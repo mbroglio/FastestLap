@@ -140,4 +140,14 @@
     <color name="md_theme_surfaceContainer_highContrast">#2E1B18</color>
     <color name="md_theme_surfaceContainerHigh_highContrast">#392522</color>
     <color name="md_theme_surfaceContainerHighest_highContrast">#452F2C</color>
+    <color name="mclaren_f1">#fe8125</color>
+    <color name="ferrari_f1">#e70c27</color>
+    <color name="mercedes_f1">#31f3d3</color>
+    <color name="redbull_f1">#3771c2</color>
+    <color name="aston_martin_f1">#269973</color>
+    <color name="haas_f1">#b6babd</color>
+    <color name="racing_bulls_f1">#6792fa</color>
+    <color name="williams_f1">#66c4fc</color>
+    <color name="alpine_f1">#0c93c9</color>
+    <color name="kick_f1">#000</color>
 </resources>
