@@ -9,9 +9,10 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import org.json.*;
+import org.json.JSONObject;
 
-import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.*;
 
 public class TeamCardActivity extends AppCompatActivity {
@@ -26,18 +27,45 @@ public class TeamCardActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        String response = callApi();
+
+
         TextView teamNameTextView = findViewById(R.id.teamName);
-        teamNameTextView.setText(teamName);
+        teamNameTextView.setText(response);
     }
 
-    String url = "https://api.jolpi.ca/ergast/f1/2024/constructorstandings/";
+    protected static String callApi() {
+        try {
+            // Specify the endpoint URL
+            URL url = new URL("https://api.jolpi.ca/ergast/f1/2024/constructorstandings/");
 
+            // Open the connection
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Accept", "application/json");
 
-    public String teamName = "Mercedes";
+            BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder response = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                response.append(line);
+            }
+            reader.close();
+
+            return response.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    /*public String teamName = "Mercedes";
     public String driverOne = "Lewis Hamilton";
     public int driverOneNumber = 44;
     public String driverTwo = "George Russell";
     public int driverTwoNumber = 63;
     public int teamPoints = 573;
-    public int teamPosition = 1;
+    public int teamPosition = 1;*/
 }
