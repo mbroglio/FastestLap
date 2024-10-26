@@ -1,6 +1,7 @@
 package com.the_coffe_coders.fastestlap;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -29,6 +30,7 @@ public class TeamCardActivity extends AppCompatActivity {
         });
 
         String response = callApi();
+        Log.d("JSON", response);
 
 
         TextView teamNameTextView = findViewById(R.id.teamName);
@@ -58,7 +60,7 @@ public class TeamCardActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        return null;
+        return "";
     }
 
     /*public String teamName = "Mercedes";
