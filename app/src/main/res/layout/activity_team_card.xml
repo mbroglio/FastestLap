@@ -1,77 +1,146 @@
-<com.google.android.material.card.MaterialCardView android:id="@+id/team_card"
+gt<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card"
+    style="?materialCardViewElevatedStyle"
+
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    tools:context=".TeamCardActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/light_orange"
         android:orientation="vertical">
-
-        <!-- Media -->
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="194dp"
-            app:srcCompat="@drawable/mercedes"
-            android:scaleType="centerCrop"
-            android:contentDescription="@string/app_name"
-            />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:orientation="horizontal"
+            android:background="@color/mclaren_f1">
 
-            <!-- Title, secondary and supporting text -->
-            <TextView
-                android:id="@+id/teamName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="?attr/textAppearanceTitleMedium"
-                />
-            <TextView
-                android:id="@+id/jsonDesc"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:textColor="?android:attr/textColorSecondary"
-                />
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text=""
-                android:textAppearance="?attr/textAppearanceBodyMedium"
-                android:textColor="?android:attr/textColorSecondary"
-                />
+                android:layout_gravity="center"
+                android:layout_marginLeft="7dp"
+                android:text="1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="65dp"
+                android:text="@string/mclaren"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="40dp"
+                android:text="544 pts."
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
         </LinearLayout>
 
-        <!-- Buttons -->
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="horizontal">
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="wrap_content"
+
+            <LinearLayout
+                android:layout_width="198dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:text="s"
-                style="?attr/borderlessButtonStyle"
-                />
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="wrap_content"
+                android:layout_gravity=""
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Title, secondary and supporting text -->
+                <LinearLayout
+                    android:layout_width="180dp"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="fill"
+                        android:contentDescription="description"
+                        app:srcCompat="@drawable/norrisfull" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/lando_norris"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="?android:attr/textColorSecondary" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="180dp"
+                    android:layout_height="40dp"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="fill"
+                        android:contentDescription="description"
+                        app:srcCompat="@drawable/piastrifull" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginTop="5dp"
+                        android:text="@string/oscar_piastri"
+                        android:textAppearance="?attr/textAppearanceBodyLarge"
+                        android:textColor="?android:attr/textColorSecondary" />
+
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="197dp"
                 android:layout_height="wrap_content"
-                android:text="s"
-                style="?attr/borderlessButtonStyle"
-                />
+                android:orientation="vertical">
+                <!-- Media -->
+                <ImageView
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:scaleType="centerCrop"
+                    app:srcCompat="@drawable/mclarenlogo"/>
+
+                <ImageView
+                    android:layout_width="196dp"
+                    android:layout_height="71dp"
+                    android:contentDescription="description"
+                    android:scaleType="centerInside"
+                    app:srcCompat="@drawable/mclaren" />
+            </LinearLayout>
+            <!-- Buttons -->
+
+
         </LinearLayout>
 
     </LinearLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" />
+
 
 </com.google.android.material.card.MaterialCardView>
