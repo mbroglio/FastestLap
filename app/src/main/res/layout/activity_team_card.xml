@@ -1,8 +1,8 @@
-gt<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card"
+    android:id="@+id/team_card"
     style="?materialCardViewElevatedStyle"
 
     android:layout_width="match_parent"
@@ -26,7 +26,7 @@ gt<?xml version="1.0" encoding="utf-8"?>
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="7dp"
+                android:layout_marginStart="7dp"
                 android:text="1"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
@@ -34,7 +34,7 @@ gt<?xml version="1.0" encoding="utf-8"?>
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="65dp"
+                android:layout_marginStart="90dp"
                 android:text="@string/mclaren"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
@@ -42,7 +42,7 @@ gt<?xml version="1.0" encoding="utf-8"?>
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginLeft="40dp"
+                android:layout_marginStart="40dp"
                 android:text="544 pts."
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
@@ -70,13 +70,12 @@ gt<?xml version="1.0" encoding="utf-8"?>
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_gravity="fill"
-                        android:contentDescription="description"
                         app:srcCompat="@drawable/norrisfull" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="6dp"
+                        android:layout_marginStart="6dp"
                         android:layout_marginTop="5dp"
                         android:text="@string/lando_norris"
                         android:textAppearance="?attr/textAppearanceBodyLarge"
@@ -93,13 +92,12 @@ gt<?xml version="1.0" encoding="utf-8"?>
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_gravity="fill"
-                        android:contentDescription="description"
                         app:srcCompat="@drawable/piastrifull" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="6dp"
+                        android:layout_marginStart="6dp"
                         android:layout_marginTop="5dp"
                         android:text="@string/oscar_piastri"
                         android:textAppearance="?attr/textAppearanceBodyLarge"
@@ -112,7 +110,7 @@ gt<?xml version="1.0" encoding="utf-8"?>
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="197dp"
+                android:layout_width="230dp"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
                 <!-- Media -->
@@ -123,9 +121,8 @@ gt<?xml version="1.0" encoding="utf-8"?>
                     app:srcCompat="@drawable/mclarenlogo"/>
 
                 <ImageView
-                    android:layout_width="196dp"
+                    android:layout_width="230dp"
                     android:layout_height="71dp"
-                    android:contentDescription="description"
                     android:scaleType="centerInside"
                     app:srcCompat="@drawable/mclaren" />
             </LinearLayout>
