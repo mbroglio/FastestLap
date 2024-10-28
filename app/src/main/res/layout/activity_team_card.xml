@@ -19,33 +19,80 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:background="@color/mclaren_f1">
+            android:background="@color/mclaren_f1"
+            android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="7dp"
-                android:text="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_weight="0.1">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="90dp"
-                android:text="@string/mclaren"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="40dp"
-                android:text="544 pts."
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="7dp"
+                        android:text="1"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                </LinearLayout>
 
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="end">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/mclaren"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:layout_weight="0.2">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.3">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="end"
+                        android:text="544"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="pt"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small" />
+
+                </LinearLayout>
+
+
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -54,81 +101,107 @@
             android:orientation="horizontal">
 
             <LinearLayout
-                android:layout_width="198dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity=""
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical"
                 android:padding="16dp">
 
                 <!-- Title, secondary and supporting text -->
                 <LinearLayout
-                    android:layout_width="180dp"
-                    android:layout_height="40dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="fill"
-                        app:srcCompat="@drawable/norrisfull" />
-
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:layout_marginTop="5dp"
-                        android:text="@string/lando_norris"
-                        android:textAppearance="?attr/textAppearanceBodyLarge"
-                        android:textColor="?android:attr/textColorSecondary" />
+                        android:layout_height="match_parent">
+
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="fill"
+                            app:srcCompat="@drawable/norrisfull" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:layout_marginTop="5dp"
+                            android:text="@string/lando_norris"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
+                            android:textColor="?android:attr/textColorSecondary" />
+                    </LinearLayout>
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="180dp"
-                    android:layout_height="40dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
                     android:orientation="horizontal">
 
-                    <ImageView
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="fill"
-                        app:srcCompat="@drawable/piastrifull" />
-
-                    <TextView
+                    <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:layout_marginTop="5dp"
-                        android:text="@string/oscar_piastri"
-                        android:textAppearance="?attr/textAppearanceBodyLarge"
-                        android:textColor="?android:attr/textColorSecondary" />
+                        android:layout_height="match_parent">
 
+                        <ImageView
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="fill"
+                            app:srcCompat="@drawable/piastrifull" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:layout_marginTop="5dp"
+                            android:text="@string/oscar_piastri"
+                            android:textAppearance="?attr/textAppearanceBodyLarge"
+                            android:textColor="?android:attr/textColorSecondary" />
+                    </LinearLayout>
                 </LinearLayout>
-
-
-
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="230dp"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
                 <!-- Media -->
-                <ImageView
-                    android:layout_width="80dp"
-                    android:layout_height="40dp"
-                    android:scaleType="centerCrop"
-                    app:srcCompat="@drawable/mclarenlogo"/>
 
-                <ImageView
-                    android:layout_width="230dp"
-                    android:layout_height="71dp"
-                    android:scaleType="centerInside"
-                    app:srcCompat="@drawable/mclaren" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center">
+
+                    <ImageView
+                        android:layout_width="80dp"
+                        android:layout_height="40dp"
+                        android:scaleType="centerCrop"
+                        app:srcCompat="@drawable/mclarenlogo" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="end">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="60dp"
+                        android:scaleType="fitCenter"
+                        app:srcCompat="@drawable/mclaren" />
+                </LinearLayout>
             </LinearLayout>
-            <!-- Buttons -->
-
-
         </LinearLayout>
 
     </LinearLayout>
