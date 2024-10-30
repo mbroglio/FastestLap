@@ -2,6 +2,8 @@ package com.the_coffe_coders.fastestlap;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
+
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -13,6 +15,8 @@ import org.chromium.net.UrlRequest.Callback;
 import org.chromium.net.UrlResponseInfo;
 import java.nio.ByteBuffer;
 import java.util.concurrent.Executors;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.chromium.net.CronetException;
 
@@ -20,6 +24,8 @@ public class TeamCardActivity extends AppCompatActivity {
 
     private static final String TAG = "TeamCardActivity";
     private static final String URL = "https://api.jolpi.ca/ergast/f1/2024/constructorstandings/";
+
+    private TextView teamPointsTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +38,8 @@ public class TeamCardActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        teamPointsTextView = findViewById(R.id.team_points);
 
         // Initialize CronetEngine
         CronetEngine cronetEngine = new CronetEngine.Builder(this).build();
@@ -81,8 +89,17 @@ public class TeamCardActivity extends AppCompatActivity {
 
             try {
                 JSONObject jsonResponse = new JSONObject(responseString);
-                // Manipulate the response JSON as needed
-                Log.i(TAG, "JSON Response: " + jsonResponse.toString(2));
+                Log.i(TAG, "Response " + jsonResponse.toString(2));
+
+                JSONArray standing = jsonResponse.getJSONObject("MRData").getJSONObject("StandingsTable").getJSONArray("StandingsLists").getJSONObject(0).getJSONArray("ConstructorStandings");
+                int points = standing.getJSONObject(0).getInt("points");
+                String team = standing.getJSONObject(0).getJSONObject("Constructor").getString("name");
+                String position = standing.getJSONObject(0).getString("position");
+
+                Log.i(TAG, "Team: " + team);
+                Log.i(TAG, "Position: " + position);
+                Log.i(TAG, "Points: " + points);
+                teamPointsTextView.setText(String.valueOf(points));
             } catch (Exception e) {
                 Log.e(TAG, "Failed to parse JSON response", e);
             }
