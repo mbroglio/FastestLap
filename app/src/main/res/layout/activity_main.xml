@@ -11,15 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-
-        <FrameLayout
+        <include layout="@layout/team_card" />
+        <Space
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:context=".TeamCardActivity">
-
-            <include layout="@layout/team_card" />
-            <include layout="@layout/team_card" />
-        </FrameLayout>
+            android:layout_height="10dp"></Space>
+        <include layout="@layout/team_card" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
