@@ -7,7 +7,6 @@
 
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="50dp"
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp"
     tools:context=".TeamCardActivity">
@@ -15,12 +14,12 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/light_orange"
+        android:background="@drawable/gradient_color_mclaren"
+
         android:orientation="vertical">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/mclaren_f1">
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/position"

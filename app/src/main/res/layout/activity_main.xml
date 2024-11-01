@@ -17,7 +17,8 @@
             android:layout_height="wrap_content"
             tools:context=".TeamCardActivity">
 
-            <include layout="@layout/activity_team_card" />
+            <include layout="@layout/team_card" />
+            <include layout="@layout/team_card" />
         </FrameLayout>
     </LinearLayout>
 
