@@ -16,6 +16,10 @@
             android:layout_width="match_parent"
             android:layout_height="10dp"></Space>
         <include layout="@layout/team_card" />
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp"></Space>
+        <include layout="@layout/driver_card" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
