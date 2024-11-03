@@ -3,27 +3,24 @@ package com.the_coffe_coders.fastestlap;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.TextView;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import org.chromium.net.CronetEngine;
-import org.chromium.net.UrlRequest;
-import org.chromium.net.UrlRequest.Callback;
-import org.chromium.net.UrlResponseInfo;
-import java.nio.ByteBuffer;
-import java.util.concurrent.Executors;
-
+import okhttp3.ResponseBody;
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.chromium.net.CronetException;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class TeamCardActivity extends AppCompatActivity {
 
     private static final String TAG = "TeamCardActivity";
-    private static final String URL = "https://api.jolpi.ca/ergast/f1/2024/constructorstandings/";
+    private static final String BASE_URL = "https://api.jolpi.ca/ergast/f1/2024/";
 
     private TextView teamPointsTextView;
 
@@ -41,73 +38,45 @@ public class TeamCardActivity extends AppCompatActivity {
 
         teamPointsTextView = findViewById(R.id.team_points);
 
-        // Initialize CronetEngine
-        CronetEngine cronetEngine = new CronetEngine.Builder(this).build();
+        // Initialize Retrofit
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .build();
 
-        // Create a request
-        UrlRequest.Builder requestBuilder = cronetEngine.newUrlRequestBuilder(
-                URL,
-                new MyUrlRequestCallback(),
-                Executors.newSingleThreadExecutor()
-        );
+        ErgastAPI ergastApi = retrofit.create(ErgastAPI.class);
 
-        UrlRequest request = requestBuilder.build();
-        request.start();
-    }
+        // Make the network request
+        ergastApi.getConstructorStandings().enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        String responseString = response.body().string();
+                        JSONObject jsonResponse = new JSONObject(responseString);
+                        Log.i(TAG, "Response " + jsonResponse.toString(2));
 
-    private class MyUrlRequestCallback extends UrlRequest.Callback {
-        private StringBuilder responseBuilder = new StringBuilder();
+                        JSONArray standing = jsonResponse.getJSONObject("MRData").getJSONObject("StandingsTable").getJSONArray("StandingsLists").getJSONObject(0).getJSONArray("ConstructorStandings");
+                        int points = standing.getJSONObject(0).getInt("points");
+                        String team = standing.getJSONObject(0).getJSONObject("Constructor").getString("name");
+                        String position = standing.getJSONObject(0).getString("position");
 
-        @Override
-        public void onRedirectReceived(UrlRequest request, UrlResponseInfo info, String newLocationUrl) {
-            Log.i(TAG, "onRedirectReceived: " + newLocationUrl);
-            request.followRedirect();
-        }
-
-        @Override
-        public void onResponseStarted(UrlRequest request, UrlResponseInfo info) {
-            Log.i(TAG, "onResponseStarted: " + info.getHttpStatusCode());
-            request.read(ByteBuffer.allocateDirect(1024));
-        }
-
-        @Override
-        public void onReadCompleted(UrlRequest request, UrlResponseInfo info, ByteBuffer byteBuffer) {
-            byteBuffer.flip();
-            byte[] bytes = new byte[byteBuffer.remaining()];
-            byteBuffer.get(bytes);
-            String chunk = new String(bytes);
-            responseBuilder.append(chunk);
-            byteBuffer.clear();
-            request.read(byteBuffer);
-        }
-
-        @Override
-        public void onSucceeded(UrlRequest request, UrlResponseInfo info) {
-            Log.i(TAG, "onSucceeded: " + info.toString());
-            String responseString = responseBuilder.toString();
-            Log.i(TAG, "Full Response: " + responseString);
-
-            try {
-                JSONObject jsonResponse = new JSONObject(responseString);
-                Log.i(TAG, "Response " + jsonResponse.toString(2));
-
-                JSONArray standing = jsonResponse.getJSONObject("MRData").getJSONObject("StandingsTable").getJSONArray("StandingsLists").getJSONObject(0).getJSONArray("ConstructorStandings");
-                int points = standing.getJSONObject(0).getInt("points");
-                String team = standing.getJSONObject(0).getJSONObject("Constructor").getString("name");
-                String position = standing.getJSONObject(0).getString("position");
-
-                Log.i(TAG, "Team: " + team);
-                Log.i(TAG, "Position: " + position);
-                Log.i(TAG, "Points: " + points);
-                teamPointsTextView.setText(String.valueOf(points));
-            } catch (Exception e) {
-                Log.e(TAG, "Failed to parse JSON response", e);
+                        Log.i(TAG, "Team: " + team);
+                        Log.i(TAG, "Position: " + position);
+                        Log.i(TAG, "Points: " + points);
+                        teamPointsTextView.setText(String.valueOf(points));
+                    } catch (Exception e) {
+                        Log.e(TAG, "Failed to parse JSON response", e);
+                    }
+                } else {
+                    Log.e(TAG, "Response not successful");
+                }
             }
-        }
 
-        @Override
-        public void onFailed(UrlRequest request, UrlResponseInfo info, CronetException error) {
-            Log.e(TAG, "onFailed: ", error);
-        }
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e(TAG, "Network request failed", t);
+            }
+        });
     }
 }
