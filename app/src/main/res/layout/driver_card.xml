@@ -57,21 +57,36 @@
                             android:text="@string/george_russell"
                             android:textAppearance="@style/TextAppearance.AppCompat.Large">
                         </TextView>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2.5">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:srcCompat="@drawable/united_kingdom">
+                        </ImageView>
+
                     </LinearLayout>
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:layout_marginEnd="10dp">
+                        android:layout_marginEnd="10dp"
+                        android:layout_weight="2">
 
                         <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="1°"
-                        android:gravity="end"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Large">
-                    </TextView>
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="end"
+                            android:text="1°"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Large">
+                        </TextView>
+
                     </LinearLayout>
 
                 </LinearLayout>
@@ -79,26 +94,48 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:orientation="horizontal">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_weight="5">
+                            android:layout_weight="1.5"
+                            android:orientation="horizontal">
 
-                            <ImageView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:scaleType="centerInside"
-                                app:srcCompat="@drawable/mercedeslogo">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="4">
 
-                            </ImageView>
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:scaleType="centerInside"
+                                    app:srcCompat="@drawable/mercedeslogo">
+                                </ImageView>
 
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center_vertical"
+                                    android:text="@string/mercedes_short"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Small">
+                                </TextView>
+
+                            </LinearLayout>
                         </LinearLayout>
 
                         <LinearLayout
@@ -106,56 +143,106 @@
                             android:layout_height="match_parent"
                             android:layout_weight="1">
 
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:text="@string/mercedes_short"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                                android:gravity="center_vertical">
-
-                            </TextView>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.8"
-                        android:orientation="horizontal">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="3">
-
                             <ImageView
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 app:srcCompat="@drawable/george_russell_number">
-
                             </ImageView>
+
                         </LinearLayout>
-                        <LinearLayout
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1">
+
+                        <TextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_weight="2">
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:text="310 pt"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                                android:gravity="center_horizontal">
-
-                            </TextView>
-
-
-                        </LinearLayout>
+                            android:gravity="center"
+                            android:text="310 pt"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Large">
+                        </TextView>
 
                     </LinearLayout>
 
 
+                    <!--
+                                        <LinearLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="1">
+
+                                            <LinearLayout
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:layout_weight="5">
+
+                                                <ImageView
+                                                    android:layout_width="wrap_content"
+                                                    android:layout_height="wrap_content"
+                                                    android:scaleType="centerInside"
+                                                    app:srcCompat="@drawable/mercedeslogo">
+
+                                                </ImageView>
+
+                                            </LinearLayout>
+
+                                            <LinearLayout
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:layout_weight="1">
+
+                                                <TextView
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="match_parent"
+                                                    android:text="@string/mercedes_short"
+                                                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                                    android:gravity="center_vertical">
+
+                                                </TextView>
+
+                                            </LinearLayout>
+
+                                        </LinearLayout>
+                                        <LinearLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="0.8"
+                                            android:orientation="horizontal">
+
+                                            <LinearLayout
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:layout_weight="3">
+
+                                                <ImageView
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="match_parent"
+                                                    app:srcCompat="@drawable/george_russell_number">
+
+                                                </ImageView>
+                                            </LinearLayout>
+                                            <LinearLayout
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:layout_weight="2">
+
+                                                <TextView
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="match_parent"
+                                                    android:text="310 pt"
+                                                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                                                    android:gravity="center_horizontal">
+
+                                                </TextView>
+
+
+                                            </LinearLayout>
+
+                                        </LinearLayout>
+                                    -->
 
 
                 </LinearLayout>
