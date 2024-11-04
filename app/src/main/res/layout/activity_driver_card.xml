@@ -11,14 +11,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
-        <include layout="@layout/team_card" />
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="10dp"></Space>
-        <include layout="@layout/team_card" />
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="10dp"></Space>
         <include layout="@layout/driver_card" />
     </LinearLayout>
 
