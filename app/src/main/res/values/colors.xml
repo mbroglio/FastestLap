@@ -150,5 +150,5 @@
     <color name="racing_bulls_f1">#6792fa</color>
     <color name="williams_f1">#66c4fc</color>
     <color name="alpine_f1">#0c93c9</color>
-    <color name="kick_f1">#01FE2B</color>
+    <color name="kick_f1">#000</color>
 </resources>
