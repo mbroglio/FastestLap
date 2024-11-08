@@ -2,6 +2,8 @@ package com.the_coffe_coders.fastestlap;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,6 +38,8 @@ public class TeamCardActivity extends AppCompatActivity {
             return insets;
         });
 
+        LinearLayout teamStanding = findViewById(R.id.team_standing);
+
         teamPointsTextView = findViewById(R.id.team_points);
 
         // Initialize Retrofit
@@ -57,14 +61,21 @@ public class TeamCardActivity extends AppCompatActivity {
                         Log.i(TAG, "Response " + jsonResponse.toString(2));
 
                         JSONArray standing = jsonResponse.getJSONObject("MRData").getJSONObject("StandingsTable").getJSONArray("StandingsLists").getJSONObject(0).getJSONArray("ConstructorStandings");
-                        int points = standing.getJSONObject(0).getInt("points");
-                        String team = standing.getJSONObject(0).getJSONObject("Constructor").getString("name");
-                        String position = standing.getJSONObject(0).getString("position");
 
-                        Log.i(TAG, "Team: " + team);
-                        Log.i(TAG, "Position: " + position);
-                        Log.i(TAG, "Points: " + points);
-                        teamPointsTextView.setText(String.valueOf(points));
+                        for(int i = 0; i < standing.length(); i++) {
+                            JSONObject team = standing.getJSONObject(i);
+                            int points = team.getInt("points");
+                            String teamName = team.getJSONObject("Constructor").getString("name");
+                            String position = team.getString("position");
+                            String teamId = team.getJSONObject("Constructor").getString("constructorId");
+
+                            Log.i(TAG, "Team ID: " + teamId);
+                            Log.i(TAG, "Team: " + teamName);
+                            Log.i(TAG, "Position: " + position);
+                            Log.i(TAG, "Points: " + points);
+
+                            teamStanding.addView(generateTeamCard(teamId, teamName, position, points));
+                        }
                     } catch (Exception e) {
                         Log.e(TAG, "Failed to parse JSON response", e);
                     }
@@ -78,5 +89,16 @@ public class TeamCardActivity extends AppCompatActivity {
                 Log.e(TAG, "Network request failed", t);
             }
         });
+    }
+
+    private View generateTeamCard(String teamId, String teamName, String position, int points) {
+        // Inflate the team card layout
+        View teamCard = getLayoutInflater().inflate(R.layout.team_card, null);
+
+        // Set the team name
+        TextView teamNameTextView = teamCard.findViewById(R.id.team_name);
+        teamNameTextView.setText(R.string.teamId);
+
+        return null;
     }
 }

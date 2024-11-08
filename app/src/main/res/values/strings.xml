@@ -46,18 +46,18 @@
     <string name="mick_schumacher">Mick Schumacher</string>
 
     <!-- Scuderie di Formula 1 -->
-    <string name="red_bull_racing">Red Bull Racing</string>
-    <string name="mercedes_short">Mercedes</string>
+    <string name="red_bull">Red Bull Racing</string>
+    <string name="mercedes">Mercedes</string>
     <string name="mercedes_full_name">Mercedes-AMG Petronas Formula One Team</string>
     <string name="ferrari">Scuderia Ferrari</string>
     <string name="mclaren">McLaren F1 Team</string>
-    <string name="aston_martin_short">Aston Martin</string>
+    <string name="aston_martin">Aston Martin</string>
     <string name="aston_martin_full_name">Aston Martin Aramco Cognizant Formula One Team</string>
-    <string name="alpine_short">Alpine F1 Team</string>
+    <string name="alpine">Alpine F1 Team</string>
     <string name="alpine_full_name">BWT Alpine F1 Team</string>
-    <string name="stake_f1">Stake F1 Team</string>
+    <string name="sauber">Stake F1 Team</string>
     <string name="haas_full">MoneyGram Haas F1 Team</string>
     <string name="haas">Haas</string>
     <string name="williams">Williams Racing</string>
-    <string name="alphatauri">Scuderia AlphaTauri</string>
+    <string name="rb">Racing Bulls</string>
 </resources>
