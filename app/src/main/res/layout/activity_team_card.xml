@@ -2,21 +2,20 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
+    android:id="@+id/team_card_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".TeamCardActivity">
 
-        <LinearLayout
-            android:id="@+id/team_standing"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-                <include layout="@layout/team_card" />
-                <Space
+            android:layout_height="match_parent">
+                <LinearLayout
+                    android:id="@+id/team_standing"
                     android:layout_width="match_parent"
-                    android:layout_height="10dp"></Space>
-                <include layout="@layout/team_card" />
-        </LinearLayout>
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                </LinearLayout>
+        </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

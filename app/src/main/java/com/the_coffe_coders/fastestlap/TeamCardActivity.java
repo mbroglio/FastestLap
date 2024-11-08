@@ -37,7 +37,7 @@ public class TeamCardActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_team_card);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.team_card), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.team_card_view), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -77,6 +77,10 @@ public class TeamCardActivity extends AppCompatActivity {
                             Log.i(TAG, "Points: " + points);
 
                             teamStanding.addView(generateTeamCard(teamId, teamName, position, points));
+                            //add a space between each team card
+                            View space = new View(TeamCardActivity.this);
+                            space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
+                            teamStanding.addView(space);
                         }
                     } catch (Exception e) {
                         Log.e(TAG, "Failed to parse JSON response", e);
@@ -108,7 +112,7 @@ public class TeamCardActivity extends AppCompatActivity {
 
         ImageView teamLogoImageView = teamCard.findViewById(R.id.team_logo);
         ImageView teamCarImageView = teamCard.findViewById(R.id.car_image);
-        LinearLayout teamColor = teamCard.findViewById(R.id.team_color);
+        LinearLayout teamColor = teamCard.findViewById(R.id.team_card);
 
         switch (teamId) {
             case "mercedes":
@@ -183,6 +187,18 @@ public class TeamCardActivity extends AppCompatActivity {
                 driverTwoNameTextView.setText(R.string.pierre_gasly);
                 driverTwoImageView.setImageResource(R.drawable.gaslyfull);
                 break;
+            case "rb":
+                teamNameTextView.setText(R.string.rb);
+                teamLogoImageView.setImageResource(R.drawable.racingbullslogo);
+                teamCarImageView.setImageResource(R.drawable.rb);
+                teamColor.setBackground(getDrawable(R.drawable.gradient_color_rb));
+
+                driverOneNameTextView.setText(R.string.yuki_tsunoda);
+                driverOneImageView.setImageResource(R.drawable.tsunoda);
+
+                driverTwoNameTextView.setText(R.string.liam_lawson);
+                driverTwoImageView.setImageResource(R.drawable.tsunoda);
+                break;
             case "haas":
                 teamNameTextView.setText(R.string.haas);
                 teamLogoImageView.setImageResource(R.drawable.haaslogo);
@@ -199,6 +215,7 @@ public class TeamCardActivity extends AppCompatActivity {
                 teamNameTextView.setText(R.string.williams);
                 teamLogoImageView.setImageResource(R.drawable.williamslogo);
                 teamCarImageView.setImageResource(R.drawable.williams);
+                teamColor.setBackground(getDrawable(R.drawable.gradient_color_williams));
 
                 driverOneNameTextView.setText(R.string.alexander_albon);
                 driverOneImageView.setImageResource(R.drawable.albon);
@@ -210,6 +227,7 @@ public class TeamCardActivity extends AppCompatActivity {
                 teamNameTextView.setText(R.string.sauber);
                 teamLogoImageView.setImageResource(R.drawable.stakelogo);
                 teamCarImageView.setImageResource(R.drawable.kick_sauber);
+                teamColor.setBackground(getDrawable(R.drawable.gradient_color_sauber));
 
                 driverOneNameTextView.setText(R.string.valtteri_bottas);
                 driverOneImageView.setImageResource(R.drawable.bottas);
