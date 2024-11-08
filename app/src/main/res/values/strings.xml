@@ -60,4 +60,8 @@
     <string name="haas">Haas</string>
     <string name="williams">Williams Racing</string>
     <string name="rb">Racing Bulls</string>
+    <string name="no_team_name_found">No team name found</string>
+
+    <string name="not_found">-!-</string>
+    <string name="franco_colapinto">Franco Colapinto</string>
 </resources>

@@ -7,16 +7,16 @@
     android:layout_height="match_parent"
     tools:context=".TeamCardActivity">
 
-    <LinearLayout
-        android:id="@+id/team_standing"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-        <include layout="@layout/team_card" />
-        <Space
+        <LinearLayout
+            android:id="@+id/team_standing"
             android:layout_width="match_parent"
-            android:layout_height="10dp"></Space>
-        <include layout="@layout/team_card" />
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+                <include layout="@layout/team_card" />
+                <Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp"></Space>
+                <include layout="@layout/team_card" />
+        </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
