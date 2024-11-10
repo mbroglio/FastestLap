@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -119,7 +120,7 @@ public class TeamCardActivity extends AppCompatActivity {
                 teamNameTextView.setText(R.string.mercedes);
                 teamLogoImageView.setImageResource(R.drawable.mercedeslogo);
                 teamCarImageView.setImageResource(R.drawable.mercedes);
-                teamColor.setBackground(getDrawable(R.drawable.gradient_color_mercedes));
+                teamColor.setBackground(AppCompatResources.getDrawable(this, R.drawable.gradient_color_mercedes));
 
                 driverOneNameTextView.setText(R.string.lewis_hamilton);
                 driverOneImageView.setImageResource(R.drawable.hamiltonfull);
@@ -131,7 +132,7 @@ public class TeamCardActivity extends AppCompatActivity {
                 teamNameTextView.setText(R.string.red_bull);
                 teamLogoImageView.setImageResource(R.drawable.redbulllogo);
                 teamCarImageView.setImageResource(R.drawable.red_bull_racing);
-                teamColor.setBackground(getDrawable(R.drawable.gradient_color_red_bull));
+                teamColor.setBackground(AppCompatResources.getDrawable(this, R.drawable.gradient_color_red_bull));
 
                 driverOneNameTextView.setText(R.string.max_verstappen);
                 driverOneImageView.setImageResource(R.drawable.verstappenfull);
@@ -143,7 +144,7 @@ public class TeamCardActivity extends AppCompatActivity {
                 teamNameTextView.setText(R.string.ferrari);
                 teamLogoImageView.setImageResource(R.drawable.ferrarilogo);
                 teamCarImageView.setImageResource(R.drawable.ferrari);
-                teamColor.setBackground(getDrawable(R.drawable.gradient_color_ferrari));
+                teamColor.setBackground(AppCompatResources.getDrawable(this, R.drawable.gradient_color_ferrari));
 
                 driverOneNameTextView.setText(R.string.charles_leclerc);
                 driverOneImageView.setImageResource(R.drawable.leclercfull);
@@ -155,7 +156,7 @@ public class TeamCardActivity extends AppCompatActivity {
                 teamNameTextView.setText(R.string.mclaren);
                 teamLogoImageView.setImageResource(R.drawable.mclarenlogo);
                 teamCarImageView.setImageResource(R.drawable.mclaren);
-                teamColor.setBackground(getDrawable(R.drawable.gradient_color_mclaren));
+                teamColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_mclaren));
 
                 driverOneNameTextView.setText(R.string.lando_norris);
                 driverOneImageView.setImageResource(R.drawable.norrisfull);
@@ -167,7 +168,7 @@ public class TeamCardActivity extends AppCompatActivity {
                 teamNameTextView.setText(R.string.aston_martin);
                 teamLogoImageView.setImageResource(R.drawable.astonmartinlogo);
                 teamCarImageView.setImageResource(R.drawable.aston_martin);
-                teamColor.setBackground(getDrawable(R.drawable.gradient_color_aston_martin));
+                teamColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_aston_martin));
 
                 driverOneNameTextView.setText(R.string.fernando_alonso);
                 driverOneImageView.setImageResource(R.drawable.alonsofull);
@@ -179,7 +180,7 @@ public class TeamCardActivity extends AppCompatActivity {
                 teamNameTextView.setText(R.string.alpine);
                 teamLogoImageView.setImageResource(R.drawable.alpinelogo);
                 teamCarImageView.setImageResource(R.drawable.alpine);
-                teamColor.setBackground(getDrawable(R.drawable.gradient_color_alpine));
+                teamColor.setBackground(AppCompatResources.getDrawable(this, R.drawable.gradient_color_alpine));
 
                 driverOneNameTextView.setText(R.string.esteban_ocon);
                 driverOneImageView.setImageResource(R.drawable.oconfull);
@@ -191,7 +192,7 @@ public class TeamCardActivity extends AppCompatActivity {
                 teamNameTextView.setText(R.string.rb);
                 teamLogoImageView.setImageResource(R.drawable.racingbullslogo);
                 teamCarImageView.setImageResource(R.drawable.rb);
-                teamColor.setBackground(getDrawable(R.drawable.gradient_color_rb));
+                teamColor.setBackground(AppCompatResources.getDrawable(this, R.drawable.gradient_color_rb));
 
                 driverOneNameTextView.setText(R.string.yuki_tsunoda);
                 driverOneImageView.setImageResource(R.drawable.tsunoda);
@@ -203,7 +204,7 @@ public class TeamCardActivity extends AppCompatActivity {
                 teamNameTextView.setText(R.string.haas);
                 teamLogoImageView.setImageResource(R.drawable.haaslogo);
                 teamCarImageView.setImageResource(R.drawable.haas);
-                teamColor.setBackground(getDrawable(R.drawable.gradient_color_haas));
+                teamColor.setBackground(AppCompatResources.getDrawable(this, R.drawable.gradient_color_haas));
 
                 driverOneNameTextView.setText(R.string.nico_hulkenberg);
                 driverOneImageView.setImageResource(R.drawable.hulkenberg);
@@ -215,7 +216,7 @@ public class TeamCardActivity extends AppCompatActivity {
                 teamNameTextView.setText(R.string.williams);
                 teamLogoImageView.setImageResource(R.drawable.williamslogo);
                 teamCarImageView.setImageResource(R.drawable.williams);
-                teamColor.setBackground(getDrawable(R.drawable.gradient_color_williams));
+                teamColor.setBackground(AppCompatResources.getDrawable(this, R.drawable.gradient_color_williams));
 
                 driverOneNameTextView.setText(R.string.alexander_albon);
                 driverOneImageView.setImageResource(R.drawable.albon);
@@ -227,7 +228,7 @@ public class TeamCardActivity extends AppCompatActivity {
                 teamNameTextView.setText(R.string.sauber);
                 teamLogoImageView.setImageResource(R.drawable.stakelogo);
                 teamCarImageView.setImageResource(R.drawable.kick_sauber);
-                teamColor.setBackground(getDrawable(R.drawable.gradient_color_sauber));
+                teamColor.setBackground(AppCompatResources.getDrawable(this, R.drawable.gradient_color_sauber));
 
                 driverOneNameTextView.setText(R.string.valtteri_bottas);
                 driverOneImageView.setImageResource(R.drawable.bottas);
