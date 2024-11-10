@@ -68,16 +68,14 @@ public class TeamCardActivity extends AppCompatActivity {
                         for (int i = 0; i < standing.length(); i++) {
                             JSONObject team = standing.getJSONObject(i);
                             int points = team.getInt("points");
-                            String teamName = team.getJSONObject("Constructor").getString("name");
                             String position = team.getString("position");
                             String teamId = team.getJSONObject("Constructor").getString("constructorId");
 
                             Log.i(TAG, "Team ID: " + teamId);
-                            Log.i(TAG, "Team: " + teamName);
                             Log.i(TAG, "Position: " + position);
                             Log.i(TAG, "Points: " + points);
 
-                            teamStanding.addView(generateTeamCard(teamId, teamName, position, points));
+                            teamStanding.addView(generateTeamCard(teamId, position, points));
                             //add a space between each team card
                             View space = new View(TeamCardActivity.this);
                             space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
@@ -98,7 +96,7 @@ public class TeamCardActivity extends AppCompatActivity {
         });
     }
 
-    private View generateTeamCard(String teamId, String teamName, String position, int points) {
+    private View generateTeamCard(String teamId, String position, int points) {
         // Inflate the team card layout
         View teamCard = getLayoutInflater().inflate(R.layout.team_card, null);
 
