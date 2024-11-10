@@ -131,7 +131,7 @@
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
                                     android:gravity="center_vertical"
-                                    android:text="@string/mercedes_short"
+                                    android:text="@string/mercedes"
                                     android:textAppearance="@style/TextAppearance.AppCompat.Small">
                                 </TextView>
 
