@@ -1,3 +1,67 @@
 <resources>
     <string name="app_name">Fastest Lap</string>
+
+    <!-- Piloti Red Bull Racing -->
+    <string name="max_verstappen">Max Verstappen</string>
+    <string name="sergio_perez">Sergio Pérez</string>
+
+    <!-- Piloti Mercedes -->
+    <string name="lewis_hamilton">Lewis Hamilton</string>
+    <string name="george_russell">George Russell</string>
+
+    <!-- Piloti Ferrari -->
+    <string name="charles_leclerc">Charles Leclerc</string>
+    <string name="carlos_sainz">Carlos Sainz</string>
+
+    <!-- Piloti McLaren -->
+    <string name="lando_norris">Lando Norris</string>
+    <string name="oscar_piastri">Oscar Piastri</string>
+
+    <!-- Piloti Aston Martin -->
+    <string name="fernando_alonso">Fernando Alonso</string>
+    <string name="lance_stroll">Lance Stroll</string>
+
+    <!-- Piloti Alpine -->
+    <string name="esteban_ocon">Esteban Ocon</string>
+    <string name="pierre_gasly">Pierre Gasly</string>
+
+    <!-- Piloti Alfa Romeo -->
+    <string name="valtteri_bottas">Valtteri Bottas</string>
+    <string name="zhou_guanyu">Zhou Guanyu</string>
+
+    <!-- Piloti Haas -->
+    <string name="kevin_magnussen">Kevin Magnussen</string>
+    <string name="nico_hulkenberg">Nico Hülkenberg</string>
+
+    <!-- Piloti Williams -->
+    <string name="alexander_albon">Alexander Albon</string>
+    <string name="logan_sargeant">Logan Sargeant</string>
+
+    <!-- Piloti AlphaTauri -->
+    <string name="yuki_tsunoda">Yuki Tsunoda</string>
+    <string name="daniel_ricciardo">Daniel Ricciardo</string>
+
+    <!-- Piloti di Riserva -->
+    <string name="liam_lawson">Liam Lawson</string>
+    <string name="mick_schumacher">Mick Schumacher</string>
+
+    <!-- Scuderie di Formula 1 -->
+    <string name="red_bull">Red Bull Racing</string>
+    <string name="mercedes">Mercedes</string>
+    <string name="mercedes_full_name">Mercedes-AMG Petronas Formula One Team</string>
+    <string name="ferrari">Scuderia Ferrari</string>
+    <string name="mclaren">McLaren F1 Team</string>
+    <string name="aston_martin">Aston Martin</string>
+    <string name="aston_martin_full_name">Aston Martin Aramco Cognizant Formula One Team</string>
+    <string name="alpine">Alpine F1 Team</string>
+    <string name="alpine_full_name">BWT Alpine F1 Team</string>
+    <string name="sauber">Stake F1 Team</string>
+    <string name="haas_full">MoneyGram Haas F1 Team</string>
+    <string name="haas">Haas</string>
+    <string name="williams">Williams Racing</string>
+    <string name="rb">Racing Bulls</string>
+    <string name="no_team_name_found">No team name found</string>
+
+    <string name="not_found">-!-</string>
+    <string name="franco_colapinto">Franco Colapinto</string>
 </resources>
