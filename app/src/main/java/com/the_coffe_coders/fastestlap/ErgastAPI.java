@@ -7,4 +7,7 @@ import retrofit2.http.GET;
 public interface ErgastAPI {
     @GET("constructorstandings")
     Call<ResponseBody> getConstructorStandings();
+
+    @GET("driverstandings")
+    Call<ResponseBody> getDriverStandings();
 }

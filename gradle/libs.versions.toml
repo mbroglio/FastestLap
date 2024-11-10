@@ -1,5 +1,5 @@
 [versions]
-agp = "8.7.1"
+agp = "8.7.2"
 json = "20240303"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -10,6 +10,7 @@ activity = "1.9.3"
 constraintlayout = "2.1.4"
 playServicesCronet = "18.0.1"
 retrofit = "2.11.0"
+threetenbp = "1.7.0"
 
 [libraries]
 converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", version.ref = "retrofit" }
@@ -23,6 +24,7 @@ activity = { group = "androidx.activity", name = "activity", version.ref = "acti
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 play-services-cronet = { module = "com.google.android.gms:play-services-cronet", version.ref = "playServicesCronet" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+threetenbp = { module = "org.threeten:threetenbp", version.ref = "threetenbp" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
