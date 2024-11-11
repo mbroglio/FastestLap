@@ -40,7 +40,7 @@ dependencies {
     implementation(libs.threetenbp)
     implementation(libs.json)
     implementation(libs.retrofit)
-    implementation(libs.converter.gson)
+    implementation(libs.converter.scalars)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
