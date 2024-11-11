@@ -11,7 +11,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="@dimen/top_bar_height"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
@@ -19,18 +19,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
-            app:title="DRIVER STANDINGS"
+            app:menu="@menu/top_app_bar"
+            app:title="DRIVERS STANDING"
             app:titleCentered="true"
             android:background="@color/ferrari_f1" />
 
     </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="64dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline1"
@@ -50,15 +44,15 @@
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="@dimen/start_standing"
         app:layout_constraintRight_toLeftOf="@id/guideline2"
-        app:layout_constraintLeft_toRightOf="@id/guideline1"
-        app:layout_constraintTop_toBottomOf="@id/top_bar_layout">
+        app:layout_constraintLeft_toRightOf="@id/guideline1">
 
 
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:scrollbars="none">
 
             <LinearLayout
                 android:id="@+id/driver_standing"

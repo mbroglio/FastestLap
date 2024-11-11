@@ -121,10 +121,10 @@ public class TeamCardActivity extends AppCompatActivity {
                 teamColor.setBackground(AppCompatResources.getDrawable(this, R.drawable.gradient_color_mercedes));
 
                 driverOneNameTextView.setText(R.string.lewis_hamilton);
-                driverOneImageView.setImageResource(R.drawable.hamiltonfull);
+                driverOneImageView.setImageResource(R.drawable.hamilton_pic);
 
                 driverTwoNameTextView.setText(R.string.george_russell);
-                driverTwoImageView.setImageResource(R.drawable.russellfull);
+                driverTwoImageView.setImageResource(R.drawable.russell_pic);
                 break;
             case "red_bull":
                 teamNameTextView.setText(R.string.red_bull);
@@ -133,10 +133,10 @@ public class TeamCardActivity extends AppCompatActivity {
                 teamColor.setBackground(AppCompatResources.getDrawable(this, R.drawable.gradient_color_red_bull));
 
                 driverOneNameTextView.setText(R.string.max_verstappen);
-                driverOneImageView.setImageResource(R.drawable.verstappenfull);
+                driverOneImageView.setImageResource(R.drawable.verstappen_pic);
 
                 driverTwoNameTextView.setText(R.string.sergio_perez);
-                driverTwoImageView.setImageResource(R.drawable.perezfull);
+                driverTwoImageView.setImageResource(R.drawable.perez_pic);
                 break;
             case "ferrari":
                 teamNameTextView.setText(R.string.ferrari);
@@ -145,10 +145,10 @@ public class TeamCardActivity extends AppCompatActivity {
                 teamColor.setBackground(AppCompatResources.getDrawable(this, R.drawable.gradient_color_ferrari));
 
                 driverOneNameTextView.setText(R.string.charles_leclerc);
-                driverOneImageView.setImageResource(R.drawable.leclercfull);
+                driverOneImageView.setImageResource(R.drawable.leclerc_pic);
 
                 driverTwoNameTextView.setText(R.string.carlos_sainz);
-                driverTwoImageView.setImageResource(R.drawable.sainzfull);
+                driverTwoImageView.setImageResource(R.drawable.sainz_pic);
                 break;
             case "mclaren":
                 teamNameTextView.setText(R.string.mclaren);
@@ -157,10 +157,10 @@ public class TeamCardActivity extends AppCompatActivity {
                 teamColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_mclaren));
 
                 driverOneNameTextView.setText(R.string.lando_norris);
-                driverOneImageView.setImageResource(R.drawable.norrisfull);
+                driverOneImageView.setImageResource(R.drawable.norris_pic);
 
                 driverTwoNameTextView.setText(R.string.oscar_piastri);
-                driverTwoImageView.setImageResource(R.drawable.piastrifull);
+                driverTwoImageView.setImageResource(R.drawable.piastri_pic);
                 break;
             case "aston_martin":
                 teamNameTextView.setText(R.string.aston_martin);
@@ -169,10 +169,10 @@ public class TeamCardActivity extends AppCompatActivity {
                 teamColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_aston_martin));
 
                 driverOneNameTextView.setText(R.string.fernando_alonso);
-                driverOneImageView.setImageResource(R.drawable.alonsofull);
+                driverOneImageView.setImageResource(R.drawable.alonso_pic);
 
                 driverTwoNameTextView.setText(R.string.lance_stroll);
-                driverTwoImageView.setImageResource(R.drawable.strollfull);
+                driverTwoImageView.setImageResource(R.drawable.stroll_pic);
                 break;
             case "alpine":
                 teamNameTextView.setText(R.string.alpine);
@@ -181,10 +181,10 @@ public class TeamCardActivity extends AppCompatActivity {
                 teamColor.setBackground(AppCompatResources.getDrawable(this, R.drawable.gradient_color_alpine));
 
                 driverOneNameTextView.setText(R.string.esteban_ocon);
-                driverOneImageView.setImageResource(R.drawable.oconfull);
+                driverOneImageView.setImageResource(R.drawable.ocon_pic);
 
                 driverTwoNameTextView.setText(R.string.pierre_gasly);
-                driverTwoImageView.setImageResource(R.drawable.gaslyfull);
+                driverTwoImageView.setImageResource(R.drawable.gasly_pic);
                 break;
             case "rb":
                 teamNameTextView.setText(R.string.rb);
@@ -193,10 +193,10 @@ public class TeamCardActivity extends AppCompatActivity {
                 teamColor.setBackground(AppCompatResources.getDrawable(this, R.drawable.gradient_color_rb));
 
                 driverOneNameTextView.setText(R.string.yuki_tsunoda);
-                driverOneImageView.setImageResource(R.drawable.tsunoda);
+                driverOneImageView.setImageResource(R.drawable.tsunoda_pic);
 
                 driverTwoNameTextView.setText(R.string.liam_lawson);
-                driverTwoImageView.setImageResource(R.drawable.tsunoda);
+                driverTwoImageView.setImageResource(R.drawable.lawson_pic);
                 break;
             case "haas":
                 teamNameTextView.setText(R.string.haas);
@@ -205,10 +205,10 @@ public class TeamCardActivity extends AppCompatActivity {
                 teamColor.setBackground(AppCompatResources.getDrawable(this, R.drawable.gradient_color_haas));
 
                 driverOneNameTextView.setText(R.string.nico_hulkenberg);
-                driverOneImageView.setImageResource(R.drawable.hulkenberg);
+                driverOneImageView.setImageResource(R.drawable.hulkenberg_pic);
 
                 driverTwoNameTextView.setText(R.string.kevin_magnussen);
-                driverTwoImageView.setImageResource(R.drawable.magnussen);
+                driverTwoImageView.setImageResource(R.drawable.magnussen_pic);
                 break;
             case "williams":
                 teamNameTextView.setText(R.string.williams);
@@ -217,10 +217,10 @@ public class TeamCardActivity extends AppCompatActivity {
                 teamColor.setBackground(AppCompatResources.getDrawable(this, R.drawable.gradient_color_williams));
 
                 driverOneNameTextView.setText(R.string.alexander_albon);
-                driverOneImageView.setImageResource(R.drawable.albon);
+                driverOneImageView.setImageResource(R.drawable.albon_pic);
 
                 driverTwoNameTextView.setText(R.string.franco_colapinto);
-                driverTwoImageView.setImageResource(R.drawable.colapinto);
+                driverTwoImageView.setImageResource(R.drawable.colapinto_pic);
                 break;
             case "sauber":
                 teamNameTextView.setText(R.string.sauber);
@@ -229,10 +229,10 @@ public class TeamCardActivity extends AppCompatActivity {
                 teamColor.setBackground(AppCompatResources.getDrawable(this, R.drawable.gradient_color_sauber));
 
                 driverOneNameTextView.setText(R.string.valtteri_bottas);
-                driverOneImageView.setImageResource(R.drawable.bottas);
+                driverOneImageView.setImageResource(R.drawable.bottas_pic);
 
                 driverTwoNameTextView.setText(R.string.zhou_guanyu);
-                driverTwoImageView.setImageResource(R.drawable.zhou);
+                driverTwoImageView.setImageResource(R.drawable.zhou_pic);
                 break;
             default:
                 teamNameTextView.setText(R.string.no_team_name_found);
