@@ -2,4 +2,5 @@
 <resources>
     <dimen name="driver_photo_in_card">100dp</dimen>
     <dimen name="small_image">40dp</dimen>
+    <dimen name="small_margin">16dp</dimen>
 </resources>

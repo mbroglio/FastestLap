@@ -118,141 +118,164 @@ public class DriverCardActivity extends AppCompatActivity {
                 driverImageView.setImageResource(R.drawable.hamiltonfull);
                 driverName.setText(R.string.lewis_hamilton);
                 teamLogoImageView.setImageResource(R.drawable.mercedeslogo);
-                driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.mercedes_f1).getDefaultColor());
-                break;
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.mercedes_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_mercedes));
+            break;
             case "max_verstappen":
                 driverImageView.setImageResource(R.drawable.verstappenfull);
                 driverName.setText(R.string.max_verstappen);
                 teamLogoImageView.setImageResource(R.drawable.redbulllogo);
-                driverColor.setBackgroundColor(getResources().getColor(R.color.redbull_f1, null));
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.redbull_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_red_bull));
                 break;
             case "bottas":
                 driverImageView.setImageResource(R.drawable.bottas);
                 driverName.setText(R.string.valtteri_bottas);
                 teamLogoImageView.setImageResource(R.drawable.stakelogo);
-                driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.kick_f1).getDefaultColor());
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.kick_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_sauber));
                 break;
             case "norris":
                 driverImageView.setImageResource(R.drawable.norrisfull);
                 driverName.setText(R.string.lando_norris);
                 teamLogoImageView.setImageResource(R.drawable.mclarenlogo);
-                driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.mclaren_f1).getDefaultColor());
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.mclaren_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_mclaren));
                 break;
             case "perez":
                 driverImageView.setImageResource(R.drawable.perezfull);
                 driverName.setText(R.string.sergio_perez);
                 teamLogoImageView.setImageResource(R.drawable.redbulllogo);
-                driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.redbull_f1).getDefaultColor());
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.redbull_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_red_bull));
                 break;
             case "leclerc":
                 driverImageView.setImageResource(R.drawable.leclercfull);
                 driverName.setText(R.string.charles_leclerc);
                 teamLogoImageView.setImageResource(R.drawable.ferrarilogo);
-                driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.ferrari_f1).getDefaultColor());
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.ferrari_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_ferrari));
                 break;
             case "sainz":
                 driverImageView.setImageResource(R.drawable.sainzfull);
                 driverName.setText(R.string.carlos_sainz);
                 teamLogoImageView.setImageResource(R.drawable.ferrarilogo);
-                driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.ferrari_f1).getDefaultColor());
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.ferrari_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_ferrari));
                 break;
             case "ricciardo":
                 driverImageView.setImageResource(R.drawable.tsunoda);
                 driverName.setText(R.string.daniel_ricciardo);
                 teamLogoImageView.setImageResource(R.drawable.racingbullslogo);
-                driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.racing_bulls_f1).getDefaultColor());
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.racing_bulls_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_rb));
                 break;
             case "gasly":
                 driverImageView.setImageResource(R.drawable.gaslyfull);
                 driverName.setText(R.string.pierre_gasly);
                 teamLogoImageView.setImageResource(R.drawable.alpinelogo);
-                driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.alpine_f1).getDefaultColor());
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.alpine_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_alpine));
                 break;
             case "alonso":
                 driverImageView.setImageResource(R.drawable.alonsofull);
                 driverName.setText(R.string.fernando_alonso);
                 teamLogoImageView.setImageResource(R.drawable.astonmartinlogo);
-                driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.aston_martin_f1).getDefaultColor());
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.aston_martin_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_aston_martin));
                 break;
             case "ocon":
                 driverImageView.setImageResource(R.drawable.oconfull);
                 driverName.setText(R.string.esteban_ocon);
                 teamLogoImageView.setImageResource(R.drawable.alpinelogo);
-                driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.alpine_f1).getDefaultColor());
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.alpine_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_alpine));
                 break;
             case "kevin_magnussen":
                 driverImageView.setImageResource(R.drawable.magnussen);
                 driverName.setText(R.string.kevin_magnussen);
                 teamLogoImageView.setImageResource(R.drawable.haaslogo);
-                driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.haas_f1).getDefaultColor());
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.haas_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_haas));
                 break;
             case "stroll":
                 driverImageView.setImageResource(R.drawable.strollfull);
                 driverName.setText(R.string.lance_stroll);
                 teamLogoImageView.setImageResource(R.drawable.astonmartinlogo);
-                driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.aston_martin_f1).getDefaultColor());
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.aston_martin_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_aston_martin));
                 break;
             case "tsunoda":
                 driverImageView.setImageResource(R.drawable.tsunoda);
                 driverName.setText(R.string.yuki_tsunoda);
                 teamLogoImageView.setImageResource(R.drawable.racingbullslogo);
-                driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.racing_bulls_f1).getDefaultColor());
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.racing_bulls_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_rb));
                 break;
             case "russell":
                 driverImageView.setImageResource(R.drawable.russellfull);
                 driverName.setText(R.string.george_russell);
                 teamLogoImageView.setImageResource(R.drawable.mercedeslogo);
-                driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.mercedes_f1).getDefaultColor());
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.mercedes_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_mercedes));
                 break;
             case "piastri":
                 driverImageView.setImageResource(R.drawable.piastrifull);
                 driverName.setText(R.string.oscar_piastri);
                 teamLogoImageView.setImageResource(R.drawable.mclarenlogo);
-                driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.mclaren_f1).getDefaultColor());
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.mclaren_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_mclaren));
                 break;
             case "bearman":
                 driverImageView.setImageResource(R.drawable.hulkenberg);
                 driverName.setText(R.string.oliver_bearman);
                 teamLogoImageView.setImageResource(R.drawable.haaslogo);
-                driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.haas_f1).getDefaultColor());
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.haas_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_haas));
                 break;
             case "hulkenberg":
                 driverImageView.setImageResource(R.drawable.hulkenberg);
                 driverName.setText(R.string.nico_hulkenberg);
                 teamLogoImageView.setImageResource(R.drawable.haaslogo);
-                driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.haas_f1).getDefaultColor());
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.haas_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_haas));
                 break;
             case "colapinto":
                 driverImageView.setImageResource(R.drawable.colapinto);
                 driverName.setText(R.string.franco_colapinto);
                 teamLogoImageView.setImageResource(R.drawable.williamslogo);
-                driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.williams_f1).getDefaultColor());
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.williams_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_williams));
                 break;
             case "lawson":
                 driverImageView.setImageResource(R.drawable.colapinto);
                 driverName.setText(R.string.liam_lawson);
                 teamLogoImageView.setImageResource(R.drawable.racingbullslogo);
-                driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.racing_bulls_f1).getDefaultColor());
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.racing_bulls_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_rb));
                 break;
             case "zhou":
                 driverImageView.setImageResource(R.drawable.zhou);
                 driverName.setText(R.string.zhou_guanyu);
                 teamLogoImageView.setImageResource(R.drawable.stakelogo);
-                driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.kick_f1).getDefaultColor());
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.kick_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_sauber));
                 break;
 
             case "sargeant":
                 driverImageView.setImageResource(R.drawable.sainzfull);
                 driverName.setText(R.string.logan_sargeant);
                 teamLogoImageView.setImageResource(R.drawable.williamslogo);
-                driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.williams_f1).getDefaultColor());
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.williams_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_williams));
                 break;
 
             case "albon":
                 driverImageView.setImageResource(R.drawable.albon);
                 driverName.setText(R.string.alexander_albon);
                 teamLogoImageView.setImageResource(R.drawable.williamslogo);
-                driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.williams_f1).getDefaultColor());
+                //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.williams_f1).getDefaultColor());
+                driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_williams));
                 break;
         }
 
