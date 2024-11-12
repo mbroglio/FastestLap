@@ -1,6 +1,8 @@
 package com.the_coffe_coders.fastestlap;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
@@ -11,10 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
-import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.ZonedDateTime;
-
-import java.io.IOException;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -26,6 +25,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 public class IntervalsActivity extends AppCompatActivity {
     private static final String TAG = "IntervalsActivity";
     private OpenF1 openF1;
+    private Handler handler = new Handler(Looper.getMainLooper());
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,57 +39,44 @@ public class IntervalsActivity extends AppCompatActivity {
             return insets;
         });
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.openf1.org/v1/")
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .build();
+        Retrofit retrofit = new Retrofit.Builder().baseUrl("https://api.openf1.org/v1/").addConverterFactory(ScalarsConverterFactory.create()).build();
 
         openF1 = retrofit.create(OpenF1.class);
 
-        try {
-            testIntervals();
-        } catch (InterruptedException | IOException e) {
-            throw new RuntimeException(e);
-        }
+        // Start the interval test
+        testIntervals();
     }
 
-    private void updateIntervals() throws IOException {
-        ZonedDateTime nowUtc = ZonedDateTime.now(ZoneOffset.UTC);
-        ZonedDateTime prevUtc = nowUtc.minusMinutes(1);
-
-        boolean raceEnded = false;
-        while (!raceEnded) {
-            Log.i(TAG, "Now --> " + nowUtc);
-            Log.i(TAG, "Prev --> " + prevUtc);
-
-            requestIntervals("latest", nowUtc, prevUtc);
-
-            // Update the timestamps
-            prevUtc = nowUtc;
-            nowUtc = ZonedDateTime.now(ZoneOffset.UTC);
-        }
-    }
-
-    private void testIntervals() throws InterruptedException, IOException {
+    private void testIntervals() {
         ZonedDateTime nowUtc = ZonedDateTime.parse("2023-09-17T13:31:02+00:00");
         ZonedDateTime prevUtc = nowUtc.minusMinutes(1);
 
-        boolean raceEnded = false;
-        while (!raceEnded) {
-            Log.i(TAG, "Now --> " + nowUtc);
-            Log.i(TAG, "Prev --> " + prevUtc);
+        // Define a runnable that will repeatedly call the API
+        Runnable intervalRunnable = new Runnable() {
+            ZonedDateTime currentNowUtc = nowUtc;
+            ZonedDateTime currentPrevUtc = prevUtc;
 
-            requestIntervals("9165", nowUtc, prevUtc);
+            @Override
+            public void run() {
+                Log.i(TAG, "Now --> " + currentNowUtc);
+                Log.i(TAG, "Prev --> " + currentPrevUtc);
 
-            // Sleep for 5 seconds
-            Thread.sleep(5000);
-            // Update the timestamps
-            prevUtc = nowUtc;
-            nowUtc = prevUtc.plusSeconds(5);
-        }
+                requestIntervals("9165", currentNowUtc, currentPrevUtc);
+
+                // Update the timestamps
+                currentPrevUtc = currentNowUtc;
+                currentNowUtc = currentPrevUtc.plusSeconds(5);
+
+                // Post the runnable again with a delay of 5 seconds
+                handler.postDelayed(this, 5000);
+            }
+        };
+
+        // Start the initial runnable
+        handler.post(intervalRunnable);
     }
 
-    private void requestIntervals(String sessionKey, ZonedDateTime nowUtc, ZonedDateTime prevUtc) throws IOException {
+    private void requestIntervals(String sessionKey, ZonedDateTime nowUtc, ZonedDateTime prevUtc) {
         Log.i(TAG, "Requesting intervals for session: " + sessionKey);
         Call<ResponseBody> call = openF1.getIntervals(sessionKey, nowUtc.toString(), prevUtc.toString());
         Log.i(TAG, "Request URL: " + call.request().url());
@@ -108,7 +95,6 @@ public class IntervalsActivity extends AppCompatActivity {
                             JSONObject interval = intervals.getJSONObject(i);
                             Log.i(TAG, "Interval: " + interval.toString());
                         }
-
                     } catch (Exception e) {
                         Log.e(TAG, "Failed to parse JSON response", e);
                     }
