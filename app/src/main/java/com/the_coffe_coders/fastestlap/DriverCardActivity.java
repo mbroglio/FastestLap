@@ -164,7 +164,7 @@ public class DriverCardActivity extends AppCompatActivity {
                 driverColor.setBackground(AppCompatResources.getDrawable(this,R.drawable.gradient_color_ferrari));
                 break;
             case "ricciardo":
-                driverImageView.setImageResource(R.drawable.tsunoda_pic);
+                driverImageView.setImageResource(R.drawable.ricciardo_pic);
                 driverName.setText(R.string.daniel_ricciardo);
                 teamLogoImageView.setImageResource(R.drawable.racingbullslogo);
                 //driverColor.setBackgroundColor(AppCompatResources.getColorStateList(this, R.color.racing_bulls_f1).getDefaultColor());
