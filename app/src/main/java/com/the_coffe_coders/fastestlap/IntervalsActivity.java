@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -16,7 +17,12 @@ import org.json.JSONObject;
 import org.threeten.bp.ZoneOffset;
 import org.threeten.bp.ZonedDateTime;
 
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -38,21 +44,30 @@ public class IntervalsActivity extends AppCompatActivity {
             return insets;
         });
 
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                .build();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.openf1.org/v1/")
                 .addConverterFactory(ScalarsConverterFactory.create())
+                .client(client)
                 .build();
 
         OpenF1 openF1 = retrofit.create(OpenF1.class);
 
         try {
             testIntervals(openF1);
-        } catch (InterruptedException e) {
+        } catch (InterruptedException | IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    private void testIntervals(OpenF1 openF1) throws InterruptedException {
+
+    private void testIntervals(OpenF1 openF1) throws InterruptedException, IOException {
         ZonedDateTime nowUtc = ZonedDateTime.parse("2023-09-17T13:31:02+00:00");
         ZonedDateTime prevUtc = nowUtc.minusMinutes(1);
 
@@ -71,20 +86,21 @@ public class IntervalsActivity extends AppCompatActivity {
         }
     }
 
-    private void requestIntervals(OpenF1 openF1, String sessionKey, ZonedDateTime nowUtc, ZonedDateTime prevUtc) {
+    private void requestIntervals(OpenF1 openF1, String sessionKey, ZonedDateTime nowUtc, ZonedDateTime prevUtc) throws IOException {
         Log.i(TAG, "Requesting intervals for session: " + sessionKey);
-        Call<ResponseBody> call = openF1.getIntervals(sessionKey, nowUtc.toString(), prevUtc.toString());
+        Call<String> call = openF1.getIntervals(sessionKey, nowUtc.toString(), prevUtc.toString());
         Log.i(TAG, "Request URL: " + call.request().url());
 
-        call.enqueue(new Callback<ResponseBody>() {
+        call.enqueue(new Callback<String>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Log.i(TAG, "Request successful");
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.i(TAG, "onResponse: " + response.code() + " " + response.message());
                 if (response.isSuccessful() && response.body() != null) {
                     try {
-                        String responseString = response.body().string();
+                        String responseString = response.body();
+                        Log.i(TAG, "Raw Response: " + responseString);
                         JSONObject jsonResponse = new JSONObject(responseString);
-                        Log.i(TAG, "Response: " + jsonResponse.toString(2));
+                        Log.i(TAG, "Formatted Response: " + jsonResponse.toString(2));
 
                         JSONArray intervals = jsonResponse.getJSONArray("intervals");
                         for (int i = 0; i < intervals.length(); i++) {
@@ -96,13 +112,20 @@ public class IntervalsActivity extends AppCompatActivity {
                         Log.e(TAG, "Failed to parse JSON response", e);
                     }
                 } else {
-                    Log.e(TAG, "Request failed with code: " + response.code());
+                    Log.e(TAG, "Response not successful: " + response.code() + " " + response.message());
+                    if (response.errorBody() != null) {
+                        try {
+                            Log.e(TAG, "Error Body: " + response.errorBody().string());
+                        } catch (Exception e) {
+                            Log.e(TAG, "Failed to read error body", e);
+                        }
+                    }
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e(TAG, "Request failed: " + t.getMessage());
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e(TAG, "Request failed: " + t.getMessage(), t);
             }
         });
     }
