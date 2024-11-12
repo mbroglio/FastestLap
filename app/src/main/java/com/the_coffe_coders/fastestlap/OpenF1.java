@@ -7,7 +7,7 @@ import retrofit2.http.Query;
 
 public interface OpenF1 {
     @GET("intervals")
-    Call<String> getIntervals(
+    Call<ResponseBody> getIntervals(
             @Query("session_key") String sessionKey,
             @Query("date<") String endDate,
             @Query("date>") String startDate
