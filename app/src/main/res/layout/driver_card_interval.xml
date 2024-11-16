@@ -13,6 +13,7 @@
         android:background="@color/md_theme_surfaceDim_mediumContrast">
 
         <TextView
+            android:id="@+id/driver_position"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="7dp"
@@ -22,6 +23,8 @@
             />
 
         <LinearLayout
+            android:orientation="vertical"
+            android:id="@+id/team_color"
             android:layout_marginTop="3dp"
             android:layout_marginBottom="3dp"
             android:layout_width="match_parent"
@@ -32,6 +35,7 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/driver_name"
             android:layout_marginStart="5dp"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -45,6 +49,7 @@
             android:layout_weight="1.6">
 
             <ImageView
+                android:id="@+id/driver_number"
                 android:layout_gravity="start"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -67,6 +72,7 @@
             android:layout_weight="1.2">
 
             <TextView
+                android:id="@+id/driver_interval"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -89,6 +95,7 @@
             android:layout_weight="1.35">
 
             <TextView
+                android:id="@+id/gap_to_leader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

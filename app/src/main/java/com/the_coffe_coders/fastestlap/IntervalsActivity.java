@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -173,25 +175,203 @@ public class IntervalsActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
-        LinearLayout liveIntervalsLayout = findViewById(R.id.liveIntervals);
+        LinearLayout liveIntervals = findViewById(R.id.liveIntervals);
 
         // Clear previous views to refresh data
-        liveIntervalsLayout.removeAllViews();
+        liveIntervals.removeAllViews();
 
         // Loop through the sorted drivers and add each with gap to leader and interval details to the layout
+        int position = 1;
         for (Driver driver : sortedDrivers) {
-            TextView driverView = new TextView(this);
+            liveIntervals.addView(generateIntervalEntry(driver, position));
+            position++;
 
-            // Display driver number, gap to leader, and interval
-            String driverText = String.format("Driver #%d\nGap to Leader: %.2f s\nInterval: %.2f s",
-                    driver.getDriverNo(), driver.getGapToLeader(), driver.getInterval());
-
-            driverView.setText(driverText);
-            driverView.setTextSize(16);
-            driverView.setPadding(16, 8, 16, 8);
-            driverView.setTextColor(ContextCompat.getColor(this, android.R.color.black));
-
-            liveIntervalsLayout.addView(driverView);
+            View space = new View(this);
+            space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 16));
+            liveIntervals.addView(space);
         }
+    }
+
+    private View generateIntervalEntry(Driver driver, int position) {
+        View intervalEntry = getLayoutInflater().inflate(R.layout.driver_card_interval, null);
+
+        TextView driverPosition = intervalEntry.findViewById(R.id.driver_position);
+        LinearLayout teamColor = intervalEntry.findViewById(R.id.team_color);
+        TextView driverName = intervalEntry.findViewById(R.id.driver_name);
+        ImageView driverNumber = intervalEntry.findViewById(R.id.driver_number);
+        TextView driverInterval = intervalEntry.findViewById(R.id.driver_interval);
+        TextView gapToLeader = intervalEntry.findViewById(R.id.gap_to_leader);
+
+
+        switch (driver.getDriverNo()){
+            case 1:
+                // Max Verstappen
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.redbull_f1));
+                driverName.setText("Max Verstappen");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+
+            case 4:
+                // Lando Norris
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.mclaren_f1));
+                driverName.setText("Lando Norris");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+
+            case 16:
+                // Charles Leclerc
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.ferrari_f1));
+                driverName.setText("Charles Leclerc");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+
+            case 81:
+                // Oscar Piastri
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.mclaren_f1));
+                driverName.setText("Oscar Piastri");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+
+            case 55:
+                // Carlos Sainz
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.ferrari_f1));
+                driverName.setText("Carlos Sainz");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+
+            case 63:
+                // George Russell
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.mercedes_f1));
+                driverName.setText("George Russell");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+
+            case 44:
+                // Lewis Hamilton
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.mercedes_f1));
+                driverName.setText("Lewis Hamilton");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+
+            case 11:
+                // Sergio Perez
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.redbull_f1));
+                driverName.setText("Sergio Perez");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+
+            case 14:
+                // Fernando Alonso
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.aston_martin_f1));
+                driverName.setText("Fernando Alonso");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+
+            case 27:
+                // Nico Hulkenberg
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.haas_f1));
+                driverName.setText("Nico Hulkenberg");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+
+            case 22:
+                // Yuki Tsunoda
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.racing_bulls_f1));
+                driverName.setText("Yuki Tsunoda");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+
+            case 10:
+                // Pierre Gasly
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.alpine_f1));
+                driverName.setText("Pierre Gasly");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+
+            case 18:
+                // Lance Stroll
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.aston_martin_f1));
+                driverName.setText("Lance Stroll");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+
+            case 31:
+                // Esteban Ocon
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.alpine_f1));
+                driverName.setText("Esteban Ocon");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+
+            case 20:
+                // Kevin Magnussen
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.haas_f1));
+                driverName.setText("Kevin Magnussen");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+
+            case 23:
+                // Alex Albon
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.williams_f1));
+                driverName.setText("Alex Albon");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+
+            case 3:
+                // Daniel Ricciardo
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.racing_bulls_f1));
+                driverName.setText("Daniel Ricciardo");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+
+            case 50:
+                // Oliver Bearmann
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.haas_f1));
+                driverName.setText("Oliver Bearmann");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+
+            case 43:
+                // Franco Colapinto
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.williams_f1));
+                driverName.setText("Franco Colapinto");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+
+            case 30:
+                // Liam Lawson
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.racing_bulls_f1));
+                driverName.setText("Liam Lawson");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+
+            case 24:
+                // Zhou Guanyu
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.kick_f1));
+                driverName.setText("Zhou Guanyu");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+
+            case 2:
+                // Logan Sargeant
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.williams_f1));
+                driverName.setText("Logan Sargeant");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+
+            case 77:
+                // Valtteri Bottas
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.kick_f1));
+                driverName.setText("Valtteri Bottas");
+                driverNumber.setImageResource(R.drawable.max_verstappen_number);
+                break;
+            default:
+                break;
+        }
+
+        driverPosition.setText(String.valueOf(position));
+        driverInterval.setText(String.format("%.3f", driver.getInterval()));
+        gapToLeader.setText(String.format("%.3f", driver.getGapToLeader()));
+
+        return intervalEntry;
     }
 }
