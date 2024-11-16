@@ -25,9 +25,6 @@ logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", ver
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
-retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
-threeten-extra = { module = "org.threeten:threeten-extra", version.ref = "threetenExtra" }
-threetenbp = { module = "org.threeten:threetenbp", version.ref = "threetenbp" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

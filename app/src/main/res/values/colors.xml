@@ -140,6 +140,7 @@
     <color name="md_theme_surfaceContainer_highContrast">#FFE9E6</color>
     <color name="md_theme_surfaceContainerHigh_highContrast">#FFE2DD</color>
     <color name="md_theme_surfaceContainerHighest_highContrast">#FEDBD6</color>
+    <color name="light_orange">#EC9006</color>
     <color name="mclaren_f1">#fe8125</color>
     <color name="ferrari_f1">#e70c27</color>
     <color name="mercedes_f1">#31f3d3</color>
@@ -149,5 +150,8 @@
     <color name="racing_bulls_f1">#6792fa</color>
     <color name="williams_f1">#66c4fc</color>
     <color name="alpine_f1">#0c93c9</color>
-    <color name="kick_f1">#000</color>
+    <color name="kick_f1">#01FE2B</color>
+
+    <color name="sfondo_prova">#1E1E24</color>
+    <color name="prova">#E47180</color>
 </resources>
