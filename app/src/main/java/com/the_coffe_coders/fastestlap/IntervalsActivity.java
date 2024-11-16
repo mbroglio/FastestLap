@@ -43,7 +43,7 @@ public class IntervalsActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_intervals);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.liveIntervals), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.intervals), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -61,7 +61,7 @@ public class IntervalsActivity extends AppCompatActivity {
     }
 
     private void testIntervals() {
-        ZonedDateTime nowUtc = ZonedDateTime.parse("2023-09-17T13:31:02+00:00");
+        ZonedDateTime nowUtc = ZonedDateTime.parse("2024-07-07T14:03:15+00:00");
         ZonedDateTime prevUtc = nowUtc.minusMinutes(1);
 
         // Define a runnable that will repeatedly call the API
@@ -74,7 +74,7 @@ public class IntervalsActivity extends AppCompatActivity {
                 Log.i(TAG, "Now --> " + currentNowUtc);
                 Log.i(TAG, "Prev --> " + currentPrevUtc);
 
-                requestIntervals("9165", currentNowUtc, currentPrevUtc);
+                requestIntervals("9558", currentNowUtc, currentPrevUtc);
 
                 int secondsDelay = 5;
                 // Update the timestamps
@@ -136,37 +136,37 @@ public class IntervalsActivity extends AppCompatActivity {
         try {
             // Extract driver data from JSON
             int driverNo = interval.getInt("driver_number");
+            Driver driver = driverMap.get(driverNo);
+
+            if (driver == null) {
+                driver = new Driver(driverNo, 0, 0);
+                driverMap.put(driverNo, driver);
+            } else {
+                sortedDrivers.remove(driver);
+            }
+
             double gapToLeader;
             double intervalValue;
 
             if (interval.isNull("gap_to_leader") && interval.isNull("interval")) {
-                gapToLeader = 0;
-                intervalValue = 0;
+                driver.updateTimings(0, 0);
             } else if (interval.isNull("gap_to_leader")) {
+                intervalValue = interval.getDouble("interval");
+                driver.updateInterval(intervalValue);
+
                 Log.e(TAG, "Missing gap_to_leader in interval: " + interval.toString());
-                return;
             } else if (interval.isNull("interval")) {
+                gapToLeader = interval.getDouble("gap_to_leader");
+                driver.updateGapToLeader(gapToLeader);
+
                 Log.e(TAG, "Missing interval in interval: " + interval.toString());
-                return;
             } else {
                 gapToLeader = interval.getDouble("gap_to_leader");
                 intervalValue = interval.getDouble("interval");
+                driver.updateTimings(intervalValue, gapToLeader);
             }
 
-            Driver driver = driverMap.get(driverNo);
-            if (driver != null) {
-                // Update existing driver
-                sortedDrivers.remove(driver);  // Remove old data
-                driver.setGapToLeader(gapToLeader);
-                driver.setInterval(intervalValue);
-                sortedDrivers.add(driver);     // Reinsert updated driver
-            } else {
-                // Add new driver
-                driver = new Driver(driverNo, gapToLeader, intervalValue);
-                driverMap.put(driverNo, driver);
-                sortedDrivers.add(driver);
-            }
-
+            sortedDrivers.add(driver);
             updateUI();
         } catch (Exception e) {
             Log.e(TAG, "Failed to process interval", e);
@@ -193,7 +193,7 @@ public class IntervalsActivity extends AppCompatActivity {
     }
 
     private View generateIntervalEntry(Driver driver, int position) {
-        View intervalEntry = getLayoutInflater().inflate(R.layout.driver_card_interval, null);
+        View intervalEntry = getLayoutInflater().inflate(R.layout.interval_card, null);
 
         TextView driverPosition = intervalEntry.findViewById(R.id.driver_position);
         LinearLayout teamColor = intervalEntry.findViewById(R.id.team_color);
@@ -203,7 +203,7 @@ public class IntervalsActivity extends AppCompatActivity {
         TextView gapToLeader = intervalEntry.findViewById(R.id.gap_to_leader);
 
 
-        switch (driver.getDriverNo()){
+        switch (driver.getDriverNo()) {
             case 1:
                 // Max Verstappen
                 teamColor.setBackgroundColor(ContextCompat.getColor(this, R.color.redbull_f1));
@@ -369,8 +369,10 @@ public class IntervalsActivity extends AppCompatActivity {
         }
 
         driverPosition.setText(String.valueOf(position));
-        driverInterval.setText(String.format("%.3f", driver.getInterval()));
-        gapToLeader.setText(String.format("%.3f", driver.getGapToLeader()));
+        String intervalText = driver.getInterval() > 0 ? "+ " + driver.getInterval() : "0.000";
+        String gapToLeaderText = driver.getGapToLeader() > 0 ? "+ " + driver.getGapToLeader() : "0.000";
+        driverInterval.setText(intervalText);
+        gapToLeader.setText(gapToLeaderText);
 
         return intervalEntry;
     }

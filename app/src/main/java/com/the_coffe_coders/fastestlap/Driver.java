@@ -32,6 +32,19 @@ public class Driver implements Comparable<Driver> {
         this.interval = interval;
     }
 
+    public void updateInterval(double interval) {
+        setInterval(interval);
+    }
+
+    public void updateGapToLeader(double gapToLeader) {
+        setGapToLeader(gapToLeader);
+    }
+
+    public void updateTimings(double interval, double gapToLeader) {
+        updateInterval(interval);
+        updateGapToLeader(gapToLeader);
+    }
+
     // Override compareTo for sorting by gapToLeader
     @Override
     public int compareTo(Driver other) {
