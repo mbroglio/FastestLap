@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap;
+package com.the_coffe_coders.fastestlap.ui;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -14,7 +14,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.material.card.MaterialCardView;
+import com.the_coffe_coders.fastestlap.R;
 
 import okhttp3.ResponseBody;
 

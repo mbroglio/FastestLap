@@ -10,7 +10,7 @@
     android:layout_marginEnd="10dp"
     android:clickable="true"
     android:focusable="true"
-    tools:context=".DriverCardActivity">
+    tools:context=".ui.DriverCardActivity">
 
     <LinearLayout
         android:id="@+id/small_driver_card"
