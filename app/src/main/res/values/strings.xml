@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Fastest Lap</string>
+    <string name="app_name" translatable="false">Fastest Lap</string>
 
     <!-- Piloti Red Bull Racing -->
     <string name="max_verstappen">Max Verstappen</string>
@@ -65,4 +65,5 @@
     <string name="not_found">-!-</string>
     <string name="franco_colapinto">Franco Colapinto</string>
     <string name="oliver_bearman">Oliver Bearman</string>
+
 </resources>
