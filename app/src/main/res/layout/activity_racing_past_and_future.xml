@@ -56,8 +56,7 @@
             android:contentDescription="@string/Pilots_informations"
             android:scaleType="centerCrop"
             android:background="#FFFFFF"
-            app:cardCornerRadius="80dp"
-            >
+            app:cardCornerRadius="80dp">
 
             <ImageView
                 android:layout_width="match_parent"
