@@ -65,5 +65,15 @@
     <string name="not_found">-!-</string>
     <string name="franco_colapinto">Franco Colapinto</string>
     <string name="oliver_bearman">Oliver Bearman</string>
+    <string name="practice_1_string">Practice 1</string>
+    <string name="friday_string">Friday</string>
+    <string name="race_string">Race</string>
+    <string name="sunday_string">Sunday</string>
+    <string name="saturday_string">Saturday</string>
+    <string name="qualifying_string">Qualifying</string>
+    <string name="sprint_qualifying_string">Sprint Qualifying</string>
+    <string name="sprint_string">Sprint</string>
+    <string name="practice_2_string">Practice 2</string>
+    <string name="practice_3_string">Practice 3</string>
 
 </resources>

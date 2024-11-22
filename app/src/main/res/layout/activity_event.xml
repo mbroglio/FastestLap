@@ -107,22 +107,11 @@
                         android:id="@+id/text_1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="FORMULA 1 HEINEKEN SILVER"
+                        android:text="FORMULA 1 HEINEKEN SILVER LAS VEGAS GRAND PRIX"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
                         android:textColor="@color/bianco">
 
                     </TextView>
-
-                    <TextView
-                        android:id="@+id/text_2"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="LAS VEGAS GRAND PRIX"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                        android:textColor="@color/bianco">
-
-                    </TextView>
-
 
                     <TextView
                         android:id="@+id/event_date"
@@ -441,7 +430,7 @@
                         </TextView>
 
                         <TextView
-                            android:id="@+id/session_1_period"
+                            android:id="@+id/session_1_time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
@@ -485,7 +474,7 @@
                         </TextView>
 
                         <TextView
-                            android:id="@+id/session_2_period"
+                            android:id="@+id/session_2_time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
@@ -529,7 +518,7 @@
                         </TextView>
 
                         <TextView
-                            android:id="@+id/session_3_period"
+                            android:id="@+id/session_3_time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
@@ -573,7 +562,7 @@
                         </TextView>
 
                         <TextView
-                            android:id="@+id/session_4_period"
+                            android:id="@+id/session_4_time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
@@ -617,7 +606,7 @@
                         </TextView>
 
                         <TextView
-                            android:id="@+id/session_5_period"
+                            android:id="@+id/session_5_time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
