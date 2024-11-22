@@ -3,6 +3,7 @@ package com.the_coffe_coders.fastestlap;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -24,7 +25,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.threeten.bp.LocalDate;
-import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.Year;
 import org.threeten.bp.ZoneId;
@@ -32,12 +32,8 @@ import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
-import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -48,7 +44,7 @@ public class EventActivity extends AppCompatActivity {
     private static final String TAG = "EventActivity";
     private String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
     private ErgastAPI ergastApi;
-    private boolean underwaySession = false;
+    private String underwaySession = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,17 +67,9 @@ public class EventActivity extends AppCompatActivity {
 
         Log.i(TAG, "Base URL: " + BASE_URL);
 
-        OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(30, TimeUnit.SECONDS)
-                .writeTimeout(30, TimeUnit.SECONDS)
-                .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                .build();
-
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(ScalarsConverterFactory.create())
-                .client(client)
                 .build();
 
         ergastApi = retrofit.create(ErgastAPI.class);
@@ -143,18 +131,18 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void getEventInfo() {
-        ergastApi.getRaces().enqueue(new Callback<ResponseBody>() {
+        ergastApi.getRaces().enqueue(new Callback<>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Log.i(TAG, "Response: " + response.toString());
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                Log.i(TAG, "Response: " + response);
                 if (response.isSuccessful() && response.body() != null) {
                     try {
                         String responseBody = response.body().string();
                         JSONObject jsonResponse = new JSONObject(responseBody);
-                        Log.i(TAG, "Json Response: " + jsonResponse.toString());
+                        Log.i(TAG, "Json Response: " + jsonResponse);
 
                         JSONArray raceSchedule = jsonResponse.getJSONObject("MRData").getJSONObject("RaceTable").getJSONArray("Races");
-                        Log.i(TAG, "Json Array: " + raceSchedule.toString());
+                        Log.i(TAG, "Json Array: " + raceSchedule);
 
                         try {
                             processRaceData(raceSchedule);
@@ -198,9 +186,7 @@ public class EventActivity extends AppCompatActivity {
             startCountdown(nextEventDate);
         }
 
-        if (underwaySession) {
-            Log.i(TAG, "Session is underway");
-        }
+        Log.i(TAG, "Underway Session: " + underwaySession);
 
         createWeekSchedule(race);
     }
@@ -251,19 +237,45 @@ public class EventActivity extends AppCompatActivity {
         }
 
         if (nextEvent != null) {
-            if (nextSession.equals("SprintQualifying")) {
-                if (currentDateTime.isBefore(nextEvent.plusMinutes(45))) {
-                    underwaySession = true;
-                }
-            } else if (nextSession.equals("Race")) {
-                if (currentDateTime.isBefore(nextEvent.plusHours(2))) {
-                    underwaySession = true;
-                }
-                return null;  // As per original logic, return null if the race is the next event
-            } else {
-                if (currentDateTime.isBefore(nextEvent.plusHours(1))) {
-                    underwaySession = true;
-                }
+            switch (nextSession) {
+                case "FirstPractice":
+                    if (currentDateTime.isBefore(nextEvent.plusHours(1))) {
+                        underwaySession = "First Practice";
+                    }
+                    break;
+                case "SecondPractice":
+                    if (currentDateTime.isBefore(nextEvent.plusHours(1))) {
+                        underwaySession = "Second Practice";
+                    }
+                    break;
+                case "ThirdPractice":
+                    if (currentDateTime.isBefore(nextEvent.plusHours(1))) {
+                        underwaySession = "Third Practice";
+                    }
+                    break;
+                case "Qualifying":
+                    if (currentDateTime.isBefore(nextEvent.plusHours(1))) {
+                        underwaySession = "Qualifying";
+                    }
+                    break;
+                case "Sprint":
+                    if (currentDateTime.isBefore(nextEvent.plusHours(1))) {
+                        underwaySession = "Sprint";
+                    }
+                    break;
+
+                case "SprintQualifying":
+                    if (currentDateTime.isBefore(nextEvent.plusMinutes(45))) {
+                        underwaySession = "Sprint Qualifying";
+                    }
+                    break;
+                case "Race":
+                    if (currentDateTime.isBefore(nextEvent.plusHours(2))) {
+                        underwaySession = "Race";
+                    }
+                    return null;  // As per original logic,
+                default:
+                    Log.e(TAG, "Unknown Session: " + nextSession);
             }
         }
 
