@@ -29,6 +29,7 @@ import org.threeten.bp.LocalTime;
 import org.threeten.bp.Year;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.format.DateTimeFormatter;
 
 import java.io.IOException;
 import java.util.List;
@@ -299,119 +300,70 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void createWeekSchedule(JSONArray race) throws JSONException {
-        String sessionTime = "";
-
         // First Practice Session
-        TextView sessionName = findViewById(R.id.session_1_name);
-        sessionName.setText(R.string.practice_1_string);
-
-        TextView sessionDay = findViewById(R.id.session_1_day);
-        sessionDay.setText(R.string.friday_string);
-
-        TextView sessionTimeView = findViewById(R.id.session_1_time);
-        sessionTime = race.getJSONObject(0).getJSONObject("FirstPractice").getString("time");
-        sessionTime = sessionTime.substring(0, sessionTime.length() - 1);
-        LocalTime sessionStart = LocalTime.parse(sessionTime);
-        LocalTime sessionEnd = sessionStart.plusHours(1);
-
-        String sessionTimeString = sessionStart + " - " + sessionEnd;
-        sessionTimeView.setText(sessionTimeString);
+        updateSession(R.id.session_1_name, R.string.practice_1_string,
+                R.id.session_1_day, R.string.friday_string,
+                R.id.session_1_time, race.getJSONObject(0).getJSONObject("FirstPractice"), 60);
 
         // Qualifying Session
-        sessionName = findViewById(R.id.session_4_name);
-        sessionName.setText(R.string.qualifying_string);
-
-        sessionDay = findViewById(R.id.session_4_day);
-        sessionDay.setText(R.string.saturday_string);
-
-        sessionTimeView = findViewById(R.id.session_4_time);
-        sessionTime = race.getJSONObject(0).getJSONObject("Qualifying").getString("time");
-        sessionTime = sessionTime.substring(0, sessionTime.length() - 1);
-        sessionStart = LocalTime.parse(sessionTime);
-        sessionEnd = sessionStart.plusHours(1);
-
-        sessionTimeString = sessionStart + " - " + sessionEnd;
-        sessionTimeView.setText(sessionTimeString);
-
+        updateSession(R.id.session_4_name, R.string.qualifying_string,
+                R.id.session_4_day, R.string.saturday_string,
+                R.id.session_4_time, race.getJSONObject(0).getJSONObject("Qualifying"), 60);
 
         // Race Session
-        sessionName = findViewById(R.id.session_5_name);
-        sessionName.setText(R.string.race_string);
-
-        sessionDay = findViewById(R.id.session_5_day);
-        sessionDay.setText(R.string.sunday_string);
-
-        sessionTimeView = findViewById(R.id.session_5_time);
-        sessionTime = race.getJSONObject(0).getString("time");
-        sessionTime = sessionTime.substring(0, sessionTime.length() - 1);
-        sessionStart = LocalTime.parse(sessionTime);
-        sessionTimeView.setText(sessionStart.toString());
+        updateSession(R.id.session_5_name, R.string.race_string,
+                R.id.session_5_day, R.string.sunday_string,
+                R.id.session_5_time, race.getJSONObject(0), "time", 0);
 
         try {
-            sessionTime = race.getJSONObject(0).getJSONObject("SprintQualifying").getString("time"); // Checks if Sprint weekend
-
             // Sprint Qualifying Session
-            sessionName = findViewById(R.id.session_2_name);
-            sessionName.setText(R.string.sprint_qualifying_string);
-
-            sessionDay = findViewById(R.id.session_2_day);
-            sessionDay.setText(R.string.friday_string);
-
-            sessionTimeView = findViewById(R.id.session_2_time);
-            sessionTime = sessionTime.substring(0, sessionTime.length() - 1);
-            sessionStart = LocalTime.parse(sessionTime);
-            sessionEnd = sessionStart.plusMinutes(45);
-
-            sessionTimeString = sessionStart + " - " + sessionEnd;
-            sessionTimeView.setText(sessionTimeString);
+            updateSession(R.id.session_2_name, R.string.sprint_qualifying_string,
+                    R.id.session_2_day, R.string.friday_string,
+                    R.id.session_2_time, race.getJSONObject(0).getJSONObject("SprintQualifying"), 45);
 
             // Sprint Race Session
-            sessionName = findViewById(R.id.session_3_name);
-            sessionName.setText(R.string.sprint_string);
-
-            sessionDay = findViewById(R.id.session_3_day);
-            sessionDay.setText(R.string.saturday_string);
-
-            sessionTimeView = findViewById(R.id.session_3_time);
-            sessionTime = race.getJSONObject(0).getJSONObject("Sprint").getString("time");
-            sessionTime = sessionTime.substring(0, sessionTime.length() - 1);
-            sessionStart = LocalTime.parse(sessionTime);
-            sessionEnd = sessionStart.plusHours(1);
-
-            sessionTimeString = sessionStart + " - " + sessionEnd;
-            sessionTimeView.setText(sessionTimeString);
+            updateSession(R.id.session_3_name, R.string.sprint_string,
+                    R.id.session_3_day, R.string.saturday_string,
+                    R.id.session_3_time, race.getJSONObject(0).getJSONObject("Sprint"), 60);
         } catch (JSONException e) {
             // Second Practice Session
-            sessionName = findViewById(R.id.session_2_name);
-            sessionName.setText(R.string.practice_2_string);
-
-            sessionDay = findViewById(R.id.session_2_day);
-            sessionDay.setText(R.string.friday_string);
-
-            sessionTimeView = findViewById(R.id.session_2_time);
-            sessionTime = race.getJSONObject(0).getJSONObject("SecondPractice").getString("time");
-            sessionTime = sessionTime.substring(0, sessionTime.length() - 1);
-            sessionStart = LocalTime.parse(sessionTime);
-            sessionEnd = sessionStart.plusHours(1);
-
-            sessionTimeString = sessionStart + " - " + sessionEnd;
-            sessionTimeView.setText(sessionTimeString);
+            updateSession(R.id.session_2_name, R.string.practice_2_string,
+                    R.id.session_2_day, R.string.friday_string,
+                    R.id.session_2_time, race.getJSONObject(0).getJSONObject("SecondPractice"), 60);
 
             // Third Practice Session
-            sessionName = findViewById(R.id.session_3_name);
-            sessionName.setText(R.string.practice_3_string);
-
-            sessionDay = findViewById(R.id.session_3_day);
-            sessionDay.setText(R.string.saturday_string);
-
-            sessionTimeView = findViewById(R.id.session_3_time);
-            sessionTime = race.getJSONObject(0).getJSONObject("ThirdPractice").getString("time");
-            sessionTime = sessionTime.substring(0, sessionTime.length() - 1);
-            sessionStart = LocalTime.parse(sessionTime);
-            sessionEnd = sessionStart.plusHours(1);
-
-            sessionTimeString = sessionStart + " - " + sessionEnd;
-            sessionTimeView.setText(sessionTimeString);
+            updateSession(R.id.session_3_name, R.string.practice_3_string,
+                    R.id.session_3_day, R.string.saturday_string,
+                    R.id.session_3_time, race.getJSONObject(0).getJSONObject("ThirdPractice"), 60);
         }
+    }
+
+    private void updateSession(int nameViewId, int nameStringId, int dayViewId, int dayStringId, int timeViewId, JSONObject session, int durationMinutes) throws JSONException {
+        updateSession(nameViewId, nameStringId, dayViewId, dayStringId, timeViewId, session, "time", durationMinutes);
+    }
+
+    private void updateSession(int nameViewId, int nameStringId, int dayViewId, int dayStringId, int timeViewId, JSONObject session, String timeKey, int durationMinutes) throws JSONException {
+        TextView sessionName = findViewById(nameViewId);
+        sessionName.setText(nameStringId);
+
+        TextView sessionDay = findViewById(dayViewId);
+        sessionDay.setText(dayStringId);
+
+        TextView sessionTimeView = findViewById(timeViewId);
+        String sessionTime = session.getString(timeKey);
+        sessionTime = sessionTime.substring(0, sessionTime.length() - 1);
+
+        LocalTime sessionStart = convertUtcToLocal(sessionTime);
+        LocalTime sessionEnd = sessionStart.plusMinutes(durationMinutes);
+
+        String sessionTimeString = durationMinutes > 0 ? sessionStart + " - " + sessionEnd : sessionStart.toString();
+        sessionTimeView.setText(sessionTimeString);
+    }
+
+    private LocalTime convertUtcToLocal(String utcTime) {
+        LocalTime utcLocalTime = LocalTime.parse(utcTime, DateTimeFormatter.ofPattern("HH:mm:ss"));
+        ZonedDateTime utcZoned = utcLocalTime.atDate(LocalDate.now()).atZone(ZoneId.of("UTC"));
+        ZonedDateTime localZoned = utcZoned.withZoneSameInstant(ZoneId.systemDefault());
+        return localZoned.toLocalTime();
     }
 }
