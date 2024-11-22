@@ -44,10 +44,9 @@
             android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@id/guideline_top_bar"
             app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
-            android:background="">
+            android:background="#FFFFFF">
 
-            <ImageButton
-                android:id="@+id/imageButton"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:layout_marginTop="30dp"
@@ -56,22 +55,58 @@
                 android:layout_marginBottom="10dp"
                 android:contentDescription="@string/Pilots_informations"
                 android:scaleType="centerCrop"
-                android:background="@drawable/button_rounded"
-                app:srcCompat="@drawable/button_pilots_picture"
-            />
+                android:background="#FFFFFF"
+                app:cardCornerRadius="80dp"
+                >
 
-            <ImageButton
-                android:id="@+id/imageButton2"
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:srcCompat="@drawable/fotopilotaprova2"
+                    android:scaleType="fitCenter"/>
+
+                    <TextView
+                        android:id="@+id/cardText1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="20dp"
+                        android:text="DRIVES"
+                        android:textSize="30sp"
+                        android:textColor="#000000"
+                        android:gravity="left" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="30dp"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
-                android:layout_marginBottom="30dp"
-                android:contentDescription="@string/Racing_Stable_informations"
+                android:layout_marginBottom="10dp"
+                android:contentDescription="@string/Pilots_informations"
                 android:scaleType="centerCrop"
-                android:background="@drawable/button_rounded"
-                app:srcCompat="@drawable/astonmartinlogo"
-            />
+                android:background="#FFFFFF"
+                app:cardCornerRadius="80dp">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:srcCompat="@drawable/fotocostruttoriprova2"
+                    android:scaleType="centerCrop"/>
+
+                    <TextView
+                        android:id="@+id/cardText2"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:padding="16dp"
+                        android:text="CONSTRUCTORS"
+                        android:textSize="30sp"
+                        android:textColor="#000000"
+                        android:gravity="left" />
+
+
+
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
