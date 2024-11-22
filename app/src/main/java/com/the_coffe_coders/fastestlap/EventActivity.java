@@ -183,7 +183,7 @@ public class EventActivity extends AppCompatActivity {
         toolbar.setTitle(title);
 
         TextView roundNumber = findViewById(R.id.round_number);
-        String roundText = "Round" + race.getJSONObject(0).getString("round");
+        String roundText = "Round " + race.getJSONObject(0).getString("round");
         roundNumber.setText(roundText);
 
         String season = race.getJSONObject(0).getString("season");
@@ -221,54 +221,52 @@ public class EventActivity extends AppCompatActivity {
         String[] sessions = {"FirstPractice", "SecondPractice", "ThirdPractice", "Qualifying", "Sprint", "SprintQualifying"};
         ZonedDateTime currentDateTime = ZonedDateTime.now(ZoneId.of("UTC"));
 
-        ZonedDateTime tmp = null;
-        String sessionTmp = "";
+        ZonedDateTime nextEvent = null;
+        String nextSession = "";
         for (String session : sessions) {
             try {
-                String nextEventString = race.getJSONObject(0).getJSONObject(session).getString("date");
-                nextEventString += "T" + race.getJSONObject(0).getJSONObject(session).getString("time");
-                nextEventString += "[UTC]";
-                ZonedDateTime nextEvent = ZonedDateTime.parse(nextEventString);
-                Log.i(TAG, "Next Event: " + nextEvent);
+                JSONObject sessionObj = race.getJSONObject(0).optJSONObject(session);
+                if (sessionObj != null) {
+                    String nextEventString = sessionObj.getString("date") + "T" + sessionObj.getString("time") + "[UTC]";
+                    ZonedDateTime sessionDateTime = ZonedDateTime.parse(nextEventString);
+                    Log.i(TAG, "Next Event: " + sessionDateTime);
 
-                Log.i(TAG, "Comparison: " + currentDateTime + " > " + nextEvent);
-                if (currentDateTime.isAfter(nextEvent)) {
-                    tmp = nextEvent;
-                    sessionTmp = session;
+                    if (currentDateTime.isBefore(sessionDateTime) && (nextEvent == null || sessionDateTime.isBefore(nextEvent))) {
+                        nextEvent = sessionDateTime;
+                        nextSession = session;
+                    }
                 }
-
-                Log.i(TAG, "Current Last Event: " + tmp);
             } catch (JSONException e) {
                 Log.i(TAG, "No " + session + " Session", e);
             }
         }
 
-        String raceDate = race.getJSONObject(0).getString("date");
-        raceDate += "T" + race.getJSONObject(0).getString("time");
-        raceDate += "[UTC]";
-        ZonedDateTime raceDateTime = ZonedDateTime.parse(raceDate);
+        String raceDateString = race.getJSONObject(0).getString("date") + "T" + race.getJSONObject(0).getString("time") + "[UTC]";
+        ZonedDateTime raceDateTime = ZonedDateTime.parse(raceDateString);
 
-        if (currentDateTime.isAfter(raceDateTime)) {
-            tmp = raceDateTime;
-            sessionTmp = "Race";
+        if (currentDateTime.isBefore(raceDateTime) && (nextEvent == null || raceDateTime.isBefore(nextEvent))) {
+            nextEvent = raceDateTime;
+            nextSession = "Race";
         }
 
-        if (sessionTmp.equals("SprintQualifying")) {
-            if (currentDateTime.isBefore(tmp.plusMinutes(45))) {
-                underwaySession = true;
-            }
-        } else if (sessionTmp.equals("Race")) {
-            if (currentDateTime.isBefore(tmp.plusHours(2))) {
-                underwaySession = true;
-            }
-            return null;
-        } else {
-            if (currentDateTime.isBefore(tmp.plusHours(1))) {
-                underwaySession = true;
+        if (nextEvent != null) {
+            if (nextSession.equals("SprintQualifying")) {
+                if (currentDateTime.isBefore(nextEvent.plusMinutes(45))) {
+                    underwaySession = true;
+                }
+            } else if (nextSession.equals("Race")) {
+                if (currentDateTime.isBefore(nextEvent.plusHours(2))) {
+                    underwaySession = true;
+                }
+                return null;  // As per original logic, return null if the race is the next event
+            } else {
+                if (currentDateTime.isBefore(nextEvent.plusHours(1))) {
+                    underwaySession = true;
+                }
             }
         }
 
-        return tmp;
+        return nextEvent;
     }
 
     private void startCountdown(ZonedDateTime eventDate) {
