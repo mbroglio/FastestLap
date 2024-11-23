@@ -119,8 +119,8 @@ public class EventActivity extends AppCompatActivity {
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int screenWidth = displayMetrics.widthPixels;
 
-        setDynamicMargins((int) (screenWidth * 0.18), R.id.session_1_name);
-        setDynamicMargins((int) (screenWidth * 0.22), R.id.session_1_day);
+        setDynamicMargins((int) (screenWidth * 0.15), R.id.session_1_name);
+        setDynamicMargins((int) (screenWidth * 0.15), R.id.session_1_day);
     }
 
     private void setDynamicMargins(int screenWidth, int viewId) {

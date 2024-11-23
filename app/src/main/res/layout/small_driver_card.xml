@@ -26,7 +26,8 @@
             android:gravity="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:text="@string/not_found"
-            android:layout_weight="1.75">
+            android:fontFamily="@font/orbitron_bold"
+            android:layout_weight="1.7">
 
 
         </TextView>
@@ -35,6 +36,7 @@
             android:id="@+id/driver_image"
             android:layout_width="@dimen/small_image"
             android:layout_height="@dimen/small_image"
+            android:layout_gravity="center"
             app:srcCompat="@drawable/russellfull">
         </ImageView>
 
@@ -42,8 +44,9 @@
             android:id="@+id/team_logo"
             android:layout_width="@dimen/small_image"
             android:layout_height="@dimen/small_image"
-
-            app:srcCompat="@drawable/mercedeslogo">
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
+            app:srcCompat="@drawable/racingbullslogo">
         </ImageView>
 
         <TextView
@@ -52,6 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:text="@string/not_found"
+            android:fontFamily="@font/orbitron_bold"
             android:layout_gravity="center"
             android:textAppearance="@style/TextAppearance.AppCompat.Body2"
             android:layout_weight="1">
@@ -63,6 +67,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="@string/not_found"
+            android:fontFamily="@font/orbitron_bold"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:layout_weight="1.5">
 

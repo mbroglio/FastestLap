@@ -7,15 +7,52 @@
     android:layout_height="match_parent"
     tools:context=".TeamCardActivity">
 
-        <ScrollView
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/top_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/top_bar_height"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-                <LinearLayout
-                    android:id="@+id/team_standing"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                </LinearLayout>
+            android:layout_height="wrap_content"
+            android:background="@color/ferrari_f1"
+            android:minHeight="?attr/actionBarSize"
+            app:menu="@menu/top_app_bar"
+            app:title="TEAMS STANDING"
+            app:titleCentered="true"
+            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp"
+            app:titleTextColor="@color/sfondo_prova" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/top_bar_height"
+        android:background="@color/sfondo_prova"
+        android:orientation="vertical">
+
+
+        <ScrollView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="@dimen/small_margin"
+            android:layout_marginEnd="@dimen/small_margin"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:id="@+id/team_standing"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
         </ScrollView>
+
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

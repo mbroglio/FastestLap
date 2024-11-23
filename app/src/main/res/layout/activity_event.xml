@@ -21,7 +21,8 @@
             android:minHeight="?attr/actionBarSize"
             app:menu="@menu/top_app_bar"
             app:title="LAS VEGAS GRAND PRIX"
-            app:titleCentered="true" />
+            app:titleCentered="true"
+            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_20sp" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -59,9 +60,7 @@
         android:layout_height="0dp"
         android:background="@color/sfondo_prova"
         app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
-        app:layout_constraintTop_toBottomOf="@id/guideline_top_bar"
-        app:layout_constraintVertical_bias="1.0"
-        tools:layout_editor_absoluteX="-16dp">
+        app:layout_constraintTop_toBottomOf="@id/guideline_top_bar">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -72,31 +71,60 @@
                 android:id="@+id/event_card"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:background="@drawable/skysports_f1_start_2023_singapore_gp_6369777_ritoccata">
+                android:background="@drawable/skysports_f1_start_2023_singapore_gp_6369777_ritoccata"
+                android:orientation="vertical">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginEnd="10dp"
-                    android:orientation="vertical">
+                    android:orientation="horizontal"
+                    android:layout_marginStart="10dp">
 
                     <TextView
                         android:id="@+id/round_number"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
+                        android:layout_marginTop="15dp"
+                        android:fontFamily="@font/orbitron_regular"
                         android:text="Round 21"
+                        android:layout_weight="1"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="@color/bianco">
 
                     </TextView>
 
+                    <LinearLayout
+                        android:layout_width="70dp"
+                        android:layout_height="50dp"
+                        android:background="@drawable/curved_bottom_left">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:srcCompat="@drawable/united_states"
+                            android:layout_marginStart="7dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="3dp"
+                            android:layout_marginEnd="3dp">
+
+                        </ImageView>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:orientation="vertical">
+
                     <TextView
                         android:id="@+id/year"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/orbitron_bold"
                         android:text="2024"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
                         android:textColor="@color/bianco">
@@ -107,6 +135,7 @@
                         android:id="@+id/text_1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/orbitron_bold"
                         android:text="FORMULA 1 HEINEKEN SILVER LAS VEGAS GRAND PRIX"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
                         android:textColor="@color/bianco">
@@ -120,6 +149,7 @@
                         android:layout_gravity="end"
                         android:layout_marginTop="15dp"
                         android:layout_marginEnd="15dp"
+                        android:fontFamily="@font/orbitron_regular"
                         android:text="22-24 November"
                         android:textColor="@color/bianco">
 
@@ -160,6 +190,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginTop="10dp"
+                            android:fontFamily="@font/orbitron_regular"
                             android:text="Next Session in:">
 
                         </TextView>
@@ -177,6 +208,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_marginEnd="20dp"
+                                android:fontFamily="@font/orbitron_regular"
                                 android:text="DAYS"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                                 android:textSize="11sp">
@@ -188,6 +220,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_marginEnd="20dp"
+                                android:fontFamily="@font/orbitron_regular"
                                 android:text="HRS"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                                 android:textSize="11sp">
@@ -199,6 +232,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_marginEnd="20dp"
+                                android:fontFamily="@font/orbitron_regular"
                                 android:text="MIN"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                                 android:textSize="11sp">
@@ -210,6 +244,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_marginEnd="20dp"
+                                android:fontFamily="@font/orbitron_regular"
                                 android:text="SEC"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                                 android:textSize="11sp">
@@ -333,6 +368,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginStart="5dp"
+                        android:fontFamily="@font/orbitron_bold"
                         android:text="LIVE SESSION"
                         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                         android:textColor="@color/sfondo_prova"
@@ -373,6 +409,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="37dp"
                             android:layout_weight="1"
+                            android:fontFamily="@font/orbitron_bold"
                             android:gravity="center_horizontal"
                             android:text="WEEKEND SCHEDULE"
                             android:textAppearance="@style/TextAppearance.AppCompat.Large" />
@@ -414,7 +451,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:layout_marginBottom="20dp"
-                            android:text="PRACTICE 1"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="@string/not_found"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
                             android:textStyle="bold">
 
@@ -425,7 +463,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="Friday"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small">
 
                         </TextView>
@@ -435,8 +474,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="12:30-13:30"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Small">
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textSize="13sp">
 
                         </TextView>
 
@@ -458,7 +499,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:layout_marginBottom="20dp"
-                            android:text="PRACTICE 2"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="@string/not_found"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
                             android:textStyle="bold">
 
@@ -469,7 +511,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="Friday"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small">
 
                         </TextView>
@@ -479,8 +522,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="16:30-17:30"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Small">
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textSize="13sp">
 
                         </TextView>
 
@@ -502,7 +547,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:layout_marginBottom="20dp"
-                            android:text="PRACTICE 3"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="@string/not_found"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
                             android:textStyle="bold">
 
@@ -513,7 +559,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="Saturday"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small">
 
                         </TextView>
@@ -523,8 +570,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="11:30-12:30"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Small">
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textSize="13sp">
 
                         </TextView>
 
@@ -546,7 +595,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:layout_marginBottom="20dp"
-                            android:text="QUALIFYING"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="@string/not_found"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
                             android:textStyle="bold">
 
@@ -557,7 +607,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="Saturday"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small">
 
                         </TextView>
@@ -567,8 +618,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="16:00-17:00"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Small">
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textSize="13sp">
 
                         </TextView>
 
@@ -590,7 +643,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
                             android:layout_marginBottom="10dp"
-                            android:text="RACE"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="@string/not_found"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
                             android:textStyle="bold">
 
@@ -601,7 +655,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="Sunday"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small">
 
                         </TextView>
@@ -611,8 +666,10 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="5dp"
-                            android:text="15:00"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Small">
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textSize="13sp">
 
                         </TextView>
 

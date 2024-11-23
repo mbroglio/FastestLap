@@ -27,6 +27,7 @@
                 android:layout_marginStart="10dp"
                 android:gravity="start"
                 android:text="@string/not_found"
+                android:fontFamily="@font/orbitron_bold"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <TextView
@@ -36,6 +37,7 @@
                 android:layout_centerInParent="true"
                 android:gravity="center"
                 android:text="@string/not_found"
+                android:fontFamily="@font/orbitron_bold"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <TextView
@@ -45,6 +47,7 @@
                 android:layout_marginEnd="10dp"
                 android:gravity="end"
                 android:text="@string/not_found"
+                android:fontFamily="@font/orbitron_bold"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:layout_alignParentEnd="true" />
         </RelativeLayout>
@@ -76,8 +79,9 @@
                         android:layout_marginStart="6dp"
                         android:layout_marginTop="5dp"
                         android:text="@string/not_found"
+                        android:fontFamily="@font/orbitron_regular"
                         android:textAppearance="?attr/textAppearanceBodyLarge"
-                        android:textColor="?android:attr/textColorSecondary" />
+                        android:textColor="@color/sfondo_prova" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -97,8 +101,9 @@
                         android:layout_marginStart="6dp"
                         android:layout_marginTop="5dp"
                         android:text="@string/not_found"
+                        android:fontFamily="@font/orbitron_regular"
                         android:textAppearance="?attr/textAppearanceBodyLarge"
-                        android:textColor="?android:attr/textColorSecondary" />
+                        android:textColor="@color/sfondo_prova" />
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
@@ -108,17 +113,16 @@
                 android:layout_weight="50">
                 <ImageView
                     android:id="@+id/team_logo"
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="40dp"
+                    android:layout_marginTop="5dp"
                     android:scaleType="fitCenter"
-                    android:layout_gravity="center"
-                    app:srcCompat="@drawable/mclarenlogo" />
+                    android:layout_gravity="center" />
                 <ImageView
                     android:id="@+id/car_image"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:scaleType="fitCenter"
-                    app:srcCompat="@drawable/mclaren" />
+                    android:scaleType="fitCenter"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
