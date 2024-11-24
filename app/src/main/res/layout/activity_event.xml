@@ -132,7 +132,7 @@
                     </TextView>
 
                     <TextView
-                        android:id="@+id/text_1"
+                        android:id="@+id/gp_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/orbitron_bold"
@@ -669,7 +669,8 @@
                             android:background="@drawable/text_view_underlined_bg"
                             android:clickable="true"
                             android:focusable="true"
-                            app:srcCompat="@drawable/checkered_flag">
+                            app:srcCompat="@drawable/checkered_flag"
+                            android:visibility="invisible">
 
                         </ImageView>
 
@@ -717,7 +718,9 @@
                             android:background="@drawable/text_view_underlined_bg"
                             android:clickable="true"
                             android:focusable="true"
-                            app:srcCompat="@drawable/checkered_flag">
+                            app:srcCompat="@drawable/checkered_flag"
+                            android:visibility="invisible"
+                            >
 
                         </ImageView>
 
@@ -765,7 +768,8 @@
                             android:background="@drawable/text_view_underlined_bg"
                             android:clickable="true"
                             android:focusable="true"
-                            app:srcCompat="@drawable/checkered_flag">
+                            app:srcCompat="@drawable/checkered_flag"
+                            android:visibility="invisible">
 
                         </ImageView>
 
@@ -813,7 +817,8 @@
                             android:background="@drawable/text_view_underlined_bg"
                             android:clickable="true"
                             android:focusable="true"
-                            app:srcCompat="@drawable/checkered_flag">
+                            app:srcCompat="@drawable/checkered_flag"
+                            android:visibility="invisible">
 
                         </ImageView>
 
@@ -861,7 +866,8 @@
                             android:background="@drawable/text_view_underlined_bg"
                             android:clickable="true"
                             android:focusable="true"
-                            app:srcCompat="@drawable/checkered_flag">
+                            app:srcCompat="@drawable/checkered_flag"
+                            android:visibility="invisible">
 
                         </ImageView>
 

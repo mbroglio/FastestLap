@@ -25,6 +25,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.Year;
 import org.threeten.bp.ZoneId;
@@ -45,6 +46,7 @@ public class EventActivity extends AppCompatActivity {
     private String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
     private ErgastAPI ergastApi;
     private String underwaySession = null;
+    private String nextSession = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,14 +170,20 @@ public class EventActivity extends AppCompatActivity {
 
     private void processRaceData(JSONArray race) throws JSONException {
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-        String title = race.getJSONObject(0).getString("raceName").toUpperCase();
-        toolbar.setTitle(title);
+        String gpName = race.getJSONObject(0).getString("raceName").toUpperCase();
+        toolbar.setTitle(gpName);
 
         TextView roundNumber = findViewById(R.id.round_number);
         String roundText = "Round " + race.getJSONObject(0).getString("round");
         roundNumber.setText(roundText);
 
+        TextView seasonYear = findViewById(R.id.year);
         String season = race.getJSONObject(0).getString("season");
+        seasonYear.setText(season);
+
+        TextView name = findViewById(R.id.gp_name);
+        name.setText(gpName);
+
 
         TextView eventDate = findViewById(R.id.event_date);
         String eventDateString = getDateString(race);
@@ -199,7 +207,7 @@ public class EventActivity extends AppCompatActivity {
         LocalDate eventEnd = LocalDate.parse(endDate);
 
         String eventDate = eventStart.getDayOfMonth() + " - " + eventEnd.getDayOfMonth();
-        eventDate += " " + eventStart.getMonth().toString();
+        eventDate += " " + eventEnd.getMonth().toString();
 
         return eventDate;
     }
@@ -209,7 +217,7 @@ public class EventActivity extends AppCompatActivity {
         ZonedDateTime currentDateTime = ZonedDateTime.now(ZoneId.of("UTC"));
 
         ZonedDateTime nextEvent = null;
-        String nextSession = "";
+
         for (String session : sessions) {
             try {
                 JSONObject sessionObj = race.getJSONObject(0).optJSONObject(session);
@@ -239,44 +247,45 @@ public class EventActivity extends AppCompatActivity {
         if (nextEvent != null) {
             switch (nextSession) {
                 case "FirstPractice":
-                    if (currentDateTime.isBefore(nextEvent.plusHours(1))) {
+                    if (currentDateTime.isAfter(nextEvent) && currentDateTime.isBefore(nextEvent.plusHours(1))) {
                         underwaySession = "First Practice";
                     }
                     break;
                 case "SecondPractice":
-                    if (currentDateTime.isBefore(nextEvent.plusHours(1))) {
+                    if (currentDateTime.isAfter(nextEvent) && currentDateTime.isBefore(nextEvent.plusHours(1))) {
                         underwaySession = "Second Practice";
                     }
                     break;
                 case "ThirdPractice":
-                    if (currentDateTime.isBefore(nextEvent.plusHours(1))) {
+                    if (currentDateTime.isAfter(nextEvent) && currentDateTime.isBefore(nextEvent.plusHours(1))) {
                         underwaySession = "Third Practice";
                     }
                     break;
                 case "Qualifying":
-                    if (currentDateTime.isBefore(nextEvent.plusHours(1))) {
+                    if (currentDateTime.isAfter(nextEvent) && currentDateTime.isBefore(nextEvent.plusHours(1))) {
                         underwaySession = "Qualifying";
                     }
                     break;
                 case "Sprint":
-                    if (currentDateTime.isBefore(nextEvent.plusHours(1))) {
+                    if (currentDateTime.isAfter(nextEvent) && currentDateTime.isBefore(nextEvent.plusHours(1))) {
                         underwaySession = "Sprint";
                     }
                     break;
-
                 case "SprintQualifying":
-                    if (currentDateTime.isBefore(nextEvent.plusMinutes(45))) {
+                    if (currentDateTime.isAfter(nextEvent) && currentDateTime.isBefore(nextEvent.plusMinutes(45))) {
                         underwaySession = "Sprint Qualifying";
                     }
                     break;
                 case "Race":
-                    if (currentDateTime.isBefore(nextEvent.plusHours(2))) {
+                    if (currentDateTime.isAfter(nextEvent) && currentDateTime.isBefore(nextEvent.plusHours(2))) {
                         underwaySession = "Race";
                     }
-                    return null;  // As per original logic,
+                    return null; // As per original logic
                 default:
                     Log.e(TAG, "Unknown Session: " + nextSession);
             }
+
+            Log.i(TAG, "Next Session: " + nextSession);
         }
 
         return nextEvent;
@@ -348,6 +357,8 @@ public class EventActivity extends AppCompatActivity {
                     R.id.session_3_day, R.string.saturday_string,
                     R.id.session_3_time, race.getJSONObject(0).getJSONObject("ThirdPractice"), 60);
         }
+
+        setChequeredFlags();
     }
 
     private void updateSession(int nameViewId, int nameStringId, int dayViewId, int dayStringId, int timeViewId, JSONObject session, int durationMinutes) throws JSONException {
@@ -368,8 +379,86 @@ public class EventActivity extends AppCompatActivity {
         LocalTime sessionStart = convertUtcToLocal(sessionTime);
         LocalTime sessionEnd = sessionStart.plusMinutes(durationMinutes);
 
+        LocalTime currentTime = LocalTime.now();
+
         String sessionTimeString = durationMinutes > 0 ? sessionStart + " - " + sessionEnd : sessionStart.toString();
         sessionTimeView.setText(sessionTimeString);
+    }
+
+    private void setChequeredFlags() {
+        if (nextSession == null) {
+            setChequeredFlag(R.id.session_1_flag);
+            setChequeredFlag(R.id.session_2_flag);
+            setChequeredFlag(R.id.session_3_flag);
+            setChequeredFlag(R.id.session_4_flag);
+            setChequeredFlag(R.id.session_5_flag);
+        } else if (underwaySession == null) {
+            switch (nextSession) {
+                case "SecondPractice":
+                    setChequeredFlag(R.id.session_1_flag);
+                    break;
+
+                case "ThirdPractice":
+                    setChequeredFlag(R.id.session_1_flag);
+                    setChequeredFlag(R.id.session_2_flag);
+                    break;
+
+                case "SprintQualifying":
+                    setChequeredFlag(R.id.session_1_flag);
+                    break;
+
+                case "Sprint":
+                    setChequeredFlag(R.id.session_1_flag);
+                    setChequeredFlag(R.id.session_2_flag);
+                    break;
+
+                case "Qualifying":
+                    setChequeredFlag(R.id.session_1_flag);
+                    setChequeredFlag(R.id.session_2_flag);
+                    setChequeredFlag(R.id.session_3_flag);
+                    break;
+
+                case "Race":
+                    setChequeredFlag(R.id.session_1_flag);
+                    setChequeredFlag(R.id.session_2_flag);
+                    setChequeredFlag(R.id.session_3_flag);
+                    setChequeredFlag(R.id.session_4_flag);
+                    break;
+            }
+        } else {
+            switch (underwaySession) {
+                case "Second Practice":
+                    setChequeredFlag(R.id.session_1_flag);
+                    break;
+
+                case "Third Practice":
+                    setChequeredFlag(R.id.session_1_flag);
+                    setChequeredFlag(R.id.session_2_flag);
+                    break;
+
+                case "Sprint Qualifying":
+                    setChequeredFlag(R.id.session_1_flag);
+                    break;
+
+                case "Sprint":
+                    setChequeredFlag(R.id.session_1_flag);
+                    setChequeredFlag(R.id.session_2_flag);
+                    break;
+
+                case "Qualifying":
+                    setChequeredFlag(R.id.session_1_flag);
+                    setChequeredFlag(R.id.session_2_flag);
+                    setChequeredFlag(R.id.session_3_flag);
+                    break;
+            }
+        }
+
+
+    }
+
+    private void setChequeredFlag(int sessionFlag) {
+        ImageView flag = findViewById(sessionFlag);
+        flag.setVisibility(View.VISIBLE);
     }
 
     private LocalTime convertUtcToLocal(String utcTime) {
