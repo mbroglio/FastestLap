@@ -25,7 +25,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.threeten.bp.LocalDate;
-import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.LocalTime;
 import org.threeten.bp.Year;
 import org.threeten.bp.ZoneId;
@@ -379,81 +378,53 @@ public class EventActivity extends AppCompatActivity {
         LocalTime sessionStart = convertUtcToLocal(sessionTime);
         LocalTime sessionEnd = sessionStart.plusMinutes(durationMinutes);
 
-        LocalTime currentTime = LocalTime.now();
-
         String sessionTimeString = durationMinutes > 0 ? sessionStart + " - " + sessionEnd : sessionStart.toString();
         sessionTimeView.setText(sessionTimeString);
     }
 
     private void setChequeredFlags() {
         if (nextSession == null) {
-            setChequeredFlag(R.id.session_1_flag);
-            setChequeredFlag(R.id.session_2_flag);
-            setChequeredFlag(R.id.session_3_flag);
-            setChequeredFlag(R.id.session_4_flag);
-            setChequeredFlag(R.id.session_5_flag);
+            setFlagsUpTo(5);
         } else if (underwaySession == null) {
-            switch (nextSession) {
-                case "SecondPractice":
-                    setChequeredFlag(R.id.session_1_flag);
-                    break;
-
-                case "ThirdPractice":
-                    setChequeredFlag(R.id.session_1_flag);
-                    setChequeredFlag(R.id.session_2_flag);
-                    break;
-
-                case "SprintQualifying":
-                    setChequeredFlag(R.id.session_1_flag);
-                    break;
-
-                case "Sprint":
-                    setChequeredFlag(R.id.session_1_flag);
-                    setChequeredFlag(R.id.session_2_flag);
-                    break;
-
-                case "Qualifying":
-                    setChequeredFlag(R.id.session_1_flag);
-                    setChequeredFlag(R.id.session_2_flag);
-                    setChequeredFlag(R.id.session_3_flag);
-                    break;
-
-                case "Race":
-                    setChequeredFlag(R.id.session_1_flag);
-                    setChequeredFlag(R.id.session_2_flag);
-                    setChequeredFlag(R.id.session_3_flag);
-                    setChequeredFlag(R.id.session_4_flag);
-                    break;
-            }
+            setFlagsBasedOnSession(nextSession);
         } else {
-            switch (underwaySession) {
-                case "Second Practice":
-                    setChequeredFlag(R.id.session_1_flag);
-                    break;
-
-                case "Third Practice":
-                    setChequeredFlag(R.id.session_1_flag);
-                    setChequeredFlag(R.id.session_2_flag);
-                    break;
-
-                case "Sprint Qualifying":
-                    setChequeredFlag(R.id.session_1_flag);
-                    break;
-
-                case "Sprint":
-                    setChequeredFlag(R.id.session_1_flag);
-                    setChequeredFlag(R.id.session_2_flag);
-                    break;
-
-                case "Qualifying":
-                    setChequeredFlag(R.id.session_1_flag);
-                    setChequeredFlag(R.id.session_2_flag);
-                    setChequeredFlag(R.id.session_3_flag);
-                    break;
-            }
+            setFlagsBasedOnSession(underwaySession);
         }
+    }
 
+    private void setFlagsUpTo(int sessionCount) {
+        int[] sessionFlags = {
+                R.id.session_1_flag,
+                R.id.session_2_flag,
+                R.id.session_3_flag,
+                R.id.session_4_flag,
+                R.id.session_5_flag
+        };
 
+        for (int i = 0; i < sessionCount; i++) {
+            setChequeredFlag(sessionFlags[i]);
+        }
+    }
+
+    private void setFlagsBasedOnSession(String session) {
+        int flagsToSet = 0;
+        switch (session) {
+            case "SecondPractice":
+            case "SprintQualifying":
+                flagsToSet = 1;
+                break;
+            case "ThirdPractice":
+            case "Sprint":
+                flagsToSet = 2;
+                break;
+            case "Qualifying":
+                flagsToSet = 3;
+                break;
+            case "Race":
+                flagsToSet = 4;
+                break;
+        }
+        setFlagsUpTo(flagsToSet);
     }
 
     private void setChequeredFlag(int sessionFlag) {
