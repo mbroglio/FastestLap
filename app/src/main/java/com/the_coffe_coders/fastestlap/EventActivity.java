@@ -62,7 +62,7 @@ public class EventActivity extends AppCompatActivity {
         Year currentYear = Year.now();
         BASE_URL += currentYear + "/";
 
-        String circuitId = "vegas"; // Must be queried from the selected card
+        String circuitId = "losail"; // Must be queried from the selected card
         BASE_URL += "circuits/" + circuitId + "/";
 
         Log.i(TAG, "Base URL: " + BASE_URL);
