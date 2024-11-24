@@ -36,8 +36,7 @@
             android:id="@+id/driver_image"
             android:layout_width="@dimen/small_image"
             android:layout_height="@dimen/small_image"
-            android:layout_gravity="center"
-            app:srcCompat="@drawable/russellfull">
+            android:layout_gravity="center">
         </ImageView>
 
         <ImageView
@@ -45,8 +44,7 @@
             android:layout_width="@dimen/small_image"
             android:layout_height="@dimen/small_image"
             android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            app:srcCompat="@drawable/racingbullslogo">
+            android:layout_marginBottom="5dp">
         </ImageView>
 
         <TextView
