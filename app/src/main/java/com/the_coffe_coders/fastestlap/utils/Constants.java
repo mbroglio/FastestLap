@@ -9,7 +9,7 @@ public class Constants {
     public static final Map<String, Integer> DRIVER_IMAGE = new HashMap<String, Integer>() {{
         put("hamilton", R.drawable.hamilton_pic);
         put("russell", R.drawable.russell_pic);
-        put("verstappen", R.drawable.verstappen_pic);
+        put("max_verstappen", R.drawable.verstappen_pic);
         put("perez", R.drawable.perez_pic);
         put("norris", R.drawable.norris_pic);
         put("piastri", R.drawable.piastri_pic);
@@ -36,7 +36,7 @@ public class Constants {
         {
             put("hamilton", R.string.lewis_hamilton);
             put("russell", R.string.george_russell);
-            put("verstappen", R.string.max_verstappen);
+            put("max_verstappen", R.string.max_verstappen);
             put("perez", R.string.sergio_perez);
             put("norris", R.string.lando_norris);
             put("piastri", R.string.oscar_piastri);
@@ -89,7 +89,7 @@ public class Constants {
     public static final Map<String, String> DRIVER_TEAM = new HashMap<String, String>() {{
         put("hamilton", "mercedes");
         put("russell", "mercedes");
-        put("verstappen", "red_bull");
+        put("max_verstappen", "red_bull");
         put("perez", "red_bull");
         put("norris", "mclaren");
         put("piastri", "mclaren");
