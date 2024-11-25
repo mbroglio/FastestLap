@@ -10,4 +10,7 @@ public interface ErgastAPI {
 
     @GET("driverstandings")
     Call<ResponseBody> getDriverStandings();
+
+    @GET("races")
+    Call<ResponseBody> getRaces();
 }

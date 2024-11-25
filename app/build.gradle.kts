@@ -41,6 +41,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.scalars)
     implementation(libs.threetenbp)
+    implementation(libs.logging.interceptor)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

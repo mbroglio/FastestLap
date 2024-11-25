@@ -1,0 +1,887 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_event"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EventActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/top_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/top_bar_height"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/ferrari_f1"
+            android:minHeight="?attr/actionBarSize"
+            app:menu="@menu/top_app_bar"
+            app:title="LAS VEGAS GRAND PRIX"
+            app:titleCentered="true"
+            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_20sp" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_top_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="@dimen/top_bar_height" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="0dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_left"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.35" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_right"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.66" />
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/sfondo_prova"
+        app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
+        app:layout_constraintTop_toBottomOf="@id/guideline_top_bar">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/event_card"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:background="@drawable/skysports_f1_start_2023_singapore_gp_6369777_ritoccata"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginStart="10dp">
+
+                    <TextView
+                        android:id="@+id/round_number"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
+                        android:fontFamily="@font/orbitron_regular"
+                        android:text="Round 21"
+                        android:layout_weight="1"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:textColor="@color/bianco">
+
+                    </TextView>
+
+                    <LinearLayout
+                        android:layout_width="70dp"
+                        android:layout_height="50dp"
+                        android:background="@drawable/curved_bottom_left">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            app:srcCompat="@drawable/united_states"
+                            android:layout_marginStart="7dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="3dp"
+                            android:layout_marginEnd="3dp">
+
+                        </ImageView>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/year"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/orbitron_bold"
+                        android:text="2024"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        android:textColor="@color/bianco">
+
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/gp_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/orbitron_bold"
+                        android:text="FORMULA 1 HEINEKEN SILVER LAS VEGAS GRAND PRIX"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        android:textColor="@color/bianco">
+
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/event_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:fontFamily="@font/orbitron_regular"
+                        android:text="22-24 November"
+                        android:textColor="@color/bianco">
+
+                    </TextView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/next_session_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="5dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp">
+
+                <LinearLayout
+                    android:id="@+id/countdown_and_track"
+                    android:layout_width="match_parent"
+                    android:layout_height="130dp"
+                    android:background="@drawable/gradient_grey_horizontal"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="270dp"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:id="@+id/countdown"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:layout_weight="0">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_marginTop="10dp"
+                                android:fontFamily="@font/orbitron_regular"
+                                android:text="Next Session in:">
+
+                            </TextView>
+
+                            <GridLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginTop="15dp"
+                                android:columnCount="4"
+                                android:rowCount="2">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginEnd="20dp"
+                                    android:fontFamily="@font/orbitron_regular"
+                                    android:text="DAYS"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                    android:textSize="11sp">
+
+                                </TextView>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginEnd="20dp"
+                                    android:fontFamily="@font/orbitron_regular"
+                                    android:text="HRS"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                    android:textSize="11sp">
+
+                                </TextView>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginEnd="20dp"
+                                    android:fontFamily="@font/orbitron_regular"
+                                    android:text="MIN"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                    android:textSize="11sp">
+
+                                </TextView>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginEnd="20dp"
+                                    android:fontFamily="@font/orbitron_regular"
+                                    android:text="SEC"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                                    android:textSize="11sp">
+
+                                </TextView>
+
+                                <TextView
+                                    android:id="@+id/days_counter"
+                                    android:layout_width="40dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginEnd="20dp"
+                                    android:gravity="center"
+                                    android:text="00"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                                    android:textStyle="bold">
+
+                                </TextView>
+
+                                <TextView
+                                    android:id="@+id/hours_counter"
+                                    android:layout_width="40dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginEnd="20dp"
+                                    android:gravity="center"
+                                    android:text="00"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                                    android:textStyle="bold">
+
+                                </TextView>
+
+                                <TextView
+                                    android:id="@+id/minutes_counter"
+                                    android:layout_width="40dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginEnd="20dp"
+                                    android:gravity="center"
+                                    android:text="00"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                                    android:textStyle="bold">
+
+                                </TextView>
+
+                                <TextView
+                                    android:id="@+id/seconds_counter"
+                                    android:layout_width="40dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginEnd="20dp"
+                                    android:gravity="center"
+                                    android:text="00"
+                                    android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                                    android:textStyle="bold">
+
+                                </TextView>
+
+                            </GridLayout>
+
+                        </LinearLayout>
+
+                        <RelativeLayout
+                            android:id="@+id/race_result"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:layout_weight="0">
+
+                            <TextView
+                                android:id="@+id/race_text"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="RACE RESULT:"
+                                android:layout_marginTop="10dp"
+                                android:fontFamily="@font/orbitron_bold"
+                                android:layout_centerHorizontal="true">
+
+                            </TextView>
+
+                            <LinearLayout
+                                android:id="@+id/race_podium"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:orientation="vertical"
+                                android:layout_marginStart="30dp"
+                                android:layout_marginTop="10dp"
+                                android:layout_below="@id/race_text">
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="10dp"
+                                        android:layout_height="wrap_content"
+                                        android:text="1"
+                                        android:fontFamily="@font/orbitron_bold">
+
+                                    </TextView>
+
+                                    <LinearLayout
+                                        android:layout_width="8dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_marginStart="10dp"
+                                        android:background="@color/mercedes_f1">
+
+                                    </LinearLayout>
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="5dp"
+                                        android:text="George Russell"
+                                        android:fontFamily="@font/orbitron_regular">
+                                    </TextView>
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_marginTop="10dp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="10dp"
+                                        android:layout_height="wrap_content"
+                                        android:text="2"
+                                        android:gravity="center"
+                                        android:fontFamily="@font/orbitron_bold">
+
+                                    </TextView>
+
+                                    <LinearLayout
+                                        android:layout_width="8dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_marginStart="10dp"
+                                        android:background="@color/mercedes_f1">
+
+                                    </LinearLayout>
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="5dp"
+                                        android:text="Lewis Hamilton"
+                                        android:fontFamily="@font/orbitron_regular">
+                                    </TextView>
+
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:layout_marginTop="10dp"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:orientation="horizontal">
+
+                                    <TextView
+                                        android:layout_width="10dp"
+                                        android:layout_height="wrap_content"
+                                        android:text="3"
+                                        android:fontFamily="@font/orbitron_bold">
+
+                                    </TextView>
+
+                                    <LinearLayout
+                                        android:layout_width="8dp"
+                                        android:layout_height="match_parent"
+                                        android:layout_marginStart="10dp"
+                                        android:background="@color/ferrari_f1">
+
+                                    </LinearLayout>
+
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginStart="5dp"
+                                        android:text="Carlos Sainz"
+                                        android:fontFamily="@font/orbitron_regular">
+                                    </TextView>
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+
+                            <ImageView
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                app:srcCompat="@drawable/arrow_pointing_right_down"
+                                android:layout_alignParentEnd="true"
+                                android:layout_alignParentBottom="true"
+                                android:layout_marginEnd="5dp"
+                                android:layout_marginBottom="5dp">
+
+                            </ImageView>
+
+                            <ImageView
+                                android:layout_width="50dp"
+                                android:layout_height="50dp"
+                                app:srcCompat="@drawable/checkered_flag"
+                                android:layout_centerInParent="true"
+                                android:layout_alignParentEnd="true"
+                                android:layout_marginEnd="15dp">
+
+                            </ImageView>
+
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Pending\nresults..."
+                                android:fontFamily="@font/orbitron_bold"
+                                android:textColor="@color/sfondo_prova"
+                                android:textSize="25sp"
+                                android:layout_centerInParent="true">
+
+                            </TextView>
+
+                        </RelativeLayout>
+
+
+                    </LinearLayout>
+
+
+
+                    <LinearLayout
+                        android:layout_width="2dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:background="@color/sfondo_prova">
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/track_pic"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:focusable="true">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="10dp"
+                            app:srcCompat="@drawable/f1_2024_lve_outline">
+
+                        </ImageView>
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/live_session"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="40dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardBackgroundColor="@color/ferrari_f1"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        app:srcCompat="@drawable/baseline_play_circle_24">
+
+                    </ImageView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="5dp"
+                        android:fontFamily="@font/orbitron_bold"
+                        android:text="LIVE SESSION"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                        android:textColor="@color/sfondo_prova"
+                        android:textStyle="bold">
+
+                    </TextView>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/weekend_schedule"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="5dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/text_view"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="37dp"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:gravity="center_horizontal"
+                            android:text="WEEKEND SCHEDULE"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/weather_forecast"
+                            android:layout_width="40dp"
+                            android:layout_height="30dp"
+                            android:layout_marginEnd="15dp"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:cardBackgroundColor="@color/sfondo_prova">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:src="@drawable/baseline_sunny_24"
+                                app:tint="@color/yellow" />
+                        </com.google.android.material.card.MaterialCardView>
+
+
+                    </LinearLayout>
+
+                    <GridLayout
+                        android:id="@+id/sessions_container"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:columnCount="4"
+                        android:rowCount="5">
+
+                        <TextView
+                            android:id="@+id/session_1_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="20dp"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="@string/not_found"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textStyle="bold">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/session_1_day"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/session_1_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textSize="13sp">
+
+                        </TextView>
+
+                        <ImageView
+                            android:id="@+id/session_1_flag"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="end"
+                            android:background="@drawable/text_view_underlined_bg"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:srcCompat="@drawable/checkered_flag"
+                            android:visibility="invisible">
+
+                        </ImageView>
+
+                        <TextView
+                            android:id="@+id/session_2_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="20dp"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="@string/not_found"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textStyle="bold">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/session_2_day"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/session_2_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textSize="13sp">
+
+                        </TextView>
+
+                        <ImageView
+                            android:id="@+id/session_2_flag"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="end"
+                            android:background="@drawable/text_view_underlined_bg"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:srcCompat="@drawable/checkered_flag"
+                            android:visibility="invisible"
+                            >
+
+                        </ImageView>
+
+                        <TextView
+                            android:id="@+id/session_3_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="20dp"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="@string/not_found"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textStyle="bold">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/session_3_day"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/session_3_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textSize="13sp">
+
+                        </TextView>
+
+                        <ImageView
+                            android:id="@+id/session_3_flag"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="end"
+                            android:background="@drawable/text_view_underlined_bg"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:srcCompat="@drawable/checkered_flag"
+                            android:visibility="invisible">
+
+                        </ImageView>
+
+                        <TextView
+                            android:id="@+id/session_4_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="20dp"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="@string/not_found"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textStyle="bold">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/session_4_day"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/session_4_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textSize="13sp">
+
+                        </TextView>
+
+                        <ImageView
+                            android:id="@+id/session_4_flag"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="end"
+                            android:background="@drawable/text_view_underlined_bg"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:srcCompat="@drawable/checkered_flag"
+                            android:visibility="invisible">
+
+                        </ImageView>
+
+                        <TextView
+                            android:id="@+id/session_5_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="10dp"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="@string/not_found"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textStyle="bold">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/session_5_day"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/session_5_time"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                            android:textSize="13sp">
+
+                        </TextView>
+
+                        <ImageView
+                            android:id="@+id/session_5_flag"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="end"
+                            android:background="@drawable/text_view_underlined_bg"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:srcCompat="@drawable/checkered_flag"
+                            android:visibility="invisible">
+
+                        </ImageView>
+
+
+                    </GridLayout>
+
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

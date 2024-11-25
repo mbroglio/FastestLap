@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Other styles -->
+
+    <style name="TextAppearance.OrbitronBold_25sp" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:fontFamily">@font/orbitron_bold</item>
+        <item name="android:textSize">25sp</item>
+    </style>
+
+    <style name="TextAppearance.OrbitronBold_20sp" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:fontFamily">@font/orbitron_bold</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+</resources>
