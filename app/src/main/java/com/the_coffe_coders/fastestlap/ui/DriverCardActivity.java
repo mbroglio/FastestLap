@@ -35,8 +35,6 @@ public class DriverCardActivity extends AppCompatActivity {
     static Year year = Year.now();
     private static final String BASE_URL = "https://api.jolpi.ca/ergast/f1/" + year + "/";
 
-    private TextView teamPointsTextView;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +74,6 @@ public class DriverCardActivity extends AppCompatActivity {
                             String driverId = driverDetails.getString("driverId");
                             int points = driver.getInt("points");
                             int position = driver.getInt("position");
-
 
                             Log.i(TAG, "Driver ID: " + driverId);
                             Log.i(TAG, "Driver Points: " + points);

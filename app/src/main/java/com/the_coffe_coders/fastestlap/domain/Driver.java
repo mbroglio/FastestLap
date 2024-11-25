@@ -1,25 +1,51 @@
 package com.the_coffe_coders.fastestlap.domain;
 
+import android.widget.ImageView;
+
+import org.json.JSONObject;
+
 public class Driver {
-    private String name;
-    private String surname;
+    private String wholeName;
+    private String driverId;
     private String nationality;
     private int height;
 
-    public String getSurname() {
-        return surname;
+    private int points;
+    private int standingPosition;
+    private int driverNumber;
+    private String teamName;
+    private ImageView driverPic;
+
+    public Driver(String wholeName, String driverId, String nationality, int height, int points, int standingPosition, int driverNumber, String teamName, ImageView driverPic) {
+        this.wholeName = wholeName;
+        this.driverId = driverId;
+        this.nationality = nationality;
+        this.height = height;
+        this.points = points;
+        this.standingPosition = standingPosition;
+        this.driverNumber = driverNumber;
+        this.teamName = teamName;
+        this.driverPic = driverPic;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public Driver(JSONObject driver){
+        try {
+            JSONObject driverDetails = driver.getJSONObject("Driver");
+            this.driverId = driverDetails.getString("driverId");
+
+            this.points = driver.getInt("points");
+            this.standingPosition = driver.getInt("position");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public String getName() {
-        return name;
+    public String getWholeName() {
+        return wholeName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setWholeName(String wholeName) {
+        this.wholeName = wholeName;
     }
 
     public String getNationality() {
@@ -41,10 +67,14 @@ public class Driver {
     @Override
     public String toString() {
         return "Driver{" +
-                "name='" + name + '\'' +
-                ", surname='" + surname + '\'' +
+                "name='" + wholeName + '\'' +
                 ", nationality='" + nationality + '\'' +
                 ", height=" + height +
+                ", points=" + points +
+                ", standingPosition=" + standingPosition +
+                ", driverNumber=" + driverNumber +
+                ", teamName='" + teamName + '\'' +
+                ", driverPic=" + driverPic +
                 '}';
     }
 }

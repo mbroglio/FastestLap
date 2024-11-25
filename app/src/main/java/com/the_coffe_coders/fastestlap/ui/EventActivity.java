@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap;
+package com.the_coffe_coders.fastestlap.ui;
 
 import android.os.Bundle;
 
@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
+import com.the_coffe_coders.fastestlap.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
