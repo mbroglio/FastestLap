@@ -100,6 +100,19 @@ public class Constants {
     }};
 
     public static final Map<String, Integer> TEAM_COLOR = new HashMap<String, Integer>() {{
+        put("mercedes", R.color.mercedes_f1);
+        put("red_bull", R.color.redbull_f1);
+        put("mclaren", R.color.mclaren_f1);
+        put("ferrari", R.color.ferrari_f1);
+        put("aston_martin", R.color.aston_martin_f1);
+        put("alpine", R.color.alpine_f1);
+        put("haas", R.color.haas_f1);
+        put("sauber", R.color.kick_f1);
+        put("williams", R.color.williams_f1);
+        put("rb", R.color.racing_bulls_f1); // Racing Bulls
+    }};
+
+    public static final Map<String, Integer> TEAM_GRADIENT_COLOR = new HashMap<String, Integer>() {{
         put("mercedes", R.drawable.gradient_color_mercedes);
         put("red_bull", R.drawable.gradient_color_red_bull);
         put("mclaren", R.drawable.gradient_color_mclaren);

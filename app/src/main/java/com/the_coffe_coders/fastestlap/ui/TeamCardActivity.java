@@ -116,7 +116,7 @@ public class TeamCardActivity extends AppCompatActivity {
         teamNameTextView.setText(Constants.TEAM_FULLNAME.get(teamId));
         teamLogoImageView.setImageResource(Constants.TEAM_LOGO.get(teamId));
         teamCarImageView.setImageResource(Constants.TEAM_CAR.get(teamId));
-        teamColor.setBackground(AppCompatResources.getDrawable(this, Constants.TEAM_COLOR.get(teamId)));
+        teamColor.setBackground(AppCompatResources.getDrawable(this, Constants.TEAM_GRADIENT_COLOR.get(teamId)));
 
         String driverId = Constants.TEAM_DRIVER1.get(teamId);
         driverOneNameTextView.setText(Constants.DRIVER_FULLNAME.get(driverId));
