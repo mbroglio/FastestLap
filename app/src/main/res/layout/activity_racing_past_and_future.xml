@@ -103,9 +103,7 @@
                 android:textSize="30sp"
                 android:textColor="#000000"
                 android:gravity="left" />
-
-
-
+            
         </androidx.cardview.widget.CardView>
     </LinearLayout>
 

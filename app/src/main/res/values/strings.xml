@@ -66,5 +66,10 @@
     <string name="franco_colapinto">Franco Colapinto</string>
     <string name="oliver_bearman">Oliver Bearman</string>
     <string name="Pilots_informations">Pilots Informations</string>
-    <string name="Costructors_informations">Costructors Informations</string>
+    <string name="Constructors_informations">Constructors Informations</string>
+    <string name="DRIVERS">DRIVERS</string>
+    <string name="CONSTRUCTORS">CONSTRUCTORS</string>
+    <string name="Barhain_Grand_Prix">Barhain Grand Prix</string>
+    <string name="Round">Round 20</string>
+    <string name="Date">Date</string>
 </resources>
