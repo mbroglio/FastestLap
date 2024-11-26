@@ -60,6 +60,32 @@ public class Constants {
         }
     };
 
+    public static final Map<String, String> DRIVER_TEAM = new HashMap<String, String>() {{
+        put("hamilton", "mercedes");
+        put("russell", "mercedes");
+        put("max_verstappen", "red_bull");
+        put("perez", "red_bull");
+        put("norris", "mclaren");
+        put("piastri", "mclaren");
+        put("leclerc", "ferrari");
+        put("sainz", "ferrari");
+        put("alonso", "aston_martin");
+        put("stroll", "aston_martin");
+        put("ocon", "alpine");
+        put("gasly", "alpine");
+        put("kevin_magnussen", "haas");
+        put("hulkenberg", "haas");
+        put("bottas", "sauber");
+        put("zhou", "sauber");
+        put("albon", "williams");
+        put("sargeant", "williams");
+        put("ricciardo", "rb");
+        put("tsunoda", "rb");
+        put("bearman", "haas");
+        put("colapinto", "williams");
+        put("lawson", "rb");
+    }};
+
     public static final Map<String, Integer> TEAM_LOGO = new HashMap<String, Integer>() {{
         put("mercedes", R.drawable.mercedeslogo);
         put("red_bull", R.drawable.redbulllogo);
@@ -86,29 +112,55 @@ public class Constants {
         put("rb", R.drawable.gradient_color_rb); // Racing Bulls
     }};
 
-    public static final Map<String, String> DRIVER_TEAM = new HashMap<String, String>() {{
-        put("hamilton", "mercedes");
-        put("russell", "mercedes");
-        put("max_verstappen", "red_bull");
-        put("perez", "red_bull");
-        put("norris", "mclaren");
-        put("piastri", "mclaren");
-        put("leclerc", "ferrari");
-        put("sainz", "ferrari");
-        put("alonso", "aston_martin");
-        put("stroll", "aston_martin");
-        put("ocon", "alpine");
-        put("gasly", "alpine");
-        put("kevin_magnussen", "haas");
-        put("hulkenberg", "haas");
-        put("bottas", "sauber");
-        put("zhou", "sauber");
-        put("albon", "williams");
-        put("sargeant", "williams");
-        put("ricciardo", "rb");
-        put("tsunoda", "rb");
-        put("bearman", "haas");
-        put("colapinto", "williams");
-        put("lawson", "rb");
+    public static final Map<String, Integer> TEAM_FULLNAME = new HashMap<String, Integer>() {{
+        put("mercedes", R.string.mercedes);
+        put("red_bull", R.string.red_bull);
+        put("mclaren", R.string.mclaren);
+        put("ferrari", R.string.ferrari);
+        put("aston_martin", R.string.aston_martin);
+        put("alpine", R.string.alpine);
+        put("haas", R.string.haas);
+        put("sauber", R.string.sauber);
+        put("williams", R.string.williams);
+        put("rb", R.string.red_bull);
+    }};
+
+    public static final Map<String, Integer> TEAM_CAR = new HashMap<String, Integer>() {{
+        put("mercedes", R.drawable.mercedes);
+        put("red_bull", R.drawable.red_bull_racing);
+        put("mclaren", R.drawable.mclaren);
+        put("ferrari", R.drawable.ferrari);
+        put("aston_martin", R.drawable.aston_martin);
+        put("alpine", R.drawable.alpine);
+        put("haas", R.drawable.haas);
+        put("sauber", R.drawable.kick_sauber);
+        put("williams", R.drawable.williams);
+        put("rb", R.drawable.rb);
+    }};
+
+    public static final Map<String, String> TEAM_DRIVER1 = new HashMap<String, String>() {{
+        put("mercedes", "hamilton");
+        put("red_bull", "max_verstappen");
+        put("mclaren", "norris");
+        put("ferrari", "leclerc");
+        put("aston_martin", "alonso");
+        put("alpine", "gasly");
+        put("haas", "hulkenberg");
+        put("sauber", "bottas");
+        put("williams", "albon");
+        put("rb", "tsunoda");
+    }};
+
+    public static final Map<String, String> TEAM_DRIVER2 = new HashMap<String, String>() {{
+        put("mercedes", "russell");
+        put("red_bull", "perez");
+        put("mclaren", "piastri");
+        put("ferrari", "sainz");
+        put("aston_martin", "stroll");
+        put("alpine", "ocon");
+        put("haas", "kevin_magnussen");
+        put("sauber", "zhou");
+        put("williams", "colapinto");
+        put("rb", "lawson");
     }};
 }
