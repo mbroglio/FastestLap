@@ -48,6 +48,14 @@ public class Driver {
         this.wholeName = wholeName;
     }
 
+    public String getDriverId() {
+        return driverId;
+    }
+
+    public void setDriverId(String driverId) {
+        this.driverId = driverId;
+    }
+
     public String getNationality() {
         return nationality;
     }
@@ -62,6 +70,46 @@ public class Driver {
 
     public void setHeight(int height) {
         this.height = height;
+    }
+
+    public int getPoints() {
+        return points;
+    }
+
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    public int getStandingPosition() {
+        return standingPosition;
+    }
+
+    public void setStandingPosition(int standingPosition) {
+        this.standingPosition = standingPosition;
+    }
+
+    public int getDriverNumber() {
+        return driverNumber;
+    }
+
+    public void setDriverNumber(int driverNumber) {
+        this.driverNumber = driverNumber;
+    }
+
+    public String getTeamName() {
+        return teamName;
+    }
+
+    public void setTeamName(String teamName) {
+        this.teamName = teamName;
+    }
+
+    public ImageView getDriverPic() {
+        return driverPic;
+    }
+
+    public void setDriverPic(ImageView driverPic) {
+        this.driverPic = driverPic;
     }
 
     @Override
