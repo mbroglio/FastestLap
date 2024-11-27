@@ -6,6 +6,9 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -57,14 +60,14 @@ public class EventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_event);
+        setContentView(R.layout.event_forecast_down);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.activity_event), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
         
-        setDynamicDimensions();
+        //setDynamicDimensions();
 
         Year currentYear = Year.now();
         BASE_URL += currentYear + "/";
@@ -94,6 +97,15 @@ public class EventActivity extends AppCompatActivity {
 
         //add event listener logic for live_session card
         MaterialCardView liveSession = findViewById(R.id.live_session);
+        ImageView liveIcon = findViewById(R.id.live_icon);
+        Animation pulseAnimation = AnimationUtils.loadAnimation(this, R.anim.pulse);
+        liveIcon.startAnimation(pulseAnimation);
+
+
+
+
+
+
         liveSession.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,7 +123,7 @@ public class EventActivity extends AppCompatActivity {
         });
 
         //add event listener for session_1_flag
-        ImageView session1Flag = findViewById(R.id.session_1_flag);
+        LinearLayout session1Flag = findViewById(R.id.session_1_flag_container);
         session1Flag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -120,13 +132,24 @@ public class EventActivity extends AppCompatActivity {
         });
     }
 
+
+    /*
     private void setDynamicDimensions() {
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int screenWidth = displayMetrics.widthPixels;
 
         setDynamicMargins((int) (screenWidth * 0.15), R.id.session_1_name);
+        setDynamicMargins((int) (screenWidth * 0.15), R.id.session_2_name);
+        setDynamicMargins((int) (screenWidth * 0.15), R.id.session_3_name);
+        setDynamicMargins((int) (screenWidth * 0.15), R.id.session_4_name);
+        setDynamicMargins((int) (screenWidth * 0.15), R.id.session_5_name);
+
         setDynamicMargins((int) (screenWidth * 0.15), R.id.session_1_day);
+        setDynamicMargins((int) (screenWidth * 0.15), R.id.session_2_day);
+        setDynamicMargins((int) (screenWidth * 0.15), R.id.session_3_day);
+        setDynamicMargins((int) (screenWidth * 0.15), R.id.session_4_day);
+        setDynamicMargins((int) (screenWidth * 0.15), R.id.session_5_day);
     }
 
     private void setDynamicMargins(int screenWidth, int viewId) {
@@ -135,7 +158,7 @@ public class EventActivity extends AppCompatActivity {
         layoutParams.setMarginEnd(screenWidth);
         textView.setLayoutParams(layoutParams);
     }
-
+    */
     private void getEventInfo() {
         ergastApi.getRaces().enqueue(new Callback<>() {
             @Override
@@ -206,7 +229,7 @@ public class EventActivity extends AppCompatActivity {
 
     private void setEventImage(String circuitId) {
         Drawable picture = ContextCompat.getDrawable(this, R.drawable.great_britain);
-        picture.setAlpha(50);
+        picture.setAlpha(76);
 
         LinearLayout eventCard = findViewById(R.id.event_card);
         eventCard.setBackground(picture);
