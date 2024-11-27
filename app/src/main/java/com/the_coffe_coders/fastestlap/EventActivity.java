@@ -1,7 +1,9 @@
 package com.the_coffe_coders.fastestlap;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -49,6 +51,7 @@ public class EventActivity extends AppCompatActivity {
     private ErgastAPI ergastApi;
     private String underwaySession = null;
     private String nextSession = null;
+    private String circuitId = "losail"; // Must be queried from the selected card
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +69,6 @@ public class EventActivity extends AppCompatActivity {
         Year currentYear = Year.now();
         BASE_URL += currentYear + "/";
 
-        String circuitId = "losail"; // Must be queried from the selected card
         BASE_URL += "circuits/" + circuitId + "/";
 
         Log.i(TAG, "Base URL: " + BASE_URL);
@@ -186,6 +188,7 @@ public class EventActivity extends AppCompatActivity {
         TextView name = findViewById(R.id.gp_name);
         name.setText(gpName);
 
+        setEventImage(circuitId);
 
         TextView eventDate = findViewById(R.id.event_date);
         String eventDateString = getDateString(race);
@@ -199,6 +202,14 @@ public class EventActivity extends AppCompatActivity {
         Log.i(TAG, "Underway Session: " + underwaySession);
 
         createWeekSchedule(race);
+    }
+
+    private void setEventImage(String circuitId) {
+        Drawable picture = ContextCompat.getDrawable(this, R.drawable.great_britain);
+        picture.setAlpha(50);
+
+        LinearLayout eventCard = findViewById(R.id.event_card);
+        eventCard.setBackground(picture);
     }
 
     private String getDateString(JSONArray race) throws JSONException {
