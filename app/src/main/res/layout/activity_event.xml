@@ -71,7 +71,7 @@
                 android:id="@+id/event_card"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                android:background="@drawable/skysports_f1_start_2023_singapore_gp_6369777_ritoccata"
+                android:background="@drawable/opaque_image"
                 android:orientation="vertical">
 
                 <LinearLayout
@@ -502,9 +502,11 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:clickable="true"
-                        android:focusable="true">
+                        android:focusable="true"
+                        >
 
                         <ImageView
+
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="10dp"
