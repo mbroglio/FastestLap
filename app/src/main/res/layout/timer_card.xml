@@ -312,8 +312,10 @@
                 </RelativeLayout>
 
                 <RelativeLayout
+                    android:id="@+id/pending_results"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_weight="0">
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -325,6 +327,42 @@
                         android:textSize="25sp">
 
                     </TextView>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/race_cancelled"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="RACE"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Large">
+
+                        </TextView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="CANCELLED"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Large">
+
+                        </TextView>
+
+                    </LinearLayout>
+
 
                 </RelativeLayout>
 
