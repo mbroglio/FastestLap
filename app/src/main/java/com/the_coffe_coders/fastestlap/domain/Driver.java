@@ -4,6 +4,8 @@ import android.widget.ImageView;
 
 import org.json.JSONObject;
 
+import java.util.Objects;
+
 public class Driver {
     private String wholeName;
     private String driverId;
@@ -110,6 +112,19 @@ public class Driver {
 
     public void setDriverPic(ImageView driverPic) {
         this.driverPic = driverPic;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Driver driver = (Driver) o;
+        return height == driver.height && points == driver.points && standingPosition == driver.standingPosition && driverNumber == driver.driverNumber && Objects.equals(wholeName, driver.wholeName) && Objects.equals(driverId, driver.driverId) && Objects.equals(nationality, driver.nationality) && Objects.equals(teamName, driver.teamName) && Objects.equals(driverPic, driver.driverPic);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(wholeName, driverId, nationality, height, points, standingPosition, driverNumber, teamName, driverPic);
     }
 
     @Override
