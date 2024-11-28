@@ -72,4 +72,6 @@
     <string name="Barhain_Grand_Prix">Barhain Grand Prix</string>
     <string name="Round">Round 20</string>
     <string name="Date">Date</string>
+    <string name="PAST">PAST</string>
+    <string name="FUTURE">FUTURE</string>
 </resources>

@@ -37,74 +37,93 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_end="0dp" />
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@id/guideline_top_bar"
         app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
-        android:background="#FFFFFF">
+        android:background="@color/sfondo_prova">
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
+            android:layout_marginBottom="5dp"
+            android:scaleType="centerCrop"
+            android:background="#FFFFFF"
+            app:cardCornerRadius="40dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:strokeWidth="3dp"
+            app:strokeColor="#FFFFFF">
 
-        <androidx.cardview.widget.CardView
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/card_border">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/Pilots_informations"
+                    app:srcCompat="@drawable/fotopilotaprova4"
+                    android:scaleType="centerCrop" />
+
+                <TextView
+                    android:id="@+id/cardText1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="20dp"
+                    android:text="@string/PAST"
+                    android:textSize="20sp"
+                    android:textColor="@color/sfondo_prova"
+                    android:textStyle="bold"/>
+
+            </FrameLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="300dp"
             android:layout_marginTop="30dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"
             android:layout_marginBottom="10dp"
-            android:contentDescription="@string/Pilots_informations"
             android:scaleType="centerCrop"
             android:background="#FFFFFF"
-            app:cardCornerRadius="80dp">
-
-            <ImageView
+            app:cardCornerRadius="40dp"
+            android:foreground="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            app:strokeWidth="3dp"
+            app:strokeColor="#FFFFFF">
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:srcCompat="@drawable/fotopilotaprova2"
-                android:scaleType="fitCenter"/>
+                android:layout_height="match_parent">
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:contentDescription="@string/Constructors_informations"
+                    app:srcCompat="@drawable/fotocostruttoriprova4"
+                    android:scaleType="centerCrop"/>
 
-            <TextView
-                android:id="@+id/cardText1"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="20dp"
-                android:text="PAST"
-                android:textSize="30sp"
-                android:textColor="#000000"
-                android:gravity="left" />
-
-        </androidx.cardview.widget.CardView>
-
-        <androidx.cardview.widget.CardView
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginBottom="10dp"
-            android:contentDescription="@string/Pilots_informations"
-            android:scaleType="centerCrop"
-            android:background="#FFFFFF"
-            app:cardCornerRadius="80dp">
-
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:srcCompat="@drawable/fotocostruttoriprova2"
-                android:scaleType="centerCrop"/>
-
-            <TextView
-                android:id="@+id/cardText2"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:padding="16dp"
-                android:text="FUTURE"
-                android:textSize="30sp"
-                android:textColor="#000000"
-                android:gravity="left" />
-            
-        </androidx.cardview.widget.CardView>
+                <TextView
+                    android:id="@+id/cardText2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|top"
+                    android:background=""
+                    android:gravity="top"
+                    android:padding="20dp"
+                    android:text="@string/FUTURE"
+                    android:textColor="#000000"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+            </FrameLayout>
+        </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
