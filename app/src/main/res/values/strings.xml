@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Fastest Lap</string>
 
+    <!-- HomePage -->
+    <string name="last_race">Italian Grand Prix</string>
+
     <!-- Piloti Red Bull Racing -->
     <string name="max_verstappen">Max Verstappen</string>
     <string name="sergio_perez">Sergio Pérez</string>
