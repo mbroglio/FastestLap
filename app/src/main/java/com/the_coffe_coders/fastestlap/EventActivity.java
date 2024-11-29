@@ -211,6 +211,7 @@ public class EventActivity extends AppCompatActivity {
             Log.i(TAG, "Session: " + raceWeek.getSessions()[i].getStartDateTime());
             if (currentDateTime.isAfter(raceWeek.getSessions()[i].getStartDateTime()) && currentDateTime.isBefore(raceWeek.getSessions()[i].getEndDateTime())) {
                 raceWeek.getSessions()[i].setUnderway(true);
+                setLiveSession();
                 Log.i(TAG, "Session underway: " + raceWeek.getSessions()[i].getSessionId());
             } else if (currentDateTime.isAfter(raceWeek.getSessions()[i].getEndDateTime())) {
                 raceWeek.getSessions()[i].setUnderway(false);
@@ -224,6 +225,8 @@ public class EventActivity extends AppCompatActivity {
                     nextSession = raceWeek.getSessions()[i];
                 }
             }
+
+            Log.i(TAG, "Is " + raceWeek.getSessions()[i].getSessionId() + " underway? " + raceWeek.getSessions()[i].isUnderway());
         }
 
         if (nextSession == null) {
@@ -232,6 +235,23 @@ public class EventActivity extends AppCompatActivity {
 
         Log.i(TAG, "Next Session: " + nextSession.getSessionId());
         return nextSession.getStartDateTime();
+    }
+
+    private void setLiveSession() {
+        MaterialCardView liveSession = findViewById(R.id.live_session);
+        MaterialCardView noLiveSession = findViewById(R.id.no_live_session);
+
+        // Set weight of live session card to 1
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.weight = 1;
+        liveSession.setLayoutParams(params);
+
+        // Set weight of no live session card to 0
+        params.weight = 0;
+        noLiveSession.setLayoutParams(params);
     }
 
     private void startCountdown(ZonedDateTime eventDate) {

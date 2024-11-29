@@ -1,5 +1,7 @@
 package com.the_coffe_coders.fastestlap;
 
+import android.util.Log;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.threeten.bp.ZoneId;
@@ -17,10 +19,7 @@ public class Session {
         this.isFinished = false;
         this.isUnderway = false;
 
-        ZoneId localZone = ZoneId.systemDefault();
-        this.startDateTime = ZonedDateTime.parse(session.getString("date") + "T" + session.getString("time"));
-        startDateTime.withZoneSameInstant(localZone);
-        this.endDateTime = this.startDateTime.plusMinutes(Constants.SESSION_DURATION.get(sessionId));
+        setTime(session, sessionId);
     }
 
     public String getSessionId() {
@@ -62,6 +61,16 @@ public class Session {
     public void setEndDateTime(ZonedDateTime endDateTime) {
         this.endDateTime = endDateTime;
     }
+
+    public void setTime(JSONObject session, String sessionId) throws JSONException {
+        this.startDateTime = ZonedDateTime
+                .parse(session.getString("date") + "T" + session.getString("time"))
+                .withZoneSameInstant(ZoneId.of("UTC"));
+
+        startDateTime = startDateTime.withZoneSameInstant(ZoneId.systemDefault());
+        this.endDateTime = this.startDateTime.plusMinutes(Constants.SESSION_DURATION.get(sessionId));
+    }
+
 
     public String getTime() {
         String start = startDateTime.toLocalTime().toString();
