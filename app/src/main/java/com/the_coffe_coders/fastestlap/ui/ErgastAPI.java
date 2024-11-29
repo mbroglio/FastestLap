@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap;
+package com.the_coffe_coders.fastestlap.ui;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;

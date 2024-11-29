@@ -7,7 +7,7 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp"
-    tools:context=".TeamCardActivity">
+    tools:context=".ui.TeamCardActivity">
 
     <LinearLayout
         android:id="@+id/team_card"

@@ -1,11 +1,12 @@
-package com.the_coffe_coders.fastestlap;
+package com.the_coffe_coders.fastestlap.domain;
 
 import android.util.Log;
+
+import com.the_coffe_coders.fastestlap.utils.Constants;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.threeten.bp.LocalDate;
-import org.threeten.bp.ZoneId;
 
 public class RaceWeek {
     private LocalDate startDate;
