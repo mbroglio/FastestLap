@@ -1,22 +1,25 @@
 package com.the_coffe_coders.fastestlap.ui;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import android.os.CountDownTimer;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.view.ViewGroup;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
@@ -45,8 +48,8 @@ public class EventActivity extends AppCompatActivity {
     private static final String TAG = "EventActivity";
     private String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
     private ErgastAPI ergastApi;
-    private String underwaySession = null;
-    private String nextSession = null;
+    private String circuitId = "losail"; // Must be queried from the selected card
+    private ZoneId localZone = ZoneId.systemDefault();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,12 +62,11 @@ public class EventActivity extends AppCompatActivity {
             return insets;
         });
 
-        setDynamicDimensions();
+        //setDynamicDimensions();
 
         Year currentYear = Year.now();
         BASE_URL += currentYear + "/";
 
-        String circuitId = "losail"; // Must be queried from the selected card
         BASE_URL += "circuits/" + circuitId + "/";
 
         Log.i(TAG, "Base URL: " + BASE_URL);
@@ -79,7 +81,7 @@ public class EventActivity extends AppCompatActivity {
         getEventInfo();
 
         //add event listener logic for countdown layout
-        LinearLayout trackPic = findViewById(R.id.track_pic);
+        LinearLayout trackPic = findViewById(R.id.timer_card);
         trackPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -90,6 +92,10 @@ public class EventActivity extends AppCompatActivity {
 
         //add event listener logic for live_session card
         MaterialCardView liveSession = findViewById(R.id.live_session);
+        ImageView liveIcon = findViewById(R.id.live_icon);
+        Animation pulseAnimation = AnimationUtils.loadAnimation(this, R.anim.pulse);
+        liveIcon.startAnimation(pulseAnimation);
+
         liveSession.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -107,29 +113,13 @@ public class EventActivity extends AppCompatActivity {
         });
 
         //add event listener for session_1_flag
-        ImageView session1Flag = findViewById(R.id.session_1_flag);
+        LinearLayout session1Flag = findViewById(R.id.session_1_flag_container);
         session1Flag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Log.i(TAG, "session 1 flag clicked");
             }
         });
-    }
-
-    private void setDynamicDimensions() {
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int screenWidth = displayMetrics.widthPixels;
-
-        setDynamicMargins((int) (screenWidth * 0.15), R.id.session_1_name);
-        setDynamicMargins((int) (screenWidth * 0.15), R.id.session_1_day);
-    }
-
-    private void setDynamicMargins(int screenWidth, int viewId) {
-        TextView textView = findViewById(viewId);
-        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) textView.getLayoutParams();
-        layoutParams.setMarginEnd(screenWidth);
-        textView.setLayoutParams(layoutParams);
     }
 
     private void getEventInfo() {
@@ -162,133 +152,107 @@ public class EventActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable throwable) {
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable throwable) {
                 Log.e(TAG, "Error fetching data", throwable);
             }
         });
     }
 
     private void processRaceData(JSONArray race) throws JSONException {
+        RaceWeek raceWeek = new RaceWeek(race.getJSONObject(0), circuitId);
+
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-        String gpName = race.getJSONObject(0).getString("raceName").toUpperCase();
-        toolbar.setTitle(gpName);
+        toolbar.setTitle(raceWeek.getGpName());
+
+        ImageView countryFlag = findViewById(R.id.country_flag);
+        Integer flag = Constants.EVENT_COUNTRY_FLAG.get(raceWeek.getTrackId());
+        countryFlag.setImageResource(flag);
+
+        ImageView trackMap = findViewById(R.id.track_outline);
+        Integer outline = Constants.EVENT_CIRCUIT.get(raceWeek.getTrackId());
+        trackMap.setImageResource(outline);
 
         TextView roundNumber = findViewById(R.id.round_number);
-        String roundText = "Round " + race.getJSONObject(0).getString("round");
-        roundNumber.setText(roundText);
+        String round = "Round " + raceWeek.getEventNumber();
+        roundNumber.setText(round);
 
         TextView seasonYear = findViewById(R.id.year);
-        String season = race.getJSONObject(0).getString("season");
-        seasonYear.setText(season);
+        seasonYear.setText(raceWeek.getYear());
 
         TextView name = findViewById(R.id.gp_name);
-        name.setText(gpName);
+        name.setText(Constants.TRACK_LONG_GP_NAME.get(raceWeek.getTrackId()));
 
+        setEventImage(raceWeek.getTrackId());
 
         TextView eventDate = findViewById(R.id.event_date);
-        String eventDateString = getDateString(race);
-        eventDate.setText(eventDateString);
+        eventDate.setText(raceWeek.getDate());
 
-        ZonedDateTime nextEventDate = findNextDate(race);
+        ZonedDateTime nextEventDate = findNextDate(raceWeek);
         if (nextEventDate != null) {
             startCountdown(nextEventDate);
         }
 
-        Log.i(TAG, "Underway Session: " + underwaySession);
-
-        createWeekSchedule(race);
+        createWeekSchedule(raceWeek);
     }
 
-    private String getDateString(JSONArray race) throws JSONException {
-        String startDate = race.getJSONObject(0).getJSONObject("FirstPractice").getString("date");
-        LocalDate eventStart = LocalDate.parse(startDate);
+    private void setEventImage(String circuitId) {
+        Integer eventImage = Constants.EVENT_PICTURE.get(circuitId);
+        Drawable picture = ContextCompat.getDrawable(this, eventImage);
+        picture.setAlpha(76);
 
-        String endDate = race.getJSONObject(0).getString("date");
-        LocalDate eventEnd = LocalDate.parse(endDate);
-
-        String eventDate = eventStart.getDayOfMonth() + " - " + eventEnd.getDayOfMonth();
-        eventDate += " " + eventEnd.getMonth().toString();
-
-        return eventDate;
+        LinearLayout eventCard = findViewById(R.id.event_card);
+        eventCard.setBackground(picture);
     }
 
-    private ZonedDateTime findNextDate(JSONArray race) throws JSONException {
-        String[] sessions = {"FirstPractice", "SecondPractice", "ThirdPractice", "Qualifying", "Sprint", "SprintQualifying"};
-        ZonedDateTime currentDateTime = ZonedDateTime.now(ZoneId.of("UTC"));
+    private ZonedDateTime findNextDate(RaceWeek raceWeek) throws JSONException {
+        ZonedDateTime currentDateTime = ZonedDateTime.now(localZone);
+        Session nextSession = null;
 
-        ZonedDateTime nextEvent = null;
+        for (int i = 0; i < 5; i++) {
+            Log.i(TAG, "Session: " + raceWeek.getSessions()[i].getStartDateTime());
+            if (currentDateTime.isAfter(raceWeek.getSessions()[i].getStartDateTime()) && currentDateTime.isBefore(raceWeek.getSessions()[i].getEndDateTime())) {
+                raceWeek.getSessions()[i].setUnderway(true);
+                setLiveSession();
+                Log.i(TAG, "Session underway: " + raceWeek.getSessions()[i].getSessionId());
+            } else if (currentDateTime.isAfter(raceWeek.getSessions()[i].getEndDateTime())) {
+                raceWeek.getSessions()[i].setUnderway(false);
+                raceWeek.getSessions()[i].setFinished(true);
+            }
 
-        for (String session : sessions) {
-            try {
-                JSONObject sessionObj = race.getJSONObject(0).optJSONObject(session);
-                if (sessionObj != null) {
-                    String nextEventString = sessionObj.getString("date") + "T" + sessionObj.getString("time") + "[UTC]";
-                    ZonedDateTime sessionDateTime = ZonedDateTime.parse(nextEventString);
-                    Log.i(TAG, "Next Event: " + sessionDateTime);
-
-                    if (currentDateTime.isBefore(sessionDateTime) && (nextEvent == null || sessionDateTime.isBefore(nextEvent))) {
-                        nextEvent = sessionDateTime;
-                        nextSession = session;
-                    }
+            if (currentDateTime.isAfter(raceWeek.getSessions()[i].getStartDateTime())) {
+                if (i <= 3) {
+                    nextSession = raceWeek.getSessions()[i + 1];
+                } else {
+                    nextSession = raceWeek.getSessions()[i];
                 }
-            } catch (JSONException e) {
-                Log.i(TAG, "No " + session + " Session", e);
-            }
-        }
-
-        String raceDateString = race.getJSONObject(0).getString("date") + "T" + race.getJSONObject(0).getString("time") + "[UTC]";
-        ZonedDateTime raceDateTime = ZonedDateTime.parse(raceDateString);
-
-        if (currentDateTime.isBefore(raceDateTime) && (nextEvent == null || raceDateTime.isBefore(nextEvent))) {
-            nextEvent = raceDateTime;
-            nextSession = "Race";
-        }
-
-        if (nextEvent != null) {
-            switch (nextSession) {
-                case "FirstPractice":
-                    if (currentDateTime.isAfter(nextEvent) && currentDateTime.isBefore(nextEvent.plusHours(1))) {
-                        underwaySession = "First Practice";
-                    }
-                    break;
-                case "SecondPractice":
-                    if (currentDateTime.isAfter(nextEvent) && currentDateTime.isBefore(nextEvent.plusHours(1))) {
-                        underwaySession = "Second Practice";
-                    }
-                    break;
-                case "ThirdPractice":
-                    if (currentDateTime.isAfter(nextEvent) && currentDateTime.isBefore(nextEvent.plusHours(1))) {
-                        underwaySession = "Third Practice";
-                    }
-                    break;
-                case "Qualifying":
-                    if (currentDateTime.isAfter(nextEvent) && currentDateTime.isBefore(nextEvent.plusHours(1))) {
-                        underwaySession = "Qualifying";
-                    }
-                    break;
-                case "Sprint":
-                    if (currentDateTime.isAfter(nextEvent) && currentDateTime.isBefore(nextEvent.plusHours(1))) {
-                        underwaySession = "Sprint";
-                    }
-                    break;
-                case "SprintQualifying":
-                    if (currentDateTime.isAfter(nextEvent) && currentDateTime.isBefore(nextEvent.plusMinutes(45))) {
-                        underwaySession = "Sprint Qualifying";
-                    }
-                    break;
-                case "Race":
-                    if (currentDateTime.isAfter(nextEvent) && currentDateTime.isBefore(nextEvent.plusHours(2))) {
-                        underwaySession = "Race";
-                    }
-                    return null; // As per original logic
-                default:
-                    Log.e(TAG, "Unknown Session: " + nextSession);
             }
 
-            Log.i(TAG, "Next Session: " + nextSession);
+            Log.i(TAG, "Is " + raceWeek.getSessions()[i].getSessionId() + " underway? " + raceWeek.getSessions()[i].isUnderway());
         }
 
-        return nextEvent;
+        if (nextSession == null) {
+            nextSession = raceWeek.getSessions()[0];
+        }
+
+        Log.i(TAG, "Next Session: " + nextSession.getSessionId());
+        return nextSession.getStartDateTime();
+    }
+
+    private void setLiveSession() {
+        MaterialCardView liveSession = findViewById(R.id.live_session);
+        MaterialCardView noLiveSession = findViewById(R.id.no_live_session);
+
+        // Set weight of live session card to 1
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        params.weight = 1;
+        liveSession.setLayoutParams(params);
+
+        // Set weight of no live session card to 0
+        params.weight = 0;
+        noLiveSession.setLayoutParams(params);
     }
 
     private void startCountdown(ZonedDateTime eventDate) {
@@ -320,123 +284,28 @@ public class EventActivity extends AppCompatActivity {
         }.start();
     }
 
-    private void createWeekSchedule(JSONArray race) throws JSONException {
-        // First Practice Session
-        updateSession(R.id.session_1_name, R.string.practice_1_string,
-                R.id.session_1_day, R.string.friday_string,
-                R.id.session_1_time, race.getJSONObject(0).getJSONObject("FirstPractice"), 60);
+    private void createWeekSchedule(RaceWeek raceWeek) throws JSONException {
+        for (Session session : raceWeek.getSessions()) {
+            TextView sessionName = findViewById(Constants.SESSION_NAME_FIELD.get(session.getSessionId()));
+            sessionName.setText(Constants.SESSION_NAMES.get(session.getSessionId()));
 
-        // Qualifying Session
-        updateSession(R.id.session_4_name, R.string.qualifying_string,
-                R.id.session_4_day, R.string.saturday_string,
-                R.id.session_4_time, race.getJSONObject(0).getJSONObject("Qualifying"), 60);
+            TextView sessionDay = findViewById(Constants.SESSION_DAY_FIELD.get(session.getSessionId()));
+            sessionDay.setText(Constants.SESSION_DAY.get(session.getSessionId()));
 
-        // Race Session
-        updateSession(R.id.session_5_name, R.string.race_string,
-                R.id.session_5_day, R.string.sunday_string,
-                R.id.session_5_time, race.getJSONObject(0), "time", 0);
+            TextView sessionTime = findViewById(Constants.SESSION_TIME_FIELD.get(session.getSessionId()));
+            if (session.getSessionId().equals("Race"))
+                sessionTime.setText(session.getStartingTime());
+            else
+                sessionTime.setText(session.getTime());
 
-        try {
-            // Sprint Qualifying Session
-            updateSession(R.id.session_2_name, R.string.sprint_qualifying_string,
-                    R.id.session_2_day, R.string.friday_string,
-                    R.id.session_2_time, race.getJSONObject(0).getJSONObject("SprintQualifying"), 45);
-
-            // Sprint Race Session
-            updateSession(R.id.session_3_name, R.string.sprint_string,
-                    R.id.session_3_day, R.string.saturday_string,
-                    R.id.session_3_time, race.getJSONObject(0).getJSONObject("Sprint"), 60);
-        } catch (JSONException e) {
-            // Second Practice Session
-            updateSession(R.id.session_2_name, R.string.practice_2_string,
-                    R.id.session_2_day, R.string.friday_string,
-                    R.id.session_2_time, race.getJSONObject(0).getJSONObject("SecondPractice"), 60);
-
-            // Third Practice Session
-            updateSession(R.id.session_3_name, R.string.practice_3_string,
-                    R.id.session_3_day, R.string.saturday_string,
-                    R.id.session_3_time, race.getJSONObject(0).getJSONObject("ThirdPractice"), 60);
-        }
-
-        setChequeredFlags();
-    }
-
-    private void updateSession(int nameViewId, int nameStringId, int dayViewId, int dayStringId, int timeViewId, JSONObject session, int durationMinutes) throws JSONException {
-        updateSession(nameViewId, nameStringId, dayViewId, dayStringId, timeViewId, session, "time", durationMinutes);
-    }
-
-    private void updateSession(int nameViewId, int nameStringId, int dayViewId, int dayStringId, int timeViewId, JSONObject session, String timeKey, int durationMinutes) throws JSONException {
-        TextView sessionName = findViewById(nameViewId);
-        sessionName.setText(nameStringId);
-
-        TextView sessionDay = findViewById(dayViewId);
-        sessionDay.setText(dayStringId);
-
-        TextView sessionTimeView = findViewById(timeViewId);
-        String sessionTime = session.getString(timeKey);
-        sessionTime = sessionTime.substring(0, sessionTime.length() - 1);
-
-        LocalTime sessionStart = convertUtcToLocal(sessionTime);
-        LocalTime sessionEnd = sessionStart.plusMinutes(durationMinutes);
-
-        String sessionTimeString = durationMinutes > 0 ? sessionStart + " - " + sessionEnd : sessionStart.toString();
-        sessionTimeView.setText(sessionTimeString);
-    }
-
-    private void setChequeredFlags() {
-        if (nextSession == null) {
-            setFlagsUpTo(5);
-        } else if (underwaySession == null) {
-            setFlagsBasedOnSession(nextSession);
-        } else {
-            setFlagsBasedOnSession(underwaySession);
+            setChequeredFlag(session);
         }
     }
 
-    private void setFlagsUpTo(int sessionCount) {
-        int[] sessionFlags = {
-                R.id.session_1_flag,
-                R.id.session_2_flag,
-                R.id.session_3_flag,
-                R.id.session_4_flag,
-                R.id.session_5_flag
-        };
-
-        for (int i = 0; i < sessionCount; i++) {
-            setChequeredFlag(sessionFlags[i]);
+    private void setChequeredFlag(Session session) {
+        if (session.isFinished()) {
+            ImageView flag = findViewById(Constants.SESSION_FLAG_FIELD.get(session.getSessionId()));
+            flag.setVisibility(View.VISIBLE);
         }
-    }
-
-    private void setFlagsBasedOnSession(String session) {
-        int flagsToSet = 0;
-        switch (session) {
-            case "SecondPractice":
-            case "SprintQualifying":
-                flagsToSet = 1;
-                break;
-            case "ThirdPractice":
-            case "Sprint":
-                flagsToSet = 2;
-                break;
-            case "Qualifying":
-                flagsToSet = 3;
-                break;
-            case "Race":
-                flagsToSet = 4;
-                break;
-        }
-        setFlagsUpTo(flagsToSet);
-    }
-
-    private void setChequeredFlag(int sessionFlag) {
-        ImageView flag = findViewById(sessionFlag);
-        flag.setVisibility(View.VISIBLE);
-    }
-
-    private LocalTime convertUtcToLocal(String utcTime) {
-        LocalTime utcLocalTime = LocalTime.parse(utcTime, DateTimeFormatter.ofPattern("HH:mm:ss"));
-        ZonedDateTime utcZoned = utcLocalTime.atDate(LocalDate.now()).atZone(ZoneId.of("UTC"));
-        ZonedDateTime localZoned = utcZoned.withZoneSameInstant(ZoneId.systemDefault());
-        return localZoned.toLocalTime();
     }
 }

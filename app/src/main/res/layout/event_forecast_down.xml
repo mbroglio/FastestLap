@@ -5,7 +5,7 @@
     android:id="@+id/activity_event"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.EventActivity">
+    tools:context=".EventActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"
@@ -164,7 +164,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:layout_marginTop="40dp"
+                android:layout_marginTop="30dp"
                 android:layout_marginEnd="5dp">
 
                 <include layout="@layout/timer_card" />
@@ -183,7 +183,7 @@
                     android:layout_height="0dp"
                     android:layout_marginStart="40dp"
                     android:layout_marginEnd="40dp"
-                    android:layout_weight="0"
+                    android:layout_weight="1"
                     android:clickable="true"
                     android:focusable="true"
                     app:cardBackgroundColor="@color/ferrari_f1"
@@ -235,7 +235,7 @@
                     android:layout_height="0dp"
                     android:layout_marginStart="40dp"
                     android:layout_marginEnd="40dp"
-                    android:layout_weight="1"
+                    android:layout_weight="0"
                     app:cardBackgroundColor="@color/dark_red"
                     app:cardCornerRadius="10dp"
                     app:cardElevation="5dp"
@@ -302,7 +302,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="5dp"
                 android:orientation="vertical">
@@ -317,52 +317,50 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentBottom="true"
+                        android:layout_marginStart="35dp"
                         android:fontFamily="@font/orbitron_bold"
                         android:text="WEEKEND SCHEDULE"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
                         android:textColor="@color/white" />
 
-
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/weather_forecast"
-                        android:layout_width="110dp"
-                        android:layout_height="match_parent"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_centerInParent="true"
-                        android:layout_marginEnd="15dp"
-                        android:clickable="true"
-                        android:focusable="true"
-                        app:cardBackgroundColor="@color/white"
-                        app:strokeColor="@color/black"
-                        app:strokeWidth="3dp">
+                        android:layout_marginEnd="30dp"
+                        android:orientation="vertical">
 
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal">
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="forecast"
+                            android:textColor="@color/white"
+                            android:textSize="11sp">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:layout_centerInParent="true"
-                                android:layout_marginStart="10dp"
-                                android:fontFamily="@font/orbitron_bold"
-                                android:text="Forecast">
+                        </TextView>
 
-                            </TextView>
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/weather_forecast"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:cardBackgroundColor="@color/white"
+                            app:strokeColor="@color/black"
+                            app:strokeWidth="3dp">
 
                             <ImageView
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_alignParentEnd="true"
-                                android:layout_margin="5dp"
-                                android:src="@drawable/play"
-                                app:tint="@color/black"></ImageView>
-                        </RelativeLayout>
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="3dp"
+                                android:src="@drawable/baseline_sunny_24"
+                                app:tint="@color/black" />
+                        </com.google.android.material.card.MaterialCardView>
 
-
-                    </com.google.android.material.card.MaterialCardView>
+                    </LinearLayout>
 
                 </RelativeLayout>
 
@@ -370,6 +368,7 @@
                     android:id="@+id/sessions_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
                     android:layout_marginTop="15dp"
                     android:layout_marginEnd="5dp"
                     android:layout_marginBottom="5dp"
@@ -381,8 +380,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
                         android:background="@drawable/bottom_right_stroke"
-                        android:clickable="false"
-                        android:focusable="false"
                         android:orientation="horizontal">
 
                         <TextView
@@ -396,7 +393,7 @@
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
                             android:textColor="@color/white"
                             android:textStyle="bold"
-                            tools:ignore="RelativeOverlap" />
+                            tools:ignore="RelativeOverlap"/>
 
                         <TextView
                             android:id="@+id/session_1_day"
@@ -409,7 +406,7 @@
                             android:text="@string/not_found"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
                             android:textColor="@color/white"
-                            tools:ignore="RelativeOverlap" />
+                            tools:ignore="RelativeOverlap"/>
 
                         <TextView
                             android:id="@+id/session_1_time"
@@ -417,13 +414,13 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_centerInParent="true"
-                            android:layout_marginEnd="45dp"
+                            android:layout_marginEnd="60dp"
                             android:fontFamily="@font/orbitron_regular"
                             android:text="@string/not_found"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
                             android:textColor="@color/white"
                             android:textSize="13sp"
-                            tools:ignore="RelativeOverlap" />
+                            tools:ignore="RelativeOverlap"/>
 
                         <LinearLayout
                             android:id="@+id/session_1_flag_container"
@@ -431,8 +428,8 @@
                             android:layout_height="35dp"
                             android:layout_alignParentEnd="true"
                             android:background="@drawable/background_right_rounded"
-                            android:clickable="false"
-                            android:focusable="false">
+                            android:clickable="true"
+                            android:focusable="true">
 
                             <ImageView
                                 android:id="@+id/session_1_flag"
@@ -455,8 +452,6 @@
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="10dp"
                         android:background="@drawable/bottom_right_stroke"
-                        android:clickable="false"
-                        android:focusable="false"
                         android:orientation="horizontal">
 
                         <TextView
@@ -470,7 +465,7 @@
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
                             android:textColor="@color/white"
                             android:textStyle="bold"
-                            tools:ignore="RelativeOverlap" />
+                            tools:ignore="RelativeOverlap"/>
 
                         <TextView
                             android:id="@+id/session_2_day"
@@ -483,7 +478,7 @@
                             android:text="@string/not_found"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
                             android:textColor="@color/white"
-                            tools:ignore="RelativeOverlap" />
+                            tools:ignore="RelativeOverlap"/>
 
                         <TextView
                             android:id="@+id/session_2_time"
@@ -491,13 +486,13 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_centerInParent="true"
-                            android:layout_marginEnd="45dp"
+                            android:layout_marginEnd="60dp"
                             android:fontFamily="@font/orbitron_regular"
                             android:text="@string/not_found"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
                             android:textColor="@color/white"
                             android:textSize="13sp"
-                            tools:ignore="RelativeOverlap" />
+                            tools:ignore="RelativeOverlap"/>
 
                         <LinearLayout
                             android:id="@+id/session_2_flag_container"
@@ -505,15 +500,15 @@
                             android:layout_height="35dp"
                             android:layout_alignParentEnd="true"
                             android:background="@drawable/background_right_rounded"
-                            android:clickable="false"
-                            android:focusable="false">
+                            android:clickable="true"
+                            android:focusable="true">
 
                             <ImageView
                                 android:id="@+id/session_2_flag"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_margin="3dp"
-                                android:visibility="invisible"
+                                android:visibility="visible"
                                 app:srcCompat="@drawable/checkered_flag">
 
                             </ImageView>
@@ -529,8 +524,6 @@
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="10dp"
                         android:background="@drawable/bottom_right_stroke"
-                        android:clickable="false"
-                        android:focusable="false"
                         android:orientation="horizontal">
 
                         <TextView
@@ -544,7 +537,7 @@
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
                             android:textColor="@color/white"
                             android:textStyle="bold"
-                            tools:ignore="RelativeOverlap" />
+                            tools:ignore="RelativeOverlap"/>
 
                         <TextView
                             android:id="@+id/session_3_day"
@@ -557,7 +550,7 @@
                             android:text="@string/not_found"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
                             android:textColor="@color/white"
-                            tools:ignore="RelativeOverlap" />
+                            tools:ignore="RelativeOverlap"/>
 
                         <TextView
                             android:id="@+id/session_3_time"
@@ -565,13 +558,13 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_centerInParent="true"
-                            android:layout_marginEnd="45dp"
+                            android:layout_marginEnd="60dp"
                             android:fontFamily="@font/orbitron_regular"
                             android:text="@string/not_found"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
                             android:textColor="@color/white"
                             android:textSize="13sp"
-                            tools:ignore="RelativeOverlap" />
+                            tools:ignore="RelativeOverlap"/>
 
                         <LinearLayout
                             android:id="@+id/session_3_flag_container"
@@ -579,15 +572,15 @@
                             android:layout_height="35dp"
                             android:layout_alignParentEnd="true"
                             android:background="@drawable/background_right_rounded"
-                            android:clickable="false"
-                            android:focusable="false">
+                            android:clickable="true"
+                            android:focusable="true">
 
                             <ImageView
                                 android:id="@+id/session_3_flag"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_margin="3dp"
-                                android:visibility="invisible"
+                                android:visibility="visible"
                                 app:srcCompat="@drawable/checkered_flag">
 
                             </ImageView>
@@ -603,8 +596,6 @@
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="10dp"
                         android:background="@drawable/bottom_right_stroke"
-                        android:clickable="false"
-                        android:focusable="false"
                         android:orientation="horizontal">
 
                         <TextView
@@ -618,7 +609,7 @@
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
                             android:textColor="@color/white"
                             android:textStyle="bold"
-                            tools:ignore="RelativeOverlap" />
+                            tools:ignore="RelativeOverlap"/>
 
                         <TextView
                             android:id="@+id/session_4_day"
@@ -631,7 +622,7 @@
                             android:text="@string/not_found"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
                             android:textColor="@color/white"
-                            tools:ignore="RelativeOverlap" />
+                            tools:ignore="RelativeOverlap"/>
 
                         <TextView
                             android:id="@+id/session_4_time"
@@ -639,13 +630,13 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_centerInParent="true"
-                            android:layout_marginEnd="45dp"
+                            android:layout_marginEnd="60dp"
                             android:fontFamily="@font/orbitron_regular"
                             android:text="@string/not_found"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
                             android:textColor="@color/white"
                             android:textSize="13sp"
-                            tools:ignore="RelativeOverlap" />
+                            tools:ignore="RelativeOverlap"/>
 
                         <LinearLayout
                             android:id="@+id/session_4_flag_container"
@@ -653,8 +644,8 @@
                             android:layout_height="35dp"
                             android:layout_alignParentEnd="true"
                             android:background="@drawable/background_right_rounded"
-                            android:clickable="false"
-                            android:focusable="false">
+                            android:clickable="true"
+                            android:focusable="true">
 
                             <ImageView
                                 android:id="@+id/session_4_flag"
@@ -677,8 +668,6 @@
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="10dp"
                         android:background="@drawable/bottom_right_stroke"
-                        android:clickable="false"
-                        android:focusable="false"
                         android:orientation="horizontal">
 
                         <TextView
@@ -692,7 +681,7 @@
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
                             android:textColor="@color/white"
                             android:textStyle="bold"
-                            tools:ignore="RelativeOverlap" />
+                            tools:ignore="RelativeOverlap"/>
 
                         <TextView
                             android:id="@+id/session_5_day"
@@ -713,7 +702,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentEnd="true"
                             android:layout_centerInParent="true"
-                            android:layout_marginEnd="45dp"
+                            android:layout_marginEnd="60dp"
                             android:fontFamily="@font/orbitron_regular"
                             android:text="@string/not_found"
                             android:textAppearance="@style/TextAppearance.AppCompat.Small"
@@ -727,8 +716,8 @@
                             android:layout_height="35dp"
                             android:layout_alignParentEnd="true"
                             android:background="@drawable/background_right_rounded"
-                            android:clickable="false"
-                            android:focusable="false">
+                            android:clickable="true"
+                            android:focusable="true">
 
                             <ImageView
                                 android:id="@+id/session_5_flag"
