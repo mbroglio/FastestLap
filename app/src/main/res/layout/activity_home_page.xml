@@ -61,22 +61,56 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/small_margin"
-                        android:text="@string/last_gp"
-                        android:textColor="@color/white"
-                        android:textSize="20dp">
-
-                    </TextView>
-
-                    <ImageView
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="150dp"
-                        app:srcCompat="@drawable/monza_track">
+                        android:layout_height="wrap_content">
 
-                    </ImageView>
+                        <TextView
+                            android:id="@+id/last_race_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/small_margin"
+                            android:text="@string/last_gp"
+                            android:textColor="@color/white"
+                            android:textSize="20sp">
+
+                        </TextView>
+
+
+                        <ImageView
+                            android:id="@+id/image_track"
+                            android:layout_width="120dp"
+                            android:layout_height="100dp"
+                            android:layout_below="@id/last_race_name"
+                            android:layout_centerHorizontal="true"
+                            app:srcCompat="@drawable/monza_track">
+
+                        </ImageView>
+
+                        <TextView
+                            android:id="@+id/last_race_date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/image_track"
+                            android:layout_centerHorizontal="true"
+                            android:text="@string/last_race_date"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@id/last_race_date"
+                            android:layout_centerHorizontal="true"
+                            android:layout_marginBottom="@dimen/small_margin"
+                            android:text="@string/last_race_month"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+
+                    </RelativeLayout>
                 </LinearLayout>
 
                 <LinearLayout
@@ -98,7 +132,9 @@
                         android:layout_below="@id/last_race"
                         android:layout_centerInParent="true"
                         android:text="Round 29"
-                        android:textColor="@color/white"></TextView>
+                        android:textColor="@color/white">
+
+                    </TextView>
 
                     <TextView
                         android:id="@+id/last_race"
@@ -227,7 +263,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
                                 android:layout_marginStart="@dimen/small_margin"
-                                android:text="RESULT"
+                                android:text="@string/result"
                                 android:textColor="@color/black">
 
                             </TextView>
@@ -346,7 +382,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_marginEnd="20dp"
-                                android:text="DAYS"
+                                android:text="@string/days"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                                 android:textColor="@color/black"
                                 android:textSize="11sp">
@@ -358,7 +394,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_marginEnd="20dp"
-                                android:text="HRS"
+                                android:text="@string/hours"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                                 android:textColor="@color/black"
                                 android:textSize="11sp">
@@ -370,7 +406,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_marginEnd="20dp"
-                                android:text="MIN"
+                                android:text="@string/min"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                                 android:textColor="@color/black"
                                 android:textSize="11sp">
@@ -382,7 +418,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_marginEnd="20dp"
-                                android:text="SEC"
+                                android:text="@string/sec"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
                                 android:textColor="@color/black"
                                 android:textSize="11sp">
@@ -396,7 +432,7 @@
                                 android:layout_gravity="center"
                                 android:layout_marginEnd="20dp"
                                 android:gravity="center"
-                                android:text="00"
+                                android:text="@string/time"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                                 android:textColor="@color/black"
                                 android:textStyle="bold">
@@ -410,7 +446,7 @@
                                 android:layout_gravity="center"
                                 android:layout_marginEnd="20dp"
                                 android:gravity="center"
-                                android:text="00"
+                                android:text="@string/time"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                                 android:textColor="@color/black"
                                 android:textStyle="bold">
@@ -424,7 +460,7 @@
                                 android:layout_gravity="center"
                                 android:layout_marginEnd="20dp"
                                 android:gravity="center"
-                                android:text="00"
+                                android:text="@string/time"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                                 android:textColor="@color/black"
                                 android:textStyle="bold">
@@ -438,7 +474,7 @@
                                 android:layout_gravity="center"
                                 android:layout_marginEnd="20dp"
                                 android:gravity="center"
-                                android:text="00"
+                                android:text="@string/time"
                                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                                 android:textColor="@color/black"
                                 android:textStyle="bold">
@@ -536,7 +572,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
                                 android:layout_marginStart="@dimen/small_margin"
-                                android:text="1°"
+                                android:text="@string/rank"
                                 android:textColor="@color/black">
 
                             </TextView>
@@ -548,7 +584,7 @@
                                 android:layout_centerVertical="true"
                                 android:layout_marginStart="@dimen/small_margin"
                                 android:layout_marginEnd="@dimen/small_margin"
-                                android:text="250pt"
+                                android:text="@string/pts"
                                 android:textColor="@color/black">
 
                             </TextView>
@@ -622,7 +658,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
                                 android:layout_marginStart="@dimen/small_margin"
-                                android:text="1°"
+                                android:text="@string/rank"
                                 android:textColor="@color/black">
 
                             </TextView>
@@ -634,7 +670,7 @@
                                 android:layout_centerVertical="true"
                                 android:layout_marginStart="@dimen/small_margin"
                                 android:layout_marginEnd="@dimen/small_margin"
-                                android:text="250pt"
+                                android:text="@string/pts"
                                 android:textColor="@color/black">
 
                             </TextView>
