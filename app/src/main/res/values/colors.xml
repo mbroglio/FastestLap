@@ -156,6 +156,8 @@
     <color name="kick_f1">#01FE2B</color>
     <color name="home_page">#11100F</color>
 
+
+    <color name="ferrari_secondary">#CA3144</color>
     <color name="sfondo_prova">#1E1E24</color>
     <color name="prova">#E47180</color>
 </resources>
