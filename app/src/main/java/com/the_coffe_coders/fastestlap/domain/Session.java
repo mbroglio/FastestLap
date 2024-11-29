@@ -1,11 +1,10 @@
-package com.the_coffe_coders.fastestlap;
-
-import android.util.Log;
+package com.the_coffe_coders.fastestlap.domain;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
+import com.the_coffe_coders.fastestlap.utils.Constants;
 
 public class Session {
     private String sessionId;

@@ -1,5 +1,9 @@
 package com.the_coffe_coders.fastestlap.ui;
 
+import com.the_coffe_coders.fastestlap.domain.RaceWeek;
+import com.the_coffe_coders.fastestlap.domain.Session;
+import com.the_coffe_coders.fastestlap.utils.Constants;
+
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
@@ -28,12 +32,9 @@ import com.the_coffe_coders.fastestlap.R;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.LocalTime;
 import org.threeten.bp.Year;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
-import org.threeten.bp.format.DateTimeFormatter;
 
 import java.io.IOException;
 
