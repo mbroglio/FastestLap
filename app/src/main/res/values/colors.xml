@@ -1,4 +1,7 @@
 <resources>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="timer_gray">#B1ADAD</color>
     <color name="md_theme_primary">#9D0006</color>
     <color name="md_theme_onPrimary">#FFFFFF</color>
     <color name="md_theme_primaryContainer">#E01013</color>

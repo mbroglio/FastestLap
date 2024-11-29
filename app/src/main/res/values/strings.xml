@@ -1,8 +1,11 @@
 <resources>
     <string name="app_name">Fastest Lap</string>
-
-    <!-- HomePage -->
-    <string name="last_race">Italian Grand Prix</string>
+        <!-- HomePage -->
+    <string name="last_gp">Italian Grand Prix</string>
+    <string name="last_race">Last Race</string>
+    <string name="round_number">Round 28</string>
+    <string name="next_session">Next Session</string>
+    <string name="favourite_driver">Favourite Driver</string>
 
     <!-- Piloti Red Bull Racing -->
     <string name="max_verstappen">Max Verstappen</string>
