@@ -55,7 +55,7 @@ public class Constants {
             put("ricciardo", R.string.daniel_ricciardo);
             put("tsunoda", R.string.yuki_tsunoda);
             put("bearman", R.string.oliver_bearman);
-            put("colapinto", R.string.oliver_bearman);
+            put("colapinto", R.string.franco_colapinto);
             put("lawson", R.string.liam_lawson);
         }
     };
