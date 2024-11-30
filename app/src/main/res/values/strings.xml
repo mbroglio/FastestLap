@@ -9,6 +9,8 @@
     <string name="last_race_date">23-24</string>
     <string name="last_race_month">November</string>
     <string name="result">RESULT</string>
+    <string name="pilot_nationality">THA</string>
+    <string name="constructor_nationality">ITA</string>
 
     <!-- Timer -->
     <string name="days">DAYS</string>

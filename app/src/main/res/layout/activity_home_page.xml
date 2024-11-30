@@ -65,22 +65,22 @@
                         android:layout_height="wrap_content">
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
                             android:id="@+id/last_race_name"
+                            android:layout_width="170dp"
+                            android:layout_height="wrap_content"
                             android:background="@drawable/bottom_right_stroke">
 
-                        <TextView
+                            <TextView
 
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginEnd="8dp"
-                            android:text="@string/last_gp"
-                            android:textColor="@color/white"
-                            android:textSize="20sp">
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginEnd="8dp"
+                                android:text="@string/last_gp"
+                                android:textColor="@color/white"
+                                android:textSize="20sp">
 
-                        </TextView>
+                            </TextView>
 
                         </LinearLayout>
 
@@ -117,17 +117,20 @@
 
                         </TextView>
 
+                        <LinearLayout
+                            android:layout_width="3dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="5dp"
+                            android:layout_below="@id/last_race_name"
+                            android:layout_marginStart="162dp"
+                            android:background="@color/white">
+
+                        </LinearLayout>
+
 
                     </RelativeLayout>
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="3dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="@dimen/small_margin"
-                    android:background="@color/white">
-
-                </LinearLayout>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -255,6 +258,7 @@
                         android:layout_height="45dp"
                         android:layout_alignParentBottom="true"
                         android:layout_centerInParent="true"
+                        android:layout_marginBottom="5dp"
                         android:layout_gravity="center"
                         android:layout_marginTop="10dp"
                         android:clickable="true"
@@ -298,7 +302,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="3dp"
-                android:layout_marginTop="8dp"
+
                 android:background="@color/white">
 
             </LinearLayout>
@@ -308,8 +312,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="40dp"
-                android:layout_marginEnd="40dp"
-                android:layout_marginTop="@dimen/small_margin">
+                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginEnd="40dp">
 
                 <LinearLayout
                     android:id="@+id/timer"
@@ -366,8 +370,8 @@
                         <ImageView
                             android:layout_width="55dp"
                             android:layout_height="45dp"
-                            android:layout_marginLeft="@dimen/small_margin"
                             android:layout_gravity="center"
+                            android:layout_marginLeft="@dimen/small_margin"
                             app:srcCompat="@drawable/italy">
 
                         </ImageView>
@@ -375,9 +379,9 @@
                         <LinearLayout
                             android:layout_width="2dp"
                             android:layout_height="match_parent"
-                            android:gravity="center_vertical"
                             android:layout_marginStart="@dimen/small_margin"
-                            android:background="@color/black">
+                            android:background="@color/black"
+                            android:gravity="center_vertical">
 
                         </LinearLayout>
 
@@ -528,17 +532,35 @@
 
                     </TextView>
 
-                    <ImageView
+                    <LinearLayout
                         android:id="@+id/driver_flag"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_below="@id/driver_name"
                         android:layout_alignParentStart="true"
-                        android:layout_marginStart="50dp"
-                        android:layout_marginTop="8dp"
-                        app:srcCompat="@drawable/thailand">
+                        android:orientation="horizontal">
 
-                    </ImageView>
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_marginStart="50dp"
+                            android:layout_marginTop="5dp"
+                            app:srcCompat="@drawable/thailand">
+
+                        </ImageView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginTop="5dp"
+                            android:gravity="center_vertical"
+                            android:textColor="@color/black"
+                            android:text="@string/pilot_nationality">
+
+                        </TextView>
+
+                    </LinearLayout>
 
                     <ImageView
                         android:layout_width="120dp"
@@ -568,9 +590,9 @@
                         android:layout_height="40dp"
                         android:layout_below="@id/driver_flag"
                         android:layout_alignParentStart="true"
-                        android:layout_marginBottom="5dp"
                         android:layout_marginStart="30dp"
                         android:layout_marginTop="8dp"
+                        android:layout_marginBottom="5dp"
                         android:clickable="true"
                         android:focusable="true"
                         app:cardBackgroundColor="@color/ferrari_f1"
@@ -694,16 +716,36 @@
 
                     </com.google.android.material.card.MaterialCardView>
 
-                    <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_alignParentEnd="true"
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:layout_below="@id/image_car"
-                        android:layout_marginEnd="@dimen/small_margin"
-                        android:layout_marginBottom="5dp"
-                        app:srcCompat="@drawable/italy">
+                        android:layout_alignParentEnd="true"
+                        android:orientation="horizontal">
 
-                    </ImageView>
+                        <ImageView
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_marginEnd="@dimen/small_margin"
+                            android:layout_marginBottom="5dp"
+                            app:srcCompat="@drawable/italy">
+
+                        </ImageView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:textColor="@color/black"
+                            android:gravity="center_vertical"
+                            android:text="@string/constructor_nationality">
+
+                        </TextView>
+
+
+                    </LinearLayout>
 
                     <ImageView
                         android:layout_width="20dp"
