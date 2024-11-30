@@ -53,7 +53,6 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/small_margin"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -65,16 +64,25 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
 
-                        <TextView
-                            android:id="@+id/last_race_name"
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/small_margin"
+                            android:id="@+id/last_race_name"
+                            android:background="@drawable/bottom_right_stroke">
+
+                        <TextView
+
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="8dp"
                             android:text="@string/last_gp"
                             android:textColor="@color/white"
                             android:textSize="20sp">
 
                         </TextView>
+
+                        </LinearLayout>
 
 
                         <ImageView
@@ -296,9 +304,11 @@
             </LinearLayout>
 
             <com.google.android.material.card.MaterialCardView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
                 android:layout_marginTop="@dimen/small_margin">
 
                 <LinearLayout
@@ -310,9 +320,10 @@
                     android:orientation="vertical">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/small_margin"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="5dp"
                         android:orientation="horizontal">
 
                         <TextView
@@ -348,15 +359,15 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/small_margin"
-                        android:layout_marginBottom="@dimen/small_margin"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="5dp"
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="match_parent"
+                            android:layout_width="55dp"
+                            android:layout_height="45dp"
                             android:layout_marginLeft="@dimen/small_margin"
-                            android:layout_marginTop="@dimen/small_margin"
+                            android:layout_gravity="center"
                             app:srcCompat="@drawable/italy">
 
                         </ImageView>
@@ -364,6 +375,7 @@
                         <LinearLayout
                             android:layout_width="2dp"
                             android:layout_height="match_parent"
+                            android:gravity="center_vertical"
                             android:layout_marginStart="@dimen/small_margin"
                             android:background="@color/black">
 
@@ -372,8 +384,8 @@
                         <GridLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/small_margin"
-                            android:layout_marginTop="@dimen/small_margin"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="8dp"
                             android:columnCount="4"
                             android:rowCount="2">
 
@@ -509,7 +521,7 @@
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
                         android:layout_marginStart="@dimen/small_margin"
-                        android:layout_marginTop="@dimen/small_margin"
+                        android:layout_marginTop="5dp"
                         android:text="@string/alexander_albon"
                         android:textColor="@color/black"
                         android:textSize="18sp">
@@ -523,17 +535,18 @@
                         android:layout_below="@id/driver_name"
                         android:layout_alignParentStart="true"
                         android:layout_marginStart="50dp"
-                        android:layout_marginTop="@dimen/small_margin"
+                        android:layout_marginTop="8dp"
                         app:srcCompat="@drawable/thailand">
 
                     </ImageView>
 
                     <ImageView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="42dp"
+                        android:layout_marginBottom="@dimen/small_margin"
                         app:srcCompat="@drawable/albon_pic">
 
                     </ImageView>
@@ -543,8 +556,8 @@
                         android:layout_height="20dp"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginTop="@dimen/small_margin"
-                        android:layout_marginEnd="@dimen/small_margin"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
                         app:srcCompat="@drawable/star_fav">
 
                     </ImageView>
@@ -555,9 +568,9 @@
                         android:layout_height="40dp"
                         android:layout_below="@id/driver_flag"
                         android:layout_alignParentStart="true"
-                        android:layout_alignParentBottom="true"
+                        android:layout_marginBottom="5dp"
                         android:layout_marginStart="30dp"
-                        android:layout_marginTop="@dimen/small_margin"
+                        android:layout_marginTop="8dp"
                         android:clickable="true"
                         android:focusable="true"
                         app:cardBackgroundColor="@color/ferrari_f1"
@@ -620,7 +633,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_marginStart="@dimen/small_margin"
-                        android:layout_marginTop="@dimen/small_margin"
+                        android:layout_marginTop="5dp"
                         android:text="@string/ferrari"
                         android:textColor="@color/black"
                         android:textSize="18sp">
@@ -631,6 +644,7 @@
                         android:id="@+id/image_car"
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
+
                         android:layout_below="@id/constructor_name"
                         app:srcCompat="@drawable/ferrari">
 
@@ -642,8 +656,8 @@
                         android:layout_height="40dp"
                         android:layout_below="@+id/image_car"
                         android:layout_alignParentStart="true"
-                        android:layout_alignParentBottom="true"
                         android:layout_marginStart="@dimen/small_margin"
+                        android:layout_marginBottom="5dp"
                         android:clickable="true"
                         android:focusable="true"
                         app:cardBackgroundColor="@color/ferrari_f1"
@@ -684,8 +698,9 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_alignParentEnd="true"
-                        android:layout_alignParentBottom="true"
+                        android:layout_below="@id/image_car"
                         android:layout_marginEnd="@dimen/small_margin"
+                        android:layout_marginBottom="5dp"
                         app:srcCompat="@drawable/italy">
 
                     </ImageView>
@@ -695,8 +710,8 @@
                         android:layout_height="20dp"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
-                        android:layout_marginTop="@dimen/small_margin"
-                        android:layout_marginEnd="@dimen/small_margin"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
                         app:srcCompat="@drawable/star_fav">
 
                     </ImageView>
