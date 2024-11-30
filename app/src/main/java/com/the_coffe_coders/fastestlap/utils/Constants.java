@@ -1,8 +1,15 @@
 package com.the_coffe_coders.fastestlap.utils;
 
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.race_week.FirstPractice;
+import com.the_coffe_coders.fastestlap.domain.race_week.Qualifying;
+import com.the_coffe_coders.fastestlap.domain.race_week.SecondPractice;
+import com.the_coffe_coders.fastestlap.domain.race_week.Sprint;
+import com.the_coffe_coders.fastestlap.domain.race_week.SprintQualifying;
+import com.the_coffe_coders.fastestlap.domain.race_week.ThirdPractice;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Constants {

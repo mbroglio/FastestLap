@@ -1,9 +1,10 @@
-package com.the_coffe_coders.fastestlap.domain;
+package com.the_coffe_coders.fastestlap.domain.race_week;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
+
 import com.the_coffe_coders.fastestlap.utils.Constants;
 
 public class Session {
@@ -13,12 +14,14 @@ public class Session {
     private ZonedDateTime startDateTime;
     private ZonedDateTime endDateTime;
 
-    public Session(JSONObject session, String sessionId) throws JSONException {
+    public Session(String sessionId, Boolean isFinished, Boolean isUnderway, ZonedDateTime startDateTime, ZonedDateTime endDateTime) {
         this.sessionId = sessionId;
-        this.isFinished = false;
-        this.isUnderway = false;
+        this.isFinished = isFinished;
+        this.isUnderway = isUnderway;
+        this.startDateTime = startDateTime;
+        this.endDateTime = endDateTime;
 
-        setTime(session, sessionId);
+        setTime();
     }
 
     public String getSessionId() {
@@ -61,11 +64,7 @@ public class Session {
         this.endDateTime = endDateTime;
     }
 
-    public void setTime(JSONObject session, String sessionId) throws JSONException {
-        this.startDateTime = ZonedDateTime
-                .parse(session.getString("date") + "T" + session.getString("time"))
-                .withZoneSameInstant(ZoneId.of("UTC"));
-
+    public void setTime() {
         startDateTime = startDateTime.withZoneSameInstant(ZoneId.systemDefault());
         this.endDateTime = this.startDateTime.plusMinutes(Constants.SESSION_DURATION.get(sessionId));
     }
