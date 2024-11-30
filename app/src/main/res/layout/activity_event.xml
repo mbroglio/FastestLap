@@ -22,7 +22,7 @@
             app:menu="@menu/top_app_bar"
             app:title="LAS VEGAS GRAND PRIX"
             app:titleCentered="true"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_20sp" />
+            app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -319,9 +319,11 @@
                         android:layout_alignParentBottom="true"
                         android:fontFamily="@font/orbitron_bold"
                         android:text="WEEKEND SCHEDULE"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="11sp"
+                        android:autoSizeMaxTextSize="20sp"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
                         android:textColor="@color/white" />
-
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/weather_forecast"
