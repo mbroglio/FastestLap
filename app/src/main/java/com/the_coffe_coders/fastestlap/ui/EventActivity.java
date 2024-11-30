@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.material.appbar.MaterialToolbar;
@@ -110,15 +111,6 @@ public class EventActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Log.i(TAG, "weather card clicked");
-            }
-        });
-
-        //add event listener for session_1_flag
-        LinearLayout session1Flag = findViewById(R.id.session_1_flag_container);
-        session1Flag.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "session 1 flag clicked");
             }
         });
     }
@@ -307,6 +299,16 @@ public class EventActivity extends AppCompatActivity {
         if (session.isFinished()) {
             ImageView flag = findViewById(Constants.SESSION_FLAG_FIELD.get(session.getSessionId()));
             flag.setVisibility(View.VISIBLE);
+
+            RelativeLayout currentSession = findViewById(Constants.SESSION_ROW.get(session.getSessionId()));
+            currentSession.setClickable(true);
+            currentSession.setFocusable(true);
+            currentSession.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.i(TAG, "session clicked");
+                }
+            });
         }
     }
 }

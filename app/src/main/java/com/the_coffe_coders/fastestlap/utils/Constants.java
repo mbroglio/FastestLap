@@ -336,6 +336,17 @@ public class Constants {
             "Race", R.id.session_5_name
     );
 
+    public static final Map<String, Integer> SESSION_ROW = Map.of(
+            "FirstPractice", R.id.session_1,
+            "SecondPractice", R.id.session_2,
+            "ThirdPractice", R.id.session_3,
+            "SprintQualifying", R.id.session_2,
+            "Sprint", R.id.session_3,
+            "Qualifying", R.id.session_4,
+            "Race", R.id.session_5
+    );
+
+
     public static final Map<String, String> SESSION_DAY = Map.of(
             "FirstPractice", "Friday",
             "SecondPractice", "Friday",
