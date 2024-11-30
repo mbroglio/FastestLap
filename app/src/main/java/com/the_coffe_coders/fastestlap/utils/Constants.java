@@ -96,8 +96,23 @@ public class Constants {
         put("haas", R.drawable.haaslogo);
         put("sauber", R.drawable.stakelogo);
         put("williams", R.drawable.williamslogo);
-        put("rb", R.drawable.racingbullslogo); // Red Bull Racing
+        put("rb", R.drawable.racingbullslogo); // Racing Bulls
     }};
+
+    public static final Map<String, Integer> TEAM_LOGO_DRIVER_CARD = new HashMap<String, Integer>() {{
+        put("mercedes", R.drawable.mercedeslogo);
+        put("red_bull", R.drawable.redbulllogo);
+        put("mclaren", R.drawable.mclarenlogo_short);
+        put("ferrari", R.drawable.ferrarilogo);
+        put("aston_martin", R.drawable.astonmartinlogo_short);
+        put("alpine", R.drawable.alpinelogo_short);
+        put("haas", R.drawable.haaslogo_short);
+        put("sauber", R.drawable.stakelogo);
+        put("williams", R.drawable.williamslogo);
+        put("rb", R.drawable.racingbullslogo_short); // Racing Bulls
+    }};
+
+
 
     public static final Map<String, Integer> TEAM_COLOR = new HashMap<String, Integer>() {{
         put("mercedes", R.color.mercedes_f1);

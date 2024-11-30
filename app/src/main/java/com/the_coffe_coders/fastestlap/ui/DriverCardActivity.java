@@ -113,7 +113,7 @@ public class DriverCardActivity extends AppCompatActivity {
         driverName.setText(getText(Constants.DRIVER_FULLNAME.get(driverId)));
 
         String team = Constants.DRIVER_TEAM.get(driverId);
-        teamLogoImageView.setImageResource(Constants.TEAM_LOGO.get(team));
+        teamLogoImageView.setImageResource(Constants.TEAM_LOGO_DRIVER_CARD.get(team));
         driverColor.setBackground(AppCompatResources.getDrawable(this, Constants.TEAM_GRADIENT_COLOR.get(team)));
 
         int position = driver.getStandingPosition();

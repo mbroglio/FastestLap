@@ -27,7 +27,7 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:text="@string/not_found"
             android:fontFamily="@font/orbitron_bold"
-            android:layout_weight="1.7">
+            android:layout_weight="1.65">
 
 
         </TextView>
