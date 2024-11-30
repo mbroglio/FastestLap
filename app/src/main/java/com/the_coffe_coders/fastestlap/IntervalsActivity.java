@@ -19,6 +19,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
@@ -59,7 +60,7 @@ public class IntervalsActivity extends AppCompatActivity {
         openF1 = retrofit.create(OpenF1.class);
 
         // Start the interval test
-        testIntervals();
+        getIntervals();
     }
 
     private void getIntervals() {
@@ -68,8 +69,8 @@ public class IntervalsActivity extends AppCompatActivity {
 
         // Define a runnable that will repeatedly call the API
         Runnable intervalRunnable = new Runnable() {
-            ZonedDateTime currentNowUtc = nowUtc;
-            ZonedDateTime currentPrevUtc = prevUtc;
+            LocalDateTime currentNowUtc = nowUtc.toLocalDateTime();
+            LocalDateTime currentPrevUtc = prevUtc.toLocalDateTime();
 
             @Override
             public void run() {
@@ -98,8 +99,8 @@ public class IntervalsActivity extends AppCompatActivity {
 
         // Define a runnable that will repeatedly call the API
         Runnable intervalRunnable = new Runnable() {
-            ZonedDateTime currentNowUtc = nowUtc;
-            ZonedDateTime currentPrevUtc = prevUtc;
+            LocalDateTime currentNowUtc = nowUtc.toLocalDateTime();
+            LocalDateTime currentPrevUtc = prevUtc.toLocalDateTime();
 
             @Override
             public void run() {
@@ -122,7 +123,7 @@ public class IntervalsActivity extends AppCompatActivity {
         handler.post(intervalRunnable);
     }
 
-    private void requestIntervals(String sessionKey, ZonedDateTime nowUtc, ZonedDateTime prevUtc) {
+    private void requestIntervals(String sessionKey, LocalDateTime nowUtc, LocalDateTime prevUtc) {
         Log.i(TAG, "Requesting intervals for session: " + sessionKey);
         Call<ResponseBody> call = openF1.getIntervals(sessionKey, nowUtc.toString(), prevUtc.toString());
         Log.i(TAG, "Request URL: " + call.request().url());
