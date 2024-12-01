@@ -101,7 +101,7 @@ public class Constants {
 
     public static final Map<String, Integer> TEAM_LOGO_DRIVER_CARD = new HashMap<String, Integer>() {{
         put("mercedes", R.drawable.mercedeslogo);
-        put("red_bull", R.drawable.redbulllogo);
+        put("red_bull", R.drawable.redbulllogo_short);
         put("mclaren", R.drawable.mclarenlogo_short);
         put("ferrari", R.drawable.ferrarilogo);
         put("aston_martin", R.drawable.astonmartinlogo_short);
