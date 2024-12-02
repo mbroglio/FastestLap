@@ -2,6 +2,8 @@ package com.the_coffe_coders.fastestlap.ui;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.the_coffe_coders.fastestlap.domain.race_result.Result;
+import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.race_week.FirstPractice;
 import com.the_coffe_coders.fastestlap.domain.race_week.Qualifying;
 import com.the_coffe_coders.fastestlap.domain.race_week.RaceWeekAPIresponse;
@@ -32,6 +34,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.material.appbar.MaterialToolbar;
@@ -45,7 +48,6 @@ import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
 import java.io.IOException;
-import java.lang.reflect.GenericSignatureFormatError;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,8 +62,7 @@ public class EventActivity extends AppCompatActivity {
     private static final String TAG = "EventActivity";
     private String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
     private ErgastAPI ergastApi;
-    private String circuitId = "losail"; // Must be queried from the selected card
-    private ZoneId localZone = ZoneId.systemDefault();
+    private final ZoneId localZone = ZoneId.systemDefault();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +80,8 @@ public class EventActivity extends AppCompatActivity {
         Year currentYear = Year.now();
         BASE_URL += currentYear + "/";
 
+        // Must be queried from the selected card
+        String circuitId = "losail";
         BASE_URL += "circuits/" + circuitId + "/";
 
         Log.i(TAG, "Base URL: " + BASE_URL);
@@ -195,10 +198,13 @@ public class EventActivity extends AppCompatActivity {
 
         List<Session> sessions = populateSessions(raceSchedule);
 
-        ZonedDateTime nextEventDate = findNextDate(sessions);
-        if (nextEventDate != null) {
-            startCountdown(nextEventDate);
-        }
+        Session nextEvent = findNextEvent(sessions);
+        if (nextEvent != null) {
+            ZonedDateTime eventDateTime = nextEvent.getStartDateTime();
+            startCountdown(eventDateTime);
+        } else
+            showResults();
+
 
         createWeekSchedule(sessions);
     }
@@ -285,39 +291,31 @@ public class EventActivity extends AppCompatActivity {
     }
 
 
-    private ZonedDateTime findNextDate(List<Session> sessions) {
+    private Session findNextEvent(List<Session> sessions) {
         ZonedDateTime currentDateTime = ZonedDateTime.now(localZone);
         Session nextSession = null;
         int i = 0;
 
-        for(Session session : sessions) {
+        for (Session session : sessions) {
             Log.i(TAG, "Session: " + session.getStartDateTime());
             if (currentDateTime.isAfter(session.getStartDateTime()) && currentDateTime.isBefore(session.getEndDateTime())) {
                 session.setUnderway(true);
                 setLiveSession();
-                i++;
                 Log.i(TAG, "Session underway: " + session.getSessionId());
             } else if (currentDateTime.isAfter(session.getEndDateTime())) {
                 session.setUnderway(false);
                 session.setFinished(true);
-                i++;
-            }
-
-            if (currentDateTime.isAfter(session.getStartDateTime())) {
-                if(i <= 3) {
-                    nextSession = sessions.get(i + 1);
-                } else {
-                    nextSession = sessions.get(i);
-                }
             }
         }
 
-        if (nextSession == null) {
-            nextSession = sessions.get(0);
+        for (Session session : sessions) {
+            if (!session.isFinished()) {
+                nextSession = session;
+                break;
+            }
         }
 
-        Log.i(TAG, "Next Session: " + nextSession.getSessionId());
-        return nextSession.getStartDateTime();
+        return nextSession;
     }
 
     private void setLiveSession() {
@@ -364,6 +362,71 @@ public class EventActivity extends AppCompatActivity {
                 seconds_counter.setText("0");
             }
         }.start();
+    }
+
+    private void showResults() {
+        showPodiumCard();
+        processRaceResults();
+    }
+
+    private void showPodiumCard() {
+        LinearLayout countdown = findViewById(R.id.countdown_and_track);
+        RelativeLayout podium = findViewById(R.id.race_result);
+
+        countdown.setVisibility(View.INVISIBLE);
+        podium.setVisibility(View.VISIBLE);
+    }
+
+    private void processRaceResults() {
+        // Get results from API https://ergast.com/api/f1/current/last/results.json
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://ergast.com/api/f1/")
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .build();
+
+        ergastApi = retrofit.create(ErgastAPI.class);
+
+        ergastApi.getLastRaceResults().enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                Log.i(TAG, "Response: " + response);
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        String responseBody = response.body().string();
+                        JsonObject jsonResponse = new Gson().fromJson(responseBody, JsonObject.class);
+                        JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
+
+                        JSONParserUtils parser = new JSONParserUtils(EventActivity.this);
+                        ResultsAPIResponse raceResult = parser.parseRaceResults(mrdata);
+
+                        showPodium(raceResult);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    Log.e(TAG, "Response body is null");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable throwable) {
+                Log.e(TAG, "Error fetching data", throwable);
+            }
+        });
+    }
+
+    private void showPodium(ResultsAPIResponse raceResult) {
+        List<Result> results = raceResult.getRaceTable().getRaces().get(0).getResults();
+        for (int i = 0; i < 3; i++) {
+            String driverId = results.get(i).getDriver().getDriverId();
+            String teamId = results.get(i).getConstructor().getConstructorId();
+
+            LinearLayout teamColor = findViewById(Constants.PODIUM_TEAM_COLOR.get(i));
+            TextView driverName = findViewById(Constants.PODIUM_DRIVER_NAME.get(i));
+
+            driverName.setText(Constants.DRIVER_FULLNAME.get(driverId));
+            teamColor.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+        }
     }
 
     private void createWeekSchedule(List<Session> sessions) {

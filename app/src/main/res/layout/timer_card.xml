@@ -31,7 +31,7 @@
                     android:id="@+id/countdown"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0"
+                    android:visibility="visible"
                     android:orientation="vertical">
 
                     <TextView
@@ -160,7 +160,7 @@
                     android:id="@+id/race_result"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_weight="0"
+                    android:visibility="invisible"
                     android:clickable="true"
                     android:focusable="true"
                     android:orientation="vertical">
@@ -199,14 +199,17 @@
                             </TextView>
 
                             <LinearLayout
+                                android:id="@+id/first_color"
                                 android:layout_width="8dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginStart="10dp"
-                                android:background="@color/mercedes_f1">
+                                android:background="@color/mercedes_f1"
+                                android:orientation="vertical">
 
                             </LinearLayout>
 
                             <TextView
+                                android:id="@+id/first_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
@@ -233,14 +236,17 @@
                             </TextView>
 
                             <LinearLayout
+                                android:id="@+id/second_color"
                                 android:layout_width="8dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginStart="10dp"
-                                android:background="@color/mercedes_f1">
+                                android:background="@color/mercedes_f1"
+                                android:orientation="vertical">
 
                             </LinearLayout>
 
                             <TextView
+                                android:id="@+id/second_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
@@ -266,14 +272,16 @@
                             </TextView>
 
                             <LinearLayout
+                                android:id="@+id/third_color"
                                 android:layout_width="8dp"
                                 android:layout_height="match_parent"
                                 android:layout_marginStart="10dp"
-                                android:background="@color/ferrari_f1">
-
+                                android:background="@color/ferrari_f1"
+                                android:orientation="vertical">
                             </LinearLayout>
 
                             <TextView
+                                android:id="@+id/third_name"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
