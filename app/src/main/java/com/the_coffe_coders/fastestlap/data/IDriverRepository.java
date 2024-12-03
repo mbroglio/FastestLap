@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface IDriverRepository {
     List<Driver> findAll();
+
+    Driver find(String id);
 }
