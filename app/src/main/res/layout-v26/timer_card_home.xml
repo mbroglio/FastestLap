@@ -33,7 +33,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_marginStart="10dp"
-                    android:text="Next Event :"
+                    android:text="@string/next_event"
                     android:fontFamily="@font/orbitron_regular"
                     android:textColor="@color/black">
 
@@ -45,7 +45,7 @@
                     android:layout_height="wrap_content"
                     android:layout_toEndOf="@+id/text_1"
                     android:layout_marginStart="24dp"
-                    android:text="Emilia Romagna Grand Prix"
+                    android:text="@string/not_found"
                     android:autoSizeTextType="uniform"
                     android:autoSizeMinTextSize="11sp"
                     android:autoSizeMaxTextSize="20sp"
@@ -69,8 +69,7 @@
                     android:id="@+id/home_next_gp_flag"
                     android:layout_width="55dp"
                     android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    app:srcCompat="@drawable/qatar_flag">
+                    android:layout_gravity="center">
 
                 </ImageView>
 
@@ -96,7 +95,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginEnd="20dp"
-                        android:text="DAYS"
+                        android:text="@string/days_upper_case"
                         android:fontFamily="@font/orbitron_regular"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="@color/black"
@@ -109,7 +108,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginEnd="20dp"
-                        android:text="HRS"
+                        android:text="@string/hours_upper_case"
                         android:fontFamily="@font/orbitron_regular"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="@color/black"
@@ -122,7 +121,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginEnd="20dp"
-                        android:text="MINS"
+                        android:text="@string/minutes_upper_case"
                         android:fontFamily="@font/orbitron_regular"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="@color/black"
@@ -134,7 +133,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="SECS"
+                        android:text="@string/seconds_upper_case"
                         android:fontFamily="@font/orbitron_regular"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="@color/black"
@@ -204,7 +203,7 @@
                 android:layout_centerInParent="true"
                 android:layout_marginBottom="5dp"
                 android:fontFamily="@font/orbitron_bold"
-                android:text="RACE"
+                android:text="@string/not_found"
                 android:textColor="@color/black">
 
             </TextView>

@@ -65,17 +65,18 @@
     <string name="not_found">-!-</string>
     <string name="franco_colapinto">Franco Colapinto</string>
     <string name="oliver_bearman">Oliver Bearman</string>
-    <string name="practice_1_string">Practice 1</string>
-    <string name="friday_string">Friday</string>
-    <string name="race_string">Race</string>
-    <string name="sunday_string">Sunday</string>
-    <string name="saturday_string">Saturday</string>
-    <string name="qualifying_string">Qualifying</string>
-    <string name="sprint_qualifying_string">Sprint Qualifying</string>
-    <string name="sprint_string">Sprint</string>
-    <string name="practice_2_string">Practice 2</string>
-    <string name="practice_3_string">Practice 3</string>
-    <string name="last_race">LAST RACE</string>
+    <string name="last_race_upper_case">LAST RACE</string>
     <string name="result">RESULT</string>
+    <string name="rank">Rank:</string>
+    <string name="separator_high_dash">-</string>
+    <string name="points_upper_case">PTS</string>
+    <string name="next_event">Next Event :</string>
+    <string name="days_upper_case">DAYS</string>
+    <string name="hours_upper_case">HRS</string>
+    <string name="minutes_upper_case">MINS</string>
+    <string name="seconds_upper_case">SECS</string>
+    <string name="_1_numeric">1</string>
+    <string name="_2_numeric">2</string>
+    <string name="_3_numeric">3</string>
 
 </resources>
