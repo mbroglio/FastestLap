@@ -15,9 +15,11 @@ import com.the_coffe_coders.fastestlap.domain.race_week.SprintQualifying;
 import com.the_coffe_coders.fastestlap.domain.race_week.ThirdPractice;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
+import android.view.LayoutInflater;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
@@ -32,6 +34,7 @@ import androidx.core.view.WindowInsetsCompat;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -95,7 +98,7 @@ public class EventActivity extends AppCompatActivity {
 
         getEventInfo();
 
-        //add event listener logic for countdown layout
+        /*add event listener logic for countdown layout
         LinearLayout trackPic = findViewById(R.id.timer_card);
         trackPic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,6 +107,7 @@ public class EventActivity extends AppCompatActivity {
 
             }
         });
+        */
 
         //add event listener logic for live_session card
         MaterialCardView liveSession = findViewById(R.id.live_session);
@@ -177,10 +181,11 @@ public class EventActivity extends AppCompatActivity {
         Integer flag = Constants.EVENT_COUNTRY_FLAG.get(trackId);
         countryFlag.setImageResource(flag);
 
+/*
         ImageView trackMap = findViewById(R.id.track_outline);
         Integer outline = Constants.EVENT_CIRCUIT.get(trackId);
         trackMap.setImageResource(outline);
-
+*/
         TextView roundNumber = findViewById(R.id.round_number);
         String round = "Round " + raceSchedule.getRaceTable().getRaces().get(0).getRound();
         roundNumber.setText(round);
@@ -370,11 +375,18 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void showPodiumCard() {
-        LinearLayout countdown = findViewById(R.id.countdown_and_track);
-        RelativeLayout podium = findViewById(R.id.race_result);
+        FrameLayout timerCard = findViewById(R.id.timer_include);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View podiumView = inflater.inflate(R.layout.timer_card_results, timerCard, false);
+        timerCard.addView(podiumView);
+        setEventTrackImage("losail");
+    }
 
-        countdown.setVisibility(View.INVISIBLE);
-        podium.setVisibility(View.VISIBLE);
+
+    private void setEventTrackImage(String trackId) {
+        ImageView trackMap = findViewById(R.id.track_outline);
+        Integer outline = Constants.EVENT_CIRCUIT.get(trackId);
+        trackMap.setImageResource(outline);
     }
 
     private void processRaceResults() {
