@@ -15,11 +15,9 @@ import com.the_coffe_coders.fastestlap.domain.race_week.SprintQualifying;
 import com.the_coffe_coders.fastestlap.domain.race_week.ThirdPractice;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
-import android.view.LayoutInflater;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
@@ -65,6 +63,8 @@ public class EventActivity extends AppCompatActivity {
     private static final String TAG = "EventActivity";
     private String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
     private ErgastAPI ergastApi;
+    // Must be queried from the selected card
+    private String circuitId = "yas_marina";
     private final ZoneId localZone = ZoneId.systemDefault();
 
     @Override
@@ -83,9 +83,7 @@ public class EventActivity extends AppCompatActivity {
         Year currentYear = Year.now();
         BASE_URL += currentYear + "/";
 
-        // Must be queried from the selected card
-        String circuitId = "losail";
-        BASE_URL += "circuits/" + circuitId + "/";
+                BASE_URL += "circuits/" + circuitId + "/";
 
         Log.i(TAG, "Base URL: " + BASE_URL);
 
@@ -98,7 +96,7 @@ public class EventActivity extends AppCompatActivity {
 
         getEventInfo();
 
-        /*add event listener logic for countdown layout
+        /*//add event listener logic for countdown layout
         LinearLayout trackPic = findViewById(R.id.timer_card);
         trackPic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,8 +104,7 @@ public class EventActivity extends AppCompatActivity {
                 Log.i(TAG, "clicked");
 
             }
-        });
-        */
+        });*/
 
         //add event listener logic for live_session card
         MaterialCardView liveSession = findViewById(R.id.live_session);
@@ -172,20 +169,17 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void processRaceData(RaceWeekAPIresponse raceSchedule) {
-        String trackId = raceSchedule.getRaceTable().getCircuitId();
-
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setTitle(raceSchedule.getRaceTable().getRaces().get(0).getRaceName());
 
         ImageView countryFlag = findViewById(R.id.country_flag);
-        Integer flag = Constants.EVENT_COUNTRY_FLAG.get(trackId);
+        Integer flag = Constants.EVENT_COUNTRY_FLAG.get(circuitId);
         countryFlag.setImageResource(flag);
 
-/*
         ImageView trackMap = findViewById(R.id.track_outline);
-        Integer outline = Constants.EVENT_CIRCUIT.get(trackId);
+        Integer outline = Constants.EVENT_CIRCUIT.get(circuitId);
         trackMap.setImageResource(outline);
-*/
+
         TextView roundNumber = findViewById(R.id.round_number);
         String round = "Round " + raceSchedule.getRaceTable().getRaces().get(0).getRound();
         roundNumber.setText(round);
@@ -194,9 +188,9 @@ public class EventActivity extends AppCompatActivity {
         seasonYear.setText(raceSchedule.getRaceTable().getSeason());
 
         TextView name = findViewById(R.id.gp_name);
-        name.setText(Constants.TRACK_LONG_GP_NAME.get(trackId));
+        name.setText(Constants.TRACK_LONG_GP_NAME.get(circuitId));
 
-        setEventImage(trackId);
+        setEventImage(circuitId);
 
         TextView eventDate = findViewById(R.id.event_date);
         eventDate.setText(getDate(raceSchedule));
@@ -370,23 +364,20 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void showResults() {
-        showPodiumCard();
+        FrameLayout eventCardContainer = findViewById(R.id.event_card_container);
+        View countdownView = findViewById(R.id.timer_card_countdown);
+        View resultsView = findViewById(R.id.timer_card_results);
+
+        // Hide countdown view and show results view
+        countdownView.setVisibility(View.GONE);
+        resultsView.setVisibility(View.VISIBLE);
+
+        // You can add logic here to populate the results view with actual data
         processRaceResults();
-    }
 
-    private void showPodiumCard() {
-        FrameLayout timerCard = findViewById(R.id.timer_include);
-        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        View podiumView = inflater.inflate(R.layout.timer_card_results, timerCard, false);
-        timerCard.addView(podiumView);
-        setEventTrackImage("losail");
-    }
-
-
-    private void setEventTrackImage(String trackId) {
-        ImageView trackMap = findViewById(R.id.track_outline);
-        Integer outline = Constants.EVENT_CIRCUIT.get(trackId);
-        trackMap.setImageResource(outline);
+        // Set podium cricuit image
+        ImageView trackOutline = findViewById(R.id.results_track_outline);
+        trackOutline.setImageResource(Constants.EVENT_CIRCUIT.get(circuitId));
     }
 
     private void processRaceResults() {

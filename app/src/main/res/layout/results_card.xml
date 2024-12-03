@@ -168,7 +168,6 @@
                     android:layout_marginEnd="5dp"
                     android:layout_marginBottom="5dp"
                     app:srcCompat="@drawable/arrow_pointing_right_down">
-
                 </ImageView>
 
                 <ImageView
@@ -203,7 +202,7 @@
                 android:focusable="true">
 
                 <ImageView
-                    android:id="@+id/track_outline"
+                    android:id="@+id/results_track_outline"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"

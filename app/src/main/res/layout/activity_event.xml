@@ -160,13 +160,22 @@
             </LinearLayout>
 
             <FrameLayout
-                android:id="@+id/timer_include"
+                android:id="@+id/event_card_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="40dp"
                 android:layout_marginEnd="5dp">
 
+                <include
+                    android:id="@+id/timer_card_countdown"
+                    layout="@layout/countdown_card"
+                    android:visibility="visible" />
+
+                <include
+                    android:id="@+id/timer_card_results"
+                    layout="@layout/results_card"
+                    android:visibility="gone" />
             </FrameLayout>
 
             <LinearLayout
