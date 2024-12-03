@@ -125,15 +125,6 @@ public class EventActivity extends AppCompatActivity {
                 Log.i(TAG, "weather card clicked");
             }
         });
-
-        //add event listener for session_1_flag
-        LinearLayout session1Flag = findViewById(R.id.session_1_flag_container);
-        session1Flag.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "session 1 flag clicked");
-            }
-        });
     }
 
     private void getEventInfo() {
@@ -171,7 +162,8 @@ public class EventActivity extends AppCompatActivity {
         toolbar.setTitle(raceSchedule.getRaceTable().getRaces().get(0).getRaceName());
 
         ImageView countryFlag = findViewById(R.id.country_flag);
-        Integer flag = Constants.EVENT_COUNTRY_FLAG.get(circuitId);
+        String nation = raceSchedule.getRaceTable().getRaces().get(0).getCircuit().getLocation().getCountry();
+        Integer flag = Constants.NATION_COUNTRY_FLAG.get(nation);
         countryFlag.setImageResource(flag);
 
         ImageView trackMap = findViewById(R.id.track_outline);
@@ -335,10 +327,10 @@ public class EventActivity extends AppCompatActivity {
     private void startCountdown(ZonedDateTime eventDate) {
         long millisUntilStart = eventDate.toInstant().toEpochMilli() - ZonedDateTime.now(ZoneId.of("UTC")).toInstant().toEpochMilli();
         new CountDownTimer(millisUntilStart, 1000) {
-            TextView days_counter = findViewById(R.id.days_counter);
-            TextView hours_counter = findViewById(R.id.hours_counter);
-            TextView minutes_counter = findViewById(R.id.minutes_counter);
-            TextView seconds_counter = findViewById(R.id.seconds_counter);
+            TextView days_counter = findViewById(R.id.next_days_counter);
+            TextView hours_counter = findViewById(R.id.next_hours_counter);
+            TextView minutes_counter = findViewById(R.id.next_minutes_counter);
+            TextView seconds_counter = findViewById(R.id.next_seconds_counter);
 
             public void onTick(long millisUntilFinished) {
                 long days = millisUntilFinished / 86400000;
@@ -456,6 +448,16 @@ public class EventActivity extends AppCompatActivity {
         if (session.isFinished()) {
             ImageView flag = findViewById(Constants.SESSION_FLAG_FIELD.get(session.getSessionId()));
             flag.setVisibility(View.VISIBLE);
+
+            RelativeLayout currentSession = findViewById(Constants.SESSION_ROW.get(session.getSessionId()));
+            currentSession.setClickable(true);
+            currentSession.setFocusable(true);
+            currentSession.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.i(TAG, "session clicked");
+                }
+            });
         }
     }
 }

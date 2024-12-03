@@ -38,6 +38,7 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.gson)
+    implementation(libs.converter.gson)
     implementation(libs.retrofit)
     implementation(libs.converter.scalars)
     implementation(libs.threetenbp)

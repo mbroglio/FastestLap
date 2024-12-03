@@ -11,4 +11,5 @@
         <item name="android:fontFamily">@font/orbitron_bold</item>
         <item name="android:textSize">20sp</item>
     </style>
+
 </resources>

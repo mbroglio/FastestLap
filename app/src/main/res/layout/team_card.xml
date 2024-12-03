@@ -7,13 +7,14 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp"
+    android:clickable="true"
+    android:focusable="true"
     tools:context=".ui.TeamCardActivity">
 
     <LinearLayout
         android:id="@+id/team_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/gradient_color_mclaren"
 
         android:orientation="vertical">
         <RelativeLayout
@@ -70,8 +71,7 @@
                         android:id="@+id/driver_1_pic"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:layout_gravity="fill"
-                        app:srcCompat="@drawable/norrisfull" />
+                        android:layout_gravity="fill" />
                     <TextView
                         android:id="@+id/driver_1_name"
                         android:layout_width="wrap_content"
@@ -93,7 +93,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:layout_gravity="fill"
-                        app:srcCompat="@drawable/piastrifull" />
+                         />
                     <TextView
                         android:id="@+id/driver_2_name"
                         android:layout_width="wrap_content"

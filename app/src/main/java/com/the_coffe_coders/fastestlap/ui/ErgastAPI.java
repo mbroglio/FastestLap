@@ -19,4 +19,7 @@ public interface ErgastAPI {
 
     @GET("results.json")
     Call<ResponseBody> getResults();
+
+    @GET("current/next")
+    Call<ResponseBody> getNextRace();
 }

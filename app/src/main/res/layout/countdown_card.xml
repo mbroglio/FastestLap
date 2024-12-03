@@ -94,7 +94,7 @@
                     </TextView>
 
                     <TextView
-                        android:id="@+id/days_counter"
+                        android:id="@+id/next_days_counter"
                         android:layout_width="40dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -107,7 +107,7 @@
                     </TextView>
 
                     <TextView
-                        android:id="@+id/hours_counter"
+                        android:id="@+id/next_hours_counter"
                         android:layout_width="40dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -120,7 +120,7 @@
                     </TextView>
 
                     <TextView
-                        android:id="@+id/minutes_counter"
+                        android:id="@+id/next_minutes_counter"
                         android:layout_width="40dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -133,7 +133,7 @@
                     </TextView>
 
                     <TextView
-                        android:id="@+id/seconds_counter"
+                        android:id="@+id/next_seconds_counter"
                         android:layout_width="40dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
