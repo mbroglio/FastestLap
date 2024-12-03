@@ -270,6 +270,7 @@ public class Constants {
         put("Brazil", R.drawable.brazil_flag);
         put("Mexico", R.drawable.mexico_flag);
         put("United States", R.drawable.united_states_flag);
+        put("Germany", R.drawable.germany_flag);
     }};
 
     public static final Map<String, String> NATIONALITY_NATION = new HashMap<>() {{
@@ -290,7 +291,7 @@ public class Constants {
         put("Singaporean", "Singapore");
         put("Qatari", "Qatar");
         put("Emirati", "UAE");
-        put("German", "UK");
+        put("German", "Germany");
     }};
 
     public static final Map<String, Integer> EVENT_CIRCUIT = new HashMap<>() {{

@@ -366,7 +366,7 @@
                             android:layout_height="50dp"
                             android:layout_marginStart="50dp"
                             android:layout_marginTop="5dp"
-                            app:srcCompat="@drawable/thailand">
+                            app:srcCompat="@drawable/united_kingdom_flag">
 
                         </ImageView>
 
@@ -555,7 +555,7 @@
                             android:layout_height="40dp"
                             android:layout_marginEnd="@dimen/small_margin"
                             android:layout_marginBottom="5dp"
-                            app:srcCompat="@drawable/italy">
+                            app:srcCompat="@drawable/italy_flag">
 
                         </ImageView>
 
