@@ -64,7 +64,7 @@ public class EventActivity extends AppCompatActivity {
     private String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
     private ErgastAPI ergastApi;
     // Must be queried from the selected card
-    private String circuitId = "yas_marina";
+    private String circuitId = "losail";
     private final ZoneId localZone = ZoneId.systemDefault();
 
     @Override
@@ -82,9 +82,7 @@ public class EventActivity extends AppCompatActivity {
 
         Year currentYear = Year.now();
         BASE_URL += currentYear + "/";
-
-                BASE_URL += "circuits/" + circuitId + "/";
-
+        BASE_URL += "circuits/" + circuitId + "/";
         Log.i(TAG, "Base URL: " + BASE_URL);
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -382,14 +380,15 @@ public class EventActivity extends AppCompatActivity {
 
     private void processRaceResults() {
         // Get results from API https://ergast.com/api/f1/current/last/results.json
+        BASE_URL = "https://ergast.com/api/f1/current/" + circuitId + "/";
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://ergast.com/api/f1/")
+                .baseUrl(BASE_URL)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build();
 
         ergastApi = retrofit.create(ErgastAPI.class);
 
-        ergastApi.getLastRaceResults().enqueue(new Callback<>() {
+        ergastApi.getResults().enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 Log.i(TAG, "Response: " + response);
