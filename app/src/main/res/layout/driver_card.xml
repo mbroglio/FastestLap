@@ -8,7 +8,7 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="10dp"
     android:layout_marginEnd="10dp"
-    tools:context=".DriverCardActivity">
+    tools:context=".ui.DriverCardActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -54,6 +54,7 @@
                             android:layout_height="wrap_content"
                             android:gravity="center"
                             android:text="@string/george_russell"
+                            android:fontFamily="@font/orbitron_bold"
                             android:textAppearance="@style/TextAppearance.AppCompat.Large">
                         </TextView>
 

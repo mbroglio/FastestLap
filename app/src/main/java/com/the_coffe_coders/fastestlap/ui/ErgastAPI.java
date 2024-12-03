@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap;
+package com.the_coffe_coders.fastestlap.ui;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -10,4 +10,10 @@ public interface ErgastAPI {
 
     @GET("driverstandings")
     Call<ResponseBody> getDriverStandings();
+
+    @GET("races")
+    Call<ResponseBody> getRaces();
+
+    @GET("current/last/results.json")
+    Call<ResponseBody> getLastRaceResults();
 }

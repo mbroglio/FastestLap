@@ -1,0 +1,16 @@
+package com.the_coffe_coders.fastestlap.data;
+
+/*public class DriverRepositoryProxy implements IDriverRepository{
+    private final DriverRepository driverRepository;
+
+
+    public DriverRepositoryProxy(DriverRepository driverRepository) {
+        this.driverRepository = driverRepository;
+    }
+
+    @Override
+    public List<Driver> findAll() {
+        System.out.println("Proxy: Recupero di tutti gli utenti con controlli aggiuntivi...");
+        return driverRepository.findAll();
+    }
+}*/
