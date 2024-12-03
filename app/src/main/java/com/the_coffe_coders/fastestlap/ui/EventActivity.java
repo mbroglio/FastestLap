@@ -64,7 +64,7 @@ public class EventActivity extends AppCompatActivity {
     private String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
     private ErgastAPI ergastApi;
     // Must be queried from the selected card
-    private String circuitId = "losail";
+    private String circuitId = "silverstone";
     private final ZoneId localZone = ZoneId.systemDefault();
 
     @Override
@@ -200,7 +200,7 @@ public class EventActivity extends AppCompatActivity {
             ZonedDateTime eventDateTime = nextEvent.getStartDateTime();
             startCountdown(eventDateTime);
         } else
-            showResults();
+            showResults(raceSchedule);
 
 
         createWeekSchedule(sessions);
@@ -361,7 +361,7 @@ public class EventActivity extends AppCompatActivity {
         }.start();
     }
 
-    private void showResults() {
+    private void showResults(RaceWeekAPIresponse raceSchedule) {
         FrameLayout eventCardContainer = findViewById(R.id.event_card_container);
         View countdownView = findViewById(R.id.timer_card_countdown);
         View resultsView = findViewById(R.id.timer_card_results);
@@ -371,16 +371,17 @@ public class EventActivity extends AppCompatActivity {
         resultsView.setVisibility(View.VISIBLE);
 
         // You can add logic here to populate the results view with actual data
-        processRaceResults();
+        processRaceResults(raceSchedule);
 
         // Set podium cricuit image
         ImageView trackOutline = findViewById(R.id.results_track_outline);
         trackOutline.setImageResource(Constants.EVENT_CIRCUIT.get(circuitId));
     }
 
-    private void processRaceResults() {
-        // Get results from API https://ergast.com/api/f1/current/last/results.json
-        BASE_URL = "https://ergast.com/api/f1/current/" + circuitId + "/";
+    private void processRaceResults(RaceWeekAPIresponse raceSchedule) {
+        // Get results from API https://ergast.com/api/f1/current/{roundNumber}/results.json
+        String roundNumber = raceSchedule.getRaceTable().getRaces().get(0).getRound();
+        BASE_URL = "https://ergast.com/api/f1/current/" + roundNumber + "/";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(ScalarsConverterFactory.create())
