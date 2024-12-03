@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap;
+package com.the_coffe_coders.fastestlap.ui;
 
 import android.os.Bundle;
 
@@ -8,7 +8,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.the_coffe_coders.fastestlap.R;
+
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
+
 public class HomePageActivity extends AppCompatActivity {
+    private String TAG = "HomePageActivity";
+    private ErgastAPI ergastAPI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,5 +28,11 @@ public class HomePageActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        setLastRaceCard();
+    }
+
+    private void setLastRaceCard() {
+        String BASE_URL = "https://ergast.com/api/f1/";
     }
 }

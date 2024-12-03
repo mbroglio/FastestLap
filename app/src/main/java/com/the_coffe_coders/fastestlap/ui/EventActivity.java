@@ -82,8 +82,7 @@ public class EventActivity extends AppCompatActivity {
 
         Year currentYear = Year.now();
         BASE_URL += currentYear + "/";
-
-                BASE_URL += "circuits/" + circuitId + "/";
+        BASE_URL += "circuits/" + circuitId + "/";
 
         Log.i(TAG, "Base URL: " + BASE_URL);
 
