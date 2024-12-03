@@ -57,7 +57,7 @@
             android:clickable="true"
             android:focusable="true"
             app:strokeWidth="3dp"
-            app:strokeColor="#FFFFFF">
+            app:strokeColor="#000000">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -99,7 +99,7 @@
             android:clickable="true"
             android:focusable="true"
             app:strokeWidth="3dp"
-            app:strokeColor="#FFFFFF">
+            app:strokeColor="#000000">
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
