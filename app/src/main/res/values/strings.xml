@@ -75,5 +75,7 @@
     <string name="sprint_string">Sprint</string>
     <string name="practice_2_string">Practice 2</string>
     <string name="practice_3_string">Practice 3</string>
+    <string name="last_race">LAST RACE</string>
+    <string name="result">RESULT</string>
 
 </resources>

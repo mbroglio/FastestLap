@@ -1,7 +1,5 @@
 package com.the_coffe_coders.fastestlap.domain.race_week;
 
-import org.threeten.bp.LocalDate;
-
 public class RaceWeekAPIresponse {
     // API Response
     private String xmlns;
@@ -19,7 +17,7 @@ public class RaceWeekAPIresponse {
         this.limit = limit;
         this.offset = offset;
         this.total = total;
-        RaceTable = raceTable;
+        this.RaceTable = raceTable;
     }
 
     public String getXmlns() {
@@ -75,6 +73,6 @@ public class RaceWeekAPIresponse {
     }
 
     public void setRaceTable(RaceTable raceTable) {
-        RaceTable = raceTable;
+        this.RaceTable = raceTable;
     }
 }

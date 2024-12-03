@@ -33,12 +33,13 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_marginStart="10dp"
-                    android:text="Next session:"
+                    android:text="Next Event:"
                     android:textColor="@color/black">
 
                 </TextView>
 
                 <TextView
+                    android:id="@+id/home_next_gp_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_toEndOf="@+id/text_1"
@@ -60,10 +61,11 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:id="@+id/home_next_gp_flag"
                     android:layout_width="55dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
-                    app:srcCompat="@drawable/italy">
+                    app:srcCompat="@drawable/qatar_flag">
 
                 </ImageView>
 
@@ -89,7 +91,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginEnd="20dp"
-                        android:text="@string/days"
+                        android:text="DAYS"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="@color/black"
                         android:textSize="11sp">
@@ -101,7 +103,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginEnd="20dp"
-                        android:text="@string/hours"
+                        android:text="HRS"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="@color/black"
                         android:textSize="11sp">
@@ -113,7 +115,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginEnd="20dp"
-                        android:text="@string/min"
+                        android:text="MINS"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="@color/black"
                         android:textSize="11sp">
@@ -124,7 +126,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="@string/sec"
+                        android:text="SECS"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="@color/black"
                         android:textSize="11sp">
@@ -132,13 +134,12 @@
                     </TextView>
 
                     <TextView
-                        android:id="@+id/days_counter"
+                        android:id="@+id/next_days_counter"
                         android:layout_width="40dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginEnd="20dp"
                         android:gravity="center"
-                        android:text="@string/time"
                         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                         android:textColor="@color/black"
                         android:textStyle="bold">
@@ -146,13 +147,12 @@
                     </TextView>
 
                     <TextView
-                        android:id="@+id/hours_counter"
+                        android:id="@+id/next_hours_counter"
                         android:layout_width="40dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginEnd="20dp"
                         android:gravity="center"
-                        android:text="@string/time"
                         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                         android:textColor="@color/black"
                         android:textStyle="bold">
@@ -160,13 +160,12 @@
                     </TextView>
 
                     <TextView
-                        android:id="@+id/minutes_counter"
+                        android:id="@+id/next_minutes_counter"
                         android:layout_width="40dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginEnd="20dp"
                         android:gravity="center"
-                        android:text="@string/time"
                         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                         android:textColor="@color/black"
                         android:textStyle="bold">
@@ -174,12 +173,11 @@
                     </TextView>
 
                     <TextView
-                        android:id="@+id/seconds_counter"
+                        android:id="@+id/next_seconds_counter"
                         android:layout_width="40dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:text="@string/time"
                         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                         android:textColor="@color/black"
                         android:textStyle="bold">
@@ -190,6 +188,7 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/next_session_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/timer_layout"

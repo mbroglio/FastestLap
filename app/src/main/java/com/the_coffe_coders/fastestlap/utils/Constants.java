@@ -247,32 +247,51 @@ public class Constants {
         put("losail", R.drawable.qatar_image);
         put("yas_marina", R.drawable.abu_dhabi);
     }};
-
-    public static final Map<String, Integer> EVENT_COUNTRY_FLAG = new HashMap<>() {{
+    public static final Map<String, Integer> NATION_COUNTRY_FLAG = new HashMap<>() {{
         //put("bahrain", R.drawable.bahrain_flag);
         //put("jeddah", R.drawable.saudi_arabia_flag);
-        put("albert_park", R.drawable.australia);
-        put("suzuka", R.drawable.japan);
-        put("shanghai", R.drawable.china);
-        put("miami", R.drawable.united_states);
+        put("Australia", R.drawable.australia);
+        put("Japan", R.drawable.japan);
+        put("China", R.drawable.china);
+        put("USA", R.drawable.united_states);
         //put("imola", R.drawable.italy_flag);
-        put("monaco", R.drawable.monaco);
-        put("villeneuve", R.drawable.canada);
-        put("catalunya", R.drawable.spain);
+        put("Monaco", R.drawable.monaco);
+        put("Canada", R.drawable.canada);
+        put("Spain", R.drawable.spain);
         //put("red_bull_ring", R.drawable.austria_flag);
-        put("silverstone", R.drawable.united_kingdom);
+        put("UK", R.drawable.united_kingdom);
         //put("hungaroring", R.drawable.hungary_flag);
         //put("spa", R.drawable.belgium_flag);
-        put("zandvoort", R.drawable.netherlands);
+        put("Netherlands", R.drawable.netherlands);
         //put("monza", R.drawable.italy_flag);
         //put("baku", R.drawable.azerbaijan_flag);
         //put("marina_bay", R.drawable.singapore_flag);
-        put("americas", R.drawable.united_states);
-        put("rodriguez", R.drawable.mexico);
+        put("Mexico", R.drawable.mexico);
         //put("interlagos", R.drawable.brazil_flag);
-        put("vegas", R.drawable.united_states);
-        put("losail", R.drawable.qatar_flag);
-        put("yas_marina", R.drawable.qatar_flag);
+        put("United States", R.drawable.united_states);
+        put("Qatar", R.drawable.qatar_flag);
+        put("UAE", R.drawable.qatar_flag);
+    }};
+
+    public static final Map<String, String> NATIONALITY_NATION = new HashMap<>() {{
+        put("British", "UK");
+        put("Dutch", "Netherlands");
+        put("Australian", "Australia");
+        put("Japanese", "Japan");
+        put("Chinese", "China");
+        put("American", "USA");
+        put("Monégasque", "Monaco");
+        put("Canadian", "Canada");
+        put("Spanish", "Spain");
+        put("French", "France");
+        put("Mexican", "Mexico");
+        put("Brazilian", "Brazil");
+        put("Italian", "Italy");
+        put("Azerbaijani", "Azerbaijan");
+        put("Singaporean", "Singapore");
+        put("Qatari", "Qatar");
+        put("Emirati", "UAE");
+        put("German", "UK");
     }};
 
     public static final Map<String, Integer> EVENT_CIRCUIT = new HashMap<>() {{
@@ -403,4 +422,13 @@ public class Constants {
             R.id.second_color,
             R.id.third_color
     );
+
+    public static final List<Integer> LAST_RACE_DRIVER_NAME = List.of(
+            R.id.last_race_first,
+            R.id.last_race_second,
+            R.id.last_race_third
+    );
+
+    public static final String FAVOURITE_DRIVER = "hamilton";
+    public static final String FAVOURITE_TEAM = "mercedes";
 }
