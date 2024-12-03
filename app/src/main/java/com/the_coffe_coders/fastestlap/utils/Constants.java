@@ -258,6 +258,7 @@ public class Constants {
         put("Monaco", R.drawable.monaco);
         put("Canada", R.drawable.canada);
         put("Spain", R.drawable.spain);
+        put("Germany", R.drawable.germany_flag);
         //put("red_bull_ring", R.drawable.austria_flag);
         put("UK", R.drawable.united_kingdom);
         //put("hungaroring", R.drawable.hungary_flag);
@@ -270,7 +271,7 @@ public class Constants {
         //put("interlagos", R.drawable.brazil_flag);
         put("United States", R.drawable.united_states);
         put("Qatar", R.drawable.qatar_flag);
-        put("UAE", R.drawable.qatar_flag);
+        put("UAE", R.drawable.united_arab_emirates_flag);
     }};
 
     public static final Map<String, String> NATIONALITY_NATION = new HashMap<>() {{
@@ -291,7 +292,28 @@ public class Constants {
         put("Singaporean", "Singapore");
         put("Qatari", "Qatar");
         put("Emirati", "UAE");
-        put("German", "UK");
+        put("German", "Germany");
+    }};
+
+    public static final Map<String, String> NATIONALITY_ABBREVIATION = new HashMap<>() {{
+        put("British", "GBR");
+        put("Dutch", "NED");
+        put("Australian", "AUS");
+        put("Japanese", "JAP");
+        put("Chinese", "CHI");
+        put("American", "USA");
+        put("Monégasque", "MON");
+        put("Canadian", "CAM");
+        put("Spanish", "SPA");
+        put("French", "FRA");
+        put("Mexican", "MEX");
+        put("Brazilian", "BRA");
+        put("Italian", "ITA");
+        put("Azerbaijani", "AZE");
+        put("Singaporean", "SGP");
+        put("Qatari", "QAT");
+        put("Emirati", "UAE");
+        put("German", "GER");
     }};
 
     public static final Map<String, Integer> EVENT_CIRCUIT = new HashMap<>() {{

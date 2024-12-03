@@ -13,6 +13,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.card.MaterialCardView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
@@ -349,6 +350,8 @@ public class HomePageActivity extends AppCompatActivity {
     }
 
     private void buildDriverCard(DriverStanding standingElement) {
+
+
         TextView driverName = findViewById(R.id.favourite_driver_name);
         driverName.setText(Constants.DRIVER_FULLNAME.get(Constants.FAVOURITE_DRIVER));
 
@@ -357,7 +360,7 @@ public class HomePageActivity extends AppCompatActivity {
         driverFlag.setImageResource(Constants.NATION_COUNTRY_FLAG.get(Constants.NATIONALITY_NATION.get(driverNationality)));
 
         TextView nationality = findViewById(R.id.favourite_driver_nationality);
-        nationality.setText(driverNationality.toUpperCase());
+        nationality.setText(Constants.NATIONALITY_ABBREVIATION.get(driverNationality));
 
         ImageView driverImage = findViewById(R.id.favourite_driver_pic);
         driverImage.setImageResource(Constants.DRIVER_IMAGE.get(Constants.FAVOURITE_DRIVER));
@@ -367,6 +370,9 @@ public class HomePageActivity extends AppCompatActivity {
 
         TextView driverPoints = findViewById(R.id.favourite_driver_points);
         driverPoints.setText(standingElement.getPoints());
+
+        MaterialCardView driverCard = findViewById(R.id.favourite_driver_card);
+        driverCard.setCardBackgroundColor(Constants.TEAM_COLOR.get(Constants.DRIVER_TEAM.get(Constants.FAVOURITE_DRIVER)));
     }
 
     private void setFavouriteConstructorCard() {
@@ -432,6 +438,6 @@ public class HomePageActivity extends AppCompatActivity {
         constructorFlag.setImageResource(Constants.NATION_COUNTRY_FLAG.get(Constants.NATIONALITY_NATION.get(nationality)));
 
         TextView constructorNationality = findViewById(R.id.favourite_constructor_nationality);
-        constructorNationality.setText(nationality.toUpperCase());
+        constructorNationality.setText(Constants.NATIONALITY_ABBREVIATION.get(nationality));
     }
 }

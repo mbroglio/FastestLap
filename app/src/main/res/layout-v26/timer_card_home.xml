@@ -33,7 +33,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
                     android:layout_marginStart="10dp"
-                    android:text="Next Event:"
+                    android:text="Next Event :"
                     android:fontFamily="@font/orbitron_regular"
                     android:textColor="@color/black">
 
@@ -203,8 +203,9 @@
                 android:layout_below="@id/timer_layout"
                 android:layout_centerInParent="true"
                 android:layout_marginBottom="5dp"
+                android:fontFamily="@font/orbitron_bold"
                 android:text="RACE"
-                android:fontFamily="@font/orbitron_bold">
+                android:textColor="@color/black">
 
             </TextView>
 

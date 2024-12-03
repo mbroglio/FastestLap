@@ -53,7 +53,7 @@
             <RelativeLayout
                 android:id="@+id/last_race_card"
                 android:layout_width="match_parent"
-                android:layout_height="180dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -68,8 +68,10 @@
                         android:id="@+id/last_race_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="3dp"
                         android:layout_marginStart="5dp"
-                        android:layout_marginEnd="8dp"
+                        android:layout_marginEnd="10dp"
                         android:fontFamily="@font/orbitron_bold"
                         android:autoSizeTextType="uniform"
                         android:autoSizeMinTextSize="11sp"
@@ -89,6 +91,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/last_race_name_layout"
                     android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
                     android:orientation="vertical">
 
                     <ImageView
@@ -108,6 +111,7 @@
                         android:layout_marginTop="5dp"
                         android:layout_centerHorizontal="true"
                         android:text="-!-"
+                        android:fontFamily="@font/orbitron_regular"
                         android:textColor="@color/white">
 
                     </TextView>
@@ -118,8 +122,8 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/last_race_date"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginBottom="@dimen/small_margin"
                         android:text="-!-"
+                        android:fontFamily="@font/orbitron_bold"
                         android:textColor="@color/white">
 
                     </TextView>
@@ -128,10 +132,13 @@
                         android:id="@+id/track_separator"
                         android:layout_width="3dp"
                         android:layout_height="match_parent"
+                        android:layout_toEndOf="@id/last_race_track_outline"
+                        android:layout_alignTop="@id/last_race_track_outline"
+                        android:layout_alignBottom="@id/last_race_month"
+                        android:orientation="horizontal"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
-                        android:layout_toEndOf="@id/last_race_track_outline"
                         android:background="@color/white">
 
                     </LinearLayout>
@@ -148,36 +155,35 @@
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
                     android:text="@string/last_race"
+                    android:textSize="11dp"
                     android:fontFamily="@font/orbitron_bold"
                     android:textColor="@color/white" />
-
-                <TextView
-                    android:id="@+id/last_race_round"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/last_race"
-                    android:layout_marginTop="5dp"
-                    android:layout_toStartOf="@id/last_race"
-                    android:layout_centerInParent="true"
-                    android:text="Round 29"
-                    android:textColor="@color/white">
-
-                </TextView>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:layout_below="@id/last_race_name_layout"
                     android:layout_toEndOf="@id/track_info">
+
+                    <TextView
+                        android:id="@+id/last_race_round"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerInParent="true"
+                        android:text="Round 29"
+                        android:fontFamily="@font/orbitron_bold"
+                        android:textColor="@color/white">
+
+                    </TextView>
 
                     <LinearLayout
                         android:id="@+id/race_podium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/last_race_round"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerInParent="true"
                         android:layout_marginStart="40dp"
-                        android:layout_marginTop="@dimen/small_margin"
+                        android:layout_marginTop="7dp"
                         android:orientation="vertical">
 
                         <LinearLayout
@@ -190,6 +196,7 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
                                 android:text="1"
+                                android:fontFamily="@font/orbitron_regular"
                                 android:textColor="@color/white"
                                 android:textSize="12sp">
 
@@ -201,6 +208,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
                                 android:text="George Russell"
+                                android:fontFamily="@font/orbitron_regular"
                                 android:textColor="@color/white"
                                 android:textSize="12sp">
 
@@ -219,6 +227,7 @@
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
                                 android:text="2"
+                                android:fontFamily="@font/orbitron_regular"
                                 android:textColor="@color/white"
                                 android:textSize="12sp">
 
@@ -229,6 +238,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
+                                android:fontFamily="@font/orbitron_regular"
                                 android:text="Lewis Hamilton"
                                 android:textColor="@color/white"
                                 android:textSize="12sp">
@@ -247,6 +257,7 @@
                                 android:layout_width="10dp"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
+                                android:fontFamily="@font/orbitron_regular"
                                 android:text="3"
                                 android:textColor="@color/white"
                                 android:textSize="12sp">
@@ -259,6 +270,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
                                 android:text="Carlos Sainz"
+                                android:fontFamily="@font/orbitron_regular"
                                 android:textColor="@color/white"
                                 android:textSize="12sp">
 
@@ -271,8 +283,8 @@
                         android:id="@+id/driver_current_standing"
                         android:layout_width="140dp"
                         android:layout_height="45dp"
-                        android:layout_alignParentBottom="true"
                         android:layout_centerInParent="true"
+                        android:layout_below="@id/race_podium"
                         android:layout_gravity="center"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="5dp"
@@ -337,13 +349,16 @@
             </FrameLayout>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/favourite_driver_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="@dimen/small_margin"
                 android:layout_marginTop="@dimen/small_margin"
                 android:layout_marginEnd="@dimen/small_margin"
-                android:background="@color/alpine_f1">
+                android:background="@color/alpine_f1"
+                app:strokeColor="@color/black"
+                app:strokeWidth="3dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -359,25 +374,27 @@
                         android:layout_marginStart="@dimen/small_margin"
                         android:layout_marginTop="5dp"
                         android:text="@string/alexander_albon"
+                        android:fontFamily="@font/orbitron_bold"
                         android:textColor="@color/black"
                         android:textSize="18sp">
 
                     </TextView>
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:id="@+id/favourite_driver_flag_field"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/favourite_driver_name"
                         android:layout_alignParentStart="true"
-                        android:orientation="horizontal">
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="50dp">
 
                         <ImageView
                             android:id="@+id/favourite_driver_flag"
                             android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_marginStart="50dp"
-                            android:layout_marginTop="5dp"
+                            android:layout_height="45dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerHorizontal="true"
                             app:srcCompat="@drawable/thailand">
 
                         </ImageView>
@@ -385,16 +402,17 @@
                         <TextView
                             android:id="@+id/favourite_driver_nationality"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@id/favourite_driver_flag"
+                            android:layout_centerVertical="true"
                             android:layout_marginStart="5dp"
-                            android:layout_marginTop="5dp"
-                            android:gravity="center_vertical"
                             android:text="@string/not_found"
-                            android:textColor="@color/black">
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/orbitron_regular">
 
                         </TextView>
 
-                    </LinearLayout>
+                    </RelativeLayout>
 
                     <ImageView
                         android:id="@+id/favourite_driver_pic"
@@ -473,13 +491,16 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/favourite_constructor_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="@dimen/small_margin"
                 android:layout_marginTop="@dimen/small_margin"
                 android:layout_marginEnd="@dimen/small_margin"
-                android:background="@color/ferrari_secondary">
+                android:background="@color/ferrari_secondary"
+                app:strokeColor="@color/black"
+                app:strokeWidth="3dp">
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -494,6 +515,7 @@
                         android:layout_marginStart="@dimen/small_margin"
                         android:layout_marginTop="5dp"
                         android:text="@string/ferrari"
+                        android:fontFamily="@font/orbitron_bold"
                         android:textColor="@color/black"
                         android:textSize="18sp">
 
@@ -516,6 +538,7 @@
                         android:layout_alignParentStart="true"
                         android:layout_marginStart="@dimen/small_margin"
                         android:layout_marginBottom="5dp"
+                        android:layout_marginTop="5dp"
                         android:clickable="true"
                         android:focusable="true"
                         app:cardBackgroundColor="@color/ferrari_f1"
@@ -554,38 +577,40 @@
 
                     </com.google.android.material.card.MaterialCardView>
 
-                    <LinearLayout
+                    <RelativeLayout
+                        android:id="@+id/favourite_constructor_flag_field"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/favourite_constructor_car"
                         android:layout_alignParentEnd="true"
-                        android:orientation="horizontal">
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="50dp"
+                        android:layout_marginBottom="5dp">
 
                         <ImageView
                             android:id="@+id/favourite_constructor_flag"
                             android:layout_width="50dp"
-                            android:layout_height="40dp"
-                            android:layout_marginEnd="@dimen/small_margin"
-                            android:layout_marginBottom="5dp"
-                            app:srcCompat="@drawable/italy">
+                            android:layout_height="45dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerHorizontal="true"
+                            app:srcCompat="@drawable/thailand">
 
                         </ImageView>
 
                         <TextView
                             android:id="@+id/favourite_constructor_nationality"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toEndOf="@id/favourite_constructor_flag"
+                            android:layout_centerVertical="true"
                             android:layout_marginStart="5dp"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginEnd="5dp"
-                            android:gravity="center_vertical"
                             android:text="@string/not_found"
-                            android:textColor="@color/black">
+                            android:textColor="@color/black"
+                            android:fontFamily="@font/orbitron_regular">
 
                         </TextView>
 
-
-                    </LinearLayout>
+                    </RelativeLayout>
 
                     <ImageView
                         android:layout_width="20dp"

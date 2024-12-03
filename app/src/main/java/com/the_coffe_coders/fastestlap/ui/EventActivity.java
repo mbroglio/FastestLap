@@ -64,7 +64,7 @@ public class EventActivity extends AppCompatActivity {
     private String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
     private ErgastAPI ergastApi;
     // Must be queried from the selected card
-    private String circuitId = "silverstone";
+    private String circuitId = "yas_marina";
     private final ZoneId localZone = ZoneId.systemDefault();
 
     @Override
