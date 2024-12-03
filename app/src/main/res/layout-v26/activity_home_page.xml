@@ -349,18 +349,17 @@
             </FrameLayout>
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/favourite_driver_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="@dimen/small_margin"
                 android:layout_marginTop="@dimen/small_margin"
                 android:layout_marginEnd="@dimen/small_margin"
-                android:background="@color/alpine_f1"
                 app:strokeColor="@color/black"
                 app:strokeWidth="3dp">
 
                 <RelativeLayout
+                    android:id="@+id/favourite_driver_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/alpine_f1">
@@ -491,18 +490,17 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
-                android:id="@+id/favourite_constructor_card"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="@dimen/small_margin"
                 android:layout_marginTop="@dimen/small_margin"
                 android:layout_marginEnd="@dimen/small_margin"
-                android:background="@color/ferrari_secondary"
                 app:strokeColor="@color/black"
                 app:strokeWidth="3dp">
 
                 <RelativeLayout
+                    android:id="@+id/favourite_constructor_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/ferrari_secondary">

@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -371,8 +373,9 @@ public class HomePageActivity extends AppCompatActivity {
         TextView driverPoints = findViewById(R.id.favourite_driver_points);
         driverPoints.setText(standingElement.getPoints());
 
-        MaterialCardView driverCard = findViewById(R.id.favourite_driver_card);
-        driverCard.setCardBackgroundColor(Constants.TEAM_COLOR.get(Constants.DRIVER_TEAM.get(Constants.FAVOURITE_DRIVER)));
+       //set favourite driver card color
+        RelativeLayout driverCard = findViewById(R.id.favourite_driver_layout);
+        driverCard.setBackgroundResource(Constants.TEAM_COLOR.get(Constants.DRIVER_TEAM.get(Constants.FAVOURITE_DRIVER)));
     }
 
     private void setFavouriteConstructorCard() {
@@ -434,10 +437,12 @@ public class HomePageActivity extends AppCompatActivity {
 
         ImageView constructorFlag = findViewById(R.id.favourite_constructor_flag);
         String nationality = standingElement.getConstructor().getNationality();
-        Log.i(TAG, "Nationality: " + nationality);
         constructorFlag.setImageResource(Constants.NATION_COUNTRY_FLAG.get(Constants.NATIONALITY_NATION.get(nationality)));
 
         TextView constructorNationality = findViewById(R.id.favourite_constructor_nationality);
         constructorNationality.setText(Constants.NATIONALITY_ABBREVIATION.get(nationality));
+
+        RelativeLayout constructorCard = findViewById(R.id.favourite_constructor_layout);
+        constructorCard.setBackgroundResource(Constants.TEAM_COLOR.get(standingElement.getConstructor().getName().toLowerCase()));
     }
 }
