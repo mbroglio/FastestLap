@@ -15,15 +15,17 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.Driver;
+import com.the_coffe_coders.fastestlap.domain.driver.StandingsAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.driver.DriverStanding;
 import com.the_coffe_coders.fastestlap.utils.Constants;
+import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
+
+import org.threeten.bp.Year;
 
 import okhttp3.ResponseBody;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.threeten.bp.Year;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -66,14 +68,20 @@ public class DriverCardActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     try {
                         String responseString = response.body().string();
-                        JSONObject jsonResponse = new JSONObject(responseString);
+                        JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
+                        JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
 
-                        JSONArray standing = jsonResponse.getJSONObject("MRData").getJSONObject("StandingsTable").getJSONArray("StandingsLists").getJSONObject(0).getJSONArray("DriverStandings");
-                        Driver driver;
+                        JSONParserUtils jsonParserUtils = new JSONParserUtils(DriverCardActivity.this);
+                        StandingsAPIResponse standingsAPIResponse = jsonParserUtils.parseDriverStandings(mrdata);
 
-                        for (int i = 0; i < standing.length(); i++) {
-                            driver = new Driver(standing.getJSONObject(i));
-                            driverStanding.addView(generateDriverCard(driver));
+                        int total = Integer.parseInt(standingsAPIResponse.getTotal());
+                        for (int i = 0; i < total; i++) {
+                            DriverStanding standingElement = standingsAPIResponse
+                                    .getStandingsTable()
+                                    .getStandingsLists().get(0)
+                                    .getDriverStandings().get(i);
+
+                            driverStanding.addView(generateDriverCard(standingElement));
 
                             View space = new View(DriverCardActivity.this);
                             space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
@@ -94,7 +102,7 @@ public class DriverCardActivity extends AppCompatActivity {
         });
     }
 
-    private View generateDriverCard(Driver driver) {
+    private View generateDriverCard(DriverStanding standingElement) {
         // Inflate the team card layout
         View driverCard = getLayoutInflater().inflate(R.layout.small_driver_card, null);
 
@@ -108,7 +116,7 @@ public class DriverCardActivity extends AppCompatActivity {
         LinearLayout driverColor = driverCard.findViewById(R.id.small_driver_card);
 
         // Setting the values
-        String driverId = driver.getDriverId();
+        String driverId = standingElement.getDriver().getDriverId();
         driverImageView.setImageResource(Constants.DRIVER_IMAGE.get(driverId));
         driverName.setText(getText(Constants.DRIVER_FULLNAME.get(driverId)));
 
@@ -116,11 +124,11 @@ public class DriverCardActivity extends AppCompatActivity {
         teamLogoImageView.setImageResource(Constants.TEAM_LOGO_DRIVER_CARD.get(team));
         driverColor.setBackground(AppCompatResources.getDrawable(this, Constants.TEAM_GRADIENT_COLOR.get(team)));
 
-        int position = driver.getStandingPosition();
-        driverPosition.setText(String.valueOf(position));
+        String position = standingElement.getPosition();
+        driverPosition.setText(position);
 
-        int points = driver.getPoints();
-        driverPoints.setText(String.valueOf(points));
+        String points = standingElement.getPoints();
+        driverPoints.setText(points);
 
         driverCard.setOnClickListener(v -> Log.i(TAG, "Driver card clicked"));
 

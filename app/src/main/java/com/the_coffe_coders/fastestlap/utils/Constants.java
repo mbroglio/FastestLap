@@ -3,6 +3,7 @@ package com.the_coffe_coders.fastestlap.utils;
 import com.the_coffe_coders.fastestlap.R;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Constants {
@@ -271,7 +272,7 @@ public class Constants {
         //put("interlagos", R.drawable.brazil_flag);
         put("vegas", R.drawable.united_states);
         put("losail", R.drawable.qatar_flag);
-        //put("yas_marina", R.drawable.united_arab_emirates_flag);
+        put("yas_marina", R.drawable.qatar_flag);
     }};
 
     public static final Map<String, Integer> EVENT_CIRCUIT = new HashMap<>() {{
@@ -389,5 +390,17 @@ public class Constants {
             "Sprint", R.id.session_3_time,
             "Qualifying", R.id.session_4_time,
             "Race", R.id.session_5_time
+    );
+
+    public static final List<Integer> PODIUM_DRIVER_NAME = List.of(
+            R.id.first_name,
+            R.id.second_name,
+            R.id.third_name
+    );
+
+    public static final List<Integer> PODIUM_TEAM_COLOR = List.of(
+            R.id.first_color,
+            R.id.second_color,
+            R.id.third_color
     );
 }

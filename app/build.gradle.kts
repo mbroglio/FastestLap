@@ -37,7 +37,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
-    implementation(libs.json)
+    implementation(libs.gson)
     implementation(libs.retrofit)
     implementation(libs.converter.scalars)
     implementation(libs.threetenbp)

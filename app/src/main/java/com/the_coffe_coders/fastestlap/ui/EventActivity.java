@@ -1,7 +1,18 @@
 package com.the_coffe_coders.fastestlap.ui;
 
-import com.the_coffe_coders.fastestlap.domain.RaceWeek;
-import com.the_coffe_coders.fastestlap.domain.Session;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.the_coffe_coders.fastestlap.domain.race_result.Result;
+import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.race_week.FirstPractice;
+import com.the_coffe_coders.fastestlap.domain.race_week.Qualifying;
+import com.the_coffe_coders.fastestlap.domain.race_week.RaceWeekAPIresponse;
+import com.the_coffe_coders.fastestlap.domain.race_week.Races;
+import com.the_coffe_coders.fastestlap.domain.race_week.SecondPractice;
+import com.the_coffe_coders.fastestlap.domain.race_week.Session;
+import com.the_coffe_coders.fastestlap.domain.race_week.Sprint;
+import com.the_coffe_coders.fastestlap.domain.race_week.SprintQualifying;
+import com.the_coffe_coders.fastestlap.domain.race_week.ThirdPractice;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 
 import android.graphics.drawable.Drawable;
@@ -21,6 +32,7 @@ import androidx.core.view.WindowInsetsCompat;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -29,15 +41,16 @@ import android.widget.TextView;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.threeten.bp.LocalDate;
 import org.threeten.bp.Year;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -50,8 +63,9 @@ public class EventActivity extends AppCompatActivity {
     private static final String TAG = "EventActivity";
     private String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
     private ErgastAPI ergastApi;
-    private String circuitId = "losail"; // Must be queried from the selected card
-    private ZoneId localZone = ZoneId.systemDefault();
+    // Must be queried from the selected card
+    private String circuitId = "yas_marina";
+    private final ZoneId localZone = ZoneId.systemDefault();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +83,7 @@ public class EventActivity extends AppCompatActivity {
         Year currentYear = Year.now();
         BASE_URL += currentYear + "/";
 
-        BASE_URL += "circuits/" + circuitId + "/";
+                BASE_URL += "circuits/" + circuitId + "/";
 
         Log.i(TAG, "Base URL: " + BASE_URL);
 
@@ -82,7 +96,7 @@ public class EventActivity extends AppCompatActivity {
 
         getEventInfo();
 
-        //add event listener logic for countdown layout
+        /*//add event listener logic for countdown layout
         LinearLayout trackPic = findViewById(R.id.timer_card);
         trackPic.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -90,7 +104,7 @@ public class EventActivity extends AppCompatActivity {
                 Log.i(TAG, "clicked");
 
             }
-        });
+        });*/
 
         //add event listener logic for live_session card
         MaterialCardView liveSession = findViewById(R.id.live_session);
@@ -123,19 +137,13 @@ public class EventActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     try {
                         String responseBody = response.body().string();
-                        JSONObject jsonResponse = new JSONObject(responseBody);
-                        Log.i(TAG, "Json Response: " + jsonResponse);
+                        JsonObject jsonResponse = new Gson().fromJson(responseBody, JsonObject.class);
+                        JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
 
-                        JSONArray raceSchedule = jsonResponse.getJSONObject("MRData").getJSONObject("RaceTable").getJSONArray("Races");
-                        Log.i(TAG, "Json Array: " + raceSchedule);
+                        JSONParserUtils parser = new JSONParserUtils(EventActivity.this);
+                        RaceWeekAPIresponse raceSchedule = parser.parseRaceWeek(mrdata);
 
-                        try {
-                            processRaceData(raceSchedule);
-                        } catch (JSONException e) {
-                            Log.e(TAG, "Error processing Race Data", e);
-                        }
-                    } catch (JSONException e) {
-                        Log.e(TAG, "Error parsing JSON response", e);
+                        processRaceData(raceSchedule);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -151,41 +159,44 @@ public class EventActivity extends AppCompatActivity {
         });
     }
 
-    private void processRaceData(JSONArray race) throws JSONException {
-        RaceWeek raceWeek = new RaceWeek(race.getJSONObject(0), circuitId);
-
+    private void processRaceData(RaceWeekAPIresponse raceSchedule) {
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-        toolbar.setTitle(raceWeek.getGpName());
+        toolbar.setTitle(raceSchedule.getRaceTable().getRaces().get(0).getRaceName());
 
         ImageView countryFlag = findViewById(R.id.country_flag);
-        Integer flag = Constants.EVENT_COUNTRY_FLAG.get(raceWeek.getTrackId());
+        Integer flag = Constants.EVENT_COUNTRY_FLAG.get(circuitId);
         countryFlag.setImageResource(flag);
 
         ImageView trackMap = findViewById(R.id.track_outline);
-        Integer outline = Constants.EVENT_CIRCUIT.get(raceWeek.getTrackId());
+        Integer outline = Constants.EVENT_CIRCUIT.get(circuitId);
         trackMap.setImageResource(outline);
 
         TextView roundNumber = findViewById(R.id.round_number);
-        String round = "Round " + raceWeek.getEventNumber();
+        String round = "Round " + raceSchedule.getRaceTable().getRaces().get(0).getRound();
         roundNumber.setText(round);
 
         TextView seasonYear = findViewById(R.id.year);
-        seasonYear.setText(raceWeek.getYear());
+        seasonYear.setText(raceSchedule.getRaceTable().getSeason());
 
         TextView name = findViewById(R.id.gp_name);
-        name.setText(Constants.TRACK_LONG_GP_NAME.get(raceWeek.getTrackId()));
+        name.setText(Constants.TRACK_LONG_GP_NAME.get(circuitId));
 
-        setEventImage(raceWeek.getTrackId());
+        setEventImage(circuitId);
 
         TextView eventDate = findViewById(R.id.event_date);
-        eventDate.setText(raceWeek.getDate());
+        eventDate.setText(getDate(raceSchedule));
 
-        ZonedDateTime nextEventDate = findNextDate(raceWeek);
-        if (nextEventDate != null) {
-            startCountdown(nextEventDate);
-        }
+        List<Session> sessions = populateSessions(raceSchedule);
 
-        createWeekSchedule(raceWeek);
+        Session nextEvent = findNextEvent(sessions);
+        if (nextEvent != null) {
+            ZonedDateTime eventDateTime = nextEvent.getStartDateTime();
+            startCountdown(eventDateTime);
+        } else
+            showResults();
+
+
+        createWeekSchedule(sessions);
     }
 
     private void setEventImage(String circuitId) {
@@ -197,38 +208,104 @@ public class EventActivity extends AppCompatActivity {
         eventCard.setBackground(picture);
     }
 
-    private ZonedDateTime findNextDate(RaceWeek raceWeek) throws JSONException {
+    private String getDate(RaceWeekAPIresponse raceSchedule) {
+        String fullDate;
+        String startingDate = raceSchedule.getRaceTable().getRaces().get(0).getFirstPractice().getDate();
+        String endingDate = raceSchedule.getRaceTable().getRaces().get(0).getDate();
+
+        LocalDate startDate = LocalDate.parse(startingDate);
+        LocalDate endDate = LocalDate.parse(endingDate);
+
+        if (startDate.getMonth() != endDate.getMonth()) {
+            fullDate = startDate.getDayOfMonth() + " " + startDate.getMonth() + " - " + endDate.getDayOfMonth() + " " + endDate.getMonth();
+        } else {
+            fullDate = startDate.getDayOfMonth() + " - " + endDate.getDayOfMonth() + " " + startDate.getMonth();
+        }
+
+        return fullDate;
+    }
+
+    private List<Session> populateSessions(RaceWeekAPIresponse raceSchedule) {
+        List<Session> sessions = new ArrayList<>();
+        Races race = raceSchedule.getRaceTable().getRaces().get(0);
+
+        addSession(sessions, race.getFirstPractice());
+        addSession(sessions, race.getSecondPractice());
+        addSession(sessions, race.getThirdPractice());
+        addSession(sessions, race.getSprintQualifying());
+        addSession(sessions, race.getSprint());
+        addSession(sessions, race.getQualifying());
+
+        // Add Race session
+        ZonedDateTime startDateTime = ZonedDateTime.parse(
+                race.getDate() + "T" + race.getTime() + "[UTC]"
+        );
+        sessions.add(new Session("Race", false, false, startDateTime, null));
+
+        return sessions;
+    }
+
+    private void addSession(List<Session> sessions, Object tmpSession) {
+        if (tmpSession != null) {
+            String sessionId = tmpSession.getClass().getSimpleName();
+            Log.i(TAG, "Session ID: " + sessionId);
+
+            String date = null;
+            String time = null;
+
+            if (tmpSession instanceof FirstPractice) {
+                date = ((FirstPractice) tmpSession).getDate();
+                time = ((FirstPractice) tmpSession).getTime();
+            } else if (tmpSession instanceof SecondPractice) {
+                date = ((SecondPractice) tmpSession).getDate();
+                time = ((SecondPractice) tmpSession).getTime();
+            } else if (tmpSession instanceof ThirdPractice) {
+                date = ((ThirdPractice) tmpSession).getDate();
+                time = ((ThirdPractice) tmpSession).getTime();
+            } else if (tmpSession instanceof SprintQualifying) {
+                date = ((SprintQualifying) tmpSession).getDate();
+                time = ((SprintQualifying) tmpSession).getTime();
+            } else if (tmpSession instanceof Sprint) {
+                date = ((Sprint) tmpSession).getDate();
+                time = ((Sprint) tmpSession).getTime();
+            } else if (tmpSession instanceof Qualifying) {
+                date = ((Qualifying) tmpSession).getDate();
+                time = ((Qualifying) tmpSession).getTime();
+            }
+
+            if (date != null && time != null) {
+                ZonedDateTime startDateTime = ZonedDateTime.parse(date + "T" + time + "[UTC]");
+                sessions.add(new Session(sessionId, false, false, startDateTime, null));
+            }
+        }
+    }
+
+
+    private Session findNextEvent(List<Session> sessions) {
         ZonedDateTime currentDateTime = ZonedDateTime.now(localZone);
         Session nextSession = null;
+        int i = 0;
 
-        for (int i = 0; i < 5; i++) {
-            Log.i(TAG, "Session: " + raceWeek.getSessions()[i].getStartDateTime());
-            if (currentDateTime.isAfter(raceWeek.getSessions()[i].getStartDateTime()) && currentDateTime.isBefore(raceWeek.getSessions()[i].getEndDateTime())) {
-                raceWeek.getSessions()[i].setUnderway(true);
+        for (Session session : sessions) {
+            Log.i(TAG, "Session: " + session.getStartDateTime());
+            if (currentDateTime.isAfter(session.getStartDateTime()) && currentDateTime.isBefore(session.getEndDateTime())) {
+                session.setUnderway(true);
                 setLiveSession();
-                Log.i(TAG, "Session underway: " + raceWeek.getSessions()[i].getSessionId());
-            } else if (currentDateTime.isAfter(raceWeek.getSessions()[i].getEndDateTime())) {
-                raceWeek.getSessions()[i].setUnderway(false);
-                raceWeek.getSessions()[i].setFinished(true);
+                Log.i(TAG, "Session underway: " + session.getSessionId());
+            } else if (currentDateTime.isAfter(session.getEndDateTime())) {
+                session.setUnderway(false);
+                session.setFinished(true);
             }
-
-            if (currentDateTime.isAfter(raceWeek.getSessions()[i].getStartDateTime())) {
-                if (i <= 3) {
-                    nextSession = raceWeek.getSessions()[i + 1];
-                } else {
-                    nextSession = raceWeek.getSessions()[i];
-                }
-            }
-
-            Log.i(TAG, "Is " + raceWeek.getSessions()[i].getSessionId() + " underway? " + raceWeek.getSessions()[i].isUnderway());
         }
 
-        if (nextSession == null) {
-            nextSession = raceWeek.getSessions()[0];
+        for (Session session : sessions) {
+            if (!session.isFinished()) {
+                nextSession = session;
+                break;
+            }
         }
 
-        Log.i(TAG, "Next Session: " + nextSession.getSessionId());
-        return nextSession.getStartDateTime();
+        return nextSession;
     }
 
     private void setLiveSession() {
@@ -277,15 +354,86 @@ public class EventActivity extends AppCompatActivity {
         }.start();
     }
 
-    private void createWeekSchedule(RaceWeek raceWeek) throws JSONException {
-        for (Session session : raceWeek.getSessions()) {
-            TextView sessionName = findViewById(Constants.SESSION_NAME_FIELD.get(session.getSessionId()));
+    private void showResults() {
+        FrameLayout eventCardContainer = findViewById(R.id.event_card_container);
+        View countdownView = findViewById(R.id.timer_card_countdown);
+        View resultsView = findViewById(R.id.timer_card_results);
+
+        // Hide countdown view and show results view
+        countdownView.setVisibility(View.GONE);
+        resultsView.setVisibility(View.VISIBLE);
+
+        // You can add logic here to populate the results view with actual data
+        processRaceResults();
+
+        // Set podium cricuit image
+        ImageView trackOutline = findViewById(R.id.results_track_outline);
+        trackOutline.setImageResource(Constants.EVENT_CIRCUIT.get(circuitId));
+    }
+
+    private void processRaceResults() {
+        // Get results from API https://ergast.com/api/f1/current/last/results.json
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://ergast.com/api/f1/")
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .build();
+
+        ergastApi = retrofit.create(ErgastAPI.class);
+
+        ergastApi.getLastRaceResults().enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                Log.i(TAG, "Response: " + response);
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        String responseBody = response.body().string();
+                        JsonObject jsonResponse = new Gson().fromJson(responseBody, JsonObject.class);
+                        JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
+
+                        JSONParserUtils parser = new JSONParserUtils(EventActivity.this);
+                        ResultsAPIResponse raceResult = parser.parseRaceResults(mrdata);
+
+                        showPodium(raceResult);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                } else {
+                    Log.e(TAG, "Response body is null");
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable throwable) {
+                Log.e(TAG, "Error fetching data", throwable);
+            }
+        });
+    }
+
+    private void showPodium(ResultsAPIResponse raceResult) {
+        List<Result> results = raceResult.getRaceTable().getRaces().get(0).getResults();
+        for (int i = 0; i < 3; i++) {
+            String driverId = results.get(i).getDriver().getDriverId();
+            String teamId = results.get(i).getConstructor().getConstructorId();
+
+            LinearLayout teamColor = findViewById(Constants.PODIUM_TEAM_COLOR.get(i));
+            TextView driverName = findViewById(Constants.PODIUM_DRIVER_NAME.get(i));
+
+            driverName.setText(Constants.DRIVER_FULLNAME.get(driverId));
+            teamColor.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+        }
+    }
+
+    private void createWeekSchedule(List<Session> sessions) {
+        String sessionId;
+        for (Session session : sessions) {
+            sessionId = session.getSessionId();
+            TextView sessionName = findViewById(Constants.SESSION_NAME_FIELD.get(sessionId));
             sessionName.setText(Constants.SESSION_NAMES.get(session.getSessionId()));
 
-            TextView sessionDay = findViewById(Constants.SESSION_DAY_FIELD.get(session.getSessionId()));
+            TextView sessionDay = findViewById(Constants.SESSION_DAY_FIELD.get(sessionId));
             sessionDay.setText(Constants.SESSION_DAY.get(session.getSessionId()));
 
-            TextView sessionTime = findViewById(Constants.SESSION_TIME_FIELD.get(session.getSessionId()));
+            TextView sessionTime = findViewById(Constants.SESSION_TIME_FIELD.get(sessionId));
             if (session.getSessionId().equals("Race"))
                 sessionTime.setText(session.getStartingTime());
             else

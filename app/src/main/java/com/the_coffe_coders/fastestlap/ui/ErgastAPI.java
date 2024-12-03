@@ -13,4 +13,7 @@ public interface ErgastAPI {
 
     @GET("races")
     Call<ResponseBody> getRaces();
+
+    @GET("current/last/results.json")
+    Call<ResponseBody> getLastRaceResults();
 }

@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.domain;
+/*package com.the_coffe_coders.fastestlap.domain.race_week;
 
 import android.util.Log;
 
@@ -12,24 +12,19 @@ public class RaceWeek {
     private LocalDate startDate;
     private LocalDate endDate;
     private String trackId;
-    private String gpName;
     private String eventNumber;
-
     private String year;
-
     private Session[] sessions = new Session[5];
 
-    public RaceWeek(JSONObject race, String trackId) throws JSONException {
-        this.trackId = trackId;
-
-        this.gpName = race.getString("raceName").toUpperCase();
-        this.eventNumber = race.getString("round");
-        this.year = race.getString("season");
+    public RaceWeek(RaceWeekAPIresponse apiResponse) {
+        this.trackId = apiResponse.getRaceTable().getRaces().get(0).getCircuit().getCircuitId();
+        this.eventNumber = apiResponse.getRaceTable().getRaces().get(0).getRound();
+        this.year = apiResponse.getRaceTable().getSeason();
         setDate(race);
-        setSessions(race);
+        setSessions(apiResponse);
     }
 
-    private void setSessions(JSONObject race) throws JSONException {
+    private void setSessions(RaceWeekAPIresponse apiResponse) {
         int i = 0;
         for (int j = 0; j < Constants.SESSIONS.length; j++) {
             try {
@@ -136,4 +131,4 @@ public class RaceWeek {
     public void setSessions(Session[] sessions) {
         this.sessions = sessions;
     }
-}
+}*/

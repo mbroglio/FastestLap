@@ -14,14 +14,15 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.Constructor;
+import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStanding;
+import com.the_coffe_coders.fastestlap.domain.constructor.StandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.utils.Constants;
+import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
 import okhttp3.ResponseBody;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -64,16 +65,19 @@ public class TeamCardActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     try {
                         String responseString = response.body().string();
-                        JSONObject jsonResponse = new JSONObject(responseString);
-                        Log.i(TAG, "Response " + jsonResponse.toString(2));
+                        JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
+                        JsonObject mrData = jsonResponse.get("MRData").getAsJsonObject();
 
-                        JSONArray standing = jsonResponse.getJSONObject("MRData").getJSONObject("StandingsTable").getJSONArray("StandingsLists").getJSONObject(0).getJSONArray("ConstructorStandings");
+                        JSONParserUtils jsonParserUtils = new JSONParserUtils(TeamCardActivity.this);
+                        StandingsAPIResponse standingsAPIResponse = jsonParserUtils.parseConstructorStandings(mrData);
 
-                        Constructor constructor;
-                        for (int i = 0; i < standing.length(); i++) {
-                            constructor = new Constructor(standing.getJSONObject(i));
-
-                            teamStanding.addView(generateTeamCard(constructor));
+                        int total = Integer.parseInt(standingsAPIResponse.getTotal());
+                        for (int i = 0; i < total; i++) {
+                            ConstructorStanding standingElement = standingsAPIResponse
+                                    .getStandingsTable()
+                                    .getStandingsLists().get(0)
+                                    .getConstructorStandings().get(i);
+                            teamStanding.addView(generateTeamCard(standingElement));
                             //add a space between each team card
                             View space = new View(TeamCardActivity.this);
                             space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
@@ -94,7 +98,7 @@ public class TeamCardActivity extends AppCompatActivity {
         });
     }
 
-    private View generateTeamCard(Constructor constructor) {
+    private View generateTeamCard(ConstructorStanding standingElement) {
         // Inflate the team card layout
         View teamCard = getLayoutInflater().inflate(R.layout.team_card, null);
 
@@ -112,7 +116,7 @@ public class TeamCardActivity extends AppCompatActivity {
         LinearLayout teamColor = teamCard.findViewById(R.id.team_card);
 
         // Populate the views with the data
-        String teamId = constructor.getTeamId();
+        String teamId = standingElement.getConstructor().getConstructorId();
         teamNameTextView.setText(Constants.TEAM_FULLNAME.get(teamId));
         teamLogoImageView.setImageResource(Constants.TEAM_LOGO.get(teamId));
         teamCarImageView.setImageResource(Constants.TEAM_CAR.get(teamId));
@@ -128,11 +132,11 @@ public class TeamCardActivity extends AppCompatActivity {
 
         // Set the team position
         TextView teamPositionTextView = teamCard.findViewById(R.id.team_position);
-        teamPositionTextView.setText(String.valueOf(constructor.getStandingPosition()));
+        teamPositionTextView.setText(standingElement.getPosition());
 
         // Set the team points
         TextView teamPointsTextView = teamCard.findViewById(R.id.team_points);
-        teamPointsTextView.setText(String.valueOf(constructor.getPoints()));
+        teamPointsTextView.setText(standingElement.getPoints());
 
         return teamCard;
     }
