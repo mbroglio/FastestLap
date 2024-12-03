@@ -68,7 +68,7 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:srcCompat="@drawable/united_kingdom">
+                            app:srcCompat="@drawable/united_kingdom_flag">
                         </ImageView>
 
                     </LinearLayout>

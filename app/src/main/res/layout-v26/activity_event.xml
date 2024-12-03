@@ -369,7 +369,7 @@
                                 android:layout_margin="5dp"
                                 android:src="@drawable/play"
                                 app:tint="@color/black">
-
+                                
                             </ImageView>
                         </RelativeLayout>
 
