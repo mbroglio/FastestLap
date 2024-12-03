@@ -68,7 +68,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:contentDescription="@string/Pilots_informations"
-                    app:srcCompat="@drawable/fotopilotaprova4"
+                    app:srcCompat="@drawable/pastraces2"
                     android:scaleType="centerCrop" />
 
                 <TextView
@@ -107,7 +107,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:contentDescription="@string/Constructors_informations"
-                    app:srcCompat="@drawable/fotocostruttoriprova4"
+                    app:srcCompat="@drawable/upcomingraces"
                     android:scaleType="centerCrop"/>
 
                 <TextView
