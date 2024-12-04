@@ -78,5 +78,8 @@
     <string name="_1_numeric">1</string>
     <string name="_2_numeric">2</string>
     <string name="_3_numeric">3</string>
+    <string name="upcoming_upper_case">UPCOMING</string>
+    <string name="past_upper_case">PAST</string>
+    <string name="constructors_upper_case">CONSTRUCTORS</string>
 
 </resources>

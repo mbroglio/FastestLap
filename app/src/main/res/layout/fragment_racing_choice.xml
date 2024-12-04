@@ -12,15 +12,19 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/top_bar_height"
         app:layout_constraintTop_toTopOf="parent">
+
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/ferrari_f1"
             android:minHeight="?attr/actionBarSize"
             app:menu="@menu/top_app_bar"
-            app:title="FASTEST LAP"
-            app:titleCentered="true" />
+            app:title="RACING"
+            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp"
+            app:titleTextColor="@color/sfondo_prova"
+            app:titleCentered="true"
+            android:background="@color/ferrari_f1" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.Guideline
@@ -44,6 +48,7 @@
         app:layout_constraintTop_toBottomOf="@id/guideline_top_bar"
         app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
         android:background="@color/sfondo_prova">
+
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="300dp"
@@ -51,13 +56,11 @@
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:layout_marginBottom="5dp"
-            android:scaleType="centerCrop"
-            android:background="#FFFFFF"
             app:cardCornerRadius="40dp"
             android:clickable="true"
             android:focusable="true"
             app:strokeWidth="3dp"
-            app:strokeColor="#FFFFFF">
+            app:strokeColor="#000000">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -67,20 +70,20 @@
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:contentDescription="@string/Pilots_informations"
-                    app:srcCompat="@drawable/fotopilotaprova4"
+                    app:srcCompat="@drawable/pastraces2"
                     android:scaleType="centerCrop" />
 
-                    <TextView
-                        android:id="@+id/cardText1"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginStart="20dp"
-                        android:text="@string/DRIVERS"
-                        android:textSize="20sp"
-                        android:textColor="@color/sfondo_prova"
-                        android:textStyle="bold"/>
+                <TextView
+                    android:id="@+id/cardText1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="20dp"
+                    android:text="@string/past_upper_case"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:textColor="@color/black"
+                    android:textSize="30sp"
+                   />
 
             </FrameLayout>
 
@@ -92,37 +95,35 @@
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
             android:layout_marginBottom="10dp"
-            android:scaleType="centerCrop"
-            android:background="#FFFFFF"
             app:cardCornerRadius="40dp"
             android:foreground="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
             app:strokeWidth="3dp"
-            app:strokeColor="#FFFFFF">
+            app:strokeColor="@color/black">
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:contentDescription="@string/Constructors_informations"
-                    app:srcCompat="@drawable/fotocostruttoriprova4"
+                    app:srcCompat="@drawable/upcomingraces"
                     android:scaleType="centerCrop"/>
 
-                    <TextView
-                        android:id="@+id/cardText2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start|top"
-                        android:background=""
-                        android:gravity="top"
-                        android:padding="20dp"
-                        android:text="@string/CONSTRUCTORS"
-                        android:textColor="#000000"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/cardText2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start|top"
+                    android:background=""
+                    android:gravity="top"
+                    android:padding="20dp"
+                    android:text="@string/upcoming_upper_case"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:textColor="@color/black"
+                    android:textSize="30sp"/>
             </FrameLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
