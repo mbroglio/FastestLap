@@ -19,11 +19,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
-            app:menu="@menu/top_app_bar"
             app:title="DRIVERS STANDING"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp"
-            app:titleTextColor="@color/sfondo_prova"
             app:titleCentered="true"
+            app:navigationIcon="@drawable/arrow_left"
             android:background="@color/ferrari_f1" />
 
     </com.google.android.material.appbar.AppBarLayout>
