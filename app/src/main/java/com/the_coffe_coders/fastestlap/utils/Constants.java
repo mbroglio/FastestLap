@@ -294,6 +294,27 @@ public class Constants {
         put("German", "Germany");
     }};
 
+    public static final Map<String, String> NATIONALITY_ABBREVIATION = new HashMap<>() {{
+        put("British", "GBR");
+        put("Dutch", "NED");
+        put("Australian", "AUS");
+        put("Japanese", "JAP");
+        put("Chinese", "CHI");
+        put("American", "USA");
+        put("Monégasque", "MON");
+        put("Canadian", "CAM");
+        put("Spanish", "SPA");
+        put("French", "FRA");
+        put("Mexican", "MEX");
+        put("Brazilian", "BRA");
+        put("Italian", "ITA");
+        put("Azerbaijani", "AZE");
+        put("Singaporean", "SGP");
+        put("Qatari", "QAT");
+        put("Emirati", "UAE");
+        put("German", "GER");
+    }};
+
     public static final Map<String, Integer> EVENT_CIRCUIT = new HashMap<>() {{
         put("bahrain", R.drawable.f1_2024_bhr_outline);
         put("jeddah", R.drawable.f1_2024_sau_outline);

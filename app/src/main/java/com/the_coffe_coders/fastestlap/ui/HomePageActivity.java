@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -13,6 +15,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.card.MaterialCardView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
@@ -349,6 +352,8 @@ public class HomePageActivity extends AppCompatActivity {
     }
 
     private void buildDriverCard(DriverStanding standingElement) {
+
+
         TextView driverName = findViewById(R.id.favourite_driver_name);
         driverName.setText(Constants.DRIVER_FULLNAME.get(Constants.FAVOURITE_DRIVER));
 
@@ -357,7 +362,7 @@ public class HomePageActivity extends AppCompatActivity {
         driverFlag.setImageResource(Constants.NATION_COUNTRY_FLAG.get(Constants.NATIONALITY_NATION.get(driverNationality)));
 
         TextView nationality = findViewById(R.id.favourite_driver_nationality);
-        nationality.setText(driverNationality.toUpperCase());
+        nationality.setText(Constants.NATIONALITY_ABBREVIATION.get(driverNationality));
 
         ImageView driverImage = findViewById(R.id.favourite_driver_pic);
         driverImage.setImageResource(Constants.DRIVER_IMAGE.get(Constants.FAVOURITE_DRIVER));
@@ -367,6 +372,10 @@ public class HomePageActivity extends AppCompatActivity {
 
         TextView driverPoints = findViewById(R.id.favourite_driver_points);
         driverPoints.setText(standingElement.getPoints());
+
+       //set favourite driver card color
+        RelativeLayout driverCard = findViewById(R.id.favourite_driver_layout);
+        driverCard.setBackgroundResource(Constants.TEAM_COLOR.get(Constants.DRIVER_TEAM.get(Constants.FAVOURITE_DRIVER)));
     }
 
     private void setFavouriteConstructorCard() {
@@ -428,10 +437,12 @@ public class HomePageActivity extends AppCompatActivity {
 
         ImageView constructorFlag = findViewById(R.id.favourite_constructor_flag);
         String nationality = standingElement.getConstructor().getNationality();
-        Log.i(TAG, "Nationality: " + nationality);
         constructorFlag.setImageResource(Constants.NATION_COUNTRY_FLAG.get(Constants.NATIONALITY_NATION.get(nationality)));
 
         TextView constructorNationality = findViewById(R.id.favourite_constructor_nationality);
-        constructorNationality.setText(nationality.toUpperCase());
+        constructorNationality.setText(Constants.NATIONALITY_ABBREVIATION.get(nationality));
+
+        RelativeLayout constructorCard = findViewById(R.id.favourite_constructor_layout);
+        constructorCard.setBackgroundResource(Constants.TEAM_COLOR.get(standingElement.getConstructor().getName().toLowerCase()));
     }
 }
