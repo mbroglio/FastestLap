@@ -41,7 +41,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/sfondo_prova"
+        android:background="@color/screen_background_color"
         app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
         app:layout_constraintTop_toBottomOf="@+id/guideline_top_bar">
 
@@ -476,7 +476,7 @@
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/rank"
                                     android:textSize="12sp"
-                                    android:textColor="@color/sfondo_prova">
+                                    android:textColor="@color/screen_background_color">
 
                                 </TextView>
 
@@ -496,7 +496,7 @@
                                     android:fontFamily="@font/orbitron_bold"
                                     android:layout_marginStart="5dp"
                                     android:text="@string/not_found"
-                                    android:textColor="@color/sfondo_prova"
+                                    android:textColor="@color/screen_background_color"
                                     android:textSize="12sp">
 
                                 </TextView>
@@ -508,7 +508,7 @@
                                     android:layout_marginEnd="5dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/separator_high_dash"
-                                    android:textColor="@color/sfondo_prova"
+                                    android:textColor="@color/screen_background_color"
                                     android:textSize="12sp">
 
                                 </TextView>
@@ -520,7 +520,7 @@
                                     android:fontFamily="@font/orbitron_bold"
                                     android:gravity="center"
                                     android:text="@string/not_found"
-                                    android:textColor="@color/sfondo_prova"
+                                    android:textColor="@color/screen_background_color"
                                     android:textSize="12sp">
 
                                 </TextView>
@@ -532,7 +532,7 @@
                                     android:layout_marginEnd="5dp"
                                     android:fontFamily="@font/orbitron_regular"
                                     android:text="@string/points_upper_case"
-                                    android:textColor="@color/sfondo_prova"
+                                    android:textColor="@color/screen_background_color"
                                     android:textSize="10sp">
 
                                 </TextView>
@@ -631,7 +631,7 @@
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/rank"
                                     android:textSize="12sp"
-                                    android:textColor="@color/sfondo_prova">
+                                    android:textColor="@color/screen_background_color">
 
                                 </TextView>
 
@@ -651,7 +651,7 @@
                                     android:fontFamily="@font/orbitron_bold"
                                     android:layout_marginStart="5dp"
                                     android:text="@string/not_found"
-                                    android:textColor="@color/sfondo_prova"
+                                    android:textColor="@color/screen_background_color"
                                     android:textSize="12sp">
 
                                 </TextView>
@@ -663,7 +663,7 @@
                                     android:layout_marginEnd="5dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/separator_high_dash"
-                                    android:textColor="@color/sfondo_prova"
+                                    android:textColor="@color/screen_background_color"
                                     android:textSize="12sp">
 
                                 </TextView>
@@ -675,7 +675,7 @@
                                     android:fontFamily="@font/orbitron_bold"
                                     android:gravity="center"
                                     android:text="@string/not_found"
-                                    android:textColor="@color/sfondo_prova"
+                                    android:textColor="@color/screen_background_color"
                                     android:textSize="12sp">
 
                                 </TextView>
@@ -687,7 +687,7 @@
                                     android:layout_marginEnd="5dp"
                                     android:fontFamily="@font/orbitron_regular"
                                     android:text="@string/points_upper_case"
-                                    android:textColor="@color/sfondo_prova"
+                                    android:textColor="@color/screen_background_color"
                                     android:textSize="10sp">
 
                                 </TextView>

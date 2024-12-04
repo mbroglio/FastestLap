@@ -81,7 +81,7 @@
                         android:text="@string/not_found"
                         android:fontFamily="@font/orbitron_regular"
                         android:textAppearance="?attr/textAppearanceBodyLarge"
-                        android:textColor="@color/sfondo_prova" />
+                        android:textColor="@color/screen_background_color" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -103,7 +103,7 @@
                         android:text="@string/not_found"
                         android:fontFamily="@font/orbitron_regular"
                         android:textAppearance="?attr/textAppearanceBodyLarge"
-                        android:textColor="@color/sfondo_prova" />
+                        android:textColor="@color/screen_background_color" />
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout

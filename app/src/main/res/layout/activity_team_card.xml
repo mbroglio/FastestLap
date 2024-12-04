@@ -17,13 +17,12 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/ferrari_f1"
             android:minHeight="?attr/actionBarSize"
-            app:menu="@menu/top_app_bar"
-            app:title="TEAMS STANDING"
+            app:title="CONSTRUCTORS"
             app:titleCentered="true"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp"
-            app:titleTextColor="@color/sfondo_prova" />
+            app:navigationIcon="@drawable/arrow_back_ios_style"
+            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_20sp"
+            android:background="@color/ferrari_f1" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -31,7 +30,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/top_bar_height"
-        android:background="@color/sfondo_prova"
+        android:background="@color/screen_background_color"
         android:orientation="vertical">
 
 

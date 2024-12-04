@@ -8,23 +8,23 @@
     tools:context=".ui.EventActivity">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/top_bar_layout"
+    android:id="@+id/top_bar_layout"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/top_bar_height"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/topAppBar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/top_bar_height"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content"
+        android:minHeight="?attr/actionBarSize"
+        app:title="LAS VEGAS GRAND PRIX"
+        app:titleCentered="true"
+        app:navigationIcon="@drawable/arrow_back_ios_style"
+        app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar"
+        android:background="@color/ferrari_f1" />
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/topAppBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/ferrari_f1"
-            android:minHeight="?attr/actionBarSize"
-            app:menu="@menu/top_app_bar"
-            app:title="LAS VEGAS GRAND PRIX"
-            app:titleCentered="true"
-            app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar" />
-
-    </com.google.android.material.appbar.AppBarLayout>
+</com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_top_bar"
@@ -58,7 +58,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@color/sfondo_prova"
+        android:background="@color/screen_background_color"
         app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
         app:layout_constraintTop_toBottomOf="@id/guideline_top_bar">
 
@@ -169,7 +169,7 @@
 
                 <include
                     android:id="@+id/timer_card_countdown"
-                    layout="@layout/countdown_card"
+                    layout="@layout/timer_card_event"
                     android:visibility="visible" />
 
                 <include
@@ -212,7 +212,7 @@
                             android:fontFamily="@font/orbitron_bold"
                             android:text="LIVE SESSION"
                             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            android:textColor="@color/sfondo_prova"
+                            android:textColor="@color/screen_background_color"
                             android:textStyle="bold">
 
                         </TextView>

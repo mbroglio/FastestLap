@@ -18,11 +18,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?attr/actionBarSize"
-            app:menu="@menu/top_app_bar"
             app:title="RACING"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp"
-            app:titleTextColor="@color/sfondo_prova"
             app:titleCentered="true"
+            app:navigationIcon="@drawable/arrow_back_ios_style"
+            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp"
             android:background="@color/ferrari_f1" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -41,89 +40,73 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_end="0dp" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
         app:layout_constraintTop_toBottomOf="@id/guideline_top_bar"
         app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
-        android:background="@color/sfondo_prova">
+        android:background="@color/screen_background_color">
 
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:layout_marginTop="20dp"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp"
-            android:layout_marginBottom="5dp"
-            app:cardCornerRadius="40dp"
-            android:clickable="true"
-            android:focusable="true"
-            app:strokeWidth="3dp"
-            app:strokeColor="#000000">
+            android:layout_centerInParent="true"
+            tools:ignore="UselessParent">
 
-            <FrameLayout
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@drawable/card_border">
+                android:layout_height="300dp"
+                app:cardCornerRadius="40dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:strokeWidth="5dp"
+                app:strokeColor="@color/black">
 
-                <ImageView
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:srcCompat="@drawable/pastraces2"
-                    android:scaleType="centerCrop" />
+                    android:layout_height="match_parent">
 
-                <TextView
-                    android:id="@+id/cardText1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginStart="20dp"
-                    android:text="@string/past_upper_case"
-                    android:fontFamily="@font/orbitron_bold"
-                    android:textColor="@color/black"
-                    android:textSize="30sp"
-                   />
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:srcCompat="@drawable/past_event_image"
+                        android:scaleType="centerCrop" />
 
-            </FrameLayout>
+                </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
-            android:layout_marginBottom="10dp"
-            app:cardCornerRadius="40dp"
-            android:foreground="?attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            app:strokeWidth="3dp"
-            app:strokeColor="@color/black">
-            <FrameLayout
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    app:srcCompat="@drawable/upcomingraces"
-                    android:scaleType="centerCrop"/>
+                android:layout_height="300dp"
+                android:layout_marginTop="50dp"
+                app:cardCornerRadius="40dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:strokeWidth="5dp"
+                app:strokeColor="@color/black">
 
-                <TextView
-                    android:id="@+id/cardText2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start|top"
-                    android:background=""
-                    android:gravity="top"
-                    android:padding="20dp"
-                    android:text="@string/upcoming_upper_case"
-                    android:fontFamily="@font/orbitron_bold"
-                    android:textColor="@color/black"
-                    android:textSize="30sp"/>
-            </FrameLayout>
-        </com.google.android.material.card.MaterialCardView>
-    </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:srcCompat="@drawable/upcoming_races_image"
+                        android:scaleType="centerCrop"/>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
