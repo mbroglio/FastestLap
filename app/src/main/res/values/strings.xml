@@ -78,8 +78,15 @@
     <string name="_1_numeric">1</string>
     <string name="_2_numeric">2</string>
     <string name="_3_numeric">3</string>
+    <string name="racing_upper_case">RACING</string>
+    <string name="standings_upper_case">STANDINGS</string>
     <string name="upcoming_upper_case">UPCOMING</string>
     <string name="past_upper_case">PAST</string>
     <string name="constructors_upper_case">CONSTRUCTORS</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="racing_menu">Racing</string>
+    <string name="home_menu">Home</string>
+    <string name="standings_menu">Standings</string>
 
 </resources>
