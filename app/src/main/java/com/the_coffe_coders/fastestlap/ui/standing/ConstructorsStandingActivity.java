@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.ui.standings;
+package com.the_coffe_coders.fastestlap.ui.standing;
 
 import android.os.Bundle;
 import android.util.Log;

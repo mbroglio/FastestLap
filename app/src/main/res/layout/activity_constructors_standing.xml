@@ -5,7 +5,7 @@
     android:id="@+id/team_card_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.standings.ConstructorsStandingActivity">
+    tools:context=".ui.standing.ConstructorsStandingActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"

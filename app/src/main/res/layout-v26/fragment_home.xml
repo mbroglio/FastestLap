@@ -263,7 +263,7 @@
                     </LinearLayout>
 
                     <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/driver_current_standing"
+                        android:id="@+id/past_event_result"
                         android:layout_width="140dp"
                         android:layout_height="45dp"
                         android:layout_centerInParent="true"

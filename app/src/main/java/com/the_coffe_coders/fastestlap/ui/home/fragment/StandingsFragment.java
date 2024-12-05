@@ -13,8 +13,8 @@ import android.view.ViewGroup;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 
-import com.the_coffe_coders.fastestlap.ui.standings.ConstructorsStandingActivity;
-import com.the_coffe_coders.fastestlap.ui.standings.DriversStandingActivity;
+import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
+import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 
 /**
  * A simple {@link Fragment} subclass.

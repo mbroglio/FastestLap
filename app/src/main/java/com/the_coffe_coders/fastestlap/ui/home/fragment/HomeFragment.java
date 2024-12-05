@@ -1,6 +1,7 @@
 package com.the_coffe_coders.fastestlap.ui.home.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,10 +12,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.material.card.MaterialCardView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
@@ -33,7 +36,9 @@ import com.the_coffe_coders.fastestlap.domain.race_week.Sprint;
 import com.the_coffe_coders.fastestlap.domain.race_week.SprintQualifying;
 import com.the_coffe_coders.fastestlap.domain.race_week.ThirdPractice;
 import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
+import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
+import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
@@ -146,6 +151,14 @@ public class HomeFragment extends Fragment {
         roundNumber.setText(round);
 
         setDriverNames(view, raceResults);
+
+        MaterialCardView resultCard = view.findViewById(R.id.past_event_result);
+        resultCard.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), EventActivity.class);
+            intent.putExtra("GRAND_PRIX_NAME", race.getRaceName());
+            startActivity(intent);
+        });
+
     }
 
     private void setDriverNames(View view, ResultsAPIResponse raceResults) {
@@ -210,6 +223,13 @@ public class HomeFragment extends Fragment {
 
         TextView sessionType = view.findViewById(R.id.next_session_type);
         sessionType.setText(Constants.SESSION_NAMES.get(nextEvent.getSessionId()));
+
+        FrameLayout nextSessionCard = view.findViewById(R.id.timer_card_countdown);
+        nextSessionCard.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), EventActivity.class);
+            intent.putExtra("GRAND_PRIX_NAME", race.getRaceName());
+            startActivity(intent);
+        });
     }
 
     private List<Session> populateSessions(RaceWeekAPIresponse raceSchedule) {
@@ -353,6 +373,7 @@ public class HomeFragment extends Fragment {
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
             }
         });
+
     }
 
     private void processStanding(View view, StandingsAPIResponse standing) {
@@ -363,6 +384,13 @@ public class HomeFragment extends Fragment {
                 buildDriverCard(view, standingElement);
             }
         }
+
+        MaterialCardView driverRank = view.findViewById(R.id.driver_rank);
+        driverRank.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), DriversStandingActivity.class);
+            intent.putExtra("DRIVER_NAME", Constants.FAVOURITE_DRIVER);
+            startActivity(intent);
+        });
     }
 
     private void buildDriverCard(View view, DriverStanding standingElement) {

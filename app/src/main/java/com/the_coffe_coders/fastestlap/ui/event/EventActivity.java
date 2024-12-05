@@ -79,14 +79,14 @@ public class EventActivity extends AppCompatActivity {
             return insets;
         });
 
-        String grandPrixName = getIntent().getStringExtra("grand prix name");
+        String grandPrixName = getIntent().getStringExtra("GRAND_PRIX_NAME");
         Log.i(TAG, "Grand Prix Name: " + grandPrixName);
+        circuitId = Constants.GP_CIRCUIT_ID.get(grandPrixName);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setTitle(grandPrixName);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        circuitId = Constants.GP_CIRCUIT_ID.get(grandPrixName);
         //setDynamicDimensions();
 
         Year currentYear = Year.now();
