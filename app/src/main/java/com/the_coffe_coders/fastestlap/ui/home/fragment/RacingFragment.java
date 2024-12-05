@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.ui.PastEventsActivity;
-import com.the_coffe_coders.fastestlap.ui.UpcomingEventsActivity;
+import com.the_coffe_coders.fastestlap.ui.event.PastEventsActivity;
+import com.the_coffe_coders.fastestlap.ui.event.UpcomingEventsActivity;
 
 /**
  * A simple {@link Fragment} subclass.

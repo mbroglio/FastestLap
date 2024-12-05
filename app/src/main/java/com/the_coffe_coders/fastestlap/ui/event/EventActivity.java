@@ -7,6 +7,7 @@ import com.the_coffe_coders.fastestlap.domain.race.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.race_result.Result;
 import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.race.Session;
+import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 
 import android.graphics.drawable.Drawable;
@@ -95,15 +96,6 @@ public class EventActivity extends AppCompatActivity {
 
         getEventInfo();
 
-        /*//add event listener logic for countdown layout
-        LinearLayout trackPic = findViewById(R.id.timer_card);
-        trackPic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "clicked");
-
-            }
-        });*/
 
         //add event listener logic for live_session card
         MaterialCardView liveSession = findViewById(R.id.live_session);

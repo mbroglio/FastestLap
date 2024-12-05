@@ -223,7 +223,7 @@ public class Constants {
 
     public static final Map<String,String> GP_CIRCUIT_ID = new HashMap<>() {{
         put("Bahrain Grand Prix", "bahrain");
-        put("Saudi Arabia Grand Prix", "jeddah");
+        put("Saudi Arabian Grand Prix", "jeddah");
         put("Australian Grand Prix", "albert_park");
         put("Japanese Grand Prix", "suzuka");
         put("Chinese Grand Prix", "shanghai");
@@ -241,8 +241,8 @@ public class Constants {
         put("Azerbaijan Grand Prix", "baku");
         put("Singapore Grand Prix", "marina_bay");
         put("United States Grand Prix", "americas");
-        put("Mexican Grand Prix", "rodriguez");
-        put("Brazilian Grand Prix", "interlagos");
+        put("Mexico City Grand Prix", "rodriguez");
+        put("São Paulo Grand Prix", "interlagos");
         put("Las Vegas Grand Prix", "vegas");
         put("Qatar Grand Prix", "losail");
         put("Abu Dhabi Grand Prix", "yas_marina");

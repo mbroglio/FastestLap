@@ -1,5 +1,6 @@
 package com.the_coffe_coders.fastestlap.ui.home.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -33,6 +34,9 @@ import com.the_coffe_coders.fastestlap.domain.race.Sprint;
 import com.the_coffe_coders.fastestlap.domain.race.SprintQualifying;
 import com.the_coffe_coders.fastestlap.domain.race.ThirdPractice;
 import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
+import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
+import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
+import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 

@@ -1,8 +1,12 @@
-package com.the_coffe_coders.fastestlap.ui;
+package com.the_coffe_coders.fastestlap.ui.event;
 
+import static android.app.PendingIntent.getActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -13,12 +17,14 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.race_result.Race;
 import com.the_coffe_coders.fastestlap.domain.race_result.Result;
 import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
+import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
@@ -51,6 +57,9 @@ public class PastEventsActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         processEvents(raceIndex);
     }
@@ -151,6 +160,12 @@ public class PastEventsActivity extends AppCompatActivity {
             driverName.setText(Constants.DRIVER_FULLNAME.get(result.getDriver().getDriverId()));
         }
 
+        Log.i("PastEvent", "gpName: " + race.getRaceName());
+        eventCard.setOnClickListener(v -> {
+            Intent intent = new Intent(PastEventsActivity.this, EventActivity.class);
+            intent.putExtra("GRAND_PRIX_NAME", race.getRaceName());
+            startActivity(intent);
+        });
         return eventCard;
     }
 }

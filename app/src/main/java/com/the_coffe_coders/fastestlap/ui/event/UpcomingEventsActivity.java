@@ -1,5 +1,6 @@
-package com.the_coffe_coders.fastestlap.ui;
+package com.the_coffe_coders.fastestlap.ui.event;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,11 +13,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.race.Race;
 import com.the_coffe_coders.fastestlap.domain.race.RaceAPIResponse;
+import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
@@ -46,6 +49,9 @@ public class UpcomingEventsActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         processEvents();
     }
@@ -144,6 +150,12 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         TextView gpMonth = eventCard.findViewById(R.id.upcoming_month);
         String fp1Month = String.valueOf(LocalDate.parse(race.getDate()).getMonth()).substring(0, 3).toUpperCase();
         gpMonth.setText(fp1Month);
+
+        eventCard.setOnClickListener(v -> {
+            Intent intent = new Intent(UpcomingEventsActivity.this, EventActivity.class);
+            intent.putExtra("GRAND_PRIX_NAME", race.getRaceName());
+            startActivity(intent);
+        });
 
         return eventCard;
     }
