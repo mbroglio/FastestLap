@@ -1,6 +1,5 @@
 package com.the_coffe_coders.fastestlap.ui.home.fragment;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -37,7 +36,7 @@ import com.the_coffe_coders.fastestlap.domain.race_week.SprintQualifying;
 import com.the_coffe_coders.fastestlap.domain.race_week.ThirdPractice;
 import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
-import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
+import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
@@ -385,7 +384,7 @@ public class HomeFragment extends Fragment {
             }
         }
 
-        MaterialCardView driverRank = view.findViewById(R.id.driver_rank);
+        MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
         driverRank.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), DriversStandingActivity.class);
             intent.putExtra("DRIVER_NAME", Constants.FAVOURITE_DRIVER);
@@ -460,6 +459,13 @@ public class HomeFragment extends Fragment {
                 buildConstructorCard(view, standingElement);
             }
         }
+
+        MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
+        teamRank.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ConstructorsStandingActivity.class);
+            intent.putExtra("TEAM_NAME", Constants.FAVOURITE_TEAM);
+            startActivity(intent);
+        });
     }
 
     private void buildConstructorCard(View view, ConstructorStanding standingElement) {

@@ -1,5 +1,9 @@
 package com.the_coffe_coders.fastestlap.ui.standing;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,6 +14,7 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -51,6 +56,9 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
             return insets;
         });
 
+        String constructorId = getIntent().getStringExtra("TEAM_NAME");
+        Log.i(TAG, "Constructor ID: " + constructorId);
+
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
@@ -82,7 +90,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                                     .getStandingsTable()
                                     .getStandingsLists().get(0)
                                     .getConstructorStandings().get(i);
-                            teamStanding.addView(generateTeamCard(standingElement));
+                            teamStanding.addView(generateTeamCard(standingElement, constructorId));
                             //add a space between each team card
                             View space = new View(ConstructorsStandingActivity.this);
                             space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
@@ -103,7 +111,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         });
     }
 
-    private View generateTeamCard(ConstructorStanding standingElement) {
+    private View generateTeamCard(ConstructorStanding standingElement, String constructorIdToHighlight) {
         // Inflate the team card layout
         View teamCard = getLayoutInflater().inflate(R.layout.team_card, null);
 
@@ -142,6 +150,19 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         // Set the team points
         TextView teamPointsTextView = teamCard.findViewById(R.id.team_points);
         teamPointsTextView.setText(standingElement.getPoints());
+
+        if (teamId.equals(constructorIdToHighlight)) {
+            int startColor = ContextCompat.getColor(this, R.color.yellow); // Replace with actual highlight color
+            int endColor = Color.TRANSPARENT;
+
+            ValueAnimator colorAnimator = ObjectAnimator.ofInt(teamCard, "backgroundColor", startColor, endColor);
+            colorAnimator.setDuration(1000); // Duration in milliseconds
+            colorAnimator.setEvaluator(new ArgbEvaluator());
+            colorAnimator.setRepeatCount(ValueAnimator.INFINITE); // Repeat 5 times (includes forward and reverse)
+            colorAnimator.setRepeatMode(ValueAnimator.REVERSE);
+            colorAnimator.start();
+
+        }
 
         return teamCard;
     }
