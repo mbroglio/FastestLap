@@ -1,19 +1,20 @@
-package com.the_coffe_coders.fastestlap.ui;
+package com.the_coffe_coders.fastestlap.ui.home.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import android.os.CountDownTimer;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
-import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.gson.Gson;
@@ -33,6 +34,10 @@ import com.the_coffe_coders.fastestlap.domain.race_week.Session;
 import com.the_coffe_coders.fastestlap.domain.race_week.Sprint;
 import com.the_coffe_coders.fastestlap.domain.race_week.SprintQualifying;
 import com.the_coffe_coders.fastestlap.domain.race_week.ThirdPractice;
+import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
+import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
+import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
+import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
@@ -51,30 +56,43 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class HomePageActivity extends AppCompatActivity {
-    private final String TAG = "HomePageActivity";
+/**
+ * A simple {@link Fragment} subclass.
+ * Use the {@link HomeFragment#newInstance} factory method to
+ * create an instance of this fragment.
+ */
+public class HomeFragment extends Fragment {
+    private final String TAG = "HomeFragment";
     private ErgastAPI ergastAPI;
     private final ZoneId localZone = ZoneId.systemDefault();
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_home_page);
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.homepage), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
-        setLastRaceCard();
-        setNextSessionCard();
-        setFavouriteDriverCard();
-        setFavouriteConstructorCard();
+    public HomeFragment() {
+        // Required empty public constructor
     }
 
-    private void setLastRaceCard() {
+    public static HomeFragment newInstance() {
+        return new HomeFragment();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        setLastRaceCard(view);
+        setNextSessionCard(view);
+        setFavouriteDriverCard(view);
+        setFavouriteConstructorCard(view);
+
+        return view;
+    }
+
+    private void setLastRaceCard(View view) {
         String BASE_URL = "https://ergast.com/api/f1/";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -92,10 +110,10 @@ public class HomePageActivity extends AppCompatActivity {
                         JsonObject jsonObject = new Gson().fromJson(responseBody, JsonObject.class);
                         JsonObject mrdata = jsonObject.getAsJsonObject("MRData");
 
-                        JSONParserUtils parser = new JSONParserUtils(HomePageActivity.this);
+                        JSONParserUtils parser = new JSONParserUtils(getContext());
                         ResultsAPIResponse raceResults = parser.parseRaceResults(mrdata);
 
-                        showPodium(raceResults);
+                        showPodium(view, raceResults);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -108,42 +126,50 @@ public class HomePageActivity extends AppCompatActivity {
         });
     }
 
-    private void showPodium(ResultsAPIResponse raceResults) {
+    private void showPodium(View view, ResultsAPIResponse raceResults) {
         Race race = raceResults.getRaceTable().getRaces().get(0);
         String circuitId = race.getCircuit().getCircuitId();
 
-        TextView raceName = findViewById(R.id.last_race_name);
+        TextView raceName = view.findViewById(R.id.last_race_name);
         raceName.setText(race.getRaceName());
 
-        ImageView trackOutline = findViewById(R.id.last_race_track_outline);
+        ImageView trackOutline = view.findViewById(R.id.last_race_track_outline);
         trackOutline.setImageResource(Constants.EVENT_CIRCUIT.get(circuitId));
 
-        TextView raceDate = findViewById(R.id.last_race_date);
+        TextView raceDate = view.findViewById(R.id.last_race_date);
         LocalDate date = LocalDate.parse(race.getDate());
         raceDate.setText(String.valueOf(date.getDayOfMonth()));
 
         // Get the first three characters of the month in capital letters
-        TextView raceMonth = findViewById(R.id.last_race_month);
+        TextView raceMonth = view.findViewById(R.id.last_race_month);
         String month = date.getMonth().toString().substring(0, 3).toUpperCase();
         raceMonth.setText(month);
 
-        TextView roundNumber = findViewById(R.id.last_race_round);
+        TextView roundNumber = view.findViewById(R.id.last_race_round);
         String round = "Round " + race.getRound();
         roundNumber.setText(round);
 
-        setDriverNames(raceResults);
+        setDriverNames(view, raceResults);
+
+        MaterialCardView resultCard = view.findViewById(R.id.past_event_result);
+        resultCard.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), EventActivity.class);
+            intent.putExtra("GRAND_PRIX_NAME", race.getRaceName());
+            startActivity(intent);
+        });
+
     }
 
-    private void setDriverNames(ResultsAPIResponse raceResults) {
+    private void setDriverNames(View view, ResultsAPIResponse raceResults) {
         for (int i = 0; i < 3; i++) {
             String driverId = raceResults.getRaceTable().getRaces().get(0).getResults().get(i).getDriver().getDriverId();
             Integer driverFullName = Constants.DRIVER_FULLNAME.get(driverId);
-            TextView driver = findViewById(Constants.LAST_RACE_DRIVER_NAME.get(i));
+            TextView driver = view.findViewById(Constants.LAST_RACE_DRIVER_NAME.get(i));
             driver.setText(driverFullName);
         }
     }
 
-    private void setNextSessionCard() {
+    private void setNextSessionCard(View view) {
         String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -161,10 +187,10 @@ public class HomePageActivity extends AppCompatActivity {
                         JsonObject jsonObject = new Gson().fromJson(responseBody, JsonObject.class);
                         JsonObject mrdata = jsonObject.getAsJsonObject("MRData");
 
-                        JSONParserUtils parser = new JSONParserUtils(HomePageActivity.this);
+                        JSONParserUtils parser = new JSONParserUtils(getContext());
                         RaceWeekAPIresponse raceSchedule = parser.parseRaceWeek(mrdata);
 
-                        processNextRace(raceSchedule);
+                        processNextRace(view, raceSchedule);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -177,13 +203,13 @@ public class HomePageActivity extends AppCompatActivity {
         });
     }
 
-    private void processNextRace(RaceWeekAPIresponse raceSchedule) {
+    private void processNextRace(View view, RaceWeekAPIresponse raceSchedule) {
         Races race = raceSchedule.getRaceTable().getRaces().get(0);
 
-        TextView nextRaceName = findViewById(R.id.home_next_gp_name);
+        TextView nextRaceName = view.findViewById(R.id.home_next_gp_name);
         nextRaceName.setText(race.getRaceName());
 
-        ImageView nextRaceFlag = findViewById(R.id.home_next_gp_flag);
+        ImageView nextRaceFlag = view.findViewById(R.id.home_next_gp_flag);
         String nation = race.getCircuit().getLocation().getCountry();
         nextRaceFlag.setImageResource(Constants.NATION_COUNTRY_FLAG.get(nation));
 
@@ -191,11 +217,18 @@ public class HomePageActivity extends AppCompatActivity {
         Session nextEvent = findNextEvent(sessions);
         if (nextEvent != null) {
             ZonedDateTime eventDateTime = nextEvent.getStartDateTime();
-            startCountdown(eventDateTime);
+            startCountdown(view, eventDateTime);
         }
 
-        TextView sessionType = findViewById(R.id.next_session_type);
+        TextView sessionType = view.findViewById(R.id.next_session_type);
         sessionType.setText(Constants.SESSION_NAMES.get(nextEvent.getSessionId()));
+
+        FrameLayout nextSessionCard = view.findViewById(R.id.timer_card_countdown);
+        nextSessionCard.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), EventActivity.class);
+            intent.putExtra("GRAND_PRIX_NAME", race.getRaceName());
+            startActivity(intent);
+        });
     }
 
     private List<Session> populateSessions(RaceWeekAPIresponse raceSchedule) {
@@ -278,13 +311,13 @@ public class HomePageActivity extends AppCompatActivity {
         return nextSession;
     }
 
-    private void startCountdown(ZonedDateTime eventDate) {
+    private void startCountdown(View view, ZonedDateTime eventDate) {
         long millisUntilStart = eventDate.toInstant().toEpochMilli() - ZonedDateTime.now(ZoneId.of("UTC")).toInstant().toEpochMilli();
         new CountDownTimer(millisUntilStart, 1000) {
-            TextView days_counter = findViewById(R.id.next_days_counter);
-            TextView hours_counter = findViewById(R.id.next_hours_counter);
-            TextView minutes_counter = findViewById(R.id.next_minutes_counter);
-            TextView seconds_counter = findViewById(R.id.next_seconds_counter);
+            TextView days_counter = view.findViewById(R.id.next_days_counter);
+            TextView hours_counter = view.findViewById(R.id.next_hours_counter);
+            TextView minutes_counter = view.findViewById(R.id.next_minutes_counter);
+            TextView seconds_counter = view.findViewById(R.id.next_seconds_counter);
 
             public void onTick(long millisUntilFinished) {
                 long days = millisUntilFinished / 86400000;
@@ -307,7 +340,7 @@ public class HomePageActivity extends AppCompatActivity {
         }.start();
     }
 
-    private void setFavouriteDriverCard() {
+    private void setFavouriteDriverCard(View view) {
         String BASE_URL = "https://api.jolpi.ca/ergast/f1/current/";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -325,10 +358,10 @@ public class HomePageActivity extends AppCompatActivity {
                         JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
                         JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
 
-                        JSONParserUtils jsonParserUtils = new JSONParserUtils(HomePageActivity.this);
+                        JSONParserUtils jsonParserUtils = new JSONParserUtils(getContext());
                         StandingsAPIResponse standing = jsonParserUtils.parseDriverStandings(mrdata);
 
-                        processStanding(standing);
+                        processStanding(view, standing);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -339,46 +372,52 @@ public class HomePageActivity extends AppCompatActivity {
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
             }
         });
+
     }
 
-    private void processStanding(StandingsAPIResponse standing) {
+    private void processStanding(View view, StandingsAPIResponse standing) {
         List<DriverStanding> standings = standing.getStandingsTable().getStandingsLists().get(0).getDriverStandings();
 
-        for (DriverStanding standingElement : standings){
-            if(standingElement.getDriver().getDriverId().equals(Constants.FAVOURITE_DRIVER)){
-                buildDriverCard(standingElement);
+        for (DriverStanding standingElement : standings) {
+            if (standingElement.getDriver().getDriverId().equals(Constants.FAVOURITE_DRIVER)) {
+                buildDriverCard(view, standingElement);
             }
         }
+
+        MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
+        driverRank.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), DriversStandingActivity.class);
+            intent.putExtra("DRIVER_NAME", Constants.FAVOURITE_DRIVER);
+            startActivity(intent);
+        });
     }
 
-    private void buildDriverCard(DriverStanding standingElement) {
-
-
-        TextView driverName = findViewById(R.id.favourite_driver_name);
+    private void buildDriverCard(View view, DriverStanding standingElement) {
+        TextView driverName = view.findViewById(R.id.favourite_driver_name);
         driverName.setText(Constants.DRIVER_FULLNAME.get(Constants.FAVOURITE_DRIVER));
 
         String driverNationality = standingElement.getDriver().getNationality();
-        ImageView driverFlag = findViewById(R.id.favourite_driver_flag);
+        ImageView driverFlag = view.findViewById(R.id.favourite_driver_flag);
         driverFlag.setImageResource(Constants.NATION_COUNTRY_FLAG.get(Constants.NATIONALITY_NATION.get(driverNationality)));
 
-        TextView nationality = findViewById(R.id.favourite_driver_nationality);
+        TextView nationality = view.findViewById(R.id.favourite_driver_nationality);
         nationality.setText(Constants.NATIONALITY_ABBREVIATION.get(driverNationality));
 
-        ImageView driverImage = findViewById(R.id.favourite_driver_pic);
+        ImageView driverImage = view.findViewById(R.id.favourite_driver_pic);
         driverImage.setImageResource(Constants.DRIVER_IMAGE.get(Constants.FAVOURITE_DRIVER));
 
-        TextView driverPosition = findViewById(R.id.favourite_driver_position);
+        TextView driverPosition = view.findViewById(R.id.favourite_driver_position);
         driverPosition.setText(standingElement.getPosition());
 
-        TextView driverPoints = findViewById(R.id.favourite_driver_points);
+        TextView driverPoints = view.findViewById(R.id.favourite_driver_points);
         driverPoints.setText(standingElement.getPoints());
 
-       //set favourite driver card color
-        RelativeLayout driverCard = findViewById(R.id.favourite_driver_layout);
+        //set favourite driver card color
+        RelativeLayout driverCard = view.findViewById(R.id.favourite_driver_layout);
         driverCard.setBackgroundResource(Constants.TEAM_COLOR.get(Constants.DRIVER_TEAM.get(Constants.FAVOURITE_DRIVER)));
     }
 
-    private void setFavouriteConstructorCard() {
+    private void setFavouriteConstructorCard(View view) {
         String BASE_URL = "https://api.jolpi.ca/ergast/f1/current/";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -396,10 +435,10 @@ public class HomePageActivity extends AppCompatActivity {
                         JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
                         JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
 
-                        JSONParserUtils jsonParserUtils = new JSONParserUtils(HomePageActivity.this);
+                        JSONParserUtils jsonParserUtils = new JSONParserUtils(getContext());
                         com.the_coffe_coders.fastestlap.domain.constructor.StandingsAPIResponse standing = jsonParserUtils.parseConstructorStandings(mrdata);
 
-                        processConstructorStanding(standing);
+                        processConstructorStanding(view, standing);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -412,37 +451,45 @@ public class HomePageActivity extends AppCompatActivity {
         });
     }
 
-    private void processConstructorStanding(com.the_coffe_coders.fastestlap.domain.constructor.StandingsAPIResponse standing) {
+    private void processConstructorStanding(View view, com.the_coffe_coders.fastestlap.domain.constructor.StandingsAPIResponse standing) {
         List<com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStanding> standings = standing.getStandingsTable().getStandingsLists().get(0).getConstructorStandings();
 
         for (com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStanding standingElement : standings){
             if(standingElement.getConstructor().getConstructorId().equals(Constants.FAVOURITE_TEAM)){
-                buildConstructorCard(standingElement);
+                buildConstructorCard(view, standingElement);
             }
         }
+
+        MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
+        teamRank.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ConstructorsStandingActivity.class);
+            intent.putExtra("TEAM_NAME", Constants.FAVOURITE_TEAM);
+            startActivity(intent);
+        });
     }
 
-    private void buildConstructorCard(ConstructorStanding standingElement) {
-        TextView constructorName = findViewById(R.id.favourite_constructor_name);
+    private void buildConstructorCard(View view, ConstructorStanding standingElement) {
+        TextView constructorName = view.findViewById(R.id.favourite_constructor_name);
         constructorName.setText(standingElement.getConstructor().getName());
 
-        ImageView constructorCar = findViewById(R.id.favourite_constructor_car);
+        ImageView constructorCar = view.findViewById(R.id.favourite_constructor_car);
         constructorCar.setImageResource(Constants.TEAM_CAR.get(Constants.FAVOURITE_TEAM));
 
-        TextView constructorPosition = findViewById(R.id.favourite_constructor_position);
+        TextView constructorPosition = view.findViewById(R.id.favourite_constructor_position);
         constructorPosition.setText(standingElement.getPosition());
 
-        TextView constructorPoints = findViewById(R.id.favourite_constructor_points);
+        TextView constructorPoints = view.findViewById(R.id.favourite_constructor_points);
         constructorPoints.setText(standingElement.getPoints());
 
-        ImageView constructorFlag = findViewById(R.id.favourite_constructor_flag);
+        ImageView constructorFlag = view.findViewById(R.id.favourite_constructor_flag);
         String nationality = standingElement.getConstructor().getNationality();
         constructorFlag.setImageResource(Constants.NATION_COUNTRY_FLAG.get(Constants.NATIONALITY_NATION.get(nationality)));
 
-        TextView constructorNationality = findViewById(R.id.favourite_constructor_nationality);
+        TextView constructorNationality = view.findViewById(R.id.favourite_constructor_nationality);
         constructorNationality.setText(Constants.NATIONALITY_ABBREVIATION.get(nationality));
 
-        RelativeLayout constructorCard = findViewById(R.id.favourite_constructor_layout);
+        RelativeLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
         constructorCard.setBackgroundResource(Constants.TEAM_COLOR.get(standingElement.getConstructor().getName().toLowerCase()));
     }
 }
+

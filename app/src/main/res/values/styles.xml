@@ -17,4 +17,9 @@
         <item name="android:textSize">15sp</item>
     </style>
 
+    <style name="TextAppearance.BottomNav.Selected" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
 </resources>

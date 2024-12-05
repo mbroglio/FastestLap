@@ -5,24 +5,8 @@
     android:id="@+id/homepage"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.HomePageActivity">
+    tools:context=".ui.home.fragment.HomeFragment">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/top_bar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/top_bar_height"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/topAppBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/ferrari_f1"
-            android:minHeight="?attr/actionBarSize"
-            app:menu="@menu/top_app_bar"
-            app:title="FASTEST LAP"
-            app:titleCentered="true" />
-    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_top_bar"
@@ -43,7 +27,7 @@
         android:layout_height="0dp"
         android:background="@color/screen_background_color"
         app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
-        app:layout_constraintTop_toBottomOf="@+id/guideline_top_bar">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -435,7 +419,7 @@
                     </ImageView>
 
                     <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/driver_rank"
+                        android:id="@+id/favourite_driver_rank"
                         android:layout_width="120dp"
                         android:layout_height="40dp"
                         android:layout_below="@id/favourite_driver_flag_field"
@@ -712,9 +696,10 @@
                         <ImageView
                             android:id="@+id/favourite_constructor_flag"
                             android:layout_width="50dp"
-                            android:layout_height="45dp"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerHorizontal="true">
+                            android:layout_height="40dp"
+                            android:layout_marginEnd="@dimen/small_margin"
+                            android:layout_marginBottom="5dp"
+                            app:srcCompat="@drawable/italy_flag">
 
                         </ImageView>
 

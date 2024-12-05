@@ -1,5 +1,9 @@
-package com.the_coffe_coders.fastestlap.ui;
+package com.the_coffe_coders.fastestlap.ui.standing;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,15 +14,18 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStanding;
 import com.the_coffe_coders.fastestlap.domain.constructor.StandingsAPIResponse;
+import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
@@ -30,7 +37,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class TeamCardActivity extends AppCompatActivity {
+public class ConstructorsStandingActivity extends AppCompatActivity {
 
     private static final String TAG = "TeamCardActivity";
     private static final String BASE_URL = "https://api.jolpi.ca/ergast/f1/2024/";
@@ -41,13 +48,19 @@ public class TeamCardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_team_card);
+        setContentView(R.layout.activity_constructors_standing);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.team_card_view), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        String constructorId = getIntent().getStringExtra("TEAM_NAME");
+        Log.i(TAG, "Constructor ID: " + constructorId);
+
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         LinearLayout teamStanding = findViewById(R.id.team_standing);
         // Initialize Retrofit
@@ -68,7 +81,7 @@ public class TeamCardActivity extends AppCompatActivity {
                         JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
                         JsonObject mrData = jsonResponse.get("MRData").getAsJsonObject();
 
-                        JSONParserUtils jsonParserUtils = new JSONParserUtils(TeamCardActivity.this);
+                        JSONParserUtils jsonParserUtils = new JSONParserUtils(ConstructorsStandingActivity.this);
                         StandingsAPIResponse standingsAPIResponse = jsonParserUtils.parseConstructorStandings(mrData);
 
                         int total = Integer.parseInt(standingsAPIResponse.getTotal());
@@ -77,9 +90,9 @@ public class TeamCardActivity extends AppCompatActivity {
                                     .getStandingsTable()
                                     .getStandingsLists().get(0)
                                     .getConstructorStandings().get(i);
-                            teamStanding.addView(generateTeamCard(standingElement));
+                            teamStanding.addView(generateTeamCard(standingElement, constructorId));
                             //add a space between each team card
-                            View space = new View(TeamCardActivity.this);
+                            View space = new View(ConstructorsStandingActivity.this);
                             space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
                             teamStanding.addView(space);
                         }
@@ -98,7 +111,7 @@ public class TeamCardActivity extends AppCompatActivity {
         });
     }
 
-    private View generateTeamCard(ConstructorStanding standingElement) {
+    private View generateTeamCard(ConstructorStanding standingElement, String constructorIdToHighlight) {
         // Inflate the team card layout
         View teamCard = getLayoutInflater().inflate(R.layout.team_card, null);
 
@@ -137,6 +150,19 @@ public class TeamCardActivity extends AppCompatActivity {
         // Set the team points
         TextView teamPointsTextView = teamCard.findViewById(R.id.team_points);
         teamPointsTextView.setText(standingElement.getPoints());
+
+        if (teamId.equals(constructorIdToHighlight)) {
+            int startColor = ContextCompat.getColor(this, R.color.yellow); // Replace with actual highlight color
+            int endColor = Color.TRANSPARENT;
+
+            ValueAnimator colorAnimator = ObjectAnimator.ofInt(teamCard, "backgroundColor", startColor, endColor);
+            colorAnimator.setDuration(1000); // Duration in milliseconds
+            colorAnimator.setEvaluator(new ArgbEvaluator());
+            colorAnimator.setRepeatCount(ValueAnimator.INFINITE); // Repeat 5 times (includes forward and reverse)
+            colorAnimator.setRepeatMode(ValueAnimator.REVERSE);
+            colorAnimator.start();
+
+        }
 
         return teamCard;
     }

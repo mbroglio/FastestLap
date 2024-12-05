@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.ui;
+package com.the_coffe_coders.fastestlap.ui.event;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -13,6 +13,7 @@ import com.the_coffe_coders.fastestlap.domain.race_week.Session;
 import com.the_coffe_coders.fastestlap.domain.race_week.Sprint;
 import com.the_coffe_coders.fastestlap.domain.race_week.SprintQualifying;
 import com.the_coffe_coders.fastestlap.domain.race_week.ThirdPractice;
+import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 
 import android.graphics.drawable.Drawable;
@@ -64,7 +65,7 @@ public class EventActivity extends AppCompatActivity {
     private String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
     private ErgastAPI ergastApi;
     // Must be queried from the selected card
-    private String circuitId = "yas_marina";
+    private String circuitId;
     private final ZoneId localZone = ZoneId.systemDefault();
 
     @Override
@@ -77,6 +78,14 @@ public class EventActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        String grandPrixName = getIntent().getStringExtra("GRAND_PRIX_NAME");
+        Log.i(TAG, "Grand Prix Name: " + grandPrixName);
+        circuitId = Constants.GP_CIRCUIT_ID.get(grandPrixName);
+
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        toolbar.setTitle(grandPrixName);
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         //setDynamicDimensions();
 
@@ -158,8 +167,6 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void processRaceData(RaceWeekAPIresponse raceSchedule) {
-        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-        toolbar.setTitle(raceSchedule.getRaceTable().getRaces().get(0).getRaceName());
 
         ImageView countryFlag = findViewById(R.id.country_flag);
         String nation = raceSchedule.getRaceTable().getRaces().get(0).getCircuit().getLocation().getCountry();
