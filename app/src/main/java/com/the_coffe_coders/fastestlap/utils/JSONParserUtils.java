@@ -14,6 +14,11 @@ public class JSONParserUtils {
     public JSONParserUtils(Context context) {
         this.context = context;
     }
+
+    public JSONParserUtils() {
+
+    }
+
     public com.the_coffe_coders.fastestlap.domain.driver.StandingsAPIResponse parseDriverStandings(JsonObject jsonObject) {
         return new Gson().fromJson(jsonObject, com.the_coffe_coders.fastestlap.domain.driver.StandingsAPIResponse.class);
     }
