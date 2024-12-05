@@ -2,6 +2,7 @@ package com.the_coffe_coders.fastestlap.ui;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.the_coffe_coders.fastestlap.data.ErgastAPI;
 import com.the_coffe_coders.fastestlap.domain.race_result.Result;
 import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.race_week.FirstPractice;

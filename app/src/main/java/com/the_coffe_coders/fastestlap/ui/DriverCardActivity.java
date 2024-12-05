@@ -18,6 +18,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.data.ErgastAPI;
 import com.the_coffe_coders.fastestlap.domain.driver.StandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverStanding;
 import com.the_coffe_coders.fastestlap.utils.Constants;
