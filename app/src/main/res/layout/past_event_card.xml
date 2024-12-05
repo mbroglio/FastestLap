@@ -27,7 +27,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/date_2"
+                    android:id="@+id/past_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -39,6 +39,7 @@
                 </TextView>
 
                 <TextView
+                    android:id="@+id/past_month"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -51,6 +52,7 @@
 
 
                 <ImageView
+                    android:id="@+id/past_track_outline"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center">
@@ -75,7 +77,7 @@
                 android:layout_gravity="center">
 
                 <TextView
-                    android:id="@+id/round"
+                    android:id="@+id/past_round_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
@@ -89,10 +91,10 @@
                 </TextView>
 
                 <TextView
-                    android:id="@+id/grand_prix"
+                    android:id="@+id/past_gp_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/round"
+                    android:layout_below="@id/past_round_number"
                     android:layout_centerInParent="true"
                     android:fontFamily="@font/orbitron_bold"
                     android:text="Singapore Grand prix"
@@ -105,7 +107,7 @@
                     android:id="@+id/race_podium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/grand_prix"
+                    android:layout_below="@id/past_gp_name"
                     android:layout_alignParentStart="true"
                     android:layout_centerInParent="true"
                     android:layout_marginStart="20dp"
@@ -129,6 +131,7 @@
                         </TextView>
 
                         <TextView
+                            android:id="@+id/past_first_driver"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
@@ -159,6 +162,7 @@
                         </TextView>
 
                         <TextView
+                            android:id="@+id/past_second_driver"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
@@ -189,6 +193,7 @@
                         </TextView>
 
                         <TextView
+                            android:id="@+id/past_third_driver"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"

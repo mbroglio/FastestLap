@@ -1,7 +1,5 @@
-package com.the_coffe_coders.fastestlap.domain.race_week;
+package com.the_coffe_coders.fastestlap.domain.race;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 

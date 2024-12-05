@@ -25,8 +25,8 @@ import com.the_coffe_coders.fastestlap.domain.race_result.Race;
 import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.race_week.FirstPractice;
 import com.the_coffe_coders.fastestlap.domain.race_week.Qualifying;
-import com.the_coffe_coders.fastestlap.domain.race_week.RaceWeekAPIresponse;
-import com.the_coffe_coders.fastestlap.domain.race_week.Races;
+import com.the_coffe_coders.fastestlap.domain.race_week.RaceAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.race_week.Race;
 import com.the_coffe_coders.fastestlap.domain.race_week.SecondPractice;
 import com.the_coffe_coders.fastestlap.domain.race_week.Session;
 import com.the_coffe_coders.fastestlap.domain.race_week.Sprint;
@@ -80,8 +80,8 @@ import com.the_coffe_coders.fastestlap.domain.race_result.Race;
 import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.race_week.FirstPractice;
 import com.the_coffe_coders.fastestlap.domain.race_week.Qualifying;
-import com.the_coffe_coders.fastestlap.domain.race_week.RaceWeekAPIresponse;
-import com.the_coffe_coders.fastestlap.domain.race_week.Races;
+import com.the_coffe_coders.fastestlap.domain.race_week.RaceAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.race_week.Race;
 import com.the_coffe_coders.fastestlap.domain.race_week.SecondPractice;
 import com.the_coffe_coders.fastestlap.domain.race_week.Session;
 import com.the_coffe_coders.fastestlap.domain.race_week.Sprint;
@@ -217,7 +217,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
                             JsonObject mrdata = jsonObject.getAsJsonObject("MRData");
 
                             JSONParserUtils parser = new JSONParserUtils(com.the_coffe_coders.fastestlap.ui.home.HomePageActivity.this);
-                            RaceWeekAPIresponse raceSchedule = parser.parseRaceWeek(mrdata);
+                            RaceAPIResponse raceSchedule = parser.parseRaceWeek(mrdata);
 
                             processNextRace(raceSchedule);
                         } catch (IOException e) {
@@ -232,8 +232,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
             });
         }
 
-        private void processNextRace(RaceWeekAPIresponse raceSchedule) {
-            Races race = raceSchedule.getRaceTable().getRaces().get(0);
+        private void processNextRace(RaceAPIResponse raceSchedule) {
+            Race race = raceSchedule.getRaceTable().getRaces().get(0);
 
             TextView nextRaceName = findViewById(R.id.home_next_gp_name);
             nextRaceName.setText(race.getRaceName());
@@ -253,9 +253,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
             sessionType.setText(Constants.SESSION_NAMES.get(nextEvent.getSessionId()));
         }
 
-        private List<Session> populateSessions(RaceWeekAPIresponse raceSchedule) {
+        private List<Session> populateSessions(RaceAPIResponse raceSchedule) {
             List<Session> sessions = new ArrayList<>();
-            Races race = raceSchedule.getRaceTable().getRaces().get(0);
+            Race race = raceSchedule.getRaceTable().getRaces().get(0);
 
             addSession(sessions, race.getFirstPractice());
             addSession(sessions, race.getSecondPractice());

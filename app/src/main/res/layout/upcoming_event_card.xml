@@ -21,6 +21,7 @@
             android:orientation="horizontal">
 
             <ImageView
+                android:id="@+id/upcoming_track_outline"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_marginStart="20dp">
@@ -43,7 +44,7 @@
                 android:layout_gravity="center">
 
                 <TextView
-                    android:id="@+id/round"
+                    android:id="@+id/upcoming_round_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
@@ -56,23 +57,22 @@
                 </TextView>
 
                 <TextView
-                    android:id="@+id/grand_prix"
+                    android:id="@+id/upcoming_gp_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/round"
+                    android:layout_below="@id/upcoming_round_number"
                     android:layout_centerInParent="true"
                     android:fontFamily="@font/orbitron_bold"
                     android:text="Singapore Grand prix"
                     android:textColor="@color/white">
 
-
                 </TextView>
 
                 <TextView
-                    android:id="@+id/date"
+                    android:id="@+id/upcoming_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/grand_prix"
+                    android:layout_below="@id/upcoming_gp_name"
                     android:layout_centerInParent="true"
                     android:layout_marginTop="5dp"
                     android:fontFamily="@font/orbitron_regular"
@@ -82,10 +82,10 @@
                 </TextView>
 
                 <TextView
-                    android:id="@+id/month"
+                    android:id="@+id/upcoming_month"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/date"
+                    android:layout_below="@id/upcoming_date"
                     android:layout_centerInParent="true"
                     android:fontFamily="@font/orbitron_bold"
                     android:text="NOV"
@@ -96,7 +96,7 @@
                 <ImageView
                     android:layout_width="24dp"
                     android:layout_height="24dp"
-                    android:layout_alignBottom="@id/month"
+                    android:layout_alignBottom="@id/upcoming_month"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="5dp"
                     app:srcCompat="@drawable/play_icon_white">
