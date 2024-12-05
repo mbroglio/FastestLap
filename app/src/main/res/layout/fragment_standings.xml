@@ -39,6 +39,7 @@
             android:layout_centerInParent="true">
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/drivers_card"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:layout_marginBottom="5dp"
@@ -63,6 +64,7 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/constructors_card"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:layout_marginTop="50dp"

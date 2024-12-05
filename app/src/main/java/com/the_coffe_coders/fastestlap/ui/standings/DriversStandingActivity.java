@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.ui;
+package com.the_coffe_coders.fastestlap.ui.standings;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -15,11 +15,13 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.driver.StandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverStanding;
+import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
@@ -33,7 +35,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class DriverCardActivity extends AppCompatActivity {
+public class DriversStandingActivity extends AppCompatActivity {
 
     private static final String TAG = "DriverCardActivity";
 
@@ -44,13 +46,18 @@ public class DriverCardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_driver_card);
+        setContentView(R.layout.activity_drivers_standing);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.driver_card_view), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+
 
         LinearLayout driverStanding = findViewById(R.id.driver_standing);
         // Initialize Retrofit
@@ -71,7 +78,7 @@ public class DriverCardActivity extends AppCompatActivity {
                         JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
                         JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
 
-                        JSONParserUtils jsonParserUtils = new JSONParserUtils(DriverCardActivity.this);
+                        JSONParserUtils jsonParserUtils = new JSONParserUtils(DriversStandingActivity.this);
                         StandingsAPIResponse standingsAPIResponse = jsonParserUtils.parseDriverStandings(mrdata);
 
                         int total = Integer.parseInt(standingsAPIResponse.getTotal());
@@ -83,7 +90,7 @@ public class DriverCardActivity extends AppCompatActivity {
 
                             driverStanding.addView(generateDriverCard(standingElement));
 
-                            View space = new View(DriverCardActivity.this);
+                            View space = new View(DriversStandingActivity.this);
                             space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
                             driverStanding.addView(space);
                         }

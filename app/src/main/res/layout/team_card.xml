@@ -9,7 +9,7 @@
     android:layout_marginEnd="10dp"
     android:clickable="true"
     android:focusable="true"
-    tools:context=".ui.TeamCardActivity">
+    tools:context=".ui.standings.ConstructorsStandingActivity">
 
     <LinearLayout
         android:id="@+id/team_card"

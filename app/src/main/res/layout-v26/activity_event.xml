@@ -5,12 +5,12 @@
     android:id="@+id/activity_event"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.EventActivity">
+    tools:context=".ui.event.EventActivity">
 
     <com.google.android.material.appbar.AppBarLayout
     android:id="@+id/top_bar_layout"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/top_bar_height"
+    android:layout_height="@dimen/top_bar_height_32_dp_top_margin"
     app:layout_constraintTop_toTopOf="parent">
 
     <com.google.android.material.appbar.MaterialToolbar
