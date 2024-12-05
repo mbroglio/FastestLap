@@ -15,6 +15,12 @@
         android:theme="@style/Theme.FastestLap"
         tools:targetApi="31">
         <activity
+            android:name=".ui.PastEventsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.UpcomingEventsActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.home.HomePageActivity"
             android:exported="true">
             <intent-filter>

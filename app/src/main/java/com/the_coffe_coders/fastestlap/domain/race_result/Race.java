@@ -2,7 +2,7 @@ package com.the_coffe_coders.fastestlap.domain.race_result;
 
 import java.util.List;
 
-import com.the_coffe_coders.fastestlap.domain.race_week.Circuit;
+import com.the_coffe_coders.fastestlap.domain.race.Circuit;
 
 public class Race {
     private String season;

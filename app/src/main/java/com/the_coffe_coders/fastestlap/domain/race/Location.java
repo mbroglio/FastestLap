@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.domain.race_week;
+package com.the_coffe_coders.fastestlap.domain.race;
 
 public class Location {
     private String lat;

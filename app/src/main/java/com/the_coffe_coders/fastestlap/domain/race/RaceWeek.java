@@ -16,7 +16,7 @@ public class RaceWeek {
     private String year;
     private Session[] sessions = new Session[5];
 
-    public RaceWeek(RaceWeekAPIresponse apiResponse) {
+    public RaceWeek(RaceAPIResponse apiResponse) {
         this.trackId = apiResponse.getRaceTable().getRaces().get(0).getCircuit().getCircuitId();
         this.eventNumber = apiResponse.getRaceTable().getRaces().get(0).getRound();
         this.year = apiResponse.getRaceTable().getSeason();
@@ -24,7 +24,7 @@ public class RaceWeek {
         setSessions(apiResponse);
     }
 
-    private void setSessions(RaceWeekAPIresponse apiResponse) {
+    private void setSessions(RaceAPIResponse apiResponse) {
         int i = 0;
         for (int j = 0; j < Constants.SESSIONS.length; j++) {
             try {

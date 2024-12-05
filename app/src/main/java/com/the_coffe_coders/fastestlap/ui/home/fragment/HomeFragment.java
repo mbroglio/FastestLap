@@ -1,6 +1,5 @@
 package com.the_coffe_coders.fastestlap.ui.home.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,21 +22,17 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStanding;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverStanding;
 import com.the_coffe_coders.fastestlap.domain.driver.StandingsAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.race_result.Race;
+import com.the_coffe_coders.fastestlap.domain.race.Race;
+import com.the_coffe_coders.fastestlap.domain.race.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.race_week.FirstPractice;
-import com.the_coffe_coders.fastestlap.domain.race_week.Qualifying;
-import com.the_coffe_coders.fastestlap.domain.race_week.RaceWeekAPIresponse;
-import com.the_coffe_coders.fastestlap.domain.race_week.Races;
-import com.the_coffe_coders.fastestlap.domain.race_week.SecondPractice;
-import com.the_coffe_coders.fastestlap.domain.race_week.Session;
-import com.the_coffe_coders.fastestlap.domain.race_week.Sprint;
-import com.the_coffe_coders.fastestlap.domain.race_week.SprintQualifying;
-import com.the_coffe_coders.fastestlap.domain.race_week.ThirdPractice;
+import com.the_coffe_coders.fastestlap.domain.race.FirstPractice;
+import com.the_coffe_coders.fastestlap.domain.race.Qualifying;
+import com.the_coffe_coders.fastestlap.domain.race.SecondPractice;
+import com.the_coffe_coders.fastestlap.domain.race.Session;
+import com.the_coffe_coders.fastestlap.domain.race.Sprint;
+import com.the_coffe_coders.fastestlap.domain.race.SprintQualifying;
+import com.the_coffe_coders.fastestlap.domain.race.ThirdPractice;
 import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
-import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
-import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
-import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
@@ -93,7 +88,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void setLastRaceCard(View view) {
-        String BASE_URL = "https://ergast.com/api/f1/";
+        String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -127,7 +122,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void showPodium(View view, ResultsAPIResponse raceResults) {
-        Race race = raceResults.getRaceTable().getRaces().get(0);
+        com.the_coffe_coders.fastestlap.domain.race_result.Race race = raceResults.getRaceTable().getRaces().get(0);
         String circuitId = race.getCircuit().getCircuitId();
 
         TextView raceName = view.findViewById(R.id.last_race_name);
@@ -188,7 +183,7 @@ public class HomeFragment extends Fragment {
                         JsonObject mrdata = jsonObject.getAsJsonObject("MRData");
 
                         JSONParserUtils parser = new JSONParserUtils(getContext());
-                        RaceWeekAPIresponse raceSchedule = parser.parseRaceWeek(mrdata);
+                        RaceAPIResponse raceSchedule = parser.parseRace(mrdata);
 
                         processNextRace(view, raceSchedule);
                     } catch (IOException e) {
@@ -203,8 +198,8 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void processNextRace(View view, RaceWeekAPIresponse raceSchedule) {
-        Races race = raceSchedule.getRaceTable().getRaces().get(0);
+    private void processNextRace(View view, RaceAPIResponse raceSchedule) {
+        Race race = raceSchedule.getRaceTable().getRaces().get(0);
 
         TextView nextRaceName = view.findViewById(R.id.home_next_gp_name);
         nextRaceName.setText(race.getRaceName());
@@ -213,8 +208,8 @@ public class HomeFragment extends Fragment {
         String nation = race.getCircuit().getLocation().getCountry();
         nextRaceFlag.setImageResource(Constants.NATION_COUNTRY_FLAG.get(nation));
 
-        List<Session> sessions = populateSessions(raceSchedule);
-        Session nextEvent = findNextEvent(sessions);
+        List<Session> sessions = race.getSessions();
+        Session nextEvent = race.findNextEvent(sessions);
         if (nextEvent != null) {
             ZonedDateTime eventDateTime = nextEvent.getStartDateTime();
             startCountdown(view, eventDateTime);
@@ -229,86 +224,6 @@ public class HomeFragment extends Fragment {
             intent.putExtra("GRAND_PRIX_NAME", race.getRaceName());
             startActivity(intent);
         });
-    }
-
-    private List<Session> populateSessions(RaceWeekAPIresponse raceSchedule) {
-        List<Session> sessions = new ArrayList<>();
-        Races race = raceSchedule.getRaceTable().getRaces().get(0);
-
-        addSession(sessions, race.getFirstPractice());
-        addSession(sessions, race.getSecondPractice());
-        addSession(sessions, race.getThirdPractice());
-        addSession(sessions, race.getSprintQualifying());
-        addSession(sessions, race.getSprint());
-        addSession(sessions, race.getQualifying());
-
-        // Add Race session
-        ZonedDateTime startDateTime = ZonedDateTime.parse(
-                race.getDate() + "T" + race.getTime() + "[UTC]"
-        );
-        sessions.add(new Session("Race", false, false, startDateTime, null));
-
-        return sessions;
-    }
-
-    private void addSession(List<Session> sessions, Object tmpSession) {
-        if (tmpSession != null) {
-            String sessionId = tmpSession.getClass().getSimpleName();
-            Log.i(TAG, "Session ID: " + sessionId);
-
-            String date = null;
-            String time = null;
-
-            if (tmpSession instanceof FirstPractice) {
-                date = ((FirstPractice) tmpSession).getDate();
-                time = ((FirstPractice) tmpSession).getTime();
-            } else if (tmpSession instanceof SecondPractice) {
-                date = ((SecondPractice) tmpSession).getDate();
-                time = ((SecondPractice) tmpSession).getTime();
-            } else if (tmpSession instanceof ThirdPractice) {
-                date = ((ThirdPractice) tmpSession).getDate();
-                time = ((ThirdPractice) tmpSession).getTime();
-            } else if (tmpSession instanceof SprintQualifying) {
-                date = ((SprintQualifying) tmpSession).getDate();
-                time = ((SprintQualifying) tmpSession).getTime();
-            } else if (tmpSession instanceof Sprint) {
-                date = ((Sprint) tmpSession).getDate();
-                time = ((Sprint) tmpSession).getTime();
-            } else if (tmpSession instanceof Qualifying) {
-                date = ((Qualifying) tmpSession).getDate();
-                time = ((Qualifying) tmpSession).getTime();
-            }
-
-            if (date != null && time != null) {
-                ZonedDateTime startDateTime = ZonedDateTime.parse(date + "T" + time + "[UTC]");
-                sessions.add(new Session(sessionId, false, false, startDateTime, null));
-            }
-        }
-    }
-
-    private Session findNextEvent(List<Session> sessions) {
-        ZonedDateTime currentDateTime = ZonedDateTime.now(localZone);
-        Session nextSession = null;
-
-        for (Session session : sessions) {
-            Log.i(TAG, "Session: " + session.getStartDateTime());
-            if (currentDateTime.isAfter(session.getStartDateTime()) && currentDateTime.isBefore(session.getEndDateTime())) {
-                session.setUnderway(true);
-                Log.i(TAG, "Session underway: " + session.getSessionId());
-            } else if (currentDateTime.isAfter(session.getEndDateTime())) {
-                session.setUnderway(false);
-                session.setFinished(true);
-            }
-        }
-
-        for (Session session : sessions) {
-            if (!session.isFinished()) {
-                nextSession = session;
-                break;
-            }
-        }
-
-        return nextSession;
     }
 
     private void startCountdown(View view, ZonedDateTime eventDate) {

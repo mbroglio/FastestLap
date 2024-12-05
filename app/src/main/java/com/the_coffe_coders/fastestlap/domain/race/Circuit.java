@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.domain.race_week;
+package com.the_coffe_coders.fastestlap.domain.race;
 
 public class Circuit {
     private String circuitId;
@@ -6,7 +6,7 @@ public class Circuit {
     private String circuitName;
     private Location Location;
 
-    public Circuit(String circuitId, String url, String circuitName, com.the_coffe_coders.fastestlap.domain.race_week.Location location) {
+    public Circuit(String circuitId, String url, String circuitName, com.the_coffe_coders.fastestlap.domain.race.Location location) {
         this.circuitId = circuitId;
         this.url = url;
         this.circuitName = circuitName;
@@ -37,11 +37,11 @@ public class Circuit {
         this.circuitName = circuitName;
     }
 
-    public com.the_coffe_coders.fastestlap.domain.race_week.Location getLocation() {
+    public com.the_coffe_coders.fastestlap.domain.race.Location getLocation() {
         return Location;
     }
 
-    public void setLocation(com.the_coffe_coders.fastestlap.domain.race_week.Location location) {
+    public void setLocation(com.the_coffe_coders.fastestlap.domain.race.Location location) {
         Location = location;
     }
 }

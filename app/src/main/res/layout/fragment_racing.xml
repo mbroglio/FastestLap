@@ -40,6 +40,7 @@
             tools:ignore="UselessParent">
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/past_events_card"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 app:cardCornerRadius="40dp"
@@ -63,6 +64,7 @@
             </com.google.android.material.card.MaterialCardView>
 
             <com.google.android.material.card.MaterialCardView
+                android:id="@+id/upcoming_events_card"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:layout_marginTop="50dp"

@@ -351,7 +351,7 @@ public class Constants {
         put("jeddah", R.drawable.f1_2024_sau_outline);
         put("albert_park", R.drawable.f1_2024_aus_outline);
         put("suzuka", R.drawable.f1_2024_jap_outline);
-        put("shangai", R.drawable.f1_2024_chn_outline);
+        put("shanghai", R.drawable.f1_2024_chn_outline);
         put("miami", R.drawable.f1_2024_mia_outline);
         put("imola", R.drawable.f1_2024_ero_outline);
         put("monaco", R.drawable.f1_2024_mco_outline);
@@ -479,6 +479,12 @@ public class Constants {
             R.id.last_race_first,
             R.id.last_race_second,
             R.id.last_race_third
+    );
+
+    public static final List<Integer> PAST_RACE_DRIVER_NAME = List.of(
+            R.id.past_first_driver,
+            R.id.past_second_driver,
+            R.id.past_third_driver
     );
 
     public static final String FAVOURITE_DRIVER = "hamilton";

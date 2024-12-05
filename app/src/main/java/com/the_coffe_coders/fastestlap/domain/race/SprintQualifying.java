@@ -1,10 +1,10 @@
-package com.the_coffe_coders.fastestlap.domain.race_week;
+package com.the_coffe_coders.fastestlap.domain.race;
 
-public class FirstPractice {
+public class SprintQualifying {
     private String date;
     private String time;
 
-    public FirstPractice(String date, String time) {
+    public SprintQualifying(String date, String time) {
         this.date = date;
         this.time = time;
     }

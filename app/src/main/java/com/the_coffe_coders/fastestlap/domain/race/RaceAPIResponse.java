@@ -1,6 +1,6 @@
-package com.the_coffe_coders.fastestlap.domain.race_week;
+package com.the_coffe_coders.fastestlap.domain.race;
 
-public class RaceWeekAPIresponse {
+public class RaceAPIResponse {
     // API Response
     private String xmlns;
     private String series;
@@ -10,7 +10,7 @@ public class RaceWeekAPIresponse {
     private String total;
     private RaceTable RaceTable;
 
-    public RaceWeekAPIresponse(String xmlns, String series, String url, String limit, String offset, String total, RaceTable raceTable) {
+    public RaceAPIResponse(String xmlns, String series, String url, String limit, String offset, String total, RaceTable raceTable) {
         this.xmlns = xmlns;
         this.series = series;
         this.url = url;
