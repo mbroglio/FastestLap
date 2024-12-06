@@ -3,6 +3,7 @@
     <dimen name="driver_photo_in_card">100dp</dimen>
     <dimen name="small_image">50dp</dimen>
     <dimen name="small_margin">16dp</dimen>
+    <dimen name="top_bar_height_32_dp_top_margin">82dp</dimen>
     <dimen name="top_bar_height">50dp</dimen>
     <dimen name="start_standing">58dp</dimen>
     <dimen name="half_screen_width">50%</dimen>

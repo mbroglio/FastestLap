@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/racingFragment"
+        android:icon="@drawable/f1_car_icon"
+        android:title="@string/racing_menu" />
+
+    <item
+        android:id="@+id/homeFragment"
+        android:icon="@drawable/baseline_home_24"
+        android:title="@string/home_menu"
+        />
+
+    <item
+        android:id="@+id/standingsFragment"
+        android:icon="@drawable/podium"
+        android:title="@string/standings_menu" />
+</menu>

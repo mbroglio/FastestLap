@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/racingFragment"
+        android:name="com.the_coffe_coders.fastestlap.ui.home.fragment.RacingFragment"
+        android:label="RACING"
+        tools:layout="@layout/fragment_racing" />
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.the_coffe_coders.fastestlap.ui.home.fragment.HomeFragment"
+        android:label="FASTEST LAP"
+        tools:layout="@layout/fragment_home" >
+    </fragment>
+
+    <fragment
+        android:id="@+id/standingsFragment"
+        android:name="com.the_coffe_coders.fastestlap.ui.home.fragment.StandingsFragment"
+        android:label="STANDINGS"
+        tools:layout="@layout/fragment_standings" />
+</navigation>

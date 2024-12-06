@@ -12,4 +12,14 @@
         <item name="android:textSize">20sp</item>
     </style>
 
+    <style name="TextAppearance.OrbitronBold_15sp" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:fontFamily">@font/orbitron_bold</item>
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="TextAppearance.BottomNav.Selected" parent="TextAppearance.AppCompat.Medium">
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
 </resources>
