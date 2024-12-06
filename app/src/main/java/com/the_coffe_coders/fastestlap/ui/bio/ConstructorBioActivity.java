@@ -1,5 +1,6 @@
 package com.the_coffe_coders.fastestlap.ui.bio;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -18,7 +19,13 @@ import androidx.core.view.WindowInsetsCompat;
 import android.graphics.Typeface;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
+import com.the_coffe_coders.fastestlap.ui.event.UpcomingEventsActivity;
+
+import org.w3c.dom.Text;
 
 public class ConstructorBioActivity extends AppCompatActivity {
 
@@ -32,6 +39,24 @@ public class ConstructorBioActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+
+        MaterialCardView driverOneCard = findViewById(R.id.driver_1_card);
+        driverOneCard.setOnClickListener(v -> {
+            Intent intent = new Intent(ConstructorBioActivity.this, EventActivity.class);
+            //intent.putExtra("DRIVER_NAME", getString(R.string.driver_1_name));
+            startActivity(intent);
+        });
+
+        MaterialCardView driverTwoCard = findViewById(R.id.driver_2_card);
+        driverTwoCard.setOnClickListener(v -> {
+            Intent intent = new Intent(ConstructorBioActivity.this, EventActivity.class);
+            //intent.putExtra("DRIVER_NAME", getString(R.string.driver_2_name));
+            startActivity(intent);
+        });
+
 
         //set listener to driver image and define a method onclick
         findViewById(R.id.driver_1_card).setOnClickListener(v -> {

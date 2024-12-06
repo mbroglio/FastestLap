@@ -10,27 +10,29 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/top_bar_height"
+        android:layout_height="@dimen/top_bar_height_32_dp_top_margin"
+        android:background="@color/mclaren_f1"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/top_bar_height"
             android:background="@color/mclaren_f1"
+            android:layout_marginTop="32dp"
             app:title="LANDO NORRIS"
-            app:titleTextColor="@color/black"
             app:navigationIcon="@drawable/arrow_back_ios_style"
+            app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar"
             app:titleCentered="true" />
-
     </com.google.android.material.appbar.AppBarLayout>
+
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_top"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="@dimen/top_bar_height" />
+        app:layout_constraintGuide_begin="@dimen/top_bar_height_32_dp_top_margin" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_bottom"

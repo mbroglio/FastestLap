@@ -1,5 +1,6 @@
 package com.the_coffe_coders.fastestlap.ui.bio;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -18,7 +19,11 @@ import androidx.core.view.WindowInsetsCompat;
 import android.graphics.Typeface;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
+import com.the_coffe_coders.fastestlap.ui.event.UpcomingEventsActivity;
 
 public class DriverBioActivity extends AppCompatActivity {
 
@@ -32,6 +37,10 @@ public class DriverBioActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+
 
         //set listener to team logo and define a method onclick
         findViewById(R.id.team_logo).setOnClickListener(new View.OnClickListener() {

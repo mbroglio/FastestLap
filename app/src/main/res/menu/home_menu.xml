@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/racingFragment"
-        android:icon="@drawable/f1_car_icon"
+        android:icon="@drawable/f1_car_icon_filled"
         android:title="@string/racing_menu" />
 
     <item
