@@ -195,30 +195,30 @@ public class Constants {
 
     // Event Constants
     public static final Map<String, String> TRACK_LONG_GP_NAME = new HashMap<>() {{
-        put("bahrain", "FORMULA 1 GULF AIR BAHRAIN GRAND PRIX");
-        put("jeddah", "FORMULA 1 STC SAUDI ARABIAN GRAND PRIX");
-        put("albert_park", "FORMULA 1 ROLEX AUSTRALIAN GRAND PRIX");
-        put("suzuka", "FORMULA 1 MSC CRUISES JAPANESE GRAND PRIX");
-        put("shanghai", "FORMULA 1 LENOVO CHINESE GRAND PRIX");
-        put("miami", "FORMULA 1 CRYPTO.COM MIAMI GRAND PRIX");
-        put("imola", "FORMULA 1 MSC CRUISES GRAN PREMIO DEL MADE IN ITALY E DELL'EMILIA-ROMAGNA");
-        put("monaco", "FORMULA 1 GRAND PRIX DE MONACO");
-        put("villeneuve", "FORMULA 1 AWS GRAND PRIX DU CANADA");
-        put("catalunya", "FORMULA 1 ARAMCO GRAN PREMIO DE ESPAÑA");
-        put("red_bull_ring", "FORMULA 1 QATAR AIRWAYS AUSTRIAN GRAND PRIX");
-        put("silverstone", "FORMULA 1 QATAR AIRWAYS BRITISH GRAND PRIX");
-        put("hungaroring", "FORMULA 1 HUNGARIAN GRAND PRIX");
-        put("spa", "FORMULA 1 ROLEX BELGIAN GRAND PRIX");
-        put("zandvoort", "FORMULA 1 HEINEKEN DUTCH GRAND PRIX");
-        put("monza", "FORMULA 1 PIRELLI GRAN PREMIO D’ITALIA");
-        put("baku", "FORMULA 1 QATAR AIRWAYS AZERBAIJAN GRAND PRIX");
-        put("marina_bay", "FORMULA 1 SINGAPORE AIRLINES SINGAPORE GRAND PRIX");
-        put("americas", "FORMULA 1 PIRELLI UNITED STATES GRAND PRIX");
-        put("rodriguez", "FORMULA 1 GRAN PREMIO DE LA CIUDAD DE MÉXICO");
-        put("interlagos", "FORMULA 1 LENOVO GRANDE PRÊMIO DE SÃO PAULO");
-        put("vegas", "FORMULA 1 HEINEKEN SILVER LAS VEGAS GRAND PRIX");
-        put("losail", "FORMULA 1 QATAR AIRWAYS QATAR GRAND PRIX");
-        put("yas_marina", "FORMULA 1 ETIHAD AIRWAYS ABU DHABI GRAND PRIX");
+        put("bahrain", "FORMULA 1 GULF AIR\nBAHRAIN GRAND PRIX");
+        put("jeddah", "FORMULA 1 STC\nSAUDI ARABIAN GRAND PRIX");
+        put("albert_park", "FORMULA 1 ROLEX\nAUSTRALIAN GRAND PRIX");
+        put("suzuka", "FORMULA 1 MSC CRUISES\nJAPANESE GRAND PRIX");
+        put("shanghai", "FORMULA 1 LENOVO\nCHINESE GRAND PRIX");
+        put("miami", "FORMULA 1 CRYPTO.COM\nMIAMI GRAND PRIX");
+        put("imola", "FORMULA 1 MSC CRUISES\nGRAN PREMIO DEL MADE IN ITALY E DELL'EMILIA-ROMAGNA");
+        put("monaco", "FORMULA 1\nGRAND PRIX DE MONACO");
+        put("villeneuve", "FORMULA 1 AWS\nGRAND PRIX DU CANADA");
+        put("catalunya", "FORMULA 1 ARAMCO\nGRAN PREMIO DE ESPAÑA");
+        put("red_bull_ring", "FORMULA 1 QATAR AIRWAYS\nAUSTRIAN GRAND PRIX");
+        put("silverstone", "FORMULA 1 QATAR AIRWAYS\nBRITISH GRAND PRIX");
+        put("hungaroring", "FORMULA 1\nHUNGARIAN GRAND PRIX");
+        put("spa", "FORMULA 1 ROLEX\nBELGIAN GRAND PRIX");
+        put("zandvoort", "FORMULA 1 HEINEKEN\nDUTCH GRAND PRIX");
+        put("monza", "FORMULA 1 PIRELLI\nGRAN PREMIO D’ITALIA");
+        put("baku", "FORMULA 1 QATAR AIRWAYS\nAZERBAIJAN GRAND PRIX");
+        put("marina_bay", "FORMULA 1 SINGAPORE AIRLINES\nSINGAPORE GRAND PRIX");
+        put("americas", "FORMULA 1 PIRELLI\nUNITED STATES GRAND PRIX");
+        put("rodriguez", "FORMULA 1\nGRAN PREMIO DE LA CIUDAD DE MÉXICO");
+        put("interlagos", "FORMULA 1 LENOVO\nGRANDE PRÊMIO DE SÃO PAULO");
+        put("vegas", "FORMULA 1 HEINEKEN SILVER\nLAS VEGAS GRAND PRIX");
+        put("losail", "FORMULA 1 QATAR AIRWAYS\nQATAR GRAND PRIX");
+        put("yas_marina", "FORMULA 1 ETIHAD AIRWAYS\nABU DHABI GRAND PRIX");
     }};
 
     public static final Map<String, Integer> EVENT_PICTURE = new HashMap<>() {{
