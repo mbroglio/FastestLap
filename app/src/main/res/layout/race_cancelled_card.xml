@@ -17,7 +17,7 @@
             android:id="@+id/countdown_and_track"
             android:layout_width="match_parent"
             android:layout_height="130dp"
-            android:background="@drawable/gradient_grey_horizontal"
+            android:background="@color/timer_gray"
             android:baselineAligned="false"
             android:orientation="horizontal">
 

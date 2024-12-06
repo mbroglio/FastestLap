@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="?materialCardViewElevatedStyle"
+    android:id="@+id/table_row_team"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
+    tools:context=".ui.bio.ConstructorBioActivity">
+
+    <LinearLayout
+        android:id="@+id/driver_history_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/season_year"
+            android:layout_marginStart="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:fontFamily="@font/orbitron_bold"
+            android:text="2025"
+            android:layout_weight="2.25">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/team_position"
+            android:layout_marginStart="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:fontFamily="@font/orbitron_bold"
+            android:text="1"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:layout_weight="2.3">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/team_points"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:gravity="center"
+            android:fontFamily="@font/orbitron_bold"
+            android:text="395"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:layout_weight="2.3">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/team_wins"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="5"
+            android:fontFamily="@font/orbitron_bold"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:layout_weight="2.2">
+        </TextView>
+
+        <TextView
+            android:id="@+id/team_podiums"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:text="8"
+            android:fontFamily="@font/orbitron_bold"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:layout_weight="2.2">
+        </TextView>
+
+
+
+    </LinearLayout>
+
+
+</com.google.android.material.card.MaterialCardView>
