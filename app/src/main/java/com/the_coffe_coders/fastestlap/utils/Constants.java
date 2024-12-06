@@ -221,37 +221,6 @@ public class Constants {
         put("yas_marina", "FORMULA 1 ETIHAD AIRWAYS ABU DHABI GRAND PRIX");
     }};
 
-    public static final Map<String,String> GP_CIRCUIT_ID = new HashMap<>() {{
-        put("Bahrain Grand Prix", "bahrain");
-        put("Saudi Arabian Grand Prix", "jeddah");
-        put("Australian Grand Prix", "albert_park");
-        put("Japanese Grand Prix", "suzuka");
-        put("Chinese Grand Prix", "shanghai");
-        put("Miami Grand Prix", "miami");
-        put("Emilia Romagna Grand Prix", "imola");
-        put("Monaco Grand Prix", "monaco");
-        put("Canadian Grand Prix", "villeneuve");
-        put("Spanish Grand Prix", "catalunya");
-        put("Austrian Grand Prix", "red_bull_ring");
-        put("British Grand Prix", "silverstone");
-        put("Hungarian Grand Prix", "hungaroring");
-        put("Belgian Grand Prix", "spa");
-        put("Dutch Grand Prix", "zandvoort");
-        put("Italian Grand Prix", "monza");
-        put("Azerbaijan Grand Prix", "baku");
-        put("Singapore Grand Prix", "marina_bay");
-        put("United States Grand Prix", "americas");
-        put("Mexico City Grand Prix", "rodriguez");
-        put("São Paulo Grand Prix", "interlagos");
-        put("Las Vegas Grand Prix", "vegas");
-        put("Qatar Grand Prix", "losail");
-        put("Abu Dhabi Grand Prix", "yas_marina");
-
-    }};
-
-
-
-
     public static final Map<String, Integer> EVENT_PICTURE = new HashMap<>() {{
         put("bahrain", R.drawable.bahrain);
         put("jeddah", R.drawable.saudi_arabia);

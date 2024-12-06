@@ -153,7 +153,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
         eventCard.setOnClickListener(v -> {
             Intent intent = new Intent(UpcomingEventsActivity.this, EventActivity.class);
-            intent.putExtra("GRAND_PRIX_NAME", race.getRaceName());
+            intent.putExtra("CIRCUIT_ID", race.getCircuit().getCircuitId());
             startActivity(intent);
         });
 

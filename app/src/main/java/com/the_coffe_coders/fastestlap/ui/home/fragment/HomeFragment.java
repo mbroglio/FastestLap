@@ -153,7 +153,7 @@ public class HomeFragment extends Fragment {
         MaterialCardView resultCard = view.findViewById(R.id.past_event_result);
         resultCard.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), EventActivity.class);
-            intent.putExtra("GRAND_PRIX_NAME", race.getRaceName());
+            intent.putExtra("CIRCUIT_ID", race.getCircuit().getCircuitId());
             startActivity(intent);
         });
 
@@ -225,7 +225,7 @@ public class HomeFragment extends Fragment {
         FrameLayout nextSessionCard = view.findViewById(R.id.timer_card_countdown);
         nextSessionCard.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), EventActivity.class);
-            intent.putExtra("GRAND_PRIX_NAME", race.getRaceName());
+            intent.putExtra("CIRCUIT_ID", race.getCircuit().getCircuitId());
             startActivity(intent);
         });
     }
@@ -306,7 +306,7 @@ public class HomeFragment extends Fragment {
         MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
         driverRank.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), DriversStandingActivity.class);
-            intent.putExtra("DRIVER_NAME", Constants.FAVOURITE_DRIVER);
+            intent.putExtra("DRIVER_ID", Constants.FAVOURITE_DRIVER);
             startActivity(intent);
         });
     }
@@ -382,7 +382,7 @@ public class HomeFragment extends Fragment {
         MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
         teamRank.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ConstructorsStandingActivity.class);
-            intent.putExtra("TEAM_NAME", Constants.FAVOURITE_TEAM);
+            intent.putExtra("TEAM_ID", Constants.FAVOURITE_TEAM);
             startActivity(intent);
         });
     }

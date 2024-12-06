@@ -56,7 +56,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
             return insets;
         });
 
-        String constructorId = getIntent().getStringExtra("TEAM_NAME");
+        String constructorId = getIntent().getStringExtra("TEAM_ID");
         Log.i(TAG, "Constructor ID: " + constructorId);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);

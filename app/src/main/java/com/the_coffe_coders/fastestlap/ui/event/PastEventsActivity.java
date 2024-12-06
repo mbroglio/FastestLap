@@ -163,7 +163,7 @@ public class PastEventsActivity extends AppCompatActivity {
         Log.i("PastEvent", "gpName: " + race.getRaceName());
         eventCard.setOnClickListener(v -> {
             Intent intent = new Intent(PastEventsActivity.this, EventActivity.class);
-            intent.putExtra("GRAND_PRIX_NAME", race.getRaceName());
+            intent.putExtra("CIRCUIT_ID", race.getCircuit().getCircuitId());
             startActivity(intent);
         });
         return eventCard;

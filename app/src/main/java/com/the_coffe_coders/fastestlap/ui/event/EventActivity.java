@@ -57,7 +57,6 @@ public class EventActivity extends AppCompatActivity {
     private static final String TAG = "EventActivity";
     private String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
     private ErgastAPI ergastApi;
-    // Must be queried from the selected card
     private String circuitId;
     private final ZoneId localZone = ZoneId.systemDefault();
 
@@ -72,13 +71,8 @@ public class EventActivity extends AppCompatActivity {
             return insets;
         });
 
-        String grandPrixName = getIntent().getStringExtra("GRAND_PRIX_NAME");
-        Log.i(TAG, "Grand Prix Name: " + grandPrixName);
-        circuitId = Constants.GP_CIRCUIT_ID.get(grandPrixName);
-
-        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-        toolbar.setTitle(grandPrixName);
-        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+        circuitId = getIntent().getStringExtra("CIRCUIT_ID");
+        Log.i(TAG, "Circui ID: " + circuitId);
 
         //setDynamicDimensions();
 
@@ -95,29 +89,6 @@ public class EventActivity extends AppCompatActivity {
         ergastApi = retrofit.create(ErgastAPI.class);
 
         getEventInfo();
-
-
-        //add event listener logic for live_session card
-        MaterialCardView liveSession = findViewById(R.id.live_session);
-        ImageView liveIcon = findViewById(R.id.live_icon);
-        Animation pulseAnimation = AnimationUtils.loadAnimation(this, R.anim.pulse);
-        liveIcon.startAnimation(pulseAnimation);
-
-        liveSession.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "live session clicked");
-            }
-        });
-
-        //add event listener for weather card
-        MaterialCardView weatherCard = findViewById(R.id.weather_forecast);
-        weatherCard.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i(TAG, "weather card clicked");
-            }
-        });
     }
 
     private void getEventInfo() {
@@ -154,6 +125,7 @@ public class EventActivity extends AppCompatActivity {
         Race race = raceSchedule.getRaceTable().getRaces().get(0);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         toolbar.setTitle(race.getRaceName());
 
         ImageView countryFlag = findViewById(R.id.country_flag);
@@ -184,11 +156,12 @@ public class EventActivity extends AppCompatActivity {
         Session nextEvent = race.findNextEvent(sessions);
         if (race.isUnderway()) {
             setLiveSession();
+        } else if (nextEvent != null) {
             ZonedDateTime eventDateTime = nextEvent.getStartDateTime();
             startCountdown(eventDateTime);
-        } else
+        } else {
             showResults(raceSchedule);
-
+        }
 
         createWeekSchedule(sessions);
     }
