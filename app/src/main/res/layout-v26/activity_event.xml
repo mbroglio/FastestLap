@@ -22,7 +22,7 @@
             android:layout_marginTop="32dp"
             app:navigationIcon="@drawable/arrow_back_ios_style"
             app:title="FASTEST LAP"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp"
+            app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar"
             app:titleCentered="true" />
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -178,133 +178,17 @@
                     android:visibility="gone" />
             </FrameLayout>
 
-            <LinearLayout
+            <FrameLayout
+                android:id="@+id/session_status_card_container"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_gravity="center"
                 android:layout_marginTop="40dp"
-                android:orientation="vertical">
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp">
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/live_session"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginEnd="40dp"
-                    android:layout_weight="0"
-                    android:clickable="true"
-                    android:focusable="true"
-                    app:cardBackgroundColor="@color/ferrari_f1"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="5dp"
-                    app:strokeColor="@color/black"
-                    app:strokeWidth="3dp">
+                <include layout="@layout/event_live_session_card" />
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:fontFamily="@font/orbitron_bold"
-                            android:text="LIVE SESSION"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            android:textColor="@color/screen_background_color"
-                            android:textStyle="bold">
-
-                        </TextView>
-
-                        <RelativeLayout
-                            android:layout_width="40dp"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center">
-
-                            <ImageView
-                                android:id="@+id/live_icon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                app:srcCompat="@drawable/dot_inside_a_circle_black">
-
-                            </ImageView>
-                        </RelativeLayout>
-
-
-                    </LinearLayout>
-
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/no_live_session"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginEnd="40dp"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="@color/dark_red"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="5dp"
-                    app:strokeColor="@color/black"
-                    app:strokeWidth="3dp">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center">
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginEnd="5dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/orbitron_bold"
-                                android:text="NO LIVE SESSION"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                                android:textColor="@color/black"
-                                android:textStyle="bold">
-
-                            </TextView>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/orbitron_bold"
-                                android:text="AVAILABLE"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                                android:textColor="@color/black"
-                                android:textStyle="bold">
-
-                            </TextView>
-
-                        </LinearLayout>
-
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            app:srcCompat="@drawable/sad_face">
-
-                        </ImageView>
-
-
-                    </LinearLayout>
-
-                </com.google.android.material.card.MaterialCardView>
-
-
-            </LinearLayout>
-
+            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

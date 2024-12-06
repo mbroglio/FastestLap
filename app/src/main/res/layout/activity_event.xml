@@ -22,7 +22,7 @@
             android:layout_marginTop="32dp"
             app:navigationIcon="@drawable/arrow_back_ios_style"
             app:title="FASTEST LAP"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp"
+            app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar"
             app:titleCentered="true" />
     </com.google.android.material.appbar.AppBarLayout>
 

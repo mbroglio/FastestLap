@@ -88,5 +88,6 @@
     <string name="racing_menu">Racing</string>
     <string name="home_menu">Home</string>
     <string name="standings_menu">Standings</string>
+    <string name="no_live_session_available_upper_case">NO LIVE SESSION\nAVAILABLE</string>
 
 </resources>
