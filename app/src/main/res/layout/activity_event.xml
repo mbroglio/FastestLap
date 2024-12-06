@@ -15,14 +15,14 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/top_app_bar"
+            android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
             android:background="@color/ferrari_f1"
             android:layout_marginTop="32dp"
             app:navigationIcon="@drawable/arrow_back_ios_style"
-            app:title="FASTEST LAP"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp"
+            app:title="AZERBAIJAN GRAND PRIX"
+            app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar"
             app:titleCentered="true" />
     </com.google.android.material.appbar.AppBarLayout>
 
