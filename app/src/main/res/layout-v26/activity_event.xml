@@ -8,30 +8,30 @@
     tools:context=".ui.event.EventActivity">
 
     <com.google.android.material.appbar.AppBarLayout
-    android:id="@+id/top_bar_layout"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/top_bar_height_32_dp_top_margin"
-    app:layout_constraintTop_toTopOf="parent">
-
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/topAppBar"
+        android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:minHeight="?attr/actionBarSize"
-        app:title="LAS VEGAS GRAND PRIX"
-        app:titleCentered="true"
-        app:navigationIcon="@drawable/arrow_back_ios_style"
-        app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar"
-        android:background="@color/ferrari_f1" />
+        android:layout_height="@dimen/top_bar_height_32_dp_top_margin"
+        android:background="@color/ferrari_f1"
+        app:layout_constraintTop_toTopOf="parent">
 
-</com.google.android.material.appbar.AppBarLayout>
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/top_app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/top_bar_height"
+            android:background="@color/ferrari_f1"
+            android:layout_marginTop="32dp"
+            app:navigationIcon="@drawable/arrow_back_ios_style"
+            app:title="FASTEST LAP"
+            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp"
+            app:titleCentered="true" />
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_top_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="@dimen/top_bar_height" />
+        app:layout_constraintGuide_begin="@dimen/top_bar_height_32_dp_top_margin" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_bottom"
