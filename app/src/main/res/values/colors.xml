@@ -156,6 +156,29 @@
     <color name="kick_f1">#01FE2B</color>
     <color name="home_page">#11100F</color>
 
+    <color name="mclaren_f1_light">#FF964B</color>
+    <color name="ferrari_f1_light">#FF4D4D</color>
+    <color name="mercedes_f1_light">#4DFFD3</color>
+    <color name="redbull_f1_light">#4D4DFF</color>
+    <color name="aston_martin_f1_light">#4DFF4D</color>
+    <color name="haas_f1_light">#B6BABD</color>
+    <color name="racing_bulls_f1_light">#4D4DFF</color>
+    <color name="williams_f1_light">#4D4DFF</color>
+    <color name="alpine_f1_light">#4D4DFF</color>
+    <color name="kick_f1_light">#4DFF4D</color>
+
+
+    <color name="mclaren_transparent">#5CEBB27F</color>
+    <color name="stake_transparent">#5C01FE2B</color>
+    <color name="ferrari_transparent">#5CE70C27</color>
+    <color name="mercedes_transparent">#5C31F3D3</color>
+    <color name="redbull_transparent">#5C3771C2</color>
+    <color name="aston_martin_transparent">#5C269973</color>
+    <color name="haas_transparent">#5CB6BABD</color>
+    <color name="racing_bulls_transparent">#5C6792FA</color>
+    <color name="williams_transparent">#5C66C4FC</color>
+    <color name="alpine_transparent">#4D2173B8</color>
+
 
     <color name="ferrari_secondary">#CA3144</color>
     <color name="screen_background_color">#1E1E24</color>

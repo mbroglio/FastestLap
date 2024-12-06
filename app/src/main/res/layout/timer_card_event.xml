@@ -17,7 +17,7 @@
             android:id="@+id/countdown_and_track"
             android:layout_width="match_parent"
             android:layout_height="130dp"
-            android:background="@drawable/gradient_grey_horizontal"
+            android:background="@color/timer_gray"
             android:baselineAligned="false"
             android:orientation="horizontal">
 
@@ -33,6 +33,7 @@
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
                     android:fontFamily="@font/orbitron_regular"
+                    android:textColor="@color/black"
                     android:text="Next Session in:">
 
                 </TextView>
@@ -52,6 +53,7 @@
                         android:layout_marginEnd="20dp"
                         android:fontFamily="@font/orbitron_regular"
                         android:text="DAYS"
+                        android:textColor="@color/black"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textSize="11sp">
 
@@ -64,6 +66,7 @@
                         android:layout_marginEnd="20dp"
                         android:fontFamily="@font/orbitron_regular"
                         android:text="HRS"
+                        android:textColor="@color/black"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textSize="11sp">
 
@@ -76,6 +79,7 @@
                         android:layout_marginEnd="20dp"
                         android:fontFamily="@font/orbitron_regular"
                         android:text="MIN"
+                        android:textColor="@color/black"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textSize="11sp">
 
@@ -88,6 +92,7 @@
                         android:layout_marginEnd="20dp"
                         android:fontFamily="@font/orbitron_regular"
                         android:text="SEC"
+                        android:textColor="@color/black"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textSize="11sp">
 
@@ -102,6 +107,7 @@
                         android:gravity="center"
                         android:text="00"
                         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+                        android:textColor="@color/black"
                         android:textStyle="bold">
 
                     </TextView>
@@ -114,6 +120,7 @@
                         android:layout_marginEnd="20dp"
                         android:gravity="center"
                         android:text="00"
+                        android:textColor="@color/black"
                         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                         android:textStyle="bold">
 
@@ -127,6 +134,7 @@
                         android:layout_marginEnd="20dp"
                         android:gravity="center"
                         android:text="00"
+                        android:textColor="@color/black"
                         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                         android:textStyle="bold">
 
@@ -140,6 +148,7 @@
                         android:layout_marginEnd="20dp"
                         android:gravity="center"
                         android:text="00"
+                        android:textColor="@color/black"
                         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                         android:textStyle="bold">
 

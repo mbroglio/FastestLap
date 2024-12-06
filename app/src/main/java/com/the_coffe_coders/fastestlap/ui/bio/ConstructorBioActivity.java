@@ -91,7 +91,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
 // Add data rows
         for (int i = 0; i < 10; i++) {
-            View tableRow = inflater.inflate(R.layout.table_row_team, tableLayout, false);
+            View tableRow = inflater.inflate(R.layout.constructor_bio_table_row, tableLayout, false);
             // Customize the row if needed
             TextView seasonYear, teamPosition, teamPoints, teamWins, teamPodiums;
             seasonYear = tableRow.findViewById(R.id.season_year);
