@@ -216,12 +216,13 @@ public class Race {
     }
 
     public Session findNextEvent(List<Session> sessions) {
-        ZonedDateTime currentDateTime = ZonedDateTime.now(ZoneId.systemDefault());
+        ZonedDateTime currentDateTime = ZonedDateTime.now(ZoneId.of("UTC"));
         Session nextSession = null;
         int i = 0;
 
         for (Session session : sessions) {
             if (currentDateTime.isAfter(session.getStartDateTime()) && currentDateTime.isBefore(session.getEndDateTime())) {
+                Log.i("RaceClass", "Session underway: " + session.getSessionId());
                 session.setUnderway(true);
             } else if (currentDateTime.isAfter(session.getEndDateTime())) {
                 session.setUnderway(false);
@@ -240,8 +241,11 @@ public class Race {
     }
 
     public boolean isUnderway() {
+        Session nextSession = this.findNextEvent(this.getSessions());
         for (Session session : this.getSessions()) {
+            Log.i("RaceClass", "Session " + session.toString());
             if (session.isUnderway()) {
+                Log.i("RaceClass", "in if true");
                 return true;
             }
         }

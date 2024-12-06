@@ -154,12 +154,18 @@ public class EventActivity extends AppCompatActivity {
 
         List<Session> sessions = race.getSessions();
         Session nextEvent = race.findNextEvent(sessions);
-        if (race.isUnderway()) {
-            setLiveSession();
-        } else if (nextEvent != null) {
+        Boolean underway = false;
+        Log.i(TAG, "Race Underway: " + race.isUnderway());
+        for(Session session : sessions) {
+            if(session.isUnderway()) {
+                setLiveSession();
+                underway = true;
+            }
+        }
+        if (nextEvent != null && !underway) {
             ZonedDateTime eventDateTime = nextEvent.getStartDateTime();
             startCountdown(eventDateTime);
-        } else {
+        } else if (!underway) {
             showResults(raceSchedule);
         }
 

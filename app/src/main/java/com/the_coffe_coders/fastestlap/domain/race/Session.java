@@ -78,4 +78,15 @@ public class Session {
     public String getStartingTime() {
         return startDateTime.toLocalTime().toString();
     }
+
+    @Override
+    public String toString() {
+        return "Session{" +
+                "sessionId='" + sessionId + '\'' +
+                ", isFinished=" + isFinished +
+                ", isUnderway=" + isUnderway +
+                ", startDateTime=" + startDateTime +
+                ", endDateTime=" + endDateTime +
+                '}';
+    }
 }
