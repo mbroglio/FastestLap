@@ -161,8 +161,8 @@ public class HomePageActivity extends AppCompatActivity {
 
                         JSONParserUtils parser = new JSONParserUtils(HomePageActivity.this);
                         RaceWeekAPIresponse raceSchedule = parser.parseRaceWeek(mrdata);
-
                         processNextRace(raceSchedule);
+
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.domain.race_result.Race;
 import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.race_week.RaceWeekAPIresponse;
 import com.the_coffe_coders.fastestlap.ui.HomePageActivity;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
@@ -31,6 +32,8 @@ public class RetrofitRaceRepository {
     private RetrofitRaceRepository() {
 
     }
+
+
 
     public CompletableFuture<Race> getLastRaceFromServer() {
         CompletableFuture<Race> lastRace = new CompletableFuture<>();
@@ -67,6 +70,44 @@ public class RetrofitRaceRepository {
         });
         return lastRace;
     }
+
+    public CompletableFuture<Race> getNextRaceFromServer() {
+        CompletableFuture<Race> nextRace = new CompletableFuture<>();
+        String BASE_URL = "https://ergast.com/api/f1/";
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        ergastAPI = retrofit.create(ErgastAPI.class);
+
+        ergastAPI.getNextRace().enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                Log.i(TAG, "Response: " + response);
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        String responseBody = response.body().string();
+                        JsonObject jsonObject = new Gson().fromJson(responseBody, JsonObject.class);
+                        JsonObject mrdata = jsonObject.getAsJsonObject("MRData");
+
+                        JSONParserUtils parser = new JSONParserUtils();
+                        RaceWeekAPIresponse raceSchedule = parser.parseRaceWeek(mrdata);
+
+                        //nextRace.complete(raceResults.getRaceTable().getRaces().get(0));
+
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+            }
+        });
+        return nextRace;
+    }
+
 
 
 
