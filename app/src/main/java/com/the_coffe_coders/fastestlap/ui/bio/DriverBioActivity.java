@@ -14,7 +14,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.core.widget.TextViewCompat;
+
 import android.graphics.Typeface;
 import androidx.core.content.res.ResourcesCompat;
 
@@ -27,7 +27,7 @@ public class DriverBioActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_driver_bio);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.driver_bio_impl_logo_background), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.activity_driver_bio), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
