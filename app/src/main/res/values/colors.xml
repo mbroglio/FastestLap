@@ -158,8 +158,9 @@
 
 
     <color name="ferrari_secondary">#CA3144</color>
-    <color name="sfondo_prova">#1E1E24</color>
+    <color name="screen_background_color">#1E1E24</color>
     <color name="prova">#E47180</color>
     <color name="yellow">#FFD700</color>
     <color name="dark_red">#8B0000</color>
+    <color name="grey_card">#3B3B37</color>
 </resources>

@@ -9,7 +9,7 @@
     android:layout_marginEnd="10dp"
     android:clickable="true"
     android:focusable="true"
-    tools:context=".ui.TeamCardActivity">
+    tools:context=".ui.standing.ConstructorsStandingActivity">
 
     <LinearLayout
         android:id="@+id/team_card"
@@ -56,6 +56,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:baselineAligned="false"
             android:orientation="horizontal">
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -79,9 +80,13 @@
                         android:layout_marginStart="6dp"
                         android:layout_marginTop="5dp"
                         android:text="@string/not_found"
+                        android:maxWidth="150dp"
+                        android:autoSizeTextType="uniform"
+                        android:autoSizeMinTextSize="11sp"
+                        android:autoSizeMaxTextSize="20sp"
                         android:fontFamily="@font/orbitron_regular"
                         android:textAppearance="?attr/textAppearanceBodyLarge"
-                        android:textColor="@color/sfondo_prova" />
+                        android:textColor="@color/screen_background_color" />
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -103,7 +108,7 @@
                         android:text="@string/not_found"
                         android:fontFamily="@font/orbitron_regular"
                         android:textAppearance="?attr/textAppearanceBodyLarge"
-                        android:textColor="@color/sfondo_prova" />
+                        android:textColor="@color/screen_background_color" />
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
@@ -122,7 +127,8 @@
                     android:id="@+id/car_image"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:scaleType="fitCenter"/>
+                    android:scaleType="fitCenter"
+                    android:layout_margin="5dp"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
