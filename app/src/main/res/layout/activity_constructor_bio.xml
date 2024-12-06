@@ -1,0 +1,704 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_team_bio"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.bio.ConstructorBioActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/top_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/top_bar_height"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/ferrari_f1"
+            app:title="SCUDERIA FERRARI"
+            app:navigationIcon="@drawable/arrow_back_ios_style"
+            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_20sp"
+            app:titleCentered="true"
+            app:titleTextColor="@color/black" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="@dimen/top_bar_height" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="0dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.6" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/screen_background_color"
+        app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
+        app:layout_constraintTop_toBottomOf="@id/top_bar_layout">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/team_logo_and_flag"
+                android:layout_width="match_parent"
+                android:layout_height="90dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="230dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
+                    app:cardBackgroundColor="@color/grey_card"
+                    app:strokeColor="@color/ferrari_f1"
+                    app:strokeWidth="3dp">
+
+                    <ImageView
+                        android:id="@+id/team_logo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        app:srcCompat="@drawable/ferrarilogo">
+
+                    </ImageView>
+                </com.google.android.material.card.MaterialCardView>
+
+
+                <ImageView
+                    android:layout_width="95dp"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:layout_gravity="center"
+                    android:layout_marginEnd="20dp"
+                    app:srcCompat="@drawable/italy_flag">
+
+                </ImageView>
+
+            </RelativeLayout>
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                app:srcCompat="@drawable/ferrari">
+
+            </ImageView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/team_current_standing"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="10dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardBackgroundColor="@color/ferrari_f1"
+                app:strokeColor="@color/black"
+                app:strokeWidth="3dp">
+
+                <LinearLayout
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="20dp"
+                            android:layout_height="match_parent"
+                            app:srcCompat="@drawable/podium">
+
+                        </ImageView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="3dp"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="Rank:"
+                            android:textColor="@color/black">
+
+                        </TextView>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="25dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="25dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:gravity="center"
+                            android:text="1"
+                            android:textColor="@color/black">
+
+                        </TextView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="-"
+                            android:textColor="@color/black">
+
+                        </TextView>
+
+                        <TextView
+                            android:layout_width="40dp"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:gravity="center"
+                            android:text="390"
+                            android:textColor="@color/black">
+
+                        </TextView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="pts"
+                            android:textColor="@color/black"
+                            android:textSize="11sp">
+
+                        </TextView>
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:id="@+id/team_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:text="DRIVERS"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="@color/white">
+
+                </TextView>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp">
+
+                    <LinearLayout
+                        android:id="@+id/driver_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/driver_1_card"
+                            android:layout_width="@dimen/driver_photo_in_card"
+                            android:layout_height="@dimen/driver_photo_in_card"
+                            android:layout_gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:cardBackgroundColor="@color/ferrari_f1"
+                            app:strokeColor="@color/black"
+                            app:strokeWidth="3dp">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                app:srcCompat="@drawable/leclerc_pic">
+
+                            </ImageView>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="Charles Leclerc"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/driver_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="70dp"
+                        android:layout_toEndOf="@id/driver_1"
+                        android:orientation="vertical">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/driver_2_card"
+                            android:layout_width="@dimen/driver_photo_in_card"
+                            android:layout_height="@dimen/driver_photo_in_card"
+                            android:layout_gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            app:cardBackgroundColor="@color/ferrari_f1"
+                            app:strokeColor="@color/black"
+                            app:strokeWidth="3dp">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                app:srcCompat="@drawable/sainz_pic">
+
+                            </ImageView>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="Carlos Sainz"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="20dp"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:text="TEAM INFO"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textColor="@color/white">
+
+                </TextView>
+
+                <LinearLayout
+                    android:id="@+id/team_stats"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="5dp"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/team_full_name_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="Full Name:"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/team_full_name_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginEnd="2dp"
+                            android:layout_toEndOf="@id/team_full_name_text"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="Scuderia Ferrari HP"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/team_base_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="Base:"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/team_base_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginEnd="2dp"
+                            android:layout_toEndOf="@id/team_base_text"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="Maranello"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/team_chief_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="Team Chief:"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/team_chief_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity=""
+                            android:layout_marginStart="20dp"
+                            android:layout_toEndOf="@id/team_chief_text"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="Frederic Vasseur"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/team_chassis_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="Chassis:"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/team_chassis_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_toEndOf="@id/team_chassis_text"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="SF-24"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/team_power_unit_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="Power Unit:"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/team_power_unit_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity=""
+                            android:layout_marginStart="20dp"
+                            android:layout_toEndOf="@id/team_power_unit_text"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="Ferrari"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/team_championships_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="Constructors' Championships:"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/team_championships_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_toEndOf="@id/team_championships_text"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="16"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/team_wins_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="Wins:"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/team_wins_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_toEndOf="@id/team_wins_text"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="170"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/team_wins_this_season"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_marginStart="20dp"
+                            android:layout_toEndOf="@id/team_wins_value"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="(4 - 2024)"
+                            android:textColor="@color/white"
+                            android:textSize="11sp">
+
+                        </TextView>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/team_podiums_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="Podiums:"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/team_podiums_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_toEndOf="@id/team_podiums_text"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="190"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/team_podiums_this_season"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_marginStart="20dp"
+                            android:layout_toEndOf="@id/team_podiums_value"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="(15 - 2024)"
+                            android:textColor="@color/white"
+                            android:textSize="11sp">
+
+                        </TextView>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/team_pole_positions_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="Pole Positions:"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/team_pole_positions_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_toEndOf="@id/team_pole_positions_text"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="3"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/team_pole_positions_this_season"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_marginStart="20dp"
+                            android:layout_toEndOf="@id/team_pole_positions_value"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="(15 - 2024)"
+                            android:textColor="@color/white"
+                            android:textSize="11sp">
+
+                        </TextView>
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/team_history"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/orbitron_bold"
+                        android:text="TEAM HISTORY:"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                        android:textColor="@color/white" />
+
+
+                    <TableLayout
+                        android:id="@+id/history_table"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_marginBottom="5dp">
+
+                    </TableLayout>
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
