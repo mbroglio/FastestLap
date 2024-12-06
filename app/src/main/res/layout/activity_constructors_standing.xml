@@ -10,26 +10,26 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/top_bar_height"
+        android:layout_height="@dimen/top_bar_height_32_dp_top_margin"
+        android:background="@color/ferrari_secondary"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="?attr/actionBarSize"
-            app:title="CONSTRUCTORS"
-            app:titleCentered="true"
+            android:layout_height="@dimen/top_bar_height"
+            android:background="@color/ferrari_secondary"
+            android:layout_marginTop="32dp"
             app:navigationIcon="@drawable/arrow_back_ios_style"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_20sp"
-            android:background="@color/ferrari_f1" />
-
+            app:title="@string/constructors_upper_case"
+            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp"
+            app:titleCentered="true" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/top_bar_height"
+        android:layout_marginTop="@dimen/top_bar_height_32_dp_top_margin"
         android:background="@color/screen_background_color"
         android:orientation="vertical">
 

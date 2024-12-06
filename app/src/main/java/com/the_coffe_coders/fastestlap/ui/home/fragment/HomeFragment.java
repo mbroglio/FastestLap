@@ -339,7 +339,7 @@ public class HomeFragment extends Fragment {
 
         driverImage.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), DriverBioActivity.class);
-            intent.putExtra("DRIVER_NAME", getString(Constants.DRIVER_FULLNAME.get(Constants.FAVOURITE_DRIVER)));
+            intent.putExtra("DRIVER_ID", Constants.FAVOURITE_DRIVER);
             startActivity(intent);
         });
     }

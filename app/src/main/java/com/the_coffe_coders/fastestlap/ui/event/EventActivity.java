@@ -8,8 +8,11 @@ import com.the_coffe_coders.fastestlap.domain.race_result.Result;
 import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.race.Session;
 import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
+import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
+import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
@@ -128,7 +131,7 @@ public class EventActivity extends AppCompatActivity {
         Integer flag = Constants.NATION_COUNTRY_FLAG.get(nation);
         countryFlag.setImageResource(flag);
 
-        ImageView trackMap = findViewById(R.id.track_outline);
+        ImageView trackMap = findViewById(R.id.track_outline_image);
         Integer outline = Constants.EVENT_CIRCUIT.get(circuitId);
         trackMap.setImageResource(outline);
 
@@ -237,6 +240,14 @@ public class EventActivity extends AppCompatActivity {
         // Set podium cricuit image
         ImageView trackOutline = findViewById(R.id.results_track_outline);
         trackOutline.setImageResource(Constants.EVENT_CIRCUIT.get(circuitId));
+
+        // Set listener to track outline and define a method onclick
+        LinearLayout track = findViewById(R.id.track_outline_layout);
+        track.setOnClickListener(v -> {
+            Intent intent = new Intent(EventActivity.this, TrackBioActivity.class);
+            intent.putExtra("CIRCUIT_ID", circuitId);
+            startActivity(intent);
+        });
     }
 
     private void processRaceResults(RaceAPIResponse raceSchedule) {

@@ -71,18 +71,22 @@
                 android:layout_marginEnd="10dp">
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/team_logo"
                     android:layout_width="230dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentStart="true"
                     android:layout_centerInParent="true"
-                    app:cardBackgroundColor="@color/grey_card"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="@color/timer_gray"
                     app:strokeColor="@color/mclaren_f1"
                     app:strokeWidth="3dp">
 
                     <ImageView
-                        android:id="@+id/team_logo"
+                        android:id="@+id/team_logo_image"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
+                        android:contentDescription="mclaren"
                         android:layout_margin="5dp"
                         app:srcCompat="@drawable/mclarenlogo">
 
@@ -129,7 +133,9 @@
                         android:layout_height="100dp"
                         android:layout_gravity="center"
                         android:layout_marginTop="5dp"
-                        app:cardBackgroundColor="@color/grey_card"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:cardBackgroundColor="@color/timer_gray"
                         app:strokeColor="@color/mclaren_f1"
                         app:strokeWidth="3dp">
 

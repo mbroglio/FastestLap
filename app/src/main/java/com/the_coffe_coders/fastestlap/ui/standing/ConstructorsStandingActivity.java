@@ -50,12 +50,6 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_constructors_standing);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.team_card_view), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
-
         String constructorId = getIntent().getStringExtra("TEAM_ID");
         Log.i(TAG, "Constructor ID: " + constructorId);
 

@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -22,8 +23,10 @@ import androidx.core.content.res.ResourcesCompat;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.driver.DriverStanding;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.ui.event.UpcomingEventsActivity;
+import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 
 public class DriverBioActivity extends AppCompatActivity {
 
@@ -32,31 +35,40 @@ public class DriverBioActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_driver_bio);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.activity_driver_bio), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
+        String driverId = getIntent().getStringExtra("DRIVER_ID");
+
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
 
         //set listener to team logo and define a method onclick
-        findViewById(R.id.team_logo).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("DriverBioActivity", "Team logo clicked");
-            }
+        MaterialCardView teamLogo = findViewById(R.id.team_logo);
+        ImageView teamLogoImage = findViewById(R.id.team_logo_image);
+        String teamNameId = teamLogoImage.getContentDescription().toString();
+
+        teamLogo.setOnClickListener(v -> {
+            Intent intent = new Intent(DriverBioActivity.this, ConstructorBioActivity.class);
+            intent.putExtra("TEAM NAME", teamNameId);
+            startActivity(intent);
         });
 
-        findViewById(R.id.driver_current_standing).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("DriverBioActivity", "current standing clicked");
-            }
+        //set listener to driver rank and define a method onclick
+        MaterialCardView driverRank = findViewById(R.id.driver_current_standing);
+        driverRank.setOnClickListener(v -> {
+            Intent intent = new Intent(DriverBioActivity.this, DriversStandingActivity.class);
+            intent.putExtra("DRIVER_ID", driverId);
+            startActivity(intent);
         });
 
+
+
+
+
+
+
+        //setting table
         TableLayout tableLayout = findViewById(R.id.history_table);
         LayoutInflater inflater = LayoutInflater.from(this);
         Typeface orbitronBold = ResourcesCompat.getFont(this, R.font.orbitron_bold);

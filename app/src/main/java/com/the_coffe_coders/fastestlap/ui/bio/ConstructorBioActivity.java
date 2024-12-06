@@ -22,9 +22,10 @@ import androidx.core.content.res.ResourcesCompat;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStanding;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.ui.event.UpcomingEventsActivity;
-
+import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import org.w3c.dom.Text;
 
 public class ConstructorBioActivity extends AppCompatActivity {
@@ -34,44 +35,36 @@ public class ConstructorBioActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_constructor_bio);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.activity_constructor_bio), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         MaterialCardView driverOneCard = findViewById(R.id.driver_1_card);
+
         driverOneCard.setOnClickListener(v -> {
-            Intent intent = new Intent(ConstructorBioActivity.this, EventActivity.class);
-            //intent.putExtra("DRIVER_NAME", getString(R.string.driver_1_name));
+            Intent intent = new Intent(ConstructorBioActivity.this, DriverBioActivity.class);
+            intent.putExtra("DRIVER_ID", "leclerc");
             startActivity(intent);
         });
 
         MaterialCardView driverTwoCard = findViewById(R.id.driver_2_card);
         driverTwoCard.setOnClickListener(v -> {
-            Intent intent = new Intent(ConstructorBioActivity.this, EventActivity.class);
-            //intent.putExtra("DRIVER_NAME", getString(R.string.driver_2_name));
+            Intent intent = new Intent(ConstructorBioActivity.this, DriverBioActivity.class);
+            intent.putExtra("DRIVER_ID", "sainz");
+            startActivity(intent);
+        });
+
+        //set listener to team rank and define a method onclick
+        MaterialCardView teamRank = findViewById(R.id.team_current_standing);
+        teamRank.setOnClickListener(v -> {
+            Intent intent = new Intent(ConstructorBioActivity.this, ConstructorsStandingActivity.class);
+            intent.putExtra("TEAM_ID", "ferrari");
             startActivity(intent);
         });
 
 
-        //set listener to driver image and define a method onclick
-        findViewById(R.id.driver_1_card).setOnClickListener(v -> {
-            Log.d("TeamBioActivity", "Driver1 image clicked");
-        });
 
-        //set listener to driver image and define a method onclick
-        findViewById(R.id.driver_2_card).setOnClickListener(v -> {
-            Log.d("TeamBioActivity", "Driver2 image clicked");
-        });
-
-        //set listener to team current standing and define a method onclick
-        findViewById(R.id.team_current_standing).setOnClickListener(v -> {
-            Log.d("TeamBioActivity", "team standing card clicked");
-        });
 
         TableLayout tableLayout = findViewById(R.id.history_table);
         LayoutInflater inflater = LayoutInflater.from(this);

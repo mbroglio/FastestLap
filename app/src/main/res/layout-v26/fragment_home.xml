@@ -348,8 +348,7 @@
                 <RelativeLayout
                     android:id="@+id/favourite_driver_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/alpine_f1">
+                    android:layout_height="wrap_content">
 
                     <TextView
                         android:id="@+id/favourite_driver_name"
@@ -550,8 +549,7 @@
                 <RelativeLayout
                     android:id="@+id/favourite_constructor_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/ferrari_secondary">
+                    android:layout_height="wrap_content">
 
                     <TextView
                         android:id="@+id/favourite_constructor_name"

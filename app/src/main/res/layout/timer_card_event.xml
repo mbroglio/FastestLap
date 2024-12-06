@@ -170,7 +170,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/timer_card"
+                android:id="@+id/track_outline_layout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -178,7 +178,7 @@
                 android:focusable="true">
 
                 <ImageView
-                    android:id="@+id/track_outline"
+                    android:id="@+id/track_outline_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"

@@ -11,14 +11,14 @@
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/top_bar_height_32_dp_top_margin"
-        android:background="@color/ferrari_f1"
+        android:background="@color/ferrari_secondary"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/top_app_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:background="@color/ferrari_f1"
+            android:background="@color/ferrari_secondary"
             android:layout_marginTop="32dp"
             app:title="FASTEST LAP"
             app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp"
@@ -45,6 +45,7 @@
         app:itemIconTint="@color/black"
         app:itemTextColor="@color/black"
         app:labelVisibilityMode="labeled"
+        app:itemIconSize="32dp"
         app:itemTextAppearanceActive="@style/TextAppearance.BottomNav.Selected"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/home_menu">
