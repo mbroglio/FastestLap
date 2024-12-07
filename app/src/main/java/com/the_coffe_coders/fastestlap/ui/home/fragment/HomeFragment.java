@@ -298,7 +298,6 @@ public class HomeFragment extends Fragment {
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
             }
         });
-
     }
 
     private void processStanding(View view, StandingsAPIResponse standing) {

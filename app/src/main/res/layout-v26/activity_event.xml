@@ -190,12 +190,12 @@
                             <include
                                 android:id="@+id/timer_card_countdown"
                                 layout="@layout/timer_layout"
-                                android:visibility="gone"/>
+                                android:visibility="visible"/>
 
                             <include
                                 android:id="@+id/timer_card_results"
                                 layout="@layout/results_layout"
-                                android:visibility="visible" />
+                                android:visibility="gone" />
 
                             <include
                                 android:id="@+id/timer_card_pending_results"
@@ -256,12 +256,12 @@
                 <include
                     android:id="@+id/event_live_card"
                     layout="@layout/event_live_session_card"
-                    android:visibility="visible"/>
+                    android:visibility="gone" />
 
                 <include
                     android:id="@+id/event_not_live_card"
                     layout="@layout/event_no_live_session_card"
-                    android:visibility="gone"/>
+                    android:visibility="visible" />
 
             </FrameLayout>
 
@@ -328,7 +328,7 @@
                                 android:layout_margin="5dp"
                                 android:src="@drawable/play"
                                 app:tint="@color/black">
-                                
+
                             </ImageView>
                         </RelativeLayout>
 

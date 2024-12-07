@@ -180,20 +180,17 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void setLiveSession() {
-        MaterialCardView liveSession = findViewById(R.id.live_session);
-        MaterialCardView noLiveSession = findViewById(R.id.no_live_session);
+        FrameLayout liveSessionContainer = findViewById(R.id.session_status_card_container);
+        View liveSession = findViewById(R.id.event_live_card);
+        View noLiveSession = findViewById(R.id.event_not_live_card);
 
-        // Set weight of live session card to 1
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.weight = 1;
-        liveSession.setLayoutParams(params);
+        // Hide countdown view and show results view
+        liveSession.setVisibility(View.VISIBLE);
+        noLiveSession.setVisibility(View.GONE);
 
-        // Set weight of no live session card to 0
-        params.weight = 0;
-        noLiveSession.setLayoutParams(params);
+        ImageView liveIcon = findViewById(R.id.live_icon);
+        Animation pulse = AnimationUtils.loadAnimation(this, R.anim.pulse_dynamic);
+        liveIcon.startAnimation(pulse);
     }
 
     private void startCountdown(ZonedDateTime eventDate) {
