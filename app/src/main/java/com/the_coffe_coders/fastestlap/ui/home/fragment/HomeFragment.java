@@ -15,6 +15,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -204,6 +205,7 @@ public class HomeFragment extends Fragment {
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
             }
         });
+
         ImageView iconImageView = view.findViewById(R.id.live_icon);
         Animation pulseAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.pulse_static);
         iconImageView.startAnimation(pulseAnimation);
@@ -238,6 +240,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void startCountdown(View view, ZonedDateTime eventDate) {
+        LinearLayout liveIconLayout = view.findViewById(R.id.timer_live_layout);
+        liveIconLayout.setVisibility(View.GONE);
         long millisUntilStart = eventDate.toInstant().toEpochMilli() - ZonedDateTime.now(ZoneId.of("UTC")).toInstant().toEpochMilli();
         new CountDownTimer(millisUntilStart, 1000) {
             TextView days_counter = view.findViewById(R.id.next_days_counter);

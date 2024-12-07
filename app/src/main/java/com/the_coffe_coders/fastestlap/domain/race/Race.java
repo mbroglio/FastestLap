@@ -240,9 +240,10 @@ public class Race {
         return nextSession;
     }
 
-    public boolean isUnderway() {
-        Session nextSession = this.findNextEvent(this.getSessions());
-        for (Session session : this.getSessions()) {
+    public boolean isSomeSessionUnderway() {
+        List<Session> sessions = this.getSessions();
+        this.findNextEvent(sessions);
+        for (Session session : sessions) {
             Log.i("RaceClass", "Session " + session.toString());
             if (session.isUnderway()) {
                 Log.i("RaceClass", "in if true");
@@ -251,5 +252,12 @@ public class Race {
         }
 
         return false;
+    }
+
+    public boolean isRaceWeekendUnderway() {
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
+        List<Session> sessions = this.getSessions();
+
+        return now.isAfter(sessions.get(0).getStartDateTime()) && now.isBefore(sessions.get(sessions.size() - 1).getEndDateTime());
     }
 }

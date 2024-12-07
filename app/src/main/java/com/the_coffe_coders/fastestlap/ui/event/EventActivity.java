@@ -1,47 +1,38 @@
 package com.the_coffe_coders.fastestlap.ui.event;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.the_coffe_coders.fastestlap.domain.race.Race;
-import com.the_coffe_coders.fastestlap.domain.race.RaceAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.race_result.Result;
-import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.race.Session;
-import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
-import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
-import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
-import com.the_coffe_coders.fastestlap.utils.Constants;
-
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-
-import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.card.MaterialCardView;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.race.Race;
+import com.the_coffe_coders.fastestlap.domain.race.RaceAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.race.Session;
+import com.the_coffe_coders.fastestlap.domain.race_result.Result;
+import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
+import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
+import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
+import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
-import org.threeten.bp.LocalDate;
 import org.threeten.bp.Year;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
@@ -55,7 +46,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class EventActivity extends AppCompatActivity {
     private static final String TAG = "EventActivity";
@@ -154,13 +144,12 @@ public class EventActivity extends AppCompatActivity {
         List<Session> sessions = race.getSessions();
         Session nextEvent = race.findNextEvent(sessions);
         Boolean underway = false;
-        Log.i(TAG, "Race Underway: " + race.isUnderway());
-        for(Session session : sessions) {
-            if(session.isUnderway()) {
-                setLiveSession();
+        Log.i(TAG, "Race Underway: " + race.isSomeSessionUnderway());
+        if (race.isSomeSessionUnderway()) {
                 underway = true;
-            }
+                setLiveSession();
         }
+
         if (nextEvent != null && !underway) {
             ZonedDateTime eventDateTime = nextEvent.getStartDateTime();
             startCountdown(eventDateTime);

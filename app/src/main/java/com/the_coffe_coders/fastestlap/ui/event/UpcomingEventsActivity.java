@@ -3,15 +3,14 @@ package com.the_coffe_coders.fastestlap.ui.event;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.gson.Gson;
@@ -123,8 +122,12 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     private View generateEventCard(Race race) {
         View eventCard = null;
 
-        if (race.isUnderway()) {
+        if (race.isRaceWeekendUnderway()) {
             eventCard = getLayoutInflater().inflate(R.layout.upcoming_event_live_card, null);
+
+            ImageView liveIcon = eventCard.findViewById(R.id.upcoming_event_icon);
+            Animation pulse = AnimationUtils.loadAnimation(this, R.anim.pulse_dynamic);
+            liveIcon.startAnimation(pulse);
         } else {
             eventCard = getLayoutInflater().inflate(R.layout.upcoming_event_card, null);
         }
