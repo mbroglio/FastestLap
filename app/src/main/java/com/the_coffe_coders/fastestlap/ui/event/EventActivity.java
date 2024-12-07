@@ -229,6 +229,8 @@ public class EventActivity extends AppCompatActivity {
         FrameLayout eventCardContainer = findViewById(R.id.event_card_container);
         View countdownView = findViewById(R.id.timer_card_countdown);
         View resultsView = findViewById(R.id.timer_card_results);
+        View pendingResultsView = findViewById(R.id.timer_card_pending_results);
+        View raceCancelledView = findViewById(R.id.timer_card_race_cancelled);
 
         // Hide countdown view and show results view
         countdownView.setVisibility(View.GONE);
@@ -238,7 +240,7 @@ public class EventActivity extends AppCompatActivity {
         processRaceResults(raceSchedule);
 
         // Set podium cricuit image
-        ImageView trackOutline = findViewById(R.id.results_track_outline);
+        ImageView trackOutline = findViewById(R.id.track_outline_image);
         trackOutline.setImageResource(Constants.EVENT_CIRCUIT.get(circuitId));
 
         // Set listener to track outline and define a method onclick

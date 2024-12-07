@@ -3,6 +3,7 @@ package com.the_coffe_coders.fastestlap.ui.standing;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,6 +27,8 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStanding;
 import com.the_coffe_coders.fastestlap.domain.constructor.StandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
+import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
+import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
@@ -157,6 +160,12 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
             colorAnimator.start();
 
         }
+
+        teamCard.setOnClickListener(v -> {
+            Intent intent = new Intent(ConstructorsStandingActivity.this, ConstructorBioActivity.class);
+            intent.putExtra("TEAM_ID", teamId);
+            startActivity(intent);
+        });
 
         return teamCard;
     }

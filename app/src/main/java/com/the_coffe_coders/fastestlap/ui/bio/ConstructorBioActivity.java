@@ -40,6 +40,9 @@ public class ConstructorBioActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
+        String teamId = getIntent().getStringExtra("TEAM_ID");
+        Log.i("ConstructorBioActivity", "Team ID: " + teamId);
+
         MaterialCardView driverOneCard = findViewById(R.id.driver_1_card);
 
         driverOneCard.setOnClickListener(v -> {

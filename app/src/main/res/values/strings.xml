@@ -44,6 +44,7 @@
     <!-- Piloti di Riserva -->
     <string name="liam_lawson">Liam Lawson</string>
     <string name="mick_schumacher">Mick Schumacher</string>
+    <string name="jack_doohan">Jack Doohan</string>
 
     <!-- Scuderie di Formula 1 -->
     <string name="red_bull">Red Bull Racing</string>
@@ -90,5 +91,6 @@
     <string name="home_menu">Home</string>
     <string name="standings_menu">Standings</string>
     <string name="no_live_session_available_upper_case">NO LIVE SESSION\nAVAILABLE</string>
+
 
 </resources>

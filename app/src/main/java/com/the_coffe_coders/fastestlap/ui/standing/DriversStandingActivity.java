@@ -1,12 +1,10 @@
 package com.the_coffe_coders.fastestlap.ui.standing;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -19,18 +17,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.card.MaterialCardView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.driver.StandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverStanding;
 import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
+import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
@@ -116,7 +111,7 @@ public class DriversStandingActivity extends AppCompatActivity {
 
     private View generateDriverCard(DriverStanding standingElement, String driverIdToHighlight) {
         // Inflate the team card layout
-        View driverCard = getLayoutInflater().inflate(R.layout.small_driver_card, null);
+        View driverCard = getLayoutInflater().inflate(R.layout.driver_card, null);
 
         // Preparing all the views
         TextView driverPosition = driverCard.findViewById(R.id.driver_position);
@@ -155,7 +150,12 @@ public class DriversStandingActivity extends AppCompatActivity {
 
         }
 
-        driverCard.setOnClickListener(v -> Log.i(TAG, "Driver card clicked"));
+        driverCard.setOnClickListener(v -> {
+            Intent intent = new Intent(DriversStandingActivity.this, DriverBioActivity.class);
+            intent.putExtra("DRIVER_ID", driverId);
+            startActivity(intent);
+        });
+
 
         return driverCard;
     }

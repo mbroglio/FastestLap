@@ -37,6 +37,7 @@ public class DriverBioActivity extends AppCompatActivity {
         setContentView(R.layout.activity_driver_bio);
 
         String driverId = getIntent().getStringExtra("DRIVER_ID");
+        Log.i("DriverBioActivity", "Driver ID: " + driverId);
 
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
