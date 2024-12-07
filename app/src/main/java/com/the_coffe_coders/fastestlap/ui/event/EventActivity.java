@@ -54,6 +54,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class EventActivity extends AppCompatActivity {
@@ -81,7 +82,7 @@ public class EventActivity extends AppCompatActivity {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         ergastApi = retrofit.create(ErgastAPI.class);
@@ -250,16 +251,14 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void processRaceResults(RaceAPIResponse raceSchedule) {
-        // Get results from API https://ergast.com/api/f1/current/{roundNumber}/results.json
         String roundNumber = raceSchedule.getRaceTable().getRaces().get(0).getRound();
-        BASE_URL = "https://ergast.com/api/f1/current/" + roundNumber + "/";
+        BASE_URL = "https://api.jolpi.ca/ergast/f1/current/" + roundNumber + "/";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         ergastApi = retrofit.create(ErgastAPI.class);
-
         ergastApi.getResults().enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
