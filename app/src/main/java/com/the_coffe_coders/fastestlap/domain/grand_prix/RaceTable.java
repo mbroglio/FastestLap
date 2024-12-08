@@ -1,13 +1,13 @@
-package com.the_coffe_coders.fastestlap.domain.race;
+package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
 import java.util.List;
 
 public class RaceTable {
     private String season;
     private String circuitId;
-    private List<Race> Races;
+    private List<WeeklyRace> Races;
 
-    public RaceTable(String season, String circuitId, List<Race> races) {
+    public RaceTable(String season, String circuitId, List<WeeklyRace> races) {
         this.season = season;
         this.circuitId = circuitId;
         Races = races;
@@ -29,11 +29,11 @@ public class RaceTable {
         this.circuitId = circuitId;
     }
 
-    public List<Race> getRaces() {
+    public List<WeeklyRace> getRaces() {
         return Races;
     }
 
-    public void setRaces(List<Race> races) {
+    public void setRaces(List<WeeklyRace> races) {
         Races = races;
     }
 }

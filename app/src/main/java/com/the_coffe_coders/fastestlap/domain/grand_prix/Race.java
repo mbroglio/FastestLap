@@ -1,27 +1,24 @@
-package com.the_coffe_coders.fastestlap.domain.race_result;
+package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
 import java.util.List;
 
-import com.the_coffe_coders.fastestlap.domain.race.Circuit;
+import org.threeten.bp.ZonedDateTime;
 
-public class Race {
+public class Race extends Session {
     private String season;
     private String round;
     private String url;
     private String raceName;
     private Circuit Circuit;
-    private String date;
-    private String time;
     public List<Result> Results;
 
-    public Race(String season, String round, String url, String raceName, Circuit circuit, String date, String time, List<Result> results) {
+    public Race(String season, String round, String url, String raceName, Circuit circuit, List<Result> results, String sessionId, Boolean isFinished, Boolean isUnderway, ZonedDateTime startDateTime, ZonedDateTime endDateTime) {
+        super(sessionId, isFinished, isUnderway, startDateTime, endDateTime);
         this.season = season;
         this.round = round;
         this.url = url;
         this.raceName = raceName;
         Circuit = circuit;
-        this.date = date;
-        this.time = time;
         Results = results;
     }
 
@@ -63,22 +60,6 @@ public class Race {
 
     public void setCircuit(Circuit circuit) {
         Circuit = circuit;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
     }
 
     public List<Result> getResults() {

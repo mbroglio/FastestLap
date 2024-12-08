@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.domain.race;
+package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;

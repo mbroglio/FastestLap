@@ -2,19 +2,16 @@ package com.the_coffe_coders.fastestlap.ui.event;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.the_coffe_coders.fastestlap.domain.race.Race;
-import com.the_coffe_coders.fastestlap.domain.race.RaceAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.race_result.Result;
-import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.race.Session;
-import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Result;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.ResultsAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
+import com.the_coffe_coders.fastestlap.data.ErgastAPI;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -38,7 +35,6 @@ import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
-import org.threeten.bp.LocalDate;
 import org.threeten.bp.Year;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
@@ -122,14 +118,14 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void processRaceData(RaceAPIResponse raceSchedule) {
-        Race race = raceSchedule.getRaceTable().getRaces().get(0);
+        WeeklyRace weeklyRace = raceSchedule.getRaceTable().getRaces().get(0);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
-        toolbar.setTitle(race.getRaceName());
+        toolbar.setTitle(weeklyRace.getRaceName());
 
         ImageView countryFlag = findViewById(R.id.country_flag);
-        String nation = race.getCircuit().getLocation().getCountry();
+        String nation = weeklyRace.getCircuit().getLocation().getCountry();
         Integer flag = Constants.NATION_COUNTRY_FLAG.get(nation);
         countryFlag.setImageResource(flag);
 
@@ -138,7 +134,7 @@ public class EventActivity extends AppCompatActivity {
         trackMap.setImageResource(outline);
 
         TextView roundNumber = findViewById(R.id.round_number);
-        String round = "Round " + race.getRound();
+        String round = "Round " + weeklyRace.getRound();
         roundNumber.setText(round);
 
         TextView seasonYear = findViewById(R.id.year);
@@ -150,11 +146,11 @@ public class EventActivity extends AppCompatActivity {
         setEventImage(circuitId);
 
         TextView eventDate = findViewById(R.id.event_date);
-        eventDate.setText(race.getDateInterval());
+        eventDate.setText(weeklyRace.getDateInterval());
 
-        List<Session> sessions = race.getSessions();
-        Session nextEvent = race.findNextEvent(sessions);
-        if (race.isUnderway()) {
+        List<Session> sessions = weeklyRace.getSessions();
+        Session nextEvent = weeklyRace.findNextEvent(sessions);
+        if (weeklyRace.isUnderway()) {
             setLiveSession();
         } else if (nextEvent != null) {
             ZonedDateTime eventDateTime = nextEvent.getStartDateTime();

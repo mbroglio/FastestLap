@@ -29,7 +29,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class RetrofitDriverRepository implements IDriverRepository{
+public class RetrofitDriverRepository implements IDriverRepository, JolpicaServer{
 
     String TAG = "RetrofitDriverRepository";
 
@@ -43,10 +43,9 @@ public class RetrofitDriverRepository implements IDriverRepository{
 
         //TODO REMOVE
         Year year = Year.now();
-        String BASE_URL = "https://api.jolpi.ca/ergast/f1/" + year + "/";
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(BASE_URL + year + "/")
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build();
 

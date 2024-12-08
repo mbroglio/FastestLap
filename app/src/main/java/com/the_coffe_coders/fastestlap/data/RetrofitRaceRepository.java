@@ -6,15 +6,15 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.the_coffe_coders.fastestlap.domain.race_result.Race;
-import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.race_week.RaceWeekAPIresponse;
-import com.the_coffe_coders.fastestlap.ui.HomePageActivity;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.ResultsAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -56,7 +56,9 @@ public class RetrofitRaceRepository {
 
                         JSONParserUtils parser = new JSONParserUtils();
                         ResultsAPIResponse raceResults = parser.parseRaceResults(mrdata);
-                        lastRace.complete(raceResults.getRaceTable().getRaces().get(0));
+
+                        System.out.println(raceResults.toString());
+                        //lastRace.complete(raceResults.getRaceTable().getRaces().get(0));
 
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -68,6 +70,13 @@ public class RetrofitRaceRepository {
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
             }
         });
+
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         return lastRace;
     }
 
@@ -91,7 +100,7 @@ public class RetrofitRaceRepository {
                         JsonObject mrdata = jsonObject.getAsJsonObject("MRData");
 
                         JSONParserUtils parser = new JSONParserUtils();
-                        RaceWeekAPIresponse raceSchedule = parser.parseRaceWeek(mrdata);
+                        RaceAPIResponse raceSchedule = parser.parseRace(mrdata);
 
                         //nextRace.complete(raceResults.getRaceTable().getRaces().get(0));
 
@@ -108,11 +117,7 @@ public class RetrofitRaceRepository {
         return nextRace;
     }
 
-
-
-
-
-    public static RetrofitRaceRepository getInstance() {
+    public static synchronized RetrofitRaceRepository getInstance() {
         if (instance == null) {
             instance = new RetrofitRaceRepository();
         }

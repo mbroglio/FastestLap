@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,10 +20,10 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.race_result.Race;
-import com.the_coffe_coders.fastestlap.domain.race_result.Result;
-import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
-import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Result;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.ResultsAPIResponse;
+import com.the_coffe_coders.fastestlap.data.ErgastAPI;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
@@ -115,7 +114,7 @@ public class PastEventsActivity extends AppCompatActivity {
     }
 
     private boolean isPast(Race race) {
-        String raceDate = race.getDate();
+        String raceDate = race.getStartDateTime().toString();
         String raceTime = race.getTime(); // ends with 'Z'
         ZonedDateTime raceDateTime = ZonedDateTime.parse(raceDate + "T" + raceTime);
         raceDateTime = raceDateTime.plusMinutes(Constants.SESSION_DURATION.get("Race"));
@@ -136,11 +135,11 @@ public class PastEventsActivity extends AppCompatActivity {
         View eventCard = getLayoutInflater().inflate(R.layout.past_event_card, null);
 
         TextView day = eventCard.findViewById(R.id.past_date);
-        String dayString = String.valueOf(LocalDate.parse(race.getDate()).getDayOfMonth());
+        String dayString = String.valueOf(LocalDate.parse(race.getStartDateTime().toString()).getDayOfMonth());
         day.setText(dayString);
 
         TextView month = eventCard.findViewById(R.id.past_month);
-        String monthString = LocalDate.parse(race.getDate()).getMonth().toString().substring(0, 3).toUpperCase();
+        String monthString = LocalDate.parse(race.getStartDateTime().toString()).getMonth().toString().substring(0, 3).toUpperCase();
         month.setText(monthString);
 
         ImageView trackOutline = eventCard.findViewById(R.id.past_track_outline);

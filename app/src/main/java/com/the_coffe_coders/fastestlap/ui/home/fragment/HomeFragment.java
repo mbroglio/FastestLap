@@ -23,17 +23,12 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStanding;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverStanding;
 import com.the_coffe_coders.fastestlap.domain.driver.StandingsAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.race.Race;
-import com.the_coffe_coders.fastestlap.domain.race.RaceAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.race.FirstPractice;
-import com.the_coffe_coders.fastestlap.domain.race.Qualifying;
-import com.the_coffe_coders.fastestlap.domain.race.SecondPractice;
-import com.the_coffe_coders.fastestlap.domain.race.Session;
-import com.the_coffe_coders.fastestlap.domain.race.Sprint;
-import com.the_coffe_coders.fastestlap.domain.race.SprintQualifying;
-import com.the_coffe_coders.fastestlap.domain.race.ThirdPractice;
-import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.ResultsAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
+import com.the_coffe_coders.fastestlap.data.ErgastAPI;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
@@ -45,7 +40,6 @@ import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -126,7 +120,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void showPodium(View view, ResultsAPIResponse raceResults) {
-        com.the_coffe_coders.fastestlap.domain.race_result.Race race = raceResults.getRaceTable().getRaces().get(0);
+        Race race = raceResults.getRaceTable().getRaces().get(0);
         String circuitId = race.getCircuit().getCircuitId();
 
         TextView raceName = view.findViewById(R.id.last_race_name);
@@ -136,7 +130,7 @@ public class HomeFragment extends Fragment {
         trackOutline.setImageResource(Constants.EVENT_CIRCUIT.get(circuitId));
 
         TextView raceDate = view.findViewById(R.id.last_race_date);
-        LocalDate date = LocalDate.parse(race.getDate());
+        LocalDate date = race.getStartDateTime().toLocalDate();
         raceDate.setText(String.valueOf(date.getDayOfMonth()));
 
         // Get the first three characters of the month in capital letters
@@ -203,17 +197,17 @@ public class HomeFragment extends Fragment {
     }
 
     private void processNextRace(View view, RaceAPIResponse raceSchedule) {
-        Race race = raceSchedule.getRaceTable().getRaces().get(0);
+        WeeklyRace weeklyRace = raceSchedule.getRaceTable().getRaces().get(0);
 
         TextView nextRaceName = view.findViewById(R.id.home_next_gp_name);
-        nextRaceName.setText(race.getRaceName());
+        nextRaceName.setText(weeklyRace.getRaceName());
 
         ImageView nextRaceFlag = view.findViewById(R.id.home_next_gp_flag);
-        String nation = race.getCircuit().getLocation().getCountry();
+        String nation = weeklyRace.getCircuit().getLocation().getCountry();
         nextRaceFlag.setImageResource(Constants.NATION_COUNTRY_FLAG.get(nation));
 
-        List<Session> sessions = race.getSessions();
-        Session nextEvent = race.findNextEvent(sessions);
+        List<Session> sessions = weeklyRace.getSessions();
+        Session nextEvent = weeklyRace.findNextEvent(sessions);
         if (nextEvent != null) {
             ZonedDateTime eventDateTime = nextEvent.getStartDateTime();
             startCountdown(view, eventDateTime);
@@ -225,7 +219,7 @@ public class HomeFragment extends Fragment {
         FrameLayout nextSessionCard = view.findViewById(R.id.timer_card_countdown);
         nextSessionCard.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), EventActivity.class);
-            intent.putExtra("CIRCUIT_ID", race.getCircuit().getCircuitId());
+            intent.putExtra("CIRCUIT_ID", weeklyRace.getCircuit().getCircuitId());
             startActivity(intent);
         });
     }

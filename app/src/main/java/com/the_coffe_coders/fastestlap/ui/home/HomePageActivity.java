@@ -12,7 +12,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
+import com.the_coffe_coders.fastestlap.data.ErgastAPI;
 
 import org.threeten.bp.ZoneId;
 
