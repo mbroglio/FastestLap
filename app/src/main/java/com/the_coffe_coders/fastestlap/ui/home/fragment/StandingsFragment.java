@@ -10,6 +10,9 @@ import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.card.MaterialCardView;
@@ -43,6 +46,21 @@ public class StandingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_standings, container, false);
+
+        // Loading screen logic
+        loadingScreen = view.findViewById(R.id.loading_screen);
+        loadingText = view.findViewById(R.id.loading_text);
+        ImageView loadingWheel = view.findViewById(R.id.loading_wheel);
+
+        // Start the rotation animation
+        Animation rotateAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.rotate);
+        loadingWheel.startAnimation(rotateAnimation);
+
+        // Show loading screen initially
+        showLoadingScreen();
+
+        // Start the dots animation
+        handler.post(dotRunnable);
 
         MaterialCardView driverCardView = view.findViewById(R.id.drivers_card);
         MaterialCardView teamCardView = view.findViewById(R.id.constructors_card);
