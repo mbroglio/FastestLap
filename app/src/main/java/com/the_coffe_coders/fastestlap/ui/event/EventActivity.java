@@ -143,7 +143,7 @@ public class EventActivity extends AppCompatActivity {
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
-        toolbar.setTitle(race.getRaceName());
+        toolbar.setTitle(race.getRaceName().toUpperCase());
 
         ImageView countryFlag = findViewById(R.id.country_flag);
         String nation = race.getCircuit().getLocation().getCountry();
@@ -168,6 +168,15 @@ public class EventActivity extends AppCompatActivity {
 
         TextView eventDate = findViewById(R.id.event_date);
         eventDate.setText(race.getDateInterval());
+
+        LinearLayout track = findViewById(R.id.track_outline_layout);
+        Log.i(TAG, "Track: " + track);
+        track.setOnClickListener(v -> {
+            Intent intent = new Intent(EventActivity.this, TrackBioActivity.class);
+            intent.putExtra("CIRCUIT_ID", circuitId);
+            Log.i(TAG, "Circuit ID: " + circuitId);
+            startActivity(intent);
+        });
 
         List<Session> sessions = race.getSessions();
         Session nextEvent = race.findNextEvent(sessions);
@@ -257,14 +266,6 @@ public class EventActivity extends AppCompatActivity {
         // Set podium cricuit image
         ImageView trackOutline = findViewById(R.id.track_outline_image);
         trackOutline.setImageResource(Constants.EVENT_CIRCUIT.get(circuitId));
-
-        // Set listener to track outline and define a method onclick
-        LinearLayout track = findViewById(R.id.track_outline_layout);
-        track.setOnClickListener(v -> {
-            Intent intent = new Intent(EventActivity.this, TrackBioActivity.class);
-            intent.putExtra("CIRCUIT_ID", circuitId);
-            startActivity(intent);
-        });
     }
 
     private void processRaceResults(RaceAPIResponse raceSchedule) {

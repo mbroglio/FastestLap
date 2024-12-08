@@ -1,6 +1,7 @@
 package com.the_coffe_coders.fastestlap.ui.bio;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,5 +22,10 @@ public class TrackBioActivity extends AppCompatActivity {
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+
+        String circuitId = getIntent().getStringExtra("CIRCUIT_ID");
+        Log.i("ConstructorBioActivity", "Circuit ID: " + circuitId);
+
+
     }
 }
