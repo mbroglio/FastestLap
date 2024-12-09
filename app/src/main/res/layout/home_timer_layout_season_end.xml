@@ -12,7 +12,7 @@
         android:layout_centerInParent="true"
         android:text="@string/season_ended_upper_case"
         android:textSize="30sp"
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:fontFamily="@font/orbitron_bold">
     </TextView>
 
