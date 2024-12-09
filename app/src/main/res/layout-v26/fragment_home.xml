@@ -42,7 +42,7 @@
                <include
                    android:id="@+id/last_race_results"
                      layout="@layout/home_last_race_results_layout"
-                   android:visibility="gone"/>
+                   android:visibility="visible"/>
 
                <include
                      android:id="@+id/season_results"
@@ -50,9 +50,9 @@
                    android:visibility="gone"/>
 
                <include
-                   android:id="@+id/season_pending_last_race_results"
+                   android:id="@+id/pending_last_race_results"
                         layout="@layout/home_pending_last_race_results_layout"
-                   android:visibility="visible"/>
+                   android:visibility="gone"/>
            </FrameLayout>
 
             <LinearLayout

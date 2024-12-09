@@ -19,12 +19,12 @@
             <include
                 android:id="@+id/timer"
                 layout="@layout/home_timer_layout_next_session"
-                android:visibility="gone"/>
+                android:visibility="visible"/>
 
             <include
                 android:id="@+id/season_ended"
                 layout="@layout/home_timer_layout_season_end"
-                android:visibility="visible"/>
+                android:visibility="gone"/>
         </FrameLayout>
 
     </com.google.android.material.card.MaterialCardView>

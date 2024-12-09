@@ -2,13 +2,8 @@ package com.the_coffe_coders.fastestlap.ui.home.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-
 import android.os.CountDownTimer;
-import android.os.Looper;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +16,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+
 import com.google.android.material.card.MaterialCardView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -30,14 +28,8 @@ import com.the_coffe_coders.fastestlap.domain.driver.DriverStanding;
 import com.the_coffe_coders.fastestlap.domain.driver.StandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.race.Race;
 import com.the_coffe_coders.fastestlap.domain.race.RaceAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.race.FirstPractice;
-import com.the_coffe_coders.fastestlap.domain.race.Qualifying;
-import com.the_coffe_coders.fastestlap.domain.race.SecondPractice;
 import com.the_coffe_coders.fastestlap.domain.race.Session;
-import com.the_coffe_coders.fastestlap.domain.race.Sprint;
-import com.the_coffe_coders.fastestlap.domain.race.SprintQualifying;
-import com.the_coffe_coders.fastestlap.domain.race.ThirdPractice;
+import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
 import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
@@ -52,7 +44,6 @@ import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.ResponseBody;
@@ -77,7 +68,6 @@ public class HomeFragment extends Fragment {
     private Handler handler = new Handler();
     private int dotCount = 0;
     private boolean addingDots = true;
-
     private boolean raceToProcess = true;
     private boolean nextRaceToProcess = true;
     private boolean driverToProcess = true;
@@ -126,7 +116,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void setLastRaceCard(View view) {
-        String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
+        //String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
+        String BASE_URL = "https://ergast.com/api/f1/";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
@@ -146,29 +137,39 @@ public class HomeFragment extends Fragment {
                         JSONParserUtils parser = new JSONParserUtils(getContext());
                         ResultsAPIResponse raceResults = parser.parseRaceResults(mrdata);
 
-                        if(!raceResults.getRaceTable().getRaces().isEmpty()){
-                            return;
+                        if (!raceResults.getRaceTable().getRaces().isEmpty()) {
+                            showPodium(view, raceResults);
+                            raceToProcess = false;
+                            checkIfAllDataLoaded();
+                        } else {
+                            loadPendingResultsLayout(view);
                         }
-                        showPodium(view, raceResults);
-                        raceToProcess=false;
-                        checkIfAllDataLoaded();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                 } else {
-                    //raceToProcess=false;
-                    Log.i("setLastRaceCard", "raceToProcess: " + raceToProcess);
+                    raceToProcess = false;
                     checkIfAllDataLoaded();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                //raceToProcess=false;
-                Log.i("setLastRaceCard", "raceToProcess: " + raceToProcess);
+                raceToProcess = false;
                 checkIfAllDataLoaded();
             }
         });
+    }
+
+    private void loadPendingResultsLayout(View view) {
+        View pendingResults = view.findViewById(R.id.pending_last_race_results);
+        View results = view.findViewById(R.id.last_race_results);
+
+        pendingResults.setVisibility(View.VISIBLE);
+        results.setVisibility(View.GONE);
+
+        raceToProcess = false;
+        checkIfAllDataLoaded();
     }
 
     private void showPodium(View view, ResultsAPIResponse raceResults) {
@@ -202,7 +203,6 @@ public class HomeFragment extends Fragment {
             intent.putExtra("CIRCUIT_ID", race.getCircuit().getCircuitId());
             startActivity(intent);
         });
-
     }
 
     private void setDriverNames(View view, ResultsAPIResponse raceResults) {
@@ -213,6 +213,7 @@ public class HomeFragment extends Fragment {
             driver.setText(driverFullName);
         }
     }
+
 
     private void setNextSessionCard(View view) {
         String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
@@ -235,8 +236,10 @@ public class HomeFragment extends Fragment {
                         JSONParserUtils parser = new JSONParserUtils(getContext());
                         RaceAPIResponse raceSchedule = parser.parseRace(mrdata);
 
-                        if(!raceSchedule.getRaceTable().getRaces().isEmpty()){
+                        if (!raceSchedule.getRaceTable().getRaces().isEmpty()) {
                             processNextRace(view, raceSchedule);
+                            nextRaceToProcess = false;
+                            checkIfAllDataLoaded();
                         } else {
                             setSeasonEnded(view);
                         }
@@ -244,16 +247,14 @@ public class HomeFragment extends Fragment {
                         throw new RuntimeException(e);
                     }
                 } else {
-                    //nextRaceToProcess=false;
-                    Log.i("setNextSessionCard", "nextRaceToProcess: " + nextRaceToProcess);
+                    nextRaceToProcess = false;
                     checkIfAllDataLoaded();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                //nextRaceToProcess=false;
-                Log.i("setNextSessionCard", "nextRaceToProcess: " + nextRaceToProcess);
+                nextRaceToProcess = false;
                 checkIfAllDataLoaded();
             }
         });
@@ -292,7 +293,14 @@ public class HomeFragment extends Fragment {
     }
 
     private void setSeasonEnded(View view) {
+        View timerCard = view.findViewById(R.id.timer);
+        View seasonEndedCard = view.findViewById(R.id.season_ended);
 
+        timerCard.setVisibility(View.GONE);
+        seasonEndedCard.setVisibility(View.VISIBLE);
+
+        nextRaceToProcess = false;
+        checkIfAllDataLoaded();
     }
 
     private void startCountdown(View view, ZonedDateTime eventDate) {
@@ -348,22 +356,20 @@ public class HomeFragment extends Fragment {
                         StandingsAPIResponse standing = jsonParserUtils.parseDriverStandings(mrdata);
 
                         processStanding(view, standing);
-                        driverToProcess=false;
+                        driverToProcess = false;
                         checkIfAllDataLoaded();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                 } else {
-                    //driverToProcess=false;
-                    Log.i("setFavouriteDriverCard", "driverToProcess: " + driverToProcess);
+                    driverToProcess = false;
                     checkIfAllDataLoaded();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                //driverToProcess=false;
-                Log.i("setFavouriteDriverCard", "driverToProcess: " + driverToProcess);
+                driverToProcess = false;
                 checkIfAllDataLoaded();
             }
         });
@@ -439,20 +445,20 @@ public class HomeFragment extends Fragment {
                         com.the_coffe_coders.fastestlap.domain.constructor.StandingsAPIResponse standing = jsonParserUtils.parseConstructorStandings(mrdata);
 
                         processConstructorStanding(view, standing);
-                        constructorToProcess=false;
+                        constructorToProcess = false;
                         checkIfAllDataLoaded();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
                 } else {
-                    //constructorToProcess=false;
+                    constructorToProcess = false;
                     checkIfAllDataLoaded();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                //constructorToProcess=false;
+                constructorToProcess = false;
                 checkIfAllDataLoaded();
             }
         });

@@ -7,7 +7,6 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -186,7 +185,6 @@ public class EventActivity extends AppCompatActivity {
                 underway = true;
                 setLiveSession();
         }
-
         if (nextEvent != null && !underway) {
             ZonedDateTime eventDateTime = nextEvent.getStartDateTime();
             startCountdown(eventDateTime);
@@ -290,7 +288,11 @@ public class EventActivity extends AppCompatActivity {
                         JSONParserUtils parser = new JSONParserUtils(EventActivity.this);
                         ResultsAPIResponse raceResult = parser.parseRaceResults(mrdata);
 
-                        showPodium(raceResult);
+                        if (raceResult.getRaceTable().getRaces().isEmpty()) {
+                            showPendingResults();
+                        } else {
+                            showPodium(raceResult);
+                        }
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -304,6 +306,17 @@ public class EventActivity extends AppCompatActivity {
                 Log.e(TAG, "Error fetching data", throwable);
             }
         });
+    }
+
+    private void showPendingResults() {
+        Log.i(TAG, "No results found");
+        View pendingResultsView = findViewById(R.id.timer_card_pending_results);
+        View countdownView = findViewById(R.id.timer_card_countdown);
+        View resultsView = findViewById(R.id.timer_card_results);
+
+        pendingResultsView.setVisibility(View.VISIBLE);
+        countdownView.setVisibility(View.GONE);
+        resultsView.setVisibility(View.GONE);
     }
 
     private void showPodium(ResultsAPIResponse raceResult) {

@@ -1,25 +1,18 @@
 package com.the_coffe_coders.fastestlap.ui.event;
 
-import static android.app.PendingIntent.getActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.gson.Gson;
@@ -117,11 +110,10 @@ public class PastEventsActivity extends AppCompatActivity {
         }
     };
 
-
-
     private void processEvents(int i) {
+        //"https://api.jolpi.ca/ergast/f1/current/" + i + "/"; // This will be the default URL
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.jolpi.ca/ergast/f1/current/" + i + "/")
+                .baseUrl("https://ergast.com/api/f1/current/" + i + "/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
