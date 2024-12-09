@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -52,6 +54,14 @@ public class EventActivity extends AppCompatActivity {
     private String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
     private ErgastAPI ergastApi;
     private String circuitId;
+
+    private View loadingScreen;
+    private TextView loadingText;
+    private Handler handler = new Handler();
+    private int dotCount = 0;
+    private boolean addingDots = true;
+    private boolean eventToProcess = true;
+
     private final ZoneId localZone = ZoneId.systemDefault();
 
     @Override
@@ -59,6 +69,22 @@ public class EventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_event);
+
+        //loading screen logic
+        loadingScreen = findViewById(R.id.loading_screen);
+        loadingText = findViewById(R.id.loading_text);
+        ImageView loadingWheel = findViewById(R.id.loading_wheel);
+
+        // Start the rotation animation
+        Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        loadingWheel.startAnimation(rotateAnimation);
+
+        // Show loading screen initially
+        showLoadingScreen();
+        Log.i(TAG, "Loading screen shown");
+
+        // Start the dots animation
+        handler.post(dotRunnable);
 
         circuitId = getIntent().getStringExtra("CIRCUIT_ID");
         Log.i(TAG, "Circui ID: " + circuitId);
@@ -95,6 +121,8 @@ public class EventActivity extends AppCompatActivity {
                         RaceAPIResponse raceSchedule = parser.parseRace(mrdata);
 
                         processRaceData(raceSchedule);
+                        eventToProcess = false;
+                        checkIfAllDataLoaded();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -115,7 +143,7 @@ public class EventActivity extends AppCompatActivity {
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
-        toolbar.setTitle(race.getRaceName());
+        toolbar.setTitle(race.getRaceName().toUpperCase());
 
         ImageView countryFlag = findViewById(R.id.country_flag);
         String nation = race.getCircuit().getLocation().getCountry();
@@ -140,6 +168,15 @@ public class EventActivity extends AppCompatActivity {
 
         TextView eventDate = findViewById(R.id.event_date);
         eventDate.setText(race.getDateInterval());
+
+        LinearLayout track = findViewById(R.id.track_outline_layout);
+        Log.i(TAG, "Track: " + track);
+        track.setOnClickListener(v -> {
+            Intent intent = new Intent(EventActivity.this, TrackBioActivity.class);
+            intent.putExtra("CIRCUIT_ID", circuitId);
+            Log.i(TAG, "Circuit ID: " + circuitId);
+            startActivity(intent);
+        });
 
         List<Session> sessions = race.getSessions();
         Session nextEvent = race.findNextEvent(sessions);
@@ -229,14 +266,6 @@ public class EventActivity extends AppCompatActivity {
         // Set podium cricuit image
         ImageView trackOutline = findViewById(R.id.track_outline_image);
         trackOutline.setImageResource(Constants.EVENT_CIRCUIT.get(circuitId));
-
-        // Set listener to track outline and define a method onclick
-        LinearLayout track = findViewById(R.id.track_outline_layout);
-        track.setOnClickListener(v -> {
-            Intent intent = new Intent(EventActivity.this, TrackBioActivity.class);
-            intent.putExtra("CIRCUIT_ID", circuitId);
-            startActivity(intent);
-        });
     }
 
     private void processRaceResults(RaceAPIResponse raceSchedule) {
@@ -325,6 +354,44 @@ public class EventActivity extends AppCompatActivity {
                     Log.i(TAG, "session clicked");
                 }
             });
+        }
+    }
+
+    private void showLoadingScreen() {
+        loadingScreen.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoadingScreen() {
+        loadingScreen.setVisibility(View.GONE);
+        handler.removeCallbacks(dotRunnable);
+    }
+
+    private Runnable dotRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (addingDots) {
+                dotCount++;
+                if (dotCount == 4) {
+                    addingDots = false;
+                }
+            } else {
+                dotCount--;
+                if (dotCount == 0) {
+                    addingDots = true;
+                }
+            }
+            StringBuilder dots = new StringBuilder();
+            for (int i = 0; i < dotCount; i++) {
+                dots.append(".");
+            }
+            loadingText.setText("LOADING" + dots);
+            handler.postDelayed(this, 500);
+        }
+    };
+
+    private void checkIfAllDataLoaded() {
+        if (!eventToProcess) {
+            handler.postDelayed(this::hideLoadingScreen, 500); // 500 milliseconds delay
         }
     }
 }

@@ -4,8 +4,12 @@ import static android.app.PendingIntent.getActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewTreeObserver;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,9 +47,16 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PastEventsActivity extends AppCompatActivity {
-    private boolean raceToProcess = true;
+
     private ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
     private int raceIndex = 1;
+
+    private View loadingScreen;
+    private TextView loadingText;
+    private Handler handler = new Handler();
+    private int dotCount = 0;
+    private boolean addingDots = true;
+    private boolean raceToProcess = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,11 +64,60 @@ public class PastEventsActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_past_events);
 
+        //loading screen logic
+        loadingScreen = findViewById(R.id.loading_screen);
+        loadingText = findViewById(R.id.loading_text);
+        ImageView loadingWheel = findViewById(R.id.loading_wheel);
+
+        // Start the rotation animation
+        Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        loadingWheel.startAnimation(rotateAnimation);
+
+        // Show loading screen initially
+        showLoadingScreen();
+
+        // Start the dots animation
+        handler.post(dotRunnable);
+
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         processEvents(raceIndex);
     }
+
+    private void showLoadingScreen() {
+        loadingScreen.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoadingScreen() {
+        loadingScreen.setVisibility(View.GONE);
+        handler.removeCallbacks(dotRunnable);
+    }
+
+    private Runnable dotRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (addingDots) {
+                dotCount++;
+                if (dotCount == 4) {
+                    addingDots = false;
+                }
+            } else {
+                dotCount--;
+                if (dotCount == 0) {
+                    addingDots = true;
+                }
+            }
+            StringBuilder dots = new StringBuilder();
+            for (int i = 0; i < dotCount; i++) {
+                dots.append(".");
+            }
+            loadingText.setText("LOADING" + dots);
+            handler.postDelayed(this, 500);
+        }
+    };
+
+
 
     private void processEvents(int i) {
         Retrofit retrofit = new Retrofit.Builder()
@@ -84,6 +144,7 @@ public class PastEventsActivity extends AppCompatActivity {
                         if (races.isEmpty()) {
                             Log.i("PastEvents", "No past events found.");
                             raceToProcess = false;
+                            hideLoadingScreen();
                         } else {
                             Race race = races.get(0);
                             if (isPast(race)) {
@@ -92,6 +153,7 @@ public class PastEventsActivity extends AppCompatActivity {
                                 processEvents(raceIndex);
                             } else {
                                 raceToProcess = false;
+                                hideLoadingScreen();
                             }
                         }
                     } catch (IOException e) {
@@ -99,12 +161,14 @@ public class PastEventsActivity extends AppCompatActivity {
                     }
                 } else {
                     raceToProcess = false;
+                    hideLoadingScreen();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 raceToProcess = false;
+                hideLoadingScreen();
             }
         });
     }

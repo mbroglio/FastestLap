@@ -2,11 +2,13 @@ package com.the_coffe_coders.fastestlap.ui.home.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import android.os.CountDownTimer;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,6 +72,17 @@ public class HomeFragment extends Fragment {
     private ErgastAPI ergastAPI;
     private final ZoneId localZone = ZoneId.systemDefault();
 
+    private View loadingScreen;
+    private TextView loadingText;
+    private Handler handler = new Handler();
+    private int dotCount = 0;
+    private boolean addingDots = true;
+
+    private boolean raceToProcess = true;
+    private boolean nextRaceToProcess = true;
+    private boolean driverToProcess = true;
+    private boolean constructorToProcess = true;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -87,6 +100,22 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        // Loading screen logic
+        loadingScreen = view.findViewById(R.id.loading_screen);
+        loadingText = view.findViewById(R.id.loading_text);
+        ImageView loadingWheel = view.findViewById(R.id.loading_wheel);
+
+        // Start the rotation animation
+        Animation rotateAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.rotate);
+        loadingWheel.startAnimation(rotateAnimation);
+
+        // Show loading screen initially
+        showLoadingScreen();
+        Log.i(TAG, "Loading screen shown");
+
+        // Start the dots animation
+        handler.post(dotRunnable);
 
         setLastRaceCard(view);
         setNextSessionCard(view);
@@ -121,14 +150,23 @@ public class HomeFragment extends Fragment {
                             return;
                         }
                         showPodium(view, raceResults);
+                        raceToProcess=false;
+                        checkIfAllDataLoaded();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
+                } else {
+                    //raceToProcess=false;
+                    Log.i("setLastRaceCard", "raceToProcess: " + raceToProcess);
+                    checkIfAllDataLoaded();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                //raceToProcess=false;
+                Log.i("setLastRaceCard", "raceToProcess: " + raceToProcess);
+                checkIfAllDataLoaded();
             }
         });
     }
@@ -205,11 +243,18 @@ public class HomeFragment extends Fragment {
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
+                } else {
+                    //nextRaceToProcess=false;
+                    Log.i("setNextSessionCard", "nextRaceToProcess: " + nextRaceToProcess);
+                    checkIfAllDataLoaded();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                //nextRaceToProcess=false;
+                Log.i("setNextSessionCard", "nextRaceToProcess: " + nextRaceToProcess);
+                checkIfAllDataLoaded();
             }
         });
 
@@ -303,14 +348,23 @@ public class HomeFragment extends Fragment {
                         StandingsAPIResponse standing = jsonParserUtils.parseDriverStandings(mrdata);
 
                         processStanding(view, standing);
+                        driverToProcess=false;
+                        checkIfAllDataLoaded();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
+                } else {
+                    //driverToProcess=false;
+                    Log.i("setFavouriteDriverCard", "driverToProcess: " + driverToProcess);
+                    checkIfAllDataLoaded();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                //driverToProcess=false;
+                Log.i("setFavouriteDriverCard", "driverToProcess: " + driverToProcess);
+                checkIfAllDataLoaded();
             }
         });
     }
@@ -385,14 +439,21 @@ public class HomeFragment extends Fragment {
                         com.the_coffe_coders.fastestlap.domain.constructor.StandingsAPIResponse standing = jsonParserUtils.parseConstructorStandings(mrdata);
 
                         processConstructorStanding(view, standing);
+                        constructorToProcess=false;
+                        checkIfAllDataLoaded();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
+                } else {
+                    //constructorToProcess=false;
+                    checkIfAllDataLoaded();
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                //constructorToProcess=false;
+                checkIfAllDataLoaded();
             }
         });
     }
@@ -442,6 +503,44 @@ public class HomeFragment extends Fragment {
             intent.putExtra("DRIVER_NAME", Constants.FAVOURITE_TEAM);
             startActivity(intent);
         });
+    }
+
+    private void showLoadingScreen() {
+        loadingScreen.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoadingScreen() {
+        loadingScreen.setVisibility(View.GONE);
+        handler.removeCallbacks(dotRunnable);
+    }
+
+    private Runnable dotRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (addingDots) {
+                dotCount++;
+                if (dotCount == 4) {
+                    addingDots = false;
+                }
+            } else {
+                dotCount--;
+                if (dotCount == 0) {
+                    addingDots = true;
+                }
+            }
+            StringBuilder dots = new StringBuilder();
+            for (int i = 0; i < dotCount; i++) {
+                dots.append(".");
+            }
+            loadingText.setText("LOADING" + dots);
+            handler.postDelayed(this, 500);
+        }
+    };
+
+    private void checkIfAllDataLoaded() {
+        if (!raceToProcess && !nextRaceToProcess && !driverToProcess && !constructorToProcess) {
+            handler.postDelayed(this::hideLoadingScreen, 500); // 500 milliseconds delay
+        }
     }
 }
 
