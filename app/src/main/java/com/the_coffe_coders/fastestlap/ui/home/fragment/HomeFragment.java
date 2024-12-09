@@ -117,6 +117,9 @@ public class HomeFragment extends Fragment {
                         JSONParserUtils parser = new JSONParserUtils(getContext());
                         ResultsAPIResponse raceResults = parser.parseRaceResults(mrdata);
 
+                        if(!raceResults.getRaceTable().getRaces().isEmpty()){
+                            return;
+                        }
                         showPodium(view, raceResults);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -194,7 +197,11 @@ public class HomeFragment extends Fragment {
                         JSONParserUtils parser = new JSONParserUtils(getContext());
                         RaceAPIResponse raceSchedule = parser.parseRace(mrdata);
 
-                        processNextRace(view, raceSchedule);
+                        if(!raceSchedule.getRaceTable().getRaces().isEmpty()){
+                            processNextRace(view, raceSchedule);
+                        } else {
+                            setSeasonEnded(view);
+                        }
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -237,6 +244,10 @@ public class HomeFragment extends Fragment {
             intent.putExtra("CIRCUIT_ID", race.getCircuit().getCircuitId());
             startActivity(intent);
         });
+    }
+
+    private void setSeasonEnded(View view) {
+
     }
 
     private void startCountdown(View view, ZonedDateTime eventDate) {
