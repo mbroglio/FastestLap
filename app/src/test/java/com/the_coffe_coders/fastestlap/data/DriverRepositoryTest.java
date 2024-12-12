@@ -1,6 +1,6 @@
 package com.the_coffe_coders.fastestlap.data;
 
-/*public class DriverRepositoryTest extends TestCase {
+public class DriverRepositoryTest extends TestCase {
 
     public void testFindAll() {
         List<Driver> driverList = new ArrayList<>();
@@ -10,4 +10,4 @@ package com.the_coffe_coders.fastestlap.data;
         IDriverRepository driverRepository = new DriverRepositoryProxy(repository);
         assertEquals(driverList, driverRepository.findAll());
     }
-}*/
+}

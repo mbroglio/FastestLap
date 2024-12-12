@@ -1,6 +1,10 @@
 package com.the_coffe_coders.fastestlap.data;
 
-/*public class DriverRepository implements IDriverRepository{
+import com.the_coffe_coders.fastestlap.domain.driver.Driver;
+
+import java.util.List;
+
+public class DriverRepository implements IDriverRepository{
     @Override
     public final List<Driver> findAll() {//TODO
         return List.of(
@@ -8,4 +12,4 @@ package com.the_coffe_coders.fastestlap.data;
                 new Driver("Max Sroll", "ds", "ITA", 90, 900, 200, "20", "Ferrari", null)
         );
     }
-}*/
+}
