@@ -4,8 +4,9 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.the_coffe_coders.fastestlap.domain.race.RaceAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.api.RaceAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.api.ResultsAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.api.StandingsAPIResponse;
 
 public class JSONParserUtils {
     Context context;
@@ -14,8 +15,8 @@ public class JSONParserUtils {
         this.context = context;
     }
 
-    public com.the_coffe_coders.fastestlap.domain.driver.StandingsAPIResponse parseDriverStandings(JsonObject jsonObject) {
-        return new Gson().fromJson(jsonObject, com.the_coffe_coders.fastestlap.domain.driver.StandingsAPIResponse.class);
+    public StandingsAPIResponse parseDriverStandings(JsonObject jsonObject) {
+        return new Gson().fromJson(jsonObject, StandingsAPIResponse.class);
     }
 
     public com.the_coffe_coders.fastestlap.domain.constructor.StandingsAPIResponse parseConstructorStandings(JsonObject jsonObject) {

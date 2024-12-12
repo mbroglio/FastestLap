@@ -25,7 +25,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.driver.StandingsAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.api.StandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverStanding;
 import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
