@@ -1,12 +1,16 @@
 package com.the_coffe_coders.fastestlap.dto;
 
+import com.google.gson.annotations.SerializedName;
+
 public class ResultDTO {
 
     private String number;
     private String position;
     private String positionText;
     private String points;
+    @SerializedName("Driver")
     private DriverDTO Driver;
+    @SerializedName("Constructor")
     private ConstructorDTO Constructor;
     private String grid;
     private String laps;
