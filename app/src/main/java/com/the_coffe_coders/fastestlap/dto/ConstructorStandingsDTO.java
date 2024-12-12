@@ -6,9 +6,9 @@ public class ConstructorStandingsDTO {
     private String positionText;
     private String points;
     private String wins;
-    private ConstuctorDTO constructor;
+    private ConstructorDTO constructor;
 
-    public ConstructorStandingsDTO(String position, String positionText, String points, String wins, ConstuctorDTO constructor) {
+    public ConstructorStandingsDTO(String position, String positionText, String points, String wins, ConstructorDTO constructor) {
         this.position = position;
         this.positionText = positionText;
         this.wins = wins;
@@ -31,7 +31,7 @@ public class ConstructorStandingsDTO {
         return this.wins;
     }
 
-   public ConstuctorDTO getConstructor(){
+   public ConstructorDTO getConstructor(){
        return this.constructor;
    }
 
