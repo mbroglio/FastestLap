@@ -1,6 +1,6 @@
 package com.the_coffe_coders.fastestlap.dto;
 
-public class ResultsDTO {
+public class ResultDTO {
 
     private String number;
     private String position;
@@ -12,7 +12,7 @@ public class ResultsDTO {
     private String laps;
     private String status;
 
-    public ResultsDTO(String number, String position, String positionText, String points, DriverDTO driver, ConstructorDTO constructor, String grid, String laps, String status){
+    public ResultDTO(String number, String position, String positionText, String points, DriverDTO driver, ConstructorDTO constructor, String grid, String laps, String status){
         this.number = number;
         this.position = position;
         this.positionText = positionText;

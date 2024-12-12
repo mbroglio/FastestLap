@@ -1,4 +1,6 @@
-package com.the_coffe_coders.fastestlap.domain.api;
+package com.the_coffe_coders.fastestlap.api;
+
+import androidx.annotation.NonNull;
 
 public class APIResponse {
     private String xmlns;
@@ -63,5 +65,16 @@ public class APIResponse {
 
     public void setTotal(String total) {
         this.total = total;
+    }
+    @Override
+    public String toString() {
+        return "APIResponse{" +
+                "xmlns='" + xmlns + '\'' +
+                ", series='" + series + '\'' +
+                ", url='" + url + '\'' +
+                ", limit='" + limit + '\'' +
+                ", offset='" + offset + '\'' +
+                ", total='" + total + '\'' +
+                '}';
     }
 }

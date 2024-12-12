@@ -4,9 +4,9 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.the_coffe_coders.fastestlap.domain.api.RaceAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.api.ResultsAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.api.StandingsAPIResponse;
+import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
+import com.the_coffe_coders.fastestlap.api.ResultsAPIResponse;
+import com.the_coffe_coders.fastestlap.api.StandingsAPIResponse;
 
 public class JSONParserUtils {
     Context context;
