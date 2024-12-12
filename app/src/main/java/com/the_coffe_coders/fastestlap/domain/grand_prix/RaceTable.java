@@ -1,16 +1,19 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class RaceTable {
     private String season;
-    private String circuitId;
-    private List<WeeklyRace> Races;
+    private String round;
+    @SerializedName("Races")
+    private List<WeeklyRaceTable> weeklyRacesTable;
 
-    public RaceTable(String season, String circuitId, List<WeeklyRace> races) {
+    public RaceTable(String season, String round, List<WeeklyRaceTable> weeklyRacesTable) {
         this.season = season;
-        this.circuitId = circuitId;
-        Races = races;
+        this.round = round;
+        this.weeklyRacesTable = this.weeklyRacesTable;
     }
 
     public String getSeason() {
@@ -21,19 +24,19 @@ public class RaceTable {
         this.season = season;
     }
 
-    public String getCircuitId() {
-        return circuitId;
+    public String getRound() {
+        return round;
     }
 
-    public void setCircuitId(String circuitId) {
-        this.circuitId = circuitId;
+    public void setRound(String round) {
+        this.round = round;
     }
 
-    public List<WeeklyRace> getRaces() {
-        return Races;
+    public List<WeeklyRaceTable> getRaces() {
+        return weeklyRacesTable;
     }
 
-    public void setRaces(List<WeeklyRace> races) {
-        Races = races;
+    public void setRaces(List<WeeklyRaceTable> weeklyRaces) {
+        this.weeklyRacesTable = weeklyRaces;
     }
 }

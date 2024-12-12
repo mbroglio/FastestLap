@@ -1,6 +1,5 @@
 package com.the_coffe_coders.fastestlap.data;
 
-
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -8,18 +7,15 @@ import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
-
-import com.the_coffe_coders.fastestlap.domain.driver.DriverStanding;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverStandingsAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Circuit;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.CircuitAPIResponse;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
-
-import org.threeten.bp.Year;
-
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -28,64 +24,48 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class RetrofitDriverRepository implements IDriverRepository, JolpicaServer{
+public class JolpicaCircuitRepository implements ICircuitRepository, JolpicaServer {
 
-    String TAG = "RetrofitDriverRepository";
+    String TAG = "JolpicaCircuitRepository";
 
     @Override
-    public final List<Driver> findAll() {
-        return null;
+    public List<Circuit> findAll() {
+        return getCircuitsFromServer().join();
     }
 
     @Override
-    public Driver find(String id) {
+    public Circuit find(String circuitId) {
+        return null;
+    }
 
-        //TODO REMOVE
-        Year year = Year.now();
+    public CompletableFuture<List<Circuit>> getCircuitsFromServer() {
+        CompletableFuture<List<Circuit>> future = new CompletableFuture<>();
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL + year + "/")
+                .baseUrl(CURRENT_YEAR_BASE_URL)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build();
 
         ErgastAPI ergastApi = retrofit.create(ErgastAPI.class);
 
-        return null;
-    }
-
-    public CompletableFuture<List<Driver>> getDriversFromServer() {
-        CompletableFuture<List<Driver>> future = new CompletableFuture<>();
-        String BASE_URL = "https://api.jolpi.ca/ergast/f1/" + 2024 + "/";
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .build();
-
-        ErgastAPI ergastApi = retrofit.create(ErgastAPI.class);
-
-        ergastApi.getDriverStandings().enqueue(new Callback<>() {
+        ergastApi.getCircuits().enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                System.out.println(response.toString());
                 if (response.isSuccessful() && response.body() != null) {
                     try {
                         String responseString = response.body().string();
                         JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
                         JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
-
+                        System.out.println(mrdata);
                         JSONParserUtils jsonParserUtils = new JSONParserUtils();
-                        DriverStandingsAPIResponse driverStandingsAPIResponse = jsonParserUtils.parseDriverStandings(mrdata);
+                        CircuitAPIResponse circuitAPIResponse = jsonParserUtils.parseCircuit(mrdata);
 
-                        List<Driver> drivers = new ArrayList<>();
-                        int total = Integer.parseInt(driverStandingsAPIResponse.getTotal());
-                        for (int i = 0; i < total; i++) {
-                            DriverStanding standingElement = driverStandingsAPIResponse
-                                    .getStandingsTable()
-                                    .getStandingsLists().get(0)
-                                    .getDriverStandings().get(i);
-                            drivers.add(standingElement.getDriver());
-                        }
+                        List<Circuit> circuits = new ArrayList<>();
 
-                        future.complete(drivers); // Risolve il CompletableFuture
+                        circuits.addAll(circuitAPIResponse.getCircuitTable().getCircuits());
+                        //System.out.println(circuitAPIResponse.getCircuitTable());
+                       future.complete(circuits); // Risolve il CompletableFuture
                     } catch (Exception e) {
                         Log.e(TAG, "Failed to parse JSON response", e);
                         future.completeExceptionally(e);
@@ -105,19 +85,4 @@ public class RetrofitDriverRepository implements IDriverRepository, JolpicaServe
 
         return future;
     }
-
-    public static void main(String[] args) {
-        CompletableFuture<List<Driver>> future = new RetrofitDriverRepository().getDriversFromServer();
-
-        try {
-            List<Driver> drivers = future.get();
-            for (Driver driver : drivers) {
-                System.out.println(driver.toString());
-            }
-        }catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }
-
-

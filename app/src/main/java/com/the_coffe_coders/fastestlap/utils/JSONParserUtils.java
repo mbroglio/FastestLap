@@ -4,6 +4,10 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStandingsAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.driver.DriverStandingsAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Circuit;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.CircuitAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ResultsAPIResponse;
 
@@ -16,12 +20,12 @@ public class JSONParserUtils {
 
     public JSONParserUtils() {}
 
-    public com.the_coffe_coders.fastestlap.domain.driver.StandingsAPIResponse parseDriverStandings(JsonObject jsonObject) {
-        return new Gson().fromJson(jsonObject, com.the_coffe_coders.fastestlap.domain.driver.StandingsAPIResponse.class);
+    public DriverStandingsAPIResponse parseDriverStandings(JsonObject jsonObject) {
+        return new Gson().fromJson(jsonObject, DriverStandingsAPIResponse.class);
     }
 
-    public com.the_coffe_coders.fastestlap.domain.constructor.StandingsAPIResponse parseConstructorStandings(JsonObject jsonObject) {
-        return new Gson().fromJson(jsonObject, com.the_coffe_coders.fastestlap.domain.constructor.StandingsAPIResponse.class);
+    public ConstructorStandingsAPIResponse parseConstructorStandings(JsonObject jsonObject) {
+        return new Gson().fromJson(jsonObject, ConstructorStandingsAPIResponse.class);
     }
 
     public RaceAPIResponse parseRace(JsonObject jsonObject) {
@@ -30,5 +34,9 @@ public class JSONParserUtils {
 
     public ResultsAPIResponse parseRaceResults(JsonObject jsonObject) {
         return new Gson().fromJson(jsonObject, ResultsAPIResponse.class);
+    }
+
+    public CircuitAPIResponse parseCircuit(JsonObject jsonObject) {
+        return new Gson().fromJson(jsonObject, CircuitAPIResponse.class);
     }
 }

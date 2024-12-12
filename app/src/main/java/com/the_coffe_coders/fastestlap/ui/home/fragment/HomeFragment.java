@@ -21,8 +21,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStanding;
+import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverStanding;
-import com.the_coffe_coders.fastestlap.domain.driver.StandingsAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.driver.DriverStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceAPIResponse;
@@ -197,7 +198,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void processNextRace(View view, RaceAPIResponse raceSchedule) {
-        WeeklyRace weeklyRace = raceSchedule.getRaceTable().getRaces().get(0);
+        WeeklyRace weeklyRace = null;
 
         TextView nextRaceName = view.findViewById(R.id.home_next_gp_name);
         nextRaceName.setText(weeklyRace.getRaceName());
@@ -272,7 +273,7 @@ public class HomeFragment extends Fragment {
                         JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
 
                         JSONParserUtils jsonParserUtils = new JSONParserUtils(getContext());
-                        StandingsAPIResponse standing = jsonParserUtils.parseDriverStandings(mrdata);
+                        DriverStandingsAPIResponse standing = jsonParserUtils.parseDriverStandings(mrdata);
 
                         processStanding(view, standing);
                     } catch (IOException e) {
@@ -288,7 +289,7 @@ public class HomeFragment extends Fragment {
 
     }
 
-    private void processStanding(View view, StandingsAPIResponse standing) {
+    private void processStanding(View view, DriverStandingsAPIResponse standing) {
         List<DriverStanding> standings = standing.getStandingsTable().getStandingsLists().get(0).getDriverStandings();
 
         for (DriverStanding standingElement : standings) {
@@ -349,7 +350,7 @@ public class HomeFragment extends Fragment {
                         JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
 
                         JSONParserUtils jsonParserUtils = new JSONParserUtils(getContext());
-                        com.the_coffe_coders.fastestlap.domain.constructor.StandingsAPIResponse standing = jsonParserUtils.parseConstructorStandings(mrdata);
+                        ConstructorStandingsAPIResponse standing = jsonParserUtils.parseConstructorStandings(mrdata);
 
                         processConstructorStanding(view, standing);
                     } catch (IOException e) {
@@ -364,7 +365,7 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void processConstructorStanding(View view, com.the_coffe_coders.fastestlap.domain.constructor.StandingsAPIResponse standing) {
+    private void processConstructorStanding(View view, ConstructorStandingsAPIResponse standing) {
         List<com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStanding> standings = standing.getStandingsTable().getStandingsLists().get(0).getConstructorStandings();
 
         for (com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStanding standingElement : standings){

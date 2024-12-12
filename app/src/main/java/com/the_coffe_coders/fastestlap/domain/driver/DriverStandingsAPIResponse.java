@@ -1,8 +1,6 @@
 package com.the_coffe_coders.fastestlap.domain.driver;
 
-import java.util.List;
-
-public class StandingsAPIResponse {
+public class DriverStandingsAPIResponse {
     private String xmlns;
     private String series;
     private String url;
@@ -11,7 +9,7 @@ public class StandingsAPIResponse {
     private String total;
     private StandingsTable StandingsTable;
 
-    public StandingsAPIResponse(String xmlns, String series, String url, String limit, String offset, String total, StandingsTable StandingsTable) {
+    public DriverStandingsAPIResponse(String xmlns, String series, String url, String limit, String offset, String total, StandingsTable StandingsTable) {
         this.xmlns = xmlns;
         this.series = series;
         this.url = url;

@@ -22,4 +22,7 @@ public interface ErgastAPI {
 
     @GET("current/next")
     Call<ResponseBody> getNextRace();
+
+    @GET("circuits.json")
+    Call<ResponseBody> getCircuits();
 }

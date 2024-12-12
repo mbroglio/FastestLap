@@ -25,8 +25,7 @@ import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.data.ErgastAPI;
 import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStanding;
-import com.the_coffe_coders.fastestlap.domain.constructor.StandingsAPIResponse;
-import com.the_coffe_coders.fastestlap.data.ErgastAPI;
+import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
@@ -83,11 +82,11 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                         JsonObject mrData = jsonResponse.get("MRData").getAsJsonObject();
 
                         JSONParserUtils jsonParserUtils = new JSONParserUtils(ConstructorsStandingActivity.this);
-                        StandingsAPIResponse standingsAPIResponse = jsonParserUtils.parseConstructorStandings(mrData);
+                        ConstructorStandingsAPIResponse constructorStandingsAPIResponse = jsonParserUtils.parseConstructorStandings(mrData);
 
-                        int total = Integer.parseInt(standingsAPIResponse.getTotal());
+                        int total = Integer.parseInt(constructorStandingsAPIResponse.getTotal());
                         for (int i = 0; i < total; i++) {
-                            ConstructorStanding standingElement = standingsAPIResponse
+                            ConstructorStanding standingElement = constructorStandingsAPIResponse
                                     .getStandingsTable()
                                     .getStandingsLists().get(0)
                                     .getConstructorStandings().get(i);

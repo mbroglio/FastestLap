@@ -1,16 +1,19 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Circuit {
     private String circuitId;
     private String url;
     private String circuitName;
-    private Location Location;
+    @SerializedName("Location")
+    private Location location;
 
     public Circuit(String circuitId, String url, String circuitName, com.the_coffe_coders.fastestlap.domain.grand_prix.Location location) {
         this.circuitId = circuitId;
         this.url = url;
         this.circuitName = circuitName;
-        Location = location;
+        this.location = location;
     }
 
     public String getCircuitId() {
@@ -38,10 +41,10 @@ public class Circuit {
     }
 
     public com.the_coffe_coders.fastestlap.domain.grand_prix.Location getLocation() {
-        return Location;
+        return location;
     }
 
     public void setLocation(com.the_coffe_coders.fastestlap.domain.grand_prix.Location location) {
-        Location = location;
+        this.location = location;
     }
 }

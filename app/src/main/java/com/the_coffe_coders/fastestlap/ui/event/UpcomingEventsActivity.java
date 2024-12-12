@@ -93,7 +93,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
     private List<WeeklyRace> extractUpcomingRaces(RaceAPIResponse raceAPIResponse) {
         ZonedDateTime now = ZonedDateTime.now();
-        List<WeeklyRace> races = raceAPIResponse.getRaceTable().getRaces();
+        /*//List<WeeklyRace> races = raceAPIResponse.getRaceTable().getRaces();
         List<WeeklyRace> upcomingRaces = new ArrayList<>();
 
         for (WeeklyRace weeklyRace : races) {
@@ -108,7 +108,8 @@ public class UpcomingEventsActivity extends AppCompatActivity {
             }
         }
 
-        return upcomingRaces;
+        return upcomingRaces;*/
+        return null;
     }
 
     private void createEventCards(List<WeeklyRace> upcomingRaces) {

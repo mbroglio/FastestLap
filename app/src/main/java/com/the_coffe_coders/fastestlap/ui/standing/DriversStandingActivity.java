@@ -1,12 +1,9 @@
 package com.the_coffe_coders.fastestlap.ui.standing;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -24,14 +21,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.card.MaterialCardView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.data.ErgastAPI;
-import com.the_coffe_coders.fastestlap.domain.driver.StandingsAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.driver.DriverStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverStanding;
-import com.the_coffe_coders.fastestlap.data.ErgastAPI;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
@@ -91,11 +86,11 @@ public class DriversStandingActivity extends AppCompatActivity {
                         JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
 
                         JSONParserUtils jsonParserUtils = new JSONParserUtils(DriversStandingActivity.this);
-                        StandingsAPIResponse standingsAPIResponse = jsonParserUtils.parseDriverStandings(mrdata);
+                        DriverStandingsAPIResponse driverStandingsAPIResponse = jsonParserUtils.parseDriverStandings(mrdata);
 
-                        int total = Integer.parseInt(standingsAPIResponse.getTotal());
+                        int total = Integer.parseInt(driverStandingsAPIResponse.getTotal());
                         for (int i = 0; i < total; i++) {
-                            DriverStanding standingElement = standingsAPIResponse
+                            DriverStanding standingElement = driverStandingsAPIResponse
                                     .getStandingsTable()
                                     .getStandingsLists().get(0)
                                     .getDriverStandings().get(i);

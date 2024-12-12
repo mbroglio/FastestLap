@@ -29,11 +29,16 @@ public class RetrofitRaceRepository {
 
     private ErgastAPI ergastAPI;
 
+    public static synchronized RetrofitRaceRepository getInstance() {
+        if (instance == null) {
+            instance = new RetrofitRaceRepository();
+        }
+        return instance;
+    }
+
     private RetrofitRaceRepository() {
 
     }
-
-
 
     public CompletableFuture<Race> getLastRaceFromServer() {
         CompletableFuture<Race> lastRace = new CompletableFuture<>();
@@ -43,21 +48,20 @@ public class RetrofitRaceRepository {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         ergastAPI = retrofit.create(ErgastAPI.class);
-
         ergastAPI.getLastRaceResults().enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                Log.i(TAG, "Response: " + response);
+                System.out.println("Response: " + response);
                 if (response.isSuccessful() && response.body() != null) {
                     try {
                         String responseBody = response.body().string();
                         JsonObject jsonObject = new Gson().fromJson(responseBody, JsonObject.class);
                         JsonObject mrdata = jsonObject.getAsJsonObject("MRData");
-
+                        System.out.println(mrdata);
                         JSONParserUtils parser = new JSONParserUtils();
                         ResultsAPIResponse raceResults = parser.parseRaceResults(mrdata);
 
-                        System.out.println(raceResults.toString());
+                        //System.out.println(raceResults.toString());
                         //lastRace.complete(raceResults.getRaceTable().getRaces().get(0));
 
                     } catch (IOException e) {
@@ -115,12 +119,5 @@ public class RetrofitRaceRepository {
             }
         });
         return nextRace;
-    }
-
-    public static synchronized RetrofitRaceRepository getInstance() {
-        if (instance == null) {
-            instance = new RetrofitRaceRepository();
-        }
-        return instance;
     }
 }

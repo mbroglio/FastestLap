@@ -1,22 +1,36 @@
-package com.the_coffe_coders.fastestlap.domain.constructor;
+package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
-public class StandingsAPIResponse {
+import com.google.gson.annotations.SerializedName;
+import com.the_coffe_coders.fastestlap.domain.constructor.StandingsTable;
+
+import java.util.List;
+
+public class CircuitAPIResponse {
     private String xmlns;
     private String series;
     private String url;
     private String limit;
     private String offset;
     private String total;
-    private StandingsTable StandingsTable;
 
-    public StandingsAPIResponse(String xmlns, String series, String url, String limit, String offset, String total, StandingsTable StandingsTable) {
+    @SerializedName("CircuitTable")
+    private CircuitTable circuitTable;
+    public CircuitAPIResponse(String xmlns, String series, String url, String limit, String offset, String total, CircuitTable circuitTable) {
         this.xmlns = xmlns;
         this.series = series;
         this.url = url;
         this.limit = limit;
         this.offset = offset;
         this.total = total;
-        this.StandingsTable = StandingsTable;
+        this.circuitTable = circuitTable;
+    }
+
+    public CircuitTable getCircuitTable() {
+        return circuitTable;
+    }
+
+    public void setCircuitTable(CircuitTable circuitTable) {
+        this.circuitTable = circuitTable;
     }
 
     public String getXmlns() {
@@ -65,13 +79,5 @@ public class StandingsAPIResponse {
 
     public void setTotal(String total) {
         this.total = total;
-    }
-
-    public StandingsTable getStandingsTable() {
-        return StandingsTable;
-    }
-
-    public void setStandingsTable(StandingsTable standingsTable) {
-        this.StandingsTable = standingsTable;
     }
 }

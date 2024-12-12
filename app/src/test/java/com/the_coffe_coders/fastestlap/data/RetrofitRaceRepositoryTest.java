@@ -5,4 +5,16 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
-public class RetrofitRaceRepositoryTest extends TestCase {}
+public class RetrofitRaceRepositoryTest extends TestCase {
+
+    public void testGetInstance() {
+    }
+
+    public void testGetLastRaceFromServer() {
+        RetrofitRaceRepository raceRepository = RetrofitRaceRepository.getInstance();
+        Race lastRace = raceRepository.getLastRaceFromServer().join();
+        System.out.println("Last race: " + lastRace);
+        assertTrue(true);
+
+    }
+}

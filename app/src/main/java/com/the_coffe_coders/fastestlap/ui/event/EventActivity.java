@@ -118,7 +118,7 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void processRaceData(RaceAPIResponse raceSchedule) {
-        WeeklyRace weeklyRace = raceSchedule.getRaceTable().getRaces().get(0);
+        WeeklyRace weeklyRace = null;
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
