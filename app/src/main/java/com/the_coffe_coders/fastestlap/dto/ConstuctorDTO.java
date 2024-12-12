@@ -1,0 +1,32 @@
+package com.the_coffe_coders.fastestlap.dto;
+
+public class ConstuctorDTO {
+
+    private String constructorId;
+    private String url;
+    private String name;
+    private String nationality;
+
+    public ConstuctorDTO(String constructorId, String url, String name, String nationality) {
+        this.constructorId = constructorId;
+        this.url = url;
+        this.name = name;
+        this.nationality = nationality;
+    }
+
+    public String getConstructorId(){
+        return this.constructorId;
+    }
+
+    public String getUrl(){
+        return this.url;
+    }
+
+    public String getName(){
+        return this.name;
+    }
+
+    public String getNationality(){
+        return this.nationality;
+    }
+}
