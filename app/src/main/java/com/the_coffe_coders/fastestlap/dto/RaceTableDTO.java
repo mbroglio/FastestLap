@@ -1,13 +1,15 @@
-package com.the_coffe_coders.fastestlap.domain.race;
+package com.the_coffe_coders.fastestlap.dto;
+
+import com.the_coffe_coders.fastestlap.domain.race.Race;
 
 import java.util.List;
 
-public class RaceTable {
+public class RaceTableDTO {
     private String season;
     private String circuitId;
     private List<Race> Races;
 
-    public RaceTable(String season, String circuitId, List<Race> races) {
+    public RaceTableDTO(String season, String circuitId, List<Race> races) {
         this.season = season;
         this.circuitId = circuitId;
         Races = races;

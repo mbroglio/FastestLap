@@ -1,25 +1,20 @@
-package com.the_coffe_coders.fastestlap.domain.race;
+package com.the_coffe_coders.fastestlap.domain.api;
 
-import com.the_coffe_coders.fastestlap.dto.RaceTableDTO;
-
-public class RaceAPIResponse {
-    // API Response
+public class APIResponse {
     private String xmlns;
     private String series;
     private String url;
     private String limit;
     private String offset;
     private String total;
-    private RaceTableDTO RaceTableDTO;
 
-    public RaceAPIResponse(String xmlns, String series, String url, String limit, String offset, String total, RaceTableDTO raceTableDTO) {
+    public APIResponse(String xmlns, String series, String url, String limit, String offset, String total) {
         this.xmlns = xmlns;
         this.series = series;
         this.url = url;
         this.limit = limit;
         this.offset = offset;
         this.total = total;
-        this.RaceTableDTO = raceTableDTO;
     }
 
     public String getXmlns() {
@@ -68,13 +63,5 @@ public class RaceAPIResponse {
 
     public void setTotal(String total) {
         this.total = total;
-    }
-
-    public RaceTableDTO getRaceTable() {
-        return RaceTableDTO;
-    }
-
-    public void setRaceTable(RaceTableDTO raceTableDTO) {
-        this.RaceTableDTO = raceTableDTO;
     }
 }
