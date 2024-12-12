@@ -9,9 +9,9 @@ public class DriverStandingsDTO {
     private String points;
     private String wins;
     private DriverDTO driver;
-    private List<ConstuctorDTO> constructors;
+    private List<ConstructorDTO> constructors;
 
-    public DriverStandingsDTO(String position, String positionText, String points, String wins, DriverDTO driver, List<ConstuctorDTO> constructors){
+    public DriverStandingsDTO(String position, String positionText, String points, String wins, DriverDTO driver, List<ConstructorDTO> constructors){
         this.position = position;
         this.positionText = positionText;
         this.points = points;
@@ -40,7 +40,7 @@ public class DriverStandingsDTO {
         return driver;
     }
 
-    public List<ConstuctorDTO> getConstructors() {
+    public List<ConstructorDTO> getConstructors() {
         return constructors;
     }
 }
