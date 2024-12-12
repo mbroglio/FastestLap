@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.domain.api;
+package com.the_coffe_coders.fastestlap.api;
 
 import com.the_coffe_coders.fastestlap.domain.race_result.RaceTable;
 
