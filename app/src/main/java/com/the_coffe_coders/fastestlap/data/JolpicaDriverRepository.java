@@ -28,7 +28,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class RetrofitDriverRepository implements IDriverRepository, JolpicaServer{
+public class JolpicaDriverRepository implements IDriverRepository, JolpicaServer{
 
     String TAG = "RetrofitDriverRepository";
 
@@ -107,7 +107,7 @@ public class RetrofitDriverRepository implements IDriverRepository, JolpicaServe
     }
 
     public static void main(String[] args) {
-        CompletableFuture<List<Driver>> future = new RetrofitDriverRepository().getDriversFromServer();
+        CompletableFuture<List<Driver>> future = new JolpicaDriverRepository().getDriversFromServer();
 
         try {
             List<Driver> drivers = future.get();

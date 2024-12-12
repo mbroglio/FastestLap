@@ -9,8 +9,6 @@ import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ResultsAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
-import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
 import java.io.IOException;
@@ -23,20 +21,20 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class RetrofitRaceRepository {
+public class JolpicaRaceRepository {
     private static final String TAG = "RetrofitRaceRepository";
-    private static RetrofitRaceRepository instance;
+    private static JolpicaRaceRepository instance;
 
     private ErgastAPI ergastAPI;
 
-    public static synchronized RetrofitRaceRepository getInstance() {
+    public static synchronized JolpicaRaceRepository getInstance() {
         if (instance == null) {
-            instance = new RetrofitRaceRepository();
+            instance = new JolpicaRaceRepository();
         }
         return instance;
     }
 
-    private RetrofitRaceRepository() {
+    private JolpicaRaceRepository() {
 
     }
 

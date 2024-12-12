@@ -1,5 +1,5 @@
 package com.the_coffe_coders.fastestlap.data;
 
-public class ConstructorRepository {
+public class JolpicaConstructorRepository {
     
 }
