@@ -1,11 +1,14 @@
 package com.the_coffe_coders.fastestlap.dto;
 
+import com.google.gson.annotations.SerializedName;
+
 public class ConstructorStandingsDTO {
 
     private String position;
     private String positionText;
     private String points;
     private String wins;
+    @SerializedName("Constructor")
     private ConstructorDTO constructor;
 
     public ConstructorStandingsDTO(String position, String positionText, String points, String wins, ConstructorDTO constructor) {
@@ -35,7 +38,23 @@ public class ConstructorStandingsDTO {
        return this.constructor;
    }
 
+    public void setPosition(String position) {
+        this.position = position;
+    }
 
+    public void setPositionText(String positionText) {
+        this.positionText = positionText;
+    }
 
+    public void setPoints(String points) {
+        this.points = points;
+    }
 
+    public void setWins(String wins) {
+        this.wins = wins;
+    }
+
+    public void setConstructor(ConstructorDTO constructor) {
+        this.constructor = constructor;
+    }
 }

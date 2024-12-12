@@ -60,4 +60,40 @@ public class ResultDTO {
         return status;
     }
 
+    public void setNumber(String number) {
+        this.number = number;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public void setPositionText(String positionText) {
+        this.positionText = positionText;
+    }
+
+    public void setPoints(String points) {
+        this.points = points;
+    }
+
+    public void setDriver(DriverDTO driver) {
+        this.Driver = driver;
+    }
+
+    public void setConstructor(ConstructorDTO constructor) {
+        this.Constructor = constructor;
+    }
+
+    public void setGrid(String grid) {
+        this.grid = grid;
+    }
+
+    public void setLaps(String laps) {
+        this.laps = laps;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 }

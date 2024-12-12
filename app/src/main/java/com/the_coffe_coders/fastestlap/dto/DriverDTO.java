@@ -54,4 +54,36 @@ public class DriverDTO {
         return nationality;
     }
 
+    public void setDriverId(String driverId) {
+        this.driverId = driverId;
+    }
+
+    public void setPermanentNumber(String permanentNumber) {
+        this.permanentNumber = permanentNumber;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setGivenName(String givenName) {
+        this.givenName = givenName;
+    }
+
+    public void setFamilyName(String familyName) {
+        this.familyName = familyName;
+    }
+
+    public void setDateOfBirth(String dateOfBirth) {
+        this.dateOfBirth = dateOfBirth;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
+    }
+
 }

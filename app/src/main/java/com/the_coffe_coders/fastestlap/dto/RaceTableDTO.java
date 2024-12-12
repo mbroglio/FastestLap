@@ -1,18 +1,21 @@
 package com.the_coffe_coders.fastestlap.dto;
 
-import com.the_coffe_coders.fastestlap.domain.race.Race;
+
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 public class RaceTableDTO {
     private String season;
-    private String circuitId;
-    private List<Race> Races;
+    @SerializedName("Circuit")
+    private CircuitDTO circuit;
+    @SerializedName("Races")
+    private List<RaceDTO> races;
 
-    public RaceTableDTO(String season, String circuitId, List<Race> races) {
+    public RaceTableDTO(String season, String circuitId, List<RaceDTO> races) {
         this.season = season;
-        this.circuitId = circuitId;
-        Races = races;
+        this.circuit = circuit;
+        races = races;
     }
 
     public String getSeason() {
@@ -23,19 +26,19 @@ public class RaceTableDTO {
         this.season = season;
     }
 
-    public String getCircuitId() {
-        return circuitId;
+    public CircuitDTO getCircuit() {
+        return circuit;
     }
 
-    public void setCircuitId(String circuitId) {
-        this.circuitId = circuitId;
+    public void setCircuitId(CircuitDTO circuitId) {
+        this.circuit = circuit;
     }
 
-    public List<Race> getRaces() {
-        return Races;
+    public List<RaceDTO> getRaces() {
+        return races;
     }
 
-    public void setRaces(List<Race> races) {
-        Races = races;
+    public void setRaces(List<RaceDTO> races) {
+        races = races;
     }
 }

@@ -2,13 +2,7 @@ package com.the_coffe_coders.fastestlap.dto;
 
 import android.util.Log;
 
-import com.the_coffe_coders.fastestlap.domain.race.Circuit;
-import com.the_coffe_coders.fastestlap.domain.race.FirstPractice;
-import com.the_coffe_coders.fastestlap.domain.race.Qualifying;
-import com.the_coffe_coders.fastestlap.domain.race.SecondPractice;
-import com.the_coffe_coders.fastestlap.domain.race.Sprint;
-import com.the_coffe_coders.fastestlap.domain.race.SprintQualifying;
-import com.the_coffe_coders.fastestlap.domain.race.ThirdPractice;
+import com.google.gson.annotations.SerializedName;
 
 import org.threeten.bp.LocalDate;
 
@@ -17,30 +11,37 @@ public class RaceDTO {
     private String round;
     private String url;
     private String raceName;
-    private Circuit Circuit;
+    @SerializedName("Circuit")
+    private CircuitDTO circuit;
     private String date;
     private String time;
-    private PracticeDTO FirstPractice;
-    private PracticeDTO SecondPractice;
-    private PracticeDTO ThirdPractice;
-    private Qualifying Qualifying;
-    private SprintQualifying SprintQualifying;
-    private Sprint Sprint;
+    @SerializedName("FirstPractice")
+    private PracticeDTO firstPractice;
+    @SerializedName("SecondPractice")
+    private PracticeDTO secondPractice;
+    @SerializedName("ThirdPractice")
+    private PracticeDTO thirdPractice;
+    @SerializedName("Qualifying")
+    private QualifyingDTO qualifying;
+    @SerializedName("SprintQualifying")
+    private SprintQualifyingDTO sprintQualifying;
+    @SerializedName("Sprint")
+    private SprintDTO sprint;
 
-    public RaceDTO(String season, String round, String url, String raceName, Circuit circuit, String date, String time, PracticeDTO firstPractice, PracticeDTO secondPractice, PracticeDTO thirdPractice, Qualifying qualifying, SprintQualifying sprintQualifying, Sprint sprint) {
+    public RaceDTO(String season, String round, String url, String raceName, CircuitDTO circuit, String date, String time, PracticeDTO firstPractice, PracticeDTO secondPractice, PracticeDTO thirdPractice, QualifyingDTO qualifying, SprintQualifyingDTO sprintQualifying, SprintDTO sprint) {
         this.season = season;
         this.round = round;
         this.url = url;
         this.raceName = raceName;
-        this.Circuit = circuit;
+        this.circuit = circuit;
         this.date = date;
         this.time = time;
-        this.FirstPractice = firstPractice;
-        this.SecondPractice = secondPractice;
-        this.ThirdPractice = thirdPractice;
-        this.Qualifying = qualifying;
-        this.SprintQualifying = sprintQualifying;
-        this.Sprint = sprint;
+        this.firstPractice = firstPractice;
+        this.secondPractice = secondPractice;
+        this.thirdPractice = thirdPractice;
+        this.qualifying = qualifying;
+        this.sprintQualifying = sprintQualifying;
+        this.sprint = sprint;
     }
 
     public String getRound() {
@@ -59,52 +60,52 @@ public class RaceDTO {
         this.season = season;
     }
 
-    public Sprint getSprint() {
-        return Sprint;
+    public SprintDTO getSprint() {
+        return sprint;
     }
 
-    public void setSprint(Sprint sprint) {
-        Sprint = sprint;
+    public void setSprint(SprintDTO sprint) {
+        sprint = sprint;
     }
 
-    public SprintQualifying getSprintQualifying() {
-        return SprintQualifying;
+    public SprintQualifyingDTO getSprintQualifying() {
+        return sprintQualifying;
     }
 
-    public void setSprintQualifying(SprintQualifying sprintQualifying) {
-        SprintQualifying = sprintQualifying;
+    public void setSprintQualifying(SprintQualifyingDTO sprintQualifying) {
+        sprintQualifying = sprintQualifying;
     }
 
-    public Qualifying getQualifying() {
-        return Qualifying;
+    public QualifyingDTO getQualifying() {
+        return qualifying;
     }
 
-    public void setQualifying(Qualifying qualifying) {
-        Qualifying = qualifying;
+    public void setQualifying(QualifyingDTO qualifying) {
+        qualifying = qualifying;
     }
 
     public PracticeDTO getThirdPractice() {
-        return ThirdPractice;
+        return thirdPractice;
     }
 
     public void setThirdPractice(PracticeDTO thirdPractice) {
-        ThirdPractice = thirdPractice;
+        thirdPractice = thirdPractice;
     }
 
     public PracticeDTO getSecondPractice() {
-        return SecondPractice;
+        return secondPractice;
     }
 
     public void setSecondPractice(PracticeDTO secondPractice) {
-        SecondPractice = secondPractice;
+        secondPractice = secondPractice;
     }
 
     public PracticeDTO getFirstPractice() {
-        return FirstPractice;
+        return firstPractice;
     }
 
     public void setFirstPractice(PracticeDTO firstPractice) {
-        FirstPractice = firstPractice;
+        firstPractice = firstPractice;
     }
 
     public String getTime() {
@@ -123,12 +124,12 @@ public class RaceDTO {
         this.date = date;
     }
 
-    public Circuit getCircuit() {
-        return Circuit;
+    public CircuitDTO getCircuit() {
+        return circuit;
     }
 
-    public void setCircuit(Circuit circuit) {
-        Circuit = circuit;
+    public void setCircuit(CircuitDTO circuit) {
+        circuit = circuit;
     }
 
     public String getRaceName() {

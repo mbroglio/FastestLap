@@ -1,18 +1,19 @@
 package com.the_coffe_coders.fastestlap.dto;
 
-import com.the_coffe_coders.fastestlap.domain.race.Location;
+import com.google.gson.annotations.SerializedName;
 
 public class CircuitDTO {
     private String circuitId;
     private String url;
     private String circuitName;
-    private Location Location;
+    @SerializedName("Location")
+    private LocationDTO location;
 
-    public CircuitDTO(String circuitId, String url, String circuitName, com.the_coffe_coders.fastestlap.domain.race.Location location) {
+    public CircuitDTO(String circuitId, String url, String circuitName, LocationDTO location) {
         this.circuitId = circuitId;
         this.url = url;
         this.circuitName = circuitName;
-        Location = location;
+        this.location = location;
     }
 
     public String getCircuitId() {
@@ -39,11 +40,11 @@ public class CircuitDTO {
         this.circuitName = circuitName;
     }
 
-    public com.the_coffe_coders.fastestlap.domain.race.Location getLocation() {
-        return Location;
+    public LocationDTO getLocation() {
+        return location;
     }
 
-    public void setLocation(com.the_coffe_coders.fastestlap.domain.race.Location location) {
-        Location = location;
+    public void setLocationDTO (LocationDTO location) {
+        this.location = location;
     }
 }

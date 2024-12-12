@@ -29,4 +29,20 @@ public class ConstructorDTO {
     public String getNationality(){
         return this.nationality;
     }
+
+    public void setConstructorId(String constructorId) {
+        this.constructorId = constructorId;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setNationality(String nationality) {
+        this.nationality = nationality;
+    }
 }
