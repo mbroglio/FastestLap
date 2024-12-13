@@ -3,10 +3,14 @@ package com.the_coffe_coders.fastestlap.ui.standing;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,17 +20,15 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.data.ErgastAPI;
-import com.the_coffe_coders.fastestlap.domain.driver.DriverStandingsAPIResponse;
+import com.the_coffe_coders.fastestlap.api.StandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverStanding;
+import com.the_coffe_coders.fastestlap.api.ErgastAPI;
+import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
@@ -44,6 +46,13 @@ public class DriversStandingActivity extends AppCompatActivity {
 
     private static final String TAG = "DriverCardActivity";
 
+    private View loadingScreen;
+    private TextView loadingText;
+    private Handler handler = new Handler();
+    private int dotCount = 0;
+    private boolean addingDots = true;
+    private boolean driverToProcess = true;
+
     static Year year = Year.now();
     private static final String BASE_URL = "https://api.jolpi.ca/ergast/f1/" + year + "/";
 
@@ -53,14 +62,24 @@ public class DriversStandingActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_drivers_standing);
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.driver_card_view), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
+        //loading screen logic
+        loadingScreen = findViewById(R.id.loading_screen);
+        loadingText = findViewById(R.id.loading_text);
+        ImageView loadingWheel = findViewById(R.id.loading_wheel);
+
+        // Start the rotation animation
+        Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        loadingWheel.startAnimation(rotateAnimation);
+
+        // Show loading screen initially
+        showLoadingScreen();
+
+        // Start the dots animation
+        handler.post(dotRunnable);
+
 
         String driverId = getIntent().getStringExtra("DRIVER_ID");
-
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
@@ -101,6 +120,8 @@ public class DriversStandingActivity extends AppCompatActivity {
                             space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
                             driverStanding.addView(space);
                         }
+                        driverToProcess = false;
+                        hideLoadingScreen();
                     } catch (Exception e) {
                         Log.e(TAG, "Failed to parse JSON response", e);
                     }
@@ -116,9 +137,42 @@ public class DriversStandingActivity extends AppCompatActivity {
         });
     }
 
+    private void showLoadingScreen() {
+        loadingScreen.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoadingScreen() {
+        loadingScreen.setVisibility(View.GONE);
+        handler.removeCallbacks(dotRunnable);
+    }
+
+    private Runnable dotRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (addingDots) {
+                dotCount++;
+                if (dotCount == 4) {
+                    addingDots = false;
+                }
+            } else {
+                dotCount--;
+                if (dotCount == 0) {
+                    addingDots = true;
+                }
+            }
+            StringBuilder dots = new StringBuilder();
+            for (int i = 0; i < dotCount; i++) {
+                dots.append(".");
+            }
+            loadingText.setText("LOADING" + dots);
+            handler.postDelayed(this, 500);
+        }
+    };
+
+
     private View generateDriverCard(DriverStanding standingElement, String driverIdToHighlight) {
         // Inflate the team card layout
-        View driverCard = getLayoutInflater().inflate(R.layout.small_driver_card, null);
+        View driverCard = getLayoutInflater().inflate(R.layout.driver_card, null);
 
         // Preparing all the views
         TextView driverPosition = driverCard.findViewById(R.id.driver_position);
@@ -157,7 +211,12 @@ public class DriversStandingActivity extends AppCompatActivity {
 
         }
 
-        driverCard.setOnClickListener(v -> Log.i(TAG, "Driver card clicked"));
+        driverCard.setOnClickListener(v -> {
+            Intent intent = new Intent(DriversStandingActivity.this, DriverBioActivity.class);
+            intent.putExtra("DRIVER_ID", driverId);
+            startActivity(intent);
+        });
+
 
         return driverCard;
     }

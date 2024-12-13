@@ -57,7 +57,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:srcCompat="@drawable/drivers_image"
-                        android:scaleType="centerCrop" />
+                        android:scaleType="fitXY" />
 
                 </LinearLayout>
 
@@ -82,7 +82,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         app:srcCompat="@drawable/constructors_image"
-                        android:scaleType="centerCrop"/>
+                        android:scaleType="fitXY"/>
 
                 </LinearLayout>
 
@@ -91,5 +91,13 @@
         </LinearLayout>
 
     </RelativeLayout>
+
+    <include layout="@layout/loading_screen"
+        android:id="@+id/loading_screen"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

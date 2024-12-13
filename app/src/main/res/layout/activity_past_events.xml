@@ -11,20 +11,20 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/top_bar_height"
+        android:layout_height="@dimen/top_bar_height_32_dp_top_margin"
+        android:background="@color/ferrari_secondary"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="?attr/actionBarSize"
-            app:title="PAST EVENTS"
-            app:titleCentered="true"
+            android:layout_height="@dimen/top_bar_height"
+            android:background="@color/ferrari_secondary"
+            android:layout_marginTop="32dp"
             app:navigationIcon="@drawable/arrow_back_ios_style"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_20sp"
-            android:background="@color/ferrari_f1" />
-
+            app:title="PAST"
+            app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar"
+            app:titleCentered="true" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.Guideline
@@ -45,13 +45,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/top_bar_height"
+        android:layout_marginTop="@dimen/top_bar_height_32_dp_top_margin"
         android:background="@color/screen_background_color">
 
         <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:scrollbars="none"
+            android:layout_marginTop="@dimen/small_margin"
             android:layout_marginStart="@dimen/small_margin"
             android:layout_marginEnd="@dimen/small_margin">
 
@@ -65,5 +66,13 @@
         </ScrollView>
 
     </LinearLayout>
+
+    <include layout="@layout/loading_screen"
+        android:id="@+id/loading_screen"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

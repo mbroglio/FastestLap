@@ -1,38 +1,37 @@
 package com.the_coffe_coders.fastestlap.ui.event;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Result;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.ResultsAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
-import com.the_coffe_coders.fastestlap.data.ErgastAPI;
-import com.the_coffe_coders.fastestlap.utils.Constants;
-
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-
-import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.card.MaterialCardView;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.race.Race;
+import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.race.Session;
+import com.the_coffe_coders.fastestlap.domain.race_result.Result;
+import com.the_coffe_coders.fastestlap.api.ResultsAPIResponse;
+import com.the_coffe_coders.fastestlap.api.ErgastAPI;
+import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
+import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
 import org.threeten.bp.Year;
@@ -47,13 +46,21 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EventActivity extends AppCompatActivity {
     private static final String TAG = "EventActivity";
     private String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
     private ErgastAPI ergastApi;
     private String circuitId;
+
+    private View loadingScreen;
+    private TextView loadingText;
+    private Handler handler = new Handler();
+    private int dotCount = 0;
+    private boolean addingDots = true;
+    private boolean eventToProcess = true;
+
     private final ZoneId localZone = ZoneId.systemDefault();
 
     @Override
@@ -61,11 +68,22 @@ public class EventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_event);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.activity_event), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
+        //loading screen logic
+        loadingScreen = findViewById(R.id.loading_screen);
+        loadingText = findViewById(R.id.loading_text);
+        ImageView loadingWheel = findViewById(R.id.loading_wheel);
+
+        // Start the rotation animation
+        Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        loadingWheel.startAnimation(rotateAnimation);
+
+        // Show loading screen initially
+        showLoadingScreen();
+        Log.i(TAG, "Loading screen shown");
+
+        // Start the dots animation
+        handler.post(dotRunnable);
 
         circuitId = getIntent().getStringExtra("CIRCUIT_ID");
         Log.i(TAG, "Circui ID: " + circuitId);
@@ -79,7 +97,7 @@ public class EventActivity extends AppCompatActivity {
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         ergastApi = retrofit.create(ErgastAPI.class);
@@ -102,6 +120,8 @@ public class EventActivity extends AppCompatActivity {
                         RaceAPIResponse raceSchedule = parser.parseRace(mrdata);
 
                         processRaceData(raceSchedule);
+                        eventToProcess = false;
+                        checkIfAllDataLoaded();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -122,14 +142,14 @@ public class EventActivity extends AppCompatActivity {
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
-        toolbar.setTitle(weeklyRace.getRaceName());
+        toolbar.setTitle(race.getRaceName().toUpperCase());
 
         ImageView countryFlag = findViewById(R.id.country_flag);
         String nation = weeklyRace.getCircuit().getLocation().getCountry();
         Integer flag = Constants.NATION_COUNTRY_FLAG.get(nation);
         countryFlag.setImageResource(flag);
 
-        ImageView trackMap = findViewById(R.id.track_outline);
+        ImageView trackMap = findViewById(R.id.track_outline_image);
         Integer outline = Constants.EVENT_CIRCUIT.get(circuitId);
         trackMap.setImageResource(outline);
 
@@ -148,14 +168,27 @@ public class EventActivity extends AppCompatActivity {
         TextView eventDate = findViewById(R.id.event_date);
         eventDate.setText(weeklyRace.getDateInterval());
 
-        List<Session> sessions = weeklyRace.getSessions();
-        Session nextEvent = weeklyRace.findNextEvent(sessions);
-        if (weeklyRace.isUnderway()) {
-            setLiveSession();
-        } else if (nextEvent != null) {
+        LinearLayout track = findViewById(R.id.track_outline_layout);
+        Log.i(TAG, "Track: " + track);
+        track.setOnClickListener(v -> {
+            Intent intent = new Intent(EventActivity.this, TrackBioActivity.class);
+            intent.putExtra("CIRCUIT_ID", circuitId);
+            Log.i(TAG, "Circuit ID: " + circuitId);
+            startActivity(intent);
+        });
+
+        List<Session> sessions = race.getSessions();
+        Session nextEvent = race.findNextEvent(sessions);
+        Boolean underway = false;
+        Log.i(TAG, "Race Underway: " + race.isSomeSessionUnderway());
+        if (race.isSomeSessionUnderway()) {
+                underway = true;
+                setLiveSession();
+        }
+        if (nextEvent != null && !underway) {
             ZonedDateTime eventDateTime = nextEvent.getStartDateTime();
             startCountdown(eventDateTime);
-        } else {
+        } else if (!underway) {
             showResults(raceSchedule);
         }
 
@@ -172,20 +205,17 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void setLiveSession() {
-        MaterialCardView liveSession = findViewById(R.id.live_session);
-        MaterialCardView noLiveSession = findViewById(R.id.no_live_session);
+        FrameLayout liveSessionContainer = findViewById(R.id.session_status_card_container);
+        View liveSession = findViewById(R.id.event_live_card);
+        View noLiveSession = findViewById(R.id.event_not_live_card);
 
-        // Set weight of live session card to 1
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        params.weight = 1;
-        liveSession.setLayoutParams(params);
+        // Hide countdown view and show results view
+        liveSession.setVisibility(View.VISIBLE);
+        noLiveSession.setVisibility(View.GONE);
 
-        // Set weight of no live session card to 0
-        params.weight = 0;
-        noLiveSession.setLayoutParams(params);
+        ImageView liveIcon = findViewById(R.id.live_icon);
+        Animation pulse = AnimationUtils.loadAnimation(this, R.anim.pulse_dynamic);
+        liveIcon.startAnimation(pulse);
     }
 
     private void startCountdown(ZonedDateTime eventDate) {
@@ -221,6 +251,8 @@ public class EventActivity extends AppCompatActivity {
         FrameLayout eventCardContainer = findViewById(R.id.event_card_container);
         View countdownView = findViewById(R.id.timer_card_countdown);
         View resultsView = findViewById(R.id.timer_card_results);
+        View pendingResultsView = findViewById(R.id.timer_card_pending_results);
+        View raceCancelledView = findViewById(R.id.timer_card_race_cancelled);
 
         // Hide countdown view and show results view
         countdownView.setVisibility(View.GONE);
@@ -230,21 +262,19 @@ public class EventActivity extends AppCompatActivity {
         processRaceResults(raceSchedule);
 
         // Set podium cricuit image
-        ImageView trackOutline = findViewById(R.id.results_track_outline);
+        ImageView trackOutline = findViewById(R.id.track_outline_image);
         trackOutline.setImageResource(Constants.EVENT_CIRCUIT.get(circuitId));
     }
 
     private void processRaceResults(RaceAPIResponse raceSchedule) {
-        // Get results from API https://ergast.com/api/f1/current/{roundNumber}/results.json
         String roundNumber = raceSchedule.getRaceTable().getRaces().get(0).getRound();
-        BASE_URL = "https://ergast.com/api/f1/current/" + roundNumber + "/";
+        BASE_URL = "https://api.jolpi.ca/ergast/f1/current/" + roundNumber + "/";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         ergastApi = retrofit.create(ErgastAPI.class);
-
         ergastApi.getResults().enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
@@ -258,7 +288,11 @@ public class EventActivity extends AppCompatActivity {
                         JSONParserUtils parser = new JSONParserUtils(EventActivity.this);
                         ResultsAPIResponse raceResult = parser.parseRaceResults(mrdata);
 
-                        showPodium(raceResult);
+                        if (raceResult.getRaceTable().getRaces().isEmpty()) {
+                            showPendingResults();
+                        } else {
+                            showPodium(raceResult);
+                        }
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -272,6 +306,17 @@ public class EventActivity extends AppCompatActivity {
                 Log.e(TAG, "Error fetching data", throwable);
             }
         });
+    }
+
+    private void showPendingResults() {
+        Log.i(TAG, "No results found");
+        View pendingResultsView = findViewById(R.id.timer_card_pending_results);
+        View countdownView = findViewById(R.id.timer_card_countdown);
+        View resultsView = findViewById(R.id.timer_card_results);
+
+        pendingResultsView.setVisibility(View.VISIBLE);
+        countdownView.setVisibility(View.GONE);
+        resultsView.setVisibility(View.GONE);
     }
 
     private void showPodium(ResultsAPIResponse raceResult) {
@@ -322,6 +367,44 @@ public class EventActivity extends AppCompatActivity {
                     Log.i(TAG, "session clicked");
                 }
             });
+        }
+    }
+
+    private void showLoadingScreen() {
+        loadingScreen.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoadingScreen() {
+        loadingScreen.setVisibility(View.GONE);
+        handler.removeCallbacks(dotRunnable);
+    }
+
+    private Runnable dotRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (addingDots) {
+                dotCount++;
+                if (dotCount == 4) {
+                    addingDots = false;
+                }
+            } else {
+                dotCount--;
+                if (dotCount == 0) {
+                    addingDots = true;
+                }
+            }
+            StringBuilder dots = new StringBuilder();
+            for (int i = 0; i < dotCount; i++) {
+                dots.append(".");
+            }
+            loadingText.setText("LOADING" + dots);
+            handler.postDelayed(this, 500);
+        }
+    };
+
+    private void checkIfAllDataLoaded() {
+        if (!eventToProcess) {
+            handler.postDelayed(this::hideLoadingScreen, 500); // 500 milliseconds delay
         }
     }
 }

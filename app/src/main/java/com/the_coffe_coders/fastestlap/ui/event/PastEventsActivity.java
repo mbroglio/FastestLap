@@ -1,29 +1,27 @@
 package com.the_coffe_coders.fastestlap.ui.event;
 
-import static android.app.PendingIntent.getActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Result;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.ResultsAPIResponse;
-import com.the_coffe_coders.fastestlap.data.ErgastAPI;
+import com.the_coffe_coders.fastestlap.domain.race_result.Race;
+import com.the_coffe_coders.fastestlap.domain.race_result.Result;
+import com.the_coffe_coders.fastestlap.api.ResultsAPIResponse;
+import com.the_coffe_coders.fastestlap.api.ErgastAPI;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
@@ -42,20 +40,37 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PastEventsActivity extends AppCompatActivity {
-    private boolean raceToProcess = true;
+
     private ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
     private int raceIndex = 1;
+
+    private View loadingScreen;
+    private TextView loadingText;
+    private Handler handler = new Handler();
+    private int dotCount = 0;
+    private boolean addingDots = true;
+    private boolean raceToProcess = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_past_events);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.past_events_view), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
+        //loading screen logic
+        loadingScreen = findViewById(R.id.loading_screen);
+        loadingText = findViewById(R.id.loading_text);
+        ImageView loadingWheel = findViewById(R.id.loading_wheel);
+
+        // Start the rotation animation
+        Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        loadingWheel.startAnimation(rotateAnimation);
+
+        // Show loading screen initially
+        showLoadingScreen();
+
+        // Start the dots animation
+        handler.post(dotRunnable);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
@@ -63,9 +78,42 @@ public class PastEventsActivity extends AppCompatActivity {
         processEvents(raceIndex);
     }
 
+    private void showLoadingScreen() {
+        loadingScreen.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoadingScreen() {
+        loadingScreen.setVisibility(View.GONE);
+        handler.removeCallbacks(dotRunnable);
+    }
+
+    private Runnable dotRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (addingDots) {
+                dotCount++;
+                if (dotCount == 4) {
+                    addingDots = false;
+                }
+            } else {
+                dotCount--;
+                if (dotCount == 0) {
+                    addingDots = true;
+                }
+            }
+            StringBuilder dots = new StringBuilder();
+            for (int i = 0; i < dotCount; i++) {
+                dots.append(".");
+            }
+            loadingText.setText("LOADING" + dots);
+            handler.postDelayed(this, 500);
+        }
+    };
+
     private void processEvents(int i) {
+        //"https://api.jolpi.ca/ergast/f1/current/" + i + "/"; // This will be the default URL
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.jolpi.ca/ergast/f1/current/" + i + "/")
+                .baseUrl("https://ergast.com/api/f1/current/" + i + "/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
@@ -88,6 +136,7 @@ public class PastEventsActivity extends AppCompatActivity {
                         if (races.isEmpty()) {
                             Log.i("PastEvents", "No past events found.");
                             raceToProcess = false;
+                            hideLoadingScreen();
                         } else {
                             Race race = races.get(0);
                             if (isPast(race)) {
@@ -96,6 +145,7 @@ public class PastEventsActivity extends AppCompatActivity {
                                 processEvents(raceIndex);
                             } else {
                                 raceToProcess = false;
+                                hideLoadingScreen();
                             }
                         }
                     } catch (IOException e) {
@@ -103,12 +153,14 @@ public class PastEventsActivity extends AppCompatActivity {
                     }
                 } else {
                     raceToProcess = false;
+                    hideLoadingScreen();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 raceToProcess = false;
+                hideLoadingScreen();
             }
         });
     }

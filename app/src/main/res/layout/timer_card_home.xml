@@ -204,6 +204,7 @@
                 android:layout_centerInParent="true"
                 android:layout_marginBottom="5dp"
                 android:text="RACE"
+                android:textColor="@color/black"
                 android:fontFamily="@font/orbitron_bold">
 
             </TextView>

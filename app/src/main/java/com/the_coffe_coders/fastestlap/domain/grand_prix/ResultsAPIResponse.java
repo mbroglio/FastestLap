@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.domain.grand_prix;
+package com.the_coffe_coders.fastestlap.domain.race_result;
 
 public class ResultsAPIResponse {
     private String xmlns;
@@ -7,9 +7,9 @@ public class ResultsAPIResponse {
     private String limit;
     private String offset;
     private String total;
-    private com.the_coffe_coders.fastestlap.domain.race_result.RaceTable RaceTable;
+    private RaceTable RaceTable;
 
-    public ResultsAPIResponse(String xmlns, String series, String url, String limit, String offset, String total, com.the_coffe_coders.fastestlap.domain.race_result.RaceTable RaceTable) {
+    public ResultsAPIResponse(String xmlns, String series, String url, String limit, String offset, String total, RaceTable RaceTable) {
         this.xmlns = xmlns;
         this.series = series;
         this.url = url;
@@ -67,11 +67,11 @@ public class ResultsAPIResponse {
         this.total = total;
     }
 
-    public com.the_coffe_coders.fastestlap.domain.race_result.RaceTable getRaceTable() {
+    public RaceTable getRaceTable() {
         return RaceTable;
     }
 
-    public void setRaceTable(com.the_coffe_coders.fastestlap.domain.race_result.RaceTable RaceTable) {
+    public void setRaceTable(RaceTable RaceTable) {
         this.RaceTable = RaceTable;
     }
 }

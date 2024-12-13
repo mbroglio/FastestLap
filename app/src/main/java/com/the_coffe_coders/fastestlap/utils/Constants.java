@@ -31,6 +31,7 @@ public class Constants {
         put("bearman", R.drawable.bearman_pic);
         put("colapinto", R.drawable.colapinto_pic);
         put("lawson", R.drawable.lawson_pic);
+        put("doohan", R.drawable.doohan_pic);
     }};
 
     public static final Map<String, Integer> DRIVER_FULLNAME = new HashMap<String, Integer>() {
@@ -58,6 +59,7 @@ public class Constants {
             put("bearman", R.string.oliver_bearman);
             put("colapinto", R.string.franco_colapinto);
             put("lawson", R.string.liam_lawson);
+            put("doohan", R.string.jack_doohan);
         }
     };
 
@@ -85,6 +87,7 @@ public class Constants {
         put("bearman", "haas");
         put("colapinto", "williams");
         put("lawson", "rb");
+        put("doohan", "alpine");
     }};
 
     public static final Map<String, Integer> TEAM_LOGO = new HashMap<String, Integer>() {{

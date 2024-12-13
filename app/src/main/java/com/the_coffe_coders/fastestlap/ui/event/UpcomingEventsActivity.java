@@ -2,24 +2,24 @@ package com.the_coffe_coders.fastestlap.ui.event;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceAPIResponse;
-import com.the_coffe_coders.fastestlap.data.ErgastAPI;
+import com.the_coffe_coders.fastestlap.domain.race.Race;
+import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
+import com.the_coffe_coders.fastestlap.api.ErgastAPI;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
@@ -39,22 +39,71 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class UpcomingEventsActivity extends AppCompatActivity {
 
+    private View loadingScreen;
+    private TextView loadingText;
+    private Handler handler = new Handler();
+    private int dotCount = 0;
+    private boolean addingDots = true;
+    private boolean raceToProcess = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_upcoming_events);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.upcoming_events_view), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
-        });
+
+        //loading screen logic
+        loadingScreen = findViewById(R.id.loading_screen);
+        loadingText = findViewById(R.id.loading_text);
+        ImageView loadingWheel = findViewById(R.id.loading_wheel);
+
+        // Start the rotation animation
+        Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        loadingWheel.startAnimation(rotateAnimation);
+
+        // Show loading screen initially
+        showLoadingScreen();
+
+        // Start the dots animation
+        handler.post(dotRunnable);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         processEvents();
     }
+
+    private void showLoadingScreen() {
+        loadingScreen.setVisibility(View.VISIBLE);
+    }
+
+    private void hideLoadingScreen() {
+        loadingScreen.setVisibility(View.GONE);
+        handler.removeCallbacks(dotRunnable);
+    }
+
+    private Runnable dotRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (addingDots) {
+                dotCount++;
+                if (dotCount == 4) {
+                    addingDots = false;
+                }
+            } else {
+                dotCount--;
+                if (dotCount == 0) {
+                    addingDots = true;
+                }
+            }
+            StringBuilder dots = new StringBuilder();
+            for (int i = 0; i < dotCount; i++) {
+                dots.append(".");
+            }
+            loadingText.setText("LOADING" + dots);
+            handler.postDelayed(this, 500);
+        }
+    };
 
     private void processEvents() {
         Retrofit retrofit = new Retrofit.Builder()
@@ -78,6 +127,8 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
                         List<WeeklyRace> upcomingRaces = extractUpcomingRaces(raceAPIResponse);
                         createEventCards(upcomingRaces);
+                        raceToProcess = false;
+                        hideLoadingScreen();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -128,8 +179,12 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     private View generateEventCard(WeeklyRace weeklyRace) {
         View eventCard = null;
 
-        if (weeklyRace.isUnderway()) {
+        if (race.isRaceWeekendUnderway()) {
             eventCard = getLayoutInflater().inflate(R.layout.upcoming_event_live_card, null);
+
+            ImageView liveIcon = eventCard.findViewById(R.id.upcoming_event_icon);
+            Animation pulse = AnimationUtils.loadAnimation(this, R.anim.pulse_dynamic);
+            liveIcon.startAnimation(pulse);
         } else {
             eventCard = getLayoutInflater().inflate(R.layout.upcoming_event_card, null);
         }

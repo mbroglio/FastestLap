@@ -11,19 +11,19 @@
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/top_bar_height_32_dp_top_margin"
+        android:background="@color/ferrari_secondary"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:minHeight="?attr/actionBarSize"
-            app:title="LAS VEGAS GRAND PRIX"
-            app:titleCentered="true"
+            android:layout_height="@dimen/top_bar_height"
+            android:background="@color/ferrari_secondary"
+            android:layout_marginTop="32dp"
             app:navigationIcon="@drawable/arrow_back_ios_style"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_20sp"
-            android:background="@color/ferrari_f1" />
-
+            app:title="AZERBAIJAN GRAND PRIX"
+            app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar"
+            app:titleCentered="true" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.Guideline
@@ -159,152 +159,111 @@
 
             </LinearLayout>
 
-            <FrameLayout
-                android:id="@+id/event_card_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="40dp"
-                android:layout_marginEnd="5dp">
-
-                <include
-                    android:id="@+id/timer_card_countdown"
-                    layout="@layout/timer_card_event"
-                    android:visibility="visible" />
-
-                <include
-                    android:id="@+id/timer_card_results"
-                    layout="@layout/results_card"
-                    android:visibility="gone" />
-            </FrameLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
+                android:layout_height="wrap_content"
                 android:layout_marginTop="40dp"
-                android:orientation="vertical">
+                android:layout_marginEnd="5dp"
+                android:layout_marginStart="5dp">
 
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/live_session"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginEnd="40dp"
-                    android:layout_weight="0"
+                    android:layout_height="wrap_content"
                     android:clickable="true"
                     android:focusable="true"
-                    app:cardBackgroundColor="@color/ferrari_f1"
                     app:cardCornerRadius="10dp"
-                    app:cardElevation="5dp"
-                    app:strokeColor="@color/black"
-                    app:strokeWidth="3dp">
+                    app:cardElevation="5dp">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center">
+                        android:id="@+id/countdown_and_track"
+                        android:layout_width="match_parent"
+                        android:layout_height="130dp"
+                        android:background="@color/timer_gray"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:fontFamily="@font/orbitron_bold"
-                            android:text="LIVE SESSION"
-                            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                            android:textColor="@color/screen_background_color"
-                            android:textStyle="bold">
+                        <FrameLayout
+                            android:id="@+id/event_card_container"
+                            android:layout_width="270dp"
+                            android:layout_height="match_parent">
 
-                        </TextView>
+                            <include
+                                android:id="@+id/timer_card_countdown"
+                                layout="@layout/timer_layout"
+                                android:visibility="visible"/>
 
-                        <RelativeLayout
-                            android:layout_width="40dp"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="center">
+                            <include
+                                android:id="@+id/timer_card_results"
+                                layout="@layout/results_layout"
+                                android:visibility="gone" />
 
-                            <ImageView
-                                android:id="@+id/live_icon"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                app:srcCompat="@drawable/dot_inside_a_circle_black">
+                            <include
+                                android:id="@+id/timer_card_pending_results"
+                                layout="@layout/pending_results_layout"
+                                android:visibility="gone" />
 
-                            </ImageView>
-                        </RelativeLayout>
+                            <include
+                                android:id="@+id/timer_card_race_cancelled"
+                                layout="@layout/race_cancelled_layout"
+                                android:visibility="gone" />
 
 
-                    </LinearLayout>
+                        </FrameLayout>
 
-                </com.google.android.material.card.MaterialCardView>
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/no_live_session"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_marginStart="40dp"
-                    android:layout_marginEnd="40dp"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="@color/dark_red"
-                    app:cardCornerRadius="10dp"
-                    app:cardElevation="5dp"
-                    app:strokeColor="@color/black"
-                    app:strokeWidth="3dp">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center">
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:layout_marginEnd="5dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/orbitron_bold"
-                                android:text="NO LIVE SESSION"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                                android:textColor="@color/black"
-                                android:textStyle="bold">
-
-                            </TextView>
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:fontFamily="@font/orbitron_bold"
-                                android:text="AVAILABLE"
-                                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                                android:textColor="@color/black"
-                                android:textStyle="bold">
-
-                            </TextView>
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:background="@color/screen_background_color">
 
                         </LinearLayout>
 
+                        <LinearLayout
+                            android:id="@+id/track_outline_layout"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:clickable="true"
+                            android:focusable="true">
 
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            app:srcCompat="@drawable/sad_face">
+                            <ImageView
+                                android:id="@+id/track_outline_image"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                app:srcCompat="@drawable/f1_2024_lve_outline">
 
-                        </ImageView>
+                            </ImageView>
 
+                        </LinearLayout>
 
                     </LinearLayout>
 
                 </com.google.android.material.card.MaterialCardView>
 
-
             </LinearLayout>
 
+            <FrameLayout
+                android:id="@+id/session_status_card_container"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp">
+
+                <include
+                    android:id="@+id/event_live_card"
+                    layout="@layout/event_live_session_card"
+                    android:visibility="gone" />
+
+                <include
+                    android:id="@+id/event_not_live_card"
+                    layout="@layout/event_no_live_session_card"
+                    android:visibility="visible" />
+
+            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

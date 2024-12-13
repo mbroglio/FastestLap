@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.domain.grand_prix;
+package com.the_coffe_coders.fastestlap.domain.race;
 
 public class RaceAPIResponse {
     // API Response
