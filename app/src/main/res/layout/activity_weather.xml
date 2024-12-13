@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".WeatherActivity">
+
+    <VideoView
+        android:id="@+id/video_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/top_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/top_bar_height_32_dp_top_margin"
+        android:background="@android:color/transparent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/top_app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/top_bar_height"
+            android:layout_marginTop="32dp"
+            app:navigationIcon="@drawable/arrow_back_ios_style"
+            app:navigationIconTint="@color/white"
+            app:title="ABU DHABI"
+            app:titleCentered="true"
+            app:titleTextColor="@color/white"
+            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="@dimen/top_bar_height_32_dp_top_margin" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="0dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
+        app:layout_constraintTop_toBottomOf="@id/guideline_top">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/today_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="5dp"
+                android:text="TODAY:"
+                android:textColor="@color/white"
+                android:fontFamily="@font/orbitron_bold"
+                android:textSize="12sp">
+
+            </TextView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/today_text"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:text="Thursday, 9 December 2021"
+                android:fontFamily="@font/orbitron_regular"
+                android:textColor="@color/white"
+                android:textSize="12sp">
+            </TextView>
+
+            <RelativeLayout
+                android:id="@+id/temperature_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/today_text"
+                android:layout_marginTop="20dp">
+
+                <TextView
+                    android:id="@+id/weather_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerInParent="true"
+                    android:text="Sunny"
+                    android:textSize="20sp"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/orbitron_bold">
+
+                </TextView>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="20dp"
+                    android:layout_centerInParent="true"
+                    android:layout_below="@id/weather_text">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="40dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="MIN: 22°"
+                            android:layout_gravity="center"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:textSize="12sp">
+                        </TextView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="30°"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Display2">
+
+                        </TextView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="MAX: 32°"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:textSize="12sp">
+                        </TextView>
+
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/weather_icon"
+                        android:layout_width="@dimen/driver_photo_in_card"
+                        android:layout_height="@dimen/driver_photo_in_card"
+                        android:layout_gravity="center"
+                        app:srcCompat="@drawable/rain_weather_icon">
+
+                    </ImageView>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="40dp">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:layout_gravity="center">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="TRACK"
+                                android:layout_gravity="center"
+                                android:textColor="@color/white"
+                                android:fontFamily="@font/orbitron_regular">
+
+                            </TextView>
+
+                            <ImageView
+                                android:layout_width="@dimen/icon_24_dp"
+                                android:layout_height="@dimen/icon_24_dp"
+                                android:layout_marginStart="5dp"
+                                app:srcCompat="@drawable/road">
+
+                            </ImageView>
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="40°"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:textAppearance="@style/TextAppearance.AppCompat.Display2">
+
+                        </TextView>
+
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/humidity_rain_probability_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_below="@id/temperature_layout"
+                android:layout_marginTop="20dp"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+
+                    <TextView
+                        android:id="@+id/humidity_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Humidity:"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/orbitron_bold">
+
+                    </TextView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="50%"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/orbitron_regular">
+
+                    </TextView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginTop="5dp">
+
+                    <TextView
+                        android:id="@+id/rain_probability_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rain Probability:"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/orbitron_bold">
+
+                    </TextView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:text="10%"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/orbitron_regular">
+
+                    </TextView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/wind_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_below="@id/humidity_rain_probability_layout"
+                android:layout_marginTop="20dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_centerInParent="true">
+
+                <ImageView
+
+                    android:layout_width="@dimen/driver_photo_in_card"
+                    android:layout_height="@dimen/driver_photo_in_card"
+                    app:srcCompat="@drawable/windsock_icon">
+
+                </ImageView>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="10dp">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="5dp">
+
+                        <TextView
+                            android:id="@+id/wind_direction_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Direction:"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/orbitron_bold">
+
+                        </TextView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text="SSE"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/orbitron_regular">
+
+                        </TextView>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="5dp">
+
+                        <TextView
+                            android:id="@+id/wind_speed_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Speed:"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/orbitron_bold">
+
+                        </TextView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text="10 km/h"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/orbitron_regular">
+
+                        </TextView>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="5dp">
+
+                        <TextView
+                            android:id="@+id/wind_gust_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Gust:"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/orbitron_bold">
+
+                        </TextView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="10dp"
+                            android:text="15 km/h"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/orbitron_regular">
+
+                        </TextView>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/weekend_forecast"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/wind_layout"
+                android:layout_alignStart="@id/wind_layout"
+                android:layout_marginTop="30dp">
+
+                <TextView
+                    android:id="@+id/weekend_forecast_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true"
+                    android:text="WEEKEND FORECAST"
+                    android:textSize="18sp"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/orbitron_bold">
+                </TextView>
+
+                <LinearLayout
+                    android:id="@+id/weekend_forecast_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/weekend_forecast_text"
+                    android:layout_marginTop="5dp"
+                    android:layout_alignStart="@id/weekend_forecast_text"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="40dp"
+                        android:background="@drawable/background_bottom_margin">
+
+                        <TextView
+                            android:id="@+id/day_1_text"
+                            android:layout_width="75dp"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_alignParentStart="true"
+                            android:text="Friday"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/orbitron_regular">
+
+                        </TextView>
+
+                        <ImageView
+                            android:id="@+id/day_1_weather_icon"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginBottom="3dp"
+                            android:layout_toEndOf="@id/day_1_text"
+                            android:layout_marginStart="80dp"
+                            app:srcCompat="@drawable/heavy_rain_weather_icon">
+
+                        </ImageView>
+
+                        <TextView
+                            android:id="@+id/day_1_temp_max"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_toEndOf="@+id/day_1_weather_icon"
+                            android:layout_marginStart="70dp"
+                            android:text="20"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/orbitron_bold">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/day_1_temp_min"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_toEndOf="@+id/day_1_temp_max"
+                            android:layout_marginStart="20dp"
+                            android:text="15"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/orbitron_regular">
+
+                        </TextView>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginEnd="40dp"
+                        android:background="@drawable/background_bottom_margin">
+
+                        <TextView
+                            android:id="@+id/day_2_text"
+                            android:layout_width="75dp"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_alignParentStart="true"
+                            android:text="Saturday"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/orbitron_regular">
+
+                        </TextView>
+
+                        <ImageView
+                            android:id="@+id/day_2_weather_icon"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginBottom="3dp"
+                            android:layout_toEndOf="@id/day_2_text"
+                            android:layout_marginStart="80dp"
+                            app:srcCompat="@drawable/sun_weather_icon">
+
+                        </ImageView>
+
+                        <TextView
+                            android:id="@+id/day_2_temp_max"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_toEndOf="@+id/day_2_weather_icon"
+                            android:layout_marginStart="70dp"
+                            android:text="20"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/orbitron_bold">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/day_2_temp_min"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_toEndOf="@+id/day_2_temp_max"
+                            android:layout_marginStart="20dp"
+                            android:text="15"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/orbitron_regular">
+
+                        </TextView>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginEnd="40dp"
+                        android:background="@drawable/background_bottom_margin">
+
+                        <TextView
+                            android:id="@+id/day_3_text"
+                            android:layout_width="75dp"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_alignParentStart="true"
+                            android:text="Sunday"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/orbitron_regular">
+
+                        </TextView>
+
+                        <ImageView
+                            android:id="@+id/day_3_weather_icon"
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginBottom="3dp"
+                            android:layout_toEndOf="@id/day_3_text"
+                            android:layout_marginStart="80dp"
+                            app:srcCompat="@drawable/partially_cloud_weather_icon">
+
+                        </ImageView>
+
+                        <TextView
+                            android:id="@+id/day_3_temp_max"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_toEndOf="@+id/day_3_weather_icon"
+                            android:layout_marginStart="70dp"
+                            android:text="20"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/orbitron_bold">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/day_3_temp_min"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_toEndOf="@+id/day_3_temp_max"
+                            android:layout_marginStart="20dp"
+                            android:text="15"
+                            android:textColor="@color/white"
+                            android:fontFamily="@font/orbitron_regular">
+
+                        </TextView>
+
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+
+
+
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
