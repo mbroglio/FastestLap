@@ -9,9 +9,9 @@ public class ResultDTO {
     private String positionText;
     private String points;
     @SerializedName("Driver")
-    private DriverDTO Driver;
+    private DriverDTO driver;
     @SerializedName("Constructor")
-    private ConstructorDTO Constructor;
+    private ConstructorDTO constructor;
     private String grid;
     private String laps;
     private String status;
@@ -21,8 +21,8 @@ public class ResultDTO {
         this.position = position;
         this.positionText = positionText;
         this.points = points;
-        this.Driver = driver;
-        this.Constructor = constructor;
+        this.driver = driver;
+        this.constructor = constructor;
         this.grid = grid;
         this.laps = laps;
         this.status = status;
@@ -45,11 +45,11 @@ public class ResultDTO {
     }
 
     public DriverDTO getDriver() {
-        return Driver;
+        return driver;
     }
 
     public ConstructorDTO getConstructor() {
-        return Constructor;
+        return constructor;
     }
 
     public String getGrid() {
@@ -81,11 +81,11 @@ public class ResultDTO {
     }
 
     public void setDriver(DriverDTO driver) {
-        this.Driver = driver;
+        this.driver = driver;
     }
 
     public void setConstructor(ConstructorDTO constructor) {
-        this.Constructor = constructor;
+        this.constructor = constructor;
     }
 
     public void setGrid(String grid) {
