@@ -84,7 +84,7 @@ public class JolpicaDriverStandingRepository {
 
 
     public static void main(String[] args) {
-        /*CompletableFuture<List<DriverDTO>> future = new JolpicaDriverRepository().getDriversFromServer();
+        CompletableFuture<List<DriverDTO>> future = new JolpicaDriverStandingRepository().getDriversFromServer();
 
         try {
             List<DriverDTO> drivers = future.get();
@@ -93,11 +93,8 @@ public class JolpicaDriverStandingRepository {
             }
         }catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
     }
 }
 
 
-
-
-}
