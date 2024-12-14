@@ -286,7 +286,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
-                                android:layout_marginStart="@dimen/small_margin"
+                                android:layout_marginStart="@dimen/medium_margin"
                                 android:text="@string/result"
                                 android:fontFamily="@font/orbitron_bold"
                                 android:textColor="@color/black">
@@ -300,7 +300,7 @@
                                 android:layout_centerVertical="true"
                                 android:layout_toEndOf="@id/result"
                                 android:layout_marginStart="5dp"
-                                android:layout_marginEnd="@dimen/small_margin"
+                                android:layout_marginEnd="@dimen/medium_margin"
                                 app:srcCompat="@drawable/checkered_flag">
 
                             </ImageView>
@@ -326,7 +326,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="40dp"
-                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginTop="@dimen/medium_margin"
                 android:layout_marginEnd="40dp">
 
                 <include layout="@layout/timer_card_home" />
@@ -336,9 +336,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginStart="@dimen/small_margin"
-                android:layout_marginTop="@dimen/small_margin"
-                android:layout_marginEnd="@dimen/small_margin"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/medium_margin"
                 app:strokeColor="@color/black"
                 app:strokeWidth="3dp">
 
@@ -354,7 +354,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
-                        android:layout_marginStart="@dimen/small_margin"
+                        android:layout_marginStart="@dimen/medium_margin"
                         android:layout_marginTop="5dp"
                         android:text="@string/not_found"
                         android:fontFamily="@font/orbitron_bold"
@@ -403,7 +403,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="42dp"
-                        android:layout_marginBottom="@dimen/small_margin">
+                        android:layout_marginBottom="@dimen/medium_margin">
 
                     </ImageView>
 
@@ -538,9 +538,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginStart="@dimen/small_margin"
-                android:layout_marginTop="@dimen/small_margin"
-                android:layout_marginEnd="@dimen/small_margin"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/medium_margin"
                 app:strokeColor="@color/black"
                 app:strokeWidth="3dp">
 
@@ -555,7 +555,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
-                        android:layout_marginStart="@dimen/small_margin"
+                        android:layout_marginStart="@dimen/medium_margin"
                         android:layout_marginTop="5dp"
                         android:text="@string/not_found"
                         android:fontFamily="@font/orbitron_bold"
@@ -697,7 +697,7 @@
                             android:id="@+id/favourite_constructor_flag"
                             android:layout_width="50dp"
                             android:layout_height="40dp"
-                            android:layout_marginEnd="@dimen/small_margin"
+                            android:layout_marginEnd="@dimen/medium_margin"
                             android:layout_marginBottom="5dp"
                             app:srcCompat="@drawable/italy_flag">
 

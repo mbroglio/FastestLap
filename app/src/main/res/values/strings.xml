@@ -94,6 +94,15 @@
     <string name="season_ended_upper_case">SEASON ENDED</string>
     <string name="last_season_results_upper_case">LAST SEASON RESULTS</string>
     <string name="pending_results_upper_case">PENDING RESULTS</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="missing_password"><u>Forgot your password?</u></string>
+    <string name="login">Login</string>
+    <string name="login_with_google">Login with Google</string>
+    <string name="or">or</string>
+    <string name="register">Register</string>
+    <string name="fastest_lap">Fastest Lap</string>
+    <string name="by_the_coffee_coders">by\nThe Coffee Coders</string>
 
 
 </resources>

@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/activity_login"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/black"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_width="200dp"
+            android:layout_height="60dp"
+            app:srcCompat="@drawable/f1_logo">
+
+        </ImageView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/orbitron_bold"
+            android:text="@string/fastest_lap"
+            android:textColor="@color/white"
+            android:textSize="35sp">
+
+        </TextView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginTop="50dp"
+            android:fontFamily="@font/orbitron_bold"
+            android:text="Already registered?"
+            android:textColor="@color/white">
+
+        </TextView>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="?attr/textInputOutlinedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginEnd="@dimen/medium_margin"
+            app:boxStrokeErrorColor="@color/ferrari_f1"
+            app:cursorColor="@color/black"
+            app:cursorErrorColor="@color/ferrari_f1"
+            app:startIconDrawable="@drawable/email_icon"
+            app:startIconTint="@color/black">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textInputEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/very_round_background"
+                android:fontFamily="@font/orbitron_regular"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/grey_card"
+                android:textColorHint="@color/black" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="?attr/textInputOutlinedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:layout_marginEnd="@dimen/medium_margin"
+            app:boxStrokeErrorColor="@color/ferrari_f1"
+            app:cursorColor="@color/black"
+            app:cursorErrorColor="@color/ferrari_f1"
+            app:endIconMode="password_toggle"
+            app:endIconTint="@color/black"
+            app:startIconDrawable="@drawable/password_icon"
+            app:startIconTint="@color/black">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textInputPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/very_round_background"
+                android:fontFamily="@font/orbitron_regular"
+                android:inputType="textPassword"
+                android:textColor="@color/grey_card"
+                android:textColorHint="@color/black" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            style="@style/Widget.Material3.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:fontFamily="@font/orbitron_bold"
+            android:gravity="start"
+            android:text="@string/missing_password"
+            android:textColor="@color/ferrari_f1" />
+
+        <Button
+            android:id="@+id/RegisterButton"
+            style="@style/Widget.Material3.Button.ElevatedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="50dp"
+            android:backgroundTint="@color/white"
+            android:fontFamily="@font/orbitron_regular"
+            android:text="@string/register"
+            android:textColor="@color/black" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="100dp"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:layout_marginEnd="100dp">
+
+            <View
+                android:layout_width="100dp"
+                android:layout_height="2dp"
+                android:layout_centerInParent="true"
+                android:layout_marginEnd="@dimen/medium_margin"
+                android:layout_toStartOf="@id/text_or"
+                android:background="@color/white" />
+
+            <TextView
+                android:id="@+id/text_or"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/orbitron_regular"
+                android:text="@string/or"
+                android:textColor="@color/white" />
+
+            <View
+                android:layout_width="100dp"
+                android:layout_height="2dp"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_toEndOf="@id/text_or"
+                android:background="@color/white" />
+
+
+        </RelativeLayout>
+
+        <Button
+            style="@style/Widget.Material3.Button.ElevatedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="50dp"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:layout_marginEnd="50dp"
+            android:backgroundTint="@color/white"
+            android:fontFamily="@font/orbitron_regular"
+            android:text="@string/login_with_google"
+            android:textColor="@color/black"
+            app:icon="@drawable/google_icon"
+            app:iconGravity="textStart"
+            app:iconTint="@null" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="70dp"
+            android:fontFamily="@font/orbitron_bold"
+            android:gravity="center"
+            android:lineSpacingExtra="10dp"
+            android:text="@string/by_the_coffee_coders"
+            android:textColor="@color/white"
+            android:textSize="20sp">
+
+        </TextView>
+
+    </LinearLayout>
+
+    <include layout="@layout/intro_screen"
+        android:id="@+id/intro_screen"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"/>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
