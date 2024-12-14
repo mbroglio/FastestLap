@@ -89,7 +89,7 @@ public class JolpicaDriverRepository implements IDriverRepository, JolpicaServer
 
                         future.complete(drivers); // Risolve il CompletableFuture
                     } catch (Exception e) {
-                        Log.e(TAG, "Failed to parse JSON response", e);
+                        //Log.e(TAG, "Failed to parse JSON response", e);
                         future.completeExceptionally(e);
                     }
                 } else {

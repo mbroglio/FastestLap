@@ -1,8 +1,10 @@
 package com.the_coffe_coders.fastestlap.api;
 
+import com.google.gson.annotations.SerializedName;
 import com.the_coffe_coders.fastestlap.dto.DriverStandingsTableDTO;
 
 public class DriverStandingsAPIResponse extends APIResponse{
+    @SerializedName("StandingsTable")
     private DriverStandingsTableDTO DriverStandingsTableDTO;
 
     public DriverStandingsAPIResponse(String xmlns, String series, String url, String limit, String offset, String total, DriverStandingsTableDTO DriverStandingsTableDTO) {

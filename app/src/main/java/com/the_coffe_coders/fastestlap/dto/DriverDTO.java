@@ -86,4 +86,17 @@ public class DriverDTO {
         this.nationality = nationality;
     }
 
+    @Override
+    public String toString() {
+        return "DriverDTO{" +
+                "driverId='" + driverId + '\'' +
+                ", permanentNumber='" + permanentNumber + '\'' +
+                ", code='" + code + '\'' +
+                ", url='" + url + '\'' +
+                ", givenName='" + givenName + '\'' +
+                ", familyName='" + familyName + '\'' +
+                ", dateOfBirth='" + dateOfBirth + '\'' +
+                ", nationality='" + nationality + '\'' +
+                '}';
+    }
 }

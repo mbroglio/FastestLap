@@ -1,11 +1,14 @@
 package com.the_coffe_coders.fastestlap.dto;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class DriverStandingsListDTO {
 
     private String season;
     private String round;
+
     private List<DriverStandingsDTO> DriverStandings;
 
     public DriverStandingsListDTO(String season, String round, List<DriverStandingsDTO> driverStandings) {
