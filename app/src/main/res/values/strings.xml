@@ -103,6 +103,7 @@
     <string name="register">Register</string>
     <string name="fastest_lap">Fastest Lap</string>
     <string name="by_the_coffee_coders">by\nThe Coffee Coders</string>
+    <string name="already_registered">Already registered?</string>
 
 
 </resources>

@@ -20,7 +20,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/app_logo"
-        android:layout_marginTop="20dp"
         android:layout_centerInParent="true"
         android:fontFamily="@font/orbitron_bold"
         android:text="@string/fastest_lap"
