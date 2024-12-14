@@ -6,14 +6,13 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.the_coffe_coders.fastestlap.domain.driver.Driver;
-import com.the_coffe_coders.fastestlap.domain.driver.DriverStandingsAPIResponse;
+import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
+import com.the_coffe_coders.fastestlap.api.ErgastAPI;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Circuit;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.CircuitAPIResponse;
+import com.the_coffe_coders.fastestlap.api.CircuitAPIResponse;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 

@@ -7,10 +7,12 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.the_coffe_coders.fastestlap.api.ErgastAPI;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 
-import com.the_coffe_coders.fastestlap.domain.driver.DriverStanding;
-import com.the_coffe_coders.fastestlap.domain.driver.DriverStandingsAPIResponse;
+import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
+import com.the_coffe_coders.fastestlap.dto.DriverDTO;
+import com.the_coffe_coders.fastestlap.dto.DriverStandingsDTO;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
 
@@ -53,8 +55,8 @@ public class JolpicaDriverRepository implements IDriverRepository, JolpicaServer
         return null;
     }
 
-    public CompletableFuture<List<Driver>> getDriversFromServer() {
-        CompletableFuture<List<Driver>> future = new CompletableFuture<>();
+    public CompletableFuture<List<DriverDTO>> getDriversFromServer() {
+        CompletableFuture<List<DriverDTO>> future = new CompletableFuture<>();
         String BASE_URL = "https://api.jolpi.ca/ergast/f1/" + 2024 + "/";
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
@@ -75,10 +77,10 @@ public class JolpicaDriverRepository implements IDriverRepository, JolpicaServer
                         JSONParserUtils jsonParserUtils = new JSONParserUtils();
                         DriverStandingsAPIResponse driverStandingsAPIResponse = jsonParserUtils.parseDriverStandings(mrdata);
 
-                        List<Driver> drivers = new ArrayList<>();
+                        List<DriverDTO> drivers = new ArrayList<>();
                         int total = Integer.parseInt(driverStandingsAPIResponse.getTotal());
                         for (int i = 0; i < total; i++) {
-                            DriverStanding standingElement = driverStandingsAPIResponse
+                            DriverStandingsDTO standingElement = driverStandingsAPIResponse
                                     .getStandingsTable()
                                     .getStandingsLists().get(0)
                                     .getDriverStandings().get(i);
@@ -107,11 +109,11 @@ public class JolpicaDriverRepository implements IDriverRepository, JolpicaServer
     }
 
     public static void main(String[] args) {
-        CompletableFuture<List<Driver>> future = new JolpicaDriverRepository().getDriversFromServer();
+        CompletableFuture<List<DriverDTO>> future = new JolpicaDriverRepository().getDriversFromServer();
 
         try {
-            List<Driver> drivers = future.get();
-            for (Driver driver : drivers) {
+            List<DriverDTO> drivers = future.get();
+            for (DriverDTO driver : drivers) {
                 System.out.println(driver.toString());
             }
         }catch (Exception e) {

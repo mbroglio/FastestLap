@@ -1,13 +1,14 @@
-package com.the_coffe_coders.fastestlap.domain.driver;
+package com.the_coffe_coders.fastestlap.dto;
 
 import java.util.List;
 
-public class StandingsList {
+public class DriverStandingsListDTO {
+
     private String season;
     private String round;
-    private List<DriverStanding> DriverStandings;
+    private List<DriverStandingsDTO> DriverStandings;
 
-    public StandingsList(String season, String round, List<DriverStanding> driverStandings) {
+    public DriverStandingsListDTO(String season, String round, List<DriverStandingsDTO> driverStandings) {
         this.season = season;
         this.round = round;
         this.DriverStandings = driverStandings;
@@ -29,11 +30,11 @@ public class StandingsList {
         this.round = round;
     }
 
-    public List<DriverStanding> getDriverStandings() {
+    public List<DriverStandingsDTO> getDriverStandings() {
         return DriverStandings;
     }
 
-    public void setDriverStandings(List<DriverStanding> driverStandings) {
+    public void setDriverStandings(List<DriverStandingsDTO> driverStandings) {
         this.DriverStandings = driverStandings;
     }
 

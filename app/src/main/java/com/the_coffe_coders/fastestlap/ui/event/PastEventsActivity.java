@@ -18,9 +18,6 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.race_result.Race;
-import com.the_coffe_coders.fastestlap.domain.race_result.Result;
-import com.the_coffe_coders.fastestlap.api.ResultsAPIResponse;
 import com.the_coffe_coders.fastestlap.api.ErgastAPI;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
@@ -40,7 +37,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class PastEventsActivity extends AppCompatActivity {
-
+/*
     private ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
     private int raceIndex = 1;
 
@@ -218,5 +215,5 @@ public class PastEventsActivity extends AppCompatActivity {
             startActivity(intent);
         });
         return eventCard;
-    }
+    }*/
 }

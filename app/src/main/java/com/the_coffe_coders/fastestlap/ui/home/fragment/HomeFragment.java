@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.ui.home.fragment;
+/*package com.the_coffe_coders.fastestlap.ui.home.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,14 +23,9 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStanding;
-import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStandingsAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.driver.DriverStanding;
-import com.the_coffe_coders.fastestlap.api.StandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.race.Race;
 import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.race.Session;
-import com.the_coffe_coders.fastestlap.api.ResultsAPIResponse;
 import com.the_coffe_coders.fastestlap.api.ErgastAPI;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
@@ -58,7 +53,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * A simple {@link Fragment} subclass.
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
- */
+
 public class HomeFragment extends Fragment {
     private final String TAG = "HomeFragment";
     private ErgastAPI ergastAPI;
@@ -551,3 +546,4 @@ public class HomeFragment extends Fragment {
     }
 }
 
+*/

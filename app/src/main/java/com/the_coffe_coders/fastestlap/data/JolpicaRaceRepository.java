@@ -6,9 +6,10 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.the_coffe_coders.fastestlap.api.ErgastAPI;
+import com.the_coffe_coders.fastestlap.api.ResultsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.ResultsAPIResponse;
+import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
 import java.io.IOException;

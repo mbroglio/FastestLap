@@ -1,5 +1,5 @@
 package com.the_coffe_coders.fastestlap.ui.event;
-
+/*
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -144,7 +144,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
     private List<WeeklyRace> extractUpcomingRaces(RaceAPIResponse raceAPIResponse) {
         ZonedDateTime now = ZonedDateTime.now();
-        /*//List<WeeklyRace> races = raceAPIResponse.getRaceTable().getRaces();
+        //List<WeeklyRace> races = raceAPIResponse.getRaceTable().getRaces();
         List<WeeklyRace> upcomingRaces = new ArrayList<>();
 
         for (WeeklyRace weeklyRace : races) {
@@ -159,7 +159,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
             }
         }
 
-        return upcomingRaces;*/
+        return upcomingRaces;
         return null;
     }
 
@@ -216,3 +216,5 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         return eventCard;
     }
 }
+
+*/

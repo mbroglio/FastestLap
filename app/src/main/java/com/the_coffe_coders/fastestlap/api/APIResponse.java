@@ -1,12 +1,8 @@
 package com.the_coffe_coders.fastestlap.api;
 
-<<<<<<<< HEAD:app/src/main/java/com/the_coffe_coders/fastestlap/domain/driver/DriverStandingsAPIResponse.java
-public class DriverStandingsAPIResponse {
-========
 import androidx.annotation.NonNull;
 
 public class APIResponse {
->>>>>>>> origin/DTO_definition:app/src/main/java/com/the_coffe_coders/fastestlap/api/APIResponse.java
     private String xmlns;
     private String series;
     private String url;
@@ -14,11 +10,7 @@ public class APIResponse {
     private String offset;
     private String total;
 
-<<<<<<<< HEAD:app/src/main/java/com/the_coffe_coders/fastestlap/domain/driver/DriverStandingsAPIResponse.java
-    public DriverStandingsAPIResponse(String xmlns, String series, String url, String limit, String offset, String total, StandingsTable StandingsTable) {
-========
     public APIResponse(String xmlns, String series, String url, String limit, String offset, String total) {
->>>>>>>> origin/DTO_definition:app/src/main/java/com/the_coffe_coders/fastestlap/api/APIResponse.java
         this.xmlns = xmlns;
         this.series = series;
         this.url = url;

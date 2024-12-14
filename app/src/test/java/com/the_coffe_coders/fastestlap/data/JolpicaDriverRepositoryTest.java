@@ -1,8 +1,8 @@
 package com.the_coffe_coders.fastestlap.data;
 
-public class DriverRepositoryTest extends TestCase {
+import junit.framework.TestCase;
 
-public class DriverRepositoryTest extends TestCase {
+public class JolpicaDriverRepositoryTest extends TestCase {
 
     public void testFindAll() {
         JolpicaDriverRepository.main(new String[0]);

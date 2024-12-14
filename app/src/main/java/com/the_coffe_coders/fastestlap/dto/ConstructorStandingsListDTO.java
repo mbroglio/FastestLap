@@ -1,13 +1,13 @@
-package com.the_coffe_coders.fastestlap.domain.constructor;
+package com.the_coffe_coders.fastestlap.dto;
 
 import java.util.List;
 
-public class StandingsList {
+public class ConstructorStandingsListDTO {
     private String season;
     private String round;
-    private List<ConstructorStanding> ConstructorStandings;
+    private List<ConstructorStandingsDTO> ConstructorStandings;
 
-    public StandingsList(String season, String round, List<ConstructorStanding> ConstructorStandings) {
+    public ConstructorStandingsListDTO(String season, String round, List<ConstructorStandingsDTO> ConstructorStandings) {
         this.season = season;
         this.round = round;
         this.ConstructorStandings = ConstructorStandings;
@@ -29,11 +29,11 @@ public class StandingsList {
         this.round = round;
     }
 
-    public List<ConstructorStanding> getConstructorStandings() {
+    public List<ConstructorStandingsDTO> getConstructorStandings() {
         return ConstructorStandings;
     }
 
-    public void setConstructorStandings(List<ConstructorStanding> standingLists) {
+    public void setConstructorStandings(List<ConstructorStandingsDTO> standingLists) {
         this.ConstructorStandings = standingLists;
     }
 }

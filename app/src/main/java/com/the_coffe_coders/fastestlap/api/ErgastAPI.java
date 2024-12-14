@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:app/src/main/java/com/the_coffe_coders/fastestlap/data/ErgastAPI.java
-package com.the_coffe_coders.fastestlap.data;
-========
 package com.the_coffe_coders.fastestlap.api;
->>>>>>>> origin/DTO_definition:app/src/main/java/com/the_coffe_coders/fastestlap/api/ErgastAPI.java
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;

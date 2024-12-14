@@ -24,11 +24,9 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.race.Race;
+
 import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.race.Session;
-import com.the_coffe_coders.fastestlap.domain.race_result.Result;
-import com.the_coffe_coders.fastestlap.api.ResultsAPIResponse;
+
 import com.the_coffe_coders.fastestlap.api.ErgastAPI;
 import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
 import com.the_coffe_coders.fastestlap.utils.Constants;
@@ -49,7 +47,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EventActivity extends AppCompatActivity {
-    private static final String TAG = "EventActivity";
+    /*private static final String TAG = "EventActivity";
     private String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
     private ErgastAPI ergastApi;
     private String circuitId;
@@ -406,5 +404,5 @@ public class EventActivity extends AppCompatActivity {
         if (!eventToProcess) {
             handler.postDelayed(this::hideLoadingScreen, 500); // 500 milliseconds delay
         }
-    }
+    }*/
 }
