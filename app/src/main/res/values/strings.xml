@@ -104,6 +104,9 @@
     <string name="fastest_lap">Fastest Lap</string>
     <string name="by_the_coffee_coders">by\nThe Coffee Coders</string>
     <string name="already_registered">Already registered?</string>
+    <string name="registration">Registration</string>
+    <string name="submit_upper_case">SUBMIT</string>
+    <string name="not_registered">Not registered yet?</string>
 
 
 </resources>

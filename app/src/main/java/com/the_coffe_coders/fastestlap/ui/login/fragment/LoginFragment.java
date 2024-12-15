@@ -1,9 +1,13 @@
 package com.the_coffe_coders.fastestlap.ui.login.fragment;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import androidx.fragment.app.Fragment;
 
@@ -12,6 +16,7 @@ import com.the_coffe_coders.fastestlap.ui.login.IntroScreen;
 
 public class LoginFragment extends Fragment {
 
+    private static final String TAG = "LoginFragment";
     private IntroScreen introScreen;
 
     public LoginFragment() {
@@ -35,7 +40,42 @@ public class LoginFragment extends Fragment {
         introScreen = new IntroScreen(view, getContext());
         introScreen.showIntroScreen();
 
+        Button registerButton = view.findViewById(R.id.RegisterButton);
+        registerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showRegisterPopup();
+            }
+        });
+
         return view;
+    }
+
+    private void showRegisterPopup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        LayoutInflater inflater = getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.register_pop_up, null);
+        builder.setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
+
+        Button submitButton = dialogView.findViewById(R.id.submit_button);
+        EditText emailEditText = dialogView.findViewById(R.id.textInputEmail);
+        EditText passwordEditText = dialogView.findViewById(R.id.textInputPassword);
+
+        submitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email = emailEditText.getText().toString();
+                String password = passwordEditText.getText().toString();
+                Log.d(TAG, "Email: " + email);
+                Log.d(TAG, "Password: " + password);
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
     @Override

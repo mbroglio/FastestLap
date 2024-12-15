@@ -181,6 +181,7 @@
 
 
     <color name="ferrari_secondary">#CA3144</color>
+    <color name="ferrari_secondary_light">#C98282</color>
     <color name="screen_background_color">#1E1E24</color>
     <color name="prova">#E47180</color>
     <color name="yellow">#FFD700</color>
