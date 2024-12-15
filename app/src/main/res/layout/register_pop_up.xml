@@ -48,8 +48,7 @@
                 android:background="@drawable/background_top_left_right_margins"
                 android:fontFamily="@font/orbitron_regular"
                 android:inputType="textEmailAddress"
-                android:textColor="@color/grey_card"
-                android:textColorHint="@color/black" />
+                android:textColor="@color/grey_card"/>
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -79,8 +78,7 @@
                 android:background="@drawable/background_top_left_right_margins"
                 android:fontFamily="@font/orbitron_regular"
                 android:inputType="textPassword"
-                android:textColor="@color/grey_card"
-                android:textColorHint="@color/black" />
+                android:textColor="@color/grey_card" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

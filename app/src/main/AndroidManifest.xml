@@ -32,6 +32,7 @@
         <activity android:name=".ui.bio.ConstructorBioActivity" />
         <activity android:name=".ui.bio.DriverBioActivity" />
         <activity android:name=".ui.weather.WeatherActivity" />
+        <activity android:name=".ui.home.UserActivity" />
     </application>
 
 </manifest>

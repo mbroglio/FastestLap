@@ -426,7 +426,7 @@
                         android:layout_height="30dp"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="40dp"
-                        android:background="@drawable/background_bottom_margin">
+                        android:background="@drawable/background_bottom_margin_3_dp">
 
                         <TextView
                             android:id="@+id/day_1_text"
@@ -485,7 +485,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="40dp"
-                        android:background="@drawable/background_bottom_margin">
+                        android:background="@drawable/background_bottom_margin_3_dp">
 
                         <TextView
                             android:id="@+id/day_2_text"
@@ -544,7 +544,7 @@
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="40dp"
-                        android:background="@drawable/background_bottom_margin">
+                        android:background="@drawable/background_bottom_margin_3_dp">
 
                         <TextView
                             android:id="@+id/day_3_text"

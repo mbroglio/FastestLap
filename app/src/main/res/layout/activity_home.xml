@@ -20,6 +20,7 @@
             android:layout_height="@dimen/top_bar_height"
             android:background="@color/ferrari_secondary"
             android:layout_marginTop="32dp"
+            app:menu="@menu/top_bar_menu"
             app:title="FASTEST LAP"
             app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp"
             app:titleCentered="true" />

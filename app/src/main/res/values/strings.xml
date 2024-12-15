@@ -110,6 +110,12 @@
     <string name="choose_upper_case">CHOOSE</string>
     <string name="missing_driver_upper_case">MISSING DRIVER</string>
     <string name="missing_constructor_upper_case">MISSING CONSTRUCTOR</string>
+    <string name="profile_menu">Profile</string>
+    <string name="profile_upper_case">PROFILE</string>
+    <string name="email_field">Email:</string>
+    <string name="password_field">Password:</string>
+    <string name="favourite_driver_field">Favourite Driver:</string>
+    <string name="favourite_constructor_field">Favourite Constructor:</string>
 
 
 </resources>
