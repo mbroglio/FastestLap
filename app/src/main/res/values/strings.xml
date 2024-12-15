@@ -107,6 +107,7 @@
     <string name="registration">Registration</string>
     <string name="submit_upper_case">SUBMIT</string>
     <string name="not_registered">Not registered yet?</string>
+    <string name="choose_upper_case">CHOOSE</string>
 
 
 </resources>
