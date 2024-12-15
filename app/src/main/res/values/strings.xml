@@ -108,6 +108,8 @@
     <string name="submit_upper_case">SUBMIT</string>
     <string name="not_registered">Not registered yet?</string>
     <string name="choose_upper_case">CHOOSE</string>
+    <string name="missing_driver_upper_case">MISSING DRIVER</string>
+    <string name="missing_constructor_upper_case">MISSING CONSTRUCTOR</string>
 
 
 </resources>

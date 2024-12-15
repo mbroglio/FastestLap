@@ -97,7 +97,7 @@
                         android:layout_alignParentTop="true"
                         android:layout_marginStart="@dimen/medium_margin"
                         android:layout_marginTop="5dp"
-                        android:text="@string/not_found"
+                        android:text="@string/missing_driver_upper_case"
                         android:fontFamily="@font/orbitron_bold"
                         android:textColor="@color/black"
                         android:textSize="18sp">
@@ -220,42 +220,29 @@
                         android:layout_alignParentStart="true"
                         android:layout_marginStart="@dimen/medium_margin"
                         android:layout_marginTop="5dp"
-                        android:text="@string/not_found"
+                        android:text="@string/missing_constructor_upper_case"
                         android:fontFamily="@font/orbitron_bold"
                         android:textColor="@color/black"
                         android:textSize="18sp">
 
                     </TextView>
 
-                    <RelativeLayout
-                        android:id="@+id/favourite_constructor_car_layout"
+                    <ImageView
+                        android:id="@+id/favourite_constructor_car"
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
-                        android:layout_marginEnd="5dp"
                         android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
                         android:layout_below="@id/favourite_constructor_name"
-                        android:background="@drawable/f1_car_icon_filled_2">
+                        app:srcCompat="@drawable/f1_car_question_mark">
 
-                        <ImageView
-                            android:id="@+id/favourite_constructor_car"
-                            android:layout_width="60dp"
-                            android:layout_height="60dp"
-                            android:layout_marginEnd="110dp"
-                            android:layout_centerInParent="true"
-                            android:layout_alignParentEnd="true"
-                            app:srcCompat="@drawable/question_mark_icon_white">
-
-                        </ImageView>
-
-                    </RelativeLayout>
-
-
+                    </ImageView>
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/favourite_constructor_rank"
                         android:layout_width="120dp"
                         android:layout_height="40dp"
-                        android:layout_below="@id/favourite_constructor_car_layout"
+                        android:layout_below="@id/favourite_constructor_car"
                         android:layout_marginStart="30dp"
                         android:layout_alignParentStart="true"
                         android:layout_marginTop="5dp"
