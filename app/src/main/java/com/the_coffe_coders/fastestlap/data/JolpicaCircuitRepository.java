@@ -9,7 +9,7 @@ import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.api.ErgastAPI;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Circuit;
-import com.the_coffe_coders.fastestlap.api.CircuitAPIResponse;
+
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
 import java.util.ArrayList;
@@ -58,11 +58,11 @@ public class JolpicaCircuitRepository implements ICircuitRepository, JolpicaServ
                         JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
                         System.out.println(mrdata);
                         JSONParserUtils jsonParserUtils = new JSONParserUtils();
-                        CircuitAPIResponse circuitAPIResponse = jsonParserUtils.parseCircuit(mrdata);
+                        //CircuitAPIResponse circuitAPIResponse = jsonParserUtils.parseCircuit(mrdata);
 
                         List<Circuit> circuits = new ArrayList<>();
 
-                        circuits.addAll(circuitAPIResponse.getCircuitTable().getCircuits());
+                        //circuits.addAll(circuitAPIResponse.getCircuitTable().getCircuits());
                         //System.out.println(circuitAPIResponse.getCircuitTable());
                        future.complete(circuits); // Risolve il CompletableFuture
                     } catch (Exception e) {

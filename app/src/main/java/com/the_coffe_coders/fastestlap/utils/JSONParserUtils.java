@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.the_coffe_coders.fastestlap.api.CircuitAPIResponse;
+//import com.the_coffe_coders.fastestlap.api.CircuitAPIResponse;
 import com.the_coffe_coders.fastestlap.api.ConstructorStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
@@ -34,7 +34,7 @@ public class JSONParserUtils {
         return new Gson().fromJson(jsonObject, ResultsAPIResponse.class);
     }
 
-    public CircuitAPIResponse parseCircuit(JsonObject jsonObject) {
+    /*public CircuitAPIResponse parseCircuit(JsonObject jsonObject) {
         return new Gson().fromJson(jsonObject, CircuitAPIResponse.class);
-    }
+    }*/
 }

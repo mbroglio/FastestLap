@@ -47,4 +47,14 @@ public class CircuitDTO {
     public void setLocationDTO (LocationDTO location) {
         this.location = location;
     }
+
+    @Override
+    public String toString() {
+        return "CircuitDTO{" +
+                "circuitId='" + circuitId + '\'' +
+                ", url='" + url + '\'' +
+                ", circuitName='" + circuitName + '\'' +
+                ", location=" + location +
+                '}';
+    }
 }

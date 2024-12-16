@@ -147,4 +147,23 @@ public class RaceDTO {
     public void setUrl(String url) {
         this.url = url;
     }
+
+    @Override
+    public String toString() {
+        return "RaceDTO{" +
+                "season='" + season + '\'' +
+                ", round='" + round + '\'' +
+                ", url='" + url + '\'' +
+                ", raceName='" + raceName + '\'' +
+                ", circuit=" + circuit +
+                ", date='" + date + '\'' +
+                ", time='" + time + '\'' +
+                ", firstPractice=" + firstPractice +
+                ", secondPractice=" + secondPractice +
+                ", thirdPractice=" + thirdPractice +
+                ", qualifying=" + qualifying +
+                ", sprintQualifying=" + sprintQualifying +
+                ", sprint=" + sprint +
+                '}';
+    }
 }

@@ -1,5 +1,5 @@
 package com.the_coffe_coders.fastestlap.api;
-
+/*
 import com.google.gson.annotations.SerializedName;
 
 public class CircuitAPIResponse extends APIResponse{
@@ -17,4 +17,4 @@ public class CircuitAPIResponse extends APIResponse{
         this.circuitTable = circuitTable;
     }
 
-}
+}*/

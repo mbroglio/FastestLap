@@ -45,4 +45,14 @@ public class LocationDTO {
     public void setCountry(String country) {
         this.country = country;
     }
+
+    @Override
+    public String toString() {
+        return "LocationDTO{" +
+                "lat='" + lat + '\'' +
+                ", _long='" + _long + '\'' +
+                ", locality='" + locality + '\'' +
+                ", country='" + country + '\'' +
+                '}';
+    }
 }

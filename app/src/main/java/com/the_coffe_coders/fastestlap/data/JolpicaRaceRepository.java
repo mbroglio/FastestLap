@@ -10,10 +10,14 @@ import com.the_coffe_coders.fastestlap.api.ErgastAPI;
 import com.the_coffe_coders.fastestlap.api.ResultsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
+import com.the_coffe_coders.fastestlap.dto.RaceDTO;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -22,7 +26,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class JolpicaRaceRepository {
+public class JolpicaRaceRepository implements JolpicaServer{
     private static final String TAG = "RetrofitRaceRepository";
     private static JolpicaRaceRepository instance;
 
@@ -39,15 +43,15 @@ public class JolpicaRaceRepository {
 
     }
 
-    public CompletableFuture<Race> getLastRaceFromServer() {
-        CompletableFuture<Race> lastRace = new CompletableFuture<>();
-        String BASE_URL = "https://ergast.com/api/f1/";
+    public CompletableFuture<Race> getRacesFromServer() {
+        CompletableFuture<RaceDTO> races = new CompletableFuture<>();
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(CURRENT_YEAR_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         ergastAPI = retrofit.create(ErgastAPI.class);
-        ergastAPI.getLastRaceResults().enqueue(new Callback<>() {
+        ergastAPI.getRaces().enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 System.out.println("Response: " + response);
@@ -61,8 +65,12 @@ public class JolpicaRaceRepository {
                         ResultsAPIResponse raceResults = parser.parseRaceResults(mrdata);
 
                         //System.out.println(raceResults.toString());
-                        //lastRace.complete(raceResults.getRaceTable().getRaces().get(0));
+                        races.complete(raceResults.getRaceTable().getRaces().get(0));
+                        List<RaceDTO> raceDTOList = raceResults.getRaceTable().getRaces();
 
+                        for (RaceDTO race: raceDTOList){
+                            System.out.println(race);
+                        }
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -80,7 +88,7 @@ public class JolpicaRaceRepository {
             throw new RuntimeException(e);
         }
 
-        return lastRace;
+        return null;
     }
 
     public CompletableFuture<Race> getNextRaceFromServer() {
