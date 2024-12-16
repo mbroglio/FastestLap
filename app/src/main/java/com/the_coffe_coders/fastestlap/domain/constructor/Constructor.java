@@ -13,6 +13,10 @@ public class Constructor {
         this.nationality = nationality;
     }
 
+    public Constructor(){
+
+    }
+
     public String getConstructorId() {
         return constructorId;
     }

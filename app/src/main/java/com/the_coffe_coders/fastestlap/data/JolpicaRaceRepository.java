@@ -93,9 +93,9 @@ public class JolpicaRaceRepository implements JolpicaServer{
 
     public CompletableFuture<Race> getNextRaceFromServer() {
         CompletableFuture<Race> nextRace = new CompletableFuture<>();
-        String BASE_URL = "https://ergast.com/api/f1/";
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(CURRENT_YEAR_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         ergastAPI = retrofit.create(ErgastAPI.class);
@@ -103,7 +103,7 @@ public class JolpicaRaceRepository implements JolpicaServer{
         ergastAPI.getNextRace().enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                Log.i(TAG, "Response: " + response);
+                //Log.i(TAG, "Response: " + response);
                 if (response.isSuccessful() && response.body() != null) {
                     try {
                         String responseBody = response.body().string();
@@ -113,7 +113,8 @@ public class JolpicaRaceRepository implements JolpicaServer{
                         JSONParserUtils parser = new JSONParserUtils();
                         RaceAPIResponse raceSchedule = parser.parseRace(mrdata);
 
-                        //nextRace.complete(raceResults.getRaceTable().getRaces().get(0));
+                        System.out.println(mrdata);
+                        //nextRace.complete(raceResult.getRaceTable().getRaces().get(0));
 
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -125,6 +126,54 @@ public class JolpicaRaceRepository implements JolpicaServer{
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
             }
         });
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
         return nextRace;
+    }
+
+    public CompletableFuture<Race> getLastRaceResultFromServer() {
+        CompletableFuture<Race> lastRaceResult = new CompletableFuture<>();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(CURRENT_YEAR_BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        ergastAPI = retrofit.create(ErgastAPI.class);
+
+        ergastAPI.getLastRaceResults().enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                //Log.i(TAG, "Response: " + response);
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        String responseBody = response.body().string();
+                        JsonObject jsonObject = new Gson().fromJson(responseBody, JsonObject.class);
+                        JsonObject mrdata = jsonObject.getAsJsonObject("MRData");
+
+                        JSONParserUtils parser = new JSONParserUtils();
+                        RaceAPIResponse raceSchedule = parser.parseRace(mrdata);
+
+                        System.out.println(mrdata);
+                        //nextRace.complete(raceResult.getRaceTable().getRaces().get(0));
+
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+            }
+        });
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return lastRaceResult;
     }
 }

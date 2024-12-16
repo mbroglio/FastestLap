@@ -17,4 +17,18 @@ public class JolpicaRaceRepositoryTest extends TestCase {
         assertTrue(true);
 
     }
+
+    public void testNextRaceFromServer() {
+        JolpicaRaceRepository raceRepository = JolpicaRaceRepository.getInstance();
+        raceRepository.getNextRaceFromServer();
+        //System.out.println("Last race: " + lastRace);
+        assertTrue(true);
+    }
+
+    public void testLastRaceResultFromServer() {
+        JolpicaRaceRepository raceRepository = JolpicaRaceRepository.getInstance();
+        raceRepository.getLastRaceResultFromServer();
+        //System.out.println("Last race: " + lastRace);
+        assertTrue(true);
+    }
 }
