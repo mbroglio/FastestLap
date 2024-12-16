@@ -68,15 +68,36 @@
 
             </LinearLayout>
 
-            <TextView
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:fontFamily="@font/orbitron_bold"
-                android:text="Lorenzo_207378"
-                android:textColor="@color/white">
+                android:layout_marginTop="5dp">
 
-            </TextView>
+                <EditText
+                    android:id="@+id/profile_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerInParent="true"
+                    android:background="@null"
+                    android:cursorVisible="true"
+                    android:enabled="false"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:inputType="text"
+                    android:text="Lorenzo_207378"
+                    android:textColor="@color/white"
+                    android:textCursorDrawable="@drawable/cursor_color"
+                    android:textSize="14sp" />
+
+                <ImageView
+                    android:id="@+id/edit_profile_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="10dp"
+                    android:layout_toEndOf="@+id/profile_text"
+                    android:src="@drawable/pencil_icon_white" />
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -110,15 +131,15 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
-                        android:enabled="false"
+                        android:background="@null"
                         android:cursorVisible="true"
+                        android:enabled="false"
                         android:fontFamily="@font/orbitron_regular"
                         android:inputType="textEmailAddress"
                         android:text="pierre.gasslee@gmail.com"
                         android:textColor="@color/timer_gray"
                         android:textCursorDrawable="@drawable/cursor_color"
-                        android:textSize="14sp"
-                        android:background="@null"/>
+                        android:textSize="14sp" />
 
                     <ImageView
                         android:id="@+id/edit_email"
@@ -164,15 +185,15 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
+                        android:background="@null"
+                        android:cursorVisible="true"
                         android:enabled="false"
                         android:fontFamily="@font/orbitron_regular"
                         android:inputType="textPassword"
-                        android:cursorVisible="true"
                         android:text="Lorenzo 1"
                         android:textColor="@color/timer_gray"
                         android:textCursorDrawable="@drawable/cursor_color"
-                        android:textSize="14sp"
-                        android:background="@null"/>
+                        android:textSize="14sp" />
 
 
                     <ImageView
@@ -356,22 +377,22 @@
 
             </LinearLayout>
 
-           <Button
-               android:id="@+id/save_button"
-               android:layout_width="wrap_content"
-               android:layout_height="40dp"
-               android:layout_gravity="bottom|end"
-               android:layout_marginTop="30dp"
-               android:layout_marginEnd="30dp"
-               android:backgroundTint="@color/timer_gray"
-               android:text="@string/save_upper_case"
-               android:fontFamily="@font/orbitron_bold"
-               android:textColor="@color/black"
-               app:icon="@drawable/check_icon_black"
-               app:iconTint="@color/black"
-               android:visibility="invisible">
+            <Button
+                android:id="@+id/save_button"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom|end"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="30dp"
+                android:backgroundTint="@color/timer_gray"
+                android:fontFamily="@font/orbitron_bold"
+                android:text="@string/save_upper_case"
+                android:textColor="@color/black"
+                android:visibility="invisible"
+                app:icon="@drawable/check_icon_black"
+                app:iconTint="@color/black">
 
-           </Button>
+            </Button>
 
             <Button
                 android:id="@+id/dismiss_button"
@@ -381,12 +402,12 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="30dp"
                 android:backgroundTint="@color/timer_gray"
-                android:text="@string/dismiss_upper_case"
                 android:fontFamily="@font/orbitron_bold"
+                android:text="@string/dismiss_upper_case"
                 android:textColor="@color/black"
+                android:visibility="invisible"
                 app:icon="@drawable/x_icon_black"
-                app:iconTint="@color/black"
-                android:visibility="invisible">
+                app:iconTint="@color/black">
 
             </Button>
 
