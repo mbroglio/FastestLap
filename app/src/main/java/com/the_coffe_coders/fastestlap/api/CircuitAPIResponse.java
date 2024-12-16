@@ -1,7 +1,6 @@
 package com.the_coffe_coders.fastestlap.api;
 
 import com.google.gson.annotations.SerializedName;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.CircuitTable;
 
 public class CircuitAPIResponse extends APIResponse{
     @SerializedName("CircuitTable")
