@@ -29,6 +29,8 @@ public abstract class WeeklyRace {
         this.firstPractice = firstPractice;
     }
 
+    WeeklyRace() {}
+
     public String getSeason() {
         return season;
     }

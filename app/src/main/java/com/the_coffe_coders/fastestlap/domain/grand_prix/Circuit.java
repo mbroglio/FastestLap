@@ -16,6 +16,10 @@ public class Circuit {
         this.location = location;
     }
 
+    public Circuit() {
+
+    }
+
     public String getCircuitId() {
         return circuitId;
     }

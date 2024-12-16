@@ -2,11 +2,22 @@ package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
 import org.threeten.bp.LocalDate;
 
-public class WeeklyRaceClassic {
-    Practice firstPractice;
+import java.util.Collections;
+import java.util.List;
+
+public class WeeklyRaceClassic extends WeeklyRace {
     Practice secondPractice;
     Practice thirdPractice;
 
+    WeeklyRaceClassic(String season, String round, String url, String raceName, Circuit circuit, String date, String time, Qualifying qualifying, Race finalRace, Practice firstPractice, Practice secondPractice, Practice thirdPractice) {
+        super(season, round, url, raceName, circuit, date, time, qualifying, finalRace, firstPractice);
+        this.secondPractice = secondPractice;
+        this.thirdPractice = thirdPractice;
+    }
+
+    public WeeklyRaceClassic() {
+        super();
+    }
     public String getDateInterval() {
         String fullDate;
         String startingDate = this.firstPractice.getStartDateTime().toLocalDate().toString();
@@ -22,5 +33,10 @@ public class WeeklyRaceClassic {
         }
 
         return fullDate;
+    }
+
+    @Override
+    public List<Session> getSessions() {
+        return Collections.emptyList();
     }
 }
