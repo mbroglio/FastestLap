@@ -1,8 +1,10 @@
 package com.the_coffe_coders.fastestlap.ui.user;
+
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.Button;
@@ -43,6 +45,7 @@ public class UserActivity extends AppCompatActivity {
     private ListPopupWindow listPopupWindowConstructors;
 
     private Button saveButton;
+    private Button dismissButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +63,7 @@ public class UserActivity extends AppCompatActivity {
         changeConstructorButton = findViewById(R.id.change_constructor_button);
 
         saveButton = findViewById(R.id.save_button);
+        dismissButton = findViewById(R.id.dismiss_button);
 
         // Get keys from DRIVER_FULLNAME and TEAM_FULLNAME maps
         Set<String> driverKeys = Constants.DRIVER_FULLNAME.keySet();
@@ -86,8 +90,10 @@ public class UserActivity extends AppCompatActivity {
         // Handle change driver button click
         changeDriverButton.setOnClickListener(v -> {
             if (listPopupWindowDrivers.isShowing()) {
+                Log.i("UserActivity", "Dismissing driver popup");
                 listPopupWindowDrivers.dismiss();
             } else {
+                Log.i("UserActivity", "Showing driver popup");
                 listPopupWindowDrivers.show();
             }
         });
@@ -97,7 +103,7 @@ public class UserActivity extends AppCompatActivity {
         listPopupWindowConstructors.setAdapter(new SpinnerAdapter(this, constructors, false));
         listPopupWindowConstructors.setAnchorView(changeConstructorButton);
         listPopupWindowConstructors.setWidth((int) (220 * getResources().getDisplayMetrics().density)); // Set the width to 220dp
-        listPopupWindowConstructors.setHeight((int) (150 * getResources().getDisplayMetrics().density)); // Set the height to 150dp
+        listPopupWindowConstructors.setHeight((int) (250 * getResources().getDisplayMetrics().density)); // Set the height to 150dp
         listPopupWindowConstructors.setBackgroundDrawable(getDrawable(R.drawable.round_background_grey));
         listPopupWindowConstructors.setOnItemClickListener((parent, view, position, id) -> {
             String selectedConstructorKey = constructors[position];
@@ -109,8 +115,10 @@ public class UserActivity extends AppCompatActivity {
         // Handle change constructor button click
         changeConstructorButton.setOnClickListener(v -> {
             if (listPopupWindowConstructors.isShowing()) {
+                Log.i("UserActivity", "Dismissing constructor popup");
                 listPopupWindowConstructors.dismiss();
             } else {
+                Log.i("UserActivity", "Showing constructor popup");
                 listPopupWindowConstructors.show();
             }
         });
@@ -220,5 +228,7 @@ public class UserActivity extends AppCompatActivity {
 
         saveButton.setVisibility(hasChanges ? View.VISIBLE : View.INVISIBLE);
         saveButton.setEnabled(hasChanges);
+        dismissButton.setVisibility(hasChanges ? View.VISIBLE : View.INVISIBLE);
+        dismissButton.setEnabled(hasChanges);
     }
 }

@@ -368,9 +368,27 @@
                android:fontFamily="@font/orbitron_bold"
                android:textColor="@color/black"
                app:icon="@drawable/check_icon_black"
+               app:iconTint="@color/black"
                android:visibility="invisible">
 
            </Button>
+
+            <Button
+                android:id="@+id/dismiss_button"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="bottom|end"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="30dp"
+                android:backgroundTint="@color/timer_gray"
+                android:text="@string/dismiss_upper_case"
+                android:fontFamily="@font/orbitron_bold"
+                android:textColor="@color/black"
+                app:icon="@drawable/x_icon_black"
+                app:iconTint="@color/black"
+                android:visibility="invisible">
+
+            </Button>
 
         </LinearLayout>
 
