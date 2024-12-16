@@ -14,7 +14,7 @@ public class ConstructorDTO {
         this.nationality = nationality;
     }
 
-    public String getConstructorId(){
+    public String getConstructor(){
         return this.constructorId;
     }
 
@@ -44,5 +44,15 @@ public class ConstructorDTO {
 
     public void setNationality(String nationality) {
         this.nationality = nationality;
+    }
+
+    @Override
+    public String toString() {
+        return "ConstructorDTO{" +
+                "constructorId='" + constructorId + '\'' +
+                ", url='" + url + '\'' +
+                ", name='" + name + '\'' +
+                ", nationality='" + nationality + '\'' +
+                '}';
     }
 }
