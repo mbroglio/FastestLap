@@ -5,7 +5,7 @@
     android:id="@+id/activity_user_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.UserActivity">
+    tools:context=".ui.user.UserActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"
@@ -43,15 +43,15 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:background="@color/screen_background_color"
         app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
-        app:layout_constraintTop_toBottomOf="@id/guideline_top"
-        android:background="@color/screen_background_color">
+        app:layout_constraintTop_toBottomOf="@id/guideline_top">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="100dp"
@@ -72,121 +72,179 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:fontFamily="@font/orbitron_bold"
                 android:text="Lorenzo_207378"
-                android:textColor="@color/white"
-                android:fontFamily="@font/orbitron_bold">
+                android:textColor="@color/white">
 
             </TextView>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
                 android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="30dp"
                 android:layout_marginEnd="@dimen/medium_margin"
-                android:background="@drawable/background_bottom_margin_2_dp"
+                android:background="@drawable/background_bottom_margin_2_dp_white"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
+                    android:fontFamily="@font/orbitron_bold"
                     android:text="@string/email_field"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/orbitron_bold">
+                    android:textColor="@color/white">
 
                 </TextView>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:layout_marginStart="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:text="pier.gasslee@gmail.com"
-                    android:textColor="@color/timer_gray"
-                    android:fontFamily="@font/orbitron_regular">
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp">
 
-                </TextView>
+                    <EditText
+                        android:id="@+id/email_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:enabled="false"
+                        android:cursorVisible="true"
+                        android:fontFamily="@font/orbitron_regular"
+                        android:inputType="textEmailAddress"
+                        android:text="pierre.gasslee@gmail.com"
+                        android:textColor="@color/timer_gray"
+                        android:textCursorDrawable="@drawable/cursor_color"
+                        android:textSize="14sp"
+                        android:background="@null"/>
+
+                    <ImageView
+                        android:id="@+id/edit_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="10dp"
+                        android:layout_toEndOf="@+id/email_text"
+                        android:src="@drawable/pencil_icon_white" />
+                </RelativeLayout>
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
                 android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="30dp"
                 android:layout_marginEnd="@dimen/medium_margin"
-                android:background="@drawable/background_bottom_margin_2_dp"
+                android:background="@drawable/background_bottom_margin_2_dp_white"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
+                    android:fontFamily="@font/orbitron_bold"
                     android:text="@string/password_field"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/orbitron_bold">
+                    android:textColor="@color/white">
 
                 </TextView>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
                     android:layout_marginStart="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:text="********"
-                    android:textColor="@color/timer_gray"
-                    android:fontFamily="@font/orbitron_regular">
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="10dp">
 
-                </TextView>
+                    <EditText
+                        android:id="@+id/password_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_centerInParent="true"
+                        android:enabled="false"
+                        android:fontFamily="@font/orbitron_regular"
+                        android:inputType="textPassword"
+                        android:cursorVisible="true"
+                        android:text="Lorenzo 1"
+                        android:textColor="@color/timer_gray"
+                        android:textCursorDrawable="@drawable/cursor_color"
+                        android:textSize="14sp"
+                        android:background="@null"/>
+
+
+                    <ImageView
+                        android:id="@+id/toggle_password_visibility"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="10dp"
+                        android:layout_toEndOf="@+id/password_text"
+                        android:src="@drawable/eye_icon_white" />
+
+                    <ImageView
+                        android:id="@+id/edit_password"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:layout_marginStart="10dp"
+                        android:layout_toEndOf="@+id/toggle_password_visibility"
+                        android:src="@drawable/pencil_icon_white" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/favourite_driver_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
                 android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="30dp"
                 android:layout_marginEnd="@dimen/medium_margin"
-                android:background="@drawable/background_bottom_margin_2_dp"
+                android:background="@drawable/background_bottom_margin_2_dp_white"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
+                    android:fontFamily="@font/orbitron_bold"
                     android:text="@string/favourite_driver_field"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/orbitron_bold">
+                    android:textColor="@color/white">
 
                 </TextView>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginBottom="10dp">
 
                     <TextView
+                        android:id="@+id/favourite_driver_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
+                        android:fontFamily="@font/orbitron_regular"
                         android:text="Lewis Hamilton"
-                        android:textColor="@color/timer_gray"
-                        android:fontFamily="@font/orbitron_regular">
+                        android:textColor="@color/timer_gray">
 
                     </TextView>
 
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/change_driver_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_marginEnd="@dimen/medium_margin"
                         android:backgroundTint="@color/timer_gray"
+                        android:clickable="true"
+                        android:focusable="true"
                         app:strokeColor="@color/black"
                         app:strokeWidth="1dp">
 
@@ -194,16 +252,26 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
-                            android:layout_marginEnd="10dp"
                             android:layout_marginTop="5dp"
+                            android:layout_marginEnd="10dp"
                             android:layout_marginBottom="5dp"
+                            android:fontFamily="@font/orbitron_bold"
                             android:text="CHANGE"
-                            android:textColor="@color/black"
-                            android:fontFamily="@font/orbitron_bold">
+                            android:textColor="@color/black">
 
                         </TextView>
 
                     </com.google.android.material.card.MaterialCardView>
+
+                    <Spinner
+                        android:id="@+id/favourite_driver_spinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/medium_margin"
+                        android:visibility="gone">
+
+                    </Spinner>
 
                 </RelativeLayout>
 
@@ -212,46 +280,50 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
                 android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="30dp"
                 android:layout_marginEnd="@dimen/medium_margin"
-                android:background="@drawable/background_bottom_margin_2_dp"
+                android:background="@drawable/background_bottom_margin_2_dp_white"
                 android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
+                    android:fontFamily="@font/orbitron_bold"
                     android:text="@string/favourite_constructor_field"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/orbitron_bold">
+                    android:textColor="@color/white">
 
                 </TextView>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
                     android:layout_marginBottom="10dp">
 
                     <TextView
+                        android:id="@+id/favourite_constructor_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_centerInParent="true"
+                        android:fontFamily="@font/orbitron_regular"
                         android:text="Mercedes"
-                        android:textColor="@color/timer_gray"
-                        android:fontFamily="@font/orbitron_regular">
+                        android:textColor="@color/timer_gray">
 
                     </TextView>
 
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/change_constructor_button"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_marginEnd="@dimen/medium_margin"
                         android:backgroundTint="@color/timer_gray"
+                        android:clickable="true"
+                        android:focusable="true"
                         app:strokeColor="@color/black"
                         app:strokeWidth="1dp">
 
@@ -259,20 +331,46 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="10dp"
-                            android:layout_marginEnd="10dp"
                             android:layout_marginTop="5dp"
+                            android:layout_marginEnd="10dp"
                             android:layout_marginBottom="5dp"
+                            android:fontFamily="@font/orbitron_bold"
                             android:text="CHANGE"
-                            android:textColor="@color/black"
-                            android:fontFamily="@font/orbitron_bold">
+                            android:textColor="@color/black">
 
                         </TextView>
 
                     </com.google.android.material.card.MaterialCardView>
 
+                    <Spinner
+                        android:id="@+id/favourite_constructor_spinner"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="@dimen/medium_margin"
+                        android:visibility="gone">
+
+                    </Spinner>
+
                 </RelativeLayout>
 
             </LinearLayout>
+
+           <Button
+               android:id="@+id/save_button"
+               android:layout_width="wrap_content"
+               android:layout_height="40dp"
+               android:layout_gravity="bottom|end"
+               android:layout_marginTop="30dp"
+               android:layout_marginEnd="30dp"
+               android:backgroundTint="@color/timer_gray"
+               android:text="@string/save_upper_case"
+               android:fontFamily="@font/orbitron_bold"
+               android:textColor="@color/black"
+               app:icon="@drawable/check_icon_black"
+               android:visibility="invisible">
+
+           </Button>
 
         </LinearLayout>
 

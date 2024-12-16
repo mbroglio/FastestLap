@@ -116,6 +116,7 @@
     <string name="password_field">Password:</string>
     <string name="favourite_driver_field">Favourite Driver:</string>
     <string name="favourite_constructor_field">Favourite Constructor:</string>
+    <string name="save_upper_case">SAVE</string>
 
 
 </resources>
