@@ -25,10 +25,8 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.driver.StandingsAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.driver.DriverStanding;
-import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
-import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
+import com.the_coffe_coders.fastestlap.api.ErgastAPI;
+
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
@@ -41,7 +39,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
-
+/*
 public class DriversStandingActivity extends AppCompatActivity {
 
     private static final String TAG = "DriverCardActivity";
@@ -105,11 +103,11 @@ public class DriversStandingActivity extends AppCompatActivity {
                         JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
 
                         JSONParserUtils jsonParserUtils = new JSONParserUtils(DriversStandingActivity.this);
-                        StandingsAPIResponse standingsAPIResponse = jsonParserUtils.parseDriverStandings(mrdata);
+                        DriverStandingsAPIResponse driverStandingsAPIResponse = jsonParserUtils.parseDriverStandings(mrdata);
 
-                        int total = Integer.parseInt(standingsAPIResponse.getTotal());
+                        int total = Integer.parseInt(driverStandingsAPIResponse.getTotal());
                         for (int i = 0; i < total; i++) {
-                            DriverStanding standingElement = standingsAPIResponse
+                            DriverStanding standingElement = driverStandingsAPIResponse
                                     .getStandingsTable()
                                     .getStandingsLists().get(0)
                                     .getDriverStandings().get(i);
@@ -220,4 +218,4 @@ public class DriversStandingActivity extends AppCompatActivity {
 
         return driverCard;
     }
-}
+}*/

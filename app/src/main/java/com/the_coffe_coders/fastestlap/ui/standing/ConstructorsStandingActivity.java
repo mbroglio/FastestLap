@@ -1,5 +1,5 @@
 package com.the_coffe_coders.fastestlap.ui.standing;
-
+/*
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -19,19 +19,12 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStanding;
-import com.the_coffe_coders.fastestlap.domain.constructor.StandingsAPIResponse;
-import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
-import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
@@ -106,11 +99,11 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                         JsonObject mrData = jsonResponse.get("MRData").getAsJsonObject();
 
                         JSONParserUtils jsonParserUtils = new JSONParserUtils(ConstructorsStandingActivity.this);
-                        StandingsAPIResponse standingsAPIResponse = jsonParserUtils.parseConstructorStandings(mrData);
+                        ConstructorStandingsAPIResponse constructorStandingsAPIResponse = jsonParserUtils.parseConstructorStandings(mrData);
 
-                        int total = Integer.parseInt(standingsAPIResponse.getTotal());
+                        int total = Integer.parseInt(constructorStandingsAPIResponse.getTotal());
                         for (int i = 0; i < total; i++) {
-                            ConstructorStanding standingElement = standingsAPIResponse
+                            ConstructorStanding standingElement = constructorStandingsAPIResponse
                                     .getStandingsTable()
                                     .getStandingsLists().get(0)
                                     .getConstructorStandings().get(i);
@@ -231,4 +224,4 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
         return teamCard;
     }
-}
+}*/

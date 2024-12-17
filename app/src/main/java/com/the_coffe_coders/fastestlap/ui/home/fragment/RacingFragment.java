@@ -18,13 +18,13 @@ import android.widget.TextView;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.ui.event.PastEventsActivity;
-import com.the_coffe_coders.fastestlap.ui.event.UpcomingEventsActivity;
 
-/**
+
+/*
  * A simple {@link Fragment} subclass.
  * Use the {@link RacingFragment#newInstance} factory method to
  * create an instance of this fragment.
- */
+
 public class RacingFragment extends Fragment {
 
     private View loadingScreen;
@@ -120,4 +120,4 @@ public class RacingFragment extends Fragment {
             handler.postDelayed(this, 500);
         }
     };
-}
+}*/

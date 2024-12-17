@@ -1,5 +1,5 @@
 package com.the_coffe_coders.fastestlap.ui.event;
-
+/*
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,8 +18,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.race.Race;
-import com.the_coffe_coders.fastestlap.domain.race.RaceAPIResponse;
-import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
+import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
+import com.the_coffe_coders.fastestlap.api.ErgastAPI;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
@@ -125,7 +125,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
                         JSONParserUtils jsonParserUtils = new JSONParserUtils(UpcomingEventsActivity.this);
                         RaceAPIResponse raceAPIResponse = jsonParserUtils.parseRace(mrData);
 
-                        List<Race> upcomingRaces = extractUpcomingRaces(raceAPIResponse);
+                        List<WeeklyRace> upcomingRaces = extractUpcomingRaces(raceAPIResponse);
                         createEventCards(upcomingRaces);
                         raceToProcess = false;
                         hideLoadingScreen();
@@ -142,31 +142,32 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
     }
 
-    private List<Race> extractUpcomingRaces(RaceAPIResponse raceAPIResponse) {
+    private List<WeeklyRace> extractUpcomingRaces(RaceAPIResponse raceAPIResponse) {
         ZonedDateTime now = ZonedDateTime.now();
-        List<Race> races = raceAPIResponse.getRaceTable().getRaces();
-        List<Race> upcomingRaces = new ArrayList<>();
+        //List<WeeklyRace> races = raceAPIResponse.getRaceTable().getRaces();
+        List<WeeklyRace> upcomingRaces = new ArrayList<>();
 
-        for (Race race : races) {
-            String raceDate = race.getDate();
-            String raceTime = race.getTime(); // ends with 'Z'
+        for (WeeklyRace weeklyRace : races) {
+            String raceDate = weeklyRace.getDate();
+            String raceTime = weeklyRace.getTime(); // ends with 'Z'
             ZonedDateTime raceDateTime = ZonedDateTime.parse(raceDate + "T" + raceTime);
             raceDateTime = raceDateTime.plusMinutes(Constants.SESSION_DURATION.get("Race"));
 
             // A Race is considered upcoming if it is yet to finish
             if (now.isBefore(raceDateTime)) {
-                upcomingRaces.add(race);
+                upcomingRaces.add(weeklyRace);
             }
         }
 
         return upcomingRaces;
+        return null;
     }
 
-    private void createEventCards(List<Race> upcomingRaces) {
+    private void createEventCards(List<WeeklyRace> upcomingRaces) {
         LinearLayout upcomingEvents = findViewById(R.id.upcoming_events_list);
 
-        for (Race race : upcomingRaces) {
-            upcomingEvents.addView(generateEventCard(race));
+        for (WeeklyRace weeklyRace : upcomingRaces) {
+            upcomingEvents.addView(generateEventCard(weeklyRace));
 
             View space = new View(UpcomingEventsActivity.this);
             space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
@@ -175,7 +176,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
     }
 
-    private View generateEventCard(Race race) {
+    private View generateEventCard(WeeklyRace weeklyRace) {
         View eventCard = null;
 
         if (race.isRaceWeekendUnderway()) {
@@ -189,29 +190,31 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         }
 
         ImageView trackOutline = eventCard.findViewById(R.id.upcoming_track_outline);
-        trackOutline.setImageResource(Constants.EVENT_CIRCUIT.get(race.getCircuit().getCircuitId()));
+        trackOutline.setImageResource(Constants.EVENT_CIRCUIT.get(weeklyRace.getCircuit().getCircuitId()));
 
         TextView roundNumber = eventCard.findViewById(R.id.upcoming_round_number);
-        roundNumber.setText("ROUND " + race.getRound());
+        roundNumber.setText("ROUND " + weeklyRace.getRound());
 
         TextView gpName = eventCard.findViewById(R.id.upcoming_gp_name);
-        gpName.setText(race.getRaceName());
+        gpName.setText(weeklyRace.getRaceName());
 
         TextView gpDate = eventCard.findViewById(R.id.upcoming_date);
-        String fp1Day = String.valueOf(LocalDate.parse(race.getFirstPractice().getDate()).getDayOfMonth());
-        String raceDay = String.valueOf(LocalDate.parse(race.getDate()).getDayOfMonth());
+        String fp1Day = String.valueOf(LocalDate.parse(weeklyRace.getFirstPractice().getStartDateTime().toString()).getDayOfMonth());
+        String raceDay = String.valueOf(LocalDate.parse(weeklyRace.getDate()).getDayOfMonth());
         gpDate.setText(fp1Day + " - " + raceDay);
 
         TextView gpMonth = eventCard.findViewById(R.id.upcoming_month);
-        String fp1Month = String.valueOf(LocalDate.parse(race.getDate()).getMonth()).substring(0, 3).toUpperCase();
+        String fp1Month = String.valueOf(LocalDate.parse(weeklyRace.getDate()).getMonth()).substring(0, 3).toUpperCase();
         gpMonth.setText(fp1Month);
 
         eventCard.setOnClickListener(v -> {
             Intent intent = new Intent(UpcomingEventsActivity.this, EventActivity.class);
-            intent.putExtra("CIRCUIT_ID", race.getCircuit().getCircuitId());
+            intent.putExtra("CIRCUIT_ID", weeklyRace.getCircuit().getCircuitId());
             startActivity(intent);
         });
 
         return eventCard;
     }
 }
+
+*/
