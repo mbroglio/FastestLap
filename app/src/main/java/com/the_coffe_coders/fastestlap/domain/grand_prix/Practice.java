@@ -2,12 +2,16 @@ package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
 import org.threeten.bp.ZonedDateTime;
 
-public class Practice extends Session{
+public class Practice extends Session {
     private int number;
 
     public Practice(String sessionId, Boolean isFinished, Boolean isUnderway, ZonedDateTime startDateTime, ZonedDateTime endDateTime, int number) {
         super(sessionId, isFinished, isUnderway, startDateTime, endDateTime);
         this.number = number;
+    }
+
+    public Practice() {
+        super();
     }
 
     public int getNumber() {

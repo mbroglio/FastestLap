@@ -7,15 +7,25 @@ import java.util.List;
 
 public class RaceTableDTO {
     private String season;
+    private String round;
     @SerializedName("Circuit")
     private CircuitDTO circuit;
     @SerializedName("Races")
     private List<RaceDTO> races;
 
-    public RaceTableDTO(String season, String circuitId, List<RaceDTO> races) {
+    public RaceTableDTO(String season, String round, CircuitDTO circuit, List<RaceDTO> races) {
         this.season = season;
-        this.circuit = circuit;
-        races = races;
+        //this.circuit = circuit;
+        this.races = races;
+        this.round = round;
+    }
+
+    public String getRound() {
+        return round;
+    }
+
+    public void setRound(String round) {
+        this.round = round;
     }
 
     public String getSeason() {
@@ -30,7 +40,7 @@ public class RaceTableDTO {
         return circuit;
     }
 
-    public void setCircuitId(CircuitDTO circuitId) {
+    public void setCircuitId(CircuitDTO circuit) {
         this.circuit = circuit;
     }
 
@@ -39,6 +49,16 @@ public class RaceTableDTO {
     }
 
     public void setRaces(List<RaceDTO> races) {
-        races = races;
+        this.races = races;
+    }
+
+    @Override
+    public String toString() {
+        return "\nRaceTableDTO{" +
+                "\nseason='" + season + '\'' +
+                ", \nround='" + round + '\'' +
+                ", \ncircuit=" + circuit +
+                ", \nraces=" + races +
+                '}';
     }
 }

@@ -4,7 +4,10 @@ import org.threeten.bp.ZonedDateTime;
 
 public class Qualifying extends Session{
 
-    Qualifying(String sessionId, Boolean isFinished, Boolean isUnderway, ZonedDateTime startDateTime, ZonedDateTime endDateTime) {
+    public Qualifying(String sessionId, Boolean isFinished, Boolean isUnderway, ZonedDateTime startDateTime, ZonedDateTime endDateTime) {
         super(sessionId, isFinished, isUnderway, startDateTime, endDateTime);
+    }
+    public Qualifying() {
+
     }
 }

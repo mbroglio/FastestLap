@@ -14,7 +14,7 @@ public abstract class WeeklyRace {
     private Circuit Circuit;
     private String date;
     private String time;
-    Practice firstPractice;
+    protected Practice firstPractice;
     private Qualifying Qualifying;
     private Race finalRace;
     private Sprint Sprint;
@@ -63,11 +63,11 @@ public abstract class WeeklyRace {
         this.raceName = raceName;
     }
 
-    public Circuit getCircuit() {
+    public com.the_coffe_coders.fastestlap.domain.grand_prix.Circuit getCircuit() {
         return Circuit;
     }
 
-    public void setCircuit(Circuit circuit) {
+    public void setCircuit(com.the_coffe_coders.fastestlap.domain.grand_prix.Circuit circuit) {
         Circuit = circuit;
     }
 
@@ -87,19 +87,31 @@ public abstract class WeeklyRace {
         this.time = time;
     }
 
-    public Qualifying getQualifying() {
+    public void setFirstPractice(Practice firstPractice) {
+        this.firstPractice = firstPractice;
+    }
+
+    public com.the_coffe_coders.fastestlap.domain.grand_prix.Qualifying getQualifying() {
         return Qualifying;
     }
 
-    public void setQualifying(Qualifying qualifying) {
+    public void setQualifying(com.the_coffe_coders.fastestlap.domain.grand_prix.Qualifying qualifying) {
         Qualifying = qualifying;
     }
 
-    public Sprint getSprint() {
+    public Race getFinalRace() {
+        return finalRace;
+    }
+
+    public void setFinalRace(Race finalRace) {
+        this.finalRace = finalRace;
+    }
+
+    public com.the_coffe_coders.fastestlap.domain.grand_prix.Sprint getSprint() {
         return Sprint;
     }
 
-    public void setSprint(Sprint sprint) {
+    public void setSprint(com.the_coffe_coders.fastestlap.domain.grand_prix.Sprint sprint) {
         Sprint = sprint;
     }
 

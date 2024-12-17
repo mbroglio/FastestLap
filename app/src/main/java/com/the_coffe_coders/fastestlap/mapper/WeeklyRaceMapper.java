@@ -13,21 +13,31 @@ public class WeeklyRaceMapper {
         } else {
             weeklyRace = toRaceClassic(race);
         }
+        weeklyRace.setRaceName(race.getRaceName());
+        //weeklyRace.setDate(race.getDate());
+        weeklyRace.setRound(race.getRound());
+        weeklyRace.setSeason(race.getSeason());
+        weeklyRace.setCircuit(CircuitMapper.toCircuit(race.getCircuit()));
+        weeklyRace.setQualifying(SessionMapper.toQualifying(race.getQualifying()));
+        weeklyRace.setFirstPractice(SessionMapper.toPractice(race.getFirstPractice(), 1));
+        //weeklyRace.setFinalRace(SessionMapper.toRace(race.getFinalRace()));
         return weeklyRace;
     }
 
     public static WeeklyRaceClassic toRaceClassic(RaceDTO race) {
         WeeklyRaceClassic weeklyRace = new WeeklyRaceClassic();
-        weeklyRace.setRaceName(race.getRaceName());
-        weeklyRace.setDate(race.getDate());
-        weeklyRace.setRound(race.getRound());
-        weeklyRace.setSeason(race.getSeason());
-        weeklyRace.setCircuit(CircuitMapper.toCircuit(race.getCircuit()));
+        weeklyRace.setSecondPractice(SessionMapper.toPractice(race.getSecondPractice(), 2));
+        weeklyRace.setThirdPractice(SessionMapper.toPractice(race.getThirdPractice(), 3));
+
         return weeklyRace;
     }
 
     public static WeeklyRaceSprint toRaceSprint(RaceDTO race) {
         WeeklyRaceSprint weeklyRace = new WeeklyRaceSprint();
+
+        weeklyRace.setSprint(SessionMapper.toSprint(race.getSprint()));
+        weeklyRace.setSprintQualifying(SessionMapper.toQualifying(race.getSprintQualifying()));
+
         return weeklyRace;
     }
 }

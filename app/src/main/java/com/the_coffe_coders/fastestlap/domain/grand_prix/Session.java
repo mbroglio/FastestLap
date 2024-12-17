@@ -22,6 +22,10 @@ public class Session {
         setTime();
     }
 
+    public Session() {
+
+    }
+
     public String getSessionId() {
         return sessionId;
     }
@@ -66,7 +70,6 @@ public class Session {
         startDateTime = startDateTime.withZoneSameInstant(ZoneId.systemDefault());
         this.endDateTime = this.startDateTime.plusMinutes(Constants.SESSION_DURATION.get(sessionId));
     }
-
 
     public String getTime() {
         String start = startDateTime.toLocalTime().toString();

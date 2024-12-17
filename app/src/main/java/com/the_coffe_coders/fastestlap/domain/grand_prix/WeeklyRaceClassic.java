@@ -6,8 +6,8 @@ import java.util.Collections;
 import java.util.List;
 
 public class WeeklyRaceClassic extends WeeklyRace {
-    Practice secondPractice;
-    Practice thirdPractice;
+    private Practice secondPractice;
+    private Practice thirdPractice;
 
     WeeklyRaceClassic(String season, String round, String url, String raceName, Circuit circuit, String date, String time, Qualifying qualifying, Race finalRace, Practice firstPractice, Practice secondPractice, Practice thirdPractice) {
         super(season, round, url, raceName, circuit, date, time, qualifying, finalRace, firstPractice);
@@ -18,6 +18,23 @@ public class WeeklyRaceClassic extends WeeklyRace {
     public WeeklyRaceClassic() {
         super();
     }
+
+    public Practice getSecondPractice() {
+        return secondPractice;
+    }
+
+    public void setSecondPractice(Practice secondPractice) {
+        this.secondPractice = secondPractice;
+    }
+
+    public Practice getThirdPractice() {
+        return thirdPractice;
+    }
+
+    public void setThirdPractice(Practice thirdPractice) {
+        this.thirdPractice = thirdPractice;
+    }
+
     public String getDateInterval() {
         String fullDate;
         String startingDate = this.firstPractice.getStartDateTime().toLocalDate().toString();
@@ -38,5 +55,13 @@ public class WeeklyRaceClassic extends WeeklyRace {
     @Override
     public List<Session> getSessions() {
         return Collections.emptyList();
+    }
+
+    @Override
+    public String toString() {
+        return "WeeklyRaceClassic{" +
+                "secondPractice=" + secondPractice +
+                ", thirdPractice=" + thirdPractice +
+                '}';
     }
 }

@@ -10,7 +10,9 @@ import com.the_coffe_coders.fastestlap.api.ErgastAPI;
 import com.the_coffe_coders.fastestlap.api.ResultsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.dto.RaceDTO;
+import com.the_coffe_coders.fastestlap.mapper.WeeklyRaceMapper;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
 import java.io.IOException;
@@ -43,8 +45,8 @@ public class JolpicaRaceRepository implements JolpicaServer{
 
     }
 
-    public CompletableFuture<Race> getRacesFromServer() {
-        CompletableFuture<RaceDTO> races = new CompletableFuture<>();
+    public List<WeeklyRace> getRacesFromServer() throws ExecutionException, InterruptedException {
+        CompletableFuture<List<WeeklyRace>> weeklyRaces = new CompletableFuture<>();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(CURRENT_YEAR_BASE_URL)
@@ -64,9 +66,13 @@ public class JolpicaRaceRepository implements JolpicaServer{
                         JSONParserUtils parser = new JSONParserUtils();
                         ResultsAPIResponse raceResults = parser.parseRaceResults(mrdata);
 
-                        //System.out.println(raceResults.toString());
-                        races.complete(raceResults.getRaceTable().getRaces().get(0));
                         List<RaceDTO> raceDTOList = raceResults.getRaceTable().getRaces();
+                        List<WeeklyRace> weeklyRaceList = new ArrayList<>();
+                        //System.out.println(raceResults.toString());
+                        for (RaceDTO race: raceDTOList) {
+                            weeklyRaceList.add(WeeklyRaceMapper.toWeeklyRace(race));
+                        }
+                        weeklyRaces.complete(weeklyRaceList);
 
                         for (RaceDTO race: raceDTOList){
                             System.out.println(race);
@@ -82,17 +88,13 @@ public class JolpicaRaceRepository implements JolpicaServer{
             }
         });
 
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        weeklyRaces.join();
 
-        return null;
+        return weeklyRaces.get();
     }
 
-    public CompletableFuture<Race> getNextRaceFromServer() {
-        CompletableFuture<Race> nextRace = new CompletableFuture<>();
+    public WeeklyRace getNextRaceFromServer() throws ExecutionException, InterruptedException {
+        CompletableFuture<RaceDTO> nextRace = new CompletableFuture<>();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(CURRENT_YEAR_BASE_URL)
@@ -113,8 +115,19 @@ public class JolpicaRaceRepository implements JolpicaServer{
                         JSONParserUtils parser = new JSONParserUtils();
                         RaceAPIResponse raceSchedule = parser.parseRace(mrdata);
 
-                        System.out.println(mrdata);
-                        //nextRace.complete(raceResult.getRaceTable().getRaces().get(0));
+                        List<RaceDTO> raceDTOList = raceSchedule.getRaceTable().getRaces();
+                        for (RaceDTO race: raceDTOList){
+                            System.out.println(race);
+                        }
+
+                        //System.out.println(mrdata);
+                        if(!raceDTOList.isEmpty()) {
+                            nextRace.complete(raceDTOList.get(0));
+                        }else {
+                            nextRace.complete(null);
+                        }
+
+
 
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -126,16 +139,12 @@ public class JolpicaRaceRepository implements JolpicaServer{
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
             }
         });
-        try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        return nextRace;
+        nextRace.join();
+        return WeeklyRaceMapper.toWeeklyRace(nextRace.get());
     }
 
-    public CompletableFuture<Race> getLastRaceResultFromServer() {
-        CompletableFuture<Race> lastRaceResult = new CompletableFuture<>();
+    public WeeklyRace getLastRaceResultFromServer() {
+        CompletableFuture<WeeklyRace> lastWeeklyRace = new CompletableFuture<>();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(CURRENT_YEAR_BASE_URL)
@@ -155,10 +164,8 @@ public class JolpicaRaceRepository implements JolpicaServer{
 
                         JSONParserUtils parser = new JSONParserUtils();
                         RaceAPIResponse raceSchedule = parser.parseRace(mrdata);
-
-                        System.out.println(mrdata);
-                        //nextRace.complete(raceResult.getRaceTable().getRaces().get(0));
-
+                        RaceDTO raceDTO = raceSchedule.getRaceTable().getRaces().get(0);
+                        lastWeeklyRace.complete(WeeklyRaceMapper.toWeeklyRace(raceDTO));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -169,11 +176,12 @@ public class JolpicaRaceRepository implements JolpicaServer{
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
             }
         });
+        WeeklyRace race;
         try {
-            Thread.sleep(5000);
-        } catch (InterruptedException e) {
+            race = lastWeeklyRace.get();
+        } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-        return lastRaceResult;
+        return race;
     }
 }

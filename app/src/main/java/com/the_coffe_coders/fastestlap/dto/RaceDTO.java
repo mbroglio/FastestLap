@@ -6,6 +6,8 @@ import com.google.gson.annotations.SerializedName;
 
 import org.threeten.bp.LocalDate;
 
+import java.util.List;
+
 public class RaceDTO {
     private String season;
     private String round;
@@ -28,7 +30,10 @@ public class RaceDTO {
     @SerializedName("Sprint")
     private SprintDTO sprint;
 
-    public RaceDTO(String season, String round, String url, String raceName, CircuitDTO circuit, String date, String time, PracticeDTO firstPractice, PracticeDTO secondPractice, PracticeDTO thirdPractice, QualifyingDTO qualifying, SprintQualifyingDTO sprintQualifying, SprintDTO sprint) {
+    @SerializedName("Results")
+    List<ResultDTO> results;
+
+    public RaceDTO(String season, String round, String url, String raceName, CircuitDTO circuit, String date, String time, PracticeDTO firstPractice, PracticeDTO secondPractice, PracticeDTO thirdPractice, QualifyingDTO qualifying, SprintQualifyingDTO sprintQualifying, SprintDTO sprint, List<ResultDTO> resultDTO) {
         this.season = season;
         this.round = round;
         this.url = url;
@@ -42,14 +47,7 @@ public class RaceDTO {
         this.qualifying = qualifying;
         this.sprintQualifying = sprintQualifying;
         this.sprint = sprint;
-    }
-
-    public String getRound() {
-        return round;
-    }
-
-    public void setRound(String round) {
-        this.round = round;
+        this.results = resultDTO;
     }
 
     public String getSeason() {
@@ -60,84 +58,12 @@ public class RaceDTO {
         this.season = season;
     }
 
-    public SprintDTO getSprint() {
-        return sprint;
+    public String getRound() {
+        return round;
     }
 
-    public void setSprint(SprintDTO sprint) {
-        sprint = sprint;
-    }
-
-    public SprintQualifyingDTO getSprintQualifying() {
-        return sprintQualifying;
-    }
-
-    public void setSprintQualifying(SprintQualifyingDTO sprintQualifying) {
-        sprintQualifying = sprintQualifying;
-    }
-
-    public QualifyingDTO getQualifying() {
-        return qualifying;
-    }
-
-    public void setQualifying(QualifyingDTO qualifying) {
-        qualifying = qualifying;
-    }
-
-    public PracticeDTO getThirdPractice() {
-        return thirdPractice;
-    }
-
-    public void setThirdPractice(PracticeDTO thirdPractice) {
-        thirdPractice = thirdPractice;
-    }
-
-    public PracticeDTO getSecondPractice() {
-        return secondPractice;
-    }
-
-    public void setSecondPractice(PracticeDTO secondPractice) {
-        secondPractice = secondPractice;
-    }
-
-    public PracticeDTO getFirstPractice() {
-        return firstPractice;
-    }
-
-    public void setFirstPractice(PracticeDTO firstPractice) {
-        firstPractice = firstPractice;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public CircuitDTO getCircuit() {
-        return circuit;
-    }
-
-    public void setCircuit(CircuitDTO circuit) {
-        circuit = circuit;
-    }
-
-    public String getRaceName() {
-        return raceName;
-    }
-
-    public void setRaceName(String raceName) {
-        this.raceName = raceName;
+    public void setRound(String round) {
+        this.round = round;
     }
 
     public String getUrl() {
@@ -148,22 +74,111 @@ public class RaceDTO {
         this.url = url;
     }
 
+    public String getRaceName() {
+        return raceName;
+    }
+
+    public void setRaceName(String raceName) {
+        this.raceName = raceName;
+    }
+
+    public CircuitDTO getCircuit() {
+        return circuit;
+    }
+
+    public void setCircuit(CircuitDTO circuit) {
+        this.circuit = circuit;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getTime() {
+        return time;
+    }
+
+    public void setTime(String time) {
+        this.time = time;
+    }
+
+    public PracticeDTO getFirstPractice() {
+        return firstPractice;
+    }
+
+    public void setFirstPractice(PracticeDTO firstPractice) {
+        this.firstPractice = firstPractice;
+    }
+
+    public PracticeDTO getSecondPractice() {
+        return secondPractice;
+    }
+
+    public void setSecondPractice(PracticeDTO secondPractice) {
+        this.secondPractice = secondPractice;
+    }
+
+    public PracticeDTO getThirdPractice() {
+        return thirdPractice;
+    }
+
+    public void setThirdPractice(PracticeDTO thirdPractice) {
+        this.thirdPractice = thirdPractice;
+    }
+
+    public QualifyingDTO getQualifying() {
+        return qualifying;
+    }
+
+    public void setQualifying(QualifyingDTO qualifying) {
+        this.qualifying = qualifying;
+    }
+
+    public SprintQualifyingDTO getSprintQualifying() {
+        return sprintQualifying;
+    }
+
+    public void setSprintQualifying(SprintQualifyingDTO sprintQualifying) {
+        this.sprintQualifying = sprintQualifying;
+    }
+
+    public SprintDTO getSprint() {
+        return sprint;
+    }
+
+    public void setSprint(SprintDTO sprint) {
+        this.sprint = sprint;
+    }
+
+    public List<ResultDTO> getResults() {
+        return results;
+    }
+
+    public void setResults(List<ResultDTO> results) {
+        this.results = results;
+    }
+
     @Override
     public String toString() {
-        return "RaceDTO{" +
-                "season='" + season + '\'' +
-                ", round='" + round + '\'' +
-                ", url='" + url + '\'' +
-                ", raceName='" + raceName + '\'' +
-                ", circuit=" + circuit +
-                ", date='" + date + '\'' +
-                ", time='" + time + '\'' +
-                ", firstPractice=" + firstPractice +
-                ", secondPractice=" + secondPractice +
-                ", thirdPractice=" + thirdPractice +
-                ", qualifying=" + qualifying +
-                ", sprintQualifying=" + sprintQualifying +
-                ", sprint=" + sprint +
+        return "\nRaceDTO{" +
+                "\nseason='" + season + '\'' +
+                ", \nround='" + round + '\'' +
+                ", \nurl='" + url + '\'' +
+                ", \nraceName='" + raceName + '\'' +
+                ", \ncircuit=" + circuit +
+                ", \ndate='" + date + '\'' +
+                ", \ntime='" + time + '\'' +
+                ", \nfirstPractice=" + firstPractice +
+                ", \nsecondPractice=" + secondPractice +
+                ", \nthirdPractice=" + thirdPractice +
+                ", \nqualifying=" + qualifying +
+                ", \nsprintQualifying=" + sprintQualifying +
+                ", \nsprint=" + sprint +
+                ", \nresults=" + results +
                 '}';
     }
 }

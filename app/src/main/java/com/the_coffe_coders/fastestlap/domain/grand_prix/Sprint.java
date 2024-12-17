@@ -6,4 +6,8 @@ public class Sprint extends Session{
     public Sprint(String sessionId, Boolean isFinished, Boolean isUnderway, ZonedDateTime startDateTime, ZonedDateTime endDateTime) {
         super(sessionId, isFinished, isUnderway, startDateTime, endDateTime);
     }
+
+    public Sprint() {
+
+    }
 }

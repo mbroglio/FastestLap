@@ -100,4 +100,18 @@ public class ResultDTO {
         this.status = status;
     }
 
+    @Override
+    public String toString() {
+        return "\nResultDTO{" +
+                "\nnumber='" + number + '\'' +
+                ", \nposition='" + position + '\'' +
+                ", \npositionText='" + positionText + '\'' +
+                ", \npoints='" + points + '\'' +
+                ", \ndriver=" + driver +
+                ", \nconstructor=" + constructor +
+                ", \ngrid='" + grid + '\'' +
+                ", \nlaps='" + laps + '\'' +
+                ", \nstatus='" + status + '\'' +
+                '}';
+    }
 }

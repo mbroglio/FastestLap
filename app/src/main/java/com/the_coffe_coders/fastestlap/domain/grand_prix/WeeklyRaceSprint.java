@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WeeklyRaceSprint extends WeeklyRace {
-    Qualifying sprintQualifying;
-    Sprint sprint;
+    private Qualifying sprintQualifying;
+    private Sprint sprint;
 
     public WeeklyRaceSprint(String season, String round, String url, String raceName, Circuit circuit, String date, String time, Qualifying qualifying, Race finalRace, Qualifying sprintQualifying, Sprint sprint, Practice firstPractice) {
         super(season, round, url, raceName, circuit, date, time, qualifying, finalRace, firstPractice);
@@ -17,6 +17,24 @@ public class WeeklyRaceSprint extends WeeklyRace {
 
     public WeeklyRaceSprint() {
 
+    }
+
+    public com.the_coffe_coders.fastestlap.domain.grand_prix.Qualifying getSprintQualifying() {
+        return sprintQualifying;
+    }
+
+    public void setSprintQualifying(com.the_coffe_coders.fastestlap.domain.grand_prix.Qualifying sprintQualifying) {
+        this.sprintQualifying = sprintQualifying;
+    }
+
+    @Override
+    public com.the_coffe_coders.fastestlap.domain.grand_prix.Sprint getSprint() {
+        return sprint;
+    }
+
+    @Override
+    public void setSprint(com.the_coffe_coders.fastestlap.domain.grand_prix.Sprint sprint) {
+        this.sprint = sprint;
     }
 
     public String getDateInterval() {
@@ -50,6 +68,11 @@ public class WeeklyRaceSprint extends WeeklyRace {
 
     }
 
-
-
+    @Override
+    public String toString() {
+        return "WeeklyRaceSprint{" +
+                "sprintQualifying=" + sprintQualifying +
+                ", sprint=" + sprint +
+                '}';
+    }
 }
