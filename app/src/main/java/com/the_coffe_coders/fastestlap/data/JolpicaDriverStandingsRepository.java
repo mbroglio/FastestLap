@@ -9,9 +9,11 @@ import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.api.ErgastAPI;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.dto.DriverStandingsDTO;
 import com.the_coffe_coders.fastestlap.dto.DriverStandingsElementDTO;
 import com.the_coffe_coders.fastestlap.mapper.DriverMapper;
+import com.the_coffe_coders.fastestlap.mapper.DriverStandingsMapper;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
 import java.util.ArrayList;
@@ -29,59 +31,6 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 public class JolpicaDriverStandingsRepository implements JolpicaServer{
 
     String TAG = "JolpicaDriverStandingRepository";
-
-    public CompletableFuture<List<Driver>> getDriversFromServer() {
-        CompletableFuture<List<Driver>> future = new CompletableFuture<>();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(CURRENT_YEAR_BASE_URL)
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .build();
-
-        ErgastAPI ergastApi = retrofit.create(ErgastAPI.class);
-
-        ergastApi.getDriverStandings().enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    try {
-                        String responseString = response.body().string();
-                        JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
-                        JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
-
-                        JSONParserUtils jsonParserUtils = new JSONParserUtils();
-                        DriverStandingsAPIResponse driverStandingsAPIResponse = jsonParserUtils.parseDriverStandings(mrdata);
-
-                        List<Driver> drivers = new ArrayList<>();
-                        int total = Integer.parseInt(driverStandingsAPIResponse.getTotal());
-                        for (int i = 0; i < total; i++) {
-                            DriverStandingsElementDTO standingElement = driverStandingsAPIResponse
-                                    .getStandingsTable()
-                                    .getStandingsLists().get(0)
-                                    .getDriverStandings().get(i);
-                            drivers.add(DriverMapper.toDriver(standingElement.getDriver()));
-                        }
-
-                        future.complete(drivers); // Risolve il CompletableFuture
-                    } catch (Exception e) {
-                        //Log.e(TAG, "Failed to parse JSON response", e);
-                        future.completeExceptionally(e);
-                    }
-                } else {
-                    Log.e(TAG, "Response not successful");
-                    future.completeExceptionally(new Exception("Response not successful"));
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                Log.e(TAG, "Network request failed", t);
-                future.completeExceptionally(t);
-            }
-        });
-
-        return future;
-    }
 
     public CompletableFuture<DriverStandingsDTO> getDriverStandingsFromServer() {
         CompletableFuture<DriverStandingsDTO> future = new CompletableFuture<>();
@@ -129,8 +78,13 @@ public class JolpicaDriverStandingsRepository implements JolpicaServer{
 
 
     public DriverStandingsDTO find() {
+        return null;
+    }
+
+    public DriverStandings findDriverStandings() {
+
         try {
-            return getDriverStandingsFromServer().get();
+            return DriverStandingsMapper.toDriverStandings(getDriverStandingsFromServer().get());
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }

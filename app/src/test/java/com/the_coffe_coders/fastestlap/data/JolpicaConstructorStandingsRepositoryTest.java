@@ -10,6 +10,7 @@ public class JolpicaConstructorStandingsRepositoryTest extends TestCase {
 
     public void testFind() {
         JolpicaConstructorStandingsRepository jolpicaConstructorStandingsRepository = new JolpicaConstructorStandingsRepository();
-        ConstructorStandings constructorStandingsDTO = jolpicaConstructorStandingsRepository.findConstructorStandings();
+        ConstructorStandings constructorStandings = jolpicaConstructorStandingsRepository.findConstructorStandings();
+        assertNotNull(constructorStandings);
     }
 }
