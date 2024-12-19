@@ -37,7 +37,7 @@ public class JolpicaConstructorRepository implements IConstructorRepository, Jol
     String TAG = "JolpicaConstructorRepository";
 
     @Override
-    public final List<Constructor> findAll() {
+    public final List<Constructor> findConstructors() {
      List<Constructor> constructors = new ArrayList<>();
         try {
             for (ConstructorDTO constructor: getConstructorsFromServer().get()) {

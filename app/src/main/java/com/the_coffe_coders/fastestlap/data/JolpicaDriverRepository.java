@@ -18,7 +18,7 @@ public class JolpicaDriverRepository implements IDriverRepository, JolpicaServer
     String TAG = "RetrofitDriverRepository";
 
     @Override
-    public final List<Driver> findAll() {
+    public final List<Driver> findDrivers() {
         return null;
     }
 

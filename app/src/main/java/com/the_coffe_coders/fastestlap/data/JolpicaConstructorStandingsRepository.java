@@ -8,7 +8,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.api.ConstructorStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.api.ErgastAPI;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.dto.ConstructorStandingsDTO;
+import com.the_coffe_coders.fastestlap.mapper.ConstructorStandingsMapper;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
 import java.util.concurrent.CompletableFuture;
@@ -20,11 +22,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class JolpicaConstructorStandingRepository implements JolpicaServer, IConstructorStandingsRepository {
+public class JolpicaConstructorStandingsRepository implements JolpicaServer, IConstructorStandingsRepository {
 
     String TAG = "JolpicaDriverStandingRepository";
 
-    public CompletableFuture<ConstructorStandingsDTO> getConstructorsFromServer() {
+    public CompletableFuture<ConstructorStandingsDTO> getConstructorStandingsFromServer() {
         CompletableFuture<ConstructorStandingsDTO> future = new CompletableFuture<>();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -70,9 +72,9 @@ public class JolpicaConstructorStandingRepository implements JolpicaServer, ICon
     }
 
     @Override
-    public ConstructorStandingsDTO find() {
+    public ConstructorStandings findConstructorStandings() {
         try {
-            return getConstructorsFromServer().get();
+            return ConstructorStandingsMapper.toConstructorStandings(getConstructorStandingsFromServer().get());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
