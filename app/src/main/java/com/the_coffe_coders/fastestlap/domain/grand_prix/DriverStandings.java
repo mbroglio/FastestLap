@@ -1,20 +1,21 @@
-package com.the_coffe_coders.fastestlap.dto;
+package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
-import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class DriverStandingsListDTO {
-
+public class DriverStandings {
     private String season;
     private String round;
+    private List<DriverStandingsElement> DriverStandings;
 
-    private List<DriverStandingsDTO> DriverStandings;
-
-    public DriverStandingsListDTO(String season, String round, List<DriverStandingsDTO> driverStandings) {
+    public DriverStandings(String season, String round, List<DriverStandingsElement> DriverStandings) {
         this.season = season;
         this.round = round;
-        this.DriverStandings = driverStandings;
+        this.DriverStandings = DriverStandings;
+    }
+
+    public DriverStandings() {
+
     }
 
     public String getSeason() {
@@ -33,17 +34,17 @@ public class DriverStandingsListDTO {
         this.round = round;
     }
 
-    public List<DriverStandingsDTO> getDriverStandings() {
+    public List<DriverStandingsElement> getDriverStandings() {
         return DriverStandings;
     }
 
-    public void setDriverStandings(List<DriverStandingsDTO> driverStandings) {
-        this.DriverStandings = driverStandings;
+    public void setDriverStandings(List<DriverStandingsElement> driverStandings) {
+        DriverStandings = driverStandings;
     }
 
     @Override
     public String toString() {
-        return "StandingsList{" +
+        return "DriverStandings{" +
                 "season='" + season + '\'' +
                 ", round='" + round + '\'' +
                 ", DriverStandings=" + DriverStandings +

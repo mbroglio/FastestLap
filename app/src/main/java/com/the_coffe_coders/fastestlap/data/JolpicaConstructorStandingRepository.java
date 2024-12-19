@@ -7,16 +7,10 @@ import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.api.ConstructorStandingsAPIResponse;
-import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.api.ErgastAPI;
-import com.the_coffe_coders.fastestlap.dto.ConstructorDTO;
 import com.the_coffe_coders.fastestlap.dto.ConstructorStandingsDTO;
-import com.the_coffe_coders.fastestlap.dto.DriverDTO;
-import com.the_coffe_coders.fastestlap.dto.DriverStandingsDTO;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import okhttp3.ResponseBody;
@@ -26,15 +20,15 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class JolpicaConstructorStandingRepository {
+public class JolpicaConstructorStandingRepository implements JolpicaServer, IConstructorStandingsRepository {
 
     String TAG = "JolpicaDriverStandingRepository";
 
-    public CompletableFuture<List<ConstructorDTO>> getConstructorsFromServer() {
-        CompletableFuture<List<ConstructorDTO>> future = new CompletableFuture<>();
-        String BASE_URL = "https://api.jolpi.ca/ergast/f1/" + 2024 + "/";
+    public CompletableFuture<ConstructorStandingsDTO> getConstructorsFromServer() {
+        CompletableFuture<ConstructorStandingsDTO> future = new CompletableFuture<>();
+
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(CURRENT_YEAR_BASE_URL)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build();
 
@@ -52,17 +46,9 @@ public class JolpicaConstructorStandingRepository {
                         JSONParserUtils jsonParserUtils = new JSONParserUtils();
                         ConstructorStandingsAPIResponse constructorStandingsAPIResponse = jsonParserUtils.parseConstructorStandings(mrdata);
 
-                        List<ConstructorDTO> constructors = new ArrayList<>();
-                        int total = Integer.parseInt(constructorStandingsAPIResponse.getTotal());
-                        for (int i = 0; i < total; i++) {
-                            ConstructorStandingsDTO standingElement = constructorStandingsAPIResponse
-                                    .getStandingsTable()
-                                    .getStandingsLists().get(0)
-                                    .getConstructorStandings().get(i);
-                            constructors.add(standingElement.getConstructor());
-                        }
+                        ConstructorStandingsDTO constructorStandingsDTO = constructorStandingsAPIResponse.getStandingsTable().getStandingsLists().get(0);
 
-                        future.complete(constructors); // Risolve il CompletableFuture
+                        future.complete(constructorStandingsDTO); // Risolve il CompletableFuture
                     } catch (Exception e) {
                         //Log.e(TAG, "Failed to parse JSON response", e);
                         future.completeExceptionally(e);
@@ -83,19 +69,12 @@ public class JolpicaConstructorStandingRepository {
         return future;
     }
 
-
-
-
-    public static void main(String[] args) {
-        CompletableFuture<List<ConstructorDTO>> future = new JolpicaConstructorStandingRepository().getConstructorsFromServer();
-
+    @Override
+    public ConstructorStandingsDTO find() {
         try {
-            List<ConstructorDTO> constructors = future.get();
-            for (ConstructorDTO constructor : constructors) {
-                System.out.println(constructor.toString());
-            }
-        }catch (Exception e) {
-            e.printStackTrace();
+            return getConstructorsFromServer().get();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 }

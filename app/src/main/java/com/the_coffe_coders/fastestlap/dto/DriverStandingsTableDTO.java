@@ -8,12 +8,12 @@ public class DriverStandingsTableDTO {
     private String season;
     private String round;
     @SerializedName("StandingsLists")
-    private List<DriverStandingsListDTO> driverStandingsListDTOS;
+    private List<DriverStandingsDTO> driverStandingsDTOS;
 
-    public DriverStandingsTableDTO(String season, String round, List<DriverStandingsListDTO> driverStandingsListDTOS) {
+    public DriverStandingsTableDTO(String season, String round, List<DriverStandingsDTO> driverStandingsDTOS) {
         this.season = season;
         this.round = round;
-        this.driverStandingsListDTOS = driverStandingsListDTOS;
+        this.driverStandingsDTOS = driverStandingsDTOS;
     }
 
     public String getSeason() {
@@ -32,12 +32,12 @@ public class DriverStandingsTableDTO {
         this.round = round;
     }
 
-    public List<DriverStandingsListDTO> getStandingsLists() {
-        return driverStandingsListDTOS;
+    public List<DriverStandingsDTO> getStandingsLists() {
+        return driverStandingsDTOS;
     }
 
-    public void setStandingsLists(List<DriverStandingsListDTO> driverStandingsListDTOS) {
-        this.driverStandingsListDTOS = driverStandingsListDTOS;
+    public void setStandingsLists(List<DriverStandingsDTO> driverStandingsDTOS) {
+        this.driverStandingsDTOS = driverStandingsDTOS;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class DriverStandingsTableDTO {
         return "StandingsTable{" +
                 "season='" + season + '\'' +
                 ", round='" + round + '\'' +
-                ", StandingsLists=" + driverStandingsListDTOS +
+                ", StandingsLists=" + driverStandingsDTOS +
                 '}';
     }
 }

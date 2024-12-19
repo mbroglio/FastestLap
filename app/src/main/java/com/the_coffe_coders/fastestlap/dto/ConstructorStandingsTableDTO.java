@@ -5,9 +5,9 @@ import java.util.List;
 public class ConstructorStandingsTableDTO {
     private String season;
     private String round;
-    private List<ConstructorStandingsListDTO> StandingsLists;
+    private List<ConstructorStandingsDTO> StandingsLists;
 
-    public ConstructorStandingsTableDTO(String season, String round, List<ConstructorStandingsListDTO> StandingsLists) {
+    public ConstructorStandingsTableDTO(String season, String round, List<ConstructorStandingsDTO> StandingsLists) {
         this.season = season;
         this.round = round;
         this.StandingsLists = StandingsLists;
@@ -29,11 +29,11 @@ public class ConstructorStandingsTableDTO {
         this.round = round;
     }
 
-    public List<ConstructorStandingsListDTO> getStandingsLists() {
+    public List<ConstructorStandingsDTO> getStandingsLists() {
         return StandingsLists;
     }
 
-    public void setStandingsLists(List<ConstructorStandingsListDTO> standingsLists) {
+    public void setStandingsLists(List<ConstructorStandingsDTO> standingsLists) {
         StandingsLists = standingsLists;
     }
 

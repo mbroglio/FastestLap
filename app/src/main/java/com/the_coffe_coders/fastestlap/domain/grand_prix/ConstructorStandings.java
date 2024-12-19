@@ -1,16 +1,20 @@
-package com.the_coffe_coders.fastestlap.dto;
+package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
 import java.util.List;
 
-public class ConstructorStandingsDTO {
+public class ConstructorStandings {
     private String season;
     private String round;
-    private List<ConstructorStandingsElementDTO> ConstructorStandings;
+    private List<ConstructorStandingsElement> ConstructorStandings;
 
-    public ConstructorStandingsDTO(String season, String round, List<ConstructorStandingsElementDTO> ConstructorStandings) {
+    public ConstructorStandings(String season, String round, List<ConstructorStandingsElement> ConstructorStandings) {
         this.season = season;
         this.round = round;
         this.ConstructorStandings = ConstructorStandings;
+    }
+
+    public ConstructorStandings() {
+
     }
 
     public String getSeason() {
@@ -29,17 +33,17 @@ public class ConstructorStandingsDTO {
         this.round = round;
     }
 
-    public List<ConstructorStandingsElementDTO> getConstructorStandings() {
+    public List<ConstructorStandingsElement> getConstructorStandings() {
         return ConstructorStandings;
     }
 
-    public void setConstructorStandings(List<ConstructorStandingsElementDTO> standingLists) {
-        this.ConstructorStandings = standingLists;
+    public void setConstructorStandings(List<ConstructorStandingsElement> constructorStandings) {
+        ConstructorStandings = constructorStandings;
     }
 
     @Override
     public String toString() {
-        return "ConstructorStandingsDTO{" +
+        return "ConstructorStandings{" +
                 "season='" + season + '\'' +
                 ", round='" + round + '\'' +
                 ", ConstructorStandings=" + ConstructorStandings +

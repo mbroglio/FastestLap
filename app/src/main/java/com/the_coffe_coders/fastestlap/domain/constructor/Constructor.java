@@ -48,4 +48,14 @@ public class Constructor {
     public void setNationality(String nationality) {
         this.nationality = nationality;
     }
+
+    @Override
+    public String toString() {
+        return "Constructor{" +
+                "constructorId='" + constructorId + '\'' +
+                ", url='" + url + '\'' +
+                ", name='" + name + '\'' +
+                ", nationality='" + nationality + '\'' +
+                '}';
+    }
 }
