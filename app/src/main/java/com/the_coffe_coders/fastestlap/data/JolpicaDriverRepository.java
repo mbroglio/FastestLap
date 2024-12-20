@@ -35,6 +35,15 @@ public class JolpicaDriverRepository implements IDriverRepository, JolpicaServer
 
     String TAG = "RetrofitDriverRepository";
 
+    private static JolpicaDriverRepository instance;
+
+    public static synchronized JolpicaDriverRepository getInstance() {
+        if (instance == null) {
+            instance = new JolpicaDriverRepository();
+        }
+        return instance;
+    }
+
     @Override
     public final List<Driver> findDrivers() {
         List<Driver> drivers = new ArrayList<>();

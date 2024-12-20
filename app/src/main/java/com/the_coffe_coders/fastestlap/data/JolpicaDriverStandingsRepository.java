@@ -32,6 +32,15 @@ public class JolpicaDriverStandingsRepository implements JolpicaServer{
 
     String TAG = "JolpicaDriverStandingRepository";
 
+    private static JolpicaDriverStandingsRepository instance;
+
+    public static synchronized JolpicaDriverStandingsRepository getInstance() {
+        if (instance == null) {
+            instance = new JolpicaDriverStandingsRepository();
+        }
+        return instance;
+    }
+
     public CompletableFuture<DriverStandingsDTO> getDriverStandingsFromServer() {
         CompletableFuture<DriverStandingsDTO> future = new CompletableFuture<>();
 

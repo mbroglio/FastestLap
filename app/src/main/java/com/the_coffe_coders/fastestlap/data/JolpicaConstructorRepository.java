@@ -36,6 +36,15 @@ public class JolpicaConstructorRepository implements IConstructorRepository, Jol
 
     String TAG = "JolpicaConstructorRepository";
 
+    private static JolpicaConstructorRepository instance;
+
+    public static synchronized JolpicaConstructorRepository getInstance() {
+        if (instance == null) {
+            instance = new JolpicaConstructorRepository();
+        }
+        return instance;
+    }
+
     @Override
     public final List<Constructor> findConstructors() {
      List<Constructor> constructors = new ArrayList<>();

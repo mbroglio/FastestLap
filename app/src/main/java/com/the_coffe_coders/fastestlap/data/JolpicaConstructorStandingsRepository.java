@@ -26,6 +26,15 @@ public class JolpicaConstructorStandingsRepository implements JolpicaServer, ICo
 
     String TAG = "JolpicaDriverStandingRepository";
 
+    private static JolpicaConstructorStandingsRepository instance;
+
+    public static synchronized JolpicaConstructorStandingsRepository getInstance() {
+        if (instance == null) {
+            instance = new JolpicaConstructorStandingsRepository();
+        }
+        return instance;
+    }
+
     public CompletableFuture<ConstructorStandingsDTO> getConstructorStandingsFromServer() {
         CompletableFuture<ConstructorStandingsDTO> future = new CompletableFuture<>();
 
