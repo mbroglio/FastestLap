@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/race_result"
     android:layout_width="270dp"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
     android:orientation="vertical">
@@ -27,6 +27,7 @@
         android:layout_below="@id/race_text"
         android:layout_marginStart="30dp"
         android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -35,7 +36,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="10dp"
+                android:layout_width="13dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/orbitron_bold"
                 android:textColor="@color/black"
@@ -73,7 +74,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="10dp"
+                android:layout_width="13dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/orbitron_bold"
                 android:gravity="center"
@@ -112,7 +113,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="10dp"
+                android:layout_width="13dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/orbitron_bold"
                 android:textColor="@color/black"

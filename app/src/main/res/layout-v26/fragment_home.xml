@@ -162,7 +162,7 @@
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/favourite_driver_rank"
                         android:layout_width="120dp"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
                         android:layout_below="@id/favourite_driver_flag_field"
                         android:layout_alignParentStart="true"
                         android:layout_marginStart="30dp"
@@ -315,7 +315,7 @@
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/favourite_constructor_rank"
                         android:layout_width="120dp"
-                        android:layout_height="40dp"
+                        android:layout_height="wrap_content"
                         android:layout_below="@id/favourite_constructor_car"
                         android:layout_marginStart="30dp"
                         android:layout_alignParentStart="true"
