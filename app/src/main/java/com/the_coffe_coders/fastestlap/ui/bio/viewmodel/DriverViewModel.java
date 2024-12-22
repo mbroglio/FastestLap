@@ -1,4 +1,10 @@
 package com.the_coffe_coders.fastestlap.ui.bio.viewmodel;
 
-public class DriverViewModel {
+import androidx.lifecycle.ViewModel;
+
+public class DriverViewModel extends ViewModel {
+
+    private final JolpicaDriverRepository driverRepository;
+
+
 }
