@@ -23,6 +23,10 @@ public class Driver {
         this.nationality = nationality;
     }
 
+    public Driver() {
+
+    }
+
     public String getDriverId() {
         return driverId;
     }

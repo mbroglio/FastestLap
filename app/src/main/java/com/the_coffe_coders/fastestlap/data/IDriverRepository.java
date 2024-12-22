@@ -5,5 +5,7 @@ import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import java.util.List;
 
 public interface IDriverRepository {
-    List<Driver> findAll();
+    List<Driver> findDrivers();
+
+    Driver find(String id);
 }

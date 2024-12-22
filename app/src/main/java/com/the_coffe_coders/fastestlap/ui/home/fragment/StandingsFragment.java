@@ -18,14 +18,13 @@ import android.widget.TextView;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 
-import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
-import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
+
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link StandingsFragment#newInstance} factory method to
  * create an instance of this fragment.
- */
+
 
 public class StandingsFragment extends Fragment {
 
@@ -119,4 +118,4 @@ public class StandingsFragment extends Fragment {
             handler.postDelayed(this, 500);
         }
     };
-}
+}*/

@@ -24,12 +24,10 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.race.Race;
-import com.the_coffe_coders.fastestlap.domain.race.RaceAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.race.Session;
-import com.the_coffe_coders.fastestlap.domain.race_result.Result;
-import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
-import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
+
+import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
+
+import com.the_coffe_coders.fastestlap.api.ErgastAPI;
 import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
@@ -49,7 +47,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EventActivity extends AppCompatActivity {
-    private static final String TAG = "EventActivity";
+    /*private static final String TAG = "EventActivity";
     private String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
     private ErgastAPI ergastApi;
     private String circuitId;
@@ -138,14 +136,14 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void processRaceData(RaceAPIResponse raceSchedule) {
-        Race race = raceSchedule.getRaceTable().getRaces().get(0);
+        WeeklyRace weeklyRace = null;
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         toolbar.setTitle(race.getRaceName().toUpperCase());
 
         ImageView countryFlag = findViewById(R.id.country_flag);
-        String nation = race.getCircuit().getLocation().getCountry();
+        String nation = weeklyRace.getCircuit().getLocation().getCountry();
         Integer flag = Constants.NATION_COUNTRY_FLAG.get(nation);
         countryFlag.setImageResource(flag);
 
@@ -154,7 +152,7 @@ public class EventActivity extends AppCompatActivity {
         trackMap.setImageResource(outline);
 
         TextView roundNumber = findViewById(R.id.round_number);
-        String round = "Round " + race.getRound();
+        String round = "Round " + weeklyRace.getRound();
         roundNumber.setText(round);
 
         TextView seasonYear = findViewById(R.id.year);
@@ -166,7 +164,7 @@ public class EventActivity extends AppCompatActivity {
         setEventImage(circuitId);
 
         TextView eventDate = findViewById(R.id.event_date);
-        eventDate.setText(race.getDateInterval());
+        eventDate.setText(weeklyRace.getDateInterval());
 
         LinearLayout track = findViewById(R.id.track_outline_layout);
         Log.i(TAG, "Track: " + track);
@@ -406,5 +404,5 @@ public class EventActivity extends AppCompatActivity {
         if (!eventToProcess) {
             handler.postDelayed(this::hideLoadingScreen, 500); // 500 milliseconds delay
         }
-    }
+    }*/
 }

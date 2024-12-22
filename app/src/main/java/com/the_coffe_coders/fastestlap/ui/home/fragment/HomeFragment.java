@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.ui.home.fragment;
+/*package com.the_coffe_coders.fastestlap.ui.home.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,14 +23,10 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStanding;
-import com.the_coffe_coders.fastestlap.domain.driver.DriverStanding;
-import com.the_coffe_coders.fastestlap.domain.driver.StandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.race.Race;
-import com.the_coffe_coders.fastestlap.domain.race.RaceAPIResponse;
+import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.race.Session;
-import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
-import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
+import com.the_coffe_coders.fastestlap.api.ErgastAPI;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
@@ -57,7 +53,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * A simple {@link Fragment} subclass.
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
- */
+
 public class HomeFragment extends Fragment {
     private final String TAG = "HomeFragment";
     private ErgastAPI ergastAPI;
@@ -173,7 +169,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void showPodium(View view, ResultsAPIResponse raceResults) {
-        com.the_coffe_coders.fastestlap.domain.race_result.Race race = raceResults.getRaceTable().getRaces().get(0);
+        Race race = raceResults.getRaceTable().getRaces().get(0);
         String circuitId = race.getCircuit().getCircuitId();
 
         TextView raceName = view.findViewById(R.id.last_race_name);
@@ -183,7 +179,7 @@ public class HomeFragment extends Fragment {
         trackOutline.setImageResource(Constants.EVENT_CIRCUIT.get(circuitId));
 
         TextView raceDate = view.findViewById(R.id.last_race_date);
-        LocalDate date = LocalDate.parse(race.getDate());
+        LocalDate date = race.getStartDateTime().toLocalDate();
         raceDate.setText(String.valueOf(date.getDayOfMonth()));
 
         // Get the first three characters of the month in capital letters
@@ -265,17 +261,17 @@ public class HomeFragment extends Fragment {
     }
 
     private void processNextRace(View view, RaceAPIResponse raceSchedule) {
-        Race race = raceSchedule.getRaceTable().getRaces().get(0);
+        WeeklyRace weeklyRace = null;
 
         TextView nextRaceName = view.findViewById(R.id.home_next_gp_name);
-        nextRaceName.setText(race.getRaceName());
+        nextRaceName.setText(weeklyRace.getRaceName());
 
         ImageView nextRaceFlag = view.findViewById(R.id.home_next_gp_flag);
-        String nation = race.getCircuit().getLocation().getCountry();
+        String nation = weeklyRace.getCircuit().getLocation().getCountry();
         nextRaceFlag.setImageResource(Constants.NATION_COUNTRY_FLAG.get(nation));
 
-        List<Session> sessions = race.getSessions();
-        Session nextEvent = race.findNextEvent(sessions);
+        List<Session> sessions = weeklyRace.getSessions();
+        Session nextEvent = weeklyRace.findNextEvent(sessions);
         if (nextEvent != null) {
             ZonedDateTime eventDateTime = nextEvent.getStartDateTime();
             startCountdown(view, eventDateTime);
@@ -287,7 +283,7 @@ public class HomeFragment extends Fragment {
         FrameLayout nextSessionCard = view.findViewById(R.id.timer_card_countdown);
         nextSessionCard.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), EventActivity.class);
-            intent.putExtra("CIRCUIT_ID", race.getCircuit().getCircuitId());
+            intent.putExtra("CIRCUIT_ID", weeklyRace.getCircuit().getCircuitId());
             startActivity(intent);
         });
     }
@@ -353,7 +349,7 @@ public class HomeFragment extends Fragment {
                         JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
 
                         JSONParserUtils jsonParserUtils = new JSONParserUtils(getContext());
-                        StandingsAPIResponse standing = jsonParserUtils.parseDriverStandings(mrdata);
+                        DriverStandingsAPIResponse standing = jsonParserUtils.parseDriverStandings(mrdata);
 
                         processStanding(view, standing);
                         driverToProcess = false;
@@ -375,7 +371,7 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void processStanding(View view, StandingsAPIResponse standing) {
+    private void processStanding(View view, DriverStandingsAPIResponse standing) {
         List<DriverStanding> standings = standing.getStandingsTable().getStandingsLists().get(0).getDriverStandings();
 
         for (DriverStanding standingElement : standings) {
@@ -442,7 +438,7 @@ public class HomeFragment extends Fragment {
                         JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
 
                         JSONParserUtils jsonParserUtils = new JSONParserUtils(getContext());
-                        com.the_coffe_coders.fastestlap.domain.constructor.StandingsAPIResponse standing = jsonParserUtils.parseConstructorStandings(mrdata);
+                        ConstructorStandingsAPIResponse standing = jsonParserUtils.parseConstructorStandings(mrdata);
 
                         processConstructorStanding(view, standing);
                         constructorToProcess = false;
@@ -464,7 +460,7 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void processConstructorStanding(View view, com.the_coffe_coders.fastestlap.domain.constructor.StandingsAPIResponse standing) {
+    private void processConstructorStanding(View view, ConstructorStandingsAPIResponse standing) {
         List<com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStanding> standings = standing.getStandingsTable().getStandingsLists().get(0).getConstructorStandings();
 
         for (com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStanding standingElement : standings){
@@ -550,3 +546,4 @@ public class HomeFragment extends Fragment {
     }
 }
 
+*/
