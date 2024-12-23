@@ -3,9 +3,9 @@ package com.the_coffe_coders.fastestlap.ui.bio.viewmodel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
-import com.the_coffe_coders.fastestlap.data.JolpicaDriverRepository;
+import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
 
-import com.the_coffe_coders.fastestlap.data.JolpicaDriverRepository;
+import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 
 public class DriverViewModel extends ViewModel {
 
-    private final JolpicaDriverRepository driverRepository;
+    private final DriverRepository driverRepository;
     private final MutableLiveData<Driver> selectedDriverLiveData = new MutableLiveData<>();
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
@@ -22,7 +22,7 @@ public class DriverViewModel extends ViewModel {
 
 
     public DriverViewModel() {
-        driverRepository = JolpicaDriverRepository.getInstance();
+        driverRepository = DriverRepository.getInstance();
     }
 
     public LiveData<Driver> getSelectedDriverLiveData() {
