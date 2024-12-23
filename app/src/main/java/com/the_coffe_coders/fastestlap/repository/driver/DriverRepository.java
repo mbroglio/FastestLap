@@ -1,20 +1,25 @@
-package com.the_coffe_coders.fastestlap.data;
+package com.the_coffe_coders.fastestlap.repository.driver;
 
 
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
-import com.the_coffe_coders.fastestlap.api.ErgastAPI;
+import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.dto.DriverDTO;
 import com.the_coffe_coders.fastestlap.dto.DriverStandingsElementDTO;
-import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 import com.the_coffe_coders.fastestlap.mapper.DriverMapper;
-
+import com.the_coffe_coders.fastestlap.repository.JolpicaServer;
+import com.the_coffe_coders.fastestlap.source.driver.BaseDriverLocalDataSource;
+import com.the_coffe_coders.fastestlap.source.driver.BaseDriverRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.driver.DriverRemoteDataSource;
+import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
 
 import org.threeten.bp.Year;
@@ -25,6 +30,8 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
 
+import javax.xml.transform.Result;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -32,15 +39,22 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class JolpicaDriverRepository implements IDriverRepository, JolpicaServer {
+public class DriverRepository implements IDriverRepository, JolpicaServer {
 
     String TAG = "RetrofitDriverRepository";
 
-    private static JolpicaDriverRepository instance;
+    public static long FRESH_TIMEOUT = 60000;
 
-    public static synchronized JolpicaDriverRepository getInstance() {
+    private MutableLiveData<Result> allDriverMutableLiveData;//shuld be final
+    private MutableLiveData<Result> DriverMutableLiveData;//shuld be final
+    private BaseDriverRemoteDataSource driverRemoteDataSource;//shuld be final
+    private BaseDriverLocalDataSource driverLocalDataSource;//shuld be final
+
+    private static DriverRepository instance;
+
+    public static synchronized DriverRepository getInstance() {
         if (instance == null) {
-            instance = new JolpicaDriverRepository();
+            instance = new DriverRepository();
         }
         return instance;
     }
@@ -60,7 +74,6 @@ public class JolpicaDriverRepository implements IDriverRepository, JolpicaServer
         return drivers;
     }
 
-    @Override
     public Driver find(String id) {
 
         //TODO REMOVE
@@ -71,9 +84,29 @@ public class JolpicaDriverRepository implements IDriverRepository, JolpicaServer
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build();
 
-        ErgastAPI ergastApi = retrofit.create(ErgastAPI.class);
+        ErgastAPIService ergastApiService = retrofit.create(ErgastAPIService.class);
 
         return null;
+    }
+
+    public LiveData<Driver> fetchDriver(String driverId) {
+        Driver driver = null;
+        for (Driver current: findDrivers()) {
+            if(current.getDriverId().equals(driverId))
+                driver = current;
+        }
+        return new LiveData<Driver>() {
+        };
+    }
+
+    public MutableLiveData<Result> fetchDriver(String driverId, long lastUpdate) {
+        long currentTime = System.currentTimeMillis();
+
+        if(currentTime - lastUpdate > FRESH_TIMEOUT) {
+            return null;//RemoteDataSource.fetchDriver(driverId);
+        } else {
+          return null;//LocalDataSource.fetchDriver(driverId);
+        }
     }
 
     public CompletableFuture<List<DriverDTO>> getDriversFromServer() {
@@ -84,9 +117,9 @@ public class JolpicaDriverRepository implements IDriverRepository, JolpicaServer
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build();
 
-        ErgastAPI ergastApi = retrofit.create(ErgastAPI.class);
+        ErgastAPIService ergastApiService = retrofit.create(ErgastAPIService.class);
 
-        ergastApi.getDriverStandings().enqueue(new Callback<>() {
+        ergastApiService.getDriverStandings().enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {

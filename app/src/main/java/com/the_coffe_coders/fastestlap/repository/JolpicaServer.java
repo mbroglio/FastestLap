@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.data;
+package com.the_coffe_coders.fastestlap.repository;
 
 public interface JolpicaServer {
     public static String BASE_URL = "https://api.jolpi.ca/ergast/f1/";

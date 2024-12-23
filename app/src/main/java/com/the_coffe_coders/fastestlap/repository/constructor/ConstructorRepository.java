@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.data;
+package com.the_coffe_coders.fastestlap.repository.constructor;
 
 
 import android.util.Log;
@@ -8,12 +8,13 @@ import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.api.ConstructorStandingsAPIResponse;
-import com.the_coffe_coders.fastestlap.api.ErgastAPI;
+import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 
 import com.the_coffe_coders.fastestlap.dto.ConstructorDTO;
 import com.the_coffe_coders.fastestlap.dto.ConstructorStandingsElementDTO;
 import com.the_coffe_coders.fastestlap.mapper.ConstructorMapper;
+import com.the_coffe_coders.fastestlap.repository.JolpicaServer;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
 
@@ -32,15 +33,15 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class JolpicaConstructorRepository implements IConstructorRepository, JolpicaServer {
+public class ConstructorRepository implements IConstructorRepository, JolpicaServer {
 
     String TAG = "JolpicaConstructorRepository";
 
-    private static JolpicaConstructorRepository instance;
+    private static ConstructorRepository instance;
 
-    public static synchronized JolpicaConstructorRepository getInstance() {
+    public static synchronized ConstructorRepository getInstance() {
         if (instance == null) {
-            instance = new JolpicaConstructorRepository();
+            instance = new ConstructorRepository();
         }
         return instance;
     }
@@ -66,9 +67,9 @@ public class JolpicaConstructorRepository implements IConstructorRepository, Jol
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build();
 
-        ErgastAPI ergastApi = retrofit.create(ErgastAPI.class);
+        ErgastAPIService ergastApiService = retrofit.create(ErgastAPIService.class);
 
-        ergastApi.getConstructorStandings().enqueue(new Callback<>() {
+        ergastApiService.getConstructorStandings().enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -122,7 +123,7 @@ public class JolpicaConstructorRepository implements IConstructorRepository, Jol
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build();
 
-        ErgastAPI ergastApi = retrofit.create(ErgastAPI.class);
+        ErgastAPIService ergastApiService = retrofit.create(ErgastAPIService.class);
 
         return null;
     }

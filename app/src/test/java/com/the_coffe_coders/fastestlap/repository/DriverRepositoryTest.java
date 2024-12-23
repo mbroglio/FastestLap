@@ -1,16 +1,17 @@
-package com.the_coffe_coders.fastestlap.data;
+package com.the_coffe_coders.fastestlap.repository;
 
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
+import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
 
 import junit.framework.TestCase;
 
 import java.util.List;
 
-public class JolpicaDriverRepositoryTest extends TestCase {
+public class DriverRepositoryTest extends TestCase {
 
     public void testFindAll() {
-        JolpicaDriverRepository jolpicaDriverRepository = new JolpicaDriverRepository();
-        List<Driver> drivers = jolpicaDriverRepository.findDrivers();
+        DriverRepository driverRepository = new DriverRepository();
+        List<Driver> drivers = driverRepository.findDrivers();
         System.out.println("Drivers:");
         for (Driver driver : drivers) {
             System.out.println(driver.toString());

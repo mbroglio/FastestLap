@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.data;
+package com.the_coffe_coders.fastestlap.repository;
 
 import junit.framework.TestCase;
 
@@ -9,7 +9,7 @@ import java.util.List;
 public class JolpicaCircuitRepositoryTest extends TestCase {
 
     public void testFindAll() {
-        JolpicaCircuitRepository circuitRepository = new JolpicaCircuitRepository();
+        CircuitRepository circuitRepository = new CircuitRepository();
         List<Circuit> circuits = circuitRepository.findAll();
 
         System.out.println("Circuits:");

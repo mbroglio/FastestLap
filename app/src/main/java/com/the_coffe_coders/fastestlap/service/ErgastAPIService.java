@@ -1,10 +1,10 @@
-package com.the_coffe_coders.fastestlap.api;
+package com.the_coffe_coders.fastestlap.service;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 
-public interface ErgastAPI {
+public interface ErgastAPIService {
     @GET("constructorstandings")
     Call<ResponseBody> getConstructorStandings();
 

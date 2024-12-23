@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.data;
+package com.the_coffe_coders.fastestlap.repository.driver;
 
 import android.util.Log;
 
@@ -6,14 +6,16 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.the_coffe_coders.fastestlap.api.ConstructorStandingsAPIResponse;
-import com.the_coffe_coders.fastestlap.api.ErgastAPI;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
-import com.the_coffe_coders.fastestlap.dto.ConstructorStandingsDTO;
-import com.the_coffe_coders.fastestlap.mapper.ConstructorStandingsMapper;
+import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
+import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
+import com.the_coffe_coders.fastestlap.dto.DriverStandingsDTO;
+import com.the_coffe_coders.fastestlap.mapper.DriverStandingsMapper;
+import com.the_coffe_coders.fastestlap.repository.JolpicaServer;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -22,30 +24,30 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class JolpicaConstructorStandingsRepository implements JolpicaServer, IConstructorStandingsRepository {
+public class DriverStandingsRepository implements JolpicaServer {
 
     String TAG = "JolpicaDriverStandingRepository";
 
-    private static JolpicaConstructorStandingsRepository instance;
+    private static DriverStandingsRepository instance;
 
-    public static synchronized JolpicaConstructorStandingsRepository getInstance() {
+    public static synchronized DriverStandingsRepository getInstance() {
         if (instance == null) {
-            instance = new JolpicaConstructorStandingsRepository();
+            instance = new DriverStandingsRepository();
         }
         return instance;
     }
 
-    public CompletableFuture<ConstructorStandingsDTO> getConstructorStandingsFromServer() {
-        CompletableFuture<ConstructorStandingsDTO> future = new CompletableFuture<>();
+    public CompletableFuture<DriverStandingsDTO> getDriverStandingsFromServer() {
+        CompletableFuture<DriverStandingsDTO> future = new CompletableFuture<>();
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(CURRENT_YEAR_BASE_URL)
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build();
 
-        ErgastAPI ergastApi = retrofit.create(ErgastAPI.class);
+        ErgastAPIService ergastApiService = retrofit.create(ErgastAPIService.class);
 
-        ergastApi.getConstructorStandings().enqueue(new Callback<>() {
+        ergastApiService.getDriverStandings().enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -55,11 +57,10 @@ public class JolpicaConstructorStandingsRepository implements JolpicaServer, ICo
                         JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
 
                         JSONParserUtils jsonParserUtils = new JSONParserUtils();
-                        ConstructorStandingsAPIResponse constructorStandingsAPIResponse = jsonParserUtils.parseConstructorStandings(mrdata);
+                        DriverStandingsAPIResponse driverStandingsAPIResponse = jsonParserUtils.parseDriverStandings(mrdata);
+                        DriverStandingsDTO driverStandingsDTO = driverStandingsAPIResponse.getStandingsTable().getStandingsLists().get(0);
 
-                        ConstructorStandingsDTO constructorStandingsDTO = constructorStandingsAPIResponse.getStandingsTable().getStandingsLists().get(0);
-
-                        future.complete(constructorStandingsDTO); // Risolve il CompletableFuture
+                        future.complete(driverStandingsDTO); // Risolve il CompletableFuture
                     } catch (Exception e) {
                         //Log.e(TAG, "Failed to parse JSON response", e);
                         future.completeExceptionally(e);
@@ -80,12 +81,19 @@ public class JolpicaConstructorStandingsRepository implements JolpicaServer, ICo
         return future;
     }
 
-    @Override
-    public ConstructorStandings findConstructorStandings() {
+
+    public DriverStandingsDTO find() {
+        return null;
+    }
+
+    public DriverStandings findDriverStandings() {
+
         try {
-            return ConstructorStandingsMapper.toConstructorStandings(getConstructorStandingsFromServer().get());
-        } catch (Exception e) {
+            return DriverStandingsMapper.toDriverStandings(getDriverStandingsFromServer().get());
+        } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
 }
+
+

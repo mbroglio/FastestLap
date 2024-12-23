@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.data;
+package com.the_coffe_coders.fastestlap.repository;
 
 import android.util.Log;
 
@@ -6,8 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
-import com.the_coffe_coders.fastestlap.api.ErgastAPI;
+import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Circuit;
 
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
@@ -23,7 +22,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class JolpicaCircuitRepository implements ICircuitRepository, JolpicaServer {
+public class CircuitRepository implements ICircuitRepository, JolpicaServer {
 
     String TAG = "JolpicaCircuitRepository";
 
@@ -45,9 +44,9 @@ public class JolpicaCircuitRepository implements ICircuitRepository, JolpicaServ
                 .addConverterFactory(ScalarsConverterFactory.create())
                 .build();
 
-        ErgastAPI ergastApi = retrofit.create(ErgastAPI.class);
+        ErgastAPIService ergastApiService = retrofit.create(ErgastAPIService.class);
 
-        ergastApi.getCircuits().enqueue(new Callback<>() {
+        ergastApiService.getCircuits().enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 System.out.println(response.toString());

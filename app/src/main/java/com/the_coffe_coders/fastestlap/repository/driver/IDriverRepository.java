@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.data;
+package com.the_coffe_coders.fastestlap.repository.driver;
 
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 

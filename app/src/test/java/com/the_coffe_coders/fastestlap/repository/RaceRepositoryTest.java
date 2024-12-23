@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.data;
+package com.the_coffe_coders.fastestlap.repository;
 
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 
@@ -7,13 +7,13 @@ import junit.framework.TestCase;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
-public class JolpicaRaceRepositoryTest extends TestCase {
+public class RaceRepositoryTest extends TestCase {
 
     public void testGetInstance() {
     }
 
     public void testRacesFromServer() throws ExecutionException, InterruptedException {
-        JolpicaRaceRepository raceRepository = JolpicaRaceRepository.getInstance();
+        RaceRepository raceRepository = RaceRepository.getInstance();
         List<WeeklyRace> races = raceRepository.getRacesFromServer();
         int cont = 0;
         System.out.println("Races: ");
@@ -26,7 +26,7 @@ public class JolpicaRaceRepositoryTest extends TestCase {
     }
 
     public void testNextRaceFromServer() {
-        JolpicaRaceRepository raceRepository = JolpicaRaceRepository.getInstance();
+        RaceRepository raceRepository = RaceRepository.getInstance();
         try {
             System.out.println(raceRepository.getNextRaceFromServer());
         } catch (ExecutionException | InterruptedException e) {
@@ -37,7 +37,7 @@ public class JolpicaRaceRepositoryTest extends TestCase {
     }
 
     public void testLastRaceResultFromServer() {
-        JolpicaRaceRepository raceRepository = JolpicaRaceRepository.getInstance();
+        RaceRepository raceRepository = RaceRepository.getInstance();
         WeeklyRace wr = raceRepository.getLastRaceResultFromServer();
         System.out.println("Last race: " + wr);
         assertTrue(true);
