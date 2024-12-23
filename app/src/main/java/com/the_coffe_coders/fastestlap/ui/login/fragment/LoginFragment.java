@@ -11,6 +11,7 @@ import android.widget.EditText;
 
 import androidx.fragment.app.Fragment;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.ui.login.IntroScreen;
 
@@ -18,6 +19,8 @@ public class LoginFragment extends Fragment {
 
     private static final String TAG = "LoginFragment";
     private IntroScreen introScreen;
+    private TextInputEditText emailEditText;
+    private TextInputEditText passwordEditText;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -39,6 +42,17 @@ public class LoginFragment extends Fragment {
 
         introScreen = new IntroScreen(view, getContext());
         introScreen.showIntroScreen();
+
+        emailEditText = view.findViewById(R.id.textInputEmail);
+        passwordEditText = view.findViewById(R.id.textInputPassword);
+
+        View rootView = view.findViewById(R.id.login_fragment_layout);
+        rootView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                resetHintPosition();
+            }
+        });
 
         Button registerButton = view.findViewById(R.id.RegisterButton);
         registerButton.setOnClickListener(new View.OnClickListener() {
@@ -84,5 +98,11 @@ public class LoginFragment extends Fragment {
         if (introScreen != null) {
             introScreen.releaseResources();
         }
+    }
+
+    private void resetHintPosition() {
+        emailEditText.clearFocus();
+        passwordEditText.clearFocus();
+
     }
 }
