@@ -13,6 +13,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -181,7 +182,7 @@ public class DriversStandingActivity extends AppCompatActivity {
         TextView driverPoints = driverCard.findViewById(R.id.driver_points);
 
         ImageView teamLogoImageView = driverCard.findViewById(R.id.team_logo);
-        LinearLayout driverColor = driverCard.findViewById(R.id.small_driver_card);
+        RelativeLayout driverColor = driverCard.findViewById(R.id.small_driver_card);
 
         // Setting the values
         String driverId = standingElement.getDriver().getDriverId();
