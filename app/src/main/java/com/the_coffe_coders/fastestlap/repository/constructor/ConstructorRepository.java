@@ -15,7 +15,7 @@ import com.the_coffe_coders.fastestlap.dto.ConstructorDTO;
 import com.the_coffe_coders.fastestlap.dto.ConstructorStandingsElementDTO;
 import com.the_coffe_coders.fastestlap.mapper.ConstructorMapper;
 import com.the_coffe_coders.fastestlap.repository.JolpicaServer;
-import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
+import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
 
 
 import org.threeten.bp.Year;

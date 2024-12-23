@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.utils;
+package com.the_coffe_coders.fastestlap.util;
 
 import android.content.Context;
 

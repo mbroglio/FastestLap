@@ -10,7 +10,7 @@ import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.dto.RaceDTO;
 import com.the_coffe_coders.fastestlap.mapper.WeeklyRaceMapper;
-import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
+import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;

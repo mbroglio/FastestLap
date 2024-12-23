@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.utils;
+package com.the_coffe_coders.fastestlap.util;
 
 import com.the_coffe_coders.fastestlap.R;
 
@@ -7,6 +7,16 @@ import java.util.List;
 import java.util.Map;
 
 public class Constants {
+
+    public static final int FRESH_TIMEOUT = 1000 * 60; // 1 minute in milliseconds
+
+    public static final String RETROFIT_ERROR = "retrofit_error";
+    public static final String API_KEY_ERROR = "api_key_error";
+    public static final String UNEXPECTED_ERROR = "unexpected_error";
+    public static final String INVALID_USER_ERROR = "invalidUserError";
+    public static final String INVALID_CREDENTIALS_ERROR = "invalidCredentials";
+    public static final String USER_COLLISION_ERROR = "userCollisionError";
+    public static final String WEAK_PASSWORD_ERROR = "passwordIsWeak";
     public static final Map<String, Integer> DRIVER_IMAGE = new HashMap<String, Integer>() {{
         put("hamilton", R.drawable.hamilton_pic);
         put("russell", R.drawable.russell_pic);

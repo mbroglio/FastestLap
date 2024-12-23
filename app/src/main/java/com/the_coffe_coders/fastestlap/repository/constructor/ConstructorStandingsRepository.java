@@ -12,7 +12,7 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.dto.ConstructorStandingsDTO;
 import com.the_coffe_coders.fastestlap.mapper.ConstructorStandingsMapper;
 import com.the_coffe_coders.fastestlap.repository.JolpicaServer;
-import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
+import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
 
 import java.util.concurrent.CompletableFuture;
 

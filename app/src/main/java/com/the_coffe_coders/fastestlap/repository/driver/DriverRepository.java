@@ -18,8 +18,7 @@ import com.the_coffe_coders.fastestlap.mapper.DriverMapper;
 import com.the_coffe_coders.fastestlap.repository.JolpicaServer;
 import com.the_coffe_coders.fastestlap.source.driver.BaseDriverLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.BaseDriverRemoteDataSource;
-import com.the_coffe_coders.fastestlap.source.driver.DriverRemoteDataSource;
-import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
+import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
 
 
 import org.threeten.bp.Year;
@@ -39,7 +38,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class DriverRepository implements IDriverRepository, JolpicaServer {
+public class DriverRepository implements IDriverRepository, JolpicaServer, DriverResponseCallback {
 
     String TAG = "RetrofitDriverRepository";
 
@@ -162,6 +161,25 @@ public class DriverRepository implements IDriverRepository, JolpicaServer {
         return future;
     }
 
+    @Override
+    public void onSuccessFromRemote(DriverStandingsAPIResponse driverAPIResponse, long lastUpdate) {
+
+    }
+
+    @Override
+    public void onFailureFromRemote(Exception exception) {
+
+    }
+
+    @Override
+    public void onSuccessFromLocal(List<Driver> driverList) {
+
+    }
+
+    @Override
+    public void onFailureFromLocal(Exception exception) {
+
+    }
 }
 
 

@@ -12,7 +12,7 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.dto.DriverStandingsDTO;
 import com.the_coffe_coders.fastestlap.mapper.DriverStandingsMapper;
 import com.the_coffe_coders.fastestlap.repository.JolpicaServer;
-import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
+import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
@@ -24,7 +24,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class DriverStandingsRepository implements JolpicaServer {
+public class DriverStandingsRepository implements JolpicaServer, DriverStandingsResponseCallback {
 
     String TAG = "JolpicaDriverStandingRepository";
 
@@ -93,6 +93,26 @@ public class DriverStandingsRepository implements JolpicaServer {
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void onSuccessFromRemote(DriverStandingsAPIResponse driverStandingsAPIResponse, long lastUpdate) {
+
+    }
+
+    @Override
+    public void onFailureFromRemote(Exception exception) {
+
+    }
+
+    @Override
+    public void onSuccessFromLocal(DriverStandings driverStandings) {
+
+    }
+
+    @Override
+    public void onFailureFromLocal(Exception exception) {
+
     }
 }
 

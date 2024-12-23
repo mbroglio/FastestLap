@@ -9,7 +9,7 @@ import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Circuit;
 
-import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
+import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
 
 import java.util.ArrayList;
 import java.util.List;

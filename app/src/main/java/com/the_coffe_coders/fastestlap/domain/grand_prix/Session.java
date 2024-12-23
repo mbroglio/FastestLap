@@ -3,7 +3,7 @@ package com.the_coffe_coders.fastestlap.domain.grand_prix;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
-import com.the_coffe_coders.fastestlap.utils.Constants;
+import com.the_coffe_coders.fastestlap.util.Constants;
 
 public class Session {
     private String sessionId;
