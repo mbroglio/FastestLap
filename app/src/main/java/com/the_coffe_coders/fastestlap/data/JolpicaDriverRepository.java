@@ -12,8 +12,9 @@ import com.the_coffe_coders.fastestlap.api.ErgastAPI;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.dto.DriverDTO;
 import com.the_coffe_coders.fastestlap.dto.DriverStandingsElementDTO;
-import com.the_coffe_coders.fastestlap.mapper.DriverMapper;
 import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
+import com.the_coffe_coders.fastestlap.mapper.DriverMapper;
+
 
 
 import org.threeten.bp.Year;
