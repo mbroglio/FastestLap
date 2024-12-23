@@ -33,7 +33,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class ConstructorRepository implements IConstructorRepository, JolpicaServer {
+public class ConstructorRepository implements IConstructorRepository, JolpicaServer, ConstructorResponseCallback {
 
     String TAG = "JolpicaConstructorRepository";
 
@@ -128,4 +128,23 @@ public class ConstructorRepository implements IConstructorRepository, JolpicaSer
         return null;
     }
 
+    @Override
+    public void onSuccessFromRemote(ConstructorStandingsAPIResponse constructorStandingsAPIResponse, long lastUpdate) {
+
+    }
+
+    @Override
+    public void onFailureFromRemote(Exception e) {
+
+    }
+
+    @Override
+    public void onSuccessFromLocal(List<Constructor> constructors) {
+
+    }
+
+    @Override
+    public void onFailureFromLocal(Exception e) {
+
+    }
 }

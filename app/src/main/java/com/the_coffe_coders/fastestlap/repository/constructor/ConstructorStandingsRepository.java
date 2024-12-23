@@ -14,6 +14,7 @@ import com.the_coffe_coders.fastestlap.mapper.ConstructorStandingsMapper;
 import com.the_coffe_coders.fastestlap.repository.JolpicaServer;
 import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import okhttp3.ResponseBody;
@@ -23,11 +24,12 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class ConstructorStandingsRepository implements JolpicaServer, IConstructorStandingsRepository {
+public class ConstructorStandingsRepository implements JolpicaServer, IConstructorStandingsRepository, ConstructorStandingsResponseCallback {
 
     String TAG = "JolpicaDriverStandingRepository";
 
     private static ConstructorStandingsRepository instance;
+
 
     public static synchronized ConstructorStandingsRepository getInstance() {
         if (instance == null) {
@@ -88,5 +90,25 @@ public class ConstructorStandingsRepository implements JolpicaServer, IConstruct
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public void onSuccessFromRemote(ConstructorStandingsAPIResponse constructorStandingsAPIResponse, long lastUpdate) {
+
+    }
+
+    @Override
+    public void onFailureFromRemote(Exception e) {
+
+    }
+
+    @Override
+    public void onSuccessFromLocal(List<ConstructorStandings> constructorsStandings) {
+
+    }
+
+    @Override
+    public void onFailureFromLocal(Exception e) {
+
     }
 }

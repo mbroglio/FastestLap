@@ -5,7 +5,7 @@ import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 
 import java.util.List;
 
-public interface ConstructorResponseCallBack {
+public interface ConstructorResponseCallback {
     void onSuccessFromRemote(ConstructorStandingsAPIResponse constructorStandingsAPIResponse, long lastUpdate);
     void onFailureFromRemote(Exception e);
     void onSuccessFromLocal(List<Constructor> constructors);

@@ -5,7 +5,7 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 
 import java.util.List;
 
-public interface ConstructorStandingsResponseCallBack {
+public interface ConstructorStandingsResponseCallback {
     void onSuccessFromRemote(ConstructorStandingsAPIResponse constructorStandingsAPIResponse, long lastUpdate);
     void onFailureFromRemote(Exception e);
     void onSuccessFromLocal(List<ConstructorStandings> constructorsStandings);
