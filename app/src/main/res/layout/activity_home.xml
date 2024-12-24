@@ -48,7 +48,7 @@
         app:itemIconSize="32dp"
         app:itemTextAppearanceActive="@style/TextAppearance.BottomNav.Selected"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:menu="@menu/home_menu">
+        app:menu="@menu/nav_bar_menu">
 
     </com.google.android.material.bottomnavigation.BottomNavigationView>
 
