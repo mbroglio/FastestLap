@@ -3,9 +3,11 @@ package com.the_coffe_coders.fastestlap.ui.user;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
-import android.util.Log;
+import android.text.TextWatcher;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,6 +48,11 @@ public class UserActivity extends AppCompatActivity {
 
     private Button saveButton;
     private Button dismissButton;
+
+    private boolean isEmailModified = false;
+    private boolean isPasswordModified = false;
+    private boolean isFavDriverModified = false;
+    private boolean isFavConstructorModified = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,10 +97,8 @@ public class UserActivity extends AppCompatActivity {
         // Handle change driver button click
         changeDriverButton.setOnClickListener(v -> {
             if (listPopupWindowDrivers.isShowing()) {
-                Log.i("UserActivity", "Dismissing driver popup");
                 listPopupWindowDrivers.dismiss();
             } else {
-                Log.i("UserActivity", "Showing driver popup");
                 listPopupWindowDrivers.show();
             }
         });
@@ -115,10 +120,8 @@ public class UserActivity extends AppCompatActivity {
         // Handle change constructor button click
         changeConstructorButton.setOnClickListener(v -> {
             if (listPopupWindowConstructors.isShowing()) {
-                Log.i("UserActivity", "Dismissing constructor popup");
                 listPopupWindowConstructors.dismiss();
             } else {
-                Log.i("UserActivity", "Showing constructor popup");
                 listPopupWindowConstructors.show();
             }
         });
@@ -126,9 +129,13 @@ public class UserActivity extends AppCompatActivity {
         EditText passwordText = findViewById(R.id.password_text);
         ImageView togglePasswordVisibility = findViewById(R.id.toggle_password_visibility);
         ImageView editPassword = findViewById(R.id.edit_password);
+        ImageView revertPassword = findViewById(R.id.revert_password);
+        ImageView checkPassword = findViewById(R.id.confirm_edit_password);
 
         EditText emailText = findViewById(R.id.email_text);
         ImageView editEmail = findViewById(R.id.edit_email);
+        ImageView revertEmail = findViewById(R.id.revert_email);
+        ImageView checkEmail = findViewById(R.id.confirm_edit_email);
 
         // Store original textSize, typeface, and background
         originalTextSize = passwordText.getTextSize();
@@ -157,11 +164,13 @@ public class UserActivity extends AppCompatActivity {
 
         editPassword.setOnClickListener(v -> {
             if (isEditingPassword) {
-                // Abort editing and reset to original password
+                // Abort editing
                 passwordText.setText(originalPassword);
                 passwordText.setEnabled(false);
                 passwordText.setBackground(originalBackground);
                 isEditingPassword = false;
+                editPassword.setVisibility(View.VISIBLE);
+                checkPassword.setVisibility(View.INVISIBLE);
             } else {
                 // Start editing
                 originalPassword = passwordText.getText().toString();
@@ -169,6 +178,8 @@ public class UserActivity extends AppCompatActivity {
                 passwordText.requestFocus();
                 passwordText.setSelection(passwordText.getText().length());
                 isEditingPassword = true;
+                editPassword.setVisibility(View.INVISIBLE);
+                checkPassword.setVisibility(View.VISIBLE);
             }
             // Reapply original textSize and typeface
             passwordText.setTextSize(TypedValue.COMPLEX_UNIT_PX, originalTextSize);
@@ -177,13 +188,24 @@ public class UserActivity extends AppCompatActivity {
             checkForChanges();
         });
 
+        checkPassword.setOnClickListener(v -> {
+            // Abort editing
+            passwordText.setEnabled(false);
+            passwordText.setBackground(originalBackground);
+            isEditingPassword = false;
+            editPassword.setVisibility(View.VISIBLE);
+            checkPassword.setVisibility(View.INVISIBLE);
+        });
+
         editEmail.setOnClickListener(v -> {
             if (isEditingEmail) {
-                // Abort editing and reset to original email
+                // Abort editing
                 emailText.setText(originalEmail);
                 emailText.setEnabled(false);
                 emailText.setBackground(originalBackground);
                 isEditingEmail = false;
+                editEmail.setVisibility(View.VISIBLE);
+                checkEmail.setVisibility(View.INVISIBLE);
             } else {
                 // Start editing
                 originalEmail = emailText.getText().toString();
@@ -191,6 +213,8 @@ public class UserActivity extends AppCompatActivity {
                 emailText.requestFocus();
                 emailText.setSelection(emailText.getText().length());
                 isEditingEmail = true;
+                editEmail.setVisibility(View.INVISIBLE);
+                checkEmail.setVisibility(View.VISIBLE);
             }
             // Reapply original textSize and typeface
             emailText.setTextSize(TypedValue.COMPLEX_UNIT_PX, originalTextSize);
@@ -199,19 +223,117 @@ public class UserActivity extends AppCompatActivity {
             checkForChanges();
         });
 
-        // Add text change listeners
-        passwordText.addTextChangedListener(new SimpleTextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                checkForChanges();
-            }
+        checkEmail.setOnClickListener(v -> {
+            // Abort editing
+            emailText.setEnabled(false);
+            emailText.setBackground(originalBackground);
+            isEditingEmail = false;
+            editEmail.setVisibility(View.VISIBLE);
+            checkEmail.setVisibility(View.INVISIBLE);
         });
 
-        emailText.addTextChangedListener(new SimpleTextWatcher() {
+        // Add text change listeners
+        passwordText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                isPasswordModified = !s.toString().equals(originalPassword);
+                revertPassword.setVisibility(isPasswordModified ? View.VISIBLE : View.INVISIBLE);
                 checkForChanges();
             }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        emailText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                isEmailModified = !s.toString().equals(originalEmail);
+                revertEmail.setVisibility(isEmailModified ? View.VISIBLE : View.INVISIBLE);
+                checkForChanges();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        favouriteDriverText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                isFavDriverModified = !s.toString().equals(originalDriver);
+                checkForChanges();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        favouriteConstructorText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                isFavConstructorModified = !s.toString().equals(originalConstructor);
+                checkForChanges();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        });
+
+        // Ensure the EditText retains focus when text is empty
+        emailText.setOnKeyListener((v, keyCode, event) -> {
+            if (keyCode == KeyEvent.KEYCODE_DEL && emailText.getText().length() == 0) {
+                emailText.requestFocus();
+            }
+            return false;
+        });
+
+        passwordText.setOnKeyListener((v, keyCode, event) -> {
+            if (keyCode == KeyEvent.KEYCODE_DEL && passwordText.getText().length() == 0) {
+                passwordText.requestFocus();
+            }
+            return false;
+        });
+
+        // Set revert button listeners
+        revertEmail.setOnClickListener(v -> {
+            emailText.setText(originalEmail);
+            revertEmail.setVisibility(View.INVISIBLE);
+        });
+
+        revertPassword.setOnClickListener(v -> {
+            passwordText.setText(originalPassword);
+            revertPassword.setVisibility(View.INVISIBLE);
+        });
+
+        // Set dismiss button listener
+        dismissButton.setOnClickListener(v -> {
+            if (isEmailModified) {
+                emailText.setText(originalEmail);
+                revertEmail.setVisibility(View.INVISIBLE);
+            }
+            if (isPasswordModified) {
+                passwordText.setText(originalPassword);
+                revertPassword.setVisibility(View.INVISIBLE);
+            }
+            if (isFavDriverModified) {
+                favouriteDriverText.setText(originalDriver);
+            }
+            if (isFavConstructorModified) {
+                favouriteConstructorText.setText(originalConstructor);
+            }
+            checkForChanges();
         });
     }
 

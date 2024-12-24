@@ -135,7 +135,9 @@
                         android:cursorVisible="true"
                         android:enabled="false"
                         android:fontFamily="@font/orbitron_regular"
+                        android:importantForAutofill="no"
                         android:inputType="textEmailAddress"
+                        android:labelFor="@id/email_text"
                         android:text="pierre.gasslee@gmail.com"
                         android:textColor="@color/timer_gray"
                         android:textCursorDrawable="@drawable/cursor_color"
@@ -149,6 +151,26 @@
                         android:layout_marginStart="10dp"
                         android:layout_toEndOf="@+id/email_text"
                         android:src="@drawable/pencil_icon_white" />
+
+                    <ImageView
+                        android:id="@+id/confirm_edit_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:visibility="invisible"
+                        android:layout_toEndOf="@+id/email_text"
+                        android:src="@drawable/check_icon_black"
+                        app:tint="@color/white" />
+
+                    <ImageView
+                        android:id="@+id/revert_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_toEndOf="@id/edit_email"
+                        android:src="@drawable/arrow_back_ios_style"
+                        android:visibility="invisible"
+                        app:tint="@color/white" />
                 </RelativeLayout>
 
             </LinearLayout>
@@ -213,6 +235,26 @@
                         android:layout_marginStart="10dp"
                         android:layout_toEndOf="@+id/toggle_password_visibility"
                         android:src="@drawable/pencil_icon_white" />
+
+                    <ImageView
+                        android:id="@+id/confirm_edit_password"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:visibility="invisible"
+                        android:layout_toEndOf="@+id/toggle_password_visibility"
+                        android:src="@drawable/check_icon_black"
+                        app:tint="@color/white" />
+
+                    <ImageView
+                        android:id="@+id/revert_password"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_toEndOf="@id/edit_password"
+                        android:src="@drawable/arrow_back_ios_style"
+                        android:visibility="invisible"
+                        app:tint="@color/white" />
 
                 </RelativeLayout>
 
