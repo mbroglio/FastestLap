@@ -118,6 +118,8 @@
     <string name="favourite_constructor_field">Favourite Constructor:</string>
     <string name="save_upper_case">SAVE</string>
     <string name="dismiss_upper_case">DISMISS</string>
+    <string name="profile_image">Profile image:</string>
+    <string name="profile_name">Profile name:</string>
 
 
 </resources>

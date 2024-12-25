@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 
@@ -24,6 +26,7 @@ public class SpinnerAdapter extends ArrayAdapter<String> {
         this.isDriver = isDriver;
     }
 
+    @NonNull
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {

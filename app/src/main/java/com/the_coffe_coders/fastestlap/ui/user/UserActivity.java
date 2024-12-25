@@ -1,40 +1,44 @@
 package com.the_coffe_coders.fastestlap.ui.user;
 
 import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
+
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
-import android.view.KeyEvent;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListPopupWindow;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.adapter.ProfileImageAdapter;
 import com.the_coffe_coders.fastestlap.adapter.SpinnerAdapter;
 import com.the_coffe_coders.fastestlap.utils.Constants;
-
-import java.util.Set;
+import com.the_coffe_coders.fastestlap.utils.SimpleTextWatcher;
 
 public class UserActivity extends AppCompatActivity {
 
-    private boolean isEditingPassword = false;
-    private boolean isEditingEmail = false;
+    private String originalUsername;
     private String originalPassword;
     private String originalEmail;
     private String originalDriver;
     private String originalConstructor;
+    private int originalProfileImage;
     private float originalTextSize;
     private Typeface originalTypeface;
 
@@ -49,10 +53,13 @@ public class UserActivity extends AppCompatActivity {
     private Button saveButton;
     private Button dismissButton;
 
+    private LinearLayout buttonsLayout;
+
     private boolean isEmailModified = false;
     private boolean isPasswordModified = false;
     private boolean isFavDriverModified = false;
     private boolean isFavConstructorModified = false;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,27 +79,12 @@ public class UserActivity extends AppCompatActivity {
         saveButton = findViewById(R.id.save_button);
         dismissButton = findViewById(R.id.dismiss_button);
 
-        // Get keys from DRIVER_FULLNAME and TEAM_FULLNAME maps
-        Set<String> driverKeys = Constants.DRIVER_FULLNAME.keySet();
-        Set<String> teamKeys = Constants.TEAM_FULLNAME.keySet();
+        String[] drivers = Constants.DRIVER_FULLNAME.keySet().toArray(new String[0]);
+        String[] constructors = Constants.TEAM_FULLNAME.keySet().toArray(new String[0]);
 
-        // Convert keys to arrays
-        String[] drivers = driverKeys.toArray(new String[0]);
-        String[] constructors = teamKeys.toArray(new String[0]);
-
-        // Initialize ListPopupWindow for drivers
-        listPopupWindowDrivers = new ListPopupWindow(this);
-        listPopupWindowDrivers.setAdapter(new SpinnerAdapter(this, drivers, true));
-        listPopupWindowDrivers.setAnchorView(changeDriverButton);
-        listPopupWindowDrivers.setWidth((int) (220 * getResources().getDisplayMetrics().density)); // Set the width to 220dp
-        listPopupWindowDrivers.setHeight((int) (250 * getResources().getDisplayMetrics().density)); // Set the height to 150dp
-        listPopupWindowDrivers.setBackgroundDrawable(getDrawable(R.drawable.round_background_grey));
-        listPopupWindowDrivers.setOnItemClickListener((parent, view, position, id) -> {
-            String selectedDriverKey = drivers[position];
-            favouriteDriverText.setText(getString(Constants.DRIVER_FULLNAME.get(selectedDriverKey)));
-            listPopupWindowDrivers.dismiss();
-            checkForChanges();
-        });
+        // Initialize ListPopupWindow for drivers and constructors
+        listPopupWindowDrivers = createListPopupWindow(drivers, changeDriverButton, true);
+        listPopupWindowConstructors = createListPopupWindow(constructors, changeConstructorButton, false);
 
         // Handle change driver button click
         changeDriverButton.setOnClickListener(v -> {
@@ -103,20 +95,6 @@ public class UserActivity extends AppCompatActivity {
             }
         });
 
-        // Initialize ListPopupWindow for constructors
-        listPopupWindowConstructors = new ListPopupWindow(this);
-        listPopupWindowConstructors.setAdapter(new SpinnerAdapter(this, constructors, false));
-        listPopupWindowConstructors.setAnchorView(changeConstructorButton);
-        listPopupWindowConstructors.setWidth((int) (220 * getResources().getDisplayMetrics().density)); // Set the width to 220dp
-        listPopupWindowConstructors.setHeight((int) (250 * getResources().getDisplayMetrics().density)); // Set the height to 150dp
-        listPopupWindowConstructors.setBackgroundDrawable(getDrawable(R.drawable.round_background_grey));
-        listPopupWindowConstructors.setOnItemClickListener((parent, view, position, id) -> {
-            String selectedConstructorKey = constructors[position];
-            favouriteConstructorText.setText(getString(Constants.TEAM_FULLNAME.get(selectedConstructorKey)));
-            listPopupWindowConstructors.dismiss();
-            checkForChanges();
-        });
-
         // Handle change constructor button click
         changeConstructorButton.setOnClickListener(v -> {
             if (listPopupWindowConstructors.isShowing()) {
@@ -125,6 +103,16 @@ public class UserActivity extends AppCompatActivity {
                 listPopupWindowConstructors.show();
             }
         });
+
+        originalProfileImage = R.drawable.boy_icon;
+
+        TextView usernameText = findViewById(R.id.profile_text);
+        ImageView editProfile = findViewById(R.id.edit_profile);
+        editProfile.setOnClickListener(v -> {
+            EditProfilePopup editProfilePopup = new EditProfilePopup(this, findViewById(R.id.activity_user_layout), originalProfileImage, originalUsername);
+            editProfilePopup.show();
+        });
+
 
         EditText passwordText = findViewById(R.id.password_text);
         ImageView togglePasswordVisibility = findViewById(R.id.toggle_password_visibility);
@@ -142,6 +130,7 @@ public class UserActivity extends AppCompatActivity {
         originalTypeface = passwordText.getTypeface();
 
         // Store original values
+        originalUsername = usernameText.getText().toString();
         originalPassword = passwordText.getText().toString();
         originalEmail = emailText.getText().toString();
         originalDriver = favouriteDriverText.getText().toString();
@@ -163,36 +152,25 @@ public class UserActivity extends AppCompatActivity {
         });
 
         editPassword.setOnClickListener(v -> {
-            if (isEditingPassword) {
-                // Abort editing
-                isEditingPassword = abortEditing(passwordText, editPassword, checkPassword);
-            } else {
-                // Start editing
-                isEditingPassword = startEditing(passwordText, editPassword, checkPassword);
-            }
+            startEditing(passwordText, editPassword, checkPassword);
             checkForChanges();
         });
 
         checkPassword.setOnClickListener(v -> {
-            isEditingPassword = abortEditing(passwordText, editPassword, checkPassword);
+            abortEditing(passwordText, editPassword, checkPassword);
         });
 
         revertPassword.setOnClickListener(v -> {
             revertEditing(passwordText, originalPassword, revertPassword);
         });
 
-
         editEmail.setOnClickListener(v -> {
-            if (isEditingEmail) {
-                isEditingEmail= abortEditing(emailText, editEmail, checkEmail);
-            } else {
-                isEditingEmail = startEditing(emailText, editEmail, checkEmail);
-            }
+            startEditing(emailText, editEmail, checkEmail);
             checkForChanges();
         });
 
         checkEmail.setOnClickListener(v -> {
-            isEditingEmail = abortEditing(emailText, editEmail, checkEmail);
+            abortEditing(emailText, editEmail, checkEmail);
         });
 
         revertEmail.setOnClickListener(v -> {
@@ -200,68 +178,39 @@ public class UserActivity extends AppCompatActivity {
         });
 
 
-
-
-
-
-
         // Add text change listeners
-        passwordText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
+        passwordText.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 isPasswordModified = !s.toString().equals(originalPassword);
                 revertPassword.setVisibility(isPasswordModified ? View.VISIBLE : View.INVISIBLE);
                 checkForChanges();
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
         });
 
-        emailText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
+        emailText.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 isEmailModified = !s.toString().equals(originalEmail);
                 revertEmail.setVisibility(isEmailModified ? View.VISIBLE : View.INVISIBLE);
                 checkForChanges();
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
         });
 
-        favouriteDriverText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
+        favouriteDriverText.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 isFavDriverModified = !s.toString().equals(originalDriver);
                 checkForChanges();
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
         });
 
-        favouriteConstructorText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
+        favouriteConstructorText.addTextChangedListener(new SimpleTextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 isFavConstructorModified = !s.toString().equals(originalConstructor);
                 checkForChanges();
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
         });
 
         // Set dismiss button listener
@@ -282,22 +231,40 @@ public class UserActivity extends AppCompatActivity {
         });
     }
 
-    private boolean abortEditing(EditText inputText, ImageView editText, ImageView checkText) {
+    private ListPopupWindow createListPopupWindow(String[] items, MaterialCardView anchorView, boolean isDriver) {
+        ListPopupWindow listPopupWindow = new ListPopupWindow(this);
+        listPopupWindow.setAdapter(new SpinnerAdapter(this, items, isDriver));
+        listPopupWindow.setAnchorView(anchorView);
+        listPopupWindow.setWidth((int) (220 * getResources().getDisplayMetrics().density)); // Set the width to 220dp
+        listPopupWindow.setHeight((int) (250 * getResources().getDisplayMetrics().density)); // Set the height to 250dp
+        listPopupWindow.setBackgroundDrawable(getDrawable(R.drawable.round_background_grey));
+        listPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedItemKey = items[position];
+            if (isDriver) {
+                favouriteDriverText.setText(getString(Constants.DRIVER_FULLNAME.get(selectedItemKey)));
+            } else {
+                favouriteConstructorText.setText(getString(Constants.TEAM_FULLNAME.get(selectedItemKey)));
+            }
+            listPopupWindow.dismiss();
+            checkForChanges();
+        });
+        return listPopupWindow;
+    }
+
+    private void abortEditing(EditText inputText, ImageView editText, ImageView checkText) {
         inputText.setEnabled(false);
         editText.setVisibility(View.VISIBLE);
         checkText.setVisibility(View.INVISIBLE);
 
-        return false;
     }
 
-    private boolean startEditing(EditText inputText, ImageView editText, ImageView checkText) {
+    private void startEditing(EditText inputText, ImageView editText, ImageView checkText) {
         inputText.setEnabled(true);
         inputText.requestFocus();
         inputText.setSelection(inputText.getText().length());
         editText.setVisibility(View.INVISIBLE);
         checkText.setVisibility(View.VISIBLE);
 
-        return true;
     }
 
     private void revertEditing(EditText inputText, String originalText, ImageView revertText) {
@@ -315,12 +282,14 @@ public class UserActivity extends AppCompatActivity {
     }
 
     private void checkForChanges() {
+        String currentUsername = ((TextView) findViewById(R.id.profile_text)).getText().toString();
         String currentPassword = ((EditText) findViewById(R.id.password_text)).getText().toString();
         String currentEmail = ((EditText) findViewById(R.id.email_text)).getText().toString();
         String currentDriver = favouriteDriverText.getText().toString();
         String currentConstructor = favouriteConstructorText.getText().toString();
 
-        boolean hasChanges = !currentPassword.equals(originalPassword) ||
+        boolean hasChanges = !currentUsername.equals(originalUsername) ||
+                !currentPassword.equals(originalPassword) ||
                 !currentEmail.equals(originalEmail) ||
                 !currentDriver.equals(originalDriver) ||
                 !currentConstructor.equals(originalConstructor);
@@ -330,4 +299,7 @@ public class UserActivity extends AppCompatActivity {
         dismissButton.setVisibility(hasChanges ? View.VISIBLE : View.INVISIBLE);
         dismissButton.setEnabled(hasChanges);
     }
+
+
+
 }
