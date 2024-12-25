@@ -1,9 +1,13 @@
 package com.the_coffe_coders.fastestlap.util;
 
+import static com.the_coffe_coders.fastestlap.repository.JolpicaServer.CURRENT_YEAR_BASE_URL;
+
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.Retrofit;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class ServiceLocator {
 
@@ -25,7 +29,12 @@ public class ServiceLocator {
 
             @Override
             public Call<ResponseBody> getDriverStandings() {
-                return null;
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+
+                return retrofit.create(ErgastAPIService.class).getDriverStandings();
             }
 
             @Override

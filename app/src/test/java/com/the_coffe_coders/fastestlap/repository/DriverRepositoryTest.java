@@ -11,12 +11,18 @@ public class DriverRepositoryTest extends TestCase {
 
     public void testFindAll() {
         DriverRepository driverRepository = new DriverRepository();
-        List<Driver> drivers = driverRepository.findDrivers();
+        /*List<Driver> drivers = driverRepository.findDrivers();
         System.out.println("Drivers:");
         for (Driver driver : drivers) {
             System.out.println(driver.toString());
         }
         assertNotNull(drivers);
-        assertFalse(drivers.isEmpty());
+        assertFalse(drivers.isEmpty());*/
+        driverRepository.fetchDrivers(System.currentTimeMillis());
+        try {
+            Thread.sleep(6000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

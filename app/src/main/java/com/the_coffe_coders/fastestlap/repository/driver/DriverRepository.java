@@ -18,6 +18,7 @@ import com.the_coffe_coders.fastestlap.mapper.DriverMapper;
 import com.the_coffe_coders.fastestlap.repository.JolpicaServer;
 import com.the_coffe_coders.fastestlap.source.driver.BaseDriverLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.BaseDriverRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.driver.DriverRemoteDataSource;
 import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
 
 
@@ -45,11 +46,17 @@ public class DriverRepository implements IDriverRepository, JolpicaServer, Drive
     public static long FRESH_TIMEOUT = 60000;
 
     private MutableLiveData<Result> allDriverMutableLiveData;//shuld be final
-    private MutableLiveData<Result> DriverMutableLiveData;//shuld be final
+    private MutableLiveData<Result> driverMutableLiveData;//shuld be final
     private BaseDriverRemoteDataSource driverRemoteDataSource;//shuld be final
     private BaseDriverLocalDataSource driverLocalDataSource;//shuld be final
 
     private static DriverRepository instance;
+
+    public DriverRepository() {
+        this.allDriverMutableLiveData = new MutableLiveData<>();
+        this.driverMutableLiveData = new MutableLiveData<>();
+        this.driverRemoteDataSource = new DriverRemoteDataSource("", this);
+    }
 
     public static synchronized DriverRepository getInstance() {
         if (instance == null) {
@@ -98,14 +105,28 @@ public class DriverRepository implements IDriverRepository, JolpicaServer, Drive
         };
     }
 
+    public MutableLiveData<Result> fetchDrivers(long lastUpdate) {
+        long currentTime = System.currentTimeMillis();
+
+        if(true) { //currentTime - lastUpdate > FRESH_TIMEOUT
+            driverRemoteDataSource.getDrivers();
+        } else {
+          driverLocalDataSource.getDrivers();
+        }
+
+        return allDriverMutableLiveData;
+    }
+
     public MutableLiveData<Result> fetchDriver(String driverId, long lastUpdate) {
         long currentTime = System.currentTimeMillis();
 
-        if(currentTime - lastUpdate > FRESH_TIMEOUT) {
-            return null;//RemoteDataSource.fetchDriver(driverId);
+        /*if(currentTime - lastUpdate > FRESH_TIMEOUT) {
+            driverRemoteDataSource.getDrivers();
         } else {
-          return null;//LocalDataSource.fetchDriver(driverId);
-        }
+            driverLocalDataSource.getDrivers();
+        }*/
+
+        return null;
     }
 
     public CompletableFuture<List<DriverDTO>> getDriversFromServer() {
@@ -163,7 +184,7 @@ public class DriverRepository implements IDriverRepository, JolpicaServer, Drive
 
     @Override
     public void onSuccessFromRemote(DriverStandingsAPIResponse driverAPIResponse, long lastUpdate) {
-
+        System.out.println(driverAPIResponse.getStandingsTable());
     }
 
     @Override
