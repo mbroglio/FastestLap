@@ -1,8 +1,21 @@
 package com.the_coffe_coders.fastestlap.domain.driver;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+import androidx.room.Embedded;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import java.util.Objects;
 
-public class Driver {
+@Entity
+public class Driver implements Parcelable {
+    @PrimaryKey(autoGenerate = true)
+    private long uid;
+    @Embedded(prefix = "source_")
+    private DriverSource source;
     private String driverId;
     private String permanentNumber;
     private String code;
@@ -12,7 +25,7 @@ public class Driver {
     private String dateOfBirth;
     private String nationality;
 
-    public Driver(String driverId, String permanentNumber, String code, String url, String givenName, String familyName, String dateOfBirth, String nationality) {
+    /*public Driver(String driverId, String permanentNumber, String code, String url, String givenName, String familyName, String dateOfBirth, String nationality) {
         this.driverId = driverId;
         this.permanentNumber = permanentNumber;
         this.code = code;
@@ -21,10 +34,18 @@ public class Driver {
         this.familyName = familyName;
         this.dateOfBirth = dateOfBirth;
         this.nationality = nationality;
-    }
+    }*/
 
     public Driver() {
 
+    }
+
+    public long getUid() {
+        return uid;
+    }
+
+    public void setUid(long uid) {
+        this.uid = uid;
     }
 
     public String getDriverId() {
@@ -91,6 +112,14 @@ public class Driver {
         this.nationality = nationality;
     }
 
+    public DriverSource getSource() {
+        return source;
+    }
+
+    public void setSource(DriverSource source) {
+        this.source = source;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -117,4 +146,61 @@ public class Driver {
                 ", nationality='" + nationality + '\'' +
                 '}';
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel parcel, int i) {
+        parcel.writeLong(uid);
+        parcel.writeParcelable(source, i);
+        parcel.writeString(driverId);
+        parcel.writeString(permanentNumber);
+        parcel.writeString(code);
+        parcel.writeString(url);
+        parcel.writeString(givenName);
+        parcel.writeString(familyName);
+        parcel.writeString(dateOfBirth);
+        parcel.writeString(nationality);
+    }
+
+    public void readFromParcel(Parcel parcel) {
+        this.uid = parcel.readLong();
+        this.source = parcel.readParcelable(DriverSource.class.getClassLoader());
+        this.driverId = parcel.readString();
+        this.permanentNumber = parcel.readString();
+        this.code = parcel.readString();
+        this.url = parcel.readString();
+        this.givenName = parcel.readString();
+        this.familyName = parcel.readString();
+        this.dateOfBirth = parcel.readString();
+        this.nationality = parcel.readString();
+    }
+
+    protected Driver(Parcel in) {
+        this.uid = in.readLong();
+        this.source = in.readParcelable(DriverSource.class.getClassLoader());
+        this.driverId = in.readString();
+        this.permanentNumber = in.readString();
+        this.code = in.readString();
+        this.url = in.readString();
+        this.givenName = in.readString();
+        this.familyName = in.readString();
+        this.dateOfBirth = in.readString();
+        this.nationality = in.readString();
+    }
+
+    public static final Parcelable.Creator<Driver> CREATOR = new Parcelable.Creator<Driver>() {
+        @Override
+        public Driver createFromParcel(Parcel source) {
+            return new Driver(source);
+        }
+
+        @Override
+        public Driver[] newArray(int size) {
+            return new Driver[size];
+        }
+    };
 }

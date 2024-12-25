@@ -194,7 +194,9 @@ public class DriverRepository implements IDriverRepository, JolpicaServer, Drive
 
     @Override
     public void onSuccessFromLocal(List<Driver> driverList) {
-
+        for (Driver driver: driverList) {
+            System.out.println(driver);
+        }
     }
 
     @Override

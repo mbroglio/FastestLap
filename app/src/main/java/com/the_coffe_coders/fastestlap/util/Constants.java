@@ -8,6 +8,17 @@ import java.util.Map;
 
 public class Constants {
 
+
+    public static final String SHARED_PREFERENCES_FILENAME = "";
+    //public static final String SHARED_PREFERENCES_FAVORITE_DRIVER = "driver_favorite";
+
+    public static final String SHARED_PREFERENCES_LAST_UPDATE = "last_update";
+
+    public static final String SAMPLE_JSON_FILENAME = "sample_api_response.json";
+
+    public static final int DATABASE_VERSION = 1;
+    public static final String SAVED_DRIVERS_DATABASE = "saved_db";
+
     public static final int FRESH_TIMEOUT = 1000 * 60; // 1 minute in milliseconds
 
     public static final String RETROFIT_ERROR = "retrofit_error";
@@ -471,4 +482,35 @@ public class Constants {
 
     public static final String FAVOURITE_DRIVER = "hamilton";
     public static final String FAVOURITE_TEAM = "mercedes";
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }
