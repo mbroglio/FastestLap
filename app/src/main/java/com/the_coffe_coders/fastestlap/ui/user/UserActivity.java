@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.textfield.TextInputEditText;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.SpinnerAdapter;
 import com.the_coffe_coders.fastestlap.utils.Constants;
@@ -132,7 +133,7 @@ public class UserActivity extends AppCompatActivity {
         ImageView revertPassword = findViewById(R.id.revert_password);
         ImageView checkPassword = findViewById(R.id.confirm_edit_password);
 
-        EditText emailText = findViewById(R.id.email_text);
+        TextInputEditText emailText = findViewById(R.id.email_text);
         ImageView editEmail = findViewById(R.id.edit_email);
         ImageView revertEmail = findViewById(R.id.revert_email);
         ImageView checkEmail = findViewById(R.id.confirm_edit_email);
@@ -147,6 +148,7 @@ public class UserActivity extends AppCompatActivity {
         originalEmail = emailText.getText().toString();
         originalDriver = favouriteDriverText.getText().toString();
         originalConstructor = favouriteConstructorText.getText().toString();
+
 
         togglePasswordVisibility.setOnClickListener(v -> {
             if (passwordText.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
@@ -309,11 +311,13 @@ public class UserActivity extends AppCompatActivity {
         // Set revert button listeners
         revertEmail.setOnClickListener(v -> {
             emailText.setText(originalEmail);
+            emailText.setSelection(emailText.getText().length());
             revertEmail.setVisibility(View.INVISIBLE);
         });
 
         revertPassword.setOnClickListener(v -> {
             passwordText.setText(originalPassword);
+            passwordText.setSelection(passwordText.getText().length());
             revertPassword.setVisibility(View.INVISIBLE);
         });
 
@@ -321,10 +325,16 @@ public class UserActivity extends AppCompatActivity {
         dismissButton.setOnClickListener(v -> {
             if (isEmailModified) {
                 emailText.setText(originalEmail);
+                emailText.setEnabled(false);
+                editEmail.setVisibility(View.VISIBLE);
                 revertEmail.setVisibility(View.INVISIBLE);
+                checkEmail.setVisibility(View.INVISIBLE);
             }
             if (isPasswordModified) {
                 passwordText.setText(originalPassword);
+                passwordText.setEnabled(false);
+                editPassword.setVisibility(View.VISIBLE);
+                checkPassword.setVisibility(View.INVISIBLE);
                 revertPassword.setVisibility(View.INVISIBLE);
             }
             if (isFavDriverModified) {

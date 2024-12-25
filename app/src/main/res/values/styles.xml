@@ -14,7 +14,7 @@
         <item name="android:textSize">20sp</item>
     </style>
 
-    <style name="TextAppearance.OrbitronBold_15sp" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+    <style name="TextAppearance.OrbitronBold_15sp_black" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:fontFamily">@font/orbitron_bold</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:textSize">15sp</item>

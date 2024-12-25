@@ -65,6 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/very_round_background"
+                android:text="testo di prova"
                 android:fontFamily="@font/orbitron_regular"
                 android:inputType="textEmailAddress"
                 android:textColor="@color/grey_card"

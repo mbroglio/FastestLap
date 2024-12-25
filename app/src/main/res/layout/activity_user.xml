@@ -120,45 +120,46 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="10dp">
+                    android:layout_height="wrap_content">
 
-                    <EditText
-                        android:id="@+id/email_text"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/email_text_field"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerInParent="true"
-                        android:background="@null"
-                        android:cursorVisible="true"
                         android:enabled="false"
-                        android:fontFamily="@font/orbitron_regular"
-                        android:importantForAutofill="no"
-                        android:inputType="textEmailAddress"
-                        android:labelFor="@id/email_text"
-                        android:text="pierre.gasslee@gmail.com"
-                        android:textColor="@color/timer_gray"
-                        android:textCursorDrawable="@drawable/cursor_color"
-                        android:textSize="14sp" />
+                        app:cursorColor="@color/timer_gray">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/email_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:cursorVisible="true"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:background="@android:color/transparent"
+                            android:inputType="textEmailAddress"
+                            android:text="pierre.gasslee@gmail.com"
+                            android:textColor="@color/timer_gray"
+                            android:textSize="14sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <ImageView
                         android:id="@+id/edit_email"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:layout_marginStart="10dp"
-                        android:layout_toEndOf="@+id/email_text"
+                        android:layout_marginStart="0dp"
+                        android:layout_toEndOf="@+id/email_text_field"
                         android:src="@drawable/pencil_icon_white" />
 
                     <ImageView
                         android:id="@+id/confirm_edit_email"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="0dp"
                         android:visibility="invisible"
-                        android:layout_toEndOf="@+id/email_text"
+                        android:layout_toEndOf="@+id/email_text_field"
+                        android:layout_centerInParent="true"
                         android:src="@drawable/check_icon_black"
                         app:tint="@color/white" />
 
@@ -168,6 +169,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:layout_toEndOf="@id/edit_email"
+                        android:layout_centerInParent="true"
                         android:src="@drawable/arrow_back_ios_style"
                         android:visibility="invisible"
                         app:tint="@color/white" />
@@ -179,7 +181,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:background="@drawable/background_bottom_margin_2_dp_white"
                 android:orientation="vertical">
@@ -196,26 +198,28 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="10dp">
+                    android:layout_height="wrap_content">
 
-                    <EditText
-                        android:id="@+id/password_text"
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/password_text_field"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentStart="true"
-                        android:layout_centerInParent="true"
-                        android:background="@null"
-                        android:cursorVisible="true"
-                        android:enabled="false"
-                        android:fontFamily="@font/orbitron_regular"
-                        android:inputType="textPassword"
-                        android:text="Lorenzo 1"
-                        android:textColor="@color/timer_gray"
-                        android:textCursorDrawable="@drawable/cursor_color"
-                        android:textSize="14sp" />
+                        app:cursorColor="@color/timer_gray"
+                        android:enabled="false">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/password_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:cursorVisible="true"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:background="@android:color/transparent"
+                            android:inputType="textPassword"
+                            android:text="Lorenzo1"
+                            android:textColor="@color/timer_gray"
+                            android:textSize="14sp" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
 
 
                     <ImageView
@@ -223,9 +227,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:layout_marginStart="10dp"
-                        android:layout_toEndOf="@+id/password_text"
+                        android:layout_marginStart="0dp"
+                        android:layout_toEndOf="@+id/password_text_field"
                         android:src="@drawable/eye_icon_white" />
+
 
                     <ImageView
                         android:id="@+id/edit_password"
@@ -242,6 +247,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:visibility="invisible"
+                        android:layout_centerInParent="true"
                         android:layout_toEndOf="@+id/toggle_password_visibility"
                         android:src="@drawable/check_icon_black"
                         app:tint="@color/white" />
@@ -251,6 +257,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
+                        android:layout_centerInParent="true"
                         android:layout_toEndOf="@id/edit_password"
                         android:src="@drawable/arrow_back_ios_style"
                         android:visibility="invisible"
@@ -265,7 +272,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:background="@drawable/background_bottom_margin_2_dp_white"
                 android:orientation="vertical">
@@ -344,7 +351,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:background="@drawable/background_bottom_margin_2_dp_white"
                 android:orientation="vertical">
