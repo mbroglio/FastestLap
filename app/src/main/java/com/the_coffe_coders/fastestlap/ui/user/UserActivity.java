@@ -37,7 +37,6 @@ public class UserActivity extends AppCompatActivity {
     private String originalConstructor;
     private float originalTextSize;
     private Typeface originalTypeface;
-    private Drawable originalBackground;
 
     private TextView favouriteDriverText;
     private MaterialCardView changeDriverButton;
@@ -141,7 +140,6 @@ public class UserActivity extends AppCompatActivity {
         // Store original textSize, typeface, and background
         originalTextSize = passwordText.getTextSize();
         originalTypeface = passwordText.getTypeface();
-        originalBackground = passwordText.getBackground();
 
         // Store original values
         originalPassword = passwordText.getText().toString();
@@ -167,72 +165,45 @@ public class UserActivity extends AppCompatActivity {
         editPassword.setOnClickListener(v -> {
             if (isEditingPassword) {
                 // Abort editing
-                passwordText.setText(originalPassword);
-                passwordText.setEnabled(false);
-                passwordText.setBackground(originalBackground);
-                isEditingPassword = false;
-                editPassword.setVisibility(View.VISIBLE);
-                checkPassword.setVisibility(View.INVISIBLE);
+                isEditingPassword = abortEditing(passwordText, editPassword, checkPassword);
             } else {
                 // Start editing
-                originalPassword = passwordText.getText().toString();
-                passwordText.setEnabled(true);
-                passwordText.requestFocus();
-                passwordText.setSelection(passwordText.getText().length());
-                isEditingPassword = true;
-                editPassword.setVisibility(View.INVISIBLE);
-                checkPassword.setVisibility(View.VISIBLE);
+                isEditingPassword = startEditing(passwordText, editPassword, checkPassword);
             }
-            // Reapply original textSize and typeface
-            passwordText.setTextSize(TypedValue.COMPLEX_UNIT_PX, originalTextSize);
-            passwordText.setTypeface(originalTypeface);
-            // Set underline and cursor color
             checkForChanges();
         });
 
         checkPassword.setOnClickListener(v -> {
-            // Abort editing
-            passwordText.setEnabled(false);
-            passwordText.setBackground(originalBackground);
-            isEditingPassword = false;
-            editPassword.setVisibility(View.VISIBLE);
-            checkPassword.setVisibility(View.INVISIBLE);
+            isEditingPassword = abortEditing(passwordText, editPassword, checkPassword);
         });
+
+        revertPassword.setOnClickListener(v -> {
+            revertEditing(passwordText, originalPassword, revertPassword);
+        });
+
 
         editEmail.setOnClickListener(v -> {
             if (isEditingEmail) {
-                // Abort editing
-                emailText.setText(originalEmail);
-                emailText.setEnabled(false);
-                emailText.setBackground(originalBackground);
-                isEditingEmail = false;
-                editEmail.setVisibility(View.VISIBLE);
-                checkEmail.setVisibility(View.INVISIBLE);
+                isEditingEmail= abortEditing(emailText, editEmail, checkEmail);
             } else {
-                // Start editing
-                originalEmail = emailText.getText().toString();
-                emailText.setEnabled(true);
-                emailText.requestFocus();
-                emailText.setSelection(emailText.getText().length());
-                isEditingEmail = true;
-                editEmail.setVisibility(View.INVISIBLE);
-                checkEmail.setVisibility(View.VISIBLE);
+                isEditingEmail = startEditing(emailText, editEmail, checkEmail);
             }
-            // Reapply original textSize and typeface
-            emailText.setTextSize(TypedValue.COMPLEX_UNIT_PX, originalTextSize);
-            emailText.setTypeface(originalTypeface);
-            // Set underline and cursor color
             checkForChanges();
         });
 
         checkEmail.setOnClickListener(v -> {
-            // Abort editing
-            emailText.setEnabled(false);
-            emailText.setBackground(originalBackground);
-            isEditingEmail = false;
-            editEmail.setVisibility(View.VISIBLE);
-            checkEmail.setVisibility(View.INVISIBLE);
+            isEditingEmail = abortEditing(emailText, editEmail, checkEmail);
         });
+
+        revertEmail.setOnClickListener(v -> {
+            revertEditing(emailText, originalEmail, revertEmail);
+        });
+
+
+
+
+
+
 
         // Add text change listeners
         passwordText.addTextChangedListener(new TextWatcher() {
@@ -293,49 +264,13 @@ public class UserActivity extends AppCompatActivity {
             public void afterTextChanged(Editable s) {}
         });
 
-        // Ensure the EditText retains focus when text is empty
-        emailText.setOnKeyListener((v, keyCode, event) -> {
-            if (keyCode == KeyEvent.KEYCODE_DEL && emailText.getText().length() == 0) {
-                emailText.requestFocus();
-            }
-            return false;
-        });
-
-        passwordText.setOnKeyListener((v, keyCode, event) -> {
-            if (keyCode == KeyEvent.KEYCODE_DEL && passwordText.getText().length() == 0) {
-                passwordText.requestFocus();
-            }
-            return false;
-        });
-
-        // Set revert button listeners
-        revertEmail.setOnClickListener(v -> {
-            emailText.setText(originalEmail);
-            emailText.setSelection(emailText.getText().length());
-            revertEmail.setVisibility(View.INVISIBLE);
-        });
-
-        revertPassword.setOnClickListener(v -> {
-            passwordText.setText(originalPassword);
-            passwordText.setSelection(passwordText.getText().length());
-            revertPassword.setVisibility(View.INVISIBLE);
-        });
-
         // Set dismiss button listener
         dismissButton.setOnClickListener(v -> {
             if (isEmailModified) {
-                emailText.setText(originalEmail);
-                emailText.setEnabled(false);
-                editEmail.setVisibility(View.VISIBLE);
-                revertEmail.setVisibility(View.INVISIBLE);
-                checkEmail.setVisibility(View.INVISIBLE);
+                dismissChanges(emailText, originalEmail, editEmail, checkEmail, revertEmail);
             }
             if (isPasswordModified) {
-                passwordText.setText(originalPassword);
-                passwordText.setEnabled(false);
-                editPassword.setVisibility(View.VISIBLE);
-                checkPassword.setVisibility(View.INVISIBLE);
-                revertPassword.setVisibility(View.INVISIBLE);
+                dismissChanges(passwordText, originalPassword, editPassword, checkPassword, revertPassword);
             }
             if (isFavDriverModified) {
                 favouriteDriverText.setText(originalDriver);
@@ -345,6 +280,38 @@ public class UserActivity extends AppCompatActivity {
             }
             checkForChanges();
         });
+    }
+
+    private boolean abortEditing(EditText inputText, ImageView editText, ImageView checkText) {
+        inputText.setEnabled(false);
+        editText.setVisibility(View.VISIBLE);
+        checkText.setVisibility(View.INVISIBLE);
+
+        return false;
+    }
+
+    private boolean startEditing(EditText inputText, ImageView editText, ImageView checkText) {
+        inputText.setEnabled(true);
+        inputText.requestFocus();
+        inputText.setSelection(inputText.getText().length());
+        editText.setVisibility(View.INVISIBLE);
+        checkText.setVisibility(View.VISIBLE);
+
+        return true;
+    }
+
+    private void revertEditing(EditText inputText, String originalText, ImageView revertText) {
+        inputText.setText(originalText);
+        inputText.setSelection(inputText.getText().length());
+        revertText.setVisibility(View.INVISIBLE);
+    }
+
+    private void dismissChanges(EditText inputText, String originalText, ImageView editText, ImageView checkText, ImageView revertText) {
+        inputText.setText(originalText);
+        inputText.setEnabled(false);
+        editText.setVisibility(View.VISIBLE);
+        checkText.setVisibility(View.INVISIBLE);
+        revertText.setVisibility(View.INVISIBLE);
     }
 
     private void checkForChanges() {
