@@ -4,14 +4,16 @@ package com.the_coffe_coders.fastestlap.ui.user;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+
 import android.view.View;
 import android.view.ViewGroup;
+
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
-import android.widget.TextView;
 
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -19,19 +21,37 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.ProfileImageAdapter;
 import com.the_coffe_coders.fastestlap.utils.SimpleTextWatcher;
 
+import java.util.Objects;
+
+
 public class EditProfilePopup {
 
     private final Context context;
     private final View parentView;
     private final int originalProfileImage;
     private final String originalUsername;
+
     private int provisionalProfileImage;
+
     private boolean isUsernameModified = false;
     private boolean isProfileImageModified = false;
-    private boolean isConfermIconClicked = false;
+    private boolean isConfirmIconClicked = false;
+
     LinearLayout buttonsLayout;
     Button dismissButton;
     Button saveButton;
+    ImageView confirmEditProfileImage;
+    ImageView revertEditProfileImage;
+    LinearLayout profileImageCarouselLayout;
+    ViewPager profileImageCarousel;
+    TextInputEditText profileNameText;
+    ImageView editProfileName;
+    ImageView confirmEditProfileName;
+    ImageView revertEditProfileName;
+
+
+    int[] profileImages = {R.drawable.boy_icon, R.drawable.girl_icon, R.drawable.anonymous_user_icon};
+
 
     public EditProfilePopup(Context context, View parentView, int originalProfileImage, String originalUsername) {
         this.context = context;
@@ -53,57 +73,55 @@ public class EditProfilePopup {
                 true);
 
         // Set the background drawable
-        popupWindow.setBackgroundDrawable(context.getDrawable(R.drawable.round_background_grey));
+        popupWindow.setBackgroundDrawable(AppCompatResources.getDrawable(context, R.drawable.round_background_grey));
 
         // Initialize the carousel and EditText
-        LinearLayout profileImageCarouselLayout = popupView.findViewById(R.id.profile_image_layout);
-        ViewPager profileImageCarousel = popupView.findViewById(R.id.profile_image_carousel);
-        TextInputEditText profileNameText = popupView.findViewById(R.id.profile_name_text);
-        ImageView editProfileName = popupView.findViewById(R.id.edit_profile_name);
-        ImageView confirmEditProfileName = popupView.findViewById(R.id.confirm_edit_profile_name);
-        ImageView revertEditProfileName = popupView.findViewById(R.id.revert_edit_profile_name);
+        profileImageCarouselLayout = popupView.findViewById(R.id.profile_image_layout);
+        profileImageCarousel = popupView.findViewById(R.id.profile_image_carousel);
+        profileNameText = popupView.findViewById(R.id.profile_name_text);
+        editProfileName = popupView.findViewById(R.id.edit_profile_name);
+        confirmEditProfileName = popupView.findViewById(R.id.confirm_edit_profile_name);
+        revertEditProfileName = popupView.findViewById(R.id.revert_edit_profile_name);
 
-        ImageView confirmEditProfileImage = popupView.findViewById(R.id.confirm_edit_profile_image);
-        ImageView revertEditProfileImage = popupView.findViewById(R.id.revert_edit_profile_image);
+        confirmEditProfileImage = popupView.findViewById(R.id.confirm_edit_profile_image);
+        revertEditProfileImage = popupView.findViewById(R.id.revert_edit_profile_image);
 
         buttonsLayout = popupView.findViewById(R.id.buttons_layout);
         dismissButton = popupView.findViewById(R.id.dismiss_button);
         saveButton = popupView.findViewById(R.id.save_button);
 
         // Set up the carousel adapter
-        int[] profileImages = {R.drawable.boy_icon, R.drawable.girl_icon};
+
+        profileImages = rearrangeProfileImages(profileImages, originalProfileImage);
         ProfileImageAdapter adapter = new ProfileImageAdapter(context, profileImages);
         profileImageCarousel.setAdapter(adapter);
+        profileImageCarousel.setCurrentItem(0);
 
         // Update the visibility of the confirm and revert icons
         profileImageCarousel.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
 
             @Override
             public void onPageSelected(int position) {
                 if (profileImages[position] != originalProfileImage) {
-                    isProfileImageModified = true;
-                    confirmEditProfileImage.setVisibility(View.VISIBLE);
-                    revertEditProfileImage.setVisibility(View.VISIBLE);
+                    showImageCarouselButtons(true, View.VISIBLE, View.VISIBLE);
                 } else {
-                    isProfileImageModified = false;
-                    confirmEditProfileImage.setVisibility(View.INVISIBLE);
-                    revertEditProfileImage.setVisibility(View.INVISIBLE);
+                    showImageCarouselButtons(false, View.INVISIBLE, View.INVISIBLE);
                 }
                 checkForChanges();
             }
 
             @Override
-            public void onPageScrollStateChanged(int state) {}
+            public void onPageScrollStateChanged(int state) {
+            }
         });
 
         // Handle the confirm profile image click
         confirmEditProfileImage.setOnClickListener(v -> {
-            profileImageCarouselLayout.setBackground(context.getDrawable(R.drawable.background_all_margins_green_filled_white));
-            provisionalProfileImage = profileImages[profileImageCarousel.getCurrentItem()];
-            confirmEditProfileImage.setVisibility(View.INVISIBLE);
-            isConfermIconClicked = true;
+            confirmEditingProfileImage(profileImages, profileImageCarousel,
+                    profileImageCarouselLayout, confirmEditProfileImage, revertEditProfileImage);
         });
 
         // Handle the revert profile image click
@@ -138,6 +156,8 @@ public class EditProfilePopup {
 
         // Handle the dismiss button click
         dismissButton.setOnClickListener(v -> {
+            revertChanges();
+            /*
             if(isProfileImageModified){
                 revertEditingProfileImage(profileImages, profileImageCarousel,
                         profileImageCarouselLayout, confirmEditProfileImage, revertEditProfileImage);
@@ -146,16 +166,41 @@ public class EditProfilePopup {
                 revertEditing(profileNameText, originalUsername, revertEditProfileName);
             }
             checkForChanges();
+
+             */
+        });
+
+        saveButton.setOnClickListener(v -> {
+            saveChanges();
+            popupWindow.dismiss();
         });
 
         // Show the popup window
         popupWindow.showAtLocation(parentView, Gravity.CENTER, 0, 0);
     }
 
+    private void showImageCarouselButtons(boolean modified, int confirmVisibility, int revertVisibility) {
+        isProfileImageModified = modified;
+        confirmEditProfileImage.setVisibility(confirmVisibility);
+        revertEditProfileImage.setVisibility(revertVisibility);
+    }
+
+    private int[] rearrangeProfileImages(int[] profileImages, int originalProfileImage) {
+        int[] rearrangedImages = new int[profileImages.length];
+        rearrangedImages[0] = originalProfileImage;
+        int index = 1;
+        for (int image : profileImages) {
+            if (image != originalProfileImage) {
+                rearrangedImages[index++] = image;
+            }
+        }
+        return rearrangedImages;
+    }
+
     private void startEditing(TextInputEditText inputText, ImageView editText, ImageView checkText) {
         inputText.setEnabled(true);
         inputText.requestFocus();
-        inputText.setSelection(inputText.getText().length());
+        inputText.setSelection(Objects.requireNonNull(inputText.getText()).length());
         editText.setVisibility(View.INVISIBLE);
         checkText.setVisibility(View.VISIBLE);
     }
@@ -168,8 +213,17 @@ public class EditProfilePopup {
 
     private void revertEditing(TextInputEditText inputText, String originalText, ImageView revertText) {
         inputText.setText(originalText);
-        inputText.setSelection(inputText.getText().length());
+        inputText.setSelection(Objects.requireNonNull(inputText.getText()).length());
         revertText.setVisibility(View.INVISIBLE);
+    }
+
+    private void confirmEditingProfileImage(int[] profileImages, ViewPager profileImageCarousel, LinearLayout profileImageCarouselLayout, ImageView confirmEditProfileImage, ImageView revertEditProfileImage) {
+        setViewPagerScrollable(profileImageCarousel, false);
+        profileImageCarouselLayout.setBackground(AppCompatResources.getDrawable(context, R.drawable.background_all_margins_green_filled_white));
+        provisionalProfileImage = profileImages[profileImageCarousel.getCurrentItem()];
+        confirmEditProfileImage.setVisibility(View.INVISIBLE);
+        isConfirmIconClicked = true;
+        checkForChanges();
     }
 
     private void revertEditingProfileImage(int[] profileImages, ViewPager profileImageCarousel, LinearLayout profileImageCarouselLayout, ImageView confirmEditProfileImage, ImageView revertEditProfileImage) {
@@ -179,19 +233,52 @@ public class EditProfilePopup {
                 break;
             }
         }
+        setViewPagerScrollable(profileImageCarousel, true);
         provisionalProfileImage = originalProfileImage;
-        profileImageCarouselLayout.setBackground(context.getDrawable(R.drawable.background_all_margins_filled_white));
+        profileImageCarouselLayout.setBackground(AppCompatResources.getDrawable(context, R.drawable.background_all_margins_filled_white));
         confirmEditProfileImage.setVisibility(View.INVISIBLE);
         revertEditProfileImage.setVisibility(View.INVISIBLE);
+        isConfirmIconClicked = false;
     }
 
+    private void revertChanges() {
+        if (isProfileImageModified) {
+            revertEditingProfileImage(profileImages, profileImageCarousel,
+                    profileImageCarouselLayout, confirmEditProfileImage, revertEditProfileImage);
+        }
+        if (isUsernameModified) {
+            revertEditing(profileNameText, originalUsername, revertEditProfileName);
+        }
+        checkForChanges();
+    }
+
+    private void saveChanges() {
+        if (context instanceof EditProfileListener) {
+            EditProfileListener listener = (EditProfileListener) context;
+            if (isProfileImageModified && isConfirmIconClicked) {
+                listener.onProfileImageChanged(provisionalProfileImage);
+            }
+            if (isUsernameModified) {
+                listener.onUsernameChanged(Objects.requireNonNull(profileNameText.getText()).toString());
+            }
+        }
+    }
 
     private void checkForChanges() {
-        boolean hasChanges = isUsernameModified || isProfileImageModified;
+        boolean hasChanges = isUsernameModified || (isProfileImageModified && isConfirmIconClicked);
         buttonsLayout.setVisibility(hasChanges ? View.VISIBLE : View.INVISIBLE);
 
     }
 
+    private void setViewPagerScrollable(ViewPager viewPager, boolean scrollable) {
+        viewPager.setOnTouchListener((v, event) -> !scrollable);
+    }
+
+    public interface EditProfileListener {
+        void onProfileImageChanged(int newProfileImage);
+
+        void onUsernameChanged(String newUsername);
+    }
 
 
 }

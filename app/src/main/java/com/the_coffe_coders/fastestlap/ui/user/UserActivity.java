@@ -1,8 +1,12 @@
 package com.the_coffe_coders.fastestlap.ui.user;
 
+import android.content.Context;
 import android.graphics.Typeface;
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.InputType;
 import android.util.Log;
 import android.util.TypedValue;
@@ -31,7 +35,7 @@ import com.the_coffe_coders.fastestlap.adapter.SpinnerAdapter;
 import com.the_coffe_coders.fastestlap.utils.Constants;
 import com.the_coffe_coders.fastestlap.utils.SimpleTextWatcher;
 
-public class UserActivity extends AppCompatActivity {
+public class UserActivity extends AppCompatActivity implements EditProfilePopup.EditProfileListener {
 
     private String originalUsername;
     private String originalPassword;
@@ -41,6 +45,9 @@ public class UserActivity extends AppCompatActivity {
     private int originalProfileImage;
     private float originalTextSize;
     private Typeface originalTypeface;
+
+    private ImageView profileImage;
+    private TextView usernameText;
 
     private TextView favouriteDriverText;
     private MaterialCardView changeDriverButton;
@@ -53,13 +60,19 @@ public class UserActivity extends AppCompatActivity {
     private Button saveButton;
     private Button dismissButton;
 
-    private LinearLayout buttonsLayout;
+    private String provisionalUsername;
+    private int provisionalProfileImage;
+    private String provisionalFavDriver;
+    private String provisionalFavConstructor;
+    private String provisionalEmail;
+    private String provisionalPassword;
 
+    private boolean isProfileImageModified = false;
+    private boolean isProfileNameModified = false;
     private boolean isEmailModified = false;
     private boolean isPasswordModified = false;
     private boolean isFavDriverModified = false;
     private boolean isFavConstructorModified = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,9 +117,10 @@ public class UserActivity extends AppCompatActivity {
             }
         });
 
-        originalProfileImage = R.drawable.boy_icon;
+        profileImage = findViewById(R.id.profile_image);
+        originalProfileImage = getOriginalProfileImage(profileImage);
 
-        TextView usernameText = findViewById(R.id.profile_text);
+        usernameText = findViewById(R.id.profile_text);
         ImageView editProfile = findViewById(R.id.edit_profile);
         editProfile.setOnClickListener(v -> {
             EditProfilePopup editProfilePopup = new EditProfilePopup(this, findViewById(R.id.activity_user_layout), originalProfileImage, originalUsername);
@@ -157,11 +171,11 @@ public class UserActivity extends AppCompatActivity {
         });
 
         checkPassword.setOnClickListener(v -> {
-            abortEditing(passwordText, editPassword, checkPassword);
+            abortEditing(passwordText, editPassword, checkPassword, provisionalPassword);
         });
 
         revertPassword.setOnClickListener(v -> {
-            revertEditing(passwordText, originalPassword, revertPassword);
+            revertEditing(passwordText, originalPassword, revertPassword, provisionalPassword);
         });
 
         editEmail.setOnClickListener(v -> {
@@ -170,11 +184,11 @@ public class UserActivity extends AppCompatActivity {
         });
 
         checkEmail.setOnClickListener(v -> {
-            abortEditing(emailText, editEmail, checkEmail);
+            abortEditing(emailText, editEmail, checkEmail, provisionalEmail);
         });
 
         revertEmail.setOnClickListener(v -> {
-            revertEditing(emailText, originalEmail, revertEmail);
+            revertEditing(emailText, originalEmail, revertEmail, provisionalEmail);
         });
 
 
@@ -201,6 +215,9 @@ public class UserActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 isFavDriverModified = !s.toString().equals(originalDriver);
+                if (isFavDriverModified) {
+                    provisionalFavDriver = s.toString();
+                }
                 checkForChanges();
             }
         });
@@ -209,6 +226,9 @@ public class UserActivity extends AppCompatActivity {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 isFavConstructorModified = !s.toString().equals(originalConstructor);
+                if (isFavConstructorModified) {
+                    provisionalFavConstructor = s.toString();
+                }
                 checkForChanges();
             }
         });
@@ -216,19 +236,44 @@ public class UserActivity extends AppCompatActivity {
         // Set dismiss button listener
         dismissButton.setOnClickListener(v -> {
             if (isEmailModified) {
-                dismissChanges(emailText, originalEmail, editEmail, checkEmail, revertEmail);
+                dismissChanges(emailText, originalEmail, editEmail, checkEmail, revertEmail, provisionalEmail);
             }
             if (isPasswordModified) {
-                dismissChanges(passwordText, originalPassword, editPassword, checkPassword, revertPassword);
+                dismissChanges(passwordText, originalPassword, editPassword, checkPassword, revertPassword, provisionalPassword);
             }
             if (isFavDriverModified) {
                 favouriteDriverText.setText(originalDriver);
+                provisionalFavDriver = null;
             }
             if (isFavConstructorModified) {
                 favouriteConstructorText.setText(originalConstructor);
+                provisionalFavConstructor = null;
+            }
+            if (isProfileImageModified) {
+                profileImage.setImageResource(originalProfileImage);
+                isProfileImageModified = false;
+            }
+            if (isProfileNameModified) {
+                usernameText.setText(originalUsername);
+                isProfileNameModified = false;
             }
             checkForChanges();
         });
+    }
+
+    private int getOriginalProfileImage(ImageView profileImage) {
+        Drawable currentDrawable = profileImage.getDrawable();
+        int image = 0;
+        if (currentDrawable != null) {
+            if (currentDrawable.getConstantState().equals(AppCompatResources.getDrawable(this, R.drawable.boy_icon).getConstantState())) {
+                image = R.drawable.boy_icon;
+            } else if (currentDrawable.getConstantState().equals(AppCompatResources.getDrawable(this, R.drawable.girl_icon).getConstantState())) {
+                image = R.drawable.girl_icon;
+            } else if (currentDrawable.getConstantState().equals(AppCompatResources.getDrawable(this, R.drawable.anonymous_user_icon).getConstantState())) {
+                image = R.drawable.anonymous_user_icon;
+            }
+        }
+        return image;
     }
 
     private ListPopupWindow createListPopupWindow(String[] items, MaterialCardView anchorView, boolean isDriver) {
@@ -251,11 +296,11 @@ public class UserActivity extends AppCompatActivity {
         return listPopupWindow;
     }
 
-    private void abortEditing(EditText inputText, ImageView editText, ImageView checkText) {
+    private void abortEditing(EditText inputText, ImageView editText, ImageView checkText, String provisionalText) {
         inputText.setEnabled(false);
+        provisionalText = inputText.getText().toString();
         editText.setVisibility(View.VISIBLE);
         checkText.setVisibility(View.INVISIBLE);
-
     }
 
     private void startEditing(EditText inputText, ImageView editText, ImageView checkText) {
@@ -267,32 +312,26 @@ public class UserActivity extends AppCompatActivity {
 
     }
 
-    private void revertEditing(EditText inputText, String originalText, ImageView revertText) {
+    private void revertEditing(EditText inputText, String originalText, ImageView revertText, String provisionalText) {
         inputText.setText(originalText);
+        provisionalText = null;
         inputText.setSelection(inputText.getText().length());
         revertText.setVisibility(View.INVISIBLE);
     }
 
-    private void dismissChanges(EditText inputText, String originalText, ImageView editText, ImageView checkText, ImageView revertText) {
+    private void dismissChanges(EditText inputText, String originalText, ImageView editText, ImageView checkText, ImageView revertText, String provisionalText) {
         inputText.setText(originalText);
         inputText.setEnabled(false);
+        provisionalText = null;
         editText.setVisibility(View.VISIBLE);
         checkText.setVisibility(View.INVISIBLE);
         revertText.setVisibility(View.INVISIBLE);
     }
 
     private void checkForChanges() {
-        String currentUsername = ((TextView) findViewById(R.id.profile_text)).getText().toString();
-        String currentPassword = ((EditText) findViewById(R.id.password_text)).getText().toString();
-        String currentEmail = ((EditText) findViewById(R.id.email_text)).getText().toString();
-        String currentDriver = favouriteDriverText.getText().toString();
-        String currentConstructor = favouriteConstructorText.getText().toString();
-
-        boolean hasChanges = !currentUsername.equals(originalUsername) ||
-                !currentPassword.equals(originalPassword) ||
-                !currentEmail.equals(originalEmail) ||
-                !currentDriver.equals(originalDriver) ||
-                !currentConstructor.equals(originalConstructor);
+        boolean hasChanges = isEmailModified || isPasswordModified ||
+                isFavDriverModified || isFavConstructorModified ||
+                isProfileImageModified || isProfileNameModified;
 
         saveButton.setVisibility(hasChanges ? View.VISIBLE : View.INVISIBLE);
         saveButton.setEnabled(hasChanges);
@@ -301,5 +340,19 @@ public class UserActivity extends AppCompatActivity {
     }
 
 
+    @Override
+    public void onProfileImageChanged(int newProfileImage) {
+        profileImage.setImageResource(newProfileImage);
+        provisionalProfileImage = newProfileImage;
+        isProfileImageModified = true;
+        checkForChanges();
+    }
 
+    @Override
+    public void onUsernameChanged(String newUsername) {
+        usernameText.setText(newUsername);
+        provisionalUsername = newUsername;
+        isProfileNameModified = true;
+        checkForChanges();
+    }
 }

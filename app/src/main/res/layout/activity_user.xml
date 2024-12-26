@@ -57,12 +57,14 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginTop="50dp"
-                android:background="@drawable/circle_background">
+                android:background="@drawable/circle_background_grey">
 
                 <ImageView
+                    android:id="@+id/profile_image"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    app:srcCompat="@drawable/account_icon_2">
+                    android:layout_margin="14dp"
+                    android:src="@drawable/anonymous_user_icon">
 
                 </ImageView>
 
@@ -89,8 +91,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:layout_marginStart="10dp"
+                    android:layout_marginStart="20dp"
                     android:layout_toEndOf="@+id/profile_text"
+                    android:background="@drawable/circle_background_black"
                     android:src="@drawable/pencil_icon_white" />
             </RelativeLayout>
 
@@ -128,9 +131,9 @@
                             android:id="@+id/email_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
                             android:cursorVisible="true"
                             android:fontFamily="@font/orbitron_regular"
-                            android:background="@android:color/transparent"
                             android:inputType="textEmailAddress"
                             android:text="pierre.gasslee@gmail.com"
                             android:textColor="@color/timer_gray"
@@ -143,28 +146,31 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:layout_marginStart="0dp"
+                        android:layout_marginStart="10dp"
                         android:layout_toEndOf="@+id/email_text_field"
+                        android:background="@drawable/circle_background_black"
                         android:src="@drawable/pencil_icon_white" />
 
                     <ImageView
                         android:id="@+id/confirm_edit_email"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="0dp"
-                        android:visibility="invisible"
-                        android:layout_toEndOf="@+id/email_text_field"
                         android:layout_centerInParent="true"
+                        android:layout_marginStart="10dp"
+                        android:layout_toEndOf="@+id/email_text_field"
+                        android:background="@drawable/circle_background_black"
                         android:src="@drawable/check_icon_black"
+                        android:visibility="invisible"
                         app:tint="@color/white" />
 
                     <ImageView
                         android:id="@+id/revert_email"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_toEndOf="@id/edit_email"
                         android:layout_centerInParent="true"
+                        android:layout_marginStart="20dp"
+                        android:layout_toEndOf="@id/edit_email"
+                        android:background="@drawable/circle_background_black"
                         android:src="@drawable/arrow_back_ios_style"
                         android:visibility="invisible"
                         app:tint="@color/white" />
@@ -199,16 +205,16 @@
                         android:id="@+id/password_text_field"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        app:cursorColor="@color/timer_gray"
-                        android:enabled="false">
+                        android:enabled="false"
+                        app:cursorColor="@color/timer_gray">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/password_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
                             android:cursorVisible="true"
                             android:fontFamily="@font/orbitron_regular"
-                            android:background="@android:color/transparent"
                             android:inputType="textPassword"
                             android:text="Lorenzo1"
                             android:textColor="@color/timer_gray"
@@ -222,8 +228,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:layout_marginStart="0dp"
+                        android:layout_marginStart="10dp"
                         android:layout_toEndOf="@+id/password_text_field"
+                        android:background="@drawable/circle_background_black"
                         android:src="@drawable/eye_icon_white" />
 
 
@@ -232,28 +239,31 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:layout_marginStart="10dp"
+                        android:layout_marginStart="20dp"
                         android:layout_toEndOf="@+id/toggle_password_visibility"
+                        android:background="@drawable/circle_background_black"
                         android:src="@drawable/pencil_icon_white" />
 
                     <ImageView
                         android:id="@+id/confirm_edit_password"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:visibility="invisible"
                         android:layout_centerInParent="true"
+                        android:layout_marginStart="20dp"
                         android:layout_toEndOf="@+id/toggle_password_visibility"
+                        android:background="@drawable/circle_background_black"
                         android:src="@drawable/check_icon_black"
+                        android:visibility="invisible"
                         app:tint="@color/white" />
 
                     <ImageView
                         android:id="@+id/revert_password"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
                         android:layout_centerInParent="true"
+                        android:layout_marginStart="20dp"
                         android:layout_toEndOf="@id/edit_password"
+                        android:background="@drawable/circle_background_black"
                         android:src="@drawable/arrow_back_ios_style"
                         android:visibility="invisible"
                         app:tint="@color/white" />

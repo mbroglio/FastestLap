@@ -118,8 +118,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_marginStart="0dp"
+            android:layout_marginStart="10dp"
             android:layout_toEndOf="@+id/profile_name_text_field"
+            android:background="@drawable/circle_background_dark_grey"
             android:src="@drawable/pencil_icon_white" />
 
         <ImageView
@@ -127,7 +128,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_marginStart="0dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/circle_background_dark_grey"
             android:layout_toEndOf="@+id/profile_name_text_field"
             android:src="@drawable/check_icon_black"
             android:visibility="invisible"
@@ -138,8 +140,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:layout_marginStart="10dp"
+            android:layout_marginStart="20dp"
             android:layout_toEndOf="@id/edit_profile_name"
+            android:background="@drawable/circle_background_dark_grey"
             android:src="@drawable/arrow_back_ios_style"
             android:visibility="invisible"
             app:tint="@color/white" />

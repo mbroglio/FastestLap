@@ -187,4 +187,5 @@
     <color name="yellow">#FFD700</color>
     <color name="dark_red">#8B0000</color>
     <color name="grey_card">#3B3B37</color>
+    <color name="dark_grey">#41413D</color>
 </resources>
