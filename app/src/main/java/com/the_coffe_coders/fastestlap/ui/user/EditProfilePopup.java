@@ -157,17 +157,6 @@ public class EditProfilePopup {
         // Handle the dismiss button click
         dismissButton.setOnClickListener(v -> {
             revertChanges();
-            /*
-            if(isProfileImageModified){
-                revertEditingProfileImage(profileImages, profileImageCarousel,
-                        profileImageCarouselLayout, confirmEditProfileImage, revertEditProfileImage);
-            }
-            if(isUsernameModified){
-                revertEditing(profileNameText, originalUsername, revertEditProfileName);
-            }
-            checkForChanges();
-
-             */
         });
 
         saveButton.setOnClickListener(v -> {

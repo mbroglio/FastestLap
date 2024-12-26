@@ -45,6 +45,7 @@
         android:layout_alignBottom="@id/profile_image_layout"
         android:layout_marginStart="10dp"
         android:layout_marginBottom="30dp"
+        android:background="@drawable/circle_background_dark_grey"
         android:layout_toEndOf="@id/profile_image_layout"
         android:src="@drawable/arrow_back_ios_style"
         android:visibility="invisible">
@@ -57,6 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@id/profile_image_layout"
         android:layout_marginStart="10dp"
+        android:background="@drawable/circle_background_dark_grey"
         android:layout_toEndOf="@id/profile_image_layout"
         android:src="@drawable/check_icon_black"
         android:visibility="invisible">
