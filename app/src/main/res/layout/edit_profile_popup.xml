@@ -48,6 +48,7 @@
         android:background="@drawable/circle_background_dark_grey"
         android:layout_toEndOf="@id/profile_image_layout"
         android:src="@drawable/arrow_back_ios_style"
+        app:tint="@color/white"
         android:visibility="invisible">
 
     </ImageView>
@@ -61,7 +62,8 @@
         android:background="@drawable/circle_background_dark_grey"
         android:layout_toEndOf="@id/profile_image_layout"
         android:src="@drawable/check_icon_black"
-        android:visibility="invisible">
+        android:visibility="invisible"
+        app:tint="@color/white">
 
     </ImageView>
 
