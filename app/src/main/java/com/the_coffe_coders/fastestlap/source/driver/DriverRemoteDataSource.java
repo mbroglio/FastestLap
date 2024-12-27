@@ -28,9 +28,8 @@ import retrofit2.Response;
 public class DriverRemoteDataSource extends BaseDriverRemoteDataSource {
     private final ErgastAPIService ergastAPIService;
 
-    public DriverRemoteDataSource(String apiKey, DriverResponseCallback driverResponseCallback) {
-        setDriverCallback(driverResponseCallback);
-        this.ergastAPIService = ServiceLocator.getInstance().getArticleAPIService();
+    public DriverRemoteDataSource(String apiKey) {
+        this.ergastAPIService = ServiceLocator.getInstance().getDriverAPIService();
     }
 
     public void getDrivers() {

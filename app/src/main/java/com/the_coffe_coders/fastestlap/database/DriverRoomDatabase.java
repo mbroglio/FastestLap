@@ -10,7 +10,7 @@ import com.the_coffe_coders.fastestlap.util.Constants;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Driver.class}, version = DATABASE_VERSION, exportSchema = true)
+@Database(entities = {Driver.class}, version = DATABASE_VERSION, exportSchema = false)//TODO set to true (export schema)
 public abstract class DriverRoomDatabase extends RoomDatabase{
     public abstract DriverDAO driverDao();
     private static volatile DriverRoomDatabase INSTANCE;

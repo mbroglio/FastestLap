@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
 
 public class DriverViewModel extends ViewModel {
 
-    private final DriverRepository driverRepository;
+    private DriverRepository driverRepository;//TODO shuld be final
 
     /*DriverViewModel() {
         driverRepository = DriverRepository.getInstance();
@@ -25,7 +25,7 @@ public class DriverViewModel extends ViewModel {
 
 
     public DriverViewModel() {
-        driverRepository = DriverRepository.getInstance();
+        //driverRepository = DriverRepository.getInstance();
     }
 
     public LiveData<Driver> getSelectedDriverLiveData() {

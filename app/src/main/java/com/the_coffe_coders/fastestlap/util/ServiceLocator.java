@@ -2,7 +2,18 @@ package com.the_coffe_coders.fastestlap.util;
 
 import static com.the_coffe_coders.fastestlap.repository.JolpicaServer.CURRENT_YEAR_BASE_URL;
 
+import android.app.Application;
+
+import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.database.DriverDAO;
+import com.the_coffe_coders.fastestlap.database.DriverRoomDatabase;
+import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
+import com.the_coffe_coders.fastestlap.source.driver.BaseDriverLocalDataSource;
+import com.the_coffe_coders.fastestlap.source.driver.BaseDriverRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.driver.DriverLocalDataSource;
+import com.the_coffe_coders.fastestlap.source.driver.DriverMockDataSource;
+import com.the_coffe_coders.fastestlap.source.driver.DriverRemoteDataSource;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -20,7 +31,7 @@ public class ServiceLocator {
         return instance;
     }
 
-    public ErgastAPIService getArticleAPIService() {
+    public ErgastAPIService getDriverAPIService() {
         return new ErgastAPIService() {
             @Override
             public Call<ResponseBody> getConstructorStandings() {
@@ -62,6 +73,28 @@ public class ServiceLocator {
                 return null;
             }
         };
+    }
+
+    public DriverRoomDatabase getDriverDAO(Application application) {
+        return DriverRoomDatabase.getDatabase(application);
+    }
+
+    public DriverRepository getDriverRepository(Application application, boolean debugMode) {
+        BaseDriverRemoteDataSource driverRemoteDataSource;
+        BaseDriverLocalDataSource driverLocalDataSource;
+        SharedPreferencesUtils sharedPreferencesUtil = new SharedPreferencesUtils(application);
+
+        if (false) {//TODO change in debugMode
+            /*JSONParserUtils jsonParserUtil = new JSONParserUtils(application);
+            newsRemoteDataSource =
+                    new DriverMockDataSource(jsonParserUtil);*/
+        } else {
+            driverRemoteDataSource = new DriverRemoteDataSource("");
+        }
+
+        driverLocalDataSource = new DriverLocalDataSource(getDriverDAO(application), sharedPreferencesUtil);
+
+        return new DriverRepository(driverRemoteDataSource, driverLocalDataSource);
     }
 
 }

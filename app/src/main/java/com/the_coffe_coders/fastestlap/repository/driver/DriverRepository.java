@@ -52,17 +52,13 @@ public class DriverRepository implements IDriverRepository, JolpicaServer, Drive
 
     private static DriverRepository instance;
 
-    public DriverRepository() {
+    public DriverRepository(BaseDriverRemoteDataSource driverRemoteDataSource, BaseDriverLocalDataSource driverLocalDataSource) {
         this.allDriverMutableLiveData = new MutableLiveData<>();
         this.driverMutableLiveData = new MutableLiveData<>();
-        this.driverRemoteDataSource = new DriverRemoteDataSource("", this);
-    }
-
-    public static synchronized DriverRepository getInstance() {
-        if (instance == null) {
-            instance = new DriverRepository();
-        }
-        return instance;
+        this.driverRemoteDataSource = driverRemoteDataSource;
+        this.driverLocalDataSource = driverLocalDataSource;
+        this.driverRemoteDataSource.setDriverCallback(this);
+        this.driverLocalDataSource.setDriverCallback(this);
     }
 
     @Override
@@ -108,7 +104,7 @@ public class DriverRepository implements IDriverRepository, JolpicaServer, Drive
     public MutableLiveData<Result> fetchDrivers(long lastUpdate) {
         long currentTime = System.currentTimeMillis();
 
-        if(true) { //currentTime - lastUpdate > FRESH_TIMEOUT
+        if(currentTime - lastUpdate > FRESH_TIMEOUT) { //currentTime - lastUpdate > FRESH_TIMEOUT
             driverRemoteDataSource.getDrivers();
         } else {
           driverLocalDataSource.getDrivers();
@@ -185,6 +181,12 @@ public class DriverRepository implements IDriverRepository, JolpicaServer, Drive
     @Override
     public void onSuccessFromRemote(DriverStandingsAPIResponse driverAPIResponse, long lastUpdate) {
         System.out.println(driverAPIResponse.getStandingsTable());
+        List<Driver> drivers = new ArrayList<>();
+        for (DriverStandingsElementDTO driver: driverAPIResponse.getStandingsTable().getStandingsLists().get(0).getDriverStandings()) {
+            drivers.add(DriverMapper.toDriver(driver.getDriver()));
+            System.out.println(driver);
+        }
+        driverLocalDataSource.insertDrivers(drivers);
     }
 
     @Override
