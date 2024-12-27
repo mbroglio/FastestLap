@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/screen_background_color"
+    tools:context=".ui.live.fragment.LiveEventFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="live event fragment"
+        android:textColor="@color/white"/>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:checked="false"
+        android:layout_marginEnd="10dp"
+        android:text="Full telemetry"
+        android:fontFamily="@font/orbitron_bold"
+        android:textColor="@color/white"
+        android:buttonTint="@color/white"
+        app:buttonIconTint="@color/black"
+        >
+
+    </CheckBox>
+
+</RelativeLayout>

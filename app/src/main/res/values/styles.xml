@@ -20,6 +20,12 @@
         <item name="android:textSize">15sp</item>
     </style>
 
+    <style name="TextAppearance.OrbitronRegular_13sp_black" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:fontFamily">@font/orbitron_regular</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">13sp</item>
+    </style>
+
     <style name="TextAppearance.BottomNav.Selected" parent="TextAppearance.AppCompat.Medium">
         <item name="android:textAllCaps">true</item>
         <item name="android:textSize">16sp</item>
