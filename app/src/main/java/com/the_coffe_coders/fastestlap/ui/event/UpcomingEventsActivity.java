@@ -1,5 +1,5 @@
 package com.the_coffe_coders.fastestlap.ui.event;
-/*
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,11 +17,10 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.race.Race;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
-import com.the_coffe_coders.fastestlap.service.ErgastAPI;
-import com.the_coffe_coders.fastestlap.utils.Constants;
-import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
+import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZonedDateTime;
@@ -106,40 +105,6 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     };
 
     private void processEvents() {
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.jolpi.ca/ergast/f1/current/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        ErgastAPI ergastApi = retrofit.create(ErgastAPI.class);
-
-        ergastApi.getRaces().enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    try {
-                        String responseBody = response.body().string();
-                        JsonObject jsonResponse = new Gson().fromJson(responseBody, JsonObject.class);
-                        JsonObject mrData = jsonResponse.getAsJsonObject("MRData");
-
-                        JSONParserUtils jsonParserUtils = new JSONParserUtils(UpcomingEventsActivity.this);
-                        RaceAPIResponse raceAPIResponse = jsonParserUtils.parseRace(mrData);
-
-                        List<WeeklyRace> upcomingRaces = extractUpcomingRaces(raceAPIResponse);
-                        createEventCards(upcomingRaces);
-                        raceToProcess = false;
-                        hideLoadingScreen();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-            }
-        });
-
     }
 
     private List<WeeklyRace> extractUpcomingRaces(RaceAPIResponse raceAPIResponse) {
@@ -147,7 +112,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         //List<WeeklyRace> races = raceAPIResponse.getRaceTable().getRaces();
         List<WeeklyRace> upcomingRaces = new ArrayList<>();
 
-        for (WeeklyRace weeklyRace : races) {
+        for (WeeklyRace weeklyRace : upcomingRaces) {
             String raceDate = weeklyRace.getDate();
             String raceTime = weeklyRace.getTime(); // ends with 'Z'
             ZonedDateTime raceDateTime = ZonedDateTime.parse(raceDate + "T" + raceTime);
@@ -160,7 +125,6 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         }
 
         return upcomingRaces;
-        return null;
     }
 
     private void createEventCards(List<WeeklyRace> upcomingRaces) {
@@ -179,7 +143,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     private View generateEventCard(WeeklyRace weeklyRace) {
         View eventCard = null;
 
-        if (race.isRaceWeekendUnderway()) {
+        if (weeklyRace.isUnderway()) {
             eventCard = getLayoutInflater().inflate(R.layout.upcoming_event_live_card, null);
 
             ImageView liveIcon = eventCard.findViewById(R.id.upcoming_event_icon);
@@ -216,5 +180,3 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         return eventCard;
     }
 }
-
-*/

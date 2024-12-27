@@ -19,7 +19,8 @@ import androidx.core.content.res.ResourcesCompat;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
-/*
+import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
+
 
 public class ConstructorBioActivity extends AppCompatActivity {
 
@@ -134,4 +135,4 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
         }
     }
-}*/
+}

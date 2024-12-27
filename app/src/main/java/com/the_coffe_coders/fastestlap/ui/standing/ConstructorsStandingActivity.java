@@ -1,5 +1,5 @@
 package com.the_coffe_coders.fastestlap.ui.standing;
-/*
+
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
@@ -24,9 +24,9 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
-import com.the_coffe_coders.fastestlap.utils.Constants;
-import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
+import com.the_coffe_coders.fastestlap.util.Constants;
 
 import okhttp3.ResponseBody;
 
@@ -80,55 +80,6 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         LinearLayout teamStanding = findViewById(R.id.team_standing);
-        // Initialize Retrofit
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .build();
-
-        ErgastAPI ergastApi = retrofit.create(ErgastAPI.class);
-
-        // Make the network request
-        ergastApi.getConstructorStandings().enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    try {
-                        String responseString = response.body().string();
-                        JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
-                        JsonObject mrData = jsonResponse.get("MRData").getAsJsonObject();
-
-                        JSONParserUtils jsonParserUtils = new JSONParserUtils(ConstructorsStandingActivity.this);
-                        ConstructorStandingsAPIResponse constructorStandingsAPIResponse = jsonParserUtils.parseConstructorStandings(mrData);
-
-                        int total = Integer.parseInt(constructorStandingsAPIResponse.getTotal());
-                        for (int i = 0; i < total; i++) {
-                            ConstructorStanding standingElement = constructorStandingsAPIResponse
-                                    .getStandingsTable()
-                                    .getStandingsLists().get(0)
-                                    .getConstructorStandings().get(i);
-                            teamStanding.addView(generateTeamCard(standingElement, constructorId));
-                            //add a space between each team card
-                            View space = new View(ConstructorsStandingActivity.this);
-                            space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
-                            teamStanding.addView(space);
-
-                            constructorToProcess = false;
-                            hideLoadingScreen();
-                        }
-                    } catch (Exception e) {
-                        Log.e(TAG, "Failed to parse JSON response", e);
-                    }
-                } else {
-                    Log.e(TAG, "Response not successful");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e(TAG, "Network request failed", t);
-            }
-        });
     }
 
     private void showLoadingScreen() {
@@ -163,7 +114,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         }
     };
 
-    private View generateTeamCard(ConstructorStanding standingElement, String constructorIdToHighlight) {
+    private View generateTeamCard(ConstructorStandingsElement standingElement, String constructorIdToHighlight) {
         // Inflate the team card layout
         View teamCard = getLayoutInflater().inflate(R.layout.team_card, null);
 
@@ -224,4 +175,4 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
         return teamCard;
     }
-}*/
+}

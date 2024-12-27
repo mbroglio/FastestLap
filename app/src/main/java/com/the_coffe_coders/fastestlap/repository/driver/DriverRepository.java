@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.driver.DriverAPIResponse;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.dto.DriverDTO;
@@ -21,6 +22,8 @@ import com.the_coffe_coders.fastestlap.source.driver.BaseDriverRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.DriverRemoteDataSource;
 import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
 
+import com.the_coffe_coders.fastestlap.domain.Result;
+
 
 import org.threeten.bp.Year;
 
@@ -28,9 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-
-
-import javax.xml.transform.Result;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -41,14 +41,14 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class DriverRepository implements IDriverRepository, JolpicaServer, DriverResponseCallback {
 
-    String TAG = "RetrofitDriverRepository";
+    String TAG = "DriverRepository";
 
     public static long FRESH_TIMEOUT = 60000;
 
-    private MutableLiveData<Result> allDriverMutableLiveData;//shuld be final
-    private MutableLiveData<Result> driverMutableLiveData;//shuld be final
-    private BaseDriverRemoteDataSource driverRemoteDataSource;//shuld be final
-    private BaseDriverLocalDataSource driverLocalDataSource;//shuld be final
+    private final MutableLiveData<Result> allDriverMutableLiveData;//shuld be final
+    private final MutableLiveData<Result> driverMutableLiveData;//shuld be final
+    private final BaseDriverRemoteDataSource driverRemoteDataSource;//shuld be final
+    private final BaseDriverLocalDataSource driverLocalDataSource;//shuld be final
 
     private static DriverRepository instance;
 
@@ -103,7 +103,10 @@ public class DriverRepository implements IDriverRepository, JolpicaServer, Drive
 
     public MutableLiveData<Result> fetchDrivers(long lastUpdate) {
         long currentTime = System.currentTimeMillis();
-
+        System.out.println(currentTime);
+        System.out.println(lastUpdate);
+        System.out.println("FETCH DRIVER METHOD");
+        Log.i(TAG, "FETCH DRIVER METHOD");
         if(currentTime - lastUpdate > FRESH_TIMEOUT) { //currentTime - lastUpdate > FRESH_TIMEOUT
             driverRemoteDataSource.getDrivers();
         } else {
@@ -116,11 +119,11 @@ public class DriverRepository implements IDriverRepository, JolpicaServer, Drive
     public MutableLiveData<Result> fetchDriver(String driverId, long lastUpdate) {
         long currentTime = System.currentTimeMillis();
 
-        /*if(currentTime - lastUpdate > FRESH_TIMEOUT) {
+        if(true) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT
             driverRemoteDataSource.getDrivers();
         } else {
             driverLocalDataSource.getDrivers();
-        }*/
+        }
 
         return null;
     }
@@ -182,9 +185,10 @@ public class DriverRepository implements IDriverRepository, JolpicaServer, Drive
     public void onSuccessFromRemote(DriverStandingsAPIResponse driverAPIResponse, long lastUpdate) {
         System.out.println(driverAPIResponse.getStandingsTable());
         List<Driver> drivers = new ArrayList<>();
+
         for (DriverStandingsElementDTO driver: driverAPIResponse.getStandingsTable().getStandingsLists().get(0).getDriverStandings()) {
             drivers.add(DriverMapper.toDriver(driver.getDriver()));
-            System.out.println(driver);
+            Log.i("onSuccessFromRemoteDriver", "DRIVER: " + driver.getDriver());
         }
         driverLocalDataSource.insertDrivers(drivers);
     }
@@ -197,8 +201,10 @@ public class DriverRepository implements IDriverRepository, JolpicaServer, Drive
     @Override
     public void onSuccessFromLocal(List<Driver> driverList) {
         for (Driver driver: driverList) {
-            System.out.println(driver);
+            System.out.println("SuccessFromLocal" + driver);
         }
+        Result.DriverSuccess result = new Result.DriverSuccess(new DriverAPIResponse(driverList));
+        allDriverMutableLiveData.postValue(result);
     }
 
     @Override

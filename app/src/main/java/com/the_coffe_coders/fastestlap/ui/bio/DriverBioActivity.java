@@ -1,5 +1,5 @@
 package com.the_coffe_coders.fastestlap.ui.bio;
-/*
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -163,4 +163,4 @@ public class DriverBioActivity extends AppCompatActivity {
 
         }
     }
-}*/
+}

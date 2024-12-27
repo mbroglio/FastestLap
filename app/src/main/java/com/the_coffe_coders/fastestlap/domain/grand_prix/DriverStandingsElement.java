@@ -17,6 +17,12 @@ public class DriverStandingsElement {
 
     }
 
+    public DriverStandingsElement(Driver driver, String position) {//TODO REMOVE CONSTRUCTOR
+        this.Driver = driver;
+        this.position = position;
+        this.points = "20";
+    }
+
     public DriverStandingsElement(String position, String positionText, String points, com.the_coffe_coders.fastestlap.domain.driver.Driver driver, String wins) {
         this.position = position;
         this.positionText = positionText;

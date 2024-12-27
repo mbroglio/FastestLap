@@ -21,19 +21,25 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.driver.StandingsAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.driver.DriverStanding;
-import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
+import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.driver.Driver;
+import com.the_coffe_coders.fastestlap.domain.driver.DriverAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
+import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
-import com.the_coffe_coders.fastestlap.utils.Constants;
-import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
+import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import org.threeten.bp.Year;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.ResponseBody;
 
@@ -53,6 +59,8 @@ public class DriversStandingActivity extends AppCompatActivity {
     private int dotCount = 0;
     private boolean addingDots = true;
     private boolean driverToProcess = true;
+
+    List<Driver> driverList;
 
     static Year year = Year.now();
     private static final String BASE_URL = "https://api.jolpi.ca/ergast/f1/" + year + "/";
@@ -87,55 +95,33 @@ public class DriversStandingActivity extends AppCompatActivity {
 
 
         LinearLayout driverStanding = findViewById(R.id.driver_standing);
-        // Initialize Retrofit
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .build();
 
-        ErgastAPI ergastApi = retrofit.create(ErgastAPI.class);
+        DriverRepository driverRepository = ServiceLocator.getInstance().getDriverRepository(getApplication(), false);
 
-        // Make the network request
-        ergastApi.getDriverStandings().enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    try {
-                        String responseString = response.body().string();
-                        JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
-                        JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
+        MutableLiveData<Result> data = driverRepository.fetchDrivers(0);
 
-                        JSONParserUtils jsonParserUtils = new JSONParserUtils(DriversStandingActivity.this);
-                        DriverStandingsAPIResponse driverStandingsAPIResponse = jsonParserUtils.parseDriverStandings(mrdata);
 
-                        int total = Integer.parseInt(driverStandingsAPIResponse.getTotal());
-                        for (int i = 0; i < total; i++) {
-                            DriverStanding standingElement = driverStandingsAPIResponse
-                                    .getStandingsTable()
-                                    .getStandingsLists().get(0)
-                                    .getDriverStandings().get(i);
-
-                            driverStanding.addView(generateDriverCard(standingElement, driverId));
-
-                            View space = new View(DriversStandingActivity.this);
-                            space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
-                            driverStanding.addView(space);
-                        }
-                        driverToProcess = false;
+        data.observe(this, result -> {
+                    if (result.isSuccess()) {
+                        driverList = new ArrayList<>();
+                        int initialSize = this.driverList.size();
+                        this.driverList.clear();
+                        this.driverList.addAll(((Result.DriverSuccess) result).getData().getDrivers());
+                        int cont = 0;
                         hideLoadingScreen();
-                    } catch (Exception e) {
-                        Log.e(TAG, "Failed to parse JSON response", e);
-                    }
-                } else {
-                    Log.e(TAG, "Response not successful");
-                }
-            }
+                        for (Driver driver : this.driverList) {
+                            cont++;
+                            View driverCard = generateDriverCard(new DriverStandingsElement(driver, cont + ""), driverId);
+                            driverStanding.addView(driverCard);
+                            Log.i(TAG, "DRIVER: " + driver.toString());
+                        }
+                        /*articleRecyclerAdapter.notifyItemRangeInserted(initialSize, this.articleList.size());
+                        recyclerView.setVisibility(View.VISIBLE);
+                        shimmerLinearLayout.setVisibility(View.GONE);*/
+                    } else {
 
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                Log.e(TAG, "Network request failed", t);
-            }
-        });
+                    }
+                });
     }
 
     private void showLoadingScreen() {
@@ -171,7 +157,7 @@ public class DriversStandingActivity extends AppCompatActivity {
     };
 
 
-    private View generateDriverCard(DriverStanding standingElement, String driverIdToHighlight) {
+    private View generateDriverCard(DriverStandingsElement standingElement, String driverIdToHighlight) {
         // Inflate the team card layout
         View driverCard = getLayoutInflater().inflate(R.layout.driver_card, null);
 
@@ -221,4 +207,4 @@ public class DriversStandingActivity extends AppCompatActivity {
 
         return driverCard;
     }
-}*/
+}

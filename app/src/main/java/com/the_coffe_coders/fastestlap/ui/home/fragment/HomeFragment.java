@@ -49,14 +49,14 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
+/*
  * A simple {@link Fragment} subclass.
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
-
+*/
+/*
 public class HomeFragment extends Fragment {
     private final String TAG = "HomeFragment";
-    private ErgastAPI ergastAPI;
     private final ZoneId localZone = ZoneId.systemDefault();
 
     private View loadingScreen;
