@@ -2,10 +2,12 @@ package com.the_coffe_coders.fastestlap.ui.bio;
 /*
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
@@ -37,12 +39,24 @@ public class DriverBioActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
+        // Get the screen width
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int screenWidth = displayMetrics.widthPixels;
+
+        // Calculate 60% of the screen width
+        int width_percent_60 = (int) (screenWidth * 0.6);
+        
 
         //set listener to team logo and define a method onclick
         MaterialCardView teamLogo = findViewById(R.id.team_logo);
         ImageView teamLogoImage = findViewById(R.id.team_logo_image);
         String teamNameId = teamLogoImage.getContentDescription().toString();
 
+        ViewGroup.LayoutParams params = teamLogo.getLayoutParams();
+        params.width = width_percent_60;
+        teamLogo.setLayoutParams(params);
+        
         teamLogo.setOnClickListener(v -> {
             Intent intent = new Intent(DriverBioActivity.this, ConstructorBioActivity.class);
             intent.putExtra("TEAM NAME", teamNameId);
@@ -139,9 +153,9 @@ public class DriverBioActivity extends AppCompatActivity {
 
 
             // Set bottom margin to 5dp
-            TableLayout.LayoutParams params = (TableLayout.LayoutParams) tableRow.getLayoutParams();
-            params.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
-            tableRow.setLayoutParams(params);
+            TableLayout.LayoutParams tableParams = (TableLayout.LayoutParams) tableRow.getLayoutParams();
+            tableParams.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
+            tableRow.setLayoutParams(tableParams);
 
 
             tableLayout.addView(tableRow);

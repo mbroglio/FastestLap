@@ -1,6 +1,48 @@
 package com.the_coffe_coders.fastestlap.ui.standing;
 
-/*
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+
+import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.material.appbar.MaterialToolbar;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.driver.StandingsAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.driver.DriverStanding;
+import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
+import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
+import com.the_coffe_coders.fastestlap.utils.Constants;
+import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
+
+import org.threeten.bp.Year;
+
+import okhttp3.ResponseBody;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
+
 public class DriversStandingActivity extends AppCompatActivity {
 
     private static final String TAG = "DriverCardActivity";
@@ -140,7 +182,7 @@ public class DriversStandingActivity extends AppCompatActivity {
         TextView driverPoints = driverCard.findViewById(R.id.driver_points);
 
         ImageView teamLogoImageView = driverCard.findViewById(R.id.team_logo);
-        LinearLayout driverColor = driverCard.findViewById(R.id.small_driver_card);
+        RelativeLayout driverColor = driverCard.findViewById(R.id.small_driver_card);
 
         // Setting the values
         String driverId = standingElement.getDriver().getDriverId();

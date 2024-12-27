@@ -41,6 +41,8 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_end="0dp" />
 
+
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_center"
         android:layout_width="wrap_content"
@@ -55,7 +57,7 @@
         app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
         app:layout_constraintTop_toBottomOf="@id/guideline_top"
         app:layout_constraintVertical_bias="1.0"
-        tools:layout_editor_absoluteX="0dp">
+        android:scrollbars="none">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -72,7 +74,7 @@
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/team_logo"
-                    android:layout_width="230dp"
+                    android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentStart="true"
                     android:layout_centerInParent="true"
@@ -95,12 +97,15 @@
 
 
                 <ImageView
-                    android:layout_width="95dp"
+                    android:layout_width="0dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
-                    android:layout_centerInParent="true"
+                    android:layout_centerHorizontal="true"
                     android:layout_gravity="center"
-                    android:layout_marginEnd="20dp"
+                    android:layout_marginStart="25dp"
+                    android:layout_toEndOf="@id/team_logo"
                     app:srcCompat="@drawable/united_kingdom_flag">
 
                 </ImageView>
@@ -124,6 +129,8 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="250dp"
+                        android:layout_marginEnd="10dp"
+                        android:scaleType="centerCrop"
                         app:srcCompat="@drawable/norris_pic">
 
                     </ImageView>
@@ -366,7 +373,7 @@
                                     android:layout_marginStart="3dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="Rank:"
-                                    android:textColor="@color/screen_background_color">
+                                    android:textColor="@color/black">
 
                                 </TextView>
 
@@ -384,7 +391,7 @@
                                     android:fontFamily="@font/orbitron_bold"
                                     android:gravity="center"
                                     android:text="1"
-                                    android:textColor="@color/screen_background_color">
+                                    android:textColor="@color/black">
 
                                 </TextView>
 
@@ -395,7 +402,7 @@
                                     android:layout_marginEnd="5dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="-"
-                                    android:textColor="@color/screen_background_color">
+                                    android:textColor="@color/black">
 
                                 </TextView>
 
@@ -405,7 +412,7 @@
                                     android:fontFamily="@font/orbitron_bold"
                                     android:gravity="center"
                                     android:text="390"
-                                    android:textColor="@color/screen_background_color">
+                                    android:textColor="@color/black">
 
                                 </TextView>
 
@@ -414,7 +421,7 @@
                                     android:layout_height="wrap_content"
                                     android:fontFamily="@font/orbitron_regular"
                                     android:text="pts"
-                                    android:textColor="@color/screen_background_color"
+                                    android:textColor="@color/black"
                                     android:textSize="11sp">
 
                                 </TextView>
@@ -453,10 +460,9 @@
                     android:id="@+id/history_table"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
+                    android:layout_marginStart="3dp"
                     android:layout_marginTop="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="5dp">
+                    android:layout_marginEnd="3dp">
 
                 </TableLayout>
 
