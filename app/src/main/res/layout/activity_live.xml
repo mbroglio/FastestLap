@@ -50,6 +50,7 @@
         app:layout_constraintTop_toBottomOf="@id/session_text"
         app:tabIndicatorColor="@color/white"
         app:tabMode="fixed"
+        app:tabRippleColor="@android:color/transparent"
         app:tabSelectedTextAppearance="@style/TextAppearance.OrbitronBold_15sp_black"
         app:tabTextAppearance="@style/TextAppearance.OrbitronRegular_13sp_black"
         app:tabTextColor="@color/white">
@@ -91,7 +92,9 @@
         android:layout_height="0dp"
         android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/separator">
+        app:layout_constraintTop_toBottomOf="@id/separator"
+        app:layout_constraintVertical_bias="0.0"
+        tools:layout_editor_absoluteX="0dp">
 
     </androidx.viewpager2.widget.ViewPager2>
 
