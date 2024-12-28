@@ -3,8 +3,6 @@ package com.the_coffe_coders.fastestlap.util;
 import static com.the_coffe_coders.fastestlap.repository.JolpicaServer.CURRENT_YEAR_BASE_URL;
 
 import android.app.Application;
-
-import com.the_coffe_coders.fastestlap.database.DriverRoomDatabase;
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
 import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
@@ -158,6 +156,7 @@ public class ServiceLocator {
     public ConstructorRepository getConstructorRepository(Application application, boolean debugMode) {
         BaseConstructorRemoteDataSource constructorRemoteDataSource;
         BaseConstructorLocalDataSource constructorLocalDataSource;
+        SharedPreferencesUtils sharedPreferencesUtil = new SharedPreferencesUtils(application);
 
         if (false) {//TODO change in debugMode
             /*JSONParserUtils jsonParserUtil = new JSONParserUtils(application);
@@ -167,7 +166,7 @@ public class ServiceLocator {
             constructorRemoteDataSource = new ConstructorRemoteDataSource("");
     }
 
-        constructorLocalDataSource = new ConstructorLocalDataSource(getRoomDatabase(application));
+        constructorLocalDataSource = new ConstructorLocalDataSource(getRoomDatabase(application), sharedPreferencesUtil);
 
         return new ConstructorRepository(constructorRemoteDataSource, constructorLocalDataSource);
     }

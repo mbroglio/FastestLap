@@ -1,8 +1,13 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
-import java.util.List;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
 
+import java.util.List;
+@Entity(tableName = "ConstructorStandings")
 public class ConstructorStandings {
+    @PrimaryKey(autoGenerate = true)
+    private int uid;
     private String season;
     private String round;
     private List<ConstructorStandingsElement> ConstructorStandings;
@@ -39,6 +44,14 @@ public class ConstructorStandings {
 
     public void setConstructorStandings(List<ConstructorStandingsElement> constructorStandings) {
         ConstructorStandings = constructorStandings;
+    }
+
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
     }
 
     @Override

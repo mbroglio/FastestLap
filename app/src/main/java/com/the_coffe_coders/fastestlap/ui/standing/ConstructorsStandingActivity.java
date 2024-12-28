@@ -85,8 +85,24 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         LinearLayout teamStanding = findViewById(R.id.team_standing);
-        ConstructorRepository constructorRepository = ServiceLocator.getInstance().getConstructorRepository();
+        ConstructorRepository constructorRepository = ServiceLocator.getInstance().getConstructorRepository(getApplication(), false);
         MutableLiveData<Result> liveData = constructorRepository.fetchConstructorStandings(0);
+        Log.i(TAG, "Constructor Standings: " + liveData);
+        liveData.observe(this, result -> {
+            if (result instanceof Result.ConstructorStandingsSuccess) {
+                Result.ConstructorStandingsSuccess constructorStandingsSuccess = (Result.ConstructorStandingsSuccess) result;
+                ConstructorStandings constructorStandings = constructorStandingsSuccess.getData();
+                Log.i(TAG, "Constructor Standings: " + constructorStandings);
+                for (ConstructorStandingsElement standingElement : constructorStandings.getConstructorStandings()) {
+                    View teamCard = generateTeamCard(standingElement, constructorId);
+                    teamStanding.addView(teamCard);
+                }
+                hideLoadingScreen();
+            }else if (result instanceof Result.Error) {
+                Result.Error error = (Result.Error) result;
+                Log.e(TAG, "Error: " + error.getMessage());
+            }
+        });
     }
 
     private void showLoadingScreen() {

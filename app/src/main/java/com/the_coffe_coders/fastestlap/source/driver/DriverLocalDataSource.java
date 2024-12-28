@@ -1,8 +1,6 @@
 package com.the_coffe_coders.fastestlap.source.driver;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
-import com.the_coffe_coders.fastestlap.database.DriverDAO;
-import com.the_coffe_coders.fastestlap.database.DriverRoomDatabase;
 import com.the_coffe_coders.fastestlap.database.DriverStandingsDAO;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;

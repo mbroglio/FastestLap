@@ -6,11 +6,14 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
+
 @Dao
 public interface ConstructorStandingsDAO {
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    void insert(ConstructorStandings constructorStandings);
+
     @Query("SELECT * FROM ConstructorStandings")
     ConstructorStandings getConstructorStandings();
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(ConstructorStandings constructorStandings);
 }

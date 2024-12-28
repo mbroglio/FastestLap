@@ -90,7 +90,7 @@ public class ConstructorRepository implements IConstructorRepository, Constructo
 
     @Override
     public void onSuccessFromRemote(ConstructorStandingsAPIResponse constructorAPIResponse, long lastUpdate) {
-        Log.i("onSuccessFromRemoteDriver", "DRIVER API RESPONSE: " + constructorAPIResponse);
+        Log.i("onSuccessFromRemoteConstructor", "CONSTRUCTOR API RESPONSE: " + constructorAPIResponse);
         ConstructorStandings constructorsStandings = ConstructorStandingsMapper.toConstructorStandings(constructorAPIResponse.getStandingsTable().getStandingsLists().get(0));
         constructorLocalDataSource.insertConstructorsStandings(constructorsStandings);
     }
@@ -102,9 +102,9 @@ public class ConstructorRepository implements IConstructorRepository, Constructo
 
     @Override
     public void onSuccessFromLocal(ConstructorStandings constructorStandings) {
-        Log.i("onSuccessFromLocalDriver", "DRIVER STANDINGS: " + constructorStandings);
+        Log.i("onSuccessFromLocalConstructor", "CONSTRUCTOR STANDINGS: " + constructorStandings);
         Result.ConstructorStandingsSuccess result = new Result.ConstructorStandingsSuccess(constructorStandings);
-        constructorMutableLiveData.postValue(result);
+        constructorStandingsMutableLiveData.postValue(result);
     }
 
     @Override
