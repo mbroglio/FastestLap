@@ -1,9 +1,13 @@
 package com.the_coffe_coders.fastestlap.domain;
 
+import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+
+import java.util.List;
 
 public abstract class Result {
     private Result() {}
@@ -56,6 +60,16 @@ public abstract class Result {
 
         public ConstructorStandings getData() {
             return constructorStandings;
+        }
+    }
+
+    public static final class WeeklyRaceSuccess extends Result {
+        private final List<WeeklyRace> weeklyRaceList;
+        public WeeklyRaceSuccess(List<WeeklyRace> weeklyRaceList) {
+            this.weeklyRaceList = weeklyRaceList;
+        }
+        public List<WeeklyRace> getData() {
+            return weeklyRaceList;
         }
     }
 /*

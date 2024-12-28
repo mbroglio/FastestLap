@@ -131,6 +131,51 @@ public class ServiceLocator {
         };
     }
 
+    public ErgastAPIService getWeeklyRaceAPIService() {
+        return new ErgastAPIService() {
+
+            @Override
+            public Call<ResponseBody> getConstructorStandings() {
+                return null;
+            }
+
+            @Override
+            public Call<ResponseBody> getDriverStandings() {
+                return null;
+            }
+
+            @Override
+            public Call<ResponseBody> getRaces() {
+                return null;
+            }
+
+            @Override
+            public Call<ResponseBody> getLastRaceResults() {
+                return null;
+            }
+
+            @Override
+            public Call<ResponseBody> getResults() {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+
+                return retrofit.create(ErgastAPIService.class).getResults();
+            }
+
+            @Override
+            public Call<ResponseBody> getNextRace() {
+                return null;
+            }
+
+            @Override
+            public Call<ResponseBody> getCircuits() {
+                return null;
+            }
+        }
+    }
+
     public AppRoomDatabase getRoomDatabase(Application application) {
         return AppRoomDatabase.getDatabase(application);
     }
