@@ -3,6 +3,7 @@ package com.the_coffe_coders.fastestlap.repository;
 import junit.framework.TestCase;
 
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Circuit;
+import com.the_coffe_coders.fastestlap.repository.circuit.CircuitRepository;
 
 import java.util.List;
 

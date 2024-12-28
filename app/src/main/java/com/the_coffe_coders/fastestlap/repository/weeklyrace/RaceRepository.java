@@ -1,11 +1,12 @@
-package com.the_coffe_coders.fastestlap.repository;
+package com.the_coffe_coders.fastestlap.repository.weeklyrace;
 
 
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+
 import java.util.Collections;
 import java.util.List;
 
-public class RaceRepository implements IRaceRepository{
+public class RaceRepository implements IRaceRepository {
     private static final String TAG = "RetrofitRaceRepository";
     private RaceRepository() {
 

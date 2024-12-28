@@ -2,7 +2,6 @@ package com.the_coffe_coders.fastestlap.repository;
 
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.mapper.DriverStandingsMapper;
-import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsRepository;
 
 import junit.framework.TestCase;
 

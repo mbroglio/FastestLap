@@ -1,6 +1,7 @@
 package com.the_coffe_coders.fastestlap.repository;
 
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 
 import junit.framework.TestCase;
 

@@ -1,7 +1,6 @@
 package com.the_coffe_coders.fastestlap.repository;
 
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
-import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorStandingsRepository;
 
 import junit.framework.TestCase;
 
