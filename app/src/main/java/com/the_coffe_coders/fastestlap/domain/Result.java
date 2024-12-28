@@ -2,6 +2,7 @@ package com.the_coffe_coders.fastestlap.domain;
 
 import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 
 public abstract class Result {
@@ -43,6 +44,18 @@ public abstract class Result {
         }
         public DriverStandings getData() {
             return driverStandings;
+        }
+    }
+
+    public static final class ConstructorStandingsSuccess extends Result {
+        private final ConstructorStandings constructorStandings;
+
+        public ConstructorStandingsSuccess(ConstructorStandings constructorStandings) {
+            this.constructorStandings = constructorStandings;
+        }
+
+        public ConstructorStandings getData() {
+            return constructorStandings;
         }
     }
 /*

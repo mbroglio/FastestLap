@@ -6,8 +6,13 @@ import android.app.Application;
 
 import com.the_coffe_coders.fastestlap.database.DriverRoomDatabase;
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
+import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
 import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
+import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorLocalDataSource;
+import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.constructor.ConstructorLocalDataSource;
+import com.the_coffe_coders.fastestlap.source.constructor.ConstructorRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.BaseDriverLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.BaseDriverRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.DriverLocalDataSource;
@@ -128,11 +133,7 @@ public class ServiceLocator {
         };
     }
 
-    public AppRoomDatabase getDriverDAO(Application application) {
-        return AppRoomDatabase.getDatabase(application);
-    }
-
-    public AppRoomDatabase getDriverStandingsDAO(Application application) {
+    public AppRoomDatabase getRoomDatabase(Application application) {
         return AppRoomDatabase.getDatabase(application);
     }
 
@@ -149,9 +150,26 @@ public class ServiceLocator {
             driverRemoteDataSource = new DriverRemoteDataSource("");
         }
 
-        driverLocalDataSource = new DriverLocalDataSource(getDriverStandingsDAO(application), sharedPreferencesUtil);
+        driverLocalDataSource = new DriverLocalDataSource(getRoomDatabase(application), sharedPreferencesUtil);
 
         return new DriverRepository(driverRemoteDataSource, driverLocalDataSource);
+    }
+
+    public ConstructorRepository getConstructorRepository(Application application, boolean debugMode) {
+        BaseConstructorRemoteDataSource constructorRemoteDataSource;
+        BaseConstructorLocalDataSource constructorLocalDataSource;
+
+        if (false) {//TODO change in debugMode
+            /*JSONParserUtils jsonParserUtil = new JSONParserUtils(application);
+            newsRemoteDataSource =
+                    new DriverMockDataSource(jsonParserUtil);*/
+        } else {
+            constructorRemoteDataSource = new ConstructorRemoteDataSource("");
+    }
+
+        constructorLocalDataSource = new ConstructorLocalDataSource(getRoomDatabase(application));
+
+        return new ConstructorRepository(constructorRemoteDataSource, constructorLocalDataSource);
     }
 
 }

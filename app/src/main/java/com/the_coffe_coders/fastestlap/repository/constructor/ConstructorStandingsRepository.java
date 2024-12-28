@@ -3,6 +3,7 @@ package com.the_coffe_coders.fastestlap.repository.constructor;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.room.Entity;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -24,6 +25,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
+@Entity(tableName = "ConstructorStandings")
 public class ConstructorStandingsRepository implements JolpicaServer, IConstructorStandingsRepository, ConstructorStandingsResponseCallback {
 
     String TAG = "JolpicaDriverStandingRepository";

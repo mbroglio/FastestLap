@@ -1,5 +1,36 @@
 package com.the_coffe_coders.fastestlap.source.constructor;
 
-public class ConstructorLocalDataSource{
+import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
+import com.the_coffe_coders.fastestlap.database.ConstructorStandingsDAO;
+import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
+import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 
+import java.util.List;
+
+public class ConstructorLocalDataSource extends BaseConstructorLocalDataSource{
+    private final ConstructorStandingsDAO constructorStandingsDAO;
+    private final SharedPreferencesUtils sharedPreferencesUtil;
+
+    public ConstructorLocalDataSource(AppRoomDatabase appRoomDatabase, SharedPreferencesUtils sharedPreferencesUtil) {
+        this.constructorStandingsDAO = appRoomDatabase.constructorStandingsDao();
+        this.sharedPreferencesUtil = sharedPreferencesUtil;
+    }
+
+    @Override
+    public void getConstructorStandings() {
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            //driverCallback.onSuccessFromLocal(null);
+            constructorCallback.onSuccessFromLocal(constructorStandingsDAO.getConstructorStandings());
+        });
+    }
+
+    @Override
+    public void insertConstructors(List<Constructor> constructorsList) {
+
+    }
+
+    @Override
+    public void getConstructor() {
+
+    }
 }

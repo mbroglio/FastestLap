@@ -20,6 +20,8 @@ public abstract class AppRoomDatabase extends RoomDatabase{
     public abstract DriverStandingsDAO driverStandingsDao();
     //public abstract DriverStandingsElementDAO driverStandingsElementDAO();
     public abstract DriverDAO driverDAO();
+    public abstract ConstructorStandingsDAO constructorStandingsDao();
+
     private static volatile AppRoomDatabase INSTANCE;
 
     public static final ExecutorService databaseWriteExecutor =

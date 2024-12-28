@@ -19,14 +19,19 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
+import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import okhttp3.ResponseBody;
 
@@ -80,6 +85,8 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         LinearLayout teamStanding = findViewById(R.id.team_standing);
+        ConstructorRepository constructorRepository = ServiceLocator.getInstance().getConstructorRepository();
+        MutableLiveData<Result> liveData = constructorRepository.fetchConstructorStandings(0);
     }
 
     private void showLoadingScreen() {
