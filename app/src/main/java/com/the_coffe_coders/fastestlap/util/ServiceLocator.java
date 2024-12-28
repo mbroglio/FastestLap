@@ -4,15 +4,13 @@ import static com.the_coffe_coders.fastestlap.repository.JolpicaServer.CURRENT_Y
 
 import android.app.Application;
 
-import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.database.DriverDAO;
 import com.the_coffe_coders.fastestlap.database.DriverRoomDatabase;
+import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.source.driver.BaseDriverLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.BaseDriverRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.DriverLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.driver.DriverMockDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.DriverRemoteDataSource;
 
 import okhttp3.ResponseBody;
@@ -130,8 +128,12 @@ public class ServiceLocator {
         };
     }
 
-    public DriverRoomDatabase getDriverDAO(Application application) {
-        return DriverRoomDatabase.getDatabase(application);
+    public AppRoomDatabase getDriverDAO(Application application) {
+        return AppRoomDatabase.getDatabase(application);
+    }
+
+    public AppRoomDatabase getDriverStandingsDAO(Application application) {
+        return AppRoomDatabase.getDatabase(application);
     }
 
     public DriverRepository getDriverRepository(Application application, boolean debugMode) {
@@ -147,7 +149,7 @@ public class ServiceLocator {
             driverRemoteDataSource = new DriverRemoteDataSource("");
         }
 
-        driverLocalDataSource = new DriverLocalDataSource(getDriverDAO(application), sharedPreferencesUtil);
+        driverLocalDataSource = new DriverLocalDataSource(getDriverStandingsDAO(application), sharedPreferencesUtil);
 
         return new DriverRepository(driverRemoteDataSource, driverLocalDataSource);
     }

@@ -1,9 +1,11 @@
 package com.the_coffe_coders.fastestlap.repository.driver;
 
-import com.the_coffe_coders.fastestlap.domain.driver.Driver;
+import androidx.lifecycle.MutableLiveData;
 
-import java.util.List;
+import com.the_coffe_coders.fastestlap.domain.Result;
 
 public interface IDriverRepository {
-    List<Driver> findDrivers();
+    MutableLiveData<Result> fetchDrivers(long lastUpdate);
+    MutableLiveData<Result> fetchDriver(String driverId, long lastUpdate);
+    MutableLiveData<Result> fetchDriversStandings(long lastUpdate);
 }

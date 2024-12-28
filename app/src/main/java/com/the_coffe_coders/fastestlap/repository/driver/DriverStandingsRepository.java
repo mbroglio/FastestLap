@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.dto.DriverStandingsDTO;
@@ -97,7 +98,8 @@ public class DriverStandingsRepository implements JolpicaServer, DriverStandings
 
     @Override
     public void onSuccessFromRemote(DriverStandingsAPIResponse driverStandingsAPIResponse, long lastUpdate) {
-
+        DriverStandings driverStandings = DriverStandingsMapper.toDriverStandings(driverStandingsAPIResponse.getStandingsTable().getStandingsLists().get(0));
+        //driverLocalDataSource.insertDriversStandings(driverStandings);
     }
 
     @Override
@@ -107,7 +109,8 @@ public class DriverStandingsRepository implements JolpicaServer, DriverStandings
 
     @Override
     public void onSuccessFromLocal(DriverStandings driverStandings) {
-
+        Result.DriverStandingsSuccess result = new Result.DriverStandingsSuccess(driverStandings);
+        //driverStandingsMutableLiveData.postValue(result);
     }
 
     @Override

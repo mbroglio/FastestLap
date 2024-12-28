@@ -34,9 +34,9 @@ public class DriverRemoteDataSource extends BaseDriverRemoteDataSource {
 
     public void getDrivers() {
 
-        Call<ResponseBody> newsResponseCall = ergastAPIService.getDriverStandings();
-        System.out.println("remote data source :)");
-        newsResponseCall.enqueue(new Callback<>() {
+        Call<ResponseBody> responseCall = ergastAPIService.getDriverStandings();
+
+        responseCall.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -66,7 +66,39 @@ public class DriverRemoteDataSource extends BaseDriverRemoteDataSource {
     }
 
     @Override
-    public void getDriverStandings() {
+    public void getDriversStandings() {
+        Log.i("DriverRemoteDataSource", "getDriversStandings");
+        Call<ResponseBody> responseCall = ergastAPIService.getDriverStandings();
+        responseCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Log.i("DriverRemoteDataSource", "onResponse");
+                if (response.isSuccessful() && response.body() != null) {
+                    String responseString = null;
+                    try {
+                        responseString = response.body().string();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
+                    JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
+
+                    JSONParserUtils jsonParserUtils = new JSONParserUtils();
+                    DriverStandingsAPIResponse driverStandingsAPIResponse = jsonParserUtils.parseDriverStandings(mrdata);
+                    Log.i("DriverRemoteDataSource", driverStandingsAPIResponse.toString());
+                    System.out.println("CALLBACK");
+                    driverCallback.onSuccessFromRemote(driverStandingsAPIResponse, System.currentTimeMillis());
+                } else {
+                    Log.i("DriverRemoteDataSource", "onFailure");
+                    driverCallback.onFailureFromRemote(new Exception());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable throwable) {
+
+            }
+        });
 
     }
 

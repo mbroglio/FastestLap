@@ -18,6 +18,7 @@ public class Constants {
 
     public static final int DATABASE_VERSION = 1;
     public static final String SAVED_DRIVERS_DATABASE = "saved_db";
+    public static final String SAVED_DRIVERS_STANDINGS_DATABASE = "saved_drivers_standings";
 
     public static final int FRESH_TIMEOUT = 1000 * 60; // 1 minute in milliseconds
 

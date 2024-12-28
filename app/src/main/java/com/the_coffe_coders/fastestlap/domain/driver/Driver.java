@@ -4,18 +4,17 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.util.Objects;
 
-@Entity
+@Entity(tableName = "Driver")
 public class Driver implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     private long uid;
-    @Embedded(prefix = "source_")
-    private DriverSource source;
     private String driverId;
     private String permanentNumber;
     private String code;
@@ -112,14 +111,6 @@ public class Driver implements Parcelable {
         this.nationality = nationality;
     }
 
-    public DriverSource getSource() {
-        return source;
-    }
-
-    public void setSource(DriverSource source) {
-        this.source = source;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -155,7 +146,6 @@ public class Driver implements Parcelable {
     @Override
     public void writeToParcel(@NonNull Parcel parcel, int i) {
         parcel.writeLong(uid);
-        parcel.writeParcelable(source, i);
         parcel.writeString(driverId);
         parcel.writeString(permanentNumber);
         parcel.writeString(code);
@@ -168,7 +158,6 @@ public class Driver implements Parcelable {
 
     public void readFromParcel(Parcel parcel) {
         this.uid = parcel.readLong();
-        this.source = parcel.readParcelable(DriverSource.class.getClassLoader());
         this.driverId = parcel.readString();
         this.permanentNumber = parcel.readString();
         this.code = parcel.readString();
@@ -181,7 +170,6 @@ public class Driver implements Parcelable {
 
     protected Driver(Parcel in) {
         this.uid = in.readLong();
-        this.source = in.readParcelable(DriverSource.class.getClassLoader());
         this.driverId = in.readString();
         this.permanentNumber = in.readString();
         this.code = in.readString();

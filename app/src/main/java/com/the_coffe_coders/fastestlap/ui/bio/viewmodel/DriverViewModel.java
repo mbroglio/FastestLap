@@ -40,7 +40,7 @@ public class DriverViewModel extends ViewModel {
         return errorLiveData;
     }
 
-    public void fetchDriverById(String driverId) {
+    /*public void fetchDriverById(String driverId) {
         isLoading.setValue(true);
         executorService.execute(() -> {
             try {
@@ -52,7 +52,7 @@ public class DriverViewModel extends ViewModel {
                 isLoading.postValue(false);
             }
         });
-    }
+    }*/
 
 
 

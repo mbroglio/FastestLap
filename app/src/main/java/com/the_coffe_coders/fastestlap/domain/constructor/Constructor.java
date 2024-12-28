@@ -1,6 +1,11 @@
 package com.the_coffe_coders.fastestlap.domain.constructor;
 
-public class Constructor {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import androidx.annotation.NonNull;
+
+public class Constructor implements Parcelable {
     private String constructorId;
     private String url;
     private String name;
@@ -15,6 +20,38 @@ public class Constructor {
 
     public Constructor(){
 
+    }
+
+    protected Constructor(Parcel in) {
+        constructorId = in.readString();
+        url = in.readString();
+        name = in.readString();
+        nationality = in.readString();
+    }
+
+    public static final Creator<Constructor> CREATOR = new Creator<Constructor>() {
+        @Override
+        public Constructor createFromParcel(Parcel in) {
+            return new Constructor(in);
+        }
+
+        @Override
+        public Constructor[] newArray(int size) {
+            return new Constructor[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(@NonNull Parcel dest, int flags) {
+        dest.writeString(constructorId);
+        dest.writeString(url);
+        dest.writeString(name);
+        dest.writeString(nationality);
     }
 
     public String getConstructorId() {

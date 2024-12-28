@@ -21,7 +21,7 @@ public class DriverStandingsMapper {
         for (DriverStandingsElementDTO dseDTO : driverStandingsDTO.getDriverStandings()){
             driverStandingsElements.add(toDriverStandingsElement(dseDTO));
         }
-        driverStandings.setDriverStandings(driverStandingsElements);
+        driverStandings.setDriverStandingsElements(driverStandingsElements);
 
         return driverStandings;
     }

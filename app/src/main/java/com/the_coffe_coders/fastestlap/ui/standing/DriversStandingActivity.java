@@ -30,6 +30,7 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
@@ -59,8 +60,7 @@ public class DriversStandingActivity extends AppCompatActivity {
     private int dotCount = 0;
     private boolean addingDots = true;
     private boolean driverToProcess = true;
-
-    List<Driver> driverList;
+    DriverStandings driverStandings;
 
     static Year year = Year.now();
     private static final String BASE_URL = "https://api.jolpi.ca/ergast/f1/" + year + "/";
@@ -98,22 +98,21 @@ public class DriversStandingActivity extends AppCompatActivity {
 
         DriverRepository driverRepository = ServiceLocator.getInstance().getDriverRepository(getApplication(), false);
 
-        MutableLiveData<Result> data = driverRepository.fetchDrivers(0);
+        MutableLiveData<Result> data = driverRepository.fetchDriversStandings(0);
 
 
         data.observe(this, result -> {
                     if (result.isSuccess()) {
-                        driverList = new ArrayList<>();
-                        int initialSize = this.driverList.size();
-                        this.driverList.clear();
-                        this.driverList.addAll(((Result.DriverSuccess) result).getData().getDrivers());
-                        int cont = 0;
+                        Log.i(TAG, "DRIVER STANDINGS SUCCESS");
+                        driverStandings = ((Result.DriverStandingsSuccess) result).getData();
+
+                        List<DriverStandingsElement> driverList = driverStandings.getDriverStandingsElements();
+                        int initialSize = driverList.size();
                         hideLoadingScreen();
-                        for (Driver driver : this.driverList) {
-                            cont++;
-                            View driverCard = generateDriverCard(new DriverStandingsElement(driver, cont + ""), driverId);
+
+                        for (DriverStandingsElement driver : driverList) {
+                            View driverCard = generateDriverCard(driver, driverId);
                             driverStanding.addView(driverCard);
-                            Log.i(TAG, "DRIVER: " + driver.toString());
                         }
                         /*articleRecyclerAdapter.notifyItemRangeInserted(initialSize, this.articleList.size());
                         recyclerView.setVisibility(View.VISIBLE);

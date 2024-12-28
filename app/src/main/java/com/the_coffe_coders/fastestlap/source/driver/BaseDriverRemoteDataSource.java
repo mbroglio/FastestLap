@@ -8,6 +8,6 @@ public abstract class BaseDriverRemoteDataSource {
         this.driverCallback = driverCallback;
     }
     public abstract void getDrivers();
-    public abstract void getDriverStandings();
+    public abstract void getDriversStandings();
     public abstract void getDriver(String driverId);
 }
