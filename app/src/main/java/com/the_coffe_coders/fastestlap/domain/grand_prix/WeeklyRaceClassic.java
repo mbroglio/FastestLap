@@ -1,22 +1,26 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
+import androidx.room.Entity;
+
 import org.threeten.bp.LocalDate;
 
 import java.util.Collections;
 import java.util.List;
 
+@Entity(tableName = "WeeklyRaceClassic")
 public class WeeklyRaceClassic extends WeeklyRace {
     private Practice secondPractice;
     private Practice thirdPractice;
 
-    WeeklyRaceClassic(String season, String round, String url, String raceName, Circuit circuit, String date, String time, Qualifying qualifying, Race finalRace, Practice firstPractice, Practice secondPractice, Practice thirdPractice) {
+    public WeeklyRaceClassic(String season, String round, String url, String raceName, Circuit circuit, String date, String time, Qualifying qualifying, Race finalRace, Practice firstPractice, Practice secondPractice, Practice thirdPractice) {
         super(season, round, url, raceName, circuit, date, time, qualifying, finalRace, firstPractice);
         this.secondPractice = secondPractice;
         this.thirdPractice = thirdPractice;
     }
 
-    public WeeklyRaceClassic() {
-        super();
+    public WeeklyRaceClassic(Practice secondPractice, Practice thirdPractice) {
+        this.secondPractice = secondPractice;
+        this.thirdPractice = thirdPractice;
     }
 
     public Practice getSecondPractice() {

@@ -1,10 +1,14 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
+import androidx.room.Entity;
+import androidx.room.Ignore;
+
 import org.threeten.bp.LocalDate;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity(tableName = "WeeklyRaceSprint")
 public class WeeklyRaceSprint extends WeeklyRace {
     private Qualifying sprintQualifying;
     private Sprint sprint;
@@ -15,25 +19,28 @@ public class WeeklyRaceSprint extends WeeklyRace {
         this.sprint = sprint;
     }
 
+    @Ignore
+    public WeeklyRaceSprint(Qualifying sprintQualifying, Sprint sprint) {
+        this.sprintQualifying = sprintQualifying;
+        this.sprint = sprint;
+    }
+
     public WeeklyRaceSprint() {
 
     }
 
-    public com.the_coffe_coders.fastestlap.domain.grand_prix.Qualifying getSprintQualifying() {
+    public Qualifying getSprintQualifying() {
         return sprintQualifying;
     }
 
-    public void setSprintQualifying(com.the_coffe_coders.fastestlap.domain.grand_prix.Qualifying sprintQualifying) {
+    public void setSprintQualifying(Qualifying sprintQualifying) {
         this.sprintQualifying = sprintQualifying;
     }
 
-    @Override
-    public com.the_coffe_coders.fastestlap.domain.grand_prix.Sprint getSprint() {
+    public Sprint getSprint() {
         return sprint;
     }
-
-    @Override
-    public void setSprint(com.the_coffe_coders.fastestlap.domain.grand_prix.Sprint sprint) {
+    public void setSprint(Sprint sprint) {
         this.sprint = sprint;
     }
 

@@ -1,12 +1,17 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
 import java.util.List;
-
+@Entity(tableName = "WeeklyRace")
 public abstract class WeeklyRace {
-
+    @PrimaryKey(autoGenerate = true)
+    private int uid;
     private String season;
     private String round;
     private String url;
@@ -17,19 +22,21 @@ public abstract class WeeklyRace {
     protected Practice firstPractice;
     private Qualifying Qualifying;
     private Race finalRace;
-    private Sprint Sprint;
+    //private Sprint Sprint;
 
-    WeeklyRace(String season, String round, String url, String raceName, Circuit circuit, String date, String time, Qualifying qualifying, Race finalRace, Practice firstPractice) {
+    protected WeeklyRace(String season, String round, String url, String raceName, Circuit circuit, String date, String time, Qualifying qualifying, Race finalRace, Practice firstPractice) {
         this.season = season;
         this.round = round;
         this.url = url;
         this.raceName = raceName;
-        Circuit = circuit;
+        this.Circuit = circuit;
         this.date = date;
         this.firstPractice = firstPractice;
     }
+    @Ignore
+    public WeeklyRace() {
 
-    WeeklyRace() {}
+    }
 
     public String getSeason() {
         return season;
@@ -107,12 +114,12 @@ public abstract class WeeklyRace {
         this.finalRace = finalRace;
     }
 
-    public com.the_coffe_coders.fastestlap.domain.grand_prix.Sprint getSprint() {
-        return Sprint;
+    public int getUid() {
+        return uid;
     }
 
-    public void setSprint(com.the_coffe_coders.fastestlap.domain.grand_prix.Sprint sprint) {
-        Sprint = sprint;
+    public void setUid(int uid) {
+        this.uid = uid;
     }
 
     public abstract String getDateInterval();

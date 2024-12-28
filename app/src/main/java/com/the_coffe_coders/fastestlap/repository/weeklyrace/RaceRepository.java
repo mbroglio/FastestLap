@@ -22,7 +22,7 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
     private final BaseWeeklyRaceLocalDataSource raceLocalDataSource;
 
     private static final String TAG = "RaceRepository";
-    private RaceRepository(BaseWeeklyRaceRemoteDataSource raceRemoteDataSource, BaseWeeklyRaceLocalDataSource raceLocalDataSource) {
+    public RaceRepository(BaseWeeklyRaceRemoteDataSource raceRemoteDataSource, BaseWeeklyRaceLocalDataSource raceLocalDataSource) {
         this.weeklyRaceMutableLiveData = new MutableLiveData<>();
         this.nextRaceMutableLiveData = new MutableLiveData<>();
         this.lastRaceMutableLiveData = new MutableLiveData<>();
@@ -35,7 +35,7 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
         if(true) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
             //TODO fetch from remote raceRemoteDataSource.getWeeklyRace();
         }else {
-            raceLocalDataSource.getWeeklyRace();
+            raceLocalDataSource.getWeeklyRaces();
         }
         return Collections.emptyList();
     }

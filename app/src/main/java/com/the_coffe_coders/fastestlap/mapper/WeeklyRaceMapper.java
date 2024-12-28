@@ -25,19 +25,10 @@ public class WeeklyRaceMapper {
     }
 
     public static WeeklyRaceClassic toRaceClassic(RaceDTO race) {
-        WeeklyRaceClassic weeklyRace = new WeeklyRaceClassic();
-        weeklyRace.setSecondPractice(SessionMapper.toPractice(race.getSecondPractice(), 2));
-        weeklyRace.setThirdPractice(SessionMapper.toPractice(race.getThirdPractice(), 3));
-
-        return weeklyRace;
+        return new WeeklyRaceClassic(SessionMapper.toPractice(race.getSecondPractice(), 2), SessionMapper.toPractice(race.getThirdPractice(), 3));
     }
 
     public static WeeklyRaceSprint toRaceSprint(RaceDTO race) {
-        WeeklyRaceSprint weeklyRace = new WeeklyRaceSprint();
-
-        weeklyRace.setSprint(SessionMapper.toSprint(race.getSprint()));
-        weeklyRace.setSprintQualifying(SessionMapper.toQualifying(race.getSprintQualifying()));
-
-        return weeklyRace;
+        return new WeeklyRaceSprint(SessionMapper.toQualifying(race.getSprintQualifying()), SessionMapper.toSprint(race.getSprint()));
     }
 }

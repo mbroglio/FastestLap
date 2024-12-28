@@ -12,7 +12,7 @@ public abstract class BaseWeeklyRaceLocalDataSource {
         this.raceCallback = raceCallback;
     }
 
-    public abstract void getWeeklyRace();
+    public abstract void getWeeklyRaces();
 
     public abstract void insertWeeklyRaceList(List<WeeklyRace> weeklyRaceList);
 

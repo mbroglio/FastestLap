@@ -10,18 +10,24 @@ import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRaceClassic;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRaceSprint;
 import com.the_coffe_coders.fastestlap.util.Constants;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {DriverStandings.class, Driver.class, ConstructorStandings.class}, version = DATABASE_VERSION, exportSchema = false)//TODO set to true (export schema)
+@Database(entities = {DriverStandings.class, Driver.class, ConstructorStandings.class, WeeklyRaceClassic.class, WeeklyRaceSprint.class}, version = DATABASE_VERSION, exportSchema = false)//TODO set to true (export schema)
 @TypeConverters({DriverStandingsConverters.class})
 public abstract class AppRoomDatabase extends RoomDatabase{
     public abstract DriverStandingsDAO driverStandingsDao();
     //public abstract DriverStandingsElementDAO driverStandingsElementDAO();
     public abstract DriverDAO driverDAO();
     public abstract ConstructorStandingsDAO constructorStandingsDao();
+
+    public abstract WeeklyRaceClassicDAO weeklyRaceClassicDAO();
+    public abstract WeeklyRaceSprintDAO weeklyRaceSprintDAO();
 
     private static volatile AppRoomDatabase INSTANCE;
 

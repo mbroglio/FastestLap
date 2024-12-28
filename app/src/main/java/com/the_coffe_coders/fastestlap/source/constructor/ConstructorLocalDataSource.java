@@ -20,10 +20,7 @@ public class ConstructorLocalDataSource extends BaseConstructorLocalDataSource{
 
     @Override
     public void getConstructorStandings() {
-        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
-            //driverCallback.onSuccessFromLocal(null);
-            constructorCallback.onSuccessFromLocal(constructorStandingsDAO.getConstructorStandings());
-        });
+        constructorCallback.onSuccessFromLocal(constructorStandingsDAO.getConstructorStandings());
     }
 
     @Override

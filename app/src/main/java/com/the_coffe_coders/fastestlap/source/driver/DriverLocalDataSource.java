@@ -28,9 +28,7 @@ public class DriverLocalDataSource extends BaseDriverLocalDataSource {
 
     @Override
     public void getDriversStandings() {
-        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
-            driverCallback.onSuccessFromLocal(driverStandingsDAO.getDriverStandings());
-        });
+        driverCallback.onSuccessFromLocal(driverStandingsDAO.getDriverStandings());
     }
 
     @Override

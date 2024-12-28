@@ -6,6 +6,7 @@ import android.app.Application;
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
 import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
+import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorRemoteDataSource;
@@ -15,6 +16,10 @@ import com.the_coffe_coders.fastestlap.source.driver.BaseDriverLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.BaseDriverRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.DriverLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.DriverRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.weeklyrace.BaseWeeklyRaceLocalDataSource;
+import com.the_coffe_coders.fastestlap.source.weeklyrace.BaseWeeklyRaceRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.weeklyrace.WeeklyRaceLocalDataSource;
+import com.the_coffe_coders.fastestlap.source.weeklyrace.WeeklyRaceRemoteDataSource;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -173,7 +178,7 @@ public class ServiceLocator {
             public Call<ResponseBody> getCircuits() {
                 return null;
             }
-        }
+        };
     }
 
     public AppRoomDatabase getRoomDatabase(Application application) {
@@ -216,4 +221,9 @@ public class ServiceLocator {
         return new ConstructorRepository(constructorRemoteDataSource, constructorLocalDataSource);
     }
 
+    public RaceRepository getRaceRepository(Application application, boolean b) {
+        BaseWeeklyRaceLocalDataSource weeklyRaceLocalDataSource = new WeeklyRaceLocalDataSource(getRoomDatabase(application), new SharedPreferencesUtils(application));
+        BaseWeeklyRaceRemoteDataSource weeklyRaceRemoteDataSource = new WeeklyRaceRemoteDataSource();
+        return new RaceRepository(weeklyRaceRemoteDataSource, weeklyRaceLocalDataSource);
+    }
 }

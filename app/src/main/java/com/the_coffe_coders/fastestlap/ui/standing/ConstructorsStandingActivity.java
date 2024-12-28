@@ -29,6 +29,7 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
+import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
@@ -85,6 +86,8 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         LinearLayout teamStanding = findViewById(R.id.team_standing);
+        //testing della weeklyracerepository
+        RaceRepository weeklyRaceRepository = ServiceLocator.getInstance().getRaceRepository(getApplication(), false);
         ConstructorRepository constructorRepository = ServiceLocator.getInstance().getConstructorRepository(getApplication(), false);
         MutableLiveData<Result> liveData = constructorRepository.fetchConstructorStandings(0);
         Log.i(TAG, "Constructor Standings: " + liveData);
