@@ -6,6 +6,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,8 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.ui.live.LiveActivity;
+
+import java.util.Objects;
 
 public class LiveEventFragment extends Fragment {
 
@@ -76,7 +80,7 @@ public class LiveEventFragment extends Fragment {
     private void inflateShortTableRows() {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         String[] driverAbbreviations = {"VER", "PER", "HAM", "RUS", "LEC", "SAI", "NOR", "PIA", "ALO", "STR", "GAS", "OCO", "BOT", "ZHO", "MAG", "HUL", "TSU", "RIC", "SAR", "ALB"};
-        String[] tyreTypes = {"S", "M", "H"};
+        String[] tyreTypes = {"S", "M", "H", "W", "I"};
 
         for (int i = 0; i < 20; i++) {
             TableRow tableRow = (TableRow) inflater.inflate(R.layout.live_race_table_row_short_elements, tableLayout, false);
@@ -98,9 +102,12 @@ public class LiveEventFragment extends Fragment {
             ImageView positionChangeArrow = tableRow.findViewById(R.id.position_change_icon);
             if (positionChangeValue.getText().charAt(0) == '-') {
                 positionChangeArrow.setImageResource(R.drawable.down_arrow);
-                positionChangeArrow.setColorFilter(ContextCompat.getColor(getContext(), R.color.red));
-            } else {
-                positionChangeArrow.setColorFilter(ContextCompat.getColor(getContext(), R.color.green));
+                positionChangeArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red));
+            } else if (Integer.parseInt(positionChangeValue.getText().toString())>0) {
+                positionChangeArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.green));
+            }else{
+                positionChangeArrow.setImageResource(R.drawable.equals_icon);
+                positionChangeArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.grey_card));
             }
 
             TextView tyreInUseSymbol = tableRow.findViewById(R.id.tyre_in_use_symbol);
@@ -110,8 +117,12 @@ public class LiveEventFragment extends Fragment {
                 tyreInUse.setImageResource(R.drawable.soft_tyre_icon);
             } else if(tyreInUseSymbol.getText().equals("M")) {
                 tyreInUse.setImageResource(R.drawable.medium_tyre_icon);
-            } else {
+            } else if(tyreInUseSymbol.getText().equals("H")){
                 tyreInUse.setImageResource(R.drawable.hard_tyre_icon);
+            }else if (tyreInUseSymbol.getText().equals("W")){
+                tyreInUse.setImageResource(R.drawable.wet_tyre_icon);
+            }else{
+                tyreInUse.setImageResource(R.drawable.intermediate_tyre_icon);
             }
 
 
@@ -122,7 +133,7 @@ public class LiveEventFragment extends Fragment {
     private void inflateFullTableRows() {
         LayoutInflater inflater = LayoutInflater.from(getContext());
         String[] driverAbbreviations = {"VER", "PER", "HAM", "RUS", "LEC", "SAI", "NOR", "PIA", "ALO", "STR", "GAS", "OCO", "BOT", "ZHO", "MAG", "HUL", "TSU", "RIC", "SAR", "ALB"};
-        String[] tyreTypes = {"S", "M", "H"};
+        String[] tyreTypes = {"S", "M", "H", "W", "I"};
 
         for (int i = 0; i < 20; i++) {
             TableRow tableRow = (TableRow) inflater.inflate(R.layout.live_race_table_row_full_elements, tableLayout, false);
@@ -152,8 +163,12 @@ public class LiveEventFragment extends Fragment {
                 tyreInUse.setImageResource(R.drawable.soft_tyre_icon);
             } else if(tyreInUseSymbol.getText().equals("M")) {
                 tyreInUse.setImageResource(R.drawable.medium_tyre_icon);
-            } else {
+            } else if(tyreInUseSymbol.getText().equals("H")){
                 tyreInUse.setImageResource(R.drawable.hard_tyre_icon);
+            }else if (tyreInUseSymbol.getText().equals("W")){
+                tyreInUse.setImageResource(R.drawable.wet_tyre_icon);
+            }else{
+                tyreInUse.setImageResource(R.drawable.intermediate_tyre_icon);
             }
 
             TextView boxCount = tableRow.findViewById(R.id.box_count);
@@ -165,9 +180,12 @@ public class LiveEventFragment extends Fragment {
             ImageView positionChangeArrow = tableRow.findViewById(R.id.position_change_icon);
             if (positionChangeValue.getText().charAt(0) == '-') {
                 positionChangeArrow.setImageResource(R.drawable.down_arrow);
-                positionChangeArrow.setColorFilter(ContextCompat.getColor(getContext(), R.color.red));
-            } else {
-                positionChangeArrow.setColorFilter(ContextCompat.getColor(getContext(), R.color.green));
+                positionChangeArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red));
+            } else if (Integer.parseInt(positionChangeValue.getText().toString())>0) {
+                positionChangeArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.green));
+            }else{
+                positionChangeArrow.setImageResource(R.drawable.equals_icon);
+                positionChangeArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.grey_card));
             }
             tableLayout.addView(tableRow);
         }

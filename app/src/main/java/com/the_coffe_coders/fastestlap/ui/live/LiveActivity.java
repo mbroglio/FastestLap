@@ -23,6 +23,7 @@ public class LiveActivity extends AppCompatActivity {
     private AppBarLayout appBarLayout;
     private MaterialToolbar toolbar;
     private TabLayout tabLayout;
+    private ViewPager2 viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,7 @@ public class LiveActivity extends AppCompatActivity {
         appBarLayout = findViewById(R.id.top_bar_layout);
         toolbar = findViewById(R.id.top_app_bar);
         tabLayout = findViewById(R.id.tab_layout);
+        viewPager = findViewById(R.id.view_pager);
 
 
         ViewPager2 viewPager = findViewById(R.id.view_pager);
@@ -67,11 +69,13 @@ public class LiveActivity extends AppCompatActivity {
             toolbar.setVisibility(View.GONE);
             tabLayout.setVisibility(View.GONE);
             hideSystemUI();
+            viewPager.setUserInputEnabled(false);
         } else {
             appBarLayout.setVisibility(View.VISIBLE);
             toolbar.setVisibility(View.VISIBLE);
             tabLayout.setVisibility(View.VISIBLE);
             showSystemUI();
+            viewPager.setUserInputEnabled(true);
         }
     }
 
