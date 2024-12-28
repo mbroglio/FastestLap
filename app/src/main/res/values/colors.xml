@@ -188,4 +188,8 @@
     <color name="dark_red">#8B0000</color>
     <color name="grey_card">#3B3B37</color>
     <color name="dark_grey">#41413D</color>
+    <color name="green">#008000</color>
+    <color name="red">#800000</color>
+
+
 </resources>

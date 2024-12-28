@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/screen_background_color">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="25dp">
+
+        <TextView
+            android:id="@+id/driver_position"
+            android:layout_width="24dp"
+            android:layout_height="wrap_content"
+            android:text="1"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:layout_alignParentStart="true"
+            android:fontFamily="@font/orbitron_bold"
+            android:textColor="@color/white">
+
+        </TextView>
+
+        <View
+            android:id="@+id/team_color"
+            android:layout_width="3dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@+id/driver_position"
+            android:layout_centerInParent="true"
+            android:background="@color/ferrari_f1">
+
+        </View>
+
+        <TextView
+            android:id="@+id/driver_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HAM"
+            android:gravity="center"
+            android:layout_toEndOf="@id/team_color"
+            android:layout_marginStart="10dp"
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/orbitron_bold"
+            android:textColor="@color/white">
+
+        </TextView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/best_lap"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/driver_name"
+            android:layout_marginStart="10dp"
+            android:layout_centerInParent="true"
+            android:backgroundTint="@color/dark_grey"
+            app:strokeColor="@color/dark_grey">
+
+            <TextView
+                android:id="@+id/last_lap_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="1:23.456"
+                android:gravity="center"
+                android:fontFamily="@font/orbitron_bold"
+                android:textColor="@color/white">
+            </TextView>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/gap_ahead"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/best_lap"
+            android:layout_marginStart="10dp"
+            android:layout_centerInParent="true"
+            android:backgroundTint="@color/dark_grey"
+            app:strokeColor="@color/dark_grey">
+
+            <TextView
+                android:id="@+id/gap_ahead_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="+50.234"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:textColor="@color/white">
+            </TextView>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <LinearLayout
+            android:id="@+id/position_change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="10dp"
+            android:layout_toEndOf="@id/gap_ahead">
+
+            <ImageView
+                android:id="@+id/position_change_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:src="@drawable/up_arrow"
+                android:layout_gravity="center"
+                app:tint="@color/green">
+            </ImageView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="3"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:fontFamily="@font/orbitron_bold">
+
+            </TextView>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/tyre_in_use"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_toEndOf="@id/position_change"
+            android:layout_marginStart="15dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/medium_tyre_icon">
+
+            </ImageView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="M"
+                android:layout_gravity="center"
+                android:textColor="@color/white"
+                android:fontFamily="@font/orbitron_bold">
+
+            </TextView>
+
+        </LinearLayout>
+
+
+
+
+    </RelativeLayout>
+<!--
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="500dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:background="@color/md_theme_surfaceDim_mediumContrast">
+
+            <TextView
+                android:id="@+id/driver_position"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:text="-!-"
+                android:textAppearance="?attr/textAppearanceTitleMedium"
+                android:layout_weight="1.58"
+                />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:id="@+id/team_color"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/ferrari_f1"
+                android:layout_weight="1.67">
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/driver_name"
+                android:layout_marginStart="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="-!-"
+                android:layout_weight="1.2">
+            </TextView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1.6">
+
+                <ImageView
+                    android:id="@+id/driver_number"
+                    android:layout_gravity="start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    app:srcCompat="@drawable/max_verstappen_number"
+                    android:scaleType="fitCenter">
+
+                </ImageView>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginStart="35dp"
+                android:layout_marginEnd="10dp"
+                android:background="@drawable/rounded_view"
+                android:layout_weight="1.2">
+
+                <TextView
+                    android:id="@+id/driver_interval"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="1dp"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:text="-!-">
+
+                </TextView>
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="3dp"
+                android:layout_marginEnd="13dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/rounded_view"
+                android:layout_weight="1.35">
+
+                <TextView
+                    android:id="@+id/gap_to_leader"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center_horizontal|center_vertical"
+                    android:layout_marginBottom="1dp"
+                    android:text="-!-">
+
+                </TextView>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+-->
+
+</LinearLayout>
