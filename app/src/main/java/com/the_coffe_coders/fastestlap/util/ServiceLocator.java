@@ -31,11 +31,66 @@ public class ServiceLocator {
         return instance;
     }
 
+    public ErgastAPIService getConstructorAPIService() {
+        return new ErgastAPIService() {
+            @Override
+            public Call<ResponseBody> getConstructorStandings() {
+
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+
+                return retrofit.create(ErgastAPIService.class).getConstructorStandings();
+            }
+
+            @Override
+            public Call<ResponseBody> getDriverStandings() {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+
+                return retrofit.create(ErgastAPIService.class).getDriverStandings();
+            }
+
+            @Override
+            public Call<ResponseBody> getRaces() {
+                return null;
+            }
+
+            @Override
+            public Call<ResponseBody> getLastRaceResults() {
+                return null;
+            }
+
+            @Override
+            public Call<ResponseBody> getResults() {
+                return null;
+            }
+
+            @Override
+            public Call<ResponseBody> getNextRace() {
+                return null;
+            }
+
+            @Override
+            public Call<ResponseBody> getCircuits() {
+                return null;
+            }
+        };
+    }
+
     public ErgastAPIService getDriverAPIService() {
         return new ErgastAPIService() {
             @Override
             public Call<ResponseBody> getConstructorStandings() {
-                return null;
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+
+                return retrofit.create(ErgastAPIService.class).getConstructorStandings();
             }
 
             @Override

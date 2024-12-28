@@ -12,10 +12,12 @@ import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.api.ConstructorStandingsAPIResponse;
+import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.dto.ConstructorDTO;
 import com.the_coffe_coders.fastestlap.dto.ConstructorStandingsElementDTO;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,15 +32,17 @@ public class ConstructorRemoteDataSource extends BaseConstructorRemoteDataSource
 
     private final ErgastAPIService ergastAPIService;
 
-    public ConstructorRemoteDataSource(ErgastAPIService ergastAPIService, String apiKey) {
-        this.ergastAPIService = ergastAPIService;
+    public ConstructorRemoteDataSource(String apiKey) {
+        this.ergastAPIService = ServiceLocator.getInstance().getConstructorAPIService();
+        ;
     }
 
     @Override
     public void getConstructor() {
-        Call<ResponseBody> constructorResponseCall = ergastAPIService.getConstructorStandings();
 
-        constructorResponseCall.enqueue(new Callback<>() {
+        Call<ResponseBody> newsResponseCall = ergastAPIService.getConstructorStandings();
+        System.out.println("remote data source :)");
+        newsResponseCall.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -53,19 +57,28 @@ public class ConstructorRemoteDataSource extends BaseConstructorRemoteDataSource
 
                     JSONParserUtils jsonParserUtils = new JSONParserUtils();
                     ConstructorStandingsAPIResponse constructorStandingsAPIResponse = jsonParserUtils.parseConstructorStandings(mrdata);
-
+                    System.out.println("CALLBACK");
                     constructorCallback.onSuccessFromRemote(constructorStandingsAPIResponse, System.currentTimeMillis());
                 } else {
-                    Log.e(TAG, "Response not successful");
+                    constructorCallback.onFailureFromRemote(new Exception());
                 }
+
+
             }
 
-            @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                 constructorCallback.onFailureFromRemote(new Exception(RETROFIT_ERROR));
             }
         });
+    }
 
+    @Override
+    public void getConstructorStandings() {
+
+    }
+
+    @Override
+    public void getConstructor(String constructorId) {
 
     }
 }
