@@ -105,144 +105,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <TableRow
-                android:id="@+id/race_full_header"
+            <FrameLayout
+                android:id="@+id/live_table_rows"
                 android:layout_width="match_parent"
-                android:layout_height="25dp"
-                android:visibility="gone">
+                android:layout_height="25dp">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.27"
-                    android:text="POSITION"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/orbitron_bold" />
+                <include
+                    android:id="@+id/race_header_short"
+                    layout="@layout/live_race_table_header_short"
+                    android:visibility="visible"/>
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.265"
-                    android:text="BEST"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/orbitron_bold" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.265"
-                    android:text="LAST"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/orbitron_bold" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.25"
-                    android:text="LEADER"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/orbitron_bold" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.145"
-                    android:text="+/-"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/orbitron_bold" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.205"
-                    android:text="TYRE"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/orbitron_bold" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.08"
-                    android:text="BOX"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/orbitron_bold" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.08"
-                    android:text="LAP"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/orbitron_bold" />
-
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/race_short_header"
-                android:layout_width="match_parent"
-                android:layout_height="25dp"
-                android:visibility="visible">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.27"
-                    android:text="POSITION"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/orbitron_bold" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.265"
-                    android:text="LAST"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/orbitron_bold" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.25"
-                    android:text="LEADER"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/orbitron_bold" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.145"
-                    android:text="+/-"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/orbitron_bold" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="0.205"
-                    android:text="TYRE"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:fontFamily="@font/orbitron_bold" />
-
-            </TableRow>
+                <include
+                    android:id="@+id/race_header_full"
+                    layout="@layout/live_race_table_header_full"
+                    android:visibility="gone"/>
+            </FrameLayout>
 
         </TableLayout>
 
     </ScrollView>
-
-
-
 
 </RelativeLayout>

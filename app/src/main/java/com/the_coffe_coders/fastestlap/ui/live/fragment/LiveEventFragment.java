@@ -2,14 +2,15 @@ package com.the_coffe_coders.fastestlap.ui.live.fragment;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.content.res.Configuration;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -20,8 +21,8 @@ public class LiveEventFragment extends Fragment {
 
     private CheckBox fullTelemetryCheckbox;
     private TableLayout tableLayout;
-    private TableRow liveTableHeaderShort;
-    private TableRow liveTableHeaderFull;
+    private View liveTableHeaderShort;
+    private View liveTableHeaderFull;
 
     public LiveEventFragment() {
         // Required empty public constructor
@@ -39,8 +40,8 @@ public class LiveEventFragment extends Fragment {
 
         fullTelemetryCheckbox = view.findViewById(R.id.full_telemetry_checkbox);
         tableLayout = view.findViewById(R.id.live_table);
-        liveTableHeaderShort = view.findViewById(R.id.race_short_header);
-        liveTableHeaderFull = view.findViewById(R.id.race_full_header);
+        liveTableHeaderShort = view.findViewById(R.id.race_header_short);
+        liveTableHeaderFull = view.findViewById(R.id.race_header_full);
 
         fullTelemetryCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
@@ -94,9 +95,25 @@ public class LiveEventFragment extends Fragment {
 
             TextView positionChangeValue = tableRow.findViewById(R.id.position_change_value);
             positionChangeValue.setText(String.valueOf((int) (Math.random() * 10) - 5));
+            ImageView positionChangeArrow = tableRow.findViewById(R.id.position_change_icon);
+            if (positionChangeValue.getText().charAt(0) == '-') {
+                positionChangeArrow.setImageResource(R.drawable.down_arrow);
+                positionChangeArrow.setColorFilter(ContextCompat.getColor(getContext(), R.color.red));
+            } else {
+                positionChangeArrow.setColorFilter(ContextCompat.getColor(getContext(), R.color.green));
+            }
 
             TextView tyreInUseSymbol = tableRow.findViewById(R.id.tyre_in_use_symbol);
             tyreInUseSymbol.setText(tyreTypes[(int) (Math.random() * tyreTypes.length)]);
+            ImageView tyreInUse = tableRow.findViewById(R.id.tyre_icon);
+            if(tyreInUseSymbol.getText().equals("S")) {
+                tyreInUse.setImageResource(R.drawable.soft_tyre_icon);
+            } else if(tyreInUseSymbol.getText().equals("M")) {
+                tyreInUse.setImageResource(R.drawable.medium_tyre_icon);
+            } else {
+                tyreInUse.setImageResource(R.drawable.hard_tyre_icon);
+            }
+
 
             tableLayout.addView(tableRow);
         }
@@ -119,6 +136,9 @@ public class LiveEventFragment extends Fragment {
             TextView lastLapTime = tableRow.findViewById(R.id.last_lap_time);
             lastLapTime.setText(String.format("1:%02d.%03d", (int) (Math.random() * 60), (int) (Math.random() * 1000)));
 
+            TextView intervalTime = tableRow.findViewById(R.id.interval_text);
+            intervalTime.setText(String.format("+%d.%03d", (int) (Math.random() * 60), (int) (Math.random() * 1000)));
+
             TextView gapAheadText = tableRow.findViewById(R.id.gap_ahead_text);
             gapAheadText.setText(String.format("+%d.%03d", (int) (Math.random() * 60), (int) (Math.random() * 1000)));
 
@@ -127,6 +147,14 @@ public class LiveEventFragment extends Fragment {
 
             TextView tyreInUseSymbol = tableRow.findViewById(R.id.tyre_in_use_symbol);
             tyreInUseSymbol.setText(tyreTypes[(int) (Math.random() * tyreTypes.length)]);
+            ImageView tyreInUse = tableRow.findViewById(R.id.tyre_icon);
+            if(tyreInUseSymbol.getText().equals("S")) {
+                tyreInUse.setImageResource(R.drawable.soft_tyre_icon);
+            } else if(tyreInUseSymbol.getText().equals("M")) {
+                tyreInUse.setImageResource(R.drawable.medium_tyre_icon);
+            } else {
+                tyreInUse.setImageResource(R.drawable.hard_tyre_icon);
+            }
 
             TextView boxCount = tableRow.findViewById(R.id.box_count);
             boxCount.setText(String.valueOf((int) (Math.random() * 3)));
@@ -134,6 +162,13 @@ public class LiveEventFragment extends Fragment {
             TextView lapCount = tableRow.findViewById(R.id.lap_count);
             lapCount.setText(String.valueOf((int) (Math.random() * 53)));
 
+            ImageView positionChangeArrow = tableRow.findViewById(R.id.position_change_icon);
+            if (positionChangeValue.getText().charAt(0) == '-') {
+                positionChangeArrow.setImageResource(R.drawable.down_arrow);
+                positionChangeArrow.setColorFilter(ContextCompat.getColor(getContext(), R.color.red));
+            } else {
+                positionChangeArrow.setColorFilter(ContextCompat.getColor(getContext(), R.color.green));
+            }
             tableLayout.addView(tableRow);
         }
     }

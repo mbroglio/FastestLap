@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableRow xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="25dp">
+    android:layout_height="25dp"
+    android:background="@color/screen_background_color">
 
     <TextView
         android:layout_width="0dp"
@@ -26,6 +27,15 @@
         android:layout_height="wrap_content"
         android:layout_weight="0.265"
         android:text="LAST"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:fontFamily="@font/orbitron_bold" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.25"
+        android:text="INTERVAL"
         android:gravity="center"
         android:textColor="@color/white"
         android:fontFamily="@font/orbitron_bold" />
