@@ -1,4 +1,4 @@
 package com.the_coffe_coders.fastestlap.source.weeklyrace;
 
-public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource{
+public class WeeklyRaceRemoteDataSource {
 }
