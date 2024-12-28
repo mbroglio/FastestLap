@@ -12,14 +12,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="5dp"
         android:buttonTint="@color/white"
         android:checked="false"
-        android:fontFamily="@font/orbitron_bold"
+        android:fontFamily="@font/orbitron_regular"
         android:gravity="center"
         android:text="Full\ntelemetry"
         android:textColor="@color/white"
-        android:textSize="12sp"
+        android:textSize="11sp"
         app:buttonIconTint="@color/black">
 
     </CheckBox>
@@ -90,19 +90,76 @@
 
     </TextView>
 
-    <FrameLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:scrollbars="none"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
+        android:layout_height="0dp"
         android:layout_below="@id/event_situation_layout"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="15dp">
+        android:layout_alignParentBottom="true">
 
-        <include
-            android:id="@+id/interval_card"
-            layout="@layout/interval_card_short" />
+        <TableLayout
+            android:id="@+id/live_table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    </FrameLayout>
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="25dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.27"
+                    android:text="POSITION"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/orbitron_bold" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.265"
+                    android:text="LAST"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/orbitron_bold" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.25"
+                    android:text="LEADER"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/orbitron_bold" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.145"
+                    android:text="+/-"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/orbitron_bold" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.205"
+                    android:text="TYRE"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:fontFamily="@font/orbitron_bold" />
+
+            </TableRow>
+
+        </TableLayout>
+
+    </ScrollView>
+
+
+
 
 </RelativeLayout>
