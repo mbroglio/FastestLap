@@ -173,7 +173,7 @@ public class ServiceLocator {
             public Call<ResponseBody> getCircuits() {
                 return null;
             }
-        }
+        };
     }
 
     public AppRoomDatabase getRoomDatabase(Application application) {
