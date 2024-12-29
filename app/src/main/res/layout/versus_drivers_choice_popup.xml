@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?><?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/round_background_grey"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+    <TextView
+        android:id="@+id/select_drivers_text_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerInParent="true"
+        android:fontFamily="@font/orbitron_bold"
+        android:text="SELECT YOUR DRIVERS"
+        android:textColor="@color/black"
+        android:textSize="18sp">
+
+    </TextView>
+
+    <CheckBox
+        android:id="@+id/fav_driver_usage_check_box"
+        android:layout_width="wrap_content"
+        android:layout_height="20dp"
+        android:layout_below="@id/select_drivers_text_title"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="5dp"
+        android:buttonTint="@color/black"
+        android:fontFamily="@font/orbitron_regular"
+        android:text="Select your favourite driver"
+        android:textColor="@color/black"
+        android:textSize="12sp">
+
+    </CheckBox>
+
+    <RelativeLayout
+        android:id="@+id/drivers_choice_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/medium_margin"
+        android:layout_marginEnd="@dimen/medium_margin"
+        android:layout_below="@id/fav_driver_usage_check_box"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="10dp">
+
+        <LinearLayout
+            android:id="@+id/driver_1_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:orientation="vertical">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/select_driver_1_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/black"
+                android:clickable="true"
+                android:focusable="true"
+                app:strokeColor="@color/black"
+                app:strokeWidth="1dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:text="DRIVER 1"
+                    android:textColor="@color/timer_gray">
+
+                </TextView>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:id="@+id/driver_1_image_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/background_all_margins_filled_white">
+
+                <ImageView
+                    android:id="@+id/driver_1_image"
+                    android:layout_width="@dimen/driver_photo_in_card"
+                    android:layout_height="@dimen/driver_photo_in_card"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/hamilton_pic">
+
+                </ImageView>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/driver_1_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/lewis_hamilton"
+                android:textColor="@color/black"
+                android:fontFamily="@font/orbitron_regular"
+                android:textSize="13sp">
+
+            </TextView>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_centerInParent="true"
+            android:layout_alignTop="@id/driver_1_layout"
+            android:layout_alignBottom="@id/driver_1_layout"
+            android:layout_toEndOf="@id/driver_1_layout"
+            android:layout_toStartOf="@id/driver_2_layout"
+            android:text="VS"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:fontFamily="@font/orbitron_bold">
+
+        </TextView>
+
+        <LinearLayout
+            android:id="@+id/driver_2_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_alignParentEnd="true">
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/select_driver_2_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:backgroundTint="@color/black"
+                android:clickable="true"
+                android:focusable="true"
+                app:strokeColor="@color/black"
+                app:strokeWidth="1dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:text="DRIVER 2"
+                    android:textColor="@color/timer_gray">
+
+                </TextView>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <LinearLayout
+                android:id="@+id/driver_2_image_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/background_all_margins_filled_white">
+
+                <ImageView
+                    android:id="@+id/driver_2_image"
+                    android:layout_width="@dimen/driver_photo_in_card"
+                    android:layout_height="@dimen/driver_photo_in_card"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/sainz_pic">
+
+                </ImageView>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/driver_2_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/carlos_sainz"
+                android:layout_gravity="center"
+                android:textColor="@color/black"
+                android:fontFamily="@font/orbitron_regular"
+                android:textSize="13sp">
+
+            </TextView>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/buttons_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/drivers_choice_layout"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="15dp"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <Button
+            android:id="@+id/dismiss_button"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:backgroundTint="@color/white"
+            android:fontFamily="@font/orbitron_bold"
+            android:text="@string/dismiss_upper_case"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:icon="@drawable/x_icon_black"
+            app:iconTint="@color/black">
+
+        </Button>
+
+        <Button
+            android:id="@+id/save_button"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="10dp"
+            android:backgroundTint="@color/white"
+            android:fontFamily="@font/orbitron_bold"
+            android:text="@string/save_upper_case"
+            android:textColor="@color/black"
+            android:textSize="12sp"
+            app:icon="@drawable/check_icon_black"
+            app:iconTint="@color/black">
+
+        </Button>
+
+    </LinearLayout>
+    
+</RelativeLayout>
