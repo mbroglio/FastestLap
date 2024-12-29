@@ -17,33 +17,26 @@ public class SessionMapper {
     public static Practice toPractice(PracticeDTO practiceDTO, int number) {
         Practice practice = new Practice();
         practice.setNumber(number);
-        //practice.setStartDateTime(ZonedDateTime.parse(practiceDTO.getDate() + "T" + practiceDTO.getTime() + ":00.000Z"));
-        //practice.setDate(practiceDTO.getDate());
-        //practice.setTime(practiceDTO.getTime());
+        practice.setStartDateTime(practiceDTO.getDate(), practiceDTO.getTime());
         return practice;
     }
 
     public static Qualifying toQualifying(QualifyingDTO qualifyingDTO) {
         Qualifying qualifying = new Qualifying();
 
-        //qualifying.setStartDateTime(ZonedDateTime.parse(qualifyingDTO.getDate() + "T" + qualifyingDTO.getTime() + ":00.000Z"));
-        //practice.setDate(practiceDTO.getDate());
-        //practice.setTime(practiceDTO.getTime());
+        qualifying.setStartDateTime(qualifyingDTO.getDate(), qualifyingDTO.getTime());
         return qualifying;
     }
 
     public static Qualifying toQualifying(SprintQualifyingDTO qualifyingDTO) {
         Qualifying qualifying = new Qualifying();
-
-        //qualifying.setStartDateTime(ZonedDateTime.parse(qualifyingDTO.getDate() + "T" + qualifyingDTO.getTime() + ":00.000Z"));
-        //practice.setDate(practiceDTO.getDate());
-        //practice.setTime(practiceDTO.getTime());
+        qualifying.setStartDateTime(qualifyingDTO.getDate(), qualifyingDTO.getTime());
         return qualifying;
     }
 
     public static Sprint toSprint(SprintDTO sprintDTO) {
         Sprint sprint = new Sprint();
-        //sprint.setStartDateTime(ZonedDateTime.parse(sprintDTO.getDate() + "T" + sprintDTO.getTime() + ":00.000Z"));
+        sprint.setStartDateTime(sprintDTO.getDate(), sprintDTO.getTime());
         return sprint;
     }
 

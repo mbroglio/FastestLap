@@ -43,7 +43,7 @@ public class WeeklyRaceClassic extends WeeklyRace {
     public String getDateInterval() {
         String fullDate;
         String startingDate = this.firstPractice.getStartDateTime().toLocalDate().toString();
-        String endingDate = this.firstPractice.getEndDateTime().toLocalDate().toString();
+        String endingDate = startingDate;//TODO fix
 
         LocalDate startDate = LocalDate.parse(startingDate);
         LocalDate endDate = LocalDate.parse(endingDate);

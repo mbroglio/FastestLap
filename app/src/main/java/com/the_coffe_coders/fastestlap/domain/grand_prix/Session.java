@@ -62,6 +62,18 @@ public class Session {
         return endDateTime;
     }
 
+    public void setStartDateTime() {
+        this.startDateTime = ZonedDateTime.now();
+    }
+
+    public void setEndDateTime() {
+        this.endDateTime = ZonedDateTime.now();
+    }
+
+    public void setStartDateTime(String date, String time) {
+        this.startDateTime = ZonedDateTime.parse(date + "T" + time + "[UTC]");
+    }
+
     public void setEndDateTime(ZonedDateTime endDateTime) {
         this.endDateTime = endDateTime;
     }

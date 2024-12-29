@@ -10,6 +10,7 @@ public class CircuitMapper {
         circuit.setCircuitId(circuitDTO.getCircuitId());
         circuit.setCircuitName(circuitDTO.getCircuitName());
         circuit.setUrl(circuitDTO.getUrl());
+        circuit.setLocation(LocationMapper.toLocation(circuitDTO.getLocation()));
         return circuit;
     }
 }

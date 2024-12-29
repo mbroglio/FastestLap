@@ -92,6 +92,7 @@ public class EventActivity extends AppCompatActivity {
 
         //getEventInfo();
         processRaceData();
+        hideLoadingScreen();
     }
 
     private void processRaceData() {
