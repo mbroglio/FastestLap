@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/screen_background_color">
+
+
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/background_top_bottom_margin_1_dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp">
+
+            <TextView
+                android:id="@+id/lap_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lap: 10/11"
+                android:textColor="@color/white"
+                android:fontFamily="@font/orbitron_bold"
+                android:visibility="visible">
+
+            </TextView>
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginTop="30dp"
+                android:layout_centerInParent="true">
+
+                <include
+                    android:id="@+id/flag_message"
+                    layout="@layout/race_control_flag_message"
+                    android:visibility="visible"/>
+
+                <include
+                    android:id="@+id/safety_car_message"
+                    layout="@layout/race_control_safety_car_message"
+                    android:visibility="gone"/>
+
+                <include
+                    android:id="@+id/stewards_message"
+                    layout="@layout/race_control_stewards_message"
+                    android:visibility="gone" />
+
+                <include
+                    android:id="@+id/track_limits_message"
+                    layout="@layout/race_control_track_limits_message"
+                    android:visibility="gone"/>
+
+                <include
+                    android:id="@+id/flag_driver_message"
+                    layout="@layout/race_control_flag_driver_message"
+                    android:visibility="gone" />
+
+                <include
+                    android:id="@+id/pit_lane_message"
+                    layout="@layout/race_control_pit_lane_lights"
+                    android:visibility="gone" />
+
+                <include
+                    android:id="@+id/drs_message"
+                    layout="@layout/race_control_drs_message"
+                    android:visibility="gone" />
+            </FrameLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+
+</LinearLayout>
