@@ -17,20 +17,19 @@ public abstract class WeeklyRace {
     private String url;
     private String raceName;
     private Circuit Circuit;
-    private String date;
-    private String time;
+    private ZonedDateTime dateTime;
+
     protected Practice firstPractice;
     private Qualifying Qualifying;
     private Race finalRace;
     //private Sprint Sprint;
 
-    protected WeeklyRace(String season, String round, String url, String raceName, Circuit circuit, String date, String time, Qualifying qualifying, Race finalRace, Practice firstPractice) {
+    protected WeeklyRace(String season, String round, String url, String raceName, Circuit circuit, ZonedDateTime dateTime, Qualifying qualifying, Race finalRace, Practice firstPractice) {
         this.season = season;
         this.round = round;
         this.url = url;
         this.raceName = raceName;
         this.Circuit = circuit;
-        this.date = date;
         this.firstPractice = firstPractice;
     }
     @Ignore
@@ -78,20 +77,18 @@ public abstract class WeeklyRace {
         Circuit = circuit;
     }
 
-    public String getDate() {
-        return date;
+    public ZonedDateTime getDateTime() {
+        return dateTime;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setDateTime(ZonedDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
+    public void setDateTime(String date, String time) {
+        this.dateTime = ZonedDateTime.parse(
+                date + "T" + time + "[UTC]"
+        );
     }
 
     public void setFirstPractice(Practice firstPractice) {

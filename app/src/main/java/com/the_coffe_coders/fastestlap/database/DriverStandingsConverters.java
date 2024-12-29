@@ -13,6 +13,8 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Sprint;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 
+import org.threeten.bp.ZonedDateTime;
+
 import java.lang.reflect.Type;
 import java.util.List;
 
@@ -152,6 +154,19 @@ public class DriverStandingsConverters {
     public static WeeklyRace toWeeklyRace(String json) {
         Gson gson = new Gson();
         Type listType = new TypeToken<WeeklyRace>() {}.getType();
+        return gson.fromJson(json, listType);
+    }
+    //ZoneDateTimeConverter
+    @TypeConverter
+    public static String fromZonedDateTime(ZonedDateTime zonedDateTime) {
+        Gson gson = new Gson();
+        return gson.toJson(zonedDateTime);
+    }
+
+    @TypeConverter
+    public static ZonedDateTime toZonedDateTime(String json) {
+        Gson gson = new Gson();
+        Type listType = new TypeToken<ZonedDateTime>() {}.getType();
         return gson.fromJson(json, listType);
     }
 }

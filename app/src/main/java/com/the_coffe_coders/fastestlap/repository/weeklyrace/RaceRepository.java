@@ -37,6 +37,7 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
 
     @Override
     public MutableLiveData<Result> fetchWeeklyRaces(long lastUpdate) {
+        Log.i(TAG, "fetchWeeklyRaces");
         if(true) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
             //TODO fetch from remote
             raceRemoteDataSource.getWeeklyRaces();

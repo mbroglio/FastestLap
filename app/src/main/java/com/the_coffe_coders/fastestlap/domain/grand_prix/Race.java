@@ -12,14 +12,34 @@ public class Race extends Session {
     private Circuit Circuit;
     public List<RaceResult> raceResults;
 
+    public ZonedDateTime dateTime;
+
     public Race(String season, String round, String url, String raceName, Circuit circuit, List<RaceResult> raceResults, String sessionId, Boolean isFinished, Boolean isUnderway, ZonedDateTime startDateTime, ZonedDateTime endDateTime) {
         super(sessionId, isFinished, isUnderway, startDateTime, endDateTime);
         this.season = season;
         this.round = round;
         this.url = url;
         this.raceName = raceName;
-        Circuit = circuit;
+        this.Circuit = circuit;
         this.raceResults = raceResults;
+    }
+
+    public Race() {
+
+    }
+
+    public void setDateTime(ZonedDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public void setDateTime(String date, String time) {
+        this.dateTime = ZonedDateTime.parse(
+                date + "T" + time + "[UTC]"
+        );
+    }
+
+    public ZonedDateTime getDateTime() {
+        return dateTime;
     }
 
     public String getSeason() {

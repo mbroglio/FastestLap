@@ -4,6 +4,8 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 
 import org.threeten.bp.LocalDate;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,7 @@ public class WeeklyRaceSprint extends WeeklyRace {
     private Sprint sprint;
 
     public WeeklyRaceSprint(String season, String round, String url, String raceName, Circuit circuit, String date, String time, Qualifying qualifying, Race finalRace, Qualifying sprintQualifying, Sprint sprint, Practice firstPractice) {
-        super(season, round, url, raceName, circuit, date, time, qualifying, finalRace, firstPractice);
+        super(season, round, url, raceName, circuit, ZonedDateTime.parse(date + "T" + time + "[UTC]"),qualifying, finalRace, firstPractice);
         this.sprintQualifying = sprintQualifying;
         this.sprint = sprint;
     }

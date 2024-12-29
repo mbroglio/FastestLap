@@ -30,6 +30,7 @@ import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PastEventsActivity extends AppCompatActivity {
@@ -111,6 +112,7 @@ public class PastEventsActivity extends AppCompatActivity {
             if(result.isSuccess()) {
                 Log.i("PastEvent", "SUCCESS");
                 races.addAll(((Result.WeeklyRaceSuccess) result).getData());
+                Collections.reverse(races);
                 for (WeeklyRace race: races) {
                     createEventCard(race);
                 }
@@ -141,13 +143,14 @@ public class PastEventsActivity extends AppCompatActivity {
 
     private View generateEventCard(WeeklyRace race) {
         View eventCard = getLayoutInflater().inflate(R.layout.past_event_card, null);
-
+        ZonedDateTime zonedDateTime = race.getDateTime();
         TextView day = eventCard.findViewById(R.id.past_date);
-        String dayString = "";//String.valueOf(LocalDate.parse(race.getDate()).getDayOfMonth());
+        String dayString = zonedDateTime.getDayOfMonth() + "";
         day.setText(dayString);
 
         TextView month = eventCard.findViewById(R.id.past_month);
-        String monthString = "";//LocalDate.parse(race.getDate().toString()).getMonth().toString().substring(0, 3).toUpperCase();
+        //Es: mar, may, etc
+        String monthString = zonedDateTime.getMonth().toString().substring(0, 3);
         month.setText(monthString);
 
         ImageView trackOutline = eventCard.findViewById(R.id.past_track_outline);
@@ -158,8 +161,8 @@ public class PastEventsActivity extends AppCompatActivity {
 
         TextView gpName = eventCard.findViewById(R.id.past_gp_name);
         gpName.setText(race.getRaceName());
-
-        /*List<RaceResult> raceResults = race.getFinalRace().getResults();
+        /*
+        List<RaceResult> raceResults = race.getFinalRace().getResults();
         for (int i = 0; i < 3; i++) {
             RaceResult raceResult = raceResults.get(i);
 
