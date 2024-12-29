@@ -282,12 +282,12 @@
                             android:layout_height="match_parent">
 
                             <TextView
-                                android:id="@+id/result"
+                                android:id="@+id/raceResult"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
                                 android:layout_marginStart="@dimen/small_margin"
-                                android:text="@string/result"
+                                android:text="@string/raceResult"
                                 android:fontFamily="@font/orbitron_bold"
                                 android:textColor="@color/black">
 
@@ -298,7 +298,7 @@
                                 android:layout_height="30dp"
                                 android:layout_alignParentEnd="true"
                                 android:layout_centerVertical="true"
-                                android:layout_toEndOf="@id/result"
+                                android:layout_toEndOf="@id/raceResult"
                                 android:layout_marginStart="5dp"
                                 android:layout_marginEnd="@dimen/small_margin"
                                 app:srcCompat="@drawable/checkered_flag">

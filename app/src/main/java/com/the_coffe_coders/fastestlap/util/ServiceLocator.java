@@ -62,7 +62,12 @@ public class ServiceLocator {
 
             @Override
             public Call<ResponseBody> getRaces() {
-                return null;
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+
+                return retrofit.create(ErgastAPIService.class).getRaces();
             }
 
             @Override
@@ -111,7 +116,12 @@ public class ServiceLocator {
 
             @Override
             public Call<ResponseBody> getRaces() {
-                return null;
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+
+                return retrofit.create(ErgastAPIService.class).getRaces();
             }
 
             @Override
@@ -151,7 +161,12 @@ public class ServiceLocator {
 
             @Override
             public Call<ResponseBody> getRaces() {
-                return null;
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+
+                return retrofit.create(ErgastAPIService.class).getRaces();
             }
 
             @Override
@@ -223,7 +238,7 @@ public class ServiceLocator {
 
     public RaceRepository getRaceRepository(Application application, boolean b) {
         BaseWeeklyRaceLocalDataSource weeklyRaceLocalDataSource = new WeeklyRaceLocalDataSource(getRoomDatabase(application), new SharedPreferencesUtils(application));
-        BaseWeeklyRaceRemoteDataSource weeklyRaceRemoteDataSource = new WeeklyRaceRemoteDataSource();
+        BaseWeeklyRaceRemoteDataSource weeklyRaceRemoteDataSource = new WeeklyRaceRemoteDataSource("");
         return new RaceRepository(weeklyRaceRemoteDataSource, weeklyRaceLocalDataSource);
     }
 }

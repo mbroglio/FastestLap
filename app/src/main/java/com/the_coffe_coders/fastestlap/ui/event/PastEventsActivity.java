@@ -1,9 +1,39 @@
 package com.the_coffe_coders.fastestlap.ui.event;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.util.Log;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+
+import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
+
+import com.google.android.material.appbar.MaterialToolbar;
+import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
+import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PastEventsActivity extends AppCompatActivity {
-/*
+
     private ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
     private int raceIndex = 1;
 
@@ -37,8 +67,8 @@ public class PastEventsActivity extends AppCompatActivity {
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
-
-        processEvents(raceIndex);
+        Log.i("PastEvent", "onCreate");
+        processEvents();
     }
 
     private void showLoadingScreen() {
@@ -73,71 +103,34 @@ public class PastEventsActivity extends AppCompatActivity {
         }
     };
 
-    private void processEvents(int i) {
-        //"https://api.jolpi.ca/ergast/f1/current/" + i + "/"; // This will be the default URL
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://ergast.com/api/f1/current/" + i + "/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        ErgastAPI ergastApi = retrofit.create(ErgastAPI.class);
-
-        ergastApi.getResults().enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Log.i("PastEvents", "Response: " + response.toString());
-                if (response.isSuccessful() && response.body() != null) {
-                    try {
-                        String responseBody = response.body().string();
-                        JsonObject jsonResponse = new Gson().fromJson(responseBody, JsonObject.class);
-                        JsonObject mrData = jsonResponse.getAsJsonObject("MRData");
-
-                        JSONParserUtils jsonParserUtils = new JSONParserUtils(PastEventsActivity.this);
-                        ResultsAPIResponse resultsAPIResponse = jsonParserUtils.parseRaceResults(mrData);
-
-                        List<Race> races = resultsAPIResponse.getRaceTable().getRaces();
-                        if (races.isEmpty()) {
-                            Log.i("PastEvents", "No past events found.");
-                            raceToProcess = false;
-                            hideLoadingScreen();
-                        } else {
-                            Race race = races.get(0);
-                            if (isPast(race)) {
-                                createEventCard(race);
-                                raceIndex++;
-                                processEvents(raceIndex);
-                            } else {
-                                raceToProcess = false;
-                                hideLoadingScreen();
-                            }
-                        }
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                } else {
-                    raceToProcess = false;
-                    hideLoadingScreen();
+    private void processEvents() {
+        Log.i("PastEvent", "Process Event");
+        List<WeeklyRace> races = new ArrayList<>();
+        MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getApplication(), false).fetchWeeklyRaces(0);
+        data.observe(this, result -> {
+            if(result.isSuccess()) {
+                Log.i("PastEvent", "SUCCESS");
+                races.addAll(((Result.WeeklyRaceSuccess) result).getData());
+                for (WeeklyRace race: races) {
+                    createEventCard(race);
                 }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                raceToProcess = false;
                 hideLoadingScreen();
             }
         });
     }
 
-    private boolean isPast(Race race) {
-        String raceDate = race.getStartDateTime().toString();
+    private boolean isPast(WeeklyRace race) {
+        /*String raceDate = race.getStartDateTime().toString();
         String raceTime = race.getTime(); // ends with 'Z'
         ZonedDateTime raceDateTime = ZonedDateTime.parse(raceDate + "T" + raceTime);
         raceDateTime = raceDateTime.plusMinutes(Constants.SESSION_DURATION.get("Race"));
 
-        return now.isAfter(raceDateTime);
+        return now.isAfter(raceDateTime);*/
+        return true;
     }
 
-    private void createEventCard(Race race) {
+
+    private void createEventCard(WeeklyRace race) {
         LinearLayout pastEvents = findViewById(R.id.past_events_list);
         pastEvents.addView(generateEventCard(race));
 
@@ -146,15 +139,15 @@ public class PastEventsActivity extends AppCompatActivity {
         pastEvents.addView(space);
     }
 
-    private View generateEventCard(Race race) {
+    private View generateEventCard(WeeklyRace race) {
         View eventCard = getLayoutInflater().inflate(R.layout.past_event_card, null);
 
         TextView day = eventCard.findViewById(R.id.past_date);
-        String dayString = String.valueOf(LocalDate.parse(race.getStartDateTime().toString()).getDayOfMonth());
+        String dayString = "";//String.valueOf(LocalDate.parse(race.getDate()).getDayOfMonth());
         day.setText(dayString);
 
         TextView month = eventCard.findViewById(R.id.past_month);
-        String monthString = LocalDate.parse(race.getStartDateTime().toString()).getMonth().toString().substring(0, 3).toUpperCase();
+        String monthString = "";//LocalDate.parse(race.getDate().toString()).getMonth().toString().substring(0, 3).toUpperCase();
         month.setText(monthString);
 
         ImageView trackOutline = eventCard.findViewById(R.id.past_track_outline);
@@ -166,13 +159,13 @@ public class PastEventsActivity extends AppCompatActivity {
         TextView gpName = eventCard.findViewById(R.id.past_gp_name);
         gpName.setText(race.getRaceName());
 
-        List<Result> results = race.getResults();
+        /*List<RaceResult> raceResults = race.getFinalRace().getResults();
         for (int i = 0; i < 3; i++) {
-            Result result = results.get(i);
+            RaceResult raceResult = raceResults.get(i);
 
             TextView driverName = eventCard.findViewById(Constants.PAST_RACE_DRIVER_NAME.get(i));
-            driverName.setText(Constants.DRIVER_FULLNAME.get(result.getDriver().getDriverId()));
-        }
+            driverName.setText(Constants.DRIVER_FULLNAME.get(raceResult.getDriver().getDriverId()));
+        }*/
 
         Log.i("PastEvent", "gpName: " + race.getRaceName());
         eventCard.setOnClickListener(v -> {
@@ -181,5 +174,5 @@ public class PastEventsActivity extends AppCompatActivity {
             startActivity(intent);
         });
         return eventCard;
-    }*/
+    }
 }

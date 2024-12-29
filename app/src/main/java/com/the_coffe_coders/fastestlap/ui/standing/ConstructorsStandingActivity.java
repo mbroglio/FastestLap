@@ -86,8 +86,11 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         LinearLayout teamStanding = findViewById(R.id.team_standing);
+
         //testing della weeklyracerepository
         RaceRepository weeklyRaceRepository = ServiceLocator.getInstance().getRaceRepository(getApplication(), false);
+        weeklyRaceRepository.fetchWeeklyRaces(0);
+
         ConstructorRepository constructorRepository = ServiceLocator.getInstance().getConstructorRepository(getApplication(), false);
         MutableLiveData<Result> liveData = constructorRepository.fetchConstructorStandings(0);
         Log.i(TAG, "Constructor Standings: " + liveData);

@@ -8,9 +8,12 @@ import androidx.lifecycle.MutableLiveData;
 import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.dto.RaceDTO;
+import com.the_coffe_coders.fastestlap.mapper.WeeklyRaceMapper;
 import com.the_coffe_coders.fastestlap.source.weeklyrace.BaseWeeklyRaceLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.weeklyrace.BaseWeeklyRaceRemoteDataSource;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,31 +31,42 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
         this.lastRaceMutableLiveData = new MutableLiveData<>();
         this.raceRemoteDataSource = raceRemoteDataSource;
         this.raceLocalDataSource = raceLocalDataSource;
+        this.raceRemoteDataSource.setRaceCallback(this);
+        this.raceLocalDataSource.setRaceCallback(this);
     }
 
     @Override
-    public List<WeeklyRace> fetchWeeklyRace(long lastUpdate) {
+    public MutableLiveData<Result> fetchWeeklyRaces(long lastUpdate) {
         if(true) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
-            //TODO fetch from remote raceRemoteDataSource.getWeeklyRace();
+            //TODO fetch from remote
+            raceRemoteDataSource.getWeeklyRaces();
         }else {
             raceLocalDataSource.getWeeklyRaces();
         }
-        return Collections.emptyList();
+        return weeklyRaceMutableLiveData;
     }
 
     @Override
-    public WeeklyRace fetchNextRace(long lastUpdate) {
+    public MutableLiveData<Result> fetchNextRace(long lastUpdate) {
         return null;
     }
 
     @Override
-    public WeeklyRace fetchLastRace(long lastUpdate) {
+    public MutableLiveData<Result> fetchLastRace(long lastUpdate) {
         return null;
     }
 
     @Override
     public void onSuccessFromRemote(RaceAPIResponse weeklyRaceAPIResponse, long lastUpdate) {
+        Log.i(TAG, "onSuccessFromRemote");
+        List<RaceDTO> raceDTOS = weeklyRaceAPIResponse.getRaceTable().getRaces();
+        List<WeeklyRace> weeklyRaceList = new ArrayList<>();
+        for (RaceDTO raceDTO: raceDTOS) {
+            weeklyRaceList.add(WeeklyRaceMapper.toWeeklyRace(raceDTO));
+        }
 
+        //Collections.reverse(weeklyRaceList);
+        raceLocalDataSource.insertWeeklyRaceList(weeklyRaceList);
     }
 
     @Override
@@ -64,6 +78,9 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
     public void onSuccessFromLocal(List<WeeklyRace> weeklyRaceList) {
         Log.i(TAG, "onSuccessFromLocal");
         Result.WeeklyRaceSuccess result = new Result.WeeklyRaceSuccess(weeklyRaceList);
+        for (WeeklyRace weeklyRace: weeklyRaceList) {
+            Log.i(TAG, "WEEKLY RACES:\n " + weeklyRace.getRaceName());
+        }
         weeklyRaceMutableLiveData.postValue(result);
     }
 

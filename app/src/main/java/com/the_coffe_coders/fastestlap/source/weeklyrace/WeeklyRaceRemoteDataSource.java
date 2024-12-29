@@ -22,7 +22,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource{
+public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource {
 
     private final ErgastAPIService ergastAPIService;
 
@@ -94,7 +94,6 @@ public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource{
                 raceCallback.onFailureFromRemote(new Exception(RETROFIT_ERROR));
             }
         });
-
 
 
     }

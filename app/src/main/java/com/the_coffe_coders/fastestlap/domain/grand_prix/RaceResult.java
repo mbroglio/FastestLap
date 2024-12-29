@@ -3,7 +3,7 @@ package com.the_coffe_coders.fastestlap.domain.grand_prix;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 
-public class Result {
+public class RaceResult {
     private String number;
     private String position;
     private String positionText;
@@ -14,7 +14,7 @@ public class Result {
     private String laps;
     private String status;
 
-    public Result(String number, String position, String positionText, String points, Driver driver, Constructor constructor, String grid, String laps, String status) {
+    public RaceResult(String number, String position, String positionText, String points, Driver driver, Constructor constructor, String grid, String laps, String status) {
         this.number = number;
         this.position = position;
         this.positionText = positionText;

@@ -1,10 +1,7 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
 public class Race extends Session {
@@ -13,16 +10,16 @@ public class Race extends Session {
     private String url;
     private String raceName;
     private Circuit Circuit;
-    public List<Result> Results;
+    public List<RaceResult> raceResults;
 
-    public Race(String season, String round, String url, String raceName, Circuit circuit, List<Result> results, String sessionId, Boolean isFinished, Boolean isUnderway, ZonedDateTime startDateTime, ZonedDateTime endDateTime) {
+    public Race(String season, String round, String url, String raceName, Circuit circuit, List<RaceResult> raceResults, String sessionId, Boolean isFinished, Boolean isUnderway, ZonedDateTime startDateTime, ZonedDateTime endDateTime) {
         super(sessionId, isFinished, isUnderway, startDateTime, endDateTime);
         this.season = season;
         this.round = round;
         this.url = url;
         this.raceName = raceName;
         Circuit = circuit;
-        Results = results;
+        this.raceResults = raceResults;
     }
 
     public String getSeason() {
@@ -65,12 +62,12 @@ public class Race extends Session {
         Circuit = circuit;
     }
 
-    public List<Result> getResults() {
-        return Results;
+    public List<RaceResult> getResults() {
+        return raceResults;
     }
 
-    public void setResults(List<Result> results) {
-        Results = results;
+    public void setResults(List<RaceResult> raceResults) {
+        this.raceResults = raceResults;
     }
     /*
     public String getDateInterval() {
