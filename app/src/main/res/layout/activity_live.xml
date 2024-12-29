@@ -25,7 +25,7 @@
             app:navigationIconTint="@color/white"
             app:title="ABU DHABI GRAND PRIX"
             app:titleCentered="true"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_20sp"
+            app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar"
             app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 

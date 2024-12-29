@@ -190,6 +190,6 @@
     <color name="dark_grey">#41413D</color>
     <color name="green">#008000</color>
     <color name="red">#800000</color>
-
+    <color name="purple">#FF00FF</color>
 
 </resources>

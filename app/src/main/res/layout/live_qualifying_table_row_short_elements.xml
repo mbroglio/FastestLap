@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="25dp"
+    android:paddingTop="3dp"
+    android:paddingBottom="3dp"
+    android:background="@color/screen_background_color">
+
+    <LinearLayout
+        android:id="@+id/position_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="start"
+        android:layout_weight="0.27"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/driver_position"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/orbitron_bold"
+            android:gravity="center"
+            android:layout_marginStart="5dp"
+            android:text="1"
+            android:textColor="@color/white">
+
+        </TextView>
+
+        <View
+            android:id="@+id/team_color"
+            android:layout_width="3dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:background="@color/ferrari_f1">
+
+        </View>
+
+        <TextView
+            android:id="@+id/driver_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:fontFamily="@font/orbitron_bold"
+            android:gravity="center"
+            android:text="HAM"
+            android:maxLines="1"
+            android:textColor="@color/white">
+
+        </TextView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/last_lap_layout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_weight="0.265">
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="80dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="3sp"
+            android:layout_marginBottom="3dp"
+            android:backgroundTint="@color/dark_grey"
+            app:strokeColor="@color/dark_grey">
+
+            <TextView
+                android:id="@+id/last_lap_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:fontFamily="@font/orbitron_bold"
+                android:gravity="center"
+                android:text="1:23.456"
+                android:textColor="@color/white"
+                android:textSize="13sp">
+
+            </TextView>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/leader_layout"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_weight="0.25">
+
+        <TextView
+            android:id="@+id/gap_ahead_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:fontFamily="@font/orbitron_regular"
+            android:gravity="center"
+            android:text="+50.234"
+            android:textColor="@color/white"
+            android:textSize="13sp">
+
+        </TextView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/tyre_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.205"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/tyre_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginBottom="3dp"
+            android:src="@drawable/medium_tyre_icon">
+
+        </ImageView>
+
+        <TextView
+            android:id="@+id/tyre_in_use_symbol"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="2dp"
+            android:fontFamily="@font/orbitron_bold"
+            android:text="M"
+            android:textColor="@color/white">
+
+        </TextView>
+
+        <LinearLayout
+            android:id="@+id/lap_layout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.1"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/lap_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/orbitron_bold"
+                android:text="8"
+                android:textColor="@color/white">
+
+            </TextView>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</TableRow>
+

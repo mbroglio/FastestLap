@@ -119,6 +119,11 @@
                     android:id="@+id/race_header_full"
                     layout="@layout/live_race_table_header_full"
                     android:visibility="gone"/>
+
+                <include
+                    android:id="@+id/qualifying_header_short"
+                    layout="@layout/live_qualifying_table_header_short"
+                    android:visibility="gone"/>
             </FrameLayout>
 
         </TableLayout>
