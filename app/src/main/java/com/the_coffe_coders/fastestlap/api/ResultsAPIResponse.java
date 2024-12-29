@@ -18,4 +18,5 @@ public class ResultsAPIResponse extends APIResponse{
     public void setRaceTable(RaceTableDTO RaceTable) {
         this.RaceTable = RaceTable;
     }
+
 }
