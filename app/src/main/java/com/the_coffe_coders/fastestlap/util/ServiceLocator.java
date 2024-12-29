@@ -126,7 +126,13 @@ public class ServiceLocator {
 
             @Override
             public Call<ResponseBody> getLastRaceResults() {
-                return null;
+
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+
+                return retrofit.create(ErgastAPIService.class).getLastRaceResults();
             }
 
             @Override
@@ -136,7 +142,12 @@ public class ServiceLocator {
 
             @Override
             public Call<ResponseBody> getNextRace() {
-                return null;
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+
+                return retrofit.create(ErgastAPIService.class).getNextRace();
             }
 
             @Override
