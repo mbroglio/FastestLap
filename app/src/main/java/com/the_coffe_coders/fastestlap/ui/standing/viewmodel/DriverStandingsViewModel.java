@@ -12,7 +12,6 @@ public class DriverStandingsViewModel extends ViewModel {
     private final DriverRepository driverRepository;
     private final int page;
     private MutableLiveData<Result> driverStandingsLiveData;
-    private MutableLiveData<Result> favoriteNewsListLiveData;
 
     public DriverStandingsViewModel(DriverRepository driverRepository) {
         this.driverRepository = driverRepository;

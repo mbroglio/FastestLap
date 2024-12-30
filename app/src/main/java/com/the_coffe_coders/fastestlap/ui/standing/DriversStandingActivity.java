@@ -34,6 +34,7 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
+import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
@@ -60,10 +61,9 @@ public class DriversStandingActivity extends AppCompatActivity {
     private int dotCount = 0;
     private boolean addingDots = true;
     private boolean driverToProcess = true;
-    DriverStandings driverStandings;
+    private DriverStandings driverStandings;
 
-    static Year year = Year.now();
-    private static final String BASE_URL = "https://api.jolpi.ca/ergast/f1/" + year + "/";
+    private DriverStandingsViewModel driverStandingsViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,9 +96,7 @@ public class DriversStandingActivity extends AppCompatActivity {
 
         LinearLayout driverStanding = findViewById(R.id.driver_standing);
 
-        DriverRepository driverRepository = ServiceLocator.getInstance().getDriverRepository(getApplication(), false);
-
-        MutableLiveData<Result> data = driverRepository.fetchDriversStandings(0);
+        MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
 
 
         data.observe(this, result -> {
@@ -114,11 +112,9 @@ public class DriversStandingActivity extends AppCompatActivity {
                             View driverCard = generateDriverCard(driver, driverId);
                             driverStanding.addView(driverCard);
                         }
-                        /*articleRecyclerAdapter.notifyItemRangeInserted(initialSize, this.articleList.size());
-                        recyclerView.setVisibility(View.VISIBLE);
-                        shimmerLinearLayout.setVisibility(View.GONE);*/
                     } else {
-
+                        Log.i(TAG, "DRIVER STANDINGS ERROR");
+                        hideLoadingScreen();
                     }
                 });
     }
