@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="utf-8"?>
+ <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+     xmlns:tools="http://schemas.android.com/tools"
+     android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/screen_background_color">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:background="@drawable/background_top_bottom_margin_1_dp">
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            tools:ignore="UselessParent">
+
+            <LinearLayout
+                android:id="@+id/driver_name_and_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/driver_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:text="@string/lewis_hamilton"
+                    android:textColor="@color/white"
+                    android:textSize="15sp">
+
+                </TextView>
+
+                <LinearLayout
+                    android:layout_width="@dimen/icon_24_dp"
+                    android:layout_height="@dimen/icon_24_dp"
+                    android:layout_marginStart="5dp"
+                    android:background="@drawable/circle_background_grey">
+
+                    <ImageView
+                        android:id="@+id/driver_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/lewis_hamilton_number">
+
+                    </ImageView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/separator_dash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/driver_name_and_number"
+                android:layout_alignBottom="@id/driver_name_and_number"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_toEndOf="@id/driver_name_and_number"
+                android:fontFamily="@font/orbitron_bold"
+                android:gravity="center"
+                android:text="@string/separator_high_dash"
+                android:textColor="@color/white">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/team_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/driver_name_and_number"
+                android:layout_alignBottom="@id/driver_name_and_number"
+                android:layout_toEndOf="@id/separator_dash"
+                android:fontFamily="@font/orbitron_regular"
+                android:gravity="center"
+                android:text="Mercedes"
+                android:textColor="@color/white">
+
+            </TextView>
+
+            <LinearLayout
+                android:id="@+id/driver_position_and_gap_to_leader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/driver_name_and_number"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:text="Pos: "
+                    android:textColor="@color/white">
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/driver_position"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/orbitron_regular"
+                    android:text="3"
+                    android:textColor="@color/white">
+
+                </TextView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:gravity="center"
+                    android:text="@string/separator_high_dash"
+                    android:textColor="@color/white">
+
+                </TextView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:text="Gap to Leader: "
+                    android:textColor="@color/white">
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/driver_gap_to_leader"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/orbitron_regular"
+                    android:text="+25.456"
+                    android:textColor="@color/white">
+
+                </TextView>
+
+            </LinearLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/driver_image_layout"
+                app:cardBackgroundColor="@color/timer_gray"
+                app:strokeColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/driver_position_and_gap_to_leader"
+                android:layout_marginTop="10dp">
+
+                <ImageView
+                    android:id="@+id/driver_image"
+                    android:layout_width="@dimen/driver_photo_in_card"
+                    android:layout_height="@dimen/driver_photo_in_card"
+                    android:layout_margin="5dp"
+                    android:src="@drawable/hamilton_pic">
+
+                </ImageView>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <RelativeLayout
+                android:id="@+id/driver_lap_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@id/driver_image_layout"
+                android:layout_alignBottom="@id/driver_image_layout"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@id/driver_image_layout"
+                android:gravity="center">
+
+                <LinearLayout
+                    android:id="@+id/best_lap_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/orbitron_bold"
+                        android:text="Best Lap: "
+                        android:textColor="@color/white">
+
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/driver_best_lap_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:fontFamily="@font/orbitron_regular"
+                        android:text="1:15.754"
+                        android:textColor="@color/purple">
+
+                    </TextView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/sectors_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/best_lap_layout"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="S1: "
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/sector_1_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="11dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="26.732"
+                            android:textColor="@color/green">
+
+                        </TextView>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="S2: "
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/sector_2_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="22.542"
+                            android:textColor="@color/yellow">
+
+                        </TextView>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="3sp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="S3: "
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/sector_3_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="5dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="26.732"
+                            android:textColor="@color/purple">
+
+                        </TextView>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/last_lap_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/sectors_layout"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/orbitron_bold"
+                        android:text="Last Lap: "
+                        android:textColor="@color/white">
+
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/driver_last_lap_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:fontFamily="@font/orbitron_regular"
+                        android:text="1:16.754"
+                        android:textColor="@color/yellow">
+
+                    </TextView>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/driver_car_telemetry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/driver_position_and_gap_to_leader"
+                android:layout_alignTop="@id/driver_image_layout"
+                android:layout_marginStart="10dp"
+                android:layout_toEndOf="@id/driver_lap_info">
+
+                <LinearLayout
+                    android:id="@+id/throttle_and_brake_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:baselineAligned="false"
+                    android:layout_alignParentTop="true"
+                    android:layout_centerInParent="true"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="3dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="Throttle"
+                            android:textColor="@color/white"
+                            android:textSize="12sp">
+
+                        </TextView>
+
+                        <ProgressBar
+                            android:id="@+id/throttle_bar"
+                            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="5dp"
+                            android:progressBackgroundTint="@color/green"
+                            android:progressTint="@color/kick_f1"
+                            android:rotation="270">
+
+                        </ProgressBar>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="3dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="Brake"
+                            android:textColor="@color/white"
+                            android:textSize="12sp">
+
+                        </TextView>
+
+                        <ProgressBar
+                            android:id="@+id/brake_bar"
+                            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="50dp"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="5dp"
+                            android:progressBackgroundTint="@color/red"
+                            android:progressTint="@color/ferrari_f1"
+                            android:rotation="270">
+
+                        </ProgressBar>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/gear_and_speed_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/throttle_and_brake_layout"
+                    android:layout_marginTop="5dp"
+                    android:baselineAligned="false"
+                    android:layout_centerInParent="true"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/gear_and_drs_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_marginEnd="5dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="Gear"
+                            android:textColor="@color/white"
+                            android:textSize="13sp">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/driver_car_gear"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="7"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                        <LinearLayout
+                            android:id="@+id/message_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/icon_24_dp"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="5dp"
+                            android:background="@drawable/background_all_margins_filled_green">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginEnd="5dp"
+                                android:gravity="center"
+                                android:text="DRS"
+                                android:textColor="@color/black"
+                                android:textStyle="bold">
+
+                            </TextView>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/speed_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="Speed"
+                            android:textColor="@color/white"
+                            android:textSize="13sp">
+
+                        </TextView>
+
+                        <me.bastanfar.semicirclearcprogressbar.SemiCircleArcProgressBar
+                            android:id="@+id/speed_bar"
+                            app:progressBarColor="@color/kick_f1"
+                            app:progressBarWidth="10"
+                            app:progressPlaceHolderColor="@color/green"
+                            app:progressPlaceHolderWidth="10"
+                            android:layout_width="60dp"
+                            android:layout_height="30dp"
+                            android:layout_gravity="center">
+
+                        </me.bastanfar.semicirclearcprogressbar.SemiCircleArcProgressBar>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="300"
+                            android:textColor="@color/white">
+
+                        </TextView>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/driver_image_layout"
+                android:layout_alignStart="@id/driver_image_layout"
+                android:layout_alignEnd="@id/driver_lap_info"
+                android:layout_alignBottom="@id/driver_car_telemetry"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:background="@color/timer_gray"
+                android:visibility="invisible">
+
+            </View>
+
+        </RelativeLayout>
+
+
+    </LinearLayout>
+
+
+</LinearLayout>
+
+
+
+

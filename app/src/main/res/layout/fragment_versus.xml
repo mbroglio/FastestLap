@@ -1,14 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.live.fragment.VersusFragment">
+    tools:context=".ui.live.fragment.VersusFragment"
+    android:background="@color/screen_background_color">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="versus fragment" />
+        android:scrollbars="none"
+        android:layout_marginTop="@dimen/medium_margin"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp">
 
-</FrameLayout>
+        <LinearLayout
+            android:id="@+id/versus_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/ciao"
+                    layout="@layout/versus_driver_info_layout" />
+
+            </FrameLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+
+
+</LinearLayout>
