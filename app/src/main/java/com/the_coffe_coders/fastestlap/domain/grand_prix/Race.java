@@ -14,8 +14,8 @@ public class Race extends Session {
 
     public ZonedDateTime dateTime;
 
-    public Race(String season, String round, String url, String raceName, Circuit circuit, List<RaceResult> raceResults, String sessionId, Boolean isFinished, Boolean isUnderway, ZonedDateTime startDateTime, ZonedDateTime endDateTime) {
-        super(sessionId, isFinished, isUnderway, startDateTime, endDateTime);
+    public Race(String season, String round, String url, String raceName, Circuit circuit, List<RaceResult> raceResults, String sessionId, Boolean isFinished, Boolean isUnderway, String date, String time) {
+        super(sessionId, isFinished, isUnderway, date, time);
         this.season = season;
         this.round = round;
         this.url = url;

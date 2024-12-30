@@ -14,7 +14,7 @@ public class WeeklyRaceClassic extends WeeklyRace {
     private Practice thirdPractice;
 
     public WeeklyRaceClassic(String season, String round, String url, String raceName, Circuit circuit, String date, String time, Qualifying qualifying, Race finalRace, Practice firstPractice, Practice secondPractice, Practice thirdPractice) {
-        super(season, round, url, raceName, circuit, ZonedDateTime.parse(date + "T" + time + "[UTC]"),qualifying, finalRace, firstPractice);
+        super(season, round, url, raceName, circuit, date, time,qualifying, finalRace, firstPractice);
         this.secondPractice = secondPractice;
         this.thirdPractice = thirdPractice;
     }

@@ -12,13 +12,12 @@ public class Session {
     private ZonedDateTime startDateTime;
     private ZonedDateTime endDateTime;
 
-    public Session(String sessionId, Boolean isFinished, Boolean isUnderway, ZonedDateTime startDateTime, ZonedDateTime endDateTime) {
+    public Session(String sessionId, Boolean isFinished, Boolean isUnderway, String date, String time) {
         this.sessionId = sessionId;
         this.isFinished = isFinished;
         this.isUnderway = isUnderway;
-        this.startDateTime = startDateTime;
-        this.endDateTime = endDateTime;
 
+        setStartDateTime(date, time);
         setTime();
     }
 
@@ -71,7 +70,9 @@ public class Session {
     }
 
     public void setStartDateTime(String date, String time) {
-        this.startDateTime = ZonedDateTime.parse(date + "T" + time + "[UTC]");
+        this.startDateTime = ZonedDateTime.parse(
+                date + "T" + time + "[UTC]"
+        ).withZoneSameInstant(ZoneId.systemDefault());
     }
 
     public void setEndDateTime(ZonedDateTime endDateTime) {
@@ -79,7 +80,6 @@ public class Session {
     }
 
     public void setTime() {
-        startDateTime = startDateTime.withZoneSameInstant(ZoneId.systemDefault());
         this.endDateTime = this.startDateTime.plusMinutes(Constants.SESSION_DURATION.get(sessionId));
     }
 

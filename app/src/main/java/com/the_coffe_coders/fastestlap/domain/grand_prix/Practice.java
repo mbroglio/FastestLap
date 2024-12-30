@@ -5,8 +5,8 @@ import org.threeten.bp.ZonedDateTime;
 public class Practice extends Session {
     private int number;
 
-    public Practice(String sessionId, Boolean isFinished, Boolean isUnderway, ZonedDateTime startDateTime, ZonedDateTime endDateTime, int number) {
-        super(sessionId, isFinished, isUnderway, startDateTime, endDateTime);
+    public Practice(String sessionId, Boolean isFinished, Boolean isUnderway, String date, String time, int number) {
+        super(sessionId, isFinished, isUnderway, date, time);
         this.number = number;
     }
 
