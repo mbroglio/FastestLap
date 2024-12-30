@@ -13,7 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.ui.login.IntroScreen;
+import com.the_coffe_coders.fastestlap.utils.IntroScreen;
 
 public class LoginActivity extends AppCompatActivity {
 

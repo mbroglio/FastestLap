@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.ui.login;
+package com.the_coffe_coders.fastestlap.utils;
 
 import android.content.Context;
 import android.media.MediaPlayer;
