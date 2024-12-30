@@ -19,13 +19,13 @@ public class DriverStandingsViewModel extends ViewModel {
     }
 
     public MutableLiveData<Result> getDriverStandingsLiveData(long lastUpdate) {
-        if(driverStandingsLiveData != null) {
+        if(driverStandingsLiveData == null) {
             fetchDriverStandings(lastUpdate);
         }
         return driverStandingsLiveData;
     }
 
     private void fetchDriverStandings(long lastUpdate) {
-        driverStandingsLiveData = driverRepository.fetchDriversStandings(lastUpdate);
+        this.driverStandingsLiveData = driverRepository.fetchDriversStandings(lastUpdate);
     }
 }

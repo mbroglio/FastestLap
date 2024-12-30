@@ -23,6 +23,7 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import org.threeten.bp.LocalDate;
@@ -37,34 +38,18 @@ public class PastEventsActivity extends AppCompatActivity {
 
     private ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
     private int raceIndex = 1;
-
-    private View loadingScreen;
-    private TextView loadingText;
-    private Handler handler = new Handler();
-    private int dotCount = 0;
-    private boolean addingDots = true;
     private boolean raceToProcess = true;
+
+    LoadingScreen loadingScreen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_past_events);
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
 
-        //loading screen logic
-        loadingScreen = findViewById(R.id.loading_screen);
-        loadingText = findViewById(R.id.loading_text);
-        ImageView loadingWheel = findViewById(R.id.loading_wheel);
-
-        // Start the rotation animation
-        Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
-        loadingWheel.startAnimation(rotateAnimation);
-
-        // Show loading screen initially
-        showLoadingScreen();
-
-        // Start the dots animation
-        handler.post(dotRunnable);
+        loadingScreen.showLoadingScreen();
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
@@ -72,41 +57,10 @@ public class PastEventsActivity extends AppCompatActivity {
         processEvents();
     }
 
-    private void showLoadingScreen() {
-        loadingScreen.setVisibility(View.VISIBLE);
-    }
-
-    private void hideLoadingScreen() {
-        loadingScreen.setVisibility(View.GONE);
-        handler.removeCallbacks(dotRunnable);
-    }
-
-    private Runnable dotRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (addingDots) {
-                dotCount++;
-                if (dotCount == 4) {
-                    addingDots = false;
-                }
-            } else {
-                dotCount--;
-                if (dotCount == 0) {
-                    addingDots = true;
-                }
-            }
-            StringBuilder dots = new StringBuilder();
-            for (int i = 0; i < dotCount; i++) {
-                dots.append(".");
-            }
-            loadingText.setText("LOADING" + dots);
-            handler.postDelayed(this, 500);
-        }
-    };
-
     private void processEvents() {
         Log.i("PastEvent", "Process Event");
         List<WeeklyRace> races = new ArrayList<>();
+        //TODO ADD VIEWMODEL
         MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getApplication(), false).fetchWeeklyRaces(0);
         data.observe(this, result -> {
             if(result.isSuccess()) {
@@ -116,7 +70,7 @@ public class PastEventsActivity extends AppCompatActivity {
                 for (WeeklyRace race: races) {
                     createEventCard(race);
                 }
-                hideLoadingScreen();
+                loadingScreen.hideLoadingScreen();
             }
         });
     }
