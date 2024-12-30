@@ -1,7 +1,5 @@
 package com.the_coffe_coders.fastestlap.util;
 
-import static com.the_coffe_coders.fastestlap.repository.JolpicaServer.CURRENT_YEAR_BASE_URL;
-
 import android.app.Application;
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
@@ -29,6 +27,8 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 public class ServiceLocator {
 
     public static ServiceLocator instance;
+    public static String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
+    public String CURRENT_YEAR_BASE_URL = BASE_URL + "current/";
 
     public static synchronized ServiceLocator getInstance() {
         if (instance == null) {
