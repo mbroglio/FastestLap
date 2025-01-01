@@ -18,6 +18,7 @@
             android:id="@+id/versus_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="vertical">
 
             <FrameLayout
@@ -26,8 +27,17 @@
 
                 <include
                     android:id="@+id/ciao"
-                    layout="@layout/versus_driver_info_layout" />
+                    layout="@layout/versus_driver_info_layout_second_version" />
 
+            </FrameLayout>
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <include
+                    android:id="@+id/ciao_2"
+                    layout="@layout/versus_driver_info_layout_second_version" />
             </FrameLayout>
 
         </LinearLayout>

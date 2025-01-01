@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
 
 import com.the_coffe_coders.fastestlap.R;
@@ -15,6 +16,7 @@ import com.the_coffe_coders.fastestlap.R;
 
 public class RaceControlFragment extends Fragment {
 
+    ;
 
     public RaceControlFragment() {
         // Required empty public constructor
@@ -30,7 +32,10 @@ public class RaceControlFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_race_control, container, false);
+
         LinearLayout raceControlLayout = view.findViewById(R.id.race_control_layout);
+
+
 
         // Inflate race_control_view_entry multiple times and set different layouts visible
         int[] includeIds = {

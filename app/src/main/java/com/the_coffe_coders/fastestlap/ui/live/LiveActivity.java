@@ -2,6 +2,7 @@ package com.the_coffe_coders.fastestlap.ui.live;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,6 +25,7 @@ public class LiveActivity extends AppCompatActivity {
     private MaterialToolbar toolbar;
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
+    private CheckBox fullTelemetryCheckbox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,11 +43,16 @@ public class LiveActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.top_app_bar);
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.view_pager);
+        fullTelemetryCheckbox = findViewById(R.id.full_telemetry_checkbox);
 
 
         ViewPager2 viewPager = findViewById(R.id.view_pager);
         LivePagerAdapter adapter = new LivePagerAdapter(this);
         viewPager.setAdapter(adapter);
+
+
+
+
 
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
@@ -61,6 +68,22 @@ public class LiveActivity extends AppCompatActivity {
                     break;
             }
         }).attach();
+
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                switch (position) {
+                    case 0:
+                        fullTelemetryCheckbox.setVisibility(View.VISIBLE);
+                        break;
+                    case 1:
+                    case 2:
+                        fullTelemetryCheckbox.setVisibility(View.GONE);
+                        break;
+                }
+            }
+        });
     }
 
     public void setFullTelemetryMode(boolean isFullTelemetry) {

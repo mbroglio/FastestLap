@@ -42,7 +42,8 @@ public class LiveEventFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_live_event, container, false);
 
-        fullTelemetryCheckbox = view.findViewById(R.id.full_telemetry_checkbox);
+
+        fullTelemetryCheckbox = requireActivity().findViewById(R.id.full_telemetry_checkbox);
         tableLayout = view.findViewById(R.id.live_table);
         liveTableHeaderShort = view.findViewById(R.id.race_header_short);
         liveTableHeaderFull = view.findViewById(R.id.race_header_full);
@@ -95,7 +96,7 @@ public class LiveEventFragment extends Fragment {
             lastLapTime.setText(String.format("1:%02d.%03d", (int) (Math.random() * 60), (int) (Math.random() * 1000)));
 
             TextView gapAheadText = tableRow.findViewById(R.id.gap_ahead_text);
-            gapAheadText.setText(String.format("+%d.%03d", (int) (Math.random() * 60), (int) (Math.random() * 1000)));
+            gapAheadText.setText(String.format("+1:%d.%03d", (int) (Math.random() * 60), (int) (Math.random() * 1000)));
 
             TextView positionChangeValue = tableRow.findViewById(R.id.position_change_value);
             positionChangeValue.setText(String.valueOf((int) (Math.random() * 10) - 5));
@@ -151,7 +152,7 @@ public class LiveEventFragment extends Fragment {
             intervalTime.setText(String.format("+%d.%03d", (int) (Math.random() * 60), (int) (Math.random() * 1000)));
 
             TextView gapAheadText = tableRow.findViewById(R.id.gap_ahead_text);
-            gapAheadText.setText(String.format("+%d.%03d", (int) (Math.random() * 60), (int) (Math.random() * 1000)));
+            gapAheadText.setText(String.format("+1:%d.%03d", (int) (Math.random() * 60), (int) (Math.random() * 1000)));
 
             TextView positionChangeValue = tableRow.findViewById(R.id.position_change_value);
             positionChangeValue.setText(String.valueOf((int) (Math.random() * 10) - 5));
