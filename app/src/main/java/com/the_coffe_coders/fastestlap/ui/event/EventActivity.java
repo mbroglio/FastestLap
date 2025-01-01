@@ -31,6 +31,7 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
 import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import org.threeten.bp.Year;
@@ -45,15 +46,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EventActivity extends AppCompatActivity {
     private static final String TAG = "EventActivity";
-    private String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
+
+    LoadingScreen loadingScreen;
 
     private String circuitId;
 
-    private View loadingScreen;
-    private TextView loadingText;
-    private Handler handler = new Handler();
-    private int dotCount = 0;
-    private boolean addingDots = true;
     private boolean eventToProcess = true;
 
     private final ZoneId localZone = ZoneId.systemDefault();
@@ -64,35 +61,17 @@ public class EventActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_event);
 
-        //loading screen logic
-        loadingScreen = findViewById(R.id.loading_screen);
-        loadingText = findViewById(R.id.loading_text);
-        ImageView loadingWheel = findViewById(R.id.loading_wheel);
-
-        // Start the rotation animation
-        Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
-        loadingWheel.startAnimation(rotateAnimation);
 
         // Show loading screen initially
-        showLoadingScreen();
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
+        loadingScreen.showLoadingScreen();
         Log.i(TAG, "Loading screen shown");
-
-        // Start the dots animation
-        handler.post(dotRunnable);
 
         circuitId = getIntent().getStringExtra("CIRCUIT_ID");
         Log.i(TAG, "Circui ID: " + circuitId);
 
-        //setDynamicDimensions();
-
-        Year currentYear = Year.now();
-        BASE_URL += currentYear + "/";
-        BASE_URL += "circuits/" + circuitId + "/";
-        Log.i(TAG, "Base URL: " + BASE_URL);
-
-        //getEventInfo();
         processRaceData();
-        hideLoadingScreen();
+        loadingScreen.hideLoadingScreen();
     }
 
     private void processRaceData() {
@@ -102,7 +81,7 @@ public class EventActivity extends AppCompatActivity {
             if(result.isSuccess()) {
                 Log.i("PastEvent", "SUCCESS");
                 races.addAll(((Result.WeeklyRaceSuccess) result).getData());
-                hideLoadingScreen();
+                loadingScreen.hideLoadingScreen();
                 WeeklyRace weeklyRace = races.get(0);
 
                 MaterialToolbar toolbar = findViewById(R.id.topAppBar);
@@ -269,7 +248,7 @@ public class EventActivity extends AppCompatActivity {
         String sessionId;
         for (Session session : sessions) {
             sessionId = session.getSessionId();
-            TextView sessionName = findViewById(Constants.SESSION_NAME_FIELD.get(sessionId));
+            /*TextView sessionName = findViewById(Constants.SESSION_NAME_FIELD.get(sessionId));
             sessionName.setText(Constants.SESSION_NAMES.get(session.getSessionId()));
 
             TextView sessionDay = findViewById(Constants.SESSION_DAY_FIELD.get(sessionId));
@@ -279,15 +258,15 @@ public class EventActivity extends AppCompatActivity {
             if (session.getSessionId().equals("Race"))
                 sessionTime.setText(session.getStartingTime());
             else
-                sessionTime.setText(session.getTime());
+                sessionTime.setText(session.getTime());*/
 
             setChequeredFlag(session);
         }
     }
 
     private void setChequeredFlag(Session session) {
-        if (session.isFinished()) {
-            ImageView flag = findViewById(Constants.SESSION_FLAG_FIELD.get(session.getSessionId()));
+        if (/*session.isFinished()*/true) {
+            /*ImageView flag = findViewById(Constants.SESSION_FLAG_FIELD.get(session.getSessionId()));
             flag.setVisibility(View.VISIBLE);
 
             RelativeLayout currentSession = findViewById(Constants.SESSION_ROW.get(session.getSessionId()));
@@ -298,45 +277,7 @@ public class EventActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     Log.i(TAG, "session clicked");
                 }
-            });
-        }
-    }
-
-    private void showLoadingScreen() {
-        loadingScreen.setVisibility(View.VISIBLE);
-    }
-
-    private void hideLoadingScreen() {
-        loadingScreen.setVisibility(View.GONE);
-        handler.removeCallbacks(dotRunnable);
-    }
-
-    private Runnable dotRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (addingDots) {
-                dotCount++;
-                if (dotCount == 4) {
-                    addingDots = false;
-                }
-            } else {
-                dotCount--;
-                if (dotCount == 0) {
-                    addingDots = true;
-                }
-            }
-            StringBuilder dots = new StringBuilder();
-            for (int i = 0; i < dotCount; i++) {
-                dots.append(".");
-            }
-            loadingText.setText("LOADING" + dots);
-            handler.postDelayed(this, 500);
-        }
-    };
-
-    private void checkIfAllDataLoaded() {
-        if (!eventToProcess) {
-            handler.postDelayed(this::hideLoadingScreen, 500); // 500 milliseconds delay
+            });*/
         }
     }
 }

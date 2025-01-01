@@ -126,6 +126,8 @@ public abstract class WeeklyRace {
     public abstract List<Session> getSessions();
 
     public Session findNextEvent(List<Session> sessions) {
+        if(true)
+            return firstPractice;
         ZonedDateTime currentDateTime = ZonedDateTime.now(ZoneId.systemDefault());
         Session nextSession = null;
         int i = 0;

@@ -17,23 +17,11 @@ import android.widget.TextView;
 
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
-
-
-
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link StandingsFragment#newInstance} factory method to
- * create an instance of this fragment.
-
+import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
+import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
+import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 
 public class StandingsFragment extends Fragment {
-
-    private View loadingScreen;
-    private TextView loadingText;
-    private Handler handler = new Handler();
-    private int dotCount = 0;
-    private boolean addingDots = true;
-    private boolean loading = true;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -45,21 +33,6 @@ public class StandingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_standings, container, false);
-
-        // Loading screen logic
-        loadingScreen = view.findViewById(R.id.loading_screen);
-        loadingText = view.findViewById(R.id.loading_text);
-        ImageView loadingWheel = view.findViewById(R.id.loading_wheel);
-
-        // Start the rotation animation
-        Animation rotateAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.rotate);
-        loadingWheel.startAnimation(rotateAnimation);
-
-        // Show loading screen initially
-        showLoadingScreen();
-
-        // Start the dots animation
-        handler.post(dotRunnable);
 
         MaterialCardView driverCardView = view.findViewById(R.id.drivers_card);
         MaterialCardView teamCardView = view.findViewById(R.id.constructors_card);
@@ -80,42 +53,8 @@ public class StandingsFragment extends Fragment {
             }
         });
 
-        loading = false;
-        hideLoadingScreen();
-
         return view;
 
     }
 
-    private void showLoadingScreen() {
-        loadingScreen.setVisibility(View.VISIBLE);
-    }
-
-    private void hideLoadingScreen() {
-        loadingScreen.setVisibility(View.GONE);
-        handler.removeCallbacks(dotRunnable);
-    }
-
-    private Runnable dotRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (addingDots) {
-                dotCount++;
-                if (dotCount == 4) {
-                    addingDots = false;
-                }
-            } else {
-                dotCount--;
-                if (dotCount == 0) {
-                    addingDots = true;
-                }
-            }
-            StringBuilder dots = new StringBuilder();
-            for (int i = 0; i < dotCount; i++) {
-                dots.append(".");
-            }
-            loadingText.setText("LOADING" + dots);
-            handler.postDelayed(this, 500);
-        }
-    };
-}*/
+}

@@ -5,6 +5,7 @@ import androidx.room.Entity;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZonedDateTime;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,24 +43,27 @@ public class WeeklyRaceClassic extends WeeklyRace {
 
     public String getDateInterval() {
         String fullDate;
-        String startingDate = ""; this.firstPractice.getStartDateTime().toLocalDate().toString();
-        String endingDate = startingDate;//TODO fix
-
-        LocalDate startDate = LocalDate.parse(startingDate);
-        LocalDate endDate = LocalDate.parse(endingDate);
+        LocalDate startDate = this.firstPractice.getStartDateTime().toLocalDate();
+        LocalDate endDate = startDate;//TODO fix
 
         if (startDate.getMonth() != endDate.getMonth()) {
             fullDate = startDate.getDayOfMonth() + " " + startDate.getMonth() + " - " + endDate.getDayOfMonth() + " " + endDate.getMonth();
         } else {
             fullDate = startDate.getDayOfMonth() + " - " + endDate.getDayOfMonth() + " " + startDate.getMonth();
         }
-
         return fullDate;
     }
 
     @Override
     public List<Session> getSessions() {
-        return Collections.emptyList();
+        List<Session> sessions = new ArrayList<>();
+        sessions.add(this.firstPractice);
+        sessions.add(this.secondPractice);
+        sessions.add(this.thirdPractice);
+        sessions.add(this.getQualifying());
+        sessions.add(this.getFinalRace());
+
+        return sessions;
     }
 
     @Override

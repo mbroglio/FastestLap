@@ -65,7 +65,6 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
         for (RaceDTO raceDTO: raceDTOS) {
             weeklyRaceList.add(WeeklyRaceMapper.toWeeklyRace(raceDTO));
         }
-
         //Collections.reverse(weeklyRaceList);
         raceLocalDataSource.insertWeeklyRaceList(weeklyRaceList);
     }

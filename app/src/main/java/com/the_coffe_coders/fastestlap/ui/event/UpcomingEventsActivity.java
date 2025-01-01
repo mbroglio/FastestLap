@@ -1,8 +1,9 @@
 package com.the_coffe_coders.fastestlap.ui.event;
-/*
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -12,59 +13,43 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
+import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
+import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModelFactory;
+import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
+import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
+import com.the_coffe_coders.fastestlap.util.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZonedDateTime;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
 public class UpcomingEventsActivity extends AppCompatActivity {
 
-    private View loadingScreen;
-    private TextView loadingText;
-    private Handler handler = new Handler();
-    private int dotCount = 0;
-    private boolean addingDots = true;
+    LoadingScreen loadingScreen;
     private boolean raceToProcess = true;
+
+    private static final String TAG = "UpcomingEventsActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_upcoming_events);
-
-        //loading screen logic
-        loadingScreen = findViewById(R.id.loading_screen);
-        loadingText = findViewById(R.id.loading_text);
-        ImageView loadingWheel = findViewById(R.id.loading_wheel);
-
-        // Start the rotation animation
-        Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
-        loadingWheel.startAnimation(rotateAnimation);
-
-        // Show loading screen initially
-        showLoadingScreen();
-
-        // Start the dots animation
-        handler.post(dotRunnable);
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
+        loadingScreen.showLoadingScreen();
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
@@ -72,59 +57,21 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         processEvents();
     }
 
-    private void showLoadingScreen() {
-        loadingScreen.setVisibility(View.VISIBLE);
-    }
-
-    private void hideLoadingScreen() {
-        loadingScreen.setVisibility(View.GONE);
-        handler.removeCallbacks(dotRunnable);
-    }
-
-    private Runnable dotRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (addingDots) {
-                dotCount++;
-                if (dotCount == 4) {
-                    addingDots = false;
-                }
-            } else {
-                dotCount--;
-                if (dotCount == 0) {
-                    addingDots = true;
-                }
-            }
-            StringBuilder dots = new StringBuilder();
-            for (int i = 0; i < dotCount; i++) {
-                dots.append(".");
-            }
-            loadingText.setText("LOADING" + dots);
-            handler.postDelayed(this, 500);
-        }
-    };
-
     private void processEvents() {
-    }
-
-    private List<WeeklyRace> extractUpcomingRaces(RaceAPIResponse raceAPIResponse) {
-        ZonedDateTime now = ZonedDateTime.now();
-        //List<WeeklyRace> races = raceAPIResponse.getRaceTable().getRaces();
-        List<WeeklyRace> upcomingRaces = new ArrayList<>();
-
-        for (WeeklyRace weeklyRace : upcomingRaces) {
-            String raceDate = weeklyRace.getDate();
-            String raceTime = weeklyRace.getTime(); // ends with 'Z'
-            ZonedDateTime raceDateTime = ZonedDateTime.parse(raceDate + "T" + raceTime);
-            raceDateTime = raceDateTime.plusMinutes(Constants.SESSION_DURATION.get("Race"));
-
-            // A Race is considered upcoming if it is yet to finish
-            if (now.isBefore(raceDateTime)) {
-                upcomingRaces.add(weeklyRace);
+        EventViewModel eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false))).get(EventViewModel.class);
+        MutableLiveData<Result> data = eventViewModel.getEventsLiveData(0);
+        data.observe(this, result -> {
+            if (result.isSuccess()) {
+                List<WeeklyRace> races = ((Result.WeeklyRaceSuccess) result).getData();
+                Log.i(TAG, "EVENTS SUCCESS" + races.toString());
+                for (WeeklyRace race : races) {
+                    Log.i(TAG, race.getRaceName());
+                    createEventCards(races);
+                }
+                loadingScreen.hideLoadingScreen();
             }
         }
-
-        return upcomingRaces;
+        );
     }
 
     private void createEventCards(List<WeeklyRace> upcomingRaces) {
@@ -143,7 +90,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     private View generateEventCard(WeeklyRace weeklyRace) {
         View eventCard = null;
 
-        if (weeklyRace.isUnderway()) {
+        if (true) {
             eventCard = getLayoutInflater().inflate(R.layout.upcoming_event_live_card, null);
 
             ImageView liveIcon = eventCard.findViewById(R.id.upcoming_event_icon);
@@ -163,12 +110,12 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         gpName.setText(weeklyRace.getRaceName());
 
         TextView gpDate = eventCard.findViewById(R.id.upcoming_date);
-        String fp1Day = String.valueOf(LocalDate.parse(weeklyRace.getFirstPractice().getStartDateTime().toString()).getDayOfMonth());
-        String raceDay = String.valueOf(LocalDate.parse(weeklyRace.getDate()).getDayOfMonth());
+        String fp1Day = String.valueOf(weeklyRace.getFirstPractice().getStartDateTime().getDayOfMonth());
+        String raceDay = String.valueOf(weeklyRace.getDateTime().getDayOfMonth());
         gpDate.setText(fp1Day + " - " + raceDay);
 
         TextView gpMonth = eventCard.findViewById(R.id.upcoming_month);
-        String fp1Month = String.valueOf(LocalDate.parse(weeklyRace.getDate()).getMonth()).substring(0, 3).toUpperCase();
+        String fp1Month = weeklyRace.getDateTime().getMonth().toString().substring(0, 3);
         gpMonth.setText(fp1Month);
 
         eventCard.setOnClickListener(v -> {
@@ -179,4 +126,4 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
         return eventCard;
     }
-}*/
+}

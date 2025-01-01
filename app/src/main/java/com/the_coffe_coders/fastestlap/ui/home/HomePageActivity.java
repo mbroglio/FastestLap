@@ -12,6 +12,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 
 
 import org.threeten.bp.ZoneId;
@@ -20,11 +21,16 @@ public class HomePageActivity extends AppCompatActivity {
     private final String TAG = "HomePageActivity";
     private final ZoneId localZone = ZoneId.systemDefault();
 
+    protected LoadingScreen loadingScreen;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
+
+        //loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
+        //loadingScreen.showLoadingScreen();
 
         MaterialToolbar toolbar = findViewById(R.id.top_app_bar);
         setSupportActionBar(toolbar);
