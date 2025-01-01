@@ -16,52 +16,42 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.MutableLiveData;
+
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.race.Race;
-import com.the_coffe_coders.fastestlap.domain.race.RaceAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.race.Session;
-import com.the_coffe_coders.fastestlap.domain.race_result.Result;
-import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
-import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
+import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
+import com.the_coffe_coders.fastestlap.api.ResultsAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
-import com.the_coffe_coders.fastestlap.utils.Constants;
-import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
+import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import org.threeten.bp.Year;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EventActivity extends AppCompatActivity {
     private static final String TAG = "EventActivity";
-    private String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
-    private ErgastAPI ergastApi;
+
+    LoadingScreen loadingScreen;
+
     private String circuitId;
 
-    private View loadingScreen;
-    private TextView loadingText;
-    private Handler handler = new Handler();
-    private int dotCount = 0;
-    private boolean addingDots = true;
     private boolean eventToProcess = true;
-
-    private final ZoneId localZone = ZoneId.systemDefault();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,130 +59,89 @@ public class EventActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_event);
 
-        //loading screen logic
-        loadingScreen = findViewById(R.id.loading_screen);
-        loadingText = findViewById(R.id.loading_text);
-        ImageView loadingWheel = findViewById(R.id.loading_wheel);
-
-        // Start the rotation animation
-        Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
-        loadingWheel.startAnimation(rotateAnimation);
 
         // Show loading screen initially
-        showLoadingScreen();
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
+        loadingScreen.showLoadingScreen();
         Log.i(TAG, "Loading screen shown");
-
-        // Start the dots animation
-        handler.post(dotRunnable);
 
         circuitId = getIntent().getStringExtra("CIRCUIT_ID");
         Log.i(TAG, "Circui ID: " + circuitId);
 
-        //setDynamicDimensions();
-
-        Year currentYear = Year.now();
-        BASE_URL += currentYear + "/";
-        BASE_URL += "circuits/" + circuitId + "/";
-        Log.i(TAG, "Base URL: " + BASE_URL);
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-
-        ergastApi = retrofit.create(ErgastAPI.class);
-
-        getEventInfo();
+        processRaceData();
+        loadingScreen.hideLoadingScreen();
     }
 
-    private void getEventInfo() {
-        ergastApi.getRaces().enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                Log.i(TAG, "Response: " + response);
-                if (response.isSuccessful() && response.body() != null) {
-                    try {
-                        String responseBody = response.body().string();
-                        JsonObject jsonResponse = new Gson().fromJson(responseBody, JsonObject.class);
-                        JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
+    private void processRaceData() {
+        List<WeeklyRace> races = new ArrayList<>();
+        MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getApplication(), false).fetchWeeklyRaces(0);
+        data.observe(this, result -> {
+            if(result.isSuccess()) {
+                Log.i("PastEvent", "SUCCESS");
+                races.addAll(((Result.WeeklyRaceSuccess) result).getData());
+                loadingScreen.hideLoadingScreen();
+                WeeklyRace weeklyRace = races.get(0);
 
-                        JSONParserUtils parser = new JSONParserUtils(EventActivity.this);
-                        RaceAPIResponse raceSchedule = parser.parseRace(mrdata);
+                MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+                toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+                toolbar.setTitle(weeklyRace.getRaceName().toUpperCase());
 
-                        processRaceData(raceSchedule);
-                        eventToProcess = false;
-                        checkIfAllDataLoaded();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                } else {
-                    Log.e(TAG, "Response body is null");
+                ImageView countryFlag = findViewById(R.id.country_flag);
+                String nation = weeklyRace.getCircuit().getLocation().getCountry();
+                Integer flag = Constants.NATION_COUNTRY_FLAG.get(nation);
+                countryFlag.setImageResource(flag);
+
+                ImageView trackMap = findViewById(R.id.track_outline_image);
+                Integer outline = Constants.EVENT_CIRCUIT.get(circuitId);
+                trackMap.setImageResource(outline);
+
+                TextView roundNumber = findViewById(R.id.round_number);
+                String round = "Round " + weeklyRace.getRound();
+                roundNumber.setText(round);
+
+                TextView seasonYear = findViewById(R.id.year);
+                //seasonYear.setText(raceSchedule.getRaceTable().getSeason());
+                int year = weeklyRace.getDateTime().getYear();
+                seasonYear.setText(year);
+
+                TextView name = findViewById(R.id.gp_name);
+                name.setText(Constants.TRACK_LONG_GP_NAME.get(circuitId));
+
+                setEventImage(circuitId);
+
+                TextView eventDate = findViewById(R.id.event_date);
+                eventDate.setText(weeklyRace.getDateInterval());
+
+                LinearLayout track = findViewById(R.id.track_outline_layout);
+                Log.i(TAG, "Track: " + track);
+                track.setOnClickListener(v -> {
+                    Intent intent = new Intent(EventActivity.this, TrackBioActivity.class);
+                    intent.putExtra("CIRCUIT_ID", circuitId);
+                    Log.i(TAG, "Circuit ID: " + circuitId);
+                    startActivity(intent);
+                });
+
+                List<Session> sessions = weeklyRace.getSessions();
+                Session nextEvent = weeklyRace.findNextEvent(sessions);
+                Boolean underway = false;
+                //Log.i(TAG, "Race Underway: " + weeklyRace.isSomeSessionUnderway());
+                if (/*weeklyRace.isSomeSessionUnderway()*/ true) {
+                    underway = true;
+                    setLiveSession();
                 }
-            }
+                if (nextEvent != null && !underway) {
+                    ZonedDateTime eventDateTime = nextEvent.getStartDateTime();
+                    startCountdown(eventDateTime);
+                } else if (!underway) {
+                    //showResults(raceSchedule);
+                }
 
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable throwable) {
-                Log.e(TAG, "Error fetching data", throwable);
+                createWeekSchedule(sessions);
+
             }
         });
-    }
 
-    private void processRaceData(RaceAPIResponse raceSchedule) {
-        Race race = raceSchedule.getRaceTable().getRaces().get(0);
 
-        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
-        toolbar.setTitle(race.getRaceName().toUpperCase());
-
-        ImageView countryFlag = findViewById(R.id.country_flag);
-        String nation = race.getCircuit().getLocation().getCountry();
-        Integer flag = Constants.NATION_COUNTRY_FLAG.get(nation);
-        countryFlag.setImageResource(flag);
-
-        ImageView trackMap = findViewById(R.id.track_outline_image);
-        Integer outline = Constants.EVENT_CIRCUIT.get(circuitId);
-        trackMap.setImageResource(outline);
-
-        TextView roundNumber = findViewById(R.id.round_number);
-        String round = "Round " + race.getRound();
-        roundNumber.setText(round);
-
-        TextView seasonYear = findViewById(R.id.year);
-        seasonYear.setText(raceSchedule.getRaceTable().getSeason());
-
-        TextView name = findViewById(R.id.gp_name);
-        name.setText(Constants.TRACK_LONG_GP_NAME.get(circuitId));
-
-        setEventImage(circuitId);
-
-        TextView eventDate = findViewById(R.id.event_date);
-        eventDate.setText(race.getDateInterval());
-
-        LinearLayout track = findViewById(R.id.track_outline_layout);
-        Log.i(TAG, "Track: " + track);
-        track.setOnClickListener(v -> {
-            Intent intent = new Intent(EventActivity.this, TrackBioActivity.class);
-            intent.putExtra("CIRCUIT_ID", circuitId);
-            Log.i(TAG, "Circuit ID: " + circuitId);
-            startActivity(intent);
-        });
-
-        List<Session> sessions = race.getSessions();
-        Session nextEvent = race.findNextEvent(sessions);
-        Boolean underway = false;
-        Log.i(TAG, "Race Underway: " + race.isSomeSessionUnderway());
-        if (race.isSomeSessionUnderway()) {
-                underway = true;
-                setLiveSession();
-        }
-        if (nextEvent != null && !underway) {
-            ZonedDateTime eventDateTime = nextEvent.getStartDateTime();
-            startCountdown(eventDateTime);
-        } else if (!underway) {
-            showResults(raceSchedule);
-        }
-
-        createWeekSchedule(sessions);
     }
 
     private void setEventImage(String circuitId) {
@@ -267,45 +216,7 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void processRaceResults(RaceAPIResponse raceSchedule) {
-        String roundNumber = raceSchedule.getRaceTable().getRaces().get(0).getRound();
-        BASE_URL = "https://api.jolpi.ca/ergast/f1/current/" + roundNumber + "/";
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
 
-        ergastApi = retrofit.create(ErgastAPI.class);
-        ergastApi.getResults().enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                Log.i(TAG, "Response: " + response);
-                if (response.isSuccessful() && response.body() != null) {
-                    try {
-                        String responseBody = response.body().string();
-                        JsonObject jsonResponse = new Gson().fromJson(responseBody, JsonObject.class);
-                        JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
-
-                        JSONParserUtils parser = new JSONParserUtils(EventActivity.this);
-                        ResultsAPIResponse raceResult = parser.parseRaceResults(mrdata);
-
-                        if (raceResult.getRaceTable().getRaces().isEmpty()) {
-                            showPendingResults();
-                        } else {
-                            showPodium(raceResult);
-                        }
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                } else {
-                    Log.e(TAG, "Response body is null");
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable throwable) {
-                Log.e(TAG, "Error fetching data", throwable);
-            }
-        });
     }
 
     private void showPendingResults() {
@@ -320,7 +231,7 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void showPodium(ResultsAPIResponse raceResult) {
-        List<Result> results = raceResult.getRaceTable().getRaces().get(0).getResults();
+        /*List<Result> results = raceResult.getRaceTable().getRaces().get(0).getResults();
         for (int i = 0; i < 3; i++) {
             String driverId = results.get(i).getDriver().getDriverId();
             String teamId = results.get(i).getConstructor().getConstructorId();
@@ -330,14 +241,14 @@ public class EventActivity extends AppCompatActivity {
 
             driverName.setText(Constants.DRIVER_FULLNAME.get(driverId));
             teamColor.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
-        }
+        }*/
     }
 
     private void createWeekSchedule(List<Session> sessions) {
         String sessionId;
         for (Session session : sessions) {
             sessionId = session.getSessionId();
-            TextView sessionName = findViewById(Constants.SESSION_NAME_FIELD.get(sessionId));
+            /*TextView sessionName = findViewById(Constants.SESSION_NAME_FIELD.get(sessionId));
             sessionName.setText(Constants.SESSION_NAMES.get(session.getSessionId()));
 
             TextView sessionDay = findViewById(Constants.SESSION_DAY_FIELD.get(sessionId));
@@ -347,15 +258,15 @@ public class EventActivity extends AppCompatActivity {
             if (session.getSessionId().equals("Race"))
                 sessionTime.setText(session.getStartingTime());
             else
-                sessionTime.setText(session.getTime());
+                sessionTime.setText(session.getTime());*/
 
             setChequeredFlag(session);
         }
     }
 
     private void setChequeredFlag(Session session) {
-        if (session.isFinished()) {
-            ImageView flag = findViewById(Constants.SESSION_FLAG_FIELD.get(session.getSessionId()));
+        if (/*session.isFinished()*/true) {
+            /*ImageView flag = findViewById(Constants.SESSION_FLAG_FIELD.get(session.getSessionId()));
             flag.setVisibility(View.VISIBLE);
 
             RelativeLayout currentSession = findViewById(Constants.SESSION_ROW.get(session.getSessionId()));
@@ -366,45 +277,7 @@ public class EventActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     Log.i(TAG, "session clicked");
                 }
-            });
-        }
-    }
-
-    private void showLoadingScreen() {
-        loadingScreen.setVisibility(View.VISIBLE);
-    }
-
-    private void hideLoadingScreen() {
-        loadingScreen.setVisibility(View.GONE);
-        handler.removeCallbacks(dotRunnable);
-    }
-
-    private Runnable dotRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (addingDots) {
-                dotCount++;
-                if (dotCount == 4) {
-                    addingDots = false;
-                }
-            } else {
-                dotCount--;
-                if (dotCount == 0) {
-                    addingDots = true;
-                }
-            }
-            StringBuilder dots = new StringBuilder();
-            for (int i = 0; i < dotCount; i++) {
-                dots.append(".");
-            }
-            loadingText.setText("LOADING" + dots);
-            handler.postDelayed(this, 500);
-        }
-    };
-
-    private void checkIfAllDataLoaded() {
-        if (!eventToProcess) {
-            handler.postDelayed(this::hideLoadingScreen, 500); // 500 milliseconds delay
+            });*/
         }
     }
 }

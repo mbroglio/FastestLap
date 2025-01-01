@@ -15,9 +15,6 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import android.graphics.Typeface;
 import androidx.core.content.res.ResourcesCompat;
@@ -25,9 +22,6 @@ import androidx.core.content.res.ResourcesCompat;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.driver.DriverStanding;
-import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
-import com.the_coffe_coders.fastestlap.ui.event.UpcomingEventsActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 
 public class DriverBioActivity extends AppCompatActivity {

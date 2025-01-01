@@ -67,7 +67,7 @@
     <string name="franco_colapinto">Franco Colapinto</string>
     <string name="oliver_bearman">Oliver Bearman</string>
     <string name="last_race_upper_case">LAST RACE</string>
-    <string name="result">RESULT</string>
+    <string name="raceResult">RESULT</string>
     <string name="rank">Rank:</string>
     <string name="separator_high_dash">-</string>
     <string name="points_upper_case">PTS</string>

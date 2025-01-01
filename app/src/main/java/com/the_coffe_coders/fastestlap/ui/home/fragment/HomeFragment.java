@@ -23,21 +23,11 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStanding;
-import com.the_coffe_coders.fastestlap.domain.driver.DriverStanding;
-import com.the_coffe_coders.fastestlap.domain.driver.StandingsAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.race.Race;
-import com.the_coffe_coders.fastestlap.domain.race.RaceAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.race.Session;
-import com.the_coffe_coders.fastestlap.domain.race_result.ResultsAPIResponse;
-import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
-import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
-import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
-import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
-import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
-import com.the_coffe_coders.fastestlap.utils.Constants;
-import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
+import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZoneId;
@@ -53,25 +43,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class HomeFragment extends Fragment {
     private final String TAG = "HomeFragment";
-    private ErgastAPI ergastAPI;
     private final ZoneId localZone = ZoneId.systemDefault();
 
-    private View loadingScreen;
-    private TextView loadingText;
-    private Handler handler = new Handler();
-    private int dotCount = 0;
-    private boolean addingDots = true;
-    private boolean raceToProcess = true;
-    private boolean nextRaceToProcess = true;
-    private boolean driverToProcess = true;
-    private boolean constructorToProcess = true;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -80,6 +55,8 @@ public class HomeFragment extends Fragment {
     public static HomeFragment newInstance() {
         return new HomeFragment();
     }
+
+    /*
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,21 +68,9 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        // Loading screen logic
-        loadingScreen = view.findViewById(R.id.loading_screen);
-        loadingText = view.findViewById(R.id.loading_text);
-        ImageView loadingWheel = view.findViewById(R.id.loading_wheel);
-
-        // Start the rotation animation
-        Animation rotateAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.rotate);
-        loadingWheel.startAnimation(rotateAnimation);
-
         // Show loading screen initially
-        showLoadingScreen();
-        Log.i(TAG, "Loading screen shown");
+        loadingScreen.showLoadingScreen();
 
-        // Start the dots animation
-        handler.post(dotRunnable);
 
         setLastRaceCard(view);
         setNextSessionCard(view);
@@ -116,49 +81,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void setLastRaceCard(View view) {
-        //String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
-        String BASE_URL = "https://ergast.com/api/f1/";
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        ergastAPI = retrofit.create(ErgastAPI.class);
-
-        ergastAPI.getLastRaceResults().enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                Log.i(TAG, "Response: " + response);
-                if (response.isSuccessful() && response.body() != null) {
-                    try {
-                        String responseBody = response.body().string();
-                        JsonObject jsonObject = new Gson().fromJson(responseBody, JsonObject.class);
-                        JsonObject mrdata = jsonObject.getAsJsonObject("MRData");
-
-                        JSONParserUtils parser = new JSONParserUtils(getContext());
-                        ResultsAPIResponse raceResults = parser.parseRaceResults(mrdata);
-
-                        if (!raceResults.getRaceTable().getRaces().isEmpty()) {
-                            showPodium(view, raceResults);
-                            raceToProcess = false;
-                            checkIfAllDataLoaded();
-                        } else {
-                            loadPendingResultsLayout(view);
-                        }
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                } else {
-                    raceToProcess = false;
-                    checkIfAllDataLoaded();
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                raceToProcess = false;
-                checkIfAllDataLoaded();
-            }
-        });
+        showPodium(view, WeeklyRace raceResults);
     }
 
     private void loadPendingResultsLayout(View view) {
@@ -172,8 +95,8 @@ public class HomeFragment extends Fragment {
         checkIfAllDataLoaded();
     }
 
-    private void showPodium(View view, ResultsAPIResponse raceResults) {
-        com.the_coffe_coders.fastestlap.domain.race_result.Race race = raceResults.getRaceTable().getRaces().get(0);
+    private void showPodium(View view, WeeklyRace raceResults) {
+        Race race = raceResults.getFinalRace();
         String circuitId = race.getCircuit().getCircuitId();
 
         TextView raceName = view.findViewById(R.id.last_race_name);
@@ -183,7 +106,7 @@ public class HomeFragment extends Fragment {
         trackOutline.setImageResource(Constants.EVENT_CIRCUIT.get(circuitId));
 
         TextView raceDate = view.findViewById(R.id.last_race_date);
-        LocalDate date = LocalDate.parse(race.getDate());
+        LocalDate date = race.getStartDateTime().toLocalDate();
         raceDate.setText(String.valueOf(date.getDayOfMonth()));
 
         // Get the first three characters of the month in capital letters
@@ -205,9 +128,9 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void setDriverNames(View view, ResultsAPIResponse raceResults) {
+    private void setDriverNames(View view, WeeklyRace raceResults) {
         for (int i = 0; i < 3; i++) {
-            String driverId = raceResults.getRaceTable().getRaces().get(0).getResults().get(i).getDriver().getDriverId();
+            String driverId = raceResults.getFinalRace().getResults().get(i).getDriver().getDriverId();
             Integer driverFullName = Constants.DRIVER_FULLNAME.get(driverId);
             TextView driver = view.findViewById(Constants.LAST_RACE_DRIVER_NAME.get(i));
             driver.setText(driverFullName);
@@ -255,7 +178,6 @@ public class HomeFragment extends Fragment {
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                 nextRaceToProcess = false;
-                checkIfAllDataLoaded();
             }
         });
 
@@ -265,17 +187,17 @@ public class HomeFragment extends Fragment {
     }
 
     private void processNextRace(View view, RaceAPIResponse raceSchedule) {
-        Race race = raceSchedule.getRaceTable().getRaces().get(0);
+        WeeklyRace weeklyRace = null;
 
         TextView nextRaceName = view.findViewById(R.id.home_next_gp_name);
-        nextRaceName.setText(race.getRaceName());
+        nextRaceName.setText(weeklyRace.getRaceName());
 
         ImageView nextRaceFlag = view.findViewById(R.id.home_next_gp_flag);
-        String nation = race.getCircuit().getLocation().getCountry();
+        String nation = weeklyRace.getCircuit().getLocation().getCountry();
         nextRaceFlag.setImageResource(Constants.NATION_COUNTRY_FLAG.get(nation));
 
-        List<Session> sessions = race.getSessions();
-        Session nextEvent = race.findNextEvent(sessions);
+        List<Session> sessions = weeklyRace.getSessions();
+        Session nextEvent = weeklyRace.findNextEvent(sessions);
         if (nextEvent != null) {
             ZonedDateTime eventDateTime = nextEvent.getStartDateTime();
             startCountdown(view, eventDateTime);
@@ -287,7 +209,7 @@ public class HomeFragment extends Fragment {
         FrameLayout nextSessionCard = view.findViewById(R.id.timer_card_countdown);
         nextSessionCard.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), EventActivity.class);
-            intent.putExtra("CIRCUIT_ID", race.getCircuit().getCircuitId());
+            intent.putExtra("CIRCUIT_ID", weeklyRace.getCircuit().getCircuitId());
             startActivity(intent);
         });
     }
@@ -300,7 +222,6 @@ public class HomeFragment extends Fragment {
         seasonEndedCard.setVisibility(View.VISIBLE);
 
         nextRaceToProcess = false;
-        checkIfAllDataLoaded();
     }
 
     private void startCountdown(View view, ZonedDateTime eventDate) {
@@ -335,55 +256,11 @@ public class HomeFragment extends Fragment {
     }
 
     private void setFavouriteDriverCard(View view) {
-        String BASE_URL = "https://api.jolpi.ca/ergast/f1/current/";
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        ergastAPI = retrofit.create(ErgastAPI.class);
-
-        ergastAPI.getDriverStandings().enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                Log.i(TAG, "Response: " + response);
-                if (response.isSuccessful() && response.body() != null) {
-                    try {
-                        String responseString = response.body().string();
-                        JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
-                        JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
-
-                        JSONParserUtils jsonParserUtils = new JSONParserUtils(getContext());
-                        StandingsAPIResponse standing = jsonParserUtils.parseDriverStandings(mrdata);
-
-                        processStanding(view, standing);
-                        driverToProcess = false;
-                        checkIfAllDataLoaded();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                } else {
-                    driverToProcess = false;
-                    checkIfAllDataLoaded();
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                driverToProcess = false;
-                checkIfAllDataLoaded();
-            }
-        });
+        processStanding(view, new DriverStandingsElement());
     }
 
-    private void processStanding(View view, StandingsAPIResponse standing) {
-        List<DriverStanding> standings = standing.getStandingsTable().getStandingsLists().get(0).getDriverStandings();
-
-        for (DriverStanding standingElement : standings) {
-            if (standingElement.getDriver().getDriverId().equals(Constants.FAVOURITE_DRIVER)) {
-                buildDriverCard(view, standingElement);
-            }
-        }
-
+    private void processStanding(View view, DriverStandingsElement standing) {
+        buildDriverCard(view, standing);
         MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
         driverRank.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), DriversStandingActivity.class);
@@ -392,7 +269,7 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void buildDriverCard(View view, DriverStanding standingElement) {
+    private void buildDriverCard(View view, DriverStandingsElement standingElement) {
         TextView driverName = view.findViewById(R.id.favourite_driver_name);
         driverName.setText(Constants.DRIVER_FULLNAME.get(Constants.FAVOURITE_DRIVER));
 
@@ -424,54 +301,13 @@ public class HomeFragment extends Fragment {
     }
 
     private void setFavouriteConstructorCard(View view) {
-        String BASE_URL = "https://api.jolpi.ca/ergast/f1/current/";
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        ergastAPI = retrofit.create(ErgastAPI.class);
-
-        ergastAPI.getConstructorStandings().enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                Log.i(TAG, "Response: " + response);
-                if (response.isSuccessful() && response.body() != null) {
-                    try {
-                        String responseString = response.body().string();
-                        JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
-                        JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
-
-                        JSONParserUtils jsonParserUtils = new JSONParserUtils(getContext());
-                        com.the_coffe_coders.fastestlap.domain.constructor.StandingsAPIResponse standing = jsonParserUtils.parseConstructorStandings(mrdata);
-
-                        processConstructorStanding(view, standing);
-                        constructorToProcess = false;
-                        checkIfAllDataLoaded();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                } else {
-                    constructorToProcess = false;
-                    checkIfAllDataLoaded();
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                constructorToProcess = false;
-                checkIfAllDataLoaded();
-            }
-        });
+        ConstructorStandingsElement standingsElement = new ConstructorStandingsElement();
+        processConstructorStanding(view, standingsElement);
+        constructorToProcess = false;
     }
 
-    private void processConstructorStanding(View view, com.the_coffe_coders.fastestlap.domain.constructor.StandingsAPIResponse standing) {
-        List<com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStanding> standings = standing.getStandingsTable().getStandingsLists().get(0).getConstructorStandings();
-
-        for (com.the_coffe_coders.fastestlap.domain.constructor.ConstructorStanding standingElement : standings){
-            if(standingElement.getConstructor().getConstructorId().equals(Constants.FAVOURITE_TEAM)){
-                buildConstructorCard(view, standingElement);
-            }
-        }
+    private void processConstructorStanding(View view, ConstructorStandingsElement standing) {
+        buildConstructorCard(view, standing);
 
         MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
         teamRank.setOnClickListener(v -> {
@@ -481,7 +317,7 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void buildConstructorCard(View view, ConstructorStanding standingElement) {
+    private void buildConstructorCard(View view, ConstructorStandingsElement standingElement) {
         TextView constructorName = view.findViewById(R.id.favourite_constructor_name);
         constructorName.setText(standingElement.getConstructor().getName());
 
@@ -510,43 +346,5 @@ public class HomeFragment extends Fragment {
             startActivity(intent);
         });
     }
-
-    private void showLoadingScreen() {
-        loadingScreen.setVisibility(View.VISIBLE);
-    }
-
-    private void hideLoadingScreen() {
-        loadingScreen.setVisibility(View.GONE);
-        handler.removeCallbacks(dotRunnable);
-    }
-
-    private Runnable dotRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (addingDots) {
-                dotCount++;
-                if (dotCount == 4) {
-                    addingDots = false;
-                }
-            } else {
-                dotCount--;
-                if (dotCount == 0) {
-                    addingDots = true;
-                }
-            }
-            StringBuilder dots = new StringBuilder();
-            for (int i = 0; i < dotCount; i++) {
-                dots.append(".");
-            }
-            loadingText.setText("LOADING" + dots);
-            handler.postDelayed(this, 500);
-        }
-    };
-
-    private void checkIfAllDataLoaded() {
-        if (!raceToProcess && !nextRaceToProcess && !driverToProcess && !constructorToProcess) {
-            handler.postDelayed(this::hideLoadingScreen, 500); // 500 milliseconds delay
-        }
-    }
+    */
 }
-

@@ -17,45 +17,34 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
-
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.driver.StandingsAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.driver.DriverStanding;
-import com.the_coffe_coders.fastestlap.ui.ErgastAPI;
+import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
-import com.the_coffe_coders.fastestlap.utils.Constants;
-import com.the_coffe_coders.fastestlap.utils.JSONParserUtils;
+import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
+import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
+import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
-import org.threeten.bp.Year;
-
-import okhttp3.ResponseBody;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
+import java.util.List;
 
 public class DriversStandingActivity extends AppCompatActivity {
 
     private static final String TAG = "DriverCardActivity";
 
-    private View loadingScreen;
-    private TextView loadingText;
-    private Handler handler = new Handler();
-    private int dotCount = 0;
-    private boolean addingDots = true;
-    private boolean driverToProcess = true;
+    private DriverStandings driverStandings;
 
-    static Year year = Year.now();
-    private static final String BASE_URL = "https://api.jolpi.ca/ergast/f1/" + year + "/";
+    private LoadingScreen loadingScreen;
+
+    private DriverStandingsViewModel driverStandingsViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,23 +52,9 @@ public class DriversStandingActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_drivers_standing);
 
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
 
-        //loading screen logic
-        loadingScreen = findViewById(R.id.loading_screen);
-        loadingText = findViewById(R.id.loading_text);
-        ImageView loadingWheel = findViewById(R.id.loading_wheel);
-
-        // Start the rotation animation
-        Animation rotateAnimation = AnimationUtils.loadAnimation(this, R.anim.rotate);
-        loadingWheel.startAnimation(rotateAnimation);
-
-        // Show loading screen initially
-        showLoadingScreen();
-
-        // Start the dots animation
-        handler.post(dotRunnable);
-
-
+        loadingScreen.showLoadingScreen();
         String driverId = getIntent().getStringExtra("DRIVER_ID");
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
@@ -87,91 +62,35 @@ public class DriversStandingActivity extends AppCompatActivity {
 
 
         LinearLayout driverStanding = findViewById(R.id.driver_standing);
-        // Initialize Retrofit
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(ScalarsConverterFactory.create())
-                .build();
 
-        ErgastAPI ergastApi = retrofit.create(ErgastAPI.class);
+        driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverRepository(getApplication(), false))).get(DriverStandingsViewModel.class);
+        MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
 
-        // Make the network request
-        ergastApi.getDriverStandings().enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    try {
-                        String responseString = response.body().string();
-                        JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
-                        JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
 
-                        JSONParserUtils jsonParserUtils = new JSONParserUtils(DriversStandingActivity.this);
-                        StandingsAPIResponse standingsAPIResponse = jsonParserUtils.parseDriverStandings(mrdata);
+        data.observe(this, result -> {
+                    if (result.isSuccess()) {
+                        Log.i(TAG, "DRIVER STANDINGS SUCCESS");
+                        driverStandings = ((Result.DriverStandingsSuccess) result).getData();
 
-                        int total = Integer.parseInt(standingsAPIResponse.getTotal());
-                        for (int i = 0; i < total; i++) {
-                            DriverStanding standingElement = standingsAPIResponse
-                                    .getStandingsTable()
-                                    .getStandingsLists().get(0)
-                                    .getDriverStandings().get(i);
+                        List<DriverStandingsElement> driverList = driverStandings.getDriverStandingsElements();
+                        int initialSize = driverList.size();
+                        loadingScreen.hideLoadingScreen();
 
-                            driverStanding.addView(generateDriverCard(standingElement, driverId));
-
+                        for (DriverStandingsElement driver : driverList) {
+                            View driverCard = generateDriverCard(driver, driverId);
+                            driverStanding.addView(driverCard);
                             View space = new View(DriversStandingActivity.this);
                             space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
                             driverStanding.addView(space);
                         }
-                        driverToProcess = false;
-                        hideLoadingScreen();
-                    } catch (Exception e) {
-                        Log.e(TAG, "Failed to parse JSON response", e);
+                    } else {
+                        Log.i(TAG, "DRIVER STANDINGS ERROR");
+                        loadingScreen.hideLoadingScreen();
                     }
-                } else {
-                    Log.e(TAG, "Response not successful");
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                Log.e(TAG, "Network request failed", t);
-            }
-        });
+                });
     }
 
-    private void showLoadingScreen() {
-        loadingScreen.setVisibility(View.VISIBLE);
-    }
-
-    private void hideLoadingScreen() {
-        loadingScreen.setVisibility(View.GONE);
-        handler.removeCallbacks(dotRunnable);
-    }
-
-    private Runnable dotRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (addingDots) {
-                dotCount++;
-                if (dotCount == 4) {
-                    addingDots = false;
-                }
-            } else {
-                dotCount--;
-                if (dotCount == 0) {
-                    addingDots = true;
-                }
-            }
-            StringBuilder dots = new StringBuilder();
-            for (int i = 0; i < dotCount; i++) {
-                dots.append(".");
-            }
-            loadingText.setText("LOADING" + dots);
-            handler.postDelayed(this, 500);
-        }
-    };
-
-
-    private View generateDriverCard(DriverStanding standingElement, String driverIdToHighlight) {
+    private View generateDriverCard(DriverStandingsElement standingElement, String driverIdToHighlight) {
         // Inflate the team card layout
         View driverCard = getLayoutInflater().inflate(R.layout.driver_card, null);
 
@@ -209,7 +128,6 @@ public class DriversStandingActivity extends AppCompatActivity {
             colorAnimator.setRepeatCount(ValueAnimator.INFINITE); // Repeat 5 times (includes forward and reverse)
             colorAnimator.setRepeatMode(ValueAnimator.REVERSE);
             colorAnimator.start();
-
         }
 
         driverCard.setOnClickListener(v -> {
@@ -217,7 +135,6 @@ public class DriversStandingActivity extends AppCompatActivity {
             intent.putExtra("DRIVER_ID", driverId);
             startActivity(intent);
         });
-
 
         return driverCard;
     }

@@ -15,6 +15,9 @@ retrofit = "2.11.0"
 threetenbp = "1.7.0"
 navigationFragment = "2.8.4"
 navigationUi = "2.8.4"
+roomCommon = "2.6.1"
+roomRuntime = "2.6.1"
+roomCompiler = "2.6.1"
 
 [libraries]
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
@@ -34,6 +37,9 @@ retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit
 threetenbp = { module = "org.threeten:threetenbp", version.ref = "threetenbp" }
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
+room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
+room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "roomRuntime" }
+room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "roomCompiler" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

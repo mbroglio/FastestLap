@@ -20,20 +20,19 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.standing.DriversStandingActivity" />
+        <activity android:name=".ui.event.UpcomingEventsActivity" />
 
         <activity android:name=".ui.standing.ConstructorsStandingActivity" />
+
+        <activity android:name=".ui.standing.DriversStandingActivity" />
 
         <activity android:name=".ui.event.EventActivity" />
 
         <activity android:name=".ui.event.PastEventsActivity" />
-
-        <activity android:name=".ui.event.UpcomingEventsActivity" />
 
         <activity android:name=".ui.bio.TrackBioActivity"/>
 
