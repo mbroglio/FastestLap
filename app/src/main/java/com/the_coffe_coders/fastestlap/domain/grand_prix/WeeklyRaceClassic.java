@@ -41,16 +41,19 @@ public class WeeklyRaceClassic extends WeeklyRace {
         this.thirdPractice = thirdPractice;
     }
 
+    // Could it be moved to WeeklyRace?
     public String getDateInterval() {
         String fullDate;
-        LocalDate startDate = this.firstPractice.getStartDateTime().toLocalDate();
-        LocalDate endDate = startDate;//TODO fix
+
+        ZonedDateTime startDate = this.firstPractice.getStartDateTime();
+        ZonedDateTime endDate = this.getFinalRace().getDateTime();
 
         if (startDate.getMonth() != endDate.getMonth()) {
             fullDate = startDate.getDayOfMonth() + " " + startDate.getMonth() + " - " + endDate.getDayOfMonth() + " " + endDate.getMonth();
         } else {
             fullDate = startDate.getDayOfMonth() + " - " + endDate.getDayOfMonth() + " " + startDate.getMonth();
         }
+
         return fullDate;
     }
 
