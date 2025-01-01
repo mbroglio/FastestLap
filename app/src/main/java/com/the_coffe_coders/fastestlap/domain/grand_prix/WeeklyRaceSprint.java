@@ -46,23 +46,6 @@ public class WeeklyRaceSprint extends WeeklyRace {
         this.sprint = sprint;
     }
 
-    public String getDateInterval() {
-        String fullDate;
-        String startingDate = this.firstPractice.getStartDateTime().toLocalDate().toString();
-        String endingDate = this.firstPractice.getEndDateTime().toLocalDate().toString();
-
-        LocalDate startDate = LocalDate.parse(startingDate);
-        LocalDate endDate = LocalDate.parse(endingDate);
-
-        if (startDate.getMonth() != endDate.getMonth()) {
-            fullDate = startDate.getDayOfMonth() + " " + startDate.getMonth() + " - " + endDate.getDayOfMonth() + " " + endDate.getMonth();
-        } else {
-            fullDate = startDate.getDayOfMonth() + " - " + endDate.getDayOfMonth() + " " + startDate.getMonth();
-        }
-
-        return fullDate;
-    }
-
     public List<Session> getSessions() {
         List<Session> sessions = new ArrayList<>();
 
@@ -71,6 +54,22 @@ public class WeeklyRaceSprint extends WeeklyRace {
         sessions.add(sprint);
 
         return sessions;
+    }
+
+    // Could it be moved to WeeklyRace?
+    public String getDateInterval() {
+        String fullDate;
+
+        ZonedDateTime startDate = this.firstPractice.getStartDateTime();
+        ZonedDateTime endDate = this.getFinalRace().getDateTime();
+
+        if (startDate.getMonth() != endDate.getMonth()) {
+            fullDate = startDate.getDayOfMonth() + " " + startDate.getMonth() + " - " + endDate.getDayOfMonth() + " " + endDate.getMonth();
+        } else {
+            fullDate = startDate.getDayOfMonth() + " - " + endDate.getDayOfMonth() + " " + startDate.getMonth();
+        }
+
+        return fullDate;
     }
 
     public void addSession() {

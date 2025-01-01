@@ -56,8 +56,6 @@ public class EventActivity extends AppCompatActivity {
     private boolean addingDots = true;
     private boolean eventToProcess = true;
 
-    private final ZoneId localZone = ZoneId.systemDefault();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,6 +122,8 @@ public class EventActivity extends AppCompatActivity {
 
                 TextView seasonYear = findViewById(R.id.year);
                 //seasonYear.setText(raceSchedule.getRaceTable().getSeason());
+                int year = weeklyRace.getDateTime().getYear();
+                seasonYear.setText(year);
 
                 TextView name = findViewById(R.id.gp_name);
                 name.setText(Constants.TRACK_LONG_GP_NAME.get(circuitId));
