@@ -2,6 +2,7 @@ package com.the_coffe_coders.fastestlap.ui.live.fragment;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
@@ -13,9 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.ui.live.LiveActivity;
 
@@ -96,7 +99,17 @@ public class LiveEventFragment extends Fragment {
             lastLapTime.setText(String.format("1:%02d.%03d", (int) (Math.random() * 60), (int) (Math.random() * 1000)));
 
             TextView gapAheadText = tableRow.findViewById(R.id.gap_ahead_text);
-            gapAheadText.setText(String.format("+1:%d.%03d", (int) (Math.random() * 60), (int) (Math.random() * 1000)));
+            LinearLayout leaderLayout = tableRow.findViewById(R.id.leader_layout);
+
+            if (i == 10) {
+                gapAheadText.setText("+5.056");
+            } else if (i == 16) {
+                gapAheadText.setText(String.format("+1:%02d.%03d", (int) (Math.random() * 60), (int) (Math.random() * 1000)));
+            } else {
+                gapAheadText.setText(String.format("+%d.%03d", (int) (Math.random() * 60), (int) (Math.random() * 1000)));
+
+            }
+
 
             TextView positionChangeValue = tableRow.findViewById(R.id.position_change_value);
             positionChangeValue.setText(String.valueOf((int) (Math.random() * 10) - 5));
@@ -104,9 +117,9 @@ public class LiveEventFragment extends Fragment {
             if (positionChangeValue.getText().charAt(0) == '-') {
                 positionChangeArrow.setImageResource(R.drawable.down_arrow);
                 positionChangeArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red));
-            } else if (Integer.parseInt(positionChangeValue.getText().toString())>0) {
+            } else if (Integer.parseInt(positionChangeValue.getText().toString()) > 0) {
                 positionChangeArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.green));
-            }else{
+            } else {
                 positionChangeArrow.setImageResource(R.drawable.equals_icon);
                 positionChangeArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.grey_card));
             }
@@ -114,15 +127,15 @@ public class LiveEventFragment extends Fragment {
             TextView tyreInUseSymbol = tableRow.findViewById(R.id.tyre_in_use_symbol);
             tyreInUseSymbol.setText(tyreTypes[(int) (Math.random() * tyreTypes.length)]);
             ImageView tyreInUse = tableRow.findViewById(R.id.tyre_icon);
-            if(tyreInUseSymbol.getText().equals("S")) {
+            if (tyreInUseSymbol.getText().equals("S")) {
                 tyreInUse.setImageResource(R.drawable.soft_tyre_icon);
-            } else if(tyreInUseSymbol.getText().equals("M")) {
+            } else if (tyreInUseSymbol.getText().equals("M")) {
                 tyreInUse.setImageResource(R.drawable.medium_tyre_icon);
-            } else if(tyreInUseSymbol.getText().equals("H")){
+            } else if (tyreInUseSymbol.getText().equals("H")) {
                 tyreInUse.setImageResource(R.drawable.hard_tyre_icon);
-            }else if (tyreInUseSymbol.getText().equals("W")){
+            } else if (tyreInUseSymbol.getText().equals("W")) {
                 tyreInUse.setImageResource(R.drawable.wet_tyre_icon);
-            }else{
+            } else {
                 tyreInUse.setImageResource(R.drawable.intermediate_tyre_icon);
             }
 
@@ -160,15 +173,15 @@ public class LiveEventFragment extends Fragment {
             TextView tyreInUseSymbol = tableRow.findViewById(R.id.tyre_in_use_symbol);
             tyreInUseSymbol.setText(tyreTypes[(int) (Math.random() * tyreTypes.length)]);
             ImageView tyreInUse = tableRow.findViewById(R.id.tyre_icon);
-            if(tyreInUseSymbol.getText().equals("S")) {
+            if (tyreInUseSymbol.getText().equals("S")) {
                 tyreInUse.setImageResource(R.drawable.soft_tyre_icon);
-            } else if(tyreInUseSymbol.getText().equals("M")) {
+            } else if (tyreInUseSymbol.getText().equals("M")) {
                 tyreInUse.setImageResource(R.drawable.medium_tyre_icon);
-            } else if(tyreInUseSymbol.getText().equals("H")){
+            } else if (tyreInUseSymbol.getText().equals("H")) {
                 tyreInUse.setImageResource(R.drawable.hard_tyre_icon);
-            }else if (tyreInUseSymbol.getText().equals("W")){
+            } else if (tyreInUseSymbol.getText().equals("W")) {
                 tyreInUse.setImageResource(R.drawable.wet_tyre_icon);
-            }else{
+            } else {
                 tyreInUse.setImageResource(R.drawable.intermediate_tyre_icon);
             }
 
@@ -182,9 +195,9 @@ public class LiveEventFragment extends Fragment {
             if (positionChangeValue.getText().charAt(0) == '-') {
                 positionChangeArrow.setImageResource(R.drawable.down_arrow);
                 positionChangeArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red));
-            } else if (Integer.parseInt(positionChangeValue.getText().toString())>0) {
+            } else if (Integer.parseInt(positionChangeValue.getText().toString()) > 0) {
                 positionChangeArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.green));
-            }else{
+            } else {
                 positionChangeArrow.setImageResource(R.drawable.equals_icon);
                 positionChangeArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.grey_card));
             }
@@ -193,6 +206,6 @@ public class LiveEventFragment extends Fragment {
     }
 
     private void clearTableRows() {
-        tableLayout.removeViews(1, tableLayout.getChildCount() - 1);
+        tableLayout.removeAllViews();
     }
 }

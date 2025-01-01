@@ -8,7 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="none"
-        android:layout_marginTop="@dimen/medium_margin"
         android:layout_marginStart="@dimen/medium_margin"
         android:layout_marginEnd="@dimen/medium_margin">
 

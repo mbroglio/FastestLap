@@ -103,7 +103,6 @@
             android:layout_gravity="center"
             android:fontFamily="@font/orbitron_regular"
             android:gravity="center"
-            android:text="+50.234"
             android:textColor="@color/white"
             android:textSize="13sp">
 
@@ -115,8 +114,8 @@
         android:id="@+id/position_change"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.145"
-        android:gravity="center"
+        android:layout_weight="0.135"
+        android:gravity="start"
         android:orientation="horizontal">
 
         <ImageView
@@ -138,7 +137,7 @@
             android:layout_gravity="center"
             android:layout_marginStart="3dp"
             android:fontFamily="@font/orbitron_regular"
-            android:text="3"
+            android:text="2"
             android:textColor="@color/white">
 
         </TextView>
@@ -149,8 +148,8 @@
         android:id="@+id/tyre_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="0.205"
-        android:gravity="center"
+        android:layout_weight="0.155"
+        android:gravity="start"
         android:orientation="horizontal">
 
         <ImageView
