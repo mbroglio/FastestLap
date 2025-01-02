@@ -56,13 +56,15 @@ public class PastEventsActivity extends AppCompatActivity {
     private void processEvents() {
         Log.i("PastEvent", "Process Event");
         EventViewModel eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false))).get(EventViewModel.class);
-        MutableLiveData<Result> data = eventViewModel.getPastEventLiveData(0);
+        MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getApplication(), false).fetchWeeklyRaces(0);
         data.observe(this, result -> {
             if(result.isSuccess()) {
                 List<WeeklyRace> races = ((Result.WeeklyRaceSuccess) result).getData();
                 Log.i("PastEvent", "SUCCESS");
                 Collections.reverse(races);
-                for (WeeklyRace race : races) {
+
+                List<WeeklyRace> pastRaces = eventViewModel.extractPastRaces(races);
+                for (WeeklyRace race : pastRaces) {
                     createEventCard(race);
                 }
                 loadingScreen.hideLoadingScreen();

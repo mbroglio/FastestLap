@@ -34,6 +34,7 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZonedDateTime;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class UpcomingEventsActivity extends AppCompatActivity {
@@ -58,33 +59,31 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     }
 
     private void processEvents() {
+        Log.i("PastEvent", "Process Event");
         EventViewModel eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false))).get(EventViewModel.class);
-        MutableLiveData<Result> data = eventViewModel.getUpcomingEventLiveData(0);
+        MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getApplication(), false).fetchWeeklyRaces(0);
         data.observe(this, result -> {
-            if (result.isSuccess()) {
+            if(result.isSuccess()) {
                 List<WeeklyRace> races = ((Result.WeeklyRaceSuccess) result).getData();
-                Log.i(TAG, "EVENTS SUCCESS" + races.toString());
-                for (WeeklyRace race : races) {
-                    Log.i(TAG, race.getRaceName());
-                    createEventCards(races);
+                Log.i("PastEvent", "SUCCESS");
+                Collections.reverse(races);
+
+                List<WeeklyRace> pastRaces = eventViewModel.extractUpcomingRaces(races);
+                for (WeeklyRace race : pastRaces) {
+                    createEventCard(race);
                 }
                 loadingScreen.hideLoadingScreen();
             }
-        }
-        );
+        });
     }
 
-    private void createEventCards(List<WeeklyRace> upcomingRaces) {
+    private void createEventCard(WeeklyRace race) {
         LinearLayout upcomingEvents = findViewById(R.id.upcoming_events_list);
+        upcomingEvents.addView(generateEventCard(race));
 
-        for (WeeklyRace weeklyRace : upcomingRaces) {
-            upcomingEvents.addView(generateEventCard(weeklyRace));
-
-            View space = new View(UpcomingEventsActivity.this);
-            space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
-            upcomingEvents.addView(space);
-        }
-
+        View space = new View(UpcomingEventsActivity.this);
+        space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
+        upcomingEvents.addView(space);
     }
 
     private View generateEventCard(WeeklyRace weeklyRace) {
