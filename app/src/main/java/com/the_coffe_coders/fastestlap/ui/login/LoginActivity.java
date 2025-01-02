@@ -15,6 +15,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.util.IntroScreen;
 
+import java.util.Objects;
+
 public class LoginActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginFragment";
@@ -58,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
         builder.setView(dialogView);
 
         AlertDialog dialog = builder.create();
-        dialog.getWindow().setBackgroundDrawableResource(R.drawable.dialog_background);
+        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(R.drawable.dialog_background);
 
         Button submitButton = dialogView.findViewById(R.id.submit_button);
         EditText emailEditText = dialogView.findViewById(R.id.textInputEmail);
