@@ -50,7 +50,7 @@ public class EventViewModel extends ViewModel {
         return upcomingEventLiveData;
     }
 
-    private List<WeeklyRace> extractUpcomingRaces(List<WeeklyRace> races) {
+    public List<WeeklyRace> extractUpcomingRaces(List<WeeklyRace> races) {
         List<WeeklyRace> upcomingRaces = new ArrayList<>();
 
         for (WeeklyRace weeklyRace : races) {
@@ -63,7 +63,7 @@ public class EventViewModel extends ViewModel {
         return upcomingRaces;
     }
 
-    private List<WeeklyRace> extractPastRaces(List<WeeklyRace> races) {
+    public List<WeeklyRace> extractPastRaces(List<WeeklyRace> races) {
         List<WeeklyRace> pastRaces = new ArrayList<>();
 
         for (WeeklyRace weeklyRace : races) {
