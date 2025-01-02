@@ -11,7 +11,6 @@ public class Race extends Session {
     private String raceName;
     private Circuit Circuit;
     public List<RaceResult> raceResults;
-
     public ZonedDateTime dateTime;
 
     public Race(String season, String round, String url, String raceName, Circuit circuit, List<RaceResult> raceResults, String sessionId, Boolean isFinished, Boolean isUnderway, String date, String time) {

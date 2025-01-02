@@ -3,13 +3,9 @@ package com.the_coffe_coders.fastestlap.ui.event.viewmodel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
-import com.the_coffe_coders.fastestlap.util.Constants;
-
-import org.threeten.bp.ZonedDateTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,16 +51,11 @@ public class EventViewModel extends ViewModel {
     }
 
     private List<WeeklyRace> extractUpcomingRaces(List<WeeklyRace> races) {
-        ZonedDateTime now = ZonedDateTime.now();
-
         List<WeeklyRace> upcomingRaces = new ArrayList<>();
 
         for (WeeklyRace weeklyRace : races) {
-            ZonedDateTime raceDateTime = weeklyRace.getDateTime();
-            raceDateTime = raceDateTime.plusMinutes(Constants.SESSION_DURATION.get("Race"));
-
             // A Race is considered upcoming if it is yet to finish
-            if (now.isBefore(raceDateTime)) {
+            if (!weeklyRace.isWeekFinished()) {
                 upcomingRaces.add(weeklyRace);
             }
         }
@@ -72,4 +63,16 @@ public class EventViewModel extends ViewModel {
         return upcomingRaces;
     }
 
+    private List<WeeklyRace> extractPastRaces(List<WeeklyRace> races) {
+        List<WeeklyRace> pastRaces = new ArrayList<>();
+
+        for (WeeklyRace weeklyRace : races) {
+            // A Race is considered upcoming if it is yet to finish
+            if (weeklyRace.isWeekFinished()) {
+                pastRaces.add(weeklyRace);
+            }
+        }
+
+        return pastRaces;
+    }
 }

@@ -170,6 +170,11 @@ public abstract class WeeklyRace {
         return false;
     }
 
+    public boolean isWeekFinished() {
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
+        return now.isAfter(this.getFinalRace().getEndDateTime());
+    }
+
     public Practice getFirstPractice() {
         return this.firstPractice;
     }

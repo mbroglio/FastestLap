@@ -2,11 +2,8 @@ package com.the_coffe_coders.fastestlap.ui.event;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -14,23 +11,22 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
-import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
+import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
+import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
-import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -59,32 +55,20 @@ public class PastEventsActivity extends AppCompatActivity {
 
     private void processEvents() {
         Log.i("PastEvent", "Process Event");
-        List<WeeklyRace> races = new ArrayList<>();
-        //TODO ADD VIEWMODEL
-        MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getApplication(), false).fetchWeeklyRaces(0);
+        EventViewModel eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false))).get(EventViewModel.class);
+        MutableLiveData<Result> data = eventViewModel.getPastEventLiveData(0);
         data.observe(this, result -> {
             if(result.isSuccess()) {
+                List<WeeklyRace> races = ((Result.WeeklyRaceSuccess) result).getData();
                 Log.i("PastEvent", "SUCCESS");
-                races.addAll(((Result.WeeklyRaceSuccess) result).getData());
                 Collections.reverse(races);
-                for (WeeklyRace race: races) {
+                for (WeeklyRace race : races) {
                     createEventCard(race);
                 }
                 loadingScreen.hideLoadingScreen();
             }
         });
     }
-
-    private boolean isPast(WeeklyRace race) {
-        /*String raceDate = race.getStartDateTime().toString();
-        String raceTime = race.getTime(); // ends with 'Z'
-        ZonedDateTime raceDateTime = ZonedDateTime.parse(raceDate + "T" + raceTime);
-        raceDateTime = raceDateTime.plusMinutes(Constants.SESSION_DURATION.get("Race"));
-
-        return now.isAfter(raceDateTime);*/
-        return true;
-    }
-
 
     private void createEventCard(WeeklyRace race) {
         LinearLayout pastEvents = findViewById(R.id.past_events_list);
@@ -97,14 +81,15 @@ public class PastEventsActivity extends AppCompatActivity {
 
     private View generateEventCard(WeeklyRace race) {
         View eventCard = getLayoutInflater().inflate(R.layout.past_event_card, null);
-        ZonedDateTime zonedDateTime = race.getDateTime();
+
+        ZonedDateTime raceDateTime = race.getDateTime();
+
         TextView day = eventCard.findViewById(R.id.past_date);
-        String dayString = zonedDateTime.getDayOfMonth() + "";
+        String dayString = raceDateTime.getDayOfMonth() + "";
         day.setText(dayString);
 
         TextView month = eventCard.findViewById(R.id.past_month);
-        //Es: mar, may, etc
-        String monthString = zonedDateTime.getMonth().toString().substring(0, 3);
+        String monthString = raceDateTime.getMonth().toString().substring(0, 3); //Ex: JAN, FEB, etc
         month.setText(monthString);
 
         ImageView trackOutline = eventCard.findViewById(R.id.past_track_outline);
@@ -115,14 +100,8 @@ public class PastEventsActivity extends AppCompatActivity {
 
         TextView gpName = eventCard.findViewById(R.id.past_gp_name);
         gpName.setText(race.getRaceName());
-        /*
-        List<RaceResult> raceResults = race.getFinalRace().getResults();
-        for (int i = 0; i < 3; i++) {
-            RaceResult raceResult = raceResults.get(i);
 
-            TextView driverName = eventCard.findViewById(Constants.PAST_RACE_DRIVER_NAME.get(i));
-            driverName.setText(Constants.DRIVER_FULLNAME.get(raceResult.getDriver().getDriverId()));
-        }*/
+        generatePodium(eventCard, race);
 
         Log.i("PastEvent", "gpName: " + race.getRaceName());
         eventCard.setOnClickListener(v -> {
@@ -131,5 +110,15 @@ public class PastEventsActivity extends AppCompatActivity {
             startActivity(intent);
         });
         return eventCard;
+    }
+
+    private void generatePodium(View eventCard, WeeklyRace race) {
+        List<RaceResult> raceResults = race.getFinalRace().getResults();
+
+        for (int i = 0; i < 3; i++) {
+            RaceResult raceResult = raceResults.get(i);
+            TextView driverName = eventCard.findViewById(Constants.PAST_RACE_DRIVER_NAME.get(i));
+            driverName.setText(Constants.DRIVER_FULLNAME.get(raceResult.getDriver().getDriverId()));
+        }
     }
 }

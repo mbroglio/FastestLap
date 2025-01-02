@@ -59,7 +59,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
     private void processEvents() {
         EventViewModel eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false))).get(EventViewModel.class);
-        MutableLiveData<Result> data = eventViewModel.getEventsLiveData(0);
+        MutableLiveData<Result> data = eventViewModel.getUpcomingEventLiveData(0);
         data.observe(this, result -> {
             if (result.isSuccess()) {
                 List<WeeklyRace> races = ((Result.WeeklyRaceSuccess) result).getData();

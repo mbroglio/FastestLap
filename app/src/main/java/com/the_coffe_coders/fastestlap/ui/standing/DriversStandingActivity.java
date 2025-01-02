@@ -125,7 +125,7 @@ public class DriversStandingActivity extends AppCompatActivity {
             ValueAnimator colorAnimator = ObjectAnimator.ofInt(driverCard, "backgroundColor", startColor, endColor);
             colorAnimator.setDuration(1000); // Duration in milliseconds
             colorAnimator.setEvaluator(new ArgbEvaluator());
-            colorAnimator.setRepeatCount(ValueAnimator.INFINITE); // Repeat 5 times (includes forward and reverse)
+            colorAnimator.setRepeatCount(5); // Repeat 5 times (includes forward and reverse)
             colorAnimator.setRepeatMode(ValueAnimator.REVERSE);
             colorAnimator.start();
         }

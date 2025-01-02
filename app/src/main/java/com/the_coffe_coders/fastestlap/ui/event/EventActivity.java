@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -21,8 +20,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.api.ResultsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
@@ -122,15 +121,12 @@ public class EventActivity extends AppCompatActivity {
                     ZonedDateTime eventDateTime = nextEvent.getStartDateTime();
                     startCountdown(eventDateTime);
                 } else if (!underway) {
-                    fetchRaceResults();
+                    showResults(weeklyRace);
                 }
 
                 createWeekSchedule(sessions);
-
             }
         });
-
-
     }
 
     private void setEventImage() {
@@ -184,19 +180,7 @@ public class EventActivity extends AppCompatActivity {
         }.start();
     }
 
-    private void fetchRaceResults() {
-        MutableLiveData<Result> resultsData = ServiceLocator.getInstance().getRaceRepository(getApplication(), false).fetchWeeklyRaces(0);
-        resultsData.observe(this, result -> {
-            if (result.isSuccess()) {
-                showResults(result);
-            } else {
-                // Handle the error case
-                Log.e(TAG, "Failed to fetch race results");
-            }
-        });
-    }
-
-    private void showResults(Result raceResults) {
+    private void showResults(WeeklyRace weeklyRace) {
         View countdownView = findViewById(R.id.timer_card_countdown);
         View resultsView = findViewById(R.id.timer_card_results);
         View pendingResultsView = findViewById(R.id.timer_card_pending_results);
@@ -207,14 +191,26 @@ public class EventActivity extends AppCompatActivity {
         resultsView.setVisibility(View.VISIBLE);
 
         // You can add logic here to populate the results view with actual data
-        processRaceResults(raceResults);
+        processRaceResults(weeklyRace);
 
         // Set podium cricuit image
         ImageView trackOutline = findViewById(R.id.track_outline_image);
         trackOutline.setImageResource(Constants.EVENT_CIRCUIT.get(circuitId));
     }
 
-    private void processRaceResults(Result raceResults) {
+    private void processRaceResults(WeeklyRace raceResults) {
+        List<RaceResult> podium = raceResults.getFinalRace().getResults();
+
+        for (int i = 0; i < 3; i++) {
+            String driverId = podium.get(i).getDriver().getDriverId();
+            String teamId = podium.get(i).getConstructor().getConstructorId();
+
+            LinearLayout teamColor = findViewById(Constants.PODIUM_TEAM_COLOR.get(i));
+            TextView driverName = findViewById(Constants.PODIUM_DRIVER_NAME.get(i));
+
+            driverName.setText(Constants.DRIVER_FULLNAME.get(driverId));
+            teamColor.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+        }
     }
 
     private void showPendingResults() {
@@ -226,20 +222,6 @@ public class EventActivity extends AppCompatActivity {
         pendingResultsView.setVisibility(View.VISIBLE);
         countdownView.setVisibility(View.GONE);
         resultsView.setVisibility(View.GONE);
-    }
-
-    private void showPodium(ResultsAPIResponse raceResult) {
-        /*List<Result> results = raceResult.getRaceTable().getRaces().get(0).getResults();
-        for (int i = 0; i < 3; i++) {
-            String driverId = results.get(i).getDriver().getDriverId();
-            String teamId = results.get(i).getConstructor().getConstructorId();
-
-            LinearLayout teamColor = findViewById(Constants.PODIUM_TEAM_COLOR.get(i));
-            TextView driverName = findViewById(Constants.PODIUM_DRIVER_NAME.get(i));
-
-            driverName.setText(Constants.DRIVER_FULLNAME.get(driverId));
-            teamColor.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
-        }*/
     }
 
     private void createWeekSchedule(List<Session> sessions) {
