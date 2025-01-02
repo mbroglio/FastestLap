@@ -91,7 +91,7 @@ public class Session {
     }
 
     public String getStartingTime() {
-        return startDateTime.toLocalTime().toString();
+        return getStartDateTime().toLocalTime().toString();
     }
 
     @Override

@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -16,15 +15,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.api.ResultsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
@@ -34,15 +30,11 @@ import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
-import org.threeten.bp.Year;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class EventActivity extends AppCompatActivity {
     private static final String TAG = "EventActivity";
@@ -100,14 +92,12 @@ public class EventActivity extends AppCompatActivity {
                 roundNumber.setText(round);
 
                 TextView seasonYear = findViewById(R.id.year);
-                //seasonYear.setText(raceSchedule.getRaceTable().getSeason());
-                int year = weeklyRace.getDateTime().getYear();
-                seasonYear.setText(year);
+                seasonYear.setText(weeklyRace.getDateTime().getYear());
 
                 TextView name = findViewById(R.id.gp_name);
                 name.setText(Constants.TRACK_LONG_GP_NAME.get(circuitId));
 
-                setEventImage(circuitId);
+                setEventImage();
 
                 TextView eventDate = findViewById(R.id.event_date);
                 eventDate.setText(weeklyRace.getDateInterval());
@@ -124,8 +114,7 @@ public class EventActivity extends AppCompatActivity {
                 List<Session> sessions = weeklyRace.getSessions();
                 Session nextEvent = weeklyRace.findNextEvent(sessions);
                 Boolean underway = false;
-                //Log.i(TAG, "Race Underway: " + weeklyRace.isSomeSessionUnderway());
-                if (/*weeklyRace.isSomeSessionUnderway()*/ true) {
+                if (weeklyRace.isUnderway()) {
                     underway = true;
                     setLiveSession();
                 }
@@ -133,7 +122,7 @@ public class EventActivity extends AppCompatActivity {
                     ZonedDateTime eventDateTime = nextEvent.getStartDateTime();
                     startCountdown(eventDateTime);
                 } else if (!underway) {
-                    //showResults(raceSchedule);
+                    fetchRaceResults();
                 }
 
                 createWeekSchedule(sessions);
@@ -144,7 +133,7 @@ public class EventActivity extends AppCompatActivity {
 
     }
 
-    private void setEventImage(String circuitId) {
+    private void setEventImage() {
         Integer eventImage = Constants.EVENT_PICTURE.get(circuitId);
         Drawable picture = ContextCompat.getDrawable(this, eventImage);
         picture.setAlpha(76);
@@ -154,7 +143,6 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void setLiveSession() {
-        FrameLayout liveSessionContainer = findViewById(R.id.session_status_card_container);
         View liveSession = findViewById(R.id.event_live_card);
         View noLiveSession = findViewById(R.id.event_not_live_card);
 
@@ -196,8 +184,19 @@ public class EventActivity extends AppCompatActivity {
         }.start();
     }
 
-    private void showResults(RaceAPIResponse raceSchedule) {
-        FrameLayout eventCardContainer = findViewById(R.id.event_card_container);
+    private void fetchRaceResults() {
+        MutableLiveData<Result> resultsData = ServiceLocator.getInstance().getRaceRepository(getApplication(), false).fetchWeeklyRaces(0);
+        resultsData.observe(this, result -> {
+            if (result.isSuccess()) {
+                showResults(result);
+            } else {
+                // Handle the error case
+                Log.e(TAG, "Failed to fetch race results");
+            }
+        });
+    }
+
+    private void showResults(Result raceResults) {
         View countdownView = findViewById(R.id.timer_card_countdown);
         View resultsView = findViewById(R.id.timer_card_results);
         View pendingResultsView = findViewById(R.id.timer_card_pending_results);
@@ -208,15 +207,14 @@ public class EventActivity extends AppCompatActivity {
         resultsView.setVisibility(View.VISIBLE);
 
         // You can add logic here to populate the results view with actual data
-        processRaceResults(raceSchedule);
+        processRaceResults(raceResults);
 
         // Set podium cricuit image
         ImageView trackOutline = findViewById(R.id.track_outline_image);
         trackOutline.setImageResource(Constants.EVENT_CIRCUIT.get(circuitId));
     }
 
-    private void processRaceResults(RaceAPIResponse raceSchedule) {
-
+    private void processRaceResults(Result raceResults) {
     }
 
     private void showPendingResults() {
@@ -246,27 +244,28 @@ public class EventActivity extends AppCompatActivity {
 
     private void createWeekSchedule(List<Session> sessions) {
         String sessionId;
+
         for (Session session : sessions) {
             sessionId = session.getSessionId();
-            /*TextView sessionName = findViewById(Constants.SESSION_NAME_FIELD.get(sessionId));
+            TextView sessionName = findViewById(Constants.SESSION_NAME_FIELD.get(sessionId));
             sessionName.setText(Constants.SESSION_NAMES.get(session.getSessionId()));
 
             TextView sessionDay = findViewById(Constants.SESSION_DAY_FIELD.get(sessionId));
             sessionDay.setText(Constants.SESSION_DAY.get(session.getSessionId()));
 
             TextView sessionTime = findViewById(Constants.SESSION_TIME_FIELD.get(sessionId));
-            if (session.getSessionId().equals("Race"))
+            if (sessionId.equals("Race"))
                 sessionTime.setText(session.getStartingTime());
             else
-                sessionTime.setText(session.getTime());*/
+                sessionTime.setText(session.getTime());
 
             setChequeredFlag(session);
         }
     }
 
     private void setChequeredFlag(Session session) {
-        if (/*session.isFinished()*/true) {
-            /*ImageView flag = findViewById(Constants.SESSION_FLAG_FIELD.get(session.getSessionId()));
+        if (session.isFinished()) {
+            ImageView flag = findViewById(Constants.SESSION_FLAG_FIELD.get(session.getSessionId()));
             flag.setVisibility(View.VISIBLE);
 
             RelativeLayout currentSession = findViewById(Constants.SESSION_ROW.get(session.getSessionId()));
@@ -277,7 +276,7 @@ public class EventActivity extends AppCompatActivity {
                 public void onClick(View view) {
                     Log.i(TAG, "session clicked");
                 }
-            });*/
+            });
         }
     }
 }

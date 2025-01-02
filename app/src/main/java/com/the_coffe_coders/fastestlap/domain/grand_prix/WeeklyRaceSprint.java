@@ -52,24 +52,10 @@ public class WeeklyRaceSprint extends WeeklyRace {
         sessions.add(firstPractice);
         sessions.add(sprintQualifying);
         sessions.add(sprint);
+        sessions.add(this.getQualifying());
+        sessions.add(this.getFinalRace());
 
         return sessions;
-    }
-
-    // Could it be moved to WeeklyRace?
-    public String getDateInterval() {
-        String fullDate;
-
-        ZonedDateTime startDate = this.firstPractice.getStartDateTime();
-        ZonedDateTime endDate = this.getFinalRace().getDateTime();
-
-        if (startDate.getMonth() != endDate.getMonth()) {
-            fullDate = startDate.getDayOfMonth() + " " + startDate.getMonth() + " - " + endDate.getDayOfMonth() + " " + endDate.getMonth();
-        } else {
-            fullDate = startDate.getDayOfMonth() + " - " + endDate.getDayOfMonth() + " " + startDate.getMonth();
-        }
-
-        return fullDate;
     }
 
     public void addSession() {

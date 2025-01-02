@@ -21,7 +21,6 @@ public abstract class WeeklyRace {
     protected Practice firstPractice;
     private Qualifying Qualifying;
     private Race finalRace;
-    //private Sprint Sprint;
 
     protected WeeklyRace(String season, String round, String url, String raceName, Circuit circuit, String date, String time, Qualifying qualifying, Race finalRace, Practice firstPractice) {
         this.season = season;
@@ -93,6 +92,21 @@ public abstract class WeeklyRace {
         ).withZoneSameInstant(ZoneId.systemDefault());
     }
 
+    public String getDateInterval() {
+        String fullDate;
+
+        ZonedDateTime startDate = this.firstPractice.getStartDateTime();
+        ZonedDateTime endDate = this.getFinalRace().getDateTime();
+
+        if (startDate.getMonth() != endDate.getMonth()) {
+            fullDate = startDate.getDayOfMonth() + " " + startDate.getMonth() + " - " + endDate.getDayOfMonth() + " " + endDate.getMonth();
+        } else {
+            fullDate = startDate.getDayOfMonth() + " - " + endDate.getDayOfMonth() + " " + startDate.getMonth();
+        }
+
+        return fullDate;
+    }
+
     public void setFirstPractice(Practice firstPractice) {
         this.firstPractice = firstPractice;
     }
@@ -121,16 +135,11 @@ public abstract class WeeklyRace {
         this.uid = uid;
     }
 
-    public abstract String getDateInterval();
-
     public abstract List<Session> getSessions();
 
     public Session findNextEvent(List<Session> sessions) {
-        if(true)
-            return firstPractice;
         ZonedDateTime currentDateTime = ZonedDateTime.now(ZoneId.systemDefault());
         Session nextSession = null;
-        int i = 0;
 
         for (Session session : sessions) {
             if (currentDateTime.isAfter(session.getStartDateTime()) && currentDateTime.isBefore(session.getEndDateTime())) {
