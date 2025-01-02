@@ -14,7 +14,6 @@ import com.the_coffe_coders.fastestlap.source.weeklyrace.BaseWeeklyRaceLocalData
 import com.the_coffe_coders.fastestlap.source.weeklyrace.BaseWeeklyRaceRemoteDataSource;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class RaceRepository implements IRaceRepository, RaceResponseCallback {

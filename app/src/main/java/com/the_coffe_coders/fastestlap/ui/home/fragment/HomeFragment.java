@@ -3,7 +3,6 @@ package com.the_coffe_coders.fastestlap.ui.home.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,16 +17,26 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
+import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
+import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
+import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZoneId;
@@ -44,8 +53,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeFragment extends Fragment {
-    private final String TAG = "HomeFragment";
-    private final ZoneId localZone = ZoneId.systemDefault();
+    private final String TAG = HomeFragment.class.getSimpleName();
+
+    LoadingScreen loadingScreen;
 
 
     public HomeFragment() {
@@ -55,8 +65,6 @@ public class HomeFragment extends Fragment {
     public static HomeFragment newInstance() {
         return new HomeFragment();
     }
-
-    /*
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,10 +89,19 @@ public class HomeFragment extends Fragment {
     }
 
     private void setLastRaceCard(View view) {
-        showPodium(view, WeeklyRace raceResults);
+        MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchLastRace(0);
+        data.observe(getViewLifecycleOwner(), result -> {
+            if(result.isSuccess()) {
+                WeeklyRace raceResult = ((Result.WeeklyRaceSuccess) result).getData().get(0); // TODO: fix index requirement
+                Log.i("PastEvent", "SUCCESS");
+
+
+                showPodium(view, raceResult);
+            }
+        });
     }
 
-    private void loadPendingResultsLayout(View view) {
+    /*private void loadPendingResultsLayout(View view) {
         View pendingResults = view.findViewById(R.id.pending_last_race_results);
         View results = view.findViewById(R.id.last_race_results);
 
@@ -93,10 +110,10 @@ public class HomeFragment extends Fragment {
 
         raceToProcess = false;
         checkIfAllDataLoaded();
-    }
+    }*/
 
-    private void showPodium(View view, WeeklyRace raceResults) {
-        Race race = raceResults.getFinalRace();
+    private void showPodium(View view, WeeklyRace raceResult) {
+        Race race = raceResult.getFinalRace();
         String circuitId = race.getCircuit().getCircuitId();
 
         TextView raceName = view.findViewById(R.id.last_race_name);
@@ -118,7 +135,7 @@ public class HomeFragment extends Fragment {
         String round = "Round " + race.getRound();
         roundNumber.setText(round);
 
-        setDriverNames(view, raceResults);
+        setDriverNames(view, raceResult);
 
         MaterialCardView resultCard = view.findViewById(R.id.past_event_result);
         resultCard.setOnClickListener(v -> {
@@ -139,65 +156,33 @@ public class HomeFragment extends Fragment {
 
 
     private void setNextSessionCard(View view) {
-        String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
-        ergastAPI = retrofit.create(ErgastAPI.class);
+        MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchNextRace(0);
+        data.observe(getViewLifecycleOwner(), result -> {
+            if(result.isSuccess()) {
+                WeeklyRace nextRace = ((Result.WeeklyRaceSuccess) result).getData().get(0); // TODO: fix index requirement
+                Log.i("PastEvent", "SUCCESS");
 
-        ergastAPI.getNextRace().enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                Log.i(TAG, "Response: " + response);
-                if (response.isSuccessful() && response.body() != null) {
-                    try {
-                        String responseBody = response.body().string();
-                        JsonObject jsonObject = new Gson().fromJson(responseBody, JsonObject.class);
-                        JsonObject mrdata = jsonObject.getAsJsonObject("MRData");
 
-                        JSONParserUtils parser = new JSONParserUtils(getContext());
-                        RaceAPIResponse raceSchedule = parser.parseRace(mrdata);
-
-                        if (!raceSchedule.getRaceTable().getRaces().isEmpty()) {
-                            processNextRace(view, raceSchedule);
-                            nextRaceToProcess = false;
-                            checkIfAllDataLoaded();
-                        } else {
-                            setSeasonEnded(view);
-                        }
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                } else {
-                    nextRaceToProcess = false;
-                    checkIfAllDataLoaded();
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                nextRaceToProcess = false;
+                processNextRace(view, nextRace);
             }
         });
 
+        // CHECK IF CORRECT
         ImageView iconImageView = view.findViewById(R.id.live_icon);
         Animation pulseAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.pulse_static);
         iconImageView.startAnimation(pulseAnimation);
     }
 
-    private void processNextRace(View view, RaceAPIResponse raceSchedule) {
-        WeeklyRace weeklyRace = null;
-
+    private void processNextRace(View view, WeeklyRace nextRace) {
         TextView nextRaceName = view.findViewById(R.id.home_next_gp_name);
-        nextRaceName.setText(weeklyRace.getRaceName());
+        nextRaceName.setText(nextRace.getRaceName());
 
         ImageView nextRaceFlag = view.findViewById(R.id.home_next_gp_flag);
-        String nation = weeklyRace.getCircuit().getLocation().getCountry();
+        String nation = nextRace.getCircuit().getLocation().getCountry();
         nextRaceFlag.setImageResource(Constants.NATION_COUNTRY_FLAG.get(nation));
 
-        List<Session> sessions = weeklyRace.getSessions();
-        Session nextEvent = weeklyRace.findNextEvent(sessions);
+        List<Session> sessions = nextRace.getSessions();
+        Session nextEvent = nextRace.findNextEvent(sessions);
         if (nextEvent != null) {
             ZonedDateTime eventDateTime = nextEvent.getStartDateTime();
             startCountdown(view, eventDateTime);
@@ -209,12 +194,12 @@ public class HomeFragment extends Fragment {
         FrameLayout nextSessionCard = view.findViewById(R.id.timer_card_countdown);
         nextSessionCard.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), EventActivity.class);
-            intent.putExtra("CIRCUIT_ID", weeklyRace.getCircuit().getCircuitId());
+            intent.putExtra("CIRCUIT_ID", nextRace.getCircuit().getCircuitId());
             startActivity(intent);
         });
     }
 
-    private void setSeasonEnded(View view) {
+    /*private void setSeasonEnded(View view) {
         View timerCard = view.findViewById(R.id.timer);
         View seasonEndedCard = view.findViewById(R.id.season_ended);
 
@@ -222,7 +207,7 @@ public class HomeFragment extends Fragment {
         seasonEndedCard.setVisibility(View.VISIBLE);
 
         nextRaceToProcess = false;
-    }
+    }*/
 
     private void startCountdown(View view, ZonedDateTime eventDate) {
         LinearLayout liveIconLayout = view.findViewById(R.id.timer_live_layout);
@@ -255,6 +240,7 @@ public class HomeFragment extends Fragment {
         }.start();
     }
 
+    // I'd like to use the driverID as string to get the driver details
     private void setFavouriteDriverCard(View view) {
         processStanding(view, new DriverStandingsElement());
     }
@@ -346,5 +332,4 @@ public class HomeFragment extends Fragment {
             startActivity(intent);
         });
     }
-    */
 }
