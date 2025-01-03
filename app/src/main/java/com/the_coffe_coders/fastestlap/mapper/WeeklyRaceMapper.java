@@ -1,10 +1,17 @@
 package com.the_coffe_coders.fastestlap.mapper;
 
+import android.util.Log;
+
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRaceClassic;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRaceSprint;
 import com.the_coffe_coders.fastestlap.dto.RaceDTO;
+import com.the_coffe_coders.fastestlap.dto.ResultDTO;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class WeeklyRaceMapper {
     public static WeeklyRace toWeeklyRace(RaceDTO raceDTO) {
@@ -30,12 +37,15 @@ public class WeeklyRaceMapper {
         finalRace.setCircuit(CircuitMapper.toCircuit(raceDTO.getCircuit()));
         finalRace.setStartDateTime(raceDTO.getDate(), raceDTO.getTime());
         finalRace.setEndDateTime();
-        /*
-        List<RaceResult> results = new ArrayList<>();
+
+        /*List<RaceResult> results = new ArrayList<>();
         for (ResultDTO resultDTO: raceDTO.getResults()) {
             results.add(SessionMapper.toResult(resultDTO));
         }
-        finalRace.setResults(results);*/
+        finalRace.setResults(results);
+        */
+
+
         weeklyRace.setFinalRace(finalRace);
         return weeklyRace;
     }

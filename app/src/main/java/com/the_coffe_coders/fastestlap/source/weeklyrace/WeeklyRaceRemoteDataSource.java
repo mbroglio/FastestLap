@@ -49,7 +49,6 @@ public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource {
                     }
                     JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
                     JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
-
                     JSONParserUtils jsonParserUtils = new JSONParserUtils();
                     RaceAPIResponse raceAPIsponse = jsonParserUtils.parseRace(mrdata);
 

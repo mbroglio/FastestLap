@@ -24,6 +24,7 @@ import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
+import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
@@ -84,7 +85,7 @@ public class PastEventsActivity extends AppCompatActivity {
     private View generateEventCard(WeeklyRace race) {
         View eventCard = getLayoutInflater().inflate(R.layout.past_event_card, null);
 
-        ZonedDateTime raceDateTime = race.getDateTime();
+        LocalDateTime raceDateTime = race.getDateTime();
 
         TextView day = eventCard.findViewById(R.id.past_date);
         String dayString = raceDateTime.getDayOfMonth() + "";

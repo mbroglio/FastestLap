@@ -27,6 +27,15 @@ public class SessionMapper {
     }
 
     public static RaceResult toResult(ResultDTO resultDTO) {
-        return new RaceResult(resultDTO.getNumber(), resultDTO.getPosition(), resultDTO.getPositionText(), resultDTO.getPoints(), DriverMapper.toDriver(resultDTO.getDriver()), ConstructorMapper.toConstructor(resultDTO.getConstructor()), resultDTO.getGrid(), resultDTO.getLaps(), resultDTO.getStatus());
+        RaceResult raceResult = new RaceResult();
+        raceResult.setPosition(resultDTO.getPosition());
+        raceResult.setPoints(resultDTO.getPoints());
+        raceResult.setConstructor(ConstructorMapper.toConstructor(resultDTO.getConstructor()));
+        raceResult.setDriver(DriverMapper.toDriver(resultDTO.getDriver()));
+        raceResult.setLaps(resultDTO.getLaps());
+        raceResult.setGrid(resultDTO.getGrid());
+        raceResult.setStatus(resultDTO.getStatus());
+        raceResult.setPoints(resultDTO.getPoints());
+        return raceResult;
     }
 }

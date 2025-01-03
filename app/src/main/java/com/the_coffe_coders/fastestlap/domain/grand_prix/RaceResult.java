@@ -4,34 +4,26 @@ import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 
 public class RaceResult {
-    private String number;
     private String position;
-    private String positionText;
     private String points;
-    private Driver Driver;
-    private Constructor Constructor;
+    private Driver driver;
+    private Constructor constructor;
     private String grid;
     private String laps;
     private String status;
 
-    public RaceResult(String number, String position, String positionText, String points, Driver driver, Constructor constructor, String grid, String laps, String status) {
-        this.number = number;
+    public RaceResult(String position, String points, Driver driver, Constructor constructor, String grid, String laps, String status) {
         this.position = position;
-        this.positionText = positionText;
         this.points = points;
-        Driver = driver;
-        Constructor = constructor;
+        this.driver = driver;
+        this.constructor = constructor;
         this.grid = grid;
         this.laps = laps;
         this.status = status;
     }
 
-    public String getNumber() {
-        return number;
-    }
+    public RaceResult() {
 
-    public void setNumber(String number) {
-        this.number = number;
     }
 
     public String getPosition() {
@@ -40,14 +32,6 @@ public class RaceResult {
 
     public void setPosition(String position) {
         this.position = position;
-    }
-
-    public String getPositionText() {
-        return positionText;
-    }
-
-    public void setPositionText(String positionText) {
-        this.positionText = positionText;
     }
 
     public String getPoints() {
@@ -59,19 +43,19 @@ public class RaceResult {
     }
 
     public Driver getDriver() {
-        return Driver;
+        return driver;
     }
 
     public void setDriver(Driver driver) {
-        Driver = driver;
+        this.driver = driver;
     }
 
     public Constructor getConstructor() {
-        return Constructor;
+        return constructor;
     }
 
     public void setConstructor(Constructor constructor) {
-        Constructor = constructor;
+        this.constructor = constructor;
     }
 
     public String getGrid() {
