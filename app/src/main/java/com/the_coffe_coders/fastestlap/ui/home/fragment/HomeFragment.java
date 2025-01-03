@@ -15,16 +15,15 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.card.MaterialCardView;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
@@ -34,6 +33,8 @@ import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
+import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
+import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
@@ -42,15 +43,7 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
-import java.io.IOException;
 import java.util.List;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class HomeFragment extends Fragment {
     private final String TAG = HomeFragment.class.getSimpleName();
@@ -242,16 +235,23 @@ public class HomeFragment extends Fragment {
 
     // I'd like to use the driverID as string to get the driver details
     private void setFavouriteDriverCard(View view) {
-        processStanding(view, new DriverStandingsElement());
-    }
+        DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
+        MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
 
-    private void processStanding(View view, DriverStandingsElement standing) {
-        buildDriverCard(view, standing);
-        MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
-        driverRank.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), DriversStandingActivity.class);
-            intent.putExtra("DRIVER_ID", Constants.FAVOURITE_DRIVER);
-            startActivity(intent);
+
+        data.observe(getViewLifecycleOwner(), result -> {
+            if (result.isSuccess()) {
+                Log.i(TAG, "DRIVER STANDINGS SUCCESS");
+
+                DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
+                List<DriverStandingsElement> driversList = driverStandings.getDriverStandingsElements();
+
+                DriverStandingsElement favouriteDriver = driverStandingsViewModel.getDriverStandingsElement(driversList, Constants.FAVOURITE_DRIVER);
+                buildDriverCard(view, favouriteDriver);
+            } else {
+                Log.i(TAG, "DRIVER STANDINGS ERROR");
+                loadingScreen.hideLoadingScreen();
+            }
         });
     }
 
@@ -284,12 +284,18 @@ public class HomeFragment extends Fragment {
             intent.putExtra("DRIVER_ID", Constants.FAVOURITE_DRIVER);
             startActivity(intent);
         });
+
+        MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
+        driverRank.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), DriversStandingActivity.class);
+            intent.putExtra("DRIVER_ID", Constants.FAVOURITE_DRIVER);
+            startActivity(intent);
+        });
     }
 
     private void setFavouriteConstructorCard(View view) {
         ConstructorStandingsElement standingsElement = new ConstructorStandingsElement();
         processConstructorStanding(view, standingsElement);
-        constructorToProcess = false;
     }
 
     private void processConstructorStanding(View view, ConstructorStandingsElement standing) {

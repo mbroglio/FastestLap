@@ -4,7 +4,11 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
+import com.the_coffe_coders.fastestlap.util.Constants;
+
+import java.util.List;
 
 public class DriverStandingsViewModel extends ViewModel {
     private static final String TAG = DriverStandingsViewModel.class.getSimpleName();
@@ -27,5 +31,15 @@ public class DriverStandingsViewModel extends ViewModel {
 
     private void fetchDriverStandings(long lastUpdate) {
         this.driverStandingsLiveData = driverRepository.fetchDriversStandings(lastUpdate);
+    }
+
+    public DriverStandingsElement getDriverStandingsElement(List<DriverStandingsElement> driversList, String driverID) {
+        for (DriverStandingsElement driver : driversList) {
+            if (driver.getDriver().getDriverId().equals(driverID)) {
+                return driver;
+            }
+        }
+
+        return null;
     }
 }
