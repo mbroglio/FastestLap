@@ -29,13 +29,12 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
-import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
-import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
@@ -295,7 +294,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void setFavouriteConstructorCard(View view) {
-        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
+        // FIX: The implementation with the ViewModel is not working
+
+        /*ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
         MutableLiveData<Result> data = constructorStandingsViewModel.getConstructorStandingsLiveData(0);//TODO get last update from shared preferences
 
         if(data != null){
@@ -313,10 +314,27 @@ public class HomeFragment extends Fragment {
                     loadingScreen.hideLoadingScreen();
                 }
             });
-        }
-        else{
-            Log.i(TAG, "CONSTRUCTOR STANDINGS ERROR");
-        }
+        }*/
+
+        ConstructorRepository constructorRepository = ServiceLocator.getInstance().getConstructorRepository(getActivity().getApplication(), false);
+        MutableLiveData<Result> liveData = constructorRepository.fetchConstructorStandings(0);
+        Log.i(TAG, "Constructor Standings: " + liveData);
+        liveData.observe(getViewLifecycleOwner(), result -> {
+            if (result instanceof Result.ConstructorStandingsSuccess) {
+                Result.ConstructorStandingsSuccess constructorStandingsSuccess = (Result.ConstructorStandingsSuccess) result;
+                ConstructorStandings constructorStandings = constructorStandingsSuccess.getData();
+                Log.i(TAG, "Constructor Standings: " + constructorStandings);
+                for (ConstructorStandingsElement standingElement : constructorStandings.getConstructorStandings()) {
+                    if (standingElement.getConstructor().getConstructorId().equals(Constants.FAVOURITE_TEAM)) {
+                        buildConstructorCard(view, standingElement);
+                        break;
+                    }
+                }
+            } else if (result instanceof Result.Error) {
+                Result.Error error = (Result.Error) result;
+                Log.e(TAG, "Error: " + error.getMessage());
+            }
+        });
     }
 
     private void buildConstructorCard(View view, ConstructorStandingsElement standingElement) {
