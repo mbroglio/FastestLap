@@ -42,6 +42,7 @@ import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import org.threeten.bp.LocalDate;
+import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
@@ -179,12 +180,12 @@ public class HomeFragment extends Fragment {
         List<Session> sessions = nextRace.getSessions();
         Session nextEvent = nextRace.findNextEvent(sessions);
         if (nextEvent != null) {
-            ZonedDateTime eventDateTime = nextEvent.getStartDateTime();
+            LocalDateTime eventDateTime = nextEvent.getStartDateTime();
             startCountdown(view, eventDateTime);
         }
 
         TextView sessionType = view.findViewById(R.id.next_session_type);
-        sessionType.setText(Constants.SESSION_NAMES.get(nextEvent.getSessionId()));
+        sessionType.setText(Constants.SESSION_NAMES.get(nextEvent.getClass().getSimpleName()));
 
         FrameLayout nextSessionCard = view.findViewById(R.id.timer_card_countdown);
         nextSessionCard.setOnClickListener(v -> {
@@ -204,10 +205,10 @@ public class HomeFragment extends Fragment {
         nextRaceToProcess = false;
     }*/
 
-    private void startCountdown(View view, ZonedDateTime eventDate) {
+    private void startCountdown(View view, LocalDateTime eventDate) {
         LinearLayout liveIconLayout = view.findViewById(R.id.timer_live_layout);
         liveIconLayout.setVisibility(View.GONE);
-        long millisUntilStart = eventDate.toInstant().toEpochMilli() - ZonedDateTime.now(ZoneId.of("UTC")).toInstant().toEpochMilli();
+        long millisUntilStart = ZonedDateTime.of(eventDate, ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis();
         new CountDownTimer(millisUntilStart, 1000) {
             TextView days_counter = view.findViewById(R.id.next_days_counter);
             TextView hours_counter = view.findViewById(R.id.next_hours_counter);

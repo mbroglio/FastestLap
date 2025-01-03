@@ -29,6 +29,7 @@ import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
+import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
@@ -118,7 +119,7 @@ public class EventActivity extends AppCompatActivity {
                     setLiveSession();
                 }
                 if (nextEvent != null && !underway) {
-                    ZonedDateTime eventDateTime = nextEvent.getStartDateTime();
+                    LocalDateTime eventDateTime = nextEvent.getStartDateTime();
                     startCountdown(eventDateTime);
                 } else if (!underway) {
                     showResults(weeklyRace);
@@ -151,8 +152,8 @@ public class EventActivity extends AppCompatActivity {
         liveIcon.startAnimation(pulse);
     }
 
-    private void startCountdown(ZonedDateTime eventDate) {
-        long millisUntilStart = eventDate.toInstant().toEpochMilli() - ZonedDateTime.now(ZoneId.of("UTC")).toInstant().toEpochMilli();
+    private void startCountdown(LocalDateTime eventDate) {
+        long millisUntilStart = ZonedDateTime.of(eventDate, ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis();
         new CountDownTimer(millisUntilStart, 1000) {
             TextView days_counter = findViewById(R.id.next_days_counter);
             TextView hours_counter = findViewById(R.id.next_hours_counter);
@@ -228,12 +229,12 @@ public class EventActivity extends AppCompatActivity {
         String sessionId;
 
         for (Session session : sessions) {
-            sessionId = session.getSessionId();
+            sessionId = session.getClass().getSimpleName();
             TextView sessionName = findViewById(Constants.SESSION_NAME_FIELD.get(sessionId));
-            sessionName.setText(Constants.SESSION_NAMES.get(session.getSessionId()));
+            sessionName.setText(Constants.SESSION_NAMES.get(sessionId));
 
             TextView sessionDay = findViewById(Constants.SESSION_DAY_FIELD.get(sessionId));
-            sessionDay.setText(Constants.SESSION_DAY.get(session.getSessionId()));
+            sessionDay.setText(Constants.SESSION_DAY.get(sessionId));
 
             TextView sessionTime = findViewById(Constants.SESSION_TIME_FIELD.get(sessionId));
             if (sessionId.equals("Race"))
@@ -246,11 +247,13 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void setChequeredFlag(Session session) {
+        String sessionId = session.getClass().getSimpleName();
+
         if (session.isFinished()) {
-            ImageView flag = findViewById(Constants.SESSION_FLAG_FIELD.get(session.getSessionId()));
+            ImageView flag = findViewById(Constants.SESSION_FLAG_FIELD.get(sessionId));
             flag.setVisibility(View.VISIBLE);
 
-            RelativeLayout currentSession = findViewById(Constants.SESSION_ROW.get(session.getSessionId()));
+            RelativeLayout currentSession = findViewById(Constants.SESSION_ROW.get(sessionId));
             currentSession.setClickable(true);
             currentSession.setFocusable(true);
             currentSession.setOnClickListener(new View.OnClickListener() {
