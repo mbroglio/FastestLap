@@ -30,10 +30,10 @@ public class ConstructorStandingsViewModel extends ViewModel {
     }
 
     public MutableLiveData<Result> getConstructorStandingsLiveData(long lastUpdate) {
-        if (constructorStandingsLiveData != null) {
-            Log.i(TAG, "getConstructorStandingsLiveData");
-            fetchConstructorStandings(lastUpdate);
-        }
+
+        Log.i(TAG, "getConstructorStandingsLiveData");
+        fetchConstructorStandings(lastUpdate);
+
         return constructorStandingsLiveData;
     }
 

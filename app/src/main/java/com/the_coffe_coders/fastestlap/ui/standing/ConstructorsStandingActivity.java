@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
@@ -26,6 +27,8 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsEle
 import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
+import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
+import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
@@ -59,8 +62,9 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
         LinearLayout teamStanding = findViewById(R.id.team_standing);
 
-        ConstructorRepository constructorRepository = ServiceLocator.getInstance().getConstructorRepository(getApplication(), false);
-        MutableLiveData<Result> liveData = constructorRepository.fetchConstructorStandings(0);
+        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorRepository(getApplication(), false))).get(ConstructorStandingsViewModel.class);
+        MutableLiveData<Result> liveData = constructorStandingsViewModel.getConstructorStandingsLiveData(0);
+
         Log.i(TAG, "Constructor Standings: " + liveData);
         liveData.observe(this, result -> {
             if (result instanceof Result.ConstructorStandingsSuccess) {

@@ -65,12 +65,10 @@ public class ConstructorRepository implements IConstructorRepository, Constructo
 
     public MutableLiveData<Result> fetchConstructorStandings(long lastUpdate) {
         long currentTime = System.currentTimeMillis();
+        Log.i(TAG, "fetchConstructorStandings");
 
-        Log.i(TAG, "FETCH CONSTRUCTOR STANDINGS METHOD");
-        if(isOutdate) { //currentTime - lastUpdate > FRESH_TIMEOUT
-            Log.i(TAG, "fetchConstructorStandings");
+        if(true) { //currentTime - lastUpdate > FRESH_TIMEOUT
             constructorRemoteDataSource.getConstructor();
-            isOutdate = false;
         } else {
             constructorLocalDataSource.getConstructor();
         }
@@ -81,7 +79,7 @@ public class ConstructorRepository implements IConstructorRepository, Constructo
     public MutableLiveData<Result> fetchConstructor(String constructorId, long lastUpdate) {
         long currentTime = System.currentTimeMillis();
 
-        if(true) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT
+        if(isOutdate) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT
             constructorRemoteDataSource.getConstructor();
         } else {
             constructorLocalDataSource.getConstructor();
@@ -109,6 +107,7 @@ public class ConstructorRepository implements IConstructorRepository, Constructo
         Log.i("onSuccessFromLocalConstructor", "CONSTRUCTOR STANDINGS: " + constructorStandings);
         Result.ConstructorStandingsSuccess result = new Result.ConstructorStandingsSuccess(constructorStandings);
         constructorStandingsMutableLiveData.postValue(result);
+        isOutdate = false;
     }
 
     @Override
