@@ -66,6 +66,7 @@ public class ConstructorRepository implements IConstructorRepository, Constructo
 
         Log.i(TAG, "FETCH CONSTRUCTOR STANDINGS METHOD");
         if(true) { //currentTime - lastUpdate > FRESH_TIMEOUT
+            Log.i(TAG, "fetchConstructorStandings");
             constructorRemoteDataSource.getConstructor();
         } else {
             constructorLocalDataSource.getConstructor();

@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
@@ -33,6 +34,8 @@ import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
+import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
+import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
@@ -70,11 +73,12 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         // Show loading screen initially
-        loadingScreen.showLoadingScreen();
+        /*loadingScreen = new LoadingScreen(getActivity().getWindow().getDecorView(), getActivity());
+        loadingScreen.showLoadingScreen();*/
 
 
-        setLastRaceCard(view);
-        setNextSessionCard(view);
+        //setLastRaceCard(view);
+        //setNextSessionCard(view);
         setFavouriteDriverCard(view);
         setFavouriteConstructorCard(view);
 
@@ -87,7 +91,6 @@ public class HomeFragment extends Fragment {
             if(result.isSuccess()) {
                 WeeklyRace raceResult = ((Result.WeeklyRaceSuccess) result).getData().get(0); // TODO: fix index requirement
                 Log.i("PastEvent", "SUCCESS");
-
 
                 showPodium(view, raceResult);
             }
@@ -233,7 +236,6 @@ public class HomeFragment extends Fragment {
         }.start();
     }
 
-    // I'd like to use the driverID as string to get the driver details
     private void setFavouriteDriverCard(View view) {
         DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
         MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
@@ -241,12 +243,11 @@ public class HomeFragment extends Fragment {
 
         data.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
-                Log.i(TAG, "DRIVER STANDINGS SUCCESS");
-
                 DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
                 List<DriverStandingsElement> driversList = driverStandings.getDriverStandingsElements();
 
                 DriverStandingsElement favouriteDriver = driverStandingsViewModel.getDriverStandingsElement(driversList, Constants.FAVOURITE_DRIVER);
+                Log.i(TAG, "Favorite Driver: " + favouriteDriver.toString());
                 buildDriverCard(view, favouriteDriver);
             } else {
                 Log.i(TAG, "DRIVER STANDINGS ERROR");
@@ -294,19 +295,28 @@ public class HomeFragment extends Fragment {
     }
 
     private void setFavouriteConstructorCard(View view) {
-        ConstructorStandingsElement standingsElement = new ConstructorStandingsElement();
-        processConstructorStanding(view, standingsElement);
-    }
+        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
+        MutableLiveData<Result> data = constructorStandingsViewModel.getConstructorStandingsLiveData(0);//TODO get last update from shared preferences
 
-    private void processConstructorStanding(View view, ConstructorStandingsElement standing) {
-        buildConstructorCard(view, standing);
+        if(data != null){
+            data.observe(getViewLifecycleOwner(), result -> {
+                if (result.isSuccess()) {
+                    Log.i(TAG, "CONSTRUCTOR STANDINGS SUCCESS");
 
-        MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
-        teamRank.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), ConstructorsStandingActivity.class);
-            intent.putExtra("TEAM_ID", Constants.FAVOURITE_TEAM);
-            startActivity(intent);
-        });
+                    ConstructorStandings constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
+                    List<ConstructorStandingsElement> constructorsList = constructorStandings.getConstructorStandings();
+
+                    ConstructorStandingsElement favouriteConstructor = constructorStandingsViewModel.getConstructorStandingsElement(constructorsList, Constants.FAVOURITE_TEAM);
+                    buildConstructorCard(view, favouriteConstructor);
+                } else {
+                    Log.i(TAG, "CONSTRUCTOR STANDINGS ERROR");
+                    loadingScreen.hideLoadingScreen();
+                }
+            });
+        }
+        else{
+            Log.i(TAG, "CONSTRUCTOR STANDINGS ERROR");
+        }
     }
 
     private void buildConstructorCard(View view, ConstructorStandingsElement standingElement) {
@@ -335,6 +345,13 @@ public class HomeFragment extends Fragment {
         constructorCar.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ConstructorBioActivity.class);
             intent.putExtra("DRIVER_NAME", Constants.FAVOURITE_TEAM);
+            startActivity(intent);
+        });
+
+        MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
+        teamRank.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ConstructorsStandingActivity.class);
+            intent.putExtra("TEAM_ID", Constants.FAVOURITE_TEAM);
             startActivity(intent);
         });
     }

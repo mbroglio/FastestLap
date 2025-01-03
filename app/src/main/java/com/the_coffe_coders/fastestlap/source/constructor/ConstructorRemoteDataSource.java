@@ -34,14 +34,12 @@ public class ConstructorRemoteDataSource extends BaseConstructorRemoteDataSource
 
     public ConstructorRemoteDataSource(String apiKey) {
         this.ergastAPIService = ServiceLocator.getInstance().getConstructorAPIService();
-        ;
     }
 
     @Override
     public void getConstructor() {
-
+        Log.i(TAG, "getConstructor: ");
         Call<ResponseBody> newsResponseCall = ergastAPIService.getConstructorStandings();
-        System.out.println("remote data source :)");
         newsResponseCall.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {

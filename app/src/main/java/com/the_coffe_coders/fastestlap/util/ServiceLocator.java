@@ -1,6 +1,8 @@
 package com.the_coffe_coders.fastestlap.util;
 
 import android.app.Application;
+import android.util.Log;
+
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
 import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
@@ -19,9 +21,12 @@ import com.the_coffe_coders.fastestlap.source.weeklyrace.BaseWeeklyRaceRemoteDat
 import com.the_coffe_coders.fastestlap.source.weeklyrace.WeeklyRaceLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.weeklyrace.WeeklyRaceRemoteDataSource;
 
+import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class ServiceLocator {
@@ -41,10 +46,19 @@ public class ServiceLocator {
         return new ErgastAPIService() {
             @Override
             public Call<ResponseBody> getConstructorStandings() {
+                Log.i("ServiceLocator", "getConstructorStandings");
+                HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+                loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+                // Build an OkHttpClient with the logging interceptor
+                OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                        .addInterceptor(loggingInterceptor)
+                        .build();
 
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(CURRENT_YEAR_BASE_URL)
-                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .client(okHttpClient)
                         .build();
 
                 return retrofit.create(ErgastAPIService.class).getConstructorStandings();
@@ -106,9 +120,18 @@ public class ServiceLocator {
 
             @Override
             public Call<ResponseBody> getDriverStandings() {
+                HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+                loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+                // Build an OkHttpClient with the logging interceptor
+                OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                        .addInterceptor(loggingInterceptor)
+                        .build();
+
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(CURRENT_YEAR_BASE_URL)
-                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .client(okHttpClient)
                         .build();
 
                 return retrofit.create(ErgastAPIService.class).getDriverStandings();

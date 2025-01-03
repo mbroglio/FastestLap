@@ -29,6 +29,8 @@ public abstract class WeeklyRace {
         this.raceName = raceName;
         this.Circuit = circuit;
         this.firstPractice = firstPractice;
+        this.Qualifying = qualifying;
+        this.finalRace = finalRace;
 
         setDateTime(date, time);
     }

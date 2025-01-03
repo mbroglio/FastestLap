@@ -31,7 +31,6 @@ public class LoadingScreen {
         // Start the rotation animation
         Animation rotateAnimation = AnimationUtils.loadAnimation(context, R.anim.rotate);
         loadingWheel.startAnimation(rotateAnimation);
-
     }
 
     public void showLoadingScreen() {
