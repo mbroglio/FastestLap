@@ -52,6 +52,7 @@ public abstract class Session {
 
     public void setEndDateTime() {
         Log.i("Session", this.getClass().getSimpleName());
+        @SuppressWarnings("ConstantConditions")
         int duration = Constants.SESSION_DURATION.get(this.getClass().getSimpleName());
         this.endDateTime = getStartDateTime().plusMinutes(duration);
     }
