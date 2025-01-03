@@ -1,14 +1,10 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
-import android.util.Log;
-
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import org.threeten.bp.LocalDateTime;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZonedDateTime;
 
 import java.util.List;
 @Entity(tableName = "WeeklyRace")
@@ -20,21 +16,9 @@ public abstract class WeeklyRace {
     private String url;
     private String raceName;
     private Circuit Circuit;
-    private ZonedDateTime dateTime;
     protected Practice firstPractice;
     private Qualifying Qualifying;
     private Race finalRace;
-
-    protected WeeklyRace(String season, String round, String url, String raceName, Circuit circuit, String date, String time, Qualifying qualifying, Race finalRace, Practice firstPractice) {
-        this.season = season;
-        this.round = round;
-        this.url = url;
-        this.raceName = raceName;
-        this.Circuit = circuit;
-        this.firstPractice = firstPractice;
-
-        setDateTime(date, time);
-    }
 
     @Ignore
     public WeeklyRace() {
@@ -81,25 +65,15 @@ public abstract class WeeklyRace {
         Circuit = circuit;
     }
 
-    public ZonedDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(ZonedDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
-
-    public void setDateTime(String date, String time) {
-        this.dateTime = ZonedDateTime.parse(
-                date + "T" + time + "[UTC]"
-        ).withZoneSameInstant(ZoneId.systemDefault());
+    public LocalDateTime getDateTime() {
+        return finalRace.getStartDateTime();
     }
 
     public String getDateInterval() {
         String fullDate;
 
-        ZonedDateTime startDate = this.firstPractice.getStartDateTime();
-        ZonedDateTime endDate = this.getFinalRace().getDateTime();
+        LocalDateTime startDate = this.firstPractice.getStartDateTime();
+        LocalDateTime endDate = this.getFinalRace().getStartDateTime();//Inizio al posto della fine
 
         if (startDate.getMonth() != endDate.getMonth()) {
             fullDate = startDate.getDayOfMonth() + " " + startDate.getMonth() + " - " + endDate.getDayOfMonth() + " " + endDate.getMonth();
@@ -156,25 +130,11 @@ public abstract class WeeklyRace {
     }
 
     public void setSessions(List<Session> sessions) {
-        ZonedDateTime currentDateTime = ZonedDateTime.now(ZoneId.systemDefault());
+        LocalDateTime currentDateTime = LocalDateTime.now();
 
         for (Session session : sessions) {
-            if (currentDateTime.isAfter(session.getStartDateTime()) && currentDateTime.isBefore(session.getEndDateTime())) {
-                session.setUnderway(true);
-            } else if (currentDateTime.isAfter(session.getEndDateTime())) {
-                session.setUnderway(false);
-                session.setFinished(true);
-            }
+            session.setSessionStatus();
         }
-
-        for (Session session : sessions) {
-            if (!session.isFinished()) {
-                nextSession = session;
-                break;
-            }
-        }
-
-        return nextSession;
     }
 
     public boolean isUnderway() {
@@ -188,7 +148,7 @@ public abstract class WeeklyRace {
     }
 
     public boolean isWeekFinished() {
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.systemDefault());
+        LocalDateTime now = LocalDateTime.now();
         return now.isAfter(this.getFinalRace().getEndDateTime());
     }
 

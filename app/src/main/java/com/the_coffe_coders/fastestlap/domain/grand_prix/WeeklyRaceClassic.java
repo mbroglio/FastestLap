@@ -1,12 +1,8 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
-
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.ZonedDateTime;
-
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Entity(tableName = "WeeklyRaceClassic")
@@ -49,6 +45,7 @@ public class WeeklyRaceClassic extends WeeklyRace {
         return sessions;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return super.toString() + "WeeklyRaceClassic{" +

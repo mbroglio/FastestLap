@@ -1,12 +1,8 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
-
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZonedDateTime;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,6 +32,7 @@ public class WeeklyRaceSprint extends WeeklyRace {
     public Sprint getSprint() {
         return sprint;
     }
+
     public void setSprint(Sprint sprint) {
         this.sprint = sprint;
     }
@@ -54,15 +51,9 @@ public class WeeklyRaceSprint extends WeeklyRace {
         return sessions;
     }
 
-    public void addSession() {
-
-    }
-
+    @NonNull
     @Override
     public String toString() {
-        return "WeeklyRaceSprint{" +
-                "sprintQualifying=" + sprintQualifying +
-                ", sprint=" + sprint +
-                '}';
+        return "WeeklyRaceSprint{" + "sprintQualifying=" + sprintQualifying + ", sprint=" + sprint + '}';
     }
 }

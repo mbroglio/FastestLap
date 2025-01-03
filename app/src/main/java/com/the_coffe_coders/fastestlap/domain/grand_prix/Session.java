@@ -2,6 +2,8 @@ package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
@@ -90,6 +92,7 @@ public abstract class Session {
         this.sessionStatus = sessionStatus;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "Session{" +
