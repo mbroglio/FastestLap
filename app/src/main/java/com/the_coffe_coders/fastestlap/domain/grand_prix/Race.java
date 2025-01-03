@@ -2,7 +2,7 @@ package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
 import java.util.List;
 
-import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.LocalDateTime;
 
 public class Race extends Session {
     private String season;
@@ -11,33 +11,28 @@ public class Race extends Session {
     private String raceName;
     private Circuit Circuit;
     public List<RaceResult> raceResults;
-    public ZonedDateTime dateTime;
+    public LocalDateTime dateTime;//TODO REMOVE ?
 
     public Race(String season, String round, String url, String raceName, Circuit circuit, List<RaceResult> raceResults, String sessionId, Boolean isFinished, Boolean isUnderway, String date, String time) {
-        super(sessionId, isFinished, isUnderway, date, time);
+        super(date, time);
         this.season = season;
         this.round = round;
         this.url = url;
         this.raceName = raceName;
         this.Circuit = circuit;
         this.raceResults = raceResults;
+        setEndDateTime();
     }
 
     public Race() {
 
     }
 
-    public void setDateTime(ZonedDateTime dateTime) {
+    public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
 
-    public void setDateTime(String date, String time) {
-        this.dateTime = ZonedDateTime.parse(
-                date + "T" + time + "[UTC]"
-        );
-    }
-
-    public ZonedDateTime getDateTime() {
+    public LocalDateTime getDateTime() {
         return dateTime;
     }
 

@@ -10,19 +10,22 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Practice;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Qualifying;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Sprint;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 
-import org.threeten.bp.ZonedDateTime;
+import org.threeten.bp.LocalDateTime;
 
 import java.lang.reflect.Type;
 import java.util.List;
 
-public class DriverStandingsConverters {
+public class DatabaseConverters {
 
+    public static Gson gson = new Gson();//TODO MOVE TO SERVICE LOCATOR
+
+    //Driver Standings Element List
     @TypeConverter
     public static String fromDriverStandingsElementList(List<DriverStandingsElement> list) {
-        Gson gson = new Gson();
         return gson.toJson(list);
     }
 
@@ -33,140 +36,127 @@ public class DriverStandingsConverters {
         return gson.fromJson(json, listType);
     }
 
+    //Constructor Standings Element List
     @TypeConverter
     public static String fromConstructorStandingsElementList(List<ConstructorStandingsElement> list) {
-        Gson gson = new Gson();
         return gson.toJson(list);
     }
 
     @TypeConverter
     public static List<ConstructorStandingsElement> toConstructorStandingsElementList(String json) {
-        Gson gson = new Gson();
         Type listType = new TypeToken<List<ConstructorStandingsElement>>() {}.getType();
         return gson.fromJson(json, listType);
     }
 
+    //Driver
     @TypeConverter
     public static String fromDriver(Driver driver) {
-        Gson gson = new Gson();
         return gson.toJson(driver);
     }
 
     @TypeConverter
     public static Driver toDriver(String json) {
-        Gson gson = new Gson();
         Type listType = new TypeToken<Driver>() {}.getType();
         return gson.fromJson(json, listType);
     }
 
-
+    //Contructor List
     @TypeConverter
     public static String fromConstructorList(List<Constructor> list) {
-        Gson gson = new Gson();
         return gson.toJson(list);
     }
 
     @TypeConverter
     public static List<Constructor> toConstructorList(String json) {
-        Gson gson = new Gson();
         Type listType = new TypeToken<List<Constructor>>() {}.getType();
         return gson.fromJson(json, listType);
     }
 
-    //Circuit converter
+    //Circuit
     @TypeConverter
     public static String fromCircuit(Circuit circuit) {
-        Gson gson = new Gson();
         return gson.toJson(circuit);
     }
-
     @TypeConverter
     public static Circuit toCircuit(String json) {
-        Gson gson = new Gson();
-        Type listType = new TypeToken<Circuit>() {}.getType();
-        return gson.fromJson(json, listType);
+        return gson.fromJson(json, Circuit.class);
     }
 
-    //Practice converter
+    //Practice
     @TypeConverter
     public static String fromPractice(Practice practice) {
-        Gson gson = new Gson();
         return gson.toJson(practice);
     }
 
     @TypeConverter
     public static Practice toPractice(String json) {
-        Gson gson = new Gson();
-        Type listType = new TypeToken<Practice>() {}.getType();
-        return gson.fromJson(json, listType);
+        return gson.fromJson(json, Practice.class);
     }
 
-    //Qualifying converter
+    //Qualifying
     @TypeConverter
     public static String fromQualifying(Qualifying qualifying) {
-        Gson gson = new Gson();
         return gson.toJson(qualifying);
     }
 
     @TypeConverter
     public static Qualifying toQualifying(String json) {
-        Gson gson = new Gson();
-        Type listType = new TypeToken<Qualifying>() {}.getType();
-        return gson.fromJson(json, listType);
+        return gson.fromJson(json, Qualifying.class);
     }
 
-    //Race converter
+    //LocalDateTime
+    @TypeConverter
+    public static String fromLocalDateTime(LocalDateTime localDateTime) {
+        return gson.toJson(localDateTime);
+    }
+    @TypeConverter
+    public static LocalDateTime toLocalDateTime(String value) {
+        return gson.fromJson(value, LocalDateTime.class);
+    }
+
+    //Race
     @TypeConverter
     public static String fromRace(Race race) {
-        Gson gson = new Gson();
         return gson.toJson(race);
     }
 
     @TypeConverter
     public static Race toRace(String json) {
-        Gson gson = new Gson();
-        Type listType = new TypeToken<Race>() {}.getType();
-        return gson.fromJson(json, listType);
+        return gson.fromJson(json, Race.class);
     }
 
     //Sprint converter
     @TypeConverter
     public static String fromSprint(Sprint sprint) {
-        Gson gson = new Gson();
         return gson.toJson(sprint);
     }
 
     @TypeConverter
     public static Sprint toSprint(String json) {
-        Gson gson = new Gson();
-        Type listType = new TypeToken<Sprint>() {}.getType();
-        return gson.fromJson(json, listType);
+        return gson.fromJson(json, Sprint.class);
     }
 
     //WeekelyRace converter
     @TypeConverter
     public static String fromWeeklyRace(WeeklyRace weeklyRace) {
-        Gson gson = new Gson();
         return gson.toJson(weeklyRace);
     }
 
     @TypeConverter
     public static WeeklyRace toWeeklyRace(String json) {
-        Gson gson = new Gson();
-        Type listType = new TypeToken<WeeklyRace>() {}.getType();
-        return gson.fromJson(json, listType);
+        return gson.fromJson(json, WeeklyRace.class);
     }
     //ZoneDateTimeConverter
+
+
+    //Session
     @TypeConverter
-    public static String fromZonedDateTime(ZonedDateTime zonedDateTime) {
-        Gson gson = new Gson();
-        return gson.toJson(zonedDateTime);
+    public static String fromSession(Session session) {
+        return gson.toJson(session);
     }
 
     @TypeConverter
-    public static ZonedDateTime toZonedDateTime(String json) {
-        Gson gson = new Gson();
-        Type listType = new TypeToken<ZonedDateTime>() {}.getType();
-        return gson.fromJson(json, listType);
+    public static Session toSession(String json) {
+        return gson.fromJson(json, Session.class);
     }
 }

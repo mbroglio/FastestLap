@@ -1,9 +1,12 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
+import android.util.Log;
+
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
@@ -29,8 +32,6 @@ public abstract class WeeklyRace {
         this.raceName = raceName;
         this.Circuit = circuit;
         this.firstPractice = firstPractice;
-        this.Qualifying = qualifying;
-        this.finalRace = finalRace;
 
         setDateTime(date, time);
     }
@@ -165,6 +166,15 @@ public abstract class WeeklyRace {
                 session.setFinished(true);
             }
         }
+
+        for (Session session : sessions) {
+            if (!session.isFinished()) {
+                nextSession = session;
+                break;
+            }
+        }
+
+        return nextSession;
     }
 
     public boolean isUnderway() {

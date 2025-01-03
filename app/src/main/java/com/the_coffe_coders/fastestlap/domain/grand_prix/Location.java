@@ -46,4 +46,14 @@ public class Location {
     public void setCountry(String country) {
         this.country = country;
     }
+
+    @Override
+    public String toString() {
+        return "Location{" +
+                "lat='" + lat + '\'' +
+                ", _long='" + _long + '\'' +
+                ", locality='" + locality + '\'' +
+                ", country='" + country + '\'' +
+                '}';
+    }
 }

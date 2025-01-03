@@ -14,12 +14,6 @@ public class WeeklyRaceClassic extends WeeklyRace {
     private Practice secondPractice;
     private Practice thirdPractice;
 
-    public WeeklyRaceClassic(String season, String round, String url, String raceName, Circuit circuit, String date, String time, Qualifying qualifying, Race finalRace, Practice firstPractice, Practice secondPractice, Practice thirdPractice) {
-        super(season, round, url, raceName, circuit, date, time,qualifying, finalRace, firstPractice);
-        this.secondPractice = secondPractice;
-        this.thirdPractice = thirdPractice;
-    }
-
     public WeeklyRaceClassic(Practice secondPractice, Practice thirdPractice) {
         this.secondPractice = secondPractice;
         this.thirdPractice = thirdPractice;
@@ -57,7 +51,7 @@ public class WeeklyRaceClassic extends WeeklyRace {
 
     @Override
     public String toString() {
-        return "WeeklyRaceClassic{" +
+        return super.toString() + "WeeklyRaceClassic{" +
                 "secondPractice=" + secondPractice +
                 ", thirdPractice=" + thirdPractice +
                 '}';

@@ -6,7 +6,6 @@ public class Circuit {
     private String circuitId;
     private String url;
     private String circuitName;
-    @SerializedName("Location")
     private Location location;
 
     public Circuit(String circuitId, String url, String circuitName, com.the_coffe_coders.fastestlap.domain.grand_prix.Location location) {
@@ -50,5 +49,15 @@ public class Circuit {
 
     public void setLocation(com.the_coffe_coders.fastestlap.domain.grand_prix.Location location) {
         this.location = location;
+    }
+
+    @Override
+    public String toString() {
+        return "Circuit{" +
+                "circuitId='" + circuitId + '\'' +
+                ", url='" + url + '\'' +
+                ", circuitName='" + circuitName + '\'' +
+                ", location=" + location +
+                '}';
     }
 }

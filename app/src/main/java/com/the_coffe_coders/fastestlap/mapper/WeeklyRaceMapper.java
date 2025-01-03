@@ -11,36 +11,39 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRaceSprint;
 import com.the_coffe_coders.fastestlap.dto.RaceDTO;
 import com.the_coffe_coders.fastestlap.dto.ResultDTO;
 
+import org.threeten.bp.ZoneId;
+import org.threeten.bp.ZonedDateTime;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class WeeklyRaceMapper {
-    public static WeeklyRace toWeeklyRace(RaceDTO race) {
+    public static WeeklyRace toWeeklyRace(RaceDTO raceDTO) {
         WeeklyRace weeklyRace;
-        if(race.getSprint() != null) {
-            weeklyRace = toRaceSprint(race);
+        if(raceDTO.getSprint() != null) {
+            weeklyRace = toRaceSprint(raceDTO);
         } else {
-            weeklyRace = toRaceClassic(race);
+            weeklyRace = toRaceClassic(raceDTO);
         }
-        weeklyRace.setRaceName(race.getRaceName());
-        weeklyRace.setRound(race.getRound());
-        weeklyRace.setSeason(race.getSeason());
-        weeklyRace.setCircuit(CircuitMapper.toCircuit(race.getCircuit()));
-        weeklyRace.setQualifying(SessionMapper.toQualifying(race.getQualifying()));
-        weeklyRace.setFirstPractice(SessionMapper.toPractice(race.getFirstPractice(), 1));
-        weeklyRace.setUrl(race.getUrl());
-        weeklyRace.setDateTime(race.getDate(), race.getTime());
+        weeklyRace.setRaceName(raceDTO.getRaceName());
+        weeklyRace.setRound(raceDTO.getRound());
+        weeklyRace.setSeason(raceDTO.getSeason());
+        weeklyRace.setCircuit(CircuitMapper.toCircuit(raceDTO.getCircuit()));
+        weeklyRace.setQualifying(SessionMapper.toQualifying(raceDTO.getQualifying()));
+        weeklyRace.setFirstPractice(SessionMapper.toPractice(raceDTO.getFirstPractice(), 1));
+        weeklyRace.setUrl(raceDTO.getUrl());
 
         Race finalRace = new Race();
-        finalRace.setSeason(race.getSeason());
-        finalRace.setRound(race.getRound());
-        finalRace.setRaceName(race.getRaceName());
-        finalRace.setUrl(race.getUrl());
-        finalRace.setCircuit(CircuitMapper.toCircuit(race.getCircuit()));
-        finalRace.setDateTime(weeklyRace.getDateTime());
+        finalRace.setSeason(raceDTO.getSeason());
+        finalRace.setRound(raceDTO.getRound());
+        finalRace.setRaceName(raceDTO.getRaceName());
+        finalRace.setUrl(raceDTO.getUrl());
+        finalRace.setCircuit(CircuitMapper.toCircuit(raceDTO.getCircuit()));
+        finalRace.setStartDateTime(raceDTO.getDate(), raceDTO.getTime());
+        finalRace.setEndDateTime();
         /*
         List<RaceResult> results = new ArrayList<>();
-        for (ResultDTO resultDTO: race.getResults()) {
+        for (ResultDTO resultDTO: raceDTO.getResults()) {
             results.add(SessionMapper.toResult(resultDTO));
         }
         finalRace.setResults(results);*/

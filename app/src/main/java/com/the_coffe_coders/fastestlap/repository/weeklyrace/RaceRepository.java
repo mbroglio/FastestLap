@@ -23,6 +23,8 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
     private final BaseWeeklyRaceRemoteDataSource raceRemoteDataSource;
     private final BaseWeeklyRaceLocalDataSource raceLocalDataSource;
 
+    public static boolean isOutdate = true;
+
     private static final String TAG = "RaceRepository";
     public RaceRepository(BaseWeeklyRaceRemoteDataSource raceRemoteDataSource, BaseWeeklyRaceLocalDataSource raceLocalDataSource) {
         this.weeklyRaceMutableLiveData = new MutableLiveData<>();
@@ -36,11 +38,14 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
 
     @Override
     public MutableLiveData<Result> fetchWeeklyRaces(long lastUpdate) {
-        Log.i(TAG, "fetchWeeklyRaces");
-        if(true) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
+
+        if(isOutdate) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
             //TODO fetch from remote
+
             raceRemoteDataSource.getWeeklyRaces();
+            isOutdate = false;
         }else {
+            Log.i(TAG, "fetchWeeklyRaces from local");
             raceLocalDataSource.getWeeklyRaces();
         }
         return weeklyRaceMutableLiveData;
@@ -57,15 +62,22 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
     }
 
     @Override
-    public void onSuccessFromRemote(RaceAPIResponse weeklyRaceAPIResponse, long lastUpdate) {
+    public void onSuccessFromRemote(RaceAPIResponse weeklyRaceAPIResponse, OperationType operationType) {
         Log.i(TAG, "onSuccessFromRemote");
-        List<RaceDTO> raceDTOS = weeklyRaceAPIResponse.getRaceTable().getRaces();
-        List<WeeklyRace> weeklyRaceList = new ArrayList<>();
-        for (RaceDTO raceDTO: raceDTOS) {
-            weeklyRaceList.add(WeeklyRaceMapper.toWeeklyRace(raceDTO));
+
+        switch (operationType) {
+            case FETCH_WEEKLY_RACES:
+                handleWeeklyRacesSuccess(weeklyRaceAPIResponse);
+            break;
+            case FETCH_NEXT_RACE:
+                handleNextRaceSuccess();
+            break;
+            case FETCH_LAST_RACE:
+                handleLastRaceSuccess();
+            break;
+            default:
+                Log.i(TAG, "Operation type not supported");
         }
-        //Collections.reverse(weeklyRaceList);
-        raceLocalDataSource.insertWeeklyRaceList(weeklyRaceList);
     }
 
     @Override
@@ -77,14 +89,29 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
     public void onSuccessFromLocal(List<WeeklyRace> weeklyRaceList) {
         Log.i(TAG, "onSuccessFromLocal");
         Result.WeeklyRaceSuccess result = new Result.WeeklyRaceSuccess(weeklyRaceList);
-        for (WeeklyRace weeklyRace: weeklyRaceList) {
-            Log.i(TAG, "WEEKLY RACES:\n " + weeklyRace.getRaceName());
-        }
         weeklyRaceMutableLiveData.postValue(result);
     }
 
     @Override
     public void onFailureFromLocal(Exception exception) {
+
+    }
+
+    private void handleWeeklyRacesSuccess(RaceAPIResponse weeklyRaceAPIResponse) {
+        List<RaceDTO> raceDTOS = weeklyRaceAPIResponse.getRaceTable().getRaces();
+        List<WeeklyRace> weeklyRaceList = new ArrayList<>();
+        for (RaceDTO raceDTO: raceDTOS) {
+            weeklyRaceList.add(WeeklyRaceMapper.toWeeklyRace(raceDTO));
+        }
+        //Collections.reverse(weeklyRaceList);
+        raceLocalDataSource.insertWeeklyRaceList(weeklyRaceList);
+    }
+
+    void handleNextRaceSuccess() {
+
+    }
+
+    void handleLastRaceSuccess() {
 
     }
 }

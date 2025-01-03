@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.api.ResultsAPIResponse;
+import com.the_coffe_coders.fastestlap.repository.weeklyrace.OperationType;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
@@ -26,6 +27,8 @@ public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource {
 
     private final ErgastAPIService ergastAPIService;
 
+    private static final String TAG = "WeeklyRaceRemoteDataSource";
+
     public WeeklyRaceRemoteDataSource(String apiKey) {
         this.ergastAPIService = ServiceLocator.getInstance().getWeeklyRaceAPIService();
     }
@@ -33,7 +36,7 @@ public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource {
     @Override
     public void getWeeklyRaces() {
         Call<ResponseBody> responseCall = ergastAPIService.getRaces();
-
+        Log.i(TAG, "getWeeklyRaces from remote");
         responseCall.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
@@ -49,8 +52,8 @@ public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource {
 
                     JSONParserUtils jsonParserUtils = new JSONParserUtils();
                     RaceAPIResponse raceAPIsponse = jsonParserUtils.parseRace(mrdata);
-                    System.out.println("CALLBACK");
-                    raceCallback.onSuccessFromRemote(raceAPIsponse, System.currentTimeMillis());
+
+                    raceCallback.onSuccessFromRemote(raceAPIsponse, OperationType.FETCH_WEEKLY_RACES);
                 } else {
                     raceCallback.onFailureFromRemote(new Exception());
                 }
@@ -83,7 +86,7 @@ public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource {
                     JSONParserUtils jsonParserUtils = new JSONParserUtils();
                     RaceAPIResponse raceAPIResponse = jsonParserUtils.parseRace(mrdata);
                     System.out.println("CALLBACK");
-                    raceCallback.onSuccessFromRemote(raceAPIResponse, System.currentTimeMillis());
+                    raceCallback.onSuccessFromRemote(raceAPIResponse, OperationType.FETCH_NEXT_RACE);
                 } else {
                     raceCallback.onFailureFromRemote(new Exception());
                 }
@@ -118,7 +121,7 @@ public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource {
                     JSONParserUtils jsonParserUtils = new JSONParserUtils();
                     RaceAPIResponse raceAPIResponse = jsonParserUtils.parseRace(mrdata);
                     System.out.println("CALLBACK");
-                    raceCallback.onSuccessFromRemote(raceAPIResponse, System.currentTimeMillis());
+                    raceCallback.onSuccessFromRemote(raceAPIResponse, OperationType.FETCH_LAST_RACE);
                 } else {
                     raceCallback.onFailureFromRemote(new Exception());
                 }

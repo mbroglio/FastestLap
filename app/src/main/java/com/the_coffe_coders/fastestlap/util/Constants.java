@@ -389,6 +389,7 @@ public class Constants {
 
     public static final Map<String, Integer> SESSION_DURATION = Map.of(
             "FirstPractice", 60,
+            "Practice", 60,
             "SecondPractice", 60,
             "ThirdPractice", 60,
             "Qualifying", 60,

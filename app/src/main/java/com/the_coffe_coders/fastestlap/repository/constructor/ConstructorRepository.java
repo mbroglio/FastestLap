@@ -24,8 +24,10 @@ import java.util.List;
 
 public class ConstructorRepository implements IConstructorRepository, ConstructorResponseCallback {
 
-    String TAG = "JolpicaConstructorRepository";
+    String TAG = "ConstructorRepository";
     public static long FRESH_TIMEOUT = 60000;
+
+    public static boolean isOutdate = true;
     private static ConstructorRepository instance;
     private MutableLiveData<Result> constructorStandingsMutableLiveData;
     private MutableLiveData<Result> constructorMutableLiveData;
@@ -65,9 +67,10 @@ public class ConstructorRepository implements IConstructorRepository, Constructo
         long currentTime = System.currentTimeMillis();
 
         Log.i(TAG, "FETCH CONSTRUCTOR STANDINGS METHOD");
-        if(true) { //currentTime - lastUpdate > FRESH_TIMEOUT
+        if(isOutdate) { //currentTime - lastUpdate > FRESH_TIMEOUT
             Log.i(TAG, "fetchConstructorStandings");
             constructorRemoteDataSource.getConstructor();
+            isOutdate = false;
         } else {
             constructorLocalDataSource.getConstructor();
         }

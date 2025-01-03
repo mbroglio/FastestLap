@@ -15,12 +15,6 @@ public class WeeklyRaceSprint extends WeeklyRace {
     private Qualifying sprintQualifying;
     private Sprint sprint;
 
-    public WeeklyRaceSprint(String season, String round, String url, String raceName, Circuit circuit, String date, String time, Qualifying qualifying, Race finalRace, Qualifying sprintQualifying, Sprint sprint, Practice firstPractice) {
-        super(season, round, url, raceName, circuit, date, time, qualifying, finalRace, firstPractice);
-        this.sprintQualifying = sprintQualifying;
-        this.sprint = sprint;
-    }
-
     @Ignore
     public WeeklyRaceSprint(Qualifying sprintQualifying, Sprint sprint) {
         this.sprintQualifying = sprintQualifying;

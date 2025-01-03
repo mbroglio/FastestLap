@@ -1,81 +1,57 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
+import android.util.Log;
+
+import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
 import com.the_coffe_coders.fastestlap.util.Constants;
 
-public class Session {
-    private String sessionId;
-    private Boolean isFinished;
-    private Boolean isUnderway;
-    private ZonedDateTime startDateTime;
-    private ZonedDateTime endDateTime;
+public abstract class Session {
+    private LocalDateTime startDateTime;
+    private LocalDateTime endDateTime;
+    private SessionStatus sessionStatus;
 
-    public Session(String sessionId, Boolean isFinished, Boolean isUnderway, String date, String time) {
-        this.sessionId = sessionId;
-        this.isFinished = isFinished;
-        this.isUnderway = isUnderway;
-
+    public Session(String date, String time){
         setStartDateTime(date, time);
-        setEndDateTime();
+        setSessionStatus();
     }
 
     public Session() {
 
     }
 
-    public String getSessionId() {
-        return sessionId;
-    }
-
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
-    }
-
-    public Boolean isFinished() {
-        return isFinished;
-    }
-
-    public void setFinished(Boolean finished) {
-        isFinished = finished;
-    }
-
-    public Boolean isUnderway() {
-        return isUnderway;
-    }
-
-    public void setUnderway(Boolean underway) {
-        isUnderway = underway;
-    }
-
-    public ZonedDateTime getStartDateTime() {
+    public LocalDateTime getStartDateTime() {
         return startDateTime;
     }
 
-    public void setStartDateTime(ZonedDateTime startDateTime) {
+    public void setStartDateTime(LocalDateTime startDateTime) {
         this.startDateTime = startDateTime;
     }
     public void setStartDateTime(String date, String time) {
-        this.startDateTime = ZonedDateTime.parse(
-                date + "T" + time + "[UTC]"
-        ).withZoneSameInstant(ZoneId.systemDefault());
+        if(!time.contains("Z")) {
+            time = time.concat("Z");
+        }
+        ZonedDateTime zonedDateTime = ZonedDateTime.parse(date + "T" + time + "[UTC]");
+        ZoneId localZone = ZoneId.systemDefault();
+        // Convertire al fuso orario locale
+        ZonedDateTime localZonedDateTime = zonedDateTime.withZoneSameInstant(localZone);
+        this.startDateTime = localZonedDateTime.toLocalDateTime();
     }
 
-    public ZonedDateTime getEndDateTime() {
+    public LocalDateTime getEndDateTime() {
         return endDateTime;
     }
 
-    public void setStartDateTime() {
-        this.startDateTime = ZonedDateTime.now();
-    }
-
-    public void setEndDateTime(ZonedDateTime endDateTime) {
+    public void setEndDateTime(LocalDateTime endDateTime) {
         this.endDateTime = endDateTime;
     }
 
     public void setEndDateTime() {
-        this.endDateTime = this.startDateTime.plusMinutes(Constants.SESSION_DURATION.get(sessionId));
+        Log.i("Session", this.getClass().getSimpleName());
+        int duration = Constants.SESSION_DURATION.get(this.getClass().getSimpleName());
+        this.endDateTime = getStartDateTime().plusMinutes(duration);
     }
 
     public String getTime() {
@@ -89,14 +65,40 @@ public class Session {
         return getStartDateTime().toLocalTime().toString();
     }
 
+    public Boolean isFinished() {
+        return true;
+    }
+    public Boolean isUnderway() {
+        return true;
+    }
+
+    public void setSessionStatus() {
+        if((endDateTime != null) && endDateTime.isBefore(LocalDateTime.now())) {
+            sessionStatus = SessionStatus.FINISHED;
+        }else if(this.startDateTime.isAfter(LocalDateTime.now())) {
+            sessionStatus = SessionStatus.NOT_STARTED;
+        }else {
+            sessionStatus = SessionStatus.IN_PROGRESS;
+        }
+    }
+
+    public String getSessionStatus() {
+        return sessionStatus.toString();
+    }
+
+    public void setSessionStatus(SessionStatus sessionStatus) {
+        this.sessionStatus = sessionStatus;
+    }
+
     @Override
     public String toString() {
         return "Session{" +
-                "sessionId='" + sessionId + '\'' +
-                ", isFinished=" + isFinished +
-                ", isUnderway=" + isUnderway +
+                ", isFinished=" + isFinished() +
+                ", isUnderway=" + isUnderway() +
                 ", startDateTime=" + startDateTime +
                 ", endDateTime=" + endDateTime +
                 '}';
     }
+
+
 }

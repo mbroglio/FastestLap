@@ -20,6 +20,8 @@ public class DriverRepository implements IDriverRepository, DriverResponseCallba
 
     public static long FRESH_TIMEOUT = 60000;
 
+    public static boolean isOutdate = true;
+
     private final MutableLiveData<Result> allDriverMutableLiveData;//shuld be final
     private final MutableLiveData<Result> driverStandingsMutableLiveData;//shuld be final
     private final BaseDriverRemoteDataSource driverRemoteDataSource;//shuld be final
@@ -54,8 +56,9 @@ public class DriverRepository implements IDriverRepository, DriverResponseCallba
     public MutableLiveData<Result> fetchDriver(String driverId, long lastUpdate) {
         long currentTime = System.currentTimeMillis();
 
-        if(true) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT
+        if(isOutdate) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT
             driverRemoteDataSource.getDrivers();
+            isOutdate = false;
         } else {
             driverLocalDataSource.getDrivers();
         }
@@ -66,10 +69,13 @@ public class DriverRepository implements IDriverRepository, DriverResponseCallba
     public MutableLiveData<Result> fetchDriversStandings(long lastUpdate) {
         long currentTime = System.currentTimeMillis();
         //controllo che il dispositivo sia collegato ad internet
-        if(true) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT
+        Log.i(TAG, "FETCH DRIVER STANDINGS METHOD");
+        if(isOutdate) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT
             Log.i(TAG, "FETCH DRIVER STANDINGS METHOD");
             driverRemoteDataSource.getDriversStandings();
+            isOutdate = false;
         } else {
+            Log.i(TAG, "" + isOutdate);
             driverLocalDataSource.getDriversStandings();
         }
         return driverStandingsMutableLiveData;
