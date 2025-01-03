@@ -140,17 +140,9 @@ public abstract class WeeklyRace {
     public abstract List<Session> getSessions();
 
     public Session findNextEvent(List<Session> sessions) {
-        ZonedDateTime currentDateTime = ZonedDateTime.now(ZoneId.systemDefault());
         Session nextSession = null;
 
-        for (Session session : sessions) {
-            if (currentDateTime.isAfter(session.getStartDateTime()) && currentDateTime.isBefore(session.getEndDateTime())) {
-                session.setUnderway(true);
-            } else if (currentDateTime.isAfter(session.getEndDateTime())) {
-                session.setUnderway(false);
-                session.setFinished(true);
-            }
-        }
+        setSessions(sessions);
 
         for (Session session : sessions) {
             if (!session.isFinished()) {
@@ -160,6 +152,19 @@ public abstract class WeeklyRace {
         }
 
         return nextSession;
+    }
+
+    public void setSessions(List<Session> sessions) {
+        ZonedDateTime currentDateTime = ZonedDateTime.now(ZoneId.systemDefault());
+
+        for (Session session : sessions) {
+            if (currentDateTime.isAfter(session.getStartDateTime()) && currentDateTime.isBefore(session.getEndDateTime())) {
+                session.setUnderway(true);
+            } else if (currentDateTime.isAfter(session.getEndDateTime())) {
+                session.setUnderway(false);
+                session.setFinished(true);
+            }
+        }
     }
 
     public boolean isUnderway() {

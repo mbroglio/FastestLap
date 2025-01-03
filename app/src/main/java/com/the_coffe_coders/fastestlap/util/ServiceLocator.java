@@ -197,7 +197,7 @@ public class ServiceLocator {
             public Call<ResponseBody> getRaces() {
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(CURRENT_YEAR_BASE_URL)
-                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
                 return retrofit.create(ErgastAPIService.class).getRaces();

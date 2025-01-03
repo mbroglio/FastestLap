@@ -50,6 +50,8 @@ public class WeeklyRaceClassic extends WeeklyRace {
         sessions.add(this.getQualifying());
         sessions.add(this.getFinalRace());
 
+        setSessions(sessions);
+
         return sessions;
     }
 
