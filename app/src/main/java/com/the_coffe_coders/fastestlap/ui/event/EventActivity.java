@@ -21,6 +21,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Practice;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
@@ -41,6 +42,7 @@ import java.util.Objects;
  * TODO:
  *  - Implement pendingResults logic
  *  - Implement raceCancelled logic
+ *  - Fix raceResult logic
  */
 
 public class EventActivity extends AppCompatActivity {
@@ -85,18 +87,19 @@ public class EventActivity extends AppCompatActivity {
                 ImageView countryFlag = findViewById(R.id.country_flag);
                 String nation = weeklyRace.getCircuit().getLocation().getCountry();
                 Integer flag = Constants.NATION_COUNTRY_FLAG.get(nation);
-                countryFlag.setImageResource(Objects.requireNonNullElseGet(flag, () -> R.string.unknown));
+                countryFlag.setImageResource(Objects.requireNonNullElseGet(flag, () -> R.drawable.austria_flag));
 
                 ImageView trackMap = findViewById(R.id.track_outline_image);
                 Integer outline = Constants.EVENT_CIRCUIT.get(circuitId);
-                trackMap.setImageResource(Objects.requireNonNullElseGet(outline, () -> R.string.unknown));
+                trackMap.setImageResource(Objects.requireNonNullElseGet(outline, () -> R.drawable.back_curved_arrow));
 
                 TextView roundNumber = findViewById(R.id.round_number);
                 String round = "Round " + weeklyRace.getRound();
                 roundNumber.setText(round);
 
-                TextView seasonYear = findViewById(R.id.year);
-                seasonYear.setText(weeklyRace.getDateTime().getYear());
+                TextView seasonYear = findViewById(R.id.event_year);
+                String year = weeklyRace.getSeason();
+                seasonYear.setText(year);
 
                 TextView name = findViewById(R.id.gp_name);
                 name.setText(Constants.TRACK_LONG_GP_NAME.get(circuitId));
@@ -118,7 +121,7 @@ public class EventActivity extends AppCompatActivity {
                 List<Session> sessions = weeklyRace.getSessions();
                 Session nextEvent = weeklyRace.findNextEvent(sessions);
                 boolean underway = false;
-                if (weeklyRace.isUnderway()) {
+                if (weeklyRace.isUnderway() && !weeklyRace.isWeekFinished()) {
                     underway = true;
                     setLiveSession();
                 }
@@ -197,13 +200,12 @@ public class EventActivity extends AppCompatActivity {
         countdownView.setVisibility(View.GONE);
         resultsView.setVisibility(View.VISIBLE);
 
-        // You can add logic here to populate the results view with actual data
-        processRaceResults(weeklyRace);
+        //processRaceResults(weeklyRace);
 
         // Set podium circuit image
         ImageView trackOutline = findViewById(R.id.track_outline_image);
         Integer outline = Constants.EVENT_CIRCUIT.get(circuitId);
-        trackOutline.setImageResource(Objects.requireNonNullElseGet(outline, () -> R.string.unknown));
+        trackOutline.setImageResource(Objects.requireNonNullElseGet(outline, () -> R.drawable.arrow_back_ios_style));
     }
 
     private void processRaceResults(WeeklyRace raceResults) {
@@ -239,6 +241,11 @@ public class EventActivity extends AppCompatActivity {
 
         for (Session session : sessions) {
             sessionId = session.getClass().getSimpleName();
+            if(sessionId.equals("Practice")) {
+                Practice practice = (Practice) session;
+                sessionId = practice.getPractice();
+            }
+
             TextView sessionName = findViewById(Constants.SESSION_NAME_FIELD.get(sessionId));
             sessionName.setText(Constants.SESSION_NAMES.get(sessionId));
 
@@ -255,6 +262,10 @@ public class EventActivity extends AppCompatActivity {
 
     private void setChequeredFlag(Session session) {
         String sessionId = session.getClass().getSimpleName();
+        if(sessionId.equals("Practice")) {
+            Practice practice = (Practice) session;
+            sessionId = practice.getPractice();
+        }
 
         if (session.isFinished()) {
             ImageView flag = findViewById(Constants.SESSION_FLAG_FIELD.get(sessionId));
@@ -263,12 +274,7 @@ public class EventActivity extends AppCompatActivity {
             RelativeLayout currentSession = findViewById(Constants.SESSION_ROW.get(sessionId));
             currentSession.setClickable(true);
             currentSession.setFocusable(true);
-            currentSession.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Log.i(TAG, "session clicked");
-                }
-            });
+            currentSession.setOnClickListener(view -> Log.i(TAG, "session clicked"));
         }
     }
 }

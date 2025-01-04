@@ -24,8 +24,6 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
-import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
-import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModelFactory;
@@ -37,10 +35,8 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
     private static final String TAG = "TeamCardActivity";
     private static final String BASE_URL = "https://api.jolpi.ca/ergast/f1/2024/";
-    private boolean constructorToProcess = true;
-
     LoadingScreen loadingScreen;
-
+    private boolean constructorToProcess = true;
     private TextView teamPointsTextView;
 
     @Override
@@ -79,7 +75,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                     teamStanding.addView(space);
                 }
                 loadingScreen.hideLoadingScreen();
-            }else if (result instanceof Result.Error) {
+            } else if (result instanceof Result.Error) {
                 Result.Error error = (Result.Error) result;
                 Log.e(TAG, "Error: " + error.getMessage());
             }

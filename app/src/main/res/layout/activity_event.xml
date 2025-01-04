@@ -121,7 +121,7 @@
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/year"
+                        android:id="@+id/event_year"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/orbitron_bold"

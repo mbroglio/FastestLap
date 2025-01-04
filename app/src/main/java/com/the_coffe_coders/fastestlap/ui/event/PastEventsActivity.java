@@ -106,7 +106,7 @@ public class PastEventsActivity extends AppCompatActivity {
         TextView gpName = eventCard.findViewById(R.id.past_gp_name);
         gpName.setText(weeklyRace.getRaceName());
 
-        generatePodium(eventCard, weeklyRace);
+        //generatePodium(eventCard, weeklyRace);
 
         Log.i("PastEvent", "gpName: " + weeklyRace.getRaceName());
         eventCard.setOnClickListener(v -> {

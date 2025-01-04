@@ -17,6 +17,11 @@ import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 
 import org.threeten.bp.ZoneId;
 
+/**
+ * TODO:
+ *  - Fix loading screen
+ */
+
 public class HomePageActivity extends AppCompatActivity {
     private final String TAG = "HomePageActivity";
     private final ZoneId localZone = ZoneId.systemDefault();

@@ -6,11 +6,8 @@ import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -22,6 +19,7 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
@@ -68,26 +66,26 @@ public class DriversStandingActivity extends AppCompatActivity {
 
 
         data.observe(this, result -> {
-                    if (result.isSuccess()) {
-                        Log.i(TAG, "DRIVER STANDINGS SUCCESS");
-                        driverStandings = ((Result.DriverStandingsSuccess) result).getData();
+            if (result.isSuccess()) {
+                Log.i(TAG, "DRIVER STANDINGS SUCCESS");
+                driverStandings = ((Result.DriverStandingsSuccess) result).getData();
 
-                        List<DriverStandingsElement> driverList = driverStandings.getDriverStandingsElements();
-                        int initialSize = driverList.size();
-                        loadingScreen.hideLoadingScreen();
+                List<DriverStandingsElement> driverList = driverStandings.getDriverStandingsElements();
+                int initialSize = driverList.size();
+                loadingScreen.hideLoadingScreen();
 
-                        for (DriverStandingsElement driver : driverList) {
-                            View driverCard = generateDriverCard(driver, driverId);
-                            driverStanding.addView(driverCard);
-                            View space = new View(DriversStandingActivity.this);
-                            space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
-                            driverStanding.addView(space);
-                        }
-                    } else {
-                        Log.i(TAG, "DRIVER STANDINGS ERROR");
-                        loadingScreen.hideLoadingScreen();
-                    }
-                });
+                for (DriverStandingsElement driver : driverList) {
+                    View driverCard = generateDriverCard(driver, driverId);
+                    driverStanding.addView(driverCard);
+                    View space = new View(DriversStandingActivity.this);
+                    space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
+                    driverStanding.addView(space);
+                }
+            } else {
+                Log.i(TAG, "DRIVER STANDINGS ERROR");
+                loadingScreen.hideLoadingScreen();
+            }
+        });
     }
 
     private View generateDriverCard(DriverStandingsElement standingElement, String driverIdToHighlight) {
@@ -117,7 +115,7 @@ public class DriversStandingActivity extends AppCompatActivity {
 
         String points = standingElement.getPoints();
         driverPoints.setText(points);
-        
+
         if (driverId.equals(driverIdToHighlight)) {
             int startColor = ContextCompat.getColor(this, R.color.yellow); // Replace with actual highlight color
             int endColor = Color.TRANSPARENT;
