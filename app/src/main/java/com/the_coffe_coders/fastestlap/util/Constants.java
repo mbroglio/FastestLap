@@ -8,6 +8,7 @@ import java.util.Map;
 
 public class Constants {
 
+    public static final int SPACER_HEIGHT = 20;
 
     public static final String SHARED_PREFERENCES_FILENAME = "";
     //public static final String SHARED_PREFERENCES_FAVORITE_DRIVER = "driver_favorite";
@@ -368,9 +369,9 @@ public class Constants {
     }};
 
     public static final String[] SESSIONS = {
-            "FirstPractice",
-            "SecondPractice",
-            "ThirdPractice",
+            "Practice1",
+            "Practice2",
+            "Practice3",
             "SprintQualifying",
             "Sprint",
             "Qualifying",
@@ -378,9 +379,9 @@ public class Constants {
     };
 
     public static final Map<String, String> SESSION_NAMES = Map.of(
-            "FirstPractice", "Practice 1",
-            "SecondPractice", "Practice 2",
-            "ThirdPractice", "Practice 3",
+            "Practice1", "Practice 1",
+            "Practice2", "Practice 2",
+            "Practice3", "Practice 3",
             "Qualifying", "Qualifying",
             "SprintQualifying", "Sprint Qualifying",
             "Sprint", "Sprint",
@@ -388,10 +389,7 @@ public class Constants {
     );
 
     public static final Map<String, Integer> SESSION_DURATION = Map.of(
-            "FirstPractice", 60,
             "Practice", 60,
-            "SecondPractice", 60,
-            "ThirdPractice", 60,
             "Qualifying", 60,
             "SprintQualifying", 45,
             "Sprint", 60,
@@ -399,9 +397,9 @@ public class Constants {
     );
 
     public static final Map<String, Integer> SESSION_FLAG_FIELD = Map.of(
-            "FirstPractice", R.id.session_1_flag,
-            "SecondPractice", R.id.session_2_flag,
-            "ThirdPractice", R.id.session_3_flag,
+            "Practice1", R.id.session_1_flag,
+            "Practice2", R.id.session_2_flag,
+            "Practice3", R.id.session_3_flag,
             "SprintQualifying", R.id.session_2_flag,
             "Sprint", R.id.session_3_flag,
             "Qualifying", R.id.session_4_flag,
@@ -409,9 +407,9 @@ public class Constants {
     );
 
     public static final Map<String, Integer> SESSION_NAME_FIELD = Map.of(
-            "FirstPractice", R.id.session_1_name,
-            "SecondPractice", R.id.session_2_name,
-            "ThirdPractice", R.id.session_3_name,
+            "Practice1", R.id.session_1_name,
+            "Practice2", R.id.session_2_name,
+            "Practice3", R.id.session_3_name,
             "SprintQualifying", R.id.session_2_name,
             "Sprint", R.id.session_3_name,
             "Qualifying", R.id.session_4_name,
@@ -419,9 +417,9 @@ public class Constants {
     );
 
     public static final Map<String, Integer> SESSION_ROW = Map.of(
-            "FirstPractice", R.id.session_1,
-            "SecondPractice", R.id.session_2,
-            "ThirdPractice", R.id.session_3,
+            "Practice1", R.id.session_1,
+            "Practice2", R.id.session_2,
+            "Practice3", R.id.session_3,
             "SprintQualifying", R.id.session_2,
             "Sprint", R.id.session_3,
             "Qualifying", R.id.session_4,
@@ -430,9 +428,9 @@ public class Constants {
 
 
     public static final Map<String, String> SESSION_DAY = Map.of(
-            "FirstPractice", "Friday",
-            "SecondPractice", "Friday",
-            "ThirdPractice", "Saturday",
+            "Practice1", "Friday",
+            "Practice2", "Friday",
+            "Practice3", "Saturday",
             "SprintQualifying", "Friday",
             "Sprint", "Saturday",
             "Qualifying", "Saturday",
@@ -440,18 +438,18 @@ public class Constants {
     );
 
     public static final Map<String, Integer> SESSION_DAY_FIELD = Map.of(
-            "FirstPractice", R.id.session_1_day,
-            "SecondPractice", R.id.session_2_day,
-            "ThirdPractice", R.id.session_3_day,
+            "Practice1", R.id.session_1_day,
+            "Practice2", R.id.session_2_day,
+            "Practice3", R.id.session_3_day,
             "SprintQualifying", R.id.session_2_day,
             "Sprint", R.id.session_3_day,
             "Qualifying", R.id.session_4_day,
             "Race", R.id.session_5_day
     );
     public static final Map<String, Integer> SESSION_TIME_FIELD = Map.of(
-            "FirstPractice", R.id.session_1_time,
-            "SecondPractice", R.id.session_2_time,
-            "ThirdPractice", R.id.session_3_time,
+            "Practice1", R.id.session_1_time,
+            "Practice2", R.id.session_2_time,
+            "Practice3", R.id.session_3_time,
             "SprintQualifying", R.id.session_2_time,
             "Sprint", R.id.session_3_time,
             "Qualifying", R.id.session_4_time,

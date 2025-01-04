@@ -48,6 +48,18 @@ import org.threeten.bp.ZonedDateTime;
 
 import java.util.List;
 
+/**
+ * TODO:
+ *  - Fix loading screen
+ *  - Implement fetchLastRace
+ *  - Implement fetchNextRace
+ *  - Fix setNextSessionCard to check if underway for live icon
+ *  - Implement pendingResults logic
+ *  - Implement seasonEnded logic
+ *  - Fix setFavouriteConstructorCard
+ *  - Implement firebase to get favourite driver and constructor after user login
+ */
+
 public class HomeFragment extends Fragment {
     private final String TAG = HomeFragment.class.getSimpleName();
 
@@ -68,8 +80,7 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         // Show loading screen initially
@@ -88,7 +99,7 @@ public class HomeFragment extends Fragment {
     private void setLastRaceCard(View view) {
         MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchLastRace(0);
         data.observe(getViewLifecycleOwner(), result -> {
-            if(result.isSuccess()) {
+            if (result.isSuccess()) {
                 WeeklyRace raceResult = ((Result.WeeklyRaceSuccess) result).getData().get(0); // TODO: fix index requirement
                 Log.i("PastEvent", "SUCCESS");
 
@@ -97,16 +108,16 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    /*private void loadPendingResultsLayout(View view) {
+    private void loadPendingResultsLayout(View view) {
         View pendingResults = view.findViewById(R.id.pending_last_race_results);
         View results = view.findViewById(R.id.last_race_results);
 
         pendingResults.setVisibility(View.VISIBLE);
         results.setVisibility(View.GONE);
 
-        raceToProcess = false;
-        checkIfAllDataLoaded();
-    }*/
+        //raceToProcess = false;
+        //checkIfAllDataLoaded();
+    }
 
     private void showPodium(View view, WeeklyRace raceResult) {
         Race race = raceResult.getFinalRace();
@@ -154,7 +165,7 @@ public class HomeFragment extends Fragment {
     private void setNextSessionCard(View view) {
         MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchNextRace(0);
         data.observe(getViewLifecycleOwner(), result -> {
-            if(result.isSuccess()) {
+            if (result.isSuccess()) {
                 WeeklyRace nextRace = ((Result.WeeklyRaceSuccess) result).getData().get(0); // TODO: fix index requirement
                 Log.i("PastEvent", "SUCCESS");
 
@@ -195,25 +206,25 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    /*private void setSeasonEnded(View view) {
+    private void setSeasonEnded(View view) {
         View timerCard = view.findViewById(R.id.timer);
         View seasonEndedCard = view.findViewById(R.id.season_ended);
 
         timerCard.setVisibility(View.GONE);
         seasonEndedCard.setVisibility(View.VISIBLE);
 
-        nextRaceToProcess = false;
-    }*/
+        //nextRaceToProcess = false;
+    }
 
     private void startCountdown(View view, LocalDateTime eventDate) {
         LinearLayout liveIconLayout = view.findViewById(R.id.timer_live_layout);
         liveIconLayout.setVisibility(View.GONE);
         long millisUntilStart = ZonedDateTime.of(eventDate, ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis();
         new CountDownTimer(millisUntilStart, 1000) {
-            TextView days_counter = view.findViewById(R.id.next_days_counter);
-            TextView hours_counter = view.findViewById(R.id.next_hours_counter);
-            TextView minutes_counter = view.findViewById(R.id.next_minutes_counter);
-            TextView seconds_counter = view.findViewById(R.id.next_seconds_counter);
+            final TextView days_counter = view.findViewById(R.id.next_days_counter);
+            final TextView hours_counter = view.findViewById(R.id.next_hours_counter);
+            final TextView minutes_counter = view.findViewById(R.id.next_minutes_counter);
+            final TextView seconds_counter = view.findViewById(R.id.next_seconds_counter);
 
             public void onTick(long millisUntilFinished) {
                 long days = millisUntilFinished / 86400000;

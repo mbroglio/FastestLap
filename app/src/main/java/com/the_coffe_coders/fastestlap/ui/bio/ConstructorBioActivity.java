@@ -1,6 +1,7 @@
 package com.the_coffe_coders.fastestlap.ui.bio;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -12,8 +13,6 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-
-import android.graphics.Typeface;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
@@ -21,6 +20,10 @@ import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 
+/*
+ * TODO:
+ * - Implement firebase to get the data from the remote database
+ */
 
 public class ConstructorBioActivity extends AppCompatActivity {
 

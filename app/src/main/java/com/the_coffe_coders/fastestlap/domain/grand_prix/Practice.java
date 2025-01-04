@@ -27,6 +27,6 @@ public class Practice extends Session {
     }
 
     public String getPractice() {
-        return "Practice " + number + " \n" + super.toString();
+        return "Practice" + number;
     }
 }

@@ -12,6 +12,11 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 
+/*
+ * TODO:
+ * - Implement firebase to get the data from the remote database
+ */
+
 public class TrackBioActivity extends AppCompatActivity {
 
     @Override
