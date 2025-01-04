@@ -2,7 +2,6 @@ package com.the_coffe_coders.fastestlap.ui.event;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -14,35 +13,31 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
-import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModelFactory;
-import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
-import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.ZonedDateTime;
-
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+
+/*
+ * TODO:
+ *  - Fix the if(true) in generateEventCard method, it should check if a race is live
+ */
 
 public class UpcomingEventsActivity extends AppCompatActivity {
 
-    LoadingScreen loadingScreen;
-    private boolean raceToProcess = true;
-
     private static final String TAG = "UpcomingEventsActivity";
+    private final boolean raceToProcess = true;
+    LoadingScreen loadingScreen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,17 +54,16 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     }
 
     private void processEvents() {
-        Log.i("PastEvent", "Process Event");
+        Log.i("UpcomingEvents", "Process Event");
         EventViewModel eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false))).get(EventViewModel.class);
         MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getApplication(), false).fetchWeeklyRaces(0);
         data.observe(this, result -> {
-            if(result.isSuccess()) {
+            if (result.isSuccess()) {
                 List<WeeklyRace> races = ((Result.WeeklyRaceSuccess) result).getData();
-                Log.i("PastEvent", "SUCCESS");
-                Collections.reverse(races);
+                Log.i("UpcomingEvents", "SUCCESS");
 
-                List<WeeklyRace> pastRaces = eventViewModel.extractUpcomingRaces(races);
-                for (WeeklyRace race : pastRaces) {
+                List<WeeklyRace> upcomingRaces = eventViewModel.extractUpcomingRaces(races);
+                for (WeeklyRace race : upcomingRaces) {
                     createEventCard(race);
                 }
                 loadingScreen.hideLoadingScreen();
@@ -77,12 +71,12 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         });
     }
 
-    private void createEventCard(WeeklyRace race) {
+    private void createEventCard(WeeklyRace weeklyRace) {
         LinearLayout upcomingEvents = findViewById(R.id.upcoming_events_list);
-        upcomingEvents.addView(generateEventCard(race));
+        upcomingEvents.addView(generateEventCard(weeklyRace));
 
         View space = new View(UpcomingEventsActivity.this);
-        space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
+        space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, Constants.SPACER_HEIGHT));
         upcomingEvents.addView(space);
     }
 
@@ -100,10 +94,12 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         }
 
         ImageView trackOutline = eventCard.findViewById(R.id.upcoming_track_outline);
-        trackOutline.setImageResource(Constants.EVENT_CIRCUIT.get(weeklyRace.getCircuit().getCircuitId()));
+        Integer track = Constants.EVENT_CIRCUIT.get(weeklyRace.getCircuit().getCircuitId());
+        trackOutline.setImageResource(Objects.requireNonNullElseGet(track, () -> R.string.unknown));
 
         TextView roundNumber = eventCard.findViewById(R.id.upcoming_round_number);
-        roundNumber.setText("ROUND " + weeklyRace.getRound());
+        String round = "ROUND " + weeklyRace.getRound();
+        roundNumber.setText(round);
 
         TextView gpName = eventCard.findViewById(R.id.upcoming_gp_name);
         gpName.setText(weeklyRace.getRaceName());
@@ -111,7 +107,8 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         TextView gpDate = eventCard.findViewById(R.id.upcoming_date);
         String fp1Day = String.valueOf(weeklyRace.getFirstPractice().getStartDateTime().getDayOfMonth());
         String raceDay = String.valueOf(weeklyRace.getDateTime().getDayOfMonth());
-        gpDate.setText(fp1Day + " - " + raceDay);
+        String date = fp1Day + " - " + raceDay;
+        gpDate.setText(date);
 
         TextView gpMonth = eventCard.findViewById(R.id.upcoming_month);
         String fp1Month = weeklyRace.getDateTime().getMonth().toString().substring(0, 3);

@@ -25,17 +25,17 @@ import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import org.threeten.bp.LocalDateTime;
-import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZonedDateTime;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+
+/*
+ * TODO:
+ *  - Fix race.getFinalRace().getResults() to get the correct results, raceResultsRepository must be implemented
+ */
 
 public class PastEventsActivity extends AppCompatActivity {
-
-    private ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
-    private int raceIndex = 1;
-    private boolean raceToProcess = true;
 
     LoadingScreen loadingScreen;
 
@@ -59,7 +59,7 @@ public class PastEventsActivity extends AppCompatActivity {
         EventViewModel eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false))).get(EventViewModel.class);
         MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getApplication(), false).fetchWeeklyRaces(0);
         data.observe(this, result -> {
-            if(result.isSuccess()) {
+            if (result.isSuccess()) {
                 List<WeeklyRace> races = ((Result.WeeklyRaceSuccess) result).getData();
                 Log.i("PastEvent", "SUCCESS");
                 Collections.reverse(races);
@@ -82,10 +82,10 @@ public class PastEventsActivity extends AppCompatActivity {
         pastEvents.addView(space);
     }
 
-    private View generateEventCard(WeeklyRace race) {
+    private View generateEventCard(WeeklyRace weeklyRace) {
         View eventCard = getLayoutInflater().inflate(R.layout.past_event_card, null);
 
-        LocalDateTime raceDateTime = race.getDateTime();
+        LocalDateTime raceDateTime = weeklyRace.getDateTime();
 
         TextView day = eventCard.findViewById(R.id.past_date);
         String dayString = raceDateTime.getDayOfMonth() + "";
@@ -96,32 +96,36 @@ public class PastEventsActivity extends AppCompatActivity {
         month.setText(monthString);
 
         ImageView trackOutline = eventCard.findViewById(R.id.past_track_outline);
-        trackOutline.setImageResource(Constants.EVENT_CIRCUIT.get(race.getCircuit().getCircuitId()));
+        Integer track = Constants.EVENT_CIRCUIT.get(weeklyRace.getCircuit().getCircuitId());
+        trackOutline.setImageResource(Objects.requireNonNullElseGet(track, () -> R.string.unknown));
 
         TextView round = eventCard.findViewById(R.id.past_round_number);
-        round.setText("ROUND " + race.getRound());
+        String roundString = "ROUND " + weeklyRace.getRound();
+        round.setText(roundString);
 
         TextView gpName = eventCard.findViewById(R.id.past_gp_name);
-        gpName.setText(race.getRaceName());
+        gpName.setText(weeklyRace.getRaceName());
 
-        generatePodium(eventCard, race);
+        generatePodium(eventCard, weeklyRace);
 
-        Log.i("PastEvent", "gpName: " + race.getRaceName());
+        Log.i("PastEvent", "gpName: " + weeklyRace.getRaceName());
         eventCard.setOnClickListener(v -> {
             Intent intent = new Intent(PastEventsActivity.this, EventActivity.class);
-            intent.putExtra("CIRCUIT_ID", race.getCircuit().getCircuitId());
+            intent.putExtra("CIRCUIT_ID", weeklyRace.getCircuit().getCircuitId());
             startActivity(intent);
         });
         return eventCard;
     }
 
-    private void generatePodium(View eventCard, WeeklyRace race) {
-        List<RaceResult> raceResults = race.getFinalRace().getResults();
+    private void generatePodium(View eventCard, WeeklyRace weeklyRace) {
+        List<RaceResult> raceResults = weeklyRace.getFinalRace().getResults();
 
         for (int i = 0; i < 3; i++) {
             RaceResult raceResult = raceResults.get(i);
             TextView driverName = eventCard.findViewById(Constants.PAST_RACE_DRIVER_NAME.get(i));
-            driverName.setText(Constants.DRIVER_FULLNAME.get(raceResult.getDriver().getDriverId()));
+
+            Integer driverFullName = Constants.DRIVER_FULLNAME.get(raceResult.getDriver().getDriverId());
+            driverName.setText(Objects.requireNonNullElseGet(driverFullName, () -> R.string.unknown));
         }
     }
 }

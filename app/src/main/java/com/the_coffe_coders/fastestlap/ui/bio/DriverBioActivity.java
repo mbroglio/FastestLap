@@ -24,6 +24,11 @@ import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 
+/*
+ * TODO:
+ * - Implement firebase to get the data from the remote database
+ */
+
 public class DriverBioActivity extends AppCompatActivity {
 
     @Override
