@@ -139,7 +139,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="George Russell"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="12sp">
 
@@ -170,7 +170,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="Lewis Hamilton"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="12sp">
 
@@ -201,7 +201,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="Carlos Sainz"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="12sp">
 
