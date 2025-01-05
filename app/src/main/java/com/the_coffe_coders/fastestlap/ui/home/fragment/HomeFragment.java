@@ -54,8 +54,6 @@ import java.util.List;
  *  - Implement fetchLastRace
  *  - Implement fetchNextRace
  *  - Fix setNextSessionCard to check if underway for live icon
- *  - Implement pendingResults logic
- *  - Implement seasonEnded logic
  *  - Fix setFavouriteConstructorCard
  *  - Implement firebase to get favourite driver and constructor after user login
  */
@@ -88,8 +86,8 @@ public class HomeFragment extends Fragment {
         loadingScreen.showLoadingScreen();*/
 
 
-        //setLastRaceCard(view);
-        //setNextSessionCard(view);
+        setLastRaceCard(view);
+        setNextSessionCard(view);
         setFavouriteDriverCard(view);
         setFavouriteConstructorCard(view);
 
@@ -98,14 +96,18 @@ public class HomeFragment extends Fragment {
 
     private void setLastRaceCard(View view) {
         MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchLastRace(0);
-        data.observe(getViewLifecycleOwner(), result -> {
-            if (result.isSuccess()) {
-                WeeklyRace raceResult = ((Result.WeeklyRaceSuccess) result).getData().get(0); // TODO: fix index requirement
-                Log.i("PastEvent", "SUCCESS");
+        try {
+            data.observe(getViewLifecycleOwner(), result -> {
+                if (result.isSuccess()) {
+                    WeeklyRace raceResult = ((Result.WeeklyRaceSuccess) result).getData().get(0); // TODO: fix index requirement
+                    Log.i("PastEvent", "SUCCESS");
 
-                showPodium(view, raceResult);
-            }
-        });
+                    showPodium(view, raceResult);
+                }
+            });
+        } catch (Exception e) {
+            loadPendingResultsLayout(view);
+        }
     }
 
     private void loadPendingResultsLayout(View view) {
@@ -164,15 +166,18 @@ public class HomeFragment extends Fragment {
 
     private void setNextSessionCard(View view) {
         MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchNextRace(0);
-        data.observe(getViewLifecycleOwner(), result -> {
-            if (result.isSuccess()) {
-                WeeklyRace nextRace = ((Result.WeeklyRaceSuccess) result).getData().get(0); // TODO: fix index requirement
-                Log.i("PastEvent", "SUCCESS");
+        try {
+            data.observe(getViewLifecycleOwner(), result -> {
+                if (result.isSuccess()) {
+                    WeeklyRace nextRace = ((Result.WeeklyRaceSuccess) result).getData().get(0); // TODO: fix index requirement
+                    Log.i("PastEvent", "SUCCESS");
 
-
-                processNextRace(view, nextRace);
-            }
-        });
+                    processNextRace(view, nextRace);
+                }
+            });
+        } catch (Exception e) {
+            setSeasonEnded(view);
+        }
 
         // CHECK IF CORRECT
         ImageView iconImageView = view.findViewById(R.id.live_icon);

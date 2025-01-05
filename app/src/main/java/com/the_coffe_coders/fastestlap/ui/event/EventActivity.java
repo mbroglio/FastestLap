@@ -40,7 +40,6 @@ import java.util.Objects;
 
 /*
  * TODO:
- *  - Implement pendingResults logic
  *  - Implement raceCancelled logic
  *  - Fix raceResult logic
  */
@@ -193,14 +192,13 @@ public class EventActivity extends AppCompatActivity {
     private void showResults(WeeklyRace weeklyRace) {
         View countdownView = findViewById(R.id.timer_card_countdown);
         View resultsView = findViewById(R.id.timer_card_results);
-        View pendingResultsView = findViewById(R.id.timer_card_pending_results);
         View raceCancelledView = findViewById(R.id.timer_card_race_cancelled);
 
         // Hide countdown view and show results view
         countdownView.setVisibility(View.GONE);
         resultsView.setVisibility(View.VISIBLE);
 
-        //processRaceResults(weeklyRace);
+        processRaceResults(weeklyRace);
 
         // Set podium circuit image
         ImageView trackOutline = findViewById(R.id.track_outline_image);
@@ -211,17 +209,21 @@ public class EventActivity extends AppCompatActivity {
     private void processRaceResults(WeeklyRace raceResults) {
         List<RaceResult> podium = raceResults.getFinalRace().getResults();
 
-        for (int i = 0; i < 3; i++) {
-            String driverId = podium.get(i).getDriver().getDriverId();
-            String teamId = podium.get(i).getConstructor().getConstructorId();
+        if (podium == null) {
+            showPendingResults();
+        } else {
+            for (int i = 0; i < 3; i++) {
+                String driverId = podium.get(i).getDriver().getDriverId();
+                String teamId = podium.get(i).getConstructor().getConstructorId();
 
-            TextView driverName = findViewById(Constants.PODIUM_DRIVER_NAME.get(i));
-            Integer driverNameObj = Constants.DRIVER_FULLNAME.get(driverId);
-            driverName.setText(Objects.requireNonNullElseGet(driverNameObj, () -> R.string.unknown));
+                TextView driverName = findViewById(Constants.PODIUM_DRIVER_NAME.get(i));
+                Integer driverNameObj = Constants.DRIVER_FULLNAME.get(driverId);
+                driverName.setText(Objects.requireNonNullElseGet(driverNameObj, () -> R.string.unknown));
 
-            LinearLayout teamColor = findViewById(Constants.PODIUM_TEAM_COLOR.get(i));
-            Integer teamColorObj = Constants.TEAM_COLOR.get(teamId);
-            teamColor.setBackgroundColor(ContextCompat.getColor(this, Objects.requireNonNullElseGet(teamColorObj, () -> R.color.mercedes_f1)));
+                LinearLayout teamColor = findViewById(Constants.PODIUM_TEAM_COLOR.get(i));
+                Integer teamColorObj = Constants.TEAM_COLOR.get(teamId);
+                teamColor.setBackgroundColor(ContextCompat.getColor(this, Objects.requireNonNullElseGet(teamColorObj, () -> R.color.mercedes_f1)));
+            }
         }
     }
 
@@ -241,7 +243,7 @@ public class EventActivity extends AppCompatActivity {
 
         for (Session session : sessions) {
             sessionId = session.getClass().getSimpleName();
-            if(sessionId.equals("Practice")) {
+            if (sessionId.equals("Practice")) {
                 Practice practice = (Practice) session;
                 sessionId = practice.getPractice();
             }
@@ -262,7 +264,7 @@ public class EventActivity extends AppCompatActivity {
 
     private void setChequeredFlag(Session session) {
         String sessionId = session.getClass().getSimpleName();
-        if(sessionId.equals("Practice")) {
+        if (sessionId.equals("Practice")) {
             Practice practice = (Practice) session;
             sessionId = practice.getPractice();
         }
