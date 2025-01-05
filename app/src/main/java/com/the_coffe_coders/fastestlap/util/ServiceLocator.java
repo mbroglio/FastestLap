@@ -159,11 +159,6 @@ public class ServiceLocator {
             }
 
             @Override
-            public Call<ResponseBody> getResults() {
-                return null;
-            }
-
-            @Override
             public Call<ResponseBody> getNextRace() {
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(CURRENT_YEAR_BASE_URL)
@@ -209,13 +204,13 @@ public class ServiceLocator {
             }
 
             @Override
-            public Call<ResponseBody> getResults() {
+            public Call<ResponseBody> getRaceResults() {
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(CURRENT_YEAR_BASE_URL)
                         .addConverterFactory(ScalarsConverterFactory.create())
                         .build();
 
-                return retrofit.create(ErgastAPIService.class).getResults();
+                return retrofit.create(ErgastAPIService.class).getRaceResults();
             }
 
             @Override
@@ -229,6 +224,23 @@ public class ServiceLocator {
             }
         };
     }
+
+    public ErgastAPIService getRaceResultsAPIService() {
+        return new ErgastAPIService() {
+            @Override
+            public Call<ResponseBody> getRaceResults() {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+
+                return retrofit.create(ErgastAPIService.class).getRaceResults();
+            }
+        }
+
+    }
+
+
 
     public AppRoomDatabase getRoomDatabase(Application application) {
         return AppRoomDatabase.getDatabase(application);
