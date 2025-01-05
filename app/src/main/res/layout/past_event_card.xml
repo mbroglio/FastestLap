@@ -115,7 +115,7 @@
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="8dp"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
@@ -221,18 +221,19 @@
                     android:fontFamily="@font/orbitron_bold"
                     android:text="@string/pending_results_upper_case"
                     android:textColor="@color/white"
-                    android:visibility="visible">
+                    android:visibility="gone">
 
                 </TextView>
 
                 <ImageView
+                    android:id="@+id/paste_event_card_arrow"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentBottom="true"
                     android:layout_marginEnd="5dp"
                     android:layout_marginBottom="5dp"
-                    android:visibility="gone"
+                    android:visibility="visible"
                     app:srcCompat="@drawable/play_icon_white">
 
                 </ImageView>

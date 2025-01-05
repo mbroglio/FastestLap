@@ -134,6 +134,12 @@ public class PastEventsActivity extends AppCompatActivity {
     }
 
     private void setPendingPodium(View eventCard) {
+        View pendingResults = eventCard.findViewById(R.id.pending_results_text);
+        View podium = eventCard.findViewById(R.id.race_podium);
+        View arrow = eventCard.findViewById(R.id.paste_event_card_arrow);
 
+        pendingResults.setVisibility(View.VISIBLE);
+        podium.setVisibility(View.GONE);
+        arrow.setVisibility(View.GONE);
     }
 }
