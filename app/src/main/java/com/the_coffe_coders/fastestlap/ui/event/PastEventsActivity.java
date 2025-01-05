@@ -106,7 +106,7 @@ public class PastEventsActivity extends AppCompatActivity {
         TextView gpName = eventCard.findViewById(R.id.past_gp_name);
         gpName.setText(weeklyRace.getRaceName());
 
-        //generatePodium(eventCard, weeklyRace);
+        generatePodium(eventCard, weeklyRace);
 
         Log.i("PastEvent", "gpName: " + weeklyRace.getRaceName());
         eventCard.setOnClickListener(v -> {
@@ -120,12 +120,20 @@ public class PastEventsActivity extends AppCompatActivity {
     private void generatePodium(View eventCard, WeeklyRace weeklyRace) {
         List<RaceResult> raceResults = weeklyRace.getFinalRace().getResults();
 
-        for (int i = 0; i < 3; i++) {
-            RaceResult raceResult = raceResults.get(i);
-            TextView driverName = eventCard.findViewById(Constants.PAST_RACE_DRIVER_NAME.get(i));
+        try {
+            for (int i = 0; i < 3; i++) {
+                RaceResult raceResult = raceResults.get(i);
+                TextView driverName = eventCard.findViewById(Constants.PAST_RACE_DRIVER_NAME.get(i));
 
-            Integer driverFullName = Constants.DRIVER_FULLNAME.get(raceResult.getDriver().getDriverId());
-            driverName.setText(Objects.requireNonNullElseGet(driverFullName, () -> R.string.unknown));
+                Integer driverFullName = Constants.DRIVER_FULLNAME.get(raceResult.getDriver().getDriverId());
+                driverName.setText(Objects.requireNonNullElseGet(driverFullName, () -> R.string.unknown));
+            }
+        } catch (Exception e) {
+            setPendingPodium(eventCard);
         }
+    }
+
+    private void setPendingPodium(View eventCard) {
+
     }
 }

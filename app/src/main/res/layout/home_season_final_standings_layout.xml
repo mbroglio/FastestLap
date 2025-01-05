@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/screen_background_color">
+    android:background="@color/screen_background_color"
+    android:id="@+id/home_season_final_standings">
 
     <LinearLayout
         android:id="@+id/title"
@@ -20,7 +21,7 @@
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="5dp"
             android:fontFamily="@font/orbitron_bold"
-            android:text="@string/last_season_results_upper_case"
+            android:text="@string/season_final_results"
             android:textColor="@color/white"
             android:textSize="20sp">
 

@@ -92,7 +92,7 @@
     <string name="standings_menu">Standings</string>
     <string name="no_live_session_available_upper_case">NO LIVE SESSION\nAVAILABLE</string>
     <string name="season_ended_upper_case">SEASON ENDED</string>
-    <string name="last_season_results_upper_case">LAST SEASON RESULTS</string>
+    <string name="season_final_results">SEASON FINAL RESULTS</string>
     <string name="pending_results_upper_case">PENDING RESULTS</string>
     <string name="already_registered">Already registered?\n</string>
     <string name="email">Email</string>
