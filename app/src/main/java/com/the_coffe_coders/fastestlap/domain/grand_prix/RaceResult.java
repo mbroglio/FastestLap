@@ -1,9 +1,13 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
+import androidx.room.PrimaryKey;
+
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 
 public class RaceResult {
+    @PrimaryKey(autoGenerate = true)
+    private int uid;
     private String position;
     private String points;
     private Driver driver;
