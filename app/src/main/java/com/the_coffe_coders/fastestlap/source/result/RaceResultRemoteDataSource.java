@@ -29,12 +29,12 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource{
     private static final String TAG = "RaceResultRemoteDataSource";
 
     public RaceResultRemoteDataSource(String apiKey) {
-        this.ergastAPIService = ServiceLocator.getInstance().getRaceResultsAPIService();
+        this.ergastAPIService = ServiceLocator.getInstance().getConcreteErgastAPIService();
     }
 
     @Override
-    public void getRaceResults() {
-        Call<ResponseBody> responseCall = ergastAPIService.getRaceResults();
+    public void getRaceResults(int round) {
+        Call<ResponseBody> responseCall = ergastAPIService.getRaceResults(round);
         Log.i(TAG, "getRaceResults from remote");
         responseCall.enqueue(new Callback<>() {
             @Override

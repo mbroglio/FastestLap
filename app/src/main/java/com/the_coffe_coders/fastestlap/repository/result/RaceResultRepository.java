@@ -29,11 +29,11 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
     }
 
     @Override
-    public MutableLiveData<Result> fetchRaceResults(long lastUpdate) {
+    public MutableLiveData<Result> fetchRaceResults(int round, long lastUpdate) {
         if(isOutdate) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
             //TODO fetch from remote
 
-            raceResultRemoteDataSource.getRaceResults();
+            raceResultRemoteDataSource.getRaceResults(round);
             isOutdate = false;
         }else {
             Log.i(TAG, "fetchRaceResults from local");

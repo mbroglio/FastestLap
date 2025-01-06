@@ -7,5 +7,5 @@ public abstract class BaseRaceResultRemoteDataSource {
     public void setRaceResultCallback(RaceResultResponseCallback raceResultCallback) {
         this.raceResultCallback = raceResultCallback;
     }
-    public abstract void getRaceResults();
+    public abstract void getRaceResults(int round);
 }

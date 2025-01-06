@@ -33,7 +33,7 @@ public class ConstructorRemoteDataSource extends BaseConstructorRemoteDataSource
     private final ErgastAPIService ergastAPIService;
 
     public ConstructorRemoteDataSource(String apiKey) {
-        this.ergastAPIService = ServiceLocator.getInstance().getConstructorAPIService();
+        this.ergastAPIService = ServiceLocator.getInstance().getConcreteErgastAPIService    ();
     }
 
     @Override

@@ -28,7 +28,7 @@ public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource {
     private static final String TAG = "WeeklyRaceRemoteDataSource";
 
     public WeeklyRaceRemoteDataSource(String apiKey) {
-        this.ergastAPIService = ServiceLocator.getInstance().getWeeklyRaceAPIService();
+        this.ergastAPIService = ServiceLocator.getInstance().getConcreteErgastAPIService();
     }
 
     @Override

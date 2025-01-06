@@ -1,7 +1,6 @@
 package com.the_coffe_coders.fastestlap.util;
 
 import android.app.Application;
-import android.util.Log;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
@@ -41,73 +40,10 @@ public class ServiceLocator {
         }
         return instance;
     }
-
-    public ErgastAPIService getConstructorAPIService() {
+    
+    public ErgastAPIService getConcreteErgastAPIService() {
         return new ErgastAPIService() {
-            @Override
-            public Call<ResponseBody> getConstructorStandings() {
-                Log.i("ServiceLocator", "getConstructorStandings");
-                HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-                loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-                // Build an OkHttpClient with the logging interceptor
-                OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                        .addInterceptor(loggingInterceptor)
-                        .build();
-
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(CURRENT_YEAR_BASE_URL)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .client(okHttpClient)
-                        .build();
-
-                return retrofit.create(ErgastAPIService.class).getConstructorStandings();
-            }
-
-            @Override
-            public Call<ResponseBody> getDriverStandings() {
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(CURRENT_YEAR_BASE_URL)
-                        .addConverterFactory(ScalarsConverterFactory.create())
-                        .build();
-
-                return retrofit.create(ErgastAPIService.class).getDriverStandings();
-            }
-
-            @Override
-            public Call<ResponseBody> getRaces() {
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(CURRENT_YEAR_BASE_URL)
-                        .addConverterFactory(ScalarsConverterFactory.create())
-                        .build();
-
-                return retrofit.create(ErgastAPIService.class).getRaces();
-            }
-
-            @Override
-            public Call<ResponseBody> getLastRaceResults() {
-                return null;
-            }
-
-            @Override
-            public Call<ResponseBody> getResults() {
-                return null;
-            }
-
-            @Override
-            public Call<ResponseBody> getNextRace() {
-                return null;
-            }
-
-            @Override
-            public Call<ResponseBody> getCircuits() {
-                return null;
-            }
-        };
-    }
-
-    public ErgastAPIService getDriverAPIService() {
-        return new ErgastAPIService() {
             @Override
             public Call<ResponseBody> getConstructorStandings() {
                 Retrofit retrofit = new Retrofit.Builder()
@@ -141,12 +77,12 @@ public class ServiceLocator {
             public Call<ResponseBody> getRaces() {
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(CURRENT_YEAR_BASE_URL)
-                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .addConverterFactory(GsonConverterFactory.create())
                         .build();
 
                 return retrofit.create(ErgastAPIService.class).getRaces();
             }
-
+            
             @Override
             public Call<ResponseBody> getLastRaceResults() {
 
@@ -156,6 +92,16 @@ public class ServiceLocator {
                         .build();
 
                 return retrofit.create(ErgastAPIService.class).getLastRaceResults();
+            }
+
+            @Override
+            public Call<ResponseBody> getRaceResults(int round) {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+
+                return retrofit.create(ErgastAPIService.class).getRaceResults(round);
             }
 
             @Override
@@ -174,73 +120,6 @@ public class ServiceLocator {
             }
         };
     }
-
-    public ErgastAPIService getWeeklyRaceAPIService() {
-        return new ErgastAPIService() {
-
-            @Override
-            public Call<ResponseBody> getConstructorStandings() {
-                return null;
-            }
-
-            @Override
-            public Call<ResponseBody> getDriverStandings() {
-                return null;
-            }
-
-            @Override
-            public Call<ResponseBody> getRaces() {
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(CURRENT_YEAR_BASE_URL)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .build();
-
-                return retrofit.create(ErgastAPIService.class).getRaces();
-            }
-
-            @Override
-            public Call<ResponseBody> getLastRaceResults() {
-                return null;
-            }
-
-            @Override
-            public Call<ResponseBody> getRaceResults() {
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(CURRENT_YEAR_BASE_URL)
-                        .addConverterFactory(ScalarsConverterFactory.create())
-                        .build();
-
-                return retrofit.create(ErgastAPIService.class).getRaceResults();
-            }
-
-            @Override
-            public Call<ResponseBody> getNextRace() {
-                return null;
-            }
-
-            @Override
-            public Call<ResponseBody> getCircuits() {
-                return null;
-            }
-        };
-    }
-
-    public ErgastAPIService getRaceResultsAPIService() {
-        return new ErgastAPIService() {
-            @Override
-            public Call<ResponseBody> getRaceResults() {
-                Retrofit retrofit = new Retrofit.Builder()
-                        .baseUrl(CURRENT_YEAR_BASE_URL)
-                        .addConverterFactory(ScalarsConverterFactory.create())
-                        .build();
-
-                return retrofit.create(ErgastAPIService.class).getRaceResults();
-            }
-        }
-
-    }
-
-
 
     public AppRoomDatabase getRoomDatabase(Application application) {
         return AppRoomDatabase.getDatabase(application);
