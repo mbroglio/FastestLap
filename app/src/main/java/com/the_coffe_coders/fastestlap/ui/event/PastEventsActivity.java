@@ -33,14 +33,16 @@ import java.util.Objects;
 public class PastEventsActivity extends AppCompatActivity {
 
     LoadingScreen loadingScreen;
+    EventViewModel eventViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_past_events);
-        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
+        eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false))).get(EventViewModel.class);
 
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
         loadingScreen.showLoadingScreen();
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
@@ -113,19 +115,24 @@ public class PastEventsActivity extends AppCompatActivity {
     }
 
     private void generatePodium(View eventCard, WeeklyRace weeklyRace) {
-        List<RaceResult> raceResults = weeklyRace.getFinalRace().getResults();
+        MutableLiveData<Result> resultMutableLiveData = eventViewModel.getRaceResults(0L, weeklyRace.getRound());
+        resultMutableLiveData.observe(this, result -> {
+            List<RaceResult> podium = ((Result.RaceResultSuccess) result).getData();
+            try {
+                for (int i = 0; i < 3; i++) {
+                    RaceResult raceResult = podium.get(i);
+                    Log.i("PastEvent", "raceResult: " + weeklyRace.getRaceName() + " " + raceResult.getDriver().getDriverId() + i);
+                    TextView driverName = eventCard.findViewById(Constants.PAST_RACE_DRIVER_NAME.get(i));
 
-        try {
-            for (int i = 0; i < 3; i++) {
-                RaceResult raceResult = raceResults.get(i);
-                TextView driverName = eventCard.findViewById(Constants.PAST_RACE_DRIVER_NAME.get(i));
-
-                Integer driverFullName = Constants.DRIVER_FULLNAME.get(raceResult.getDriver().getDriverId());
-                driverName.setText(Objects.requireNonNullElseGet(driverFullName, () -> R.string.unknown));
+                    Integer driverFullName = Constants.DRIVER_FULLNAME.get(raceResult.getDriver().getDriverId());
+                    driverName.setText(Objects.requireNonNullElseGet(driverFullName, () -> R.string.unknown));
+                }
+            } catch (Exception e) {
+                setPendingPodium(eventCard);
             }
-        } catch (Exception e) {
-            setPendingPodium(eventCard);
-        }
+
+            loadingScreen.hideLoadingScreen();
+        });
     }
 
     private void setPendingPodium(View eventCard) {
