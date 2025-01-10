@@ -41,19 +41,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-/*
- * TODO:
- *  - Implement raceCancelled logic
- *  - Fix raceResult logic
- */
-
 public class EventActivity extends AppCompatActivity {
     private static final String TAG = "EventActivity";
     private final boolean eventToProcess = true;
     LoadingScreen loadingScreen;
-    private String circuitId;
-
     EventViewModel eventViewModel;
+    private String circuitId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,8 +75,8 @@ public class EventActivity extends AppCompatActivity {
                 races.addAll(((Result.WeeklyRaceSuccess) result).getData());
                 loadingScreen.hideLoadingScreen();
                 WeeklyRace weeklyRace = null;
-                for(WeeklyRace race : races){
-                    if(race.getCircuit().getCircuitId().equals(circuitId)){
+                for (WeeklyRace race : races) {
+                    if (race.getCircuit().getCircuitId().equals(circuitId)) {
                         weeklyRace = race;
                     }
                 }

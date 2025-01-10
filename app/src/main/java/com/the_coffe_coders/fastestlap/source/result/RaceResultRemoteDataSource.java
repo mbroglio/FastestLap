@@ -8,9 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.api.RaceResultsAPIResponse;
-import com.the_coffe_coders.fastestlap.repository.weeklyrace.OperationType;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
@@ -22,11 +20,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource{
-
-    private final ErgastAPIService ergastAPIService;
+public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
 
     private static final String TAG = "RaceResultRemoteDataSource";
+    private final ErgastAPIService ergastAPIService;
 
     public RaceResultRemoteDataSource(String apiKey) {
         this.ergastAPIService = ServiceLocator.getInstance().getConcreteErgastAPIService();

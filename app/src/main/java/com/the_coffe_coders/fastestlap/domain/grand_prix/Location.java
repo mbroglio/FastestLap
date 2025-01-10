@@ -13,7 +13,8 @@ public class Location {
         this.country = country;
     }
 
-    public Location() {}
+    public Location() {
+    }
 
     public String getLat() {
         return lat;

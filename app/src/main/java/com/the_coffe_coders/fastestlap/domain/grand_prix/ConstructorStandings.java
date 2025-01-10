@@ -4,6 +4,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import java.util.List;
+
 @Entity(tableName = "ConstructorStandings")
 public class ConstructorStandings {
     @PrimaryKey(autoGenerate = true)

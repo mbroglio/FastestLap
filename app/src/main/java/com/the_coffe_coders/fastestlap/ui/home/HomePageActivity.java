@@ -14,7 +14,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 
-
 import org.threeten.bp.ZoneId;
 
 /**

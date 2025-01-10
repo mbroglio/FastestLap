@@ -3,7 +3,7 @@ package com.the_coffe_coders.fastestlap.api;
 import com.google.gson.annotations.SerializedName;
 import com.the_coffe_coders.fastestlap.dto.ConstructorStandingsTableDTO;
 
-public class ConstructorStandingsAPIResponse extends APIResponse{
+public class ConstructorStandingsAPIResponse extends APIResponse {
     @SerializedName("StandingsTable")
     private ConstructorStandingsTableDTO ConstructorStandingsTableDTO;
 
@@ -22,6 +22,6 @@ public class ConstructorStandingsAPIResponse extends APIResponse{
 
     @Override
     public String toString() {
-        return "StandingsAPIResponse{" + super.toString() + "StandingsTable=" + ConstructorStandingsTableDTO + "}" ;
+        return "StandingsAPIResponse{" + super.toString() + "StandingsTable=" + ConstructorStandingsTableDTO + "}";
     }
 }

@@ -43,7 +43,7 @@ public class ServiceLocator {
         }
         return instance;
     }
-    
+
     public ErgastAPIService getConcreteErgastAPIService() {
         return new ErgastAPIService() {
 
@@ -85,7 +85,7 @@ public class ServiceLocator {
 
                 return retrofit.create(ErgastAPIService.class).getRaces();
             }
-            
+
             @Override
             public Call<ResponseBody> getLastRaceResults() {
 
@@ -157,7 +157,7 @@ public class ServiceLocator {
                     new DriverMockDataSource(jsonParserUtil);*/
         } else {
             constructorRemoteDataSource = new ConstructorRemoteDataSource("");
-    }
+        }
 
         constructorLocalDataSource = new ConstructorLocalDataSource(getRoomDatabase(application), sharedPreferencesUtil);
 

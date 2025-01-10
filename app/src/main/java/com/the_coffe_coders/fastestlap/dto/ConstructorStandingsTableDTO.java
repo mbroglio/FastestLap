@@ -41,8 +41,8 @@ public class ConstructorStandingsTableDTO {
     public String toString() {
         return "StandingsTable{" +
                 "season='" + season +
-        ", round='" + round +
-        ", StandingsLists=" + StandingsLists +
+                ", round='" + round +
+                ", StandingsLists=" + StandingsLists +
                 '}';
     }
 }

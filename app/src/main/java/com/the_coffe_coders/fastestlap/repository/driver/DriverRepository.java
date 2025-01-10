@@ -2,11 +2,13 @@ package com.the_coffe_coders.fastestlap.repository.driver;
 
 
 import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
+
 import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.driver.DriverAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.driver.Driver;
+import com.the_coffe_coders.fastestlap.domain.driver.DriverAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.mapper.DriverStandingsMapper;
 import com.the_coffe_coders.fastestlap.source.driver.BaseDriverLocalDataSource;
@@ -16,16 +18,13 @@ import java.util.List;
 
 public class DriverRepository implements IDriverRepository, DriverResponseCallback {
 
-    String TAG = "DriverRepository";
-
     public static long FRESH_TIMEOUT = 60000;
-
     public static boolean isOutdate = true;
-
     private final MutableLiveData<Result> allDriverMutableLiveData;//shuld be final
     private final MutableLiveData<Result> driverStandingsMutableLiveData;//shuld be final
     private final BaseDriverRemoteDataSource driverRemoteDataSource;//shuld be final
     private final BaseDriverLocalDataSource driverLocalDataSource;//shuld be final
+    String TAG = "DriverRepository";
 
     public DriverRepository(BaseDriverRemoteDataSource driverRemoteDataSource, BaseDriverLocalDataSource driverLocalDataSource) {
         this.allDriverMutableLiveData = new MutableLiveData<>();
@@ -43,10 +42,10 @@ public class DriverRepository implements IDriverRepository, DriverResponseCallba
         System.out.println(lastUpdate);
         System.out.println("FETCH DRIVER METHOD");
         Log.i(TAG, "FETCH DRIVER METHOD");
-        if(currentTime - lastUpdate > FRESH_TIMEOUT) { //currentTime - lastUpdate > FRESH_TIMEOUT
+        if (currentTime - lastUpdate > FRESH_TIMEOUT) { //currentTime - lastUpdate > FRESH_TIMEOUT
             driverRemoteDataSource.getDrivers();
         } else {
-          driverLocalDataSource.getDrivers();
+            driverLocalDataSource.getDrivers();
         }
 
         return allDriverMutableLiveData;
@@ -56,7 +55,7 @@ public class DriverRepository implements IDriverRepository, DriverResponseCallba
     public MutableLiveData<Result> fetchDriver(String driverId, long lastUpdate) {
         long currentTime = System.currentTimeMillis();
 
-        if(isOutdate) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT
+        if (isOutdate) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT
             driverRemoteDataSource.getDrivers();
             isOutdate = false;
         } else {
@@ -65,12 +64,13 @@ public class DriverRepository implements IDriverRepository, DriverResponseCallba
 
         return null;
     }
+
     @Override
     public MutableLiveData<Result> fetchDriversStandings(long lastUpdate) {
         long currentTime = System.currentTimeMillis();
         //controllo che il dispositivo sia collegato ad internet
         Log.i(TAG, "FETCH DRIVER STANDINGS METHOD");
-        if(isOutdate) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT
+        if (isOutdate) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT
             Log.i(TAG, "FETCH DRIVER STANDINGS METHOD");
             driverRemoteDataSource.getDriversStandings();
             isOutdate = false;

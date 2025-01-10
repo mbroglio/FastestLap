@@ -5,17 +5,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
-import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-import androidx.room.TypeConverter;
-import androidx.room.TypeConverters;
-//gson import
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -23,6 +15,17 @@ import java.util.Objects;
 @Entity(tableName = "DriverStandings")
 public class DriverStandings implements Parcelable {
 
+    public static final Creator<DriverStandings> CREATOR = new Creator<DriverStandings>() {
+        @Override
+        public DriverStandings createFromParcel(Parcel in) {
+            return new DriverStandings(in);
+        }
+
+        @Override
+        public DriverStandings[] newArray(int size) {
+            return new DriverStandings[size];
+        }
+    };
     @PrimaryKey(autoGenerate = true)
     private long uid;
     private String season;
@@ -46,18 +49,6 @@ public class DriverStandings implements Parcelable {
         round = in.readString();
         driverStandingsElements = in.createTypedArrayList(DriverStandingsElement.CREATOR);
     }
-
-    public static final Creator<DriverStandings> CREATOR = new Creator<DriverStandings>() {
-        @Override
-        public DriverStandings createFromParcel(Parcel in) {
-            return new DriverStandings(in);
-        }
-
-        @Override
-        public DriverStandings[] newArray(int size) {
-            return new DriverStandings[size];
-        }
-    };
 
     //@Override
     public int describeContents() {

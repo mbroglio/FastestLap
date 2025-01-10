@@ -1,5 +1,7 @@
 package com.the_coffe_coders.fastestlap.database;
+
 import androidx.room.TypeConverter;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
@@ -32,7 +34,8 @@ public class DatabaseConverters {
     @TypeConverter
     public static List<DriverStandingsElement> toDrvierStandingsElementList(String json) {
         Gson gson = new Gson();
-        Type listType = new TypeToken<List<DriverStandingsElement>>() {}.getType();
+        Type listType = new TypeToken<List<DriverStandingsElement>>() {
+        }.getType();
         return gson.fromJson(json, listType);
     }
 
@@ -44,7 +47,8 @@ public class DatabaseConverters {
 
     @TypeConverter
     public static List<ConstructorStandingsElement> toConstructorStandingsElementList(String json) {
-        Type listType = new TypeToken<List<ConstructorStandingsElement>>() {}.getType();
+        Type listType = new TypeToken<List<ConstructorStandingsElement>>() {
+        }.getType();
         return gson.fromJson(json, listType);
     }
 
@@ -56,7 +60,8 @@ public class DatabaseConverters {
 
     @TypeConverter
     public static Driver toDriver(String json) {
-        Type listType = new TypeToken<Driver>() {}.getType();
+        Type listType = new TypeToken<Driver>() {
+        }.getType();
         return gson.fromJson(json, listType);
     }
 
@@ -68,7 +73,8 @@ public class DatabaseConverters {
 
     @TypeConverter
     public static Constructor toConstructor(String json) {
-        Type listType = new TypeToken<Constructor>() {}.getType();
+        Type listType = new TypeToken<Constructor>() {
+        }.getType();
         return gson.fromJson(json, listType);
     }
 
@@ -80,7 +86,8 @@ public class DatabaseConverters {
 
     @TypeConverter
     public static List<Constructor> toConstructorList(String json) {
-        Type listType = new TypeToken<List<Constructor>>() {}.getType();
+        Type listType = new TypeToken<List<Constructor>>() {
+        }.getType();
         return gson.fromJson(json, listType);
     }
 
@@ -89,6 +96,7 @@ public class DatabaseConverters {
     public static String fromCircuit(Circuit circuit) {
         return gson.toJson(circuit);
     }
+
     @TypeConverter
     public static Circuit toCircuit(String json) {
         return gson.fromJson(json, Circuit.class);
@@ -121,6 +129,7 @@ public class DatabaseConverters {
     public static String fromLocalDateTime(LocalDateTime localDateTime) {
         return gson.toJson(localDateTime);
     }
+
     @TypeConverter
     public static LocalDateTime toLocalDateTime(String value) {
         return gson.fromJson(value, LocalDateTime.class);

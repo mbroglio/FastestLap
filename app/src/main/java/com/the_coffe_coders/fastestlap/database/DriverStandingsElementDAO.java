@@ -11,8 +11,10 @@ import java.util.List;
 public interface DriverStandingsElementDAO {
     @Query("SELECT * FROM DriverStandingsElement")
     List<DriverStandingsElement> getAll();
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<DriverStandingsElement> standingsElements);
+
     @Query("DELETE from DriverStandingsElement")
     void deleteAll();
 }

@@ -9,7 +9,7 @@ import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 
 import java.util.List;
 
-public class ConstructorLocalDataSource extends BaseConstructorLocalDataSource{
+public class ConstructorLocalDataSource extends BaseConstructorLocalDataSource {
     private final ConstructorStandingsDAO constructorStandingsDAO;
     private final SharedPreferencesUtils sharedPreferencesUtil;
 

@@ -12,9 +12,11 @@ public class RaceAPIResponse extends APIResponse {
         super(xmlns, series, url, limit, offset, total);
         this.RaceTableDTO = raceTableDTO;
     }
+
     public RaceTableDTO getRaceTable() {
         return RaceTableDTO;
     }
+
     public void setRaceTable(RaceTableDTO raceTableDTO) {
         this.RaceTableDTO = raceTableDTO;
     }

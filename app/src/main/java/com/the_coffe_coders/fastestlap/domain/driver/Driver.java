@@ -4,8 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
-import androidx.room.Embedded;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -13,6 +11,17 @@ import java.util.Objects;
 
 @Entity(tableName = "Driver")
 public class Driver implements Parcelable {
+    public static final Parcelable.Creator<Driver> CREATOR = new Parcelable.Creator<Driver>() {
+        @Override
+        public Driver createFromParcel(Parcel source) {
+            return new Driver(source);
+        }
+
+        @Override
+        public Driver[] newArray(int size) {
+            return new Driver[size];
+        }
+    };
     @PrimaryKey(autoGenerate = true)
     private long uid;
     private String driverId;
@@ -22,7 +31,6 @@ public class Driver implements Parcelable {
     private String givenName;
     private String familyName;
     private String dateOfBirth;
-    private String nationality;
 
     /*public Driver(String driverId, String permanentNumber, String code, String url, String givenName, String familyName, String dateOfBirth, String nationality) {
         this.driverId = driverId;
@@ -34,9 +42,22 @@ public class Driver implements Parcelable {
         this.dateOfBirth = dateOfBirth;
         this.nationality = nationality;
     }*/
+    private String nationality;
 
     public Driver() {
 
+    }
+
+    protected Driver(Parcel in) {
+        this.uid = in.readLong();
+        this.driverId = in.readString();
+        this.permanentNumber = in.readString();
+        this.code = in.readString();
+        this.url = in.readString();
+        this.givenName = in.readString();
+        this.familyName = in.readString();
+        this.dateOfBirth = in.readString();
+        this.nationality = in.readString();
     }
 
     public long getUid() {
@@ -167,28 +188,4 @@ public class Driver implements Parcelable {
         this.dateOfBirth = parcel.readString();
         this.nationality = parcel.readString();
     }
-
-    protected Driver(Parcel in) {
-        this.uid = in.readLong();
-        this.driverId = in.readString();
-        this.permanentNumber = in.readString();
-        this.code = in.readString();
-        this.url = in.readString();
-        this.givenName = in.readString();
-        this.familyName = in.readString();
-        this.dateOfBirth = in.readString();
-        this.nationality = in.readString();
-    }
-
-    public static final Parcelable.Creator<Driver> CREATOR = new Parcelable.Creator<Driver>() {
-        @Override
-        public Driver createFromParcel(Parcel source) {
-            return new Driver(source);
-        }
-
-        @Override
-        public Driver[] newArray(int size) {
-            return new Driver[size];
-        }
-    };
 }

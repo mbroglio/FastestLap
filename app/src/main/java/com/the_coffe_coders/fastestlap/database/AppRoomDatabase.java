@@ -1,6 +1,9 @@
 package com.the_coffe_coders.fastestlap.database;
+
 import static com.the_coffe_coders.fastestlap.util.Constants.DATABASE_VERSION;
+
 import android.content.Context;
+
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
@@ -17,22 +20,13 @@ import com.the_coffe_coders.fastestlap.util.Constants;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {DriverStandings.class, Driver.class, ConstructorStandings.class, WeeklyRaceClassic.class, WeeklyRaceSprint.class, RaceResult.class}, version = DATABASE_VERSION, exportSchema = false)//TODO set to true (export schema)
+@Database(entities = {DriverStandings.class, Driver.class, ConstructorStandings.class, WeeklyRaceClassic.class, WeeklyRaceSprint.class, RaceResult.class}, version = DATABASE_VERSION, exportSchema = false)
+//TODO set to true (export schema)
 @TypeConverters({DatabaseConverters.class})
-public abstract class AppRoomDatabase extends RoomDatabase{
-    public abstract DriverStandingsDAO driverStandingsDao();
-    //public abstract DriverStandingsElementDAO driverStandingsElementDAO();
-    public abstract DriverDAO driverDAO();
-    public abstract ConstructorStandingsDAO constructorStandingsDao();
-
-    public abstract WeeklyRaceClassicDAO weeklyRaceClassicDAO();
-    public abstract WeeklyRaceSprintDAO weeklyRaceSprintDAO();
-    public abstract RaceResultDAO raceResultDAO();
-
-    private static volatile AppRoomDatabase INSTANCE;
-
+public abstract class AppRoomDatabase extends RoomDatabase {
     public static final ExecutorService databaseWriteExecutor =
             Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
+    private static volatile AppRoomDatabase INSTANCE;
 
     public static AppRoomDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
@@ -46,6 +40,19 @@ public abstract class AppRoomDatabase extends RoomDatabase{
         }
         return INSTANCE;
     }
+
+    public abstract DriverStandingsDAO driverStandingsDao();
+
+    //public abstract DriverStandingsElementDAO driverStandingsElementDAO();
+    public abstract DriverDAO driverDAO();
+
+    public abstract ConstructorStandingsDAO constructorStandingsDao();
+
+    public abstract WeeklyRaceClassicDAO weeklyRaceClassicDAO();
+
+    public abstract WeeklyRaceSprintDAO weeklyRaceSprintDAO();
+
+    public abstract RaceResultDAO raceResultDAO();
 }
 
 

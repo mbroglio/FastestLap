@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface RaceResponseCallback {
     void onSuccessFromRemote(RaceAPIResponse weeklyRaceAPIResponse, OperationType operationType);
+
     void onFailureFromRemote(Exception exception);
+
     void onSuccessFromLocal(List<WeeklyRace> weeklyRaceList);
 
     void onFailureFromLocal(Exception exception);

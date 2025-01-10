@@ -4,18 +4,18 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.the_coffe_coders.fastestlap.util.Constants;
+
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
-
-import com.the_coffe_coders.fastestlap.util.Constants;
 
 public abstract class Session {
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
     private SessionStatus sessionStatus;
 
-    public Session(String date, String time){
+    public Session(String date, String time) {
         setStartDateTime(date, time);
         setSessionStatus();
     }
@@ -31,8 +31,9 @@ public abstract class Session {
     public void setStartDateTime(LocalDateTime startDateTime) {
         this.startDateTime = startDateTime;
     }
+
     public void setStartDateTime(String date, String time) {
-        if(!time.contains("Z")) {
+        if (!time.contains("Z")) {
             time = time.concat("Z");
         }
         ZonedDateTime zonedDateTime = ZonedDateTime.parse(date + "T" + time + "[UTC]");
@@ -71,16 +72,17 @@ public abstract class Session {
     public Boolean isFinished() {
         return true;
     }
+
     public Boolean isUnderway() {
         return true;
     }
 
     public void setSessionStatus() {
-        if((endDateTime != null) && endDateTime.isBefore(LocalDateTime.now())) {
+        if ((endDateTime != null) && endDateTime.isBefore(LocalDateTime.now())) {
             sessionStatus = SessionStatus.FINISHED;
-        }else if(this.startDateTime.isAfter(LocalDateTime.now())) {
+        } else if (this.startDateTime.isAfter(LocalDateTime.now())) {
             sessionStatus = SessionStatus.NOT_STARTED;
-        }else {
+        } else {
             sessionStatus = SessionStatus.IN_PROGRESS;
         }
     }

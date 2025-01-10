@@ -1,6 +1,7 @@
 package com.the_coffe_coders.fastestlap.ui.bio;
 
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -15,8 +16,6 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-
-import android.graphics.Typeface;
 import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
@@ -51,7 +50,7 @@ public class DriverBioActivity extends AppCompatActivity {
 
         // Calculate 60% of the screen width
         int width_percent_60 = (int) (screenWidth * 0.6);
-        
+
 
         //set listener to team logo and define a method onclick
         MaterialCardView teamLogo = findViewById(R.id.team_logo);
@@ -61,7 +60,7 @@ public class DriverBioActivity extends AppCompatActivity {
         ViewGroup.LayoutParams params = teamLogo.getLayoutParams();
         params.width = width_percent_60;
         teamLogo.setLayoutParams(params);
-        
+
         teamLogo.setOnClickListener(v -> {
             Intent intent = new Intent(DriverBioActivity.this, ConstructorBioActivity.class);
             intent.putExtra("TEAM NAME", teamNameId);
@@ -75,11 +74,6 @@ public class DriverBioActivity extends AppCompatActivity {
             intent.putExtra("DRIVER_ID", driverId);
             startActivity(intent);
         });
-
-
-
-
-
 
 
         //setting table

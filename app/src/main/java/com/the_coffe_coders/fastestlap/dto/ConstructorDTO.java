@@ -14,32 +14,32 @@ public class ConstructorDTO {
         this.nationality = nationality;
     }
 
-    public String getConstructorId(){
+    public String getConstructorId() {
         return this.constructorId;
-    }
-
-    public String getUrl(){
-        return this.url;
-    }
-
-    public String getName(){
-        return this.name;
-    }
-
-    public String getNationality(){
-        return this.nationality;
     }
 
     public void setConstructorId(String constructorId) {
         this.constructorId = constructorId;
     }
 
+    public String getUrl() {
+        return this.url;
+    }
+
     public void setUrl(String url) {
         this.url = url;
     }
 
+    public String getName() {
+        return this.name;
+    }
+
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getNationality() {
+        return this.nationality;
     }
 
     public void setNationality(String nationality) {

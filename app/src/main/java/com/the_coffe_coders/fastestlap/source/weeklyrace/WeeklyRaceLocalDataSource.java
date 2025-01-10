@@ -3,7 +3,6 @@ package com.the_coffe_coders.fastestlap.source.weeklyrace;
 import android.util.Log;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
-
 import com.the_coffe_coders.fastestlap.database.WeeklyRaceClassicDAO;
 import com.the_coffe_coders.fastestlap.database.WeeklyRaceSprintDAO;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
@@ -16,11 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class WeeklyRaceLocalDataSource extends BaseWeeklyRaceLocalDataSource {
+    private static final String TAG = "WeeklyRaceLocalDataSource";
     private final WeeklyRaceClassicDAO weeklyRaceClassicDao;
     private final WeeklyRaceSprintDAO weeklyRaceSprintDao;
     private final SharedPreferencesUtils sharedPreferencesUtil;
-
-    private static final String TAG = "WeeklyRaceLocalDataSource";
 
     public WeeklyRaceLocalDataSource(AppRoomDatabase appRoomDatabase, SharedPreferencesUtils sharedPreferencesUtil) {
         this.weeklyRaceClassicDao = appRoomDatabase.weeklyRaceClassicDAO();

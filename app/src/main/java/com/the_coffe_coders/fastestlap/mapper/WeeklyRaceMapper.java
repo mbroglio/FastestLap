@@ -1,22 +1,15 @@
 package com.the_coffe_coders.fastestlap.mapper;
 
-import android.util.Log;
-
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRaceClassic;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRaceSprint;
 import com.the_coffe_coders.fastestlap.dto.RaceDTO;
-import com.the_coffe_coders.fastestlap.dto.ResultDTO;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class WeeklyRaceMapper {
     public static WeeklyRace toWeeklyRace(RaceDTO raceDTO) {
         WeeklyRace weeklyRace;
-        if(raceDTO.getSprint() != null) {
+        if (raceDTO.getSprint() != null) {
             weeklyRace = toRaceSprint(raceDTO);
         } else {
             weeklyRace = toRaceClassic(raceDTO);

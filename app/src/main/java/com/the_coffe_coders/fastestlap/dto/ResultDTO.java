@@ -16,7 +16,7 @@ public class ResultDTO {
     private String laps;
     private String status;
 
-    public ResultDTO(String number, String position, String positionText, String points, DriverDTO driver, ConstructorDTO constructor, String grid, String laps, String status){
+    public ResultDTO(String number, String position, String positionText, String points, DriverDTO driver, ConstructorDTO constructor, String grid, String laps, String status) {
         this.number = number;
         this.position = position;
         this.positionText = positionText;
@@ -32,68 +32,68 @@ public class ResultDTO {
         return number;
     }
 
-    public String getPosition() {
-        return position;
-    }
-
-    public String getPositionText() {
-        return positionText;
-    }
-
-    public String getPoints() {
-        return points;
-    }
-
-    public DriverDTO getDriver() {
-        return driver;
-    }
-
-    public ConstructorDTO getConstructor() {
-        return constructor;
-    }
-
-    public String getGrid() {
-        return grid;
-    }
-
-    public String getLaps() {
-        return laps;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public String getPosition() {
+        return position;
     }
 
     public void setPosition(String position) {
         this.position = position;
     }
 
+    public String getPositionText() {
+        return positionText;
+    }
+
     public void setPositionText(String positionText) {
         this.positionText = positionText;
+    }
+
+    public String getPoints() {
+        return points;
     }
 
     public void setPoints(String points) {
         this.points = points;
     }
 
+    public DriverDTO getDriver() {
+        return driver;
+    }
+
     public void setDriver(DriverDTO driver) {
         this.driver = driver;
+    }
+
+    public ConstructorDTO getConstructor() {
+        return constructor;
     }
 
     public void setConstructor(ConstructorDTO constructor) {
         this.constructor = constructor;
     }
 
+    public String getGrid() {
+        return grid;
+    }
+
     public void setGrid(String grid) {
         this.grid = grid;
     }
 
+    public String getLaps() {
+        return laps;
+    }
+
     public void setLaps(String laps) {
         this.laps = laps;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     public void setStatus(String status) {

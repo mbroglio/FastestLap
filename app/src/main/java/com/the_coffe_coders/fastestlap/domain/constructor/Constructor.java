@@ -6,6 +6,17 @@ import android.os.Parcelable;
 import androidx.annotation.NonNull;
 
 public class Constructor implements Parcelable {
+    public static final Creator<Constructor> CREATOR = new Creator<Constructor>() {
+        @Override
+        public Constructor createFromParcel(Parcel in) {
+            return new Constructor(in);
+        }
+
+        @Override
+        public Constructor[] newArray(int size) {
+            return new Constructor[size];
+        }
+    };
     private String constructorId;
     private String url;
     private String name;
@@ -18,7 +29,7 @@ public class Constructor implements Parcelable {
         this.nationality = nationality;
     }
 
-    public Constructor(){
+    public Constructor() {
 
     }
 
@@ -28,18 +39,6 @@ public class Constructor implements Parcelable {
         name = in.readString();
         nationality = in.readString();
     }
-
-    public static final Creator<Constructor> CREATOR = new Creator<Constructor>() {
-        @Override
-        public Constructor createFromParcel(Parcel in) {
-            return new Constructor(in);
-        }
-
-        @Override
-        public Constructor[] newArray(int size) {
-            return new Constructor[size];
-        }
-    };
 
     @Override
     public int describeContents() {

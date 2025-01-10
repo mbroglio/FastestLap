@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
-import com.the_coffe_coders.fastestlap.util.Constants;
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ public class DriverStandingsViewModel extends ViewModel {
     }
 
     public MutableLiveData<Result> getDriverStandingsLiveData(long lastUpdate) {
-        if(driverStandingsLiveData == null) {
+        if (driverStandingsLiveData == null) {
             fetchDriverStandings(lastUpdate);
         }
         return driverStandingsLiveData;

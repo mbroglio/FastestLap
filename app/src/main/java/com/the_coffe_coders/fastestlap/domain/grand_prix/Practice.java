@@ -1,10 +1,5 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
-import com.the_coffe_coders.fastestlap.util.Constants;
-
-import org.threeten.bp.LocalDateTime;
-import org.threeten.bp.ZonedDateTime;
-
 public class Practice extends Session {
     private int number;
 

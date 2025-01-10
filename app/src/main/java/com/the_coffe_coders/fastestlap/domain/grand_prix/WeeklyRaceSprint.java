@@ -3,6 +3,7 @@ package com.the_coffe_coders.fastestlap.domain.grand_prix;
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
+
 import java.util.ArrayList;
 import java.util.List;
 

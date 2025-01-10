@@ -18,7 +18,7 @@ public class DriverStandingsMapper {
         driverStandings.setRound(driverStandingsDTO.getRound());
         List<DriverStandingsElement> driverStandingsElements = new ArrayList<>();
 
-        for (DriverStandingsElementDTO dseDTO : driverStandingsDTO.getDriverStandings()){
+        for (DriverStandingsElementDTO dseDTO : driverStandingsDTO.getDriverStandings()) {
             driverStandingsElements.add(toDriverStandingsElement(dseDTO));
         }
         driverStandings.setDriverStandingsElements(driverStandingsElements);

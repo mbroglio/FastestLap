@@ -8,33 +8,26 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.the_coffe_coders.fastestlap.api.ConstructorStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
-
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
-import com.the_coffe_coders.fastestlap.dto.ConstructorStandingsElementDTO;
-import com.the_coffe_coders.fastestlap.mapper.ConstructorMapper;
 import com.the_coffe_coders.fastestlap.mapper.ConstructorStandingsMapper;
 import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorRemoteDataSource;
 
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class ConstructorRepository implements IConstructorRepository, ConstructorResponseCallback {
 
-    String TAG = "ConstructorRepository";
     public static long FRESH_TIMEOUT = 60000;
-
     public static boolean isOutdate = true;
     private static ConstructorRepository instance;
-    private MutableLiveData<Result> constructorStandingsMutableLiveData;
-    private MutableLiveData<Result> constructorMutableLiveData;
-    private BaseConstructorRemoteDataSource constructorRemoteDataSource;
-    private BaseConstructorLocalDataSource constructorLocalDataSource;
+    String TAG = "ConstructorRepository";
+    private final MutableLiveData<Result> constructorStandingsMutableLiveData;
+    private final MutableLiveData<Result> constructorMutableLiveData;
+    private final BaseConstructorRemoteDataSource constructorRemoteDataSource;
+    private final BaseConstructorLocalDataSource constructorLocalDataSource;
 
-    public ConstructorRepository(BaseConstructorRemoteDataSource constructorRemoteDataSource, BaseConstructorLocalDataSource constructorLocalDataSource){
+    public ConstructorRepository(BaseConstructorRemoteDataSource constructorRemoteDataSource, BaseConstructorLocalDataSource constructorLocalDataSource) {
         this.constructorStandingsMutableLiveData = new MutableLiveData<>();
         this.constructorMutableLiveData = new MutableLiveData<>();
         this.constructorRemoteDataSource = constructorRemoteDataSource;
@@ -55,8 +48,8 @@ public class ConstructorRepository implements IConstructorRepository, Constructo
 
     public LiveData<Constructor> fetchConstructor(String constructorId) {
         Constructor constructor = null;
-        for (Constructor current: findConstructors()) {
-            if(current.getConstructorId().equals(constructorId))
+        for (Constructor current : findConstructors()) {
+            if (current.getConstructorId().equals(constructorId))
                 constructor = current;
         }
         return new LiveData<Constructor>() {
@@ -67,7 +60,7 @@ public class ConstructorRepository implements IConstructorRepository, Constructo
         long currentTime = System.currentTimeMillis();
         Log.i(TAG, "fetchConstructorStandings");
 
-        if(true) { //currentTime - lastUpdate > FRESH_TIMEOUT
+        if (true) { //currentTime - lastUpdate > FRESH_TIMEOUT
             constructorRemoteDataSource.getConstructor();
         } else {
             constructorLocalDataSource.getConstructor();
@@ -79,7 +72,7 @@ public class ConstructorRepository implements IConstructorRepository, Constructo
     public MutableLiveData<Result> fetchConstructor(String constructorId, long lastUpdate) {
         long currentTime = System.currentTimeMillis();
 
-        if(isOutdate) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT
+        if (isOutdate) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT
             constructorRemoteDataSource.getConstructor();
         } else {
             constructorLocalDataSource.getConstructor();
@@ -87,7 +80,6 @@ public class ConstructorRepository implements IConstructorRepository, Constructo
 
         return null;
     }
-
 
 
     @Override

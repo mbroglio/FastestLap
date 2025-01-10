@@ -20,13 +20,10 @@ import java.util.List;
 public class RaceResultRepository implements IRaceResultRepository, RaceResultResponseCallback {
 
     private static final String TAG = "RaceResultRepository";
-
+    public static boolean isOutdate = true;
     private final MutableLiveData<Result> raceResultMutableLiveData;
-
     private final BaseRaceResultRemoteDataSource raceResultRemoteDataSource;
     private final BaseRaceResultLocalDataSource raceResultLocalDataSource;
-
-    public static boolean isOutdate = true;
 
 
     public RaceResultRepository(BaseRaceResultRemoteDataSource raceResultRemoteDataSource, BaseRaceResultLocalDataSource raceResultLocalDataSource) {
@@ -40,12 +37,12 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
     @Override
     public MutableLiveData<Result> fetchRaceResults(int round, long lastUpdate) {
         Log.i(TAG, "fetchRaceResults");
-        if(true) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
+        if (true) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
             //TODO fetch from remote
             Log.i(TAG, "Remote fetchRaceResults");
             raceResultRemoteDataSource.getRaceResults(round);
             isOutdate = false;
-        }else {
+        } else {
             Log.i(TAG, "fetchRaceResults from local");
             raceResultLocalDataSource.getRaceResults();
         }
@@ -63,7 +60,7 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
         Log.i(TAG, "onSuccessFromRemote");
         Log.i(TAG, raceResultsAPIResponse.toString());
         List<RaceResult> raceResult = new ArrayList<>();
-        for(ResultDTO resultDTO: raceResultsAPIResponse.getRaceResults()) {
+        for (ResultDTO resultDTO : raceResultsAPIResponse.getRaceResults()) {
             raceResult.add(SessionMapper.toResult(resultDTO));
         }
         raceResultLocalDataSource.insertRaceResultList(raceResult);

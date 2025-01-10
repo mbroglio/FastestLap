@@ -12,14 +12,14 @@ import com.the_coffe_coders.fastestlap.R;
 
 public class LoadingScreen {
 
-    private Handler handler;
-    private View loadingScreen;
+    private final Handler handler;
+    private final View loadingScreen;
 
-    private TextView loadingText;
+    private final TextView loadingText;
 
     private int dotCount = 0;
     private boolean addingDots = true;
-    private Runnable dotRunnable = new Runnable() {
+    private final Runnable dotRunnable = new Runnable() {
         @Override
         public void run() {
             if (addingDots) {

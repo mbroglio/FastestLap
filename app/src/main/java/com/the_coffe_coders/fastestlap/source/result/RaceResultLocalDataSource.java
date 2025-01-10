@@ -13,9 +13,9 @@ import java.util.List;
 
 public class RaceResultLocalDataSource extends BaseRaceResultLocalDataSource {
 
+    private static final String TAG = "RaceResultLocalDataSource";
     private final RaceResultDAO raceResultDao;
     private final SharedPreferencesUtils sharedPreferencesUtil;
-    private static final String TAG = "RaceResultLocalDataSource";
 
     public RaceResultLocalDataSource(AppRoomDatabase appRoomDatabase, SharedPreferencesUtils sharedPreferencesUtil) {
         this.raceResultDao = appRoomDatabase.raceResultDAO();
@@ -43,7 +43,7 @@ public class RaceResultLocalDataSource extends BaseRaceResultLocalDataSource {
         AppRoomDatabase.databaseWriteExecutor.execute(() -> {
             raceResultList.forEach(raceResult -> {
                 Log.i(TAG, "insertRaceResultList: " + raceResult);
-                raceResultDao.insert((RaceResult) raceResult);
+                raceResultDao.insert(raceResult);
             });
             sharedPreferencesUtil.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
                     Constants.SHARED_PREFERENCES_LAST_UPDATE, String.valueOf(System.currentTimeMillis()));

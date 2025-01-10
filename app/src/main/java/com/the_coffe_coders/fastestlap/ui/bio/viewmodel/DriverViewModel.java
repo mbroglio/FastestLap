@@ -1,19 +1,16 @@
 package com.the_coffe_coders.fastestlap.ui.bio.viewmodel;
 
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
 
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
+import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
 
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class DriverViewModel extends ViewModel {
-
-    private DriverRepository driverRepository;//TODO shuld be final
 
     /*DriverViewModel() {
         driverRepository = DriverRepository.getInstance();
@@ -22,6 +19,7 @@ public class DriverViewModel extends ViewModel {
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
+    private DriverRepository driverRepository;//TODO shuld be final
 
 
     public DriverViewModel() {
@@ -53,7 +51,6 @@ public class DriverViewModel extends ViewModel {
             }
         });
     }*/
-
 
 
 }

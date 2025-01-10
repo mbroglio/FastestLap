@@ -9,7 +9,7 @@ import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorReposit
 public class ConstructorStandingsViewModelFactory implements ViewModelProvider.Factory {
     private final ConstructorRepository constructorRepository;
 
-    public ConstructorStandingsViewModelFactory(ConstructorRepository constructorRepository)  {
+    public ConstructorStandingsViewModelFactory(ConstructorRepository constructorRepository) {
         this.constructorRepository = constructorRepository;
     }
 

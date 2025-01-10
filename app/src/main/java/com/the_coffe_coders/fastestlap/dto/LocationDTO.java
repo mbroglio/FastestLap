@@ -7,7 +7,7 @@ public class LocationDTO {
     private String locality;
     private String country;
 
-    public LocationDTO(String lat, String _long, String locality, String country){
+    public LocationDTO(String lat, String _long, String locality, String country) {
         this.lat = lat;
         this._long = _long;
         this.locality = locality;
@@ -18,28 +18,28 @@ public class LocationDTO {
         return lat;
     }
 
-    public String getLong() {
-        return _long;
-    }
-
-    public String getLocality() {
-        return locality;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
     public void setLat(String lat) {
         this.lat = lat;
+    }
+
+    public String getLong() {
+        return _long;
     }
 
     public void setLong(String _long) {
         this._long = _long;
     }
 
+    public String getLocality() {
+        return locality;
+    }
+
     public void setLocality(String locality) {
         this.locality = locality;
+    }
+
+    public String getCountry() {
+        return country;
     }
 
     public void setCountry(String country) {

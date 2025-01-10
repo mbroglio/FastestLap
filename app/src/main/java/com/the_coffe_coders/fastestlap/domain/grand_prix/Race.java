@@ -1,17 +1,17 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
-import java.util.List;
-
 import org.threeten.bp.LocalDateTime;
 
+import java.util.List;
+
 public class Race extends Session {
+    public List<RaceResult> raceResults;
+    public LocalDateTime dateTime;//TODO REMOVE ?
     private String season;
     private String round;
     private String url;
     private String raceName;
     private Circuit Circuit;
-    public List<RaceResult> raceResults;
-    public LocalDateTime dateTime;//TODO REMOVE ?
 
     public Race(String season, String round, String url, String raceName, Circuit circuit, List<RaceResult> raceResults, String sessionId, Boolean isFinished, Boolean isUnderway, String date, String time) {
         super(date, time);
@@ -28,12 +28,12 @@ public class Race extends Session {
 
     }
 
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
-
     public LocalDateTime getDateTime() {
         return dateTime;
+    }
+
+    public void setDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 
     public String getSeason() {

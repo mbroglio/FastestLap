@@ -14,23 +14,20 @@ import com.the_coffe_coders.fastestlap.repository.result.IRaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.source.weeklyrace.BaseWeeklyRaceLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.weeklyrace.BaseWeeklyRaceRemoteDataSource;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class RaceRepository implements IRaceRepository, RaceResponseCallback {
+    private static final String TAG = "RaceRepository";
+    public static boolean isOutdate = true;
     private final MutableLiveData<Result> weeklyRaceMutableLiveData;
     private final MutableLiveData<Result> nextRaceMutableLiveData;
     private final MutableLiveData<Result> lastRaceMutableLiveData;
     private final BaseWeeklyRaceRemoteDataSource raceRemoteDataSource;
     private final BaseWeeklyRaceLocalDataSource raceLocalDataSource;
-
     private final IRaceResultRepository raceResultRepository;
 
-    public static boolean isOutdate = true;
-
-    private static final String TAG = "RaceRepository";
     public RaceRepository(BaseWeeklyRaceRemoteDataSource raceRemoteDataSource, BaseWeeklyRaceLocalDataSource raceLocalDataSource, RaceResultRepository raceResultRepository) {
         this.weeklyRaceMutableLiveData = new MutableLiveData<>();
         this.nextRaceMutableLiveData = new MutableLiveData<>();
@@ -45,12 +42,12 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
     @Override
     public MutableLiveData<Result> fetchWeeklyRaces(long lastUpdate) {
 
-        if(isOutdate) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
+        if (isOutdate) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
             //TODO fetch from remote
 
             raceRemoteDataSource.getWeeklyRaces();
             isOutdate = false;
-        }else {
+        } else {
             Log.i(TAG, "fetchWeeklyRaces from local");
             raceLocalDataSource.getWeeklyRaces();
         }
@@ -74,13 +71,13 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
         switch (operationType) {
             case FETCH_WEEKLY_RACES:
                 handleWeeklyRacesSuccess(weeklyRaceAPIResponse);
-            break;
+                break;
             case FETCH_NEXT_RACE:
                 handleNextRaceSuccess();
-            break;
+                break;
             case FETCH_LAST_RACE:
                 handleLastRaceSuccess();
-            break;
+                break;
             default:
                 Log.i(TAG, "Operation type not supported");
         }
@@ -106,7 +103,7 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
     private void handleWeeklyRacesSuccess(RaceAPIResponse weeklyRaceAPIResponse) {
         List<RaceDTO> raceDTOS = weeklyRaceAPIResponse.getRaceTable().getRaces();
         List<WeeklyRace> weeklyRaceList = new ArrayList<>();
-        for (RaceDTO raceDTO: raceDTOS) {
+        for (RaceDTO raceDTO : raceDTOS) {
             weeklyRaceList.add(WeeklyRaceMapper.toWeeklyRace(raceDTO));
         }
         //Collections.reverse(weeklyRaceList);

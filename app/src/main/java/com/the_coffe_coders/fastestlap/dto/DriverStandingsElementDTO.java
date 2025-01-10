@@ -15,7 +15,7 @@ public class DriverStandingsElementDTO {
     @SerializedName("Constructors")
     private List<ConstructorDTO> constructors;
 
-    public DriverStandingsElementDTO(String position, String positionText, String points, String wins, DriverDTO driver, List<ConstructorDTO> constructors){
+    public DriverStandingsElementDTO(String position, String positionText, String points, String wins, DriverDTO driver, List<ConstructorDTO> constructors) {
         this.position = position;
         this.positionText = positionText;
         this.points = points;
@@ -28,44 +28,44 @@ public class DriverStandingsElementDTO {
         return position;
     }
 
-    public String getPositionText() {
-        return positionText;
-    }
-
-    public String getPoints() {
-        return points;
-    }
-
-    public String getWins() {
-        return wins;
-    }
-
-    public DriverDTO getDriver() {
-        return driver;
-    }
-
-    public List<ConstructorDTO> getConstructors() {
-        return constructors;
-    }
-
     public void setPosition(String position) {
         this.position = position;
+    }
+
+    public String getPositionText() {
+        return positionText;
     }
 
     public void setPositionText(String positionText) {
         this.positionText = positionText;
     }
 
+    public String getPoints() {
+        return points;
+    }
+
     public void setPoints(String points) {
         this.points = points;
+    }
+
+    public String getWins() {
+        return wins;
     }
 
     public void setWins(String wins) {
         this.wins = wins;
     }
 
+    public DriverDTO getDriver() {
+        return driver;
+    }
+
     public void setDriver(DriverDTO driver) {
         this.driver = driver;
+    }
+
+    public List<ConstructorDTO> getConstructors() {
+        return constructors;
     }
 
     public void setConstructors(List<ConstructorDTO> constructors) {

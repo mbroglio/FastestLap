@@ -3,7 +3,6 @@ package com.the_coffe_coders.fastestlap.domain.grand_prix;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 

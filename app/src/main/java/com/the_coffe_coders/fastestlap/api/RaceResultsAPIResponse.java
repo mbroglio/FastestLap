@@ -1,13 +1,12 @@
 package com.the_coffe_coders.fastestlap.api;
 
 
-import com.the_coffe_coders.fastestlap.dto.RaceDTO;
 import com.the_coffe_coders.fastestlap.dto.RaceTableDTO;
 import com.the_coffe_coders.fastestlap.dto.ResultDTO;
 
 import java.util.List;
 
-public class RaceResultsAPIResponse extends APIResponse{
+public class RaceResultsAPIResponse extends APIResponse {
     private RaceTableDTO RaceTable;
 
     public RaceResultsAPIResponse(String xmlns, String series, String url, String limit, String offset, String total, RaceTableDTO RaceTable) {

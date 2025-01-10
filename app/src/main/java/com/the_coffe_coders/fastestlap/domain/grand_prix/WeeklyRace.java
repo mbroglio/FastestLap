@@ -7,8 +7,10 @@ import androidx.room.PrimaryKey;
 import org.threeten.bp.LocalDateTime;
 
 import java.util.List;
+
 @Entity(tableName = "WeeklyRace")
 public abstract class WeeklyRace {
+    protected Practice firstPractice;
     @PrimaryKey(autoGenerate = true)
     private int uid;
     private String season;
@@ -16,7 +18,6 @@ public abstract class WeeklyRace {
     private String url;
     private String raceName;
     private Circuit Circuit;
-    protected Practice firstPractice;
     private Qualifying Qualifying;
     private Race finalRace;
 
@@ -84,10 +85,6 @@ public abstract class WeeklyRace {
         return fullDate;
     }
 
-    public void setFirstPractice(Practice firstPractice) {
-        this.firstPractice = firstPractice;
-    }
-
     public com.the_coffe_coders.fastestlap.domain.grand_prix.Qualifying getQualifying() {
         return Qualifying;
     }
@@ -114,6 +111,14 @@ public abstract class WeeklyRace {
 
     public abstract List<Session> getSessions();
 
+    public void setSessions(List<Session> sessions) {
+        LocalDateTime currentDateTime = LocalDateTime.now();
+
+        for (Session session : sessions) {
+            session.setSessionStatus();
+        }
+    }
+
     public Session findNextEvent(List<Session> sessions) {
         Session nextSession = null;
 
@@ -127,14 +132,6 @@ public abstract class WeeklyRace {
         }
 
         return nextSession;
-    }
-
-    public void setSessions(List<Session> sessions) {
-        LocalDateTime currentDateTime = LocalDateTime.now();
-
-        for (Session session : sessions) {
-            session.setSessionStatus();
-        }
     }
 
     public boolean isUnderway() {
@@ -154,6 +151,10 @@ public abstract class WeeklyRace {
 
     public Practice getFirstPractice() {
         return this.firstPractice;
+    }
+
+    public void setFirstPractice(Practice firstPractice) {
+        this.firstPractice = firstPractice;
     }
 
     public void setFinalRaceResults(List<RaceResult> raceResults) {

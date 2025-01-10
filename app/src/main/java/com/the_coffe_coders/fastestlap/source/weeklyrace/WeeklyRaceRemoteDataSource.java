@@ -23,9 +23,8 @@ import retrofit2.Response;
 
 public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource {
 
-    private final ErgastAPIService ergastAPIService;
-
     private static final String TAG = "WeeklyRaceRemoteDataSource";
+    private final ErgastAPIService ergastAPIService;
 
     public WeeklyRaceRemoteDataSource(String apiKey) {
         this.ergastAPIService = ServiceLocator.getInstance().getConcreteErgastAPIService();

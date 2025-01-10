@@ -28,11 +28,6 @@ import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import java.util.List;
 import java.util.Objects;
 
-/*
- * TODO:
- *  - Fix the if(true) in generateEventCard method, it should check if a race is live
- */
-
 public class UpcomingEventsActivity extends AppCompatActivity {
 
     private static final String TAG = "UpcomingEventsActivity";
@@ -83,7 +78,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     private View generateEventCard(WeeklyRace weeklyRace) {
         View eventCard = null;
 
-        if (true) {
+        if (weeklyRace.isUnderway()) {
             eventCard = getLayoutInflater().inflate(R.layout.upcoming_event_live_card, null);
 
             ImageView liveIcon = eventCard.findViewById(R.id.upcoming_event_icon);

@@ -1,7 +1,5 @@
 package com.the_coffe_coders.fastestlap.api;
 
-import androidx.annotation.NonNull;
-
 public class APIResponse {
     private String xmlns;
     private String series;
@@ -66,6 +64,7 @@ public class APIResponse {
     public void setTotal(String total) {
         this.total = total;
     }
+
     @Override
     public String toString() {
         return "APIResponse{" +

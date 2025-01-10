@@ -4,11 +4,14 @@ import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRespons
 
 public abstract class BaseConstructorRemoteDataSource {
     protected ConstructorResponseCallback constructorCallback;
+
     public void setConstructorCallback(ConstructorResponseCallback constructorCallback) {
         this.constructorCallback = constructorCallback;
     }
+
     public abstract void getConstructor();
 
     public abstract void getConstructorStandings();
+
     public abstract void getConstructor(String constructorId);
 }

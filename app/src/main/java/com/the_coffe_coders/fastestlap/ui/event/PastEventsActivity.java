@@ -30,11 +30,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-/*
- * TODO:
- *  - Fix race.getFinalRace().getResults() to get the correct results, raceResultsRepository must be implemented
- */
-
 public class PastEventsActivity extends AppCompatActivity {
 
     LoadingScreen loadingScreen;

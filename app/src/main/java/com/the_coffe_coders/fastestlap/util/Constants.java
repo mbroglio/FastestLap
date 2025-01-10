@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- TODO:
-   - Extract maps to database, use url to fetch data from firebase
+ * TODO:
+ * - Extract maps to database, use url to fetch data from firebase
  */
 
 public class Constants {
@@ -143,7 +143,6 @@ public class Constants {
         put("williams", R.drawable.williamslogo);
         put("rb", R.drawable.racingbullslogo_short); // Racing Bulls
     }};
-
 
 
     public static final Map<String, Integer> TEAM_COLOR = new HashMap<String, Integer>() {{
@@ -512,34 +511,5 @@ public class Constants {
     public static final String FAVOURITE_DRIVER = "hamilton";
     public static final String FAVOURITE_TEAM = "mercedes";
 
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
 }

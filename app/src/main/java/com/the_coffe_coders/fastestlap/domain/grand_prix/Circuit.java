@@ -1,7 +1,5 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
-import com.google.gson.annotations.SerializedName;
-
 public class Circuit {
     private String circuitId;
     private String url;

@@ -44,7 +44,7 @@ public class CircuitDTO {
         return location;
     }
 
-    public void setLocationDTO (LocationDTO location) {
+    public void setLocationDTO(LocationDTO location) {
         this.location = location;
     }
 

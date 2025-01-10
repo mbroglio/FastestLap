@@ -1,14 +1,12 @@
 package com.the_coffe_coders.fastestlap.dto;
 
-import android.util.Log;
-
 import com.google.gson.annotations.SerializedName;
-
-import org.threeten.bp.LocalDate;
 
 import java.util.List;
 
 public class RaceDTO {
+    @SerializedName("Results")
+    List<ResultDTO> results;
     private String season;
     private String round;
     private String url;
@@ -29,9 +27,6 @@ public class RaceDTO {
     private SprintQualifyingDTO sprintQualifying;
     @SerializedName("Sprint")
     private SprintDTO sprint;
-
-    @SerializedName("Results")
-    List<ResultDTO> results;
 
     public RaceDTO(String season, String round, String url, String raceName, CircuitDTO circuit, String date, String time, PracticeDTO firstPractice, PracticeDTO secondPractice, PracticeDTO thirdPractice, QualifyingDTO qualifying, SprintQualifyingDTO sprintQualifying, SprintDTO sprint, List<ResultDTO> resultDTO) {
         this.season = season;

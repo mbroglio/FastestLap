@@ -64,8 +64,6 @@ public class ConstructorBioActivity extends AppCompatActivity {
         });
 
 
-
-
         TableLayout tableLayout = findViewById(R.id.history_table);
         LayoutInflater inflater = LayoutInflater.from(this);
         Typeface orbitronBold = ResourcesCompat.getFont(this, R.font.orbitron_bold);
@@ -103,8 +101,6 @@ public class ConstructorBioActivity extends AppCompatActivity {
         podiums.setTextColor(ContextCompat.getColor(this, R.color.black));
 
         tableLayout.addView(tableHeader);
-
-
 
 
 // Add data rows

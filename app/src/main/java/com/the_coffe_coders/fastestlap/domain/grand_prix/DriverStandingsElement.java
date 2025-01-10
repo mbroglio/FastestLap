@@ -1,10 +1,9 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
+
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
-import androidx.room.Entity;
-import androidx.room.ForeignKey;
 
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
@@ -13,12 +12,22 @@ import java.util.List;
 
 //@Entity(tableName = "DriverStandingsElement")
 public class DriverStandingsElement implements Parcelable {
+    public static final Creator<DriverStandingsElement> CREATOR = new Creator<DriverStandingsElement>() {
+        @Override
+        public DriverStandingsElement createFromParcel(Parcel in) {
+            return new DriverStandingsElement(in);
+        }
+
+        @Override
+        public DriverStandingsElement[] newArray(int size) {
+            return new DriverStandingsElement[size];
+        }
+    };
     private String position;
     private String positionText;
     private String points;
     private Driver driver;
     private String wins;
-
     private List<Constructor> constructors;
 
     public DriverStandingsElement() {
@@ -47,18 +56,6 @@ public class DriverStandingsElement implements Parcelable {
         driver = in.readParcelable(Driver.class.getClassLoader());
         wins = in.readString();
     }
-
-    public static final Creator<DriverStandingsElement> CREATOR = new Creator<DriverStandingsElement>() {
-        @Override
-        public DriverStandingsElement createFromParcel(Parcel in) {
-            return new DriverStandingsElement(in);
-        }
-
-        @Override
-        public DriverStandingsElement[] newArray(int size) {
-            return new DriverStandingsElement[size];
-        }
-    };
 
     @Override
     public int describeContents() {

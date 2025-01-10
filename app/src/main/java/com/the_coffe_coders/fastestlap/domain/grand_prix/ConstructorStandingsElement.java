@@ -1,4 +1,5 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
+
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 
 public class ConstructorStandingsElement {
