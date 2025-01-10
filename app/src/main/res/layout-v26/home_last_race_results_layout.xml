@@ -4,7 +4,8 @@
     android:id="@+id/last_race_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@color/black">
 
     <LinearLayout
         android:id="@+id/last_race_name_layout"
@@ -34,7 +35,6 @@
 
     </LinearLayout>
 
-
     <RelativeLayout
         android:id="@+id/track_info"
         android:layout_width="170dp"
@@ -60,6 +60,7 @@
             android:layout_marginTop="5dp"
             android:layout_centerHorizontal="true"
             android:text="-!-"
+            android:textSize="@dimen/body_text_size"
             android:fontFamily="@font/orbitron_regular"
             android:textColor="@color/white">
 
@@ -72,6 +73,7 @@
             android:layout_below="@id/last_race_date"
             android:layout_centerHorizontal="true"
             android:text="-!-"
+            android:textSize="@dimen/layout_subtitle_text_size"
             android:fontFamily="@font/orbitron_bold"
             android:textColor="@color/white">
 
@@ -104,7 +106,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         android:text="@string/last_race_upper_case"
-        android:textSize="11dp"
+        android:textSize="@dimen/body_text_size"
         android:fontFamily="@font/orbitron_bold"
         android:textColor="@color/white" />
 
@@ -121,6 +123,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerInParent="true"
             android:text="@string/not_found"
+            android:textSize="@dimen/body_text_size"
             android:fontFamily="@font/orbitron_bold"
             android:textColor="@color/white">
 
@@ -147,7 +150,7 @@
                     android:text="@string/_1_numeric"
                     android:fontFamily="@font/orbitron_regular"
                     android:textColor="@color/white"
-                    android:textSize="12sp">
+                    android:textSize="@dimen/body_text_size">
 
                 </TextView>
 
@@ -159,7 +162,7 @@
                     android:text="@string/not_found"
                     android:fontFamily="@font/orbitron_regular"
                     android:textColor="@color/white"
-                    android:textSize="12sp">
+                    android:textSize="@dimen/body_text_size">
 
                 </TextView>
 
@@ -178,7 +181,7 @@
                     android:text="@string/_2_numeric"
                     android:fontFamily="@font/orbitron_regular"
                     android:textColor="@color/white"
-                    android:textSize="12sp">
+                    android:textSize="@dimen/body_text_size">
 
                 </TextView>
 
@@ -190,7 +193,7 @@
                     android:fontFamily="@font/orbitron_regular"
                     android:text="@string/not_found"
                     android:textColor="@color/white"
-                    android:textSize="12sp">
+                    android:textSize="@dimen/body_text_size">
 
                 </TextView>
 
@@ -209,7 +212,7 @@
                     android:fontFamily="@font/orbitron_regular"
                     android:text="@string/_3_numeric"
                     android:textColor="@color/white"
-                    android:textSize="12sp">
+                    android:textSize="@dimen/body_text_size">
 
                 </TextView>
 
@@ -221,16 +224,17 @@
                     android:text="@string/not_found"
                     android:fontFamily="@font/orbitron_regular"
                     android:textColor="@color/white"
-                    android:textSize="12sp">
+                    android:textSize="@dimen/body_text_size">
 
                 </TextView>
 
             </LinearLayout>
+
         </LinearLayout>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/past_event_result"
-            android:layout_width="140dp"
+            android:layout_width="wrap_content"
             android:layout_height="45dp"
             android:layout_centerInParent="true"
             android:layout_below="@id/race_podium"
@@ -254,23 +258,22 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/small_margin"
                     android:text="@string/raceResult"
+                    android:textSize="@dimen/body_text_size"
                     android:fontFamily="@font/orbitron_bold"
                     android:textColor="@color/black">
 
                 </TextView>
 
                 <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
-                    android:layout_alignParentEnd="true"
+                    android:layout_width="@dimen/icon_size"
+                    android:layout_height="@dimen/icon_size"
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@id/raceResult"
+                    android:layout_marginEnd="16dp"
                     android:layout_marginStart="5dp"
-                    android:layout_marginEnd="@dimen/small_margin"
                     app:srcCompat="@drawable/checkered_flag">
 
                 </ImageView>
-
 
             </RelativeLayout>
 

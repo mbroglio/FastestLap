@@ -21,7 +21,7 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_end="0dp" />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="vertical"
@@ -29,20 +29,20 @@
         app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
         android:background="@color/screen_background_color">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="20dp"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
-            android:layout_centerInParent="true">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/drivers_card"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                android:layout_marginBottom="5dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="20dp"
                 app:cardCornerRadius="40dp"
                 android:clickable="true"
                 android:focusable="true"
@@ -63,11 +63,22 @@
 
             </com.google.android.material.card.MaterialCardView>
 
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
+
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/constructors_card"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_marginTop="50dp"
+                android:layout_height="0dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="20dp"
                 app:cardCornerRadius="40dp"
                 android:clickable="true"
                 android:focusable="true"
@@ -88,9 +99,9 @@
 
             </com.google.android.material.card.MaterialCardView>
 
-        </LinearLayout>
+        </RelativeLayout>
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <include layout="@layout/loading_screen"
         android:id="@+id/loading_screen"

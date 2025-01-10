@@ -23,7 +23,7 @@
             android:fontFamily="@font/orbitron_bold"
             android:text="@string/season_final_results"
             android:textColor="@color/white"
-            android:textSize="20sp">
+            android:textSize="@dimen/layout_title_text_size">
 
         </TextView>
 
@@ -34,6 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/title"
         android:layout_marginTop="10dp"
+        android:baselineAligned="false"
         android:orientation="horizontal">
 
         <RelativeLayout
@@ -50,6 +51,7 @@
                 android:layout_alignParentTop="true"
                 android:fontFamily="@font/orbitron_bold"
                 android:text="@string/drivers_upper_case"
+                android:textSize="@dimen/layout_subtitle_text_size"
                 android:textColor="@color/white">
 
             </TextView>
@@ -97,7 +99,7 @@
                         android:fontFamily="@font/orbitron_regular"
                         android:text="@string/not_found"
                         android:textColor="@color/white"
-                        android:textSize="12sp">
+                        android:textSize="@dimen/body_text_size">
 
                     </TextView>
 
@@ -116,7 +118,7 @@
                         android:gravity="center"
                         android:text="@string/_2_numeric"
                         android:textColor="@color/white"
-                        android:textSize="12sp">
+                        android:textSize="@dimen/body_text_size">
 
                     </TextView>
 
@@ -137,7 +139,7 @@
                         android:fontFamily="@font/orbitron_regular"
                         android:text="@string/not_found"
                         android:textColor="@color/white"
-                        android:textSize="12sp">
+                        android:textSize="@dimen/body_text_size">
 
                     </TextView>
 
@@ -156,7 +158,7 @@
                         android:gravity="center"
                         android:text="@string/_3_numeric"
                         android:textColor="@color/white"
-                        android:textSize="12sp">
+                        android:textSize="@dimen/body_text_size">
 
                     </TextView>
 
@@ -177,13 +179,13 @@
                         android:fontFamily="@font/orbitron_regular"
                         android:text="@string/not_found"
                         android:textColor="@color/white"
-                        android:textSize="12sp">
+                        android:textSize="@dimen/body_text_size">
 
                     </TextView>
 
                 </LinearLayout>
-            </LinearLayout>
 
+            </LinearLayout>
 
         </RelativeLayout>
 
@@ -201,6 +203,7 @@
                 android:layout_alignParentTop="true"
                 android:fontFamily="@font/orbitron_bold"
                 android:text="@string/constructors_upper_case"
+                android:textSize="@dimen/layout_subtitle_text_size"
                 android:textColor="@color/white">
 
             </TextView>
@@ -227,7 +230,7 @@
                         android:gravity="center"
                         android:text="@string/_1_numeric"
                         android:textColor="@color/white"
-                        android:textSize="12sp">
+                        android:textSize="@dimen/body_text_size">
 
                     </TextView>
 
@@ -248,7 +251,7 @@
                         android:fontFamily="@font/orbitron_regular"
                         android:text="@string/not_found"
                         android:textColor="@color/white"
-                        android:textSize="12sp">
+                        android:textSize="@dimen/body_text_size">
 
                     </TextView>
 
@@ -267,7 +270,7 @@
                         android:gravity="center"
                         android:text="@string/_2_numeric"
                         android:textColor="@color/white"
-                        android:textSize="12sp">
+                        android:textSize="@dimen/body_text_size">
 
                     </TextView>
 
@@ -288,7 +291,7 @@
                         android:fontFamily="@font/orbitron_regular"
                         android:text="@string/not_found"
                         android:textColor="@color/white"
-                        android:textSize="12sp">
+                        android:textSize="@dimen/body_text_size">
 
                     </TextView>
 
@@ -307,7 +310,7 @@
                         android:gravity="center"
                         android:text="@string/_3_numeric"
                         android:textColor="@color/white"
-                        android:textSize="12sp">
+                        android:textSize="@dimen/body_text_size">
 
                     </TextView>
 
@@ -328,17 +331,16 @@
                         android:fontFamily="@font/orbitron_regular"
                         android:text="@string/not_found"
                         android:textColor="@color/white"
-                        android:textSize="12sp">
+                        android:textSize="@dimen/body_text_size">
 
                     </TextView>
 
                 </LinearLayout>
-            </LinearLayout>
 
+            </LinearLayout>
 
         </RelativeLayout>
 
     </LinearLayout>
-
 
 </RelativeLayout>

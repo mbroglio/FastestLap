@@ -8,4 +8,12 @@
     <dimen name="start_standing">58dp</dimen>
     <dimen name="half_screen_width">50%</dimen>
     <dimen name="medium_margin">16dp</dimen>
+    <dimen name="icon_size">24dp</dimen>
+    <!-- 40dp -->
+
+    <dimen name="page_title_text_size">20sp</dimen>
+    <dimen name="layout_title_text_size">18sp</dimen>
+    <dimen name="layout_subtitle_text_size">14sp</dimen>
+    <dimen name="body_text_size">12sp</dimen>
+    <dimen name="text_minor_importance_size">10sp</dimen>
 </resources>

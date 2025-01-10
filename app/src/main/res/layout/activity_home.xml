@@ -44,7 +44,8 @@
         app:itemIconTint="@color/black"
         app:itemTextColor="@color/black"
         app:labelVisibilityMode="labeled"
-        app:itemIconSize="32dp"
+        app:itemIconSize="24dp"
+        app:itemTextAppearanceInactive="@style/TextAppearance.BottomNav.NotSelected"
         app:itemTextAppearanceActive="@style/TextAppearance.BottomNav.Selected"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/home_menu">
