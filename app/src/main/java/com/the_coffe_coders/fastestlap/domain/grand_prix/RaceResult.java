@@ -1,10 +1,16 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
+import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
 
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 
+
+@Entity
+//@Setter
+//@Getter
 public class RaceResult {
     @PrimaryKey(autoGenerate = true)
     private int uid;
@@ -84,5 +90,27 @@ public class RaceResult {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
+
+    @Override
+    public String toString() {
+        return "RaceResult{" +
+                "uid=" + uid +
+                ", position='" + position + '\'' +
+                ", points='" + points + '\'' +
+                ", driver=" + driver +
+                ", constructor=" + constructor +
+                ", grid='" + grid + '\'' +
+                ", laps='" + laps + '\'' +
+                ", status='" + status + '\'' +
+                '}';
     }
 }

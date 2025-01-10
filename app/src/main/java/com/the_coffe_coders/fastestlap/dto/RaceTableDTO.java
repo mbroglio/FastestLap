@@ -48,6 +48,10 @@ public class RaceTableDTO {
         return races;
     }
 
+    public RaceDTO getRace() {
+        return races.get(0);
+    }
+
     public void setRaces(List<RaceDTO> races) {
         this.races = races;
     }

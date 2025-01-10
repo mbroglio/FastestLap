@@ -60,6 +60,18 @@ public class DatabaseConverters {
         return gson.fromJson(json, listType);
     }
 
+    //Contructor
+    @TypeConverter
+    public static String fromConstructor(Constructor constructor) {
+        return gson.toJson(constructor);
+    }
+
+    @TypeConverter
+    public static Constructor toConstructor(String json) {
+        Type listType = new TypeToken<Constructor>() {}.getType();
+        return gson.fromJson(json, listType);
+    }
+
     //Contructor List
     @TypeConverter
     public static String fromConstructorList(List<Constructor> list) {

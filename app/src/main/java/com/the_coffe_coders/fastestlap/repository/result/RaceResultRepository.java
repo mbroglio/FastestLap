@@ -6,8 +6,15 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.the_coffe_coders.fastestlap.api.RaceResultsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
+import com.the_coffe_coders.fastestlap.dto.ResultDTO;
+import com.the_coffe_coders.fastestlap.mapper.SessionMapper;
 import com.the_coffe_coders.fastestlap.source.result.BaseRaceResultLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.result.BaseRaceResultRemoteDataSource;
+import com.the_coffe_coders.fastestlap.mapper.SessionMapper;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class RaceResultRepository implements IRaceResultRepository, RaceResultResponseCallback {
 
@@ -30,9 +37,10 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
 
     @Override
     public MutableLiveData<Result> fetchRaceResults(int round, long lastUpdate) {
+        Log.i(TAG, "fetchRaceResults");
         if(isOutdate) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
             //TODO fetch from remote
-
+            Log.i(TAG, "Remote fetchRaceResults");
             raceResultRemoteDataSource.getRaceResults(round);
             isOutdate = false;
         }else {
@@ -50,10 +58,31 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
 
     @Override
     public void onSuccessFromRemote(RaceResultsAPIResponse raceResultsAPIResponse) {
+        Log.i(TAG, "onSuccessFromRemote");
+        Log.i(TAG, raceResultsAPIResponse.toString());
+        int i = 0;
+        List<RaceResult> raceResult = new ArrayList<>();
+        for(ResultDTO resultDTO: raceResultsAPIResponse.getRaceResults()) {
+            raceResult.add(SessionMapper.toResult(resultDTO));
+            Log.i(TAG, raceResult.get(i).toString());
+            i++;
+        }
+
+        raceResultLocalDataSource.insertRaceResultList(raceResult);
     }
 
     @Override
     public void onFailureFromRemote(Exception exception) {
+
+    }
+
+    @Override
+    public void onSuccessFromLocal(RaceResult raceResult) {
+
+    }
+
+    @Override
+    public void onSuccessFromLocal(List<RaceResult> raceResultList) {
 
     }
 
