@@ -71,7 +71,6 @@ public class EventActivity extends AppCompatActivity {
         Log.i(TAG, "Circuit ID: " + circuitId);
 
         processRaceData();
-        loadingScreen.hideLoadingScreen();
     }
 
     private void processRaceData() {
@@ -82,7 +81,12 @@ public class EventActivity extends AppCompatActivity {
                 Log.i("PastEvent", "SUCCESS");
                 races.addAll(((Result.WeeklyRaceSuccess) result).getData());
                 loadingScreen.hideLoadingScreen();
-                WeeklyRace weeklyRace = races.get(0);
+                WeeklyRace weeklyRace = null;
+                for(WeeklyRace race : races){
+                    if(race.getCircuit().getCircuitId().equals(circuitId)){
+                        weeklyRace = race;
+                    }
+                }
 
                 MaterialToolbar toolbar = findViewById(R.id.topAppBar);
                 toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
@@ -211,9 +215,8 @@ public class EventActivity extends AppCompatActivity {
         trackOutline.setImageResource(Objects.requireNonNullElseGet(outline, () -> R.drawable.arrow_back_ios_style));
     }
 
-    private void processRaceResults(WeeklyRace raceResults) {
-
-        MutableLiveData<Result> resultMutableLiveData = eventViewModel.getRaceResults(0L, raceResults.getRound());
+    private void processRaceResults(WeeklyRace weeklyRace) {
+        MutableLiveData<Result> resultMutableLiveData = eventViewModel.getRaceResults(0L, weeklyRace.getRound());
         Log.i(TAG, resultMutableLiveData.toString());
         resultMutableLiveData.observe(this, result -> {
             List<RaceResult> podium = ((Result.RaceResultSuccess) result).getData();
@@ -233,6 +236,8 @@ public class EventActivity extends AppCompatActivity {
                     teamColor.setBackgroundColor(ContextCompat.getColor(this, Objects.requireNonNullElseGet(teamColorObj, () -> R.color.mercedes_f1)));
                 }
             }
+
+            loadingScreen.hideLoadingScreen();
         });
     }
 

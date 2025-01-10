@@ -6,6 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ TODO:
+   - Extract maps to database, use url to fetch data from firebase
+ */
+
 public class Constants {
 
     public static final int SPACER_HEIGHT = 20;

@@ -11,6 +11,11 @@ import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+    TODO:
+      - Extract last two methods and try to put them in a separate class i.e. RaceUtil or WeeklyRace
+ */
+
 public class EventViewModel extends ViewModel {
 
     private static final String TAG = EventViewModel.class.getSimpleName();
