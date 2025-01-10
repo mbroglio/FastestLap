@@ -77,8 +77,13 @@ public class EventActivity extends AppCompatActivity {
             if (result.isSuccess()) {
                 Log.i("PastEvent", "SUCCESS");
                 races.addAll(((Result.WeeklyRaceSuccess) result).getData());
+                WeeklyRace weeklyRace = null;
+                for(WeeklyRace race : races){
+                    if(race.getCircuit().getCircuitId().equals(circuitId)){
+                        weeklyRace = race;
+                    }
+                }
                 loadingScreen.hideLoadingScreen();
-                WeeklyRace weeklyRace = races.get(0);
 
                 MaterialToolbar toolbar = findViewById(R.id.topAppBar);
                 toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
