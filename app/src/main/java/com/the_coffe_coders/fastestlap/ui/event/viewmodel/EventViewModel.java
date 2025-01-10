@@ -5,21 +5,30 @@ import androidx.lifecycle.ViewModel;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+    TODO:
+      - Extract last two methods and try to put them in a separate class i.e. RaceUtil or WeeklyRace
+ */
+
 public class EventViewModel extends ViewModel {
 
     private static final String TAG = EventViewModel.class.getSimpleName();
     private final RaceRepository raceRepository;
+    private final RaceResultRepository raceResultRepository;
+
     private MutableLiveData<Result> eventLiveData;
     private MutableLiveData<Result> pastEventLiveData;
     private MutableLiveData<Result> upcomingEventLiveData;
 
-    public EventViewModel(RaceRepository raceRepository) {
+    public EventViewModel(RaceRepository raceRepository, RaceResultRepository raceResultRepository) {
         this.raceRepository = raceRepository;
+        this.raceResultRepository = raceResultRepository;
     }
 
     public MutableLiveData<Result> getEventLiveData() {
@@ -34,6 +43,11 @@ public class EventViewModel extends ViewModel {
             eventLiveData = raceRepository.fetchWeeklyRaces(lastUpdate);
         }
         return eventLiveData;
+    }
+
+    public MutableLiveData<Result> getRaceResults(long lastUpdate, String raceId) {
+        System.out.println(raceId);
+        return raceResultRepository.fetchRaceResults(Integer.parseInt(raceId), 0L);
     }
 
     public MutableLiveData<Result> getPastEventLiveData(long lastUpdate) {

@@ -54,8 +54,6 @@ import java.util.List;
  *  - Implement fetchLastRace
  *  - Implement fetchNextRace
  *  - Fix setNextSessionCard to check if underway for live icon
- *  - Implement pendingResults logic
- *  - Implement seasonEnded logic
  *  - Fix setFavouriteConstructorCard
  *  - Implement firebase to get favourite driver and constructor after user login
  */
@@ -88,8 +86,8 @@ public class HomeFragment extends Fragment {
         loadingScreen.showLoadingScreen();*/
 
 
-        //setLastRaceCard(view);
-        //setNextSessionCard(view);
+        setLastRaceCard(view);
+        setNextSessionCard(view);
         setFavouriteDriverCard(view);
         setFavouriteConstructorCard(view);
 
@@ -98,14 +96,18 @@ public class HomeFragment extends Fragment {
 
     private void setLastRaceCard(View view) {
         MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchLastRace(0);
-        data.observe(getViewLifecycleOwner(), result -> {
-            if (result.isSuccess()) {
-                WeeklyRace raceResult = ((Result.WeeklyRaceSuccess) result).getData().get(0); // TODO: fix index requirement
-                Log.i("PastEvent", "SUCCESS");
+        try {
+            data.observe(getViewLifecycleOwner(), result -> {
+                if (result.isSuccess()) {
+                    WeeklyRace raceResult = ((Result.WeeklyRaceSuccess) result).getData().get(0); // TODO: fix index requirement
+                    Log.i("PastEvent", "SUCCESS");
 
-                showPodium(view, raceResult);
-            }
-        });
+                    showPodium(view, raceResult);
+                }
+            });
+        } catch (Exception e) {
+            loadPendingResultsLayout(view);
+        }
     }
 
     private void loadPendingResultsLayout(View view) {
@@ -161,18 +163,20 @@ public class HomeFragment extends Fragment {
         }
     }
 
-
     private void setNextSessionCard(View view) {
         MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchNextRace(0);
-        data.observe(getViewLifecycleOwner(), result -> {
-            if (result.isSuccess()) {
-                WeeklyRace nextRace = ((Result.WeeklyRaceSuccess) result).getData().get(0); // TODO: fix index requirement
-                Log.i("PastEvent", "SUCCESS");
+        try {
+            data.observe(getViewLifecycleOwner(), result -> {
+                if (result.isSuccess()) {
+                    WeeklyRace nextRace = ((Result.WeeklyRaceSuccess) result).getData().get(0); // TODO: fix index requirement
+                    Log.i("PastEvent", "SUCCESS");
 
-
-                processNextRace(view, nextRace);
-            }
-        });
+                    processNextRace(view, nextRace);
+                }
+            });
+        } catch (Exception e) {
+            setSeasonEnded(view);
+        }
 
         // CHECK IF CORRECT
         ImageView iconImageView = view.findViewById(R.id.live_icon);
@@ -207,13 +211,74 @@ public class HomeFragment extends Fragment {
     }
 
     private void setSeasonEnded(View view) {
+        View lastRace = view.findViewById(R.id.last_race_results);
         View timerCard = view.findViewById(R.id.timer);
         View seasonEndedCard = view.findViewById(R.id.season_ended);
+        View seasonResults = view.findViewById(R.id.season_results);
+        View pendingResults = view.findViewById(R.id.pending_last_race_results);
 
         timerCard.setVisibility(View.GONE);
+        lastRace.setVisibility(View.GONE);
         seasonEndedCard.setVisibility(View.VISIBLE);
+        seasonResults.setVisibility(View.VISIBLE);
+        pendingResults.setVisibility(View.GONE);
+
+        buildFinalDriversStanding(seasonResults);
+        buildFinalTeamsStanding(seasonResults);
 
         //nextRaceToProcess = false;
+    }
+
+    private void buildFinalDriversStanding(View seasonEndedCard) {
+        DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
+        MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
+
+        data.observe(getViewLifecycleOwner(), result -> {
+            if (result.isSuccess()) {
+                DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
+                List<DriverStandingsElement> driversList = driverStandings.getDriverStandingsElements();
+
+                for (int i = 0; i < 3; i++) {
+                    DriverStandingsElement driver = driversList.get(i);
+
+                    TextView driverName = seasonEndedCard.findViewById(Constants.HOME_SEASON_DRIVER_STANDINGS_NAME_FIELD.get(i));
+                    driverName.setText(Constants.DRIVER_FULLNAME.get(driver.getDriver().getDriverId()));
+
+                    View driverColor = seasonEndedCard.findViewById(Constants.HOME_SEASON_DRIVER_STANDINGS_COLOR_FIELD.get(i));
+                    String team = Constants.DRIVER_TEAM.get(driver.getDriver().getDriverId());
+                    driverColor.setBackgroundResource(Constants.TEAM_COLOR.get(team));
+                }
+            } else {
+                Log.i(TAG, "DRIVER STANDINGS ERROR");
+                loadingScreen.hideLoadingScreen();
+            }
+        });
+    }
+
+    private void buildFinalTeamsStanding(View seasonEndedCard) {
+        ConstructorRepository constructorRepository = ServiceLocator.getInstance().getConstructorRepository(getActivity().getApplication(), false);
+        MutableLiveData<Result> liveData = constructorRepository.fetchConstructorStandings(0);
+        Log.i(TAG, "Constructor Standings: " + liveData);
+        liveData.observe(getViewLifecycleOwner(), result -> {
+            if (result instanceof Result.ConstructorStandingsSuccess) {
+                Result.ConstructorStandingsSuccess constructorStandingsSuccess = (Result.ConstructorStandingsSuccess) result;
+                ConstructorStandings constructorStandings = constructorStandingsSuccess.getData();
+                Log.i(TAG, "Constructor Standings: " + constructorStandings);
+                for (int i = 0; i < 3; i++) {
+                    ConstructorStandingsElement constructor = constructorStandings.getConstructorStandings().get(i);
+
+                    TextView constructorName = seasonEndedCard.findViewById(Constants.HOME_SEASON_TEAM_STANDINGS_NAME_FIELD.get(i));
+                    constructorName.setText(constructor.getConstructor().getName());
+
+                    View constructorColor = seasonEndedCard.findViewById(Constants.HOME_SEASON_TEAM_STANDINGS_COLOR_FIELD.get(i));
+                    Integer teamColor = Constants.TEAM_COLOR.get(constructor.getConstructor().getConstructorId());
+                    constructorColor.setBackgroundResource(teamColor);
+                }
+            } else if (result instanceof Result.Error) {
+                Result.Error error = (Result.Error) result;
+                Log.e(TAG, "Error: " + error.getMessage());
+            }
+        });
     }
 
     private void startCountdown(View view, LocalDateTime eventDate) {
@@ -250,7 +315,6 @@ public class HomeFragment extends Fragment {
     private void setFavouriteDriverCard(View view) {
         DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
         MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
-
 
         data.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {

@@ -6,7 +6,7 @@ import com.the_coffe_coders.fastestlap.repository.driver.DriverResponseCallback;
 
 import java.util.List;
 
-public abstract class BaseDriverLocalDataSource {
+public abstract class   BaseDriverLocalDataSource {
     protected DriverResponseCallback driverCallback;
 
     public void setDriverCallback(DriverResponseCallback driverCallback) {

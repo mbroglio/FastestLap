@@ -8,9 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
-import com.the_coffe_coders.fastestlap.api.ResultsAPIResponse;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.OperationType;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
@@ -30,7 +28,7 @@ public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource {
     private static final String TAG = "WeeklyRaceRemoteDataSource";
 
     public WeeklyRaceRemoteDataSource(String apiKey) {
-        this.ergastAPIService = ServiceLocator.getInstance().getWeeklyRaceAPIService();
+        this.ergastAPIService = ServiceLocator.getInstance().getConcreteErgastAPIService();
     }
 
     @Override

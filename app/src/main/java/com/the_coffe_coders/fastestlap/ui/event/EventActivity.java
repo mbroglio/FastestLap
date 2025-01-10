@@ -17,6 +17,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
@@ -26,6 +27,8 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
+import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
+import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
@@ -40,7 +43,6 @@ import java.util.Objects;
 
 /*
  * TODO:
- *  - Implement pendingResults logic
  *  - Implement raceCancelled logic
  *  - Fix raceResult logic
  */
@@ -51,12 +53,14 @@ public class EventActivity extends AppCompatActivity {
     LoadingScreen loadingScreen;
     private String circuitId;
 
+    EventViewModel eventViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_event);
-
+        eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false))).get(EventViewModel.class);
 
         // Show loading screen initially
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
@@ -67,7 +71,6 @@ public class EventActivity extends AppCompatActivity {
         Log.i(TAG, "Circuit ID: " + circuitId);
 
         processRaceData();
-        loadingScreen.hideLoadingScreen();
     }
 
     private void processRaceData() {
@@ -78,7 +81,12 @@ public class EventActivity extends AppCompatActivity {
                 Log.i("PastEvent", "SUCCESS");
                 races.addAll(((Result.WeeklyRaceSuccess) result).getData());
                 loadingScreen.hideLoadingScreen();
-                WeeklyRace weeklyRace = races.get(0);
+                WeeklyRace weeklyRace = null;
+                for(WeeklyRace race : races){
+                    if(race.getCircuit().getCircuitId().equals(circuitId)){
+                        weeklyRace = race;
+                    }
+                }
 
                 MaterialToolbar toolbar = findViewById(R.id.topAppBar);
                 toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
@@ -193,14 +201,13 @@ public class EventActivity extends AppCompatActivity {
     private void showResults(WeeklyRace weeklyRace) {
         View countdownView = findViewById(R.id.timer_card_countdown);
         View resultsView = findViewById(R.id.timer_card_results);
-        View pendingResultsView = findViewById(R.id.timer_card_pending_results);
         View raceCancelledView = findViewById(R.id.timer_card_race_cancelled);
 
         // Hide countdown view and show results view
         countdownView.setVisibility(View.GONE);
         resultsView.setVisibility(View.VISIBLE);
 
-        //processRaceResults(weeklyRace);
+        processRaceResults(weeklyRace);
 
         // Set podium circuit image
         ImageView trackOutline = findViewById(R.id.track_outline_image);
@@ -208,21 +215,30 @@ public class EventActivity extends AppCompatActivity {
         trackOutline.setImageResource(Objects.requireNonNullElseGet(outline, () -> R.drawable.arrow_back_ios_style));
     }
 
-    private void processRaceResults(WeeklyRace raceResults) {
-        List<RaceResult> podium = raceResults.getFinalRace().getResults();
+    private void processRaceResults(WeeklyRace weeklyRace) {
+        MutableLiveData<Result> resultMutableLiveData = eventViewModel.getRaceResults(0L, weeklyRace.getRound());
+        Log.i(TAG, resultMutableLiveData.toString());
+        resultMutableLiveData.observe(this, result -> {
+            List<RaceResult> podium = ((Result.RaceResultSuccess) result).getData();
+            if (podium == null) {
+                showPendingResults();
+            } else {
+                for (int i = 0; i < 3; i++) {
+                    String driverId = podium.get(i).getDriver().getDriverId();
+                    String teamId = podium.get(i).getConstructor().getConstructorId();
 
-        for (int i = 0; i < 3; i++) {
-            String driverId = podium.get(i).getDriver().getDriverId();
-            String teamId = podium.get(i).getConstructor().getConstructorId();
+                    TextView driverName = findViewById(Constants.PODIUM_DRIVER_NAME.get(i));
+                    Integer driverNameObj = Constants.DRIVER_FULLNAME.get(driverId);
+                    driverName.setText(Objects.requireNonNullElseGet(driverNameObj, () -> R.string.unknown));
 
-            TextView driverName = findViewById(Constants.PODIUM_DRIVER_NAME.get(i));
-            Integer driverNameObj = Constants.DRIVER_FULLNAME.get(driverId);
-            driverName.setText(Objects.requireNonNullElseGet(driverNameObj, () -> R.string.unknown));
+                    LinearLayout teamColor = findViewById(Constants.PODIUM_TEAM_COLOR.get(i));
+                    Integer teamColorObj = Constants.TEAM_COLOR.get(teamId);
+                    teamColor.setBackgroundColor(ContextCompat.getColor(this, Objects.requireNonNullElseGet(teamColorObj, () -> R.color.mercedes_f1)));
+                }
+            }
 
-            LinearLayout teamColor = findViewById(Constants.PODIUM_TEAM_COLOR.get(i));
-            Integer teamColorObj = Constants.TEAM_COLOR.get(teamId);
-            teamColor.setBackgroundColor(ContextCompat.getColor(this, Objects.requireNonNullElseGet(teamColorObj, () -> R.color.mercedes_f1)));
-        }
+            loadingScreen.hideLoadingScreen();
+        });
     }
 
     private void showPendingResults() {
@@ -241,7 +257,7 @@ public class EventActivity extends AppCompatActivity {
 
         for (Session session : sessions) {
             sessionId = session.getClass().getSimpleName();
-            if(sessionId.equals("Practice")) {
+            if (sessionId.equals("Practice")) {
                 Practice practice = (Practice) session;
                 sessionId = practice.getPractice();
             }
@@ -262,7 +278,7 @@ public class EventActivity extends AppCompatActivity {
 
     private void setChequeredFlag(Session session) {
         String sessionId = session.getClass().getSimpleName();
-        if(sessionId.equals("Practice")) {
+        if (sessionId.equals("Practice")) {
             Practice practice = (Practice) session;
             sessionId = practice.getPractice();
         }

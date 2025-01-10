@@ -3,6 +3,7 @@ import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services") version "4.4.2" apply false
+    id("io.freefair.lombok") version "8.11"
 }
 
 android {
@@ -59,4 +60,6 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     annotationProcessor(libs.room.compiler)
+    /*compileOnly(libs.projectlombok.lombok)
+    annotationProcessor(libs.projectlombok.lombok)*/
 }

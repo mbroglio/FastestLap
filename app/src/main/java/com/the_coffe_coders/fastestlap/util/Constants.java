@@ -6,6 +6,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ TODO:
+   - Extract maps to database, use url to fetch data from firebase
+ */
+
 public class Constants {
 
     public static final int SPACER_HEIGHT = 20;
@@ -478,6 +483,30 @@ public class Constants {
             R.id.past_first_driver,
             R.id.past_second_driver,
             R.id.past_third_driver
+    );
+
+    public static final List<Integer> HOME_SEASON_DRIVER_STANDINGS_NAME_FIELD = List.of(
+            R.id.first_driver,
+            R.id.second_driver,
+            R.id.third_driver
+    );
+
+    public static final List<Integer> HOME_SEASON_DRIVER_STANDINGS_COLOR_FIELD = List.of(
+            R.id.first_driver_color,
+            R.id.second_driver_color,
+            R.id.third_driver_color
+    );
+
+    public static final List<Integer> HOME_SEASON_TEAM_STANDINGS_NAME_FIELD = List.of(
+            R.id.first_team,
+            R.id.second_team,
+            R.id.third_team
+    );
+
+    public static final List<Integer> HOME_SEASON_TEAM_STANDINGS_COLOR_FIELD = List.of(
+            R.id.first_team_color,
+            R.id.second_team_color,
+            R.id.third_team_color
     );
 
     public static final String FAVOURITE_DRIVER = "hamilton";

@@ -49,7 +49,6 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         // Show loading screen initially
         loadingScreen.showLoadingScreen();
 
-
         String constructorId = getIntent().getStringExtra("TEAM_ID");
         Log.i(TAG, "Constructor ID: " + constructorId);
 
