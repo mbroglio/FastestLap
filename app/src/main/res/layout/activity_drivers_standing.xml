@@ -5,8 +5,8 @@
     android:id="@+id/driver_card_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.standing.DriversStandingActivity"
-    android:background="@color/screen_background_color">
+    android:background="@color/screen_background_color"
+    tools:context=".ui.standing.DriversStandingActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"
@@ -19,12 +19,12 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:background="@color/ferrari_secondary"
             android:layout_marginTop="32dp"
+            android:background="@color/ferrari_secondary"
             app:navigationIcon="@drawable/arrow_back_ios_style"
             app:title="@string/drivers_upper_case"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp"
-            app:titleCentered="true" />
+            app:titleCentered="true"
+            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.Guideline
@@ -44,18 +44,18 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:layout_marginTop="@dimen/top_bar_height_32_dp_top_margin"
-        android:background="@color/screen_background_color">
+        android:background="@color/screen_background_color"
+        android:orientation="vertical">
 
 
         <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:scrollbars="none"
-            android:layout_marginTop="@dimen/small_margin"
             android:layout_marginStart="@dimen/small_margin"
-            android:layout_marginEnd="@dimen/small_margin">
+            android:layout_marginTop="@dimen/small_margin"
+            android:layout_marginEnd="@dimen/small_margin"
+            android:scrollbars="none">
 
             <LinearLayout
                 android:id="@+id/driver_standing"
@@ -69,14 +69,14 @@
 
     </LinearLayout>
 
-    <include layout="@layout/loading_screen"
+    <include
         android:id="@+id/loading_screen"
-        app:layout_constraintTop_toTopOf="parent"
+        layout="@layout/loading_screen"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="gone"/>
-
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

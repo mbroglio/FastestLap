@@ -18,11 +18,11 @@
             android:id="@+id/top_app_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:background="@color/ferrari_secondary"
             android:layout_marginTop="32dp"
+            android:background="@color/ferrari_secondary"
             app:title="FASTEST LAP"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp"
-            app:titleCentered="true" />
+            app:titleCentered="true"
+            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.fragment.app.FragmentContainerView
@@ -34,18 +34,18 @@
         app:layout_constraintBottom_toTopOf="@id/navbar"
         app:layout_constraintTop_toBottomOf="@id/top_bar_layout"
         app:navGraph="@navigation/home_navigation"
-        tools:layout_editor_absoluteX="0dp"/>
+        tools:layout_editor_absoluteX="0dp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/ferrari_secondary"
+        app:itemIconSize="32dp"
         app:itemIconTint="@color/black"
+        app:itemTextAppearanceActive="@style/TextAppearance.BottomNav.Selected"
         app:itemTextColor="@color/black"
         app:labelVisibilityMode="labeled"
-        app:itemIconSize="32dp"
-        app:itemTextAppearanceActive="@style/TextAppearance.BottomNav.Selected"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/home_menu">
 

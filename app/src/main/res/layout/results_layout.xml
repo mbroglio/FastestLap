@@ -15,8 +15,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/orbitron_bold"
-        android:textColor="@color/black"
-        android:text="RACE RESULT:">
+        android:text="RACE RESULT:"
+        android:textColor="@color/black">
 
     </TextView>
 
@@ -39,8 +39,8 @@
                 android:layout_width="13dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/orbitron_bold"
-                android:textColor="@color/black"
-                android:text="@string/_1_numeric">
+                android:text="@string/_1_numeric"
+                android:textColor="@color/black">
 
             </TextView>
 
@@ -60,8 +60,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:fontFamily="@font/orbitron_regular"
-                android:textColor="@color/black"
-                android:text="George Russell">
+                android:text="George Russell"
+                android:textColor="@color/black">
 
             </TextView>
 
@@ -78,8 +78,8 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/orbitron_bold"
                 android:gravity="center"
-                android:textColor="@color/black"
-                android:text="@string/_2_numeric">
+                android:text="@string/_2_numeric"
+                android:textColor="@color/black">
 
             </TextView>
 
@@ -98,9 +98,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:textColor="@color/black"
                 android:fontFamily="@font/orbitron_regular"
-                android:text="Lewis Hamilton">
+                android:text="Lewis Hamilton"
+                android:textColor="@color/black">
 
             </TextView>
 
@@ -116,8 +116,8 @@
                 android:layout_width="13dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/orbitron_bold"
-                android:textColor="@color/black"
-                android:text="@string/_3_numeric">
+                android:text="@string/_3_numeric"
+                android:textColor="@color/black">
 
             </TextView>
 
@@ -136,9 +136,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:textColor="@color/black"
                 android:fontFamily="@font/orbitron_regular"
-                android:text="Carlos Sainz">
+                android:text="Carlos Sainz"
+                android:textColor="@color/black">
 
             </TextView>
 

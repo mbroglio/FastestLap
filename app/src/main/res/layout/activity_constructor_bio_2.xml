@@ -17,10 +17,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/ferrari_f1"
-            app:title="SCUDERIA FERRARI"
             app:navigationIcon="@drawable/arrow_back_ios_style"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_20sp"
-            app:titleCentered="true" />
+            app:title="SCUDERIA FERRARI"
+            app:titleCentered="true"
+            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_20sp" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -89,12 +89,12 @@
             </RelativeLayout>
 
             <ImageView
-                android:layout_marginTop="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="100dp"
-                app:srcCompat="@drawable/ferrari"
                 android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp">
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                app:srcCompat="@drawable/ferrari">
 
             </ImageView>
 
@@ -198,18 +198,18 @@
                 android:id="@+id/team_info"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="10dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp">
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="10dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="DRIVERS"
                     android:layout_marginStart="15dp"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:fontFamily="@font/orbitron_bold"
+                    android:text="DRIVERS"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
                     android:textColor="@color/white">
 
                 </TextView>
@@ -217,23 +217,23 @@
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_gravity="center">
+                    android:layout_gravity="center"
+                    android:layout_marginTop="5dp">
 
                     <LinearLayout
                         android:id="@+id/driver_1"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:layout_alignParentStart="true">
+                        android:layout_alignParentStart="true"
+                        android:orientation="vertical">
 
                         <com.google.android.material.card.MaterialCardView
                             android:id="@+id/driver_1_card"
                             android:layout_width="@dimen/driver_photo_in_card"
                             android:layout_height="@dimen/driver_photo_in_card"
+                            android:layout_gravity="center"
                             android:clickable="true"
                             android:focusable="true"
-                            android:layout_gravity="center"
                             app:cardBackgroundColor="@color/ferrari_f1"
                             app:strokeColor="@color/black">
 
@@ -249,8 +249,8 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Charles Leclerc"
                             android:fontFamily="@font/orbitron_regular"
+                            android:text="Charles Leclerc"
                             android:textColor="@color/white">
 
                         </TextView>
@@ -261,17 +261,17 @@
                         android:id="@+id/driver_2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
                         android:layout_marginStart="70dp"
-                        android:layout_toEndOf="@id/driver_1">
+                        android:layout_toEndOf="@id/driver_1"
+                        android:orientation="vertical">
 
                         <com.google.android.material.card.MaterialCardView
                             android:id="@+id/driver_2_card"
                             android:layout_width="@dimen/driver_photo_in_card"
                             android:layout_height="@dimen/driver_photo_in_card"
+                            android:layout_gravity="center"
                             android:clickable="true"
                             android:focusable="true"
-                            android:layout_gravity="center"
                             app:cardBackgroundColor="@color/ferrari_f1"
                             app:strokeColor="@color/black">
 
@@ -287,8 +287,8 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Carlos Sainz"
                             android:fontFamily="@font/orbitron_regular"
+                            android:text="Carlos Sainz"
                             android:textColor="@color/white">
 
                         </TextView>
@@ -301,34 +301,34 @@
                     android:id="@+id/team_stats"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
                     android:layout_marginStart="15dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginEnd="15dp"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/orbitron_bold"
                         android:text="TEAM INFO"
-                        android:textColor="@color/white"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                        android:fontFamily="@font/orbitron_bold">
+                        android:textColor="@color/white">
 
                     </TextView>
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="5dp">
+                        android:layout_marginTop="5dp"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/team_full_name_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
-                            android:text="Full Name:"
                             android:fontFamily="@font/orbitron_bold"
+                            android:text="Full Name:"
                             android:textColor="@color/white">
 
                         </TextView>
@@ -337,11 +337,11 @@
                             android:id="@+id/team_full_name_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/team_full_name_text"
                             android:layout_marginStart="20dp"
                             android:layout_marginEnd="2dp"
-                            android:text="Scuderia Ferrari HP"
+                            android:layout_toEndOf="@id/team_full_name_text"
                             android:fontFamily="@font/orbitron_regular"
+                            android:text="Scuderia Ferrari HP"
                             android:textColor="@color/white">
 
                         </TextView>
@@ -351,16 +351,16 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_marginTop="10dp">
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
 
                         <TextView
                             android:id="@+id/team_base_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
-                            android:text="Base:"
                             android:fontFamily="@font/orbitron_bold"
+                            android:text="Base:"
                             android:textColor="@color/white">
 
                         </TextView>
@@ -369,11 +369,11 @@
                             android:id="@+id/team_base_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/team_base_text"
                             android:layout_marginStart="20dp"
                             android:layout_marginEnd="2dp"
-                            android:text="Maranello"
+                            android:layout_toEndOf="@id/team_base_text"
                             android:fontFamily="@font/orbitron_regular"
+                            android:text="Maranello"
                             android:textColor="@color/white">
 
                         </TextView>
@@ -391,8 +391,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
-                            android:text="Team Chief:"
                             android:fontFamily="@font/orbitron_bold"
+                            android:text="Team Chief:"
                             android:textColor="@color/white">
 
                         </TextView>
@@ -401,11 +401,11 @@
                             android:id="@+id/team_chief_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/team_chief_text"
-                            android:layout_marginStart="20dp"
-                            android:text="Frederic Vasseur"
                             android:layout_gravity=""
+                            android:layout_marginStart="20dp"
+                            android:layout_toEndOf="@id/team_chief_text"
                             android:fontFamily="@font/orbitron_regular"
+                            android:text="Frederic Vasseur"
                             android:textColor="@color/white">
 
                         </TextView>
@@ -423,8 +423,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
-                            android:text="Chassis:"
                             android:fontFamily="@font/orbitron_bold"
+                            android:text="Chassis:"
                             android:textColor="@color/white">
 
                         </TextView>
@@ -433,10 +433,10 @@
                             android:id="@+id/team_chassis_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/team_chassis_text"
                             android:layout_marginStart="20dp"
-                            android:text="SF-24"
+                            android:layout_toEndOf="@id/team_chassis_text"
                             android:fontFamily="@font/orbitron_regular"
+                            android:text="SF-24"
                             android:textColor="@color/white">
 
                         </TextView>
@@ -454,8 +454,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
-                            android:text="Race Distance:"
                             android:fontFamily="@font/orbitron_bold"
+                            android:text="Race Distance:"
                             android:textColor="@color/white">
 
                         </TextView>
@@ -464,11 +464,11 @@
                             android:id="@+id/team_power_unit_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/team_power_unit_text"
-                            android:layout_marginStart="20dp"
-                            android:text="Ferrari"
                             android:layout_gravity=""
+                            android:layout_marginStart="20dp"
+                            android:layout_toEndOf="@id/team_power_unit_text"
                             android:fontFamily="@font/orbitron_regular"
+                            android:text="Ferrari"
                             android:textColor="@color/white">
 
                         </TextView>
@@ -486,8 +486,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
-                            android:text="Constructors' Championships:"
                             android:fontFamily="@font/orbitron_bold"
+                            android:text="Constructors' Championships:"
                             android:textColor="@color/white">
 
                         </TextView>
@@ -496,10 +496,10 @@
                             android:id="@+id/team_championships_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/team_championships_text"
                             android:layout_marginStart="20dp"
-                            android:text="16"
+                            android:layout_toEndOf="@id/team_championships_text"
                             android:fontFamily="@font/orbitron_regular"
+                            android:text="16"
                             android:textColor="@color/white">
 
                         </TextView>
@@ -517,8 +517,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
-                            android:text="Wins:"
                             android:fontFamily="@font/orbitron_bold"
+                            android:text="Wins:"
                             android:textColor="@color/white">
 
                         </TextView>
@@ -527,10 +527,10 @@
                             android:id="@+id/team_wins_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/team_wins_text"
                             android:layout_marginStart="20dp"
-                            android:text="170"
+                            android:layout_toEndOf="@id/team_wins_text"
                             android:fontFamily="@font/orbitron_regular"
+                            android:text="170"
                             android:textColor="@color/white">
 
                         </TextView>
@@ -539,11 +539,11 @@
                             android:id="@+id/team_wins_this_season"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/team_wins_value"
-                            android:layout_marginStart="20dp"
                             android:layout_centerInParent="true"
-                            android:text="(4 - 2024)"
+                            android:layout_marginStart="20dp"
+                            android:layout_toEndOf="@id/team_wins_value"
                             android:fontFamily="@font/orbitron_regular"
+                            android:text="(4 - 2024)"
                             android:textColor="@color/white"
                             android:textSize="11sp">
 
@@ -562,8 +562,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
-                            android:text="Podiums:"
                             android:fontFamily="@font/orbitron_bold"
+                            android:text="Podiums:"
                             android:textColor="@color/white">
 
                         </TextView>
@@ -572,10 +572,10 @@
                             android:id="@+id/team_podiums_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/team_podiums_text"
                             android:layout_marginStart="20dp"
-                            android:text="190"
+                            android:layout_toEndOf="@id/team_podiums_text"
                             android:fontFamily="@font/orbitron_regular"
+                            android:text="190"
                             android:textColor="@color/white">
 
                         </TextView>
@@ -584,11 +584,11 @@
                             android:id="@+id/team_podiums_this_season"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/team_podiums_value"
-                            android:layout_marginStart="20dp"
                             android:layout_centerInParent="true"
-                            android:text="(15 - 2024)"
+                            android:layout_marginStart="20dp"
+                            android:layout_toEndOf="@id/team_podiums_value"
                             android:fontFamily="@font/orbitron_regular"
+                            android:text="(15 - 2024)"
                             android:textColor="@color/white"
                             android:textSize="11sp">
 
@@ -607,8 +607,8 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
-                            android:text="Pole Positions:"
                             android:fontFamily="@font/orbitron_bold"
+                            android:text="Pole Positions:"
                             android:textColor="@color/white">
 
                         </TextView>
@@ -617,10 +617,10 @@
                             android:id="@+id/team_pole_positions_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/team_pole_positions_text"
                             android:layout_marginStart="20dp"
-                            android:text="3"
+                            android:layout_toEndOf="@id/team_pole_positions_text"
                             android:fontFamily="@font/orbitron_regular"
+                            android:text="3"
                             android:textColor="@color/white">
 
                         </TextView>
@@ -629,11 +629,11 @@
                             android:id="@+id/team_pole_positions_this_season"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/team_pole_positions_value"
-                            android:layout_marginStart="20dp"
                             android:layout_centerInParent="true"
-                            android:text="(15 - 2024)"
+                            android:layout_marginStart="20dp"
+                            android:layout_toEndOf="@id/team_pole_positions_value"
                             android:fontFamily="@font/orbitron_regular"
+                            android:text="(15 - 2024)"
                             android:textColor="@color/white"
                             android:textSize="11sp">
 
@@ -656,10 +656,10 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/orbitron_bold"
                         android:text="TEAM HISTORY:"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                        android:fontFamily="@font/orbitron_bold"
-                        android:textColor="@color/white"/>
+                        android:textColor="@color/white" />
 
 
                     <TableLayout
@@ -674,15 +674,10 @@
                     </TableLayout>
 
 
-
                 </LinearLayout>
 
 
-
             </LinearLayout>
-
-
-
 
 
         </LinearLayout>

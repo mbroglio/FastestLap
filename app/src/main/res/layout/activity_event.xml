@@ -18,12 +18,12 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:background="@color/ferrari_secondary"
             android:layout_marginTop="32dp"
+            android:background="@color/ferrari_secondary"
             app:navigationIcon="@drawable/arrow_back_ios_style"
             app:title="AZERBAIJAN GRAND PRIX"
-            app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar"
-            app:titleCentered="true" />
+            app:titleCentered="true"
+            app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.Guideline
@@ -162,9 +162,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="40dp"
-                android:layout_marginEnd="5dp"
-                android:layout_marginStart="5dp">
+                android:layout_marginEnd="5dp">
 
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="match_parent"
@@ -190,7 +190,7 @@
                             <include
                                 android:id="@+id/timer_card_countdown"
                                 layout="@layout/timer_layout"
-                                android:visibility="visible"/>
+                                android:visibility="visible" />
 
                             <include
                                 android:id="@+id/timer_card_results"
@@ -249,8 +249,8 @@
                 android:id="@+id/session_status_card_container"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:layout_marginTop="40dp"
                 android:layout_marginStart="40dp"
+                android:layout_marginTop="40dp"
                 android:layout_marginEnd="40dp">
 
                 <include
@@ -284,11 +284,11 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentBottom="true"
+                        android:autoSizeMaxTextSize="20sp"
+                        android:autoSizeMinTextSize="11sp"
+                        android:autoSizeTextType="uniform"
                         android:fontFamily="@font/orbitron_bold"
                         android:text="WEEKEND SCHEDULE"
-                        android:autoSizeTextType="uniform"
-                        android:autoSizeMinTextSize="11sp"
-                        android:autoSizeMaxTextSize="20sp"
                         android:textAppearance="@style/TextAppearance.AppCompat.Large"
                         android:textColor="@color/white" />
 

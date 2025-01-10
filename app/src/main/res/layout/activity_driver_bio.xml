@@ -18,12 +18,12 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:background="@color/mclaren_f1"
             android:layout_marginTop="32dp"
-            app:title="LANDO NORRIS"
+            android:background="@color/mclaren_f1"
             app:navigationIcon="@drawable/arrow_back_ios_style"
-            app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar"
-            app:titleCentered="true" />
+            app:title="LANDO NORRIS"
+            app:titleCentered="true"
+            app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar" />
     </com.google.android.material.appbar.AppBarLayout>
 
 
@@ -42,7 +42,6 @@
         app:layout_constraintGuide_end="0dp" />
 
 
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_center"
         android:layout_width="wrap_content"
@@ -54,10 +53,10 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/screen_background_color"
+        android:scrollbars="none"
         app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
         app:layout_constraintTop_toBottomOf="@id/guideline_top"
-        app:layout_constraintVertical_bias="1.0"
-        android:scrollbars="none">
+        app:layout_constraintVertical_bias="1.0">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -88,8 +87,8 @@
                         android:id="@+id/team_logo_image"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:contentDescription="mclaren"
                         android:layout_margin="5dp"
+                        android:contentDescription="mclaren"
                         app:srcCompat="@drawable/mclarenlogo">
 
                     </ImageView>
@@ -98,13 +97,13 @@
 
                 <ImageView
                     android:layout_width="0dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_centerHorizontal="true"
                     android:layout_gravity="center"
                     android:layout_marginStart="25dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
                     android:layout_toEndOf="@id/team_logo"
                     app:srcCompat="@drawable/united_kingdom_flag">
 

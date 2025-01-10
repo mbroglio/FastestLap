@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    style="?materialCardViewElevatedStyle"
     android:id="@+id/driver_card_view"
+    style="?materialCardViewElevatedStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="10dp"
@@ -26,10 +25,10 @@
             android:layout_alignParentStart="true"
             android:layout_centerInParent="true"
             android:layout_marginStart="5dp"
+            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:text="@string/not_found"
-            android:fontFamily="@font/orbitron_bold">
+            android:textAppearance="@style/TextAppearance.AppCompat.Large">
 
 
         </TextView>
@@ -38,50 +37,46 @@
             android:id="@+id/driver_image"
             android:layout_width="@dimen/small_image"
             android:layout_height="@dimen/small_image"
-            android:layout_marginStart="5dp"
             android:layout_centerInParent="true"
-            android:layout_toEndOf="@id/driver_position"
-            android:layout_gravity="center">
-        </ImageView>
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@id/driver_position"></ImageView>
 
         <ImageView
             android:id="@+id/team_logo"
             android:layout_width="@dimen/small_image"
             android:layout_height="@dimen/small_image"
             android:layout_marginStart="5dp"
-            android:layout_toEndOf="@id/driver_image"
             android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp">
-        </ImageView>
+            android:layout_marginBottom="5dp"
+            android:layout_toEndOf="@id/driver_image"></ImageView>
 
         <TextView
             android:id="@+id/driver_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
             android:layout_centerInParent="true"
-            android:layout_toEndOf="@id/team_logo"
-            android:text="@string/not_found"
-            android:fontFamily="@font/orbitron_bold"
             android:layout_gravity="center"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2">
-        </TextView>
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@id/team_logo"
+            android:fontFamily="@font/orbitron_bold"
+            android:text="@string/not_found"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"></TextView>
 
         <TextView
             android:id="@+id/driver_points"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
             android:layout_marginEnd="5dp"
+            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
             android:text="@string/not_found"
-            android:fontFamily="@font/orbitron_bold"
             android:textAppearance="@style/TextAppearance.AppCompat.Large">
 
 
         </TextView>
-
 
 
     </RelativeLayout>

@@ -20,8 +20,8 @@
             android:background="@color/mclaren_f1"
             app:navigationIcon="@drawable/arrow_back_ios_style"
             app:title="LANDO NORRIS"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_20sp"
-            app:titleCentered="true" />
+            app:titleCentered="true"
+            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_20sp" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -84,8 +84,7 @@
                     android:layout_centerInParent="true"
                     android:layout_gravity="center"
                     android:layout_marginEnd="20dp"
-                    app:srcCompat="@drawable/united_kingdom_flag">
-                </ImageView>
+                    app:srcCompat="@drawable/united_kingdom_flag"></ImageView>
 
             </RelativeLayout>
 
@@ -384,9 +383,9 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/orbitron_bold"
                     android:text="DRIVER HISTORY:"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                    android:fontFamily="@font/orbitron_bold"/>
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
 
                 <TableLayout
@@ -399,7 +398,6 @@
                     android:layout_marginBottom="5dp">
 
                 </TableLayout>
-
 
 
             </LinearLayout>

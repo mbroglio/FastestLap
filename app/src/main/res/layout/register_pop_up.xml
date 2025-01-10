@@ -16,13 +16,13 @@
             android:id="@+id/registration_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/registration"
-            android:fontFamily="@font/orbitron_bold"
-            android:textColor="@color/black"
-            android:textSize="25sp"
             android:layout_alignParentStart="true"
             android:layout_marginStart="@dimen/medium_margin"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/orbitron_bold"
+            android:text="@string/registration"
+            android:textColor="@color/black"
+            android:textSize="25sp" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/email_field"
@@ -30,8 +30,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/registration_text"
-            android:layout_marginTop="24dp"
             android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="@dimen/medium_margin"
             android:hint="@string/email"
             android:textColorHint="@color/black"
@@ -48,7 +48,7 @@
                 android:background="@drawable/background_top_left_right_margins"
                 android:fontFamily="@font/orbitron_regular"
                 android:inputType="textEmailAddress"
-                android:textColor="@color/grey_card"/>
+                android:textColor="@color/grey_card" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -87,15 +87,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/password_field"
-            android:layout_marginTop="@dimen/medium_margin"
-            android:layout_marginBottom="10dp"
             android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/medium_margin"
             android:layout_marginEnd="@dimen/medium_margin"
+            android:layout_marginBottom="10dp"
             android:backgroundTint="@color/ferrari_secondary_light"
-            android:text="@string/submit_upper_case"
-            android:textSize="12sp"
             android:fontFamily="@font/orbitron_bold"
-            android:textColor="@color/black">
+            android:text="@string/submit_upper_case"
+            android:textColor="@color/black"
+            android:textSize="12sp">
 
         </Button>
 

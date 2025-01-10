@@ -45,21 +45,21 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    app:maxWidth="220dp"
-                    android:background="@drawable/bottom_right_stroke">
+                    android:background="@drawable/bottom_right_stroke"
+                    app:maxWidth="220dp">
 
                     <TextView
                         android:id="@+id/last_race_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="3dp"
                         android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
                         android:layout_marginEnd="10dp"
-                        android:fontFamily="@font/orbitron_bold"
-                        android:autoSizeTextType="uniform"
-                        android:autoSizeMinTextSize="11sp"
+                        android:layout_marginBottom="3dp"
                         android:autoSizeMaxTextSize="20sp"
+                        android:autoSizeMinTextSize="11sp"
+                        android:autoSizeTextType="uniform"
+                        android:fontFamily="@font/orbitron_bold"
                         android:text="-!-"
                         android:textColor="@color/white"
                         android:textSize="20sp">
@@ -91,10 +91,10 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/last_race_track_outline"
-                        android:layout_marginTop="5dp"
                         android:layout_centerHorizontal="true"
-                        android:text="-!-"
+                        android:layout_marginTop="5dp"
                         android:fontFamily="@font/orbitron_regular"
+                        android:text="-!-"
                         android:textColor="@color/white">
 
                     </TextView>
@@ -105,8 +105,8 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/last_race_date"
                         android:layout_centerHorizontal="true"
-                        android:text="-!-"
                         android:fontFamily="@font/orbitron_bold"
+                        android:text="-!-"
                         android:textColor="@color/white">
 
                     </TextView>
@@ -115,14 +115,14 @@
                         android:id="@+id/track_separator"
                         android:layout_width="3dp"
                         android:layout_height="match_parent"
-                        android:layout_toEndOf="@id/last_race_track_outline"
                         android:layout_alignTop="@id/last_race_track_outline"
                         android:layout_alignBottom="@id/last_race_month"
-                        android:orientation="horizontal"
                         android:layout_marginStart="20dp"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="10dp"
-                        android:background="@color/white">
+                        android:layout_toEndOf="@id/last_race_track_outline"
+                        android:background="@color/white"
+                        android:orientation="horizontal">
 
                     </LinearLayout>
 
@@ -137,10 +137,10 @@
                     android:layout_alignParentEnd="true"
                     android:layout_marginTop="5dp"
                     android:layout_marginEnd="5dp"
-                    android:text="@string/last_race_upper_case"
-                    android:textSize="11dp"
                     android:fontFamily="@font/orbitron_bold"
-                    android:textColor="@color/white" />
+                    android:text="@string/last_race_upper_case"
+                    android:textColor="@color/white"
+                    android:textSize="11dp" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -154,8 +154,8 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
                         android:layout_centerInParent="true"
-                        android:text="@string/not_found"
                         android:fontFamily="@font/orbitron_bold"
+                        android:text="@string/not_found"
                         android:textColor="@color/white">
 
                     </TextView>
@@ -177,9 +177,9 @@
                             <TextView
                                 android:layout_width="10dp"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/orbitron_regular"
                                 android:gravity="center"
                                 android:text="@string/_1_numeric"
-                                android:fontFamily="@font/orbitron_regular"
                                 android:textColor="@color/white"
                                 android:textSize="12sp">
 
@@ -190,8 +190,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
-                                android:text="@string/not_found"
                                 android:fontFamily="@font/orbitron_regular"
+                                android:text="@string/not_found"
                                 android:textColor="@color/white"
                                 android:textSize="12sp">
 
@@ -208,9 +208,9 @@
                             <TextView
                                 android:layout_width="10dp"
                                 android:layout_height="wrap_content"
+                                android:fontFamily="@font/orbitron_regular"
                                 android:gravity="center"
                                 android:text="@string/_2_numeric"
-                                android:fontFamily="@font/orbitron_regular"
                                 android:textColor="@color/white"
                                 android:textSize="12sp">
 
@@ -239,8 +239,8 @@
                             <TextView
                                 android:layout_width="10dp"
                                 android:layout_height="wrap_content"
-                                android:gravity="center"
                                 android:fontFamily="@font/orbitron_regular"
+                                android:gravity="center"
                                 android:text="@string/_3_numeric"
                                 android:textColor="@color/white"
                                 android:textSize="12sp">
@@ -252,8 +252,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginStart="5dp"
-                                android:text="@string/not_found"
                                 android:fontFamily="@font/orbitron_regular"
+                                android:text="@string/not_found"
                                 android:textColor="@color/white"
                                 android:textSize="12sp">
 
@@ -266,8 +266,8 @@
                         android:id="@+id/driver_current_standing"
                         android:layout_width="140dp"
                         android:layout_height="45dp"
-                        android:layout_centerInParent="true"
                         android:layout_below="@id/race_podium"
+                        android:layout_centerInParent="true"
                         android:layout_gravity="center"
                         android:layout_marginTop="10dp"
                         android:layout_marginBottom="5dp"
@@ -287,8 +287,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_centerVertical="true"
                                 android:layout_marginStart="@dimen/small_margin"
-                                android:text="@string/raceResult"
                                 android:fontFamily="@font/orbitron_bold"
+                                android:text="@string/raceResult"
                                 android:textColor="@color/black">
 
                             </TextView>
@@ -298,9 +298,9 @@
                                 android:layout_height="30dp"
                                 android:layout_alignParentEnd="true"
                                 android:layout_centerVertical="true"
-                                android:layout_toEndOf="@id/raceResult"
                                 android:layout_marginStart="5dp"
                                 android:layout_marginEnd="@dimen/small_margin"
+                                android:layout_toEndOf="@id/raceResult"
                                 app:srcCompat="@drawable/checkered_flag">
 
                             </ImageView>
@@ -356,8 +356,8 @@
                         android:layout_alignParentTop="true"
                         android:layout_marginStart="@dimen/small_margin"
                         android:layout_marginTop="5dp"
-                        android:text="@string/not_found"
                         android:fontFamily="@font/orbitron_bold"
+                        android:text="@string/not_found"
                         android:textColor="@color/black"
                         android:textSize="18sp">
 
@@ -369,8 +369,8 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/favourite_driver_name"
                         android:layout_alignParentStart="true"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginStart="50dp">
+                        android:layout_marginStart="50dp"
+                        android:layout_marginTop="5dp">
 
                         <ImageView
                             android:id="@+id/favourite_driver_flag"
@@ -385,12 +385,12 @@
                             android:id="@+id/favourite_driver_nationality"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/favourite_driver_flag"
                             android:layout_centerVertical="true"
                             android:layout_marginStart="5dp"
+                            android:layout_toEndOf="@id/favourite_driver_flag"
+                            android:fontFamily="@font/orbitron_regular"
                             android:text="@string/not_found"
-                            android:textColor="@color/black"
-                            android:fontFamily="@font/orbitron_regular">
+                            android:textColor="@color/black">
 
                         </TextView>
 
@@ -459,17 +459,17 @@
                                     android:layout_marginStart="3dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/rank"
-                                    android:textSize="12sp"
-                                    android:textColor="@color/screen_background_color">
+                                    android:textColor="@color/screen_background_color"
+                                    android:textSize="12sp">
 
                                 </TextView>
 
                             </LinearLayout>
 
                             <LinearLayout
-                                android:layout_below="@id/driver_rank_layout"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_below="@id/driver_rank_layout"
                                 android:layout_centerInParent="true"
                                 android:orientation="horizontal">
 
@@ -477,8 +477,8 @@
                                     android:id="@+id/favourite_driver_position"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:fontFamily="@font/orbitron_bold"
                                     android:layout_marginStart="5dp"
+                                    android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/not_found"
                                     android:textColor="@color/screen_background_color"
                                     android:textSize="12sp">
@@ -557,8 +557,8 @@
                         android:layout_alignParentStart="true"
                         android:layout_marginStart="@dimen/small_margin"
                         android:layout_marginTop="5dp"
-                        android:text="@string/not_found"
                         android:fontFamily="@font/orbitron_bold"
+                        android:text="@string/not_found"
                         android:textColor="@color/black"
                         android:textSize="18sp">
 
@@ -577,8 +577,8 @@
                         android:layout_width="120dp"
                         android:layout_height="40dp"
                         android:layout_below="@id/favourite_constructor_car"
-                        android:layout_marginStart="30dp"
                         android:layout_alignParentStart="true"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="5dp"
                         android:clickable="true"
@@ -614,17 +614,17 @@
                                     android:layout_marginStart="3dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/rank"
-                                    android:textSize="12sp"
-                                    android:textColor="@color/screen_background_color">
+                                    android:textColor="@color/screen_background_color"
+                                    android:textSize="12sp">
 
                                 </TextView>
 
                             </LinearLayout>
 
                             <LinearLayout
-                                android:layout_below="@id/constructor_rank_layout"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_below="@id/constructor_rank_layout"
                                 android:layout_centerInParent="true"
                                 android:orientation="horizontal">
 
@@ -632,8 +632,8 @@
                                     android:id="@+id/favourite_constructor_position"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:fontFamily="@font/orbitron_bold"
                                     android:layout_marginStart="5dp"
+                                    android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/not_found"
                                     android:textColor="@color/screen_background_color"
                                     android:textSize="12sp">
@@ -707,12 +707,12 @@
                             android:id="@+id/favourite_constructor_nationality"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/favourite_constructor_flag"
                             android:layout_centerVertical="true"
                             android:layout_marginStart="5dp"
+                            android:layout_toEndOf="@id/favourite_constructor_flag"
+                            android:fontFamily="@font/orbitron_regular"
                             android:text="@string/not_found"
-                            android:textColor="@color/black"
-                            android:fontFamily="@font/orbitron_regular">
+                            android:textColor="@color/black">
 
                         </TextView>
 

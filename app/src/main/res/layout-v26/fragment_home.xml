@@ -35,25 +35,25 @@
             android:orientation="vertical">
 
 
-           <FrameLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content">
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-               <include
-                   android:id="@+id/last_race_results"
-                     layout="@layout/home_last_race_results_layout"
-                   android:visibility="visible"/>
+                <include
+                    android:id="@+id/last_race_results"
+                    layout="@layout/home_last_race_results_layout"
+                    android:visibility="visible" />
 
-               <include
-                     android:id="@+id/season_results"
-                        layout="@layout/home_season_final_standings_layout"
-                   android:visibility="gone"/>
+                <include
+                    android:id="@+id/season_results"
+                    layout="@layout/home_season_final_standings_layout"
+                    android:visibility="gone" />
 
-               <include
-                   android:id="@+id/pending_last_race_results"
-                        layout="@layout/home_pending_last_race_results_layout"
-                   android:visibility="gone"/>
-           </FrameLayout>
+                <include
+                    android:id="@+id/pending_last_race_results"
+                    layout="@layout/home_pending_last_race_results_layout"
+                    android:visibility="gone" />
+            </FrameLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -71,7 +71,7 @@
                 android:clickable="true"
                 android:focusable="true">
 
-                <include layout="@layout/timer_card_home"/>
+                <include layout="@layout/timer_card_home" />
             </FrameLayout>
 
             <com.google.android.material.card.MaterialCardView
@@ -97,8 +97,8 @@
                         android:layout_alignParentTop="true"
                         android:layout_marginStart="@dimen/small_margin"
                         android:layout_marginTop="5dp"
-                        android:text="@string/not_found"
                         android:fontFamily="@font/orbitron_bold"
+                        android:text="@string/not_found"
                         android:textColor="@color/black"
                         android:textSize="18sp">
 
@@ -110,8 +110,8 @@
                         android:layout_height="wrap_content"
                         android:layout_below="@id/favourite_driver_name"
                         android:layout_alignParentStart="true"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginStart="50dp">
+                        android:layout_marginStart="50dp"
+                        android:layout_marginTop="5dp">
 
                         <ImageView
                             android:id="@+id/favourite_driver_flag"
@@ -126,12 +126,12 @@
                             android:id="@+id/favourite_driver_nationality"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/favourite_driver_flag"
                             android:layout_centerVertical="true"
                             android:layout_marginStart="5dp"
+                            android:layout_toEndOf="@id/favourite_driver_flag"
+                            android:fontFamily="@font/orbitron_regular"
                             android:text="@string/not_found"
-                            android:textColor="@color/black"
-                            android:fontFamily="@font/orbitron_regular">
+                            android:textColor="@color/black">
 
                         </TextView>
 
@@ -200,17 +200,17 @@
                                     android:layout_marginStart="3dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/rank"
-                                    android:textSize="12sp"
-                                    android:textColor="@color/screen_background_color">
+                                    android:textColor="@color/screen_background_color"
+                                    android:textSize="12sp">
 
                                 </TextView>
 
                             </LinearLayout>
 
                             <LinearLayout
-                                android:layout_below="@id/driver_rank_layout"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_below="@id/driver_rank_layout"
                                 android:layout_centerInParent="true"
                                 android:orientation="horizontal">
 
@@ -218,8 +218,8 @@
                                     android:id="@+id/favourite_driver_position"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:fontFamily="@font/orbitron_bold"
                                     android:layout_marginStart="5dp"
+                                    android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/not_found"
                                     android:textColor="@color/screen_background_color"
                                     android:textSize="12sp">
@@ -297,8 +297,8 @@
                         android:layout_alignParentStart="true"
                         android:layout_marginStart="@dimen/small_margin"
                         android:layout_marginTop="5dp"
-                        android:text="@string/not_found"
                         android:fontFamily="@font/orbitron_bold"
+                        android:text="@string/not_found"
                         android:textColor="@color/black"
                         android:textSize="18sp">
 
@@ -317,8 +317,8 @@
                         android:layout_width="120dp"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/favourite_constructor_car"
-                        android:layout_marginStart="30dp"
                         android:layout_alignParentStart="true"
+                        android:layout_marginStart="30dp"
                         android:layout_marginTop="5dp"
                         android:layout_marginBottom="5dp"
                         android:clickable="true"
@@ -354,17 +354,17 @@
                                     android:layout_marginStart="3dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/rank"
-                                    android:textSize="12sp"
-                                    android:textColor="@color/screen_background_color">
+                                    android:textColor="@color/screen_background_color"
+                                    android:textSize="12sp">
 
                                 </TextView>
 
                             </LinearLayout>
 
                             <LinearLayout
-                                android:layout_below="@id/constructor_rank_layout"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:layout_below="@id/constructor_rank_layout"
                                 android:layout_centerInParent="true"
                                 android:orientation="horizontal">
 
@@ -372,8 +372,8 @@
                                     android:id="@+id/favourite_constructor_position"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:fontFamily="@font/orbitron_bold"
                                     android:layout_marginStart="5dp"
+                                    android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/not_found"
                                     android:textColor="@color/screen_background_color"
                                     android:textSize="12sp">
@@ -446,12 +446,12 @@
                             android:id="@+id/favourite_constructor_nationality"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toEndOf="@id/favourite_constructor_flag"
                             android:layout_centerVertical="true"
                             android:layout_marginStart="5dp"
+                            android:layout_toEndOf="@id/favourite_constructor_flag"
+                            android:fontFamily="@font/orbitron_regular"
                             android:text="@string/not_found"
-                            android:textColor="@color/black"
-                            android:fontFamily="@font/orbitron_regular">
+                            android:textColor="@color/black">
 
                         </TextView>
 
@@ -478,12 +478,13 @@
 
     </ScrollView>
 
-    <include layout="@layout/loading_screen"
+    <include
         android:id="@+id/loading_screen"
-        app:layout_constraintTop_toTopOf="parent"
+        layout="@layout/loading_screen"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="gone"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

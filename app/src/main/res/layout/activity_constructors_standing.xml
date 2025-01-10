@@ -18,12 +18,12 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:background="@color/ferrari_secondary"
             android:layout_marginTop="32dp"
+            android:background="@color/ferrari_secondary"
             app:navigationIcon="@drawable/arrow_back_ios_style"
             app:title="@string/constructors_upper_case"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp"
-            app:titleCentered="true" />
+            app:titleCentered="true"
+            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
@@ -37,8 +37,8 @@
         <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/small_margin"
             android:layout_marginStart="@dimen/small_margin"
+            android:layout_marginTop="@dimen/small_margin"
             android:layout_marginEnd="@dimen/small_margin"
             android:scrollbars="none">
 
@@ -54,13 +54,14 @@
 
     </LinearLayout>
 
-    <include layout="@layout/loading_screen"
+    <include
         android:id="@+id/loading_screen"
-        app:layout_constraintTop_toTopOf="parent"
+        layout="@layout/loading_screen"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="gone"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

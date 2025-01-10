@@ -8,8 +8,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:gravity="center"
         android:fontFamily="@font/orbitron_bold"
+        android:gravity="center"
         android:text="RACE\nCANCELLED"
         android:textAppearance="@style/TextAppearance.AppCompat.Large">
 

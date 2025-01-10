@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style="?materialCardViewElevatedStyle"
     android:layout_width="match_parent"
@@ -17,6 +16,7 @@
         android:layout_height="wrap_content"
 
         android:orientation="vertical">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -26,9 +26,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
+                android:fontFamily="@font/orbitron_bold"
                 android:gravity="start"
                 android:text="@string/not_found"
-                android:fontFamily="@font/orbitron_bold"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <TextView
@@ -36,21 +36,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:fontFamily="@font/orbitron_bold"
                 android:gravity="center"
                 android:text="@string/not_found"
-                android:fontFamily="@font/orbitron_bold"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large" />
 
             <TextView
                 android:id="@+id/team_points"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
                 android:layout_marginEnd="10dp"
+                android:fontFamily="@font/orbitron_bold"
                 android:gravity="end"
                 android:text="@string/not_found"
-                android:fontFamily="@font/orbitron_bold"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:layout_alignParentEnd="true" />
+                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
         </RelativeLayout>
 
         <LinearLayout
@@ -83,11 +83,11 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
                         android:layout_marginTop="5dp"
-                        android:text="@string/not_found"
-                        android:autoSizeTextType="uniform"
-                        android:autoSizeMinTextSize="11sp"
                         android:autoSizeMaxTextSize="20sp"
+                        android:autoSizeMinTextSize="11sp"
+                        android:autoSizeTextType="uniform"
                         android:fontFamily="@font/orbitron_regular"
+                        android:text="@string/not_found"
                         android:textAppearance="?attr/textAppearanceBodyLarge"
                         android:textColor="@color/screen_background_color" />
                 </LinearLayout>
@@ -97,42 +97,46 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:padding="5dp">
+
                     <ImageView
                         android:id="@+id/driver_2_pic"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:layout_gravity="fill"
-                         />
+                        android:layout_gravity="fill" />
+
                     <TextView
                         android:id="@+id/driver_2_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
                         android:layout_marginTop="5dp"
-                        android:text="@string/not_found"
                         android:fontFamily="@font/orbitron_regular"
+                        android:text="@string/not_found"
                         android:textAppearance="?attr/textAppearanceBodyLarge"
                         android:textColor="@color/screen_background_color" />
                 </LinearLayout>
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:layout_weight="50">
+                android:layout_weight="50"
+                android:orientation="vertical">
+
                 <ImageView
                     android:id="@+id/team_logo"
                     android:layout_width="100dp"
                     android:layout_height="40dp"
+                    android:layout_gravity="center"
                     android:layout_marginTop="5dp"
-                    android:scaleType="fitCenter"
-                    android:layout_gravity="center" />
+                    android:scaleType="fitCenter" />
+
                 <ImageView
                     android:id="@+id/car_image"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:scaleType="fitCenter"
-                    android:layout_margin="5dp"/>
+                    android:layout_margin="5dp"
+                    android:scaleType="fitCenter" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

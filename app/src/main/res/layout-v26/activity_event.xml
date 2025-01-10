@@ -320,9 +320,9 @@
                             <ImageView
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
-                                android:layout_toEndOf="@id/weather_forecast_text"
                                 android:layout_alignParentEnd="true"
                                 android:layout_margin="5dp"
+                                android:layout_toEndOf="@id/weather_forecast_text"
                                 android:src="@drawable/play"
                                 app:tint="@color/black">
 
@@ -721,12 +721,13 @@
 
     </ScrollView>
 
-    <include layout="@layout/loading_screen"
+    <include
         android:id="@+id/loading_screen"
-        app:layout_constraintTop_toTopOf="parent"
+        layout="@layout/loading_screen"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="gone"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
