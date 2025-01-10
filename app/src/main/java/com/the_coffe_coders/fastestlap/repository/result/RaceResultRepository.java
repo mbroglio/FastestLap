@@ -1,5 +1,7 @@
 package com.the_coffe_coders.fastestlap.repository.result;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -11,7 +13,6 @@ import com.the_coffe_coders.fastestlap.dto.ResultDTO;
 import com.the_coffe_coders.fastestlap.mapper.SessionMapper;
 import com.the_coffe_coders.fastestlap.source.result.BaseRaceResultLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.result.BaseRaceResultRemoteDataSource;
-import com.the_coffe_coders.fastestlap.mapper.SessionMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
         this.raceResultRemoteDataSource = raceResultRemoteDataSource;
         this.raceResultLocalDataSource = raceResultLocalDataSource;
         this.raceResultRemoteDataSource.setRaceResultCallback(this);
+        this.raceResultLocalDataSource.setRaceResultCallback(this);
     }
 
     @Override
@@ -60,14 +62,10 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
     public void onSuccessFromRemote(RaceResultsAPIResponse raceResultsAPIResponse) {
         Log.i(TAG, "onSuccessFromRemote");
         Log.i(TAG, raceResultsAPIResponse.toString());
-        int i = 0;
         List<RaceResult> raceResult = new ArrayList<>();
         for(ResultDTO resultDTO: raceResultsAPIResponse.getRaceResults()) {
             raceResult.add(SessionMapper.toResult(resultDTO));
-            Log.i(TAG, raceResult.get(i).toString());
-            i++;
         }
-
         raceResultLocalDataSource.insertRaceResultList(raceResult);
     }
 
@@ -83,7 +81,11 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
 
     @Override
     public void onSuccessFromLocal(List<RaceResult> raceResultList) {
-
+        Log.i(TAG, "onSuccessFromLocal");
+        new Handler(Looper.getMainLooper()).post(() -> {
+            raceResultMutableLiveData.setValue(new Result.RaceResultSuccess(raceResultList));
+        });
+        Log.i(TAG, raceResultMutableLiveData.toString());
     }
 
     @Override

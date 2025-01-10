@@ -17,6 +17,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
@@ -26,6 +27,8 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
+import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
+import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
@@ -50,12 +53,14 @@ public class EventActivity extends AppCompatActivity {
     LoadingScreen loadingScreen;
     private String circuitId;
 
+    EventViewModel eventViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_event);
-
+        eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false))).get(EventViewModel.class);
 
         // Show loading screen initially
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
@@ -207,24 +212,28 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void processRaceResults(WeeklyRace raceResults) {
-        List<RaceResult> podium = raceResults.getFinalRace().getResults();
 
-        if (podium == null) {
-            showPendingResults();
-        } else {
-            for (int i = 0; i < 3; i++) {
-                String driverId = podium.get(i).getDriver().getDriverId();
-                String teamId = podium.get(i).getConstructor().getConstructorId();
+        MutableLiveData<Result> resultMutableLiveData = eventViewModel.getRaceResults(0L, raceResults.getRound());
+        Log.i(TAG, resultMutableLiveData.toString());
+        resultMutableLiveData.observe(this, result -> {
+            List<RaceResult> podium = ((Result.RaceResultSuccess) result).getData();
+            if (podium == null) {
+                showPendingResults();
+            } else {
+                for (int i = 0; i < 3; i++) {
+                    String driverId = podium.get(i).getDriver().getDriverId();
+                    String teamId = podium.get(i).getConstructor().getConstructorId();
 
-                TextView driverName = findViewById(Constants.PODIUM_DRIVER_NAME.get(i));
-                Integer driverNameObj = Constants.DRIVER_FULLNAME.get(driverId);
-                driverName.setText(Objects.requireNonNullElseGet(driverNameObj, () -> R.string.unknown));
+                    TextView driverName = findViewById(Constants.PODIUM_DRIVER_NAME.get(i));
+                    Integer driverNameObj = Constants.DRIVER_FULLNAME.get(driverId);
+                    driverName.setText(Objects.requireNonNullElseGet(driverNameObj, () -> R.string.unknown));
 
-                LinearLayout teamColor = findViewById(Constants.PODIUM_TEAM_COLOR.get(i));
-                Integer teamColorObj = Constants.TEAM_COLOR.get(teamId);
-                teamColor.setBackgroundColor(ContextCompat.getColor(this, Objects.requireNonNullElseGet(teamColorObj, () -> R.color.mercedes_f1)));
+                    LinearLayout teamColor = findViewById(Constants.PODIUM_TEAM_COLOR.get(i));
+                    Integer teamColorObj = Constants.TEAM_COLOR.get(teamId);
+                    teamColor.setBackgroundColor(ContextCompat.getColor(this, Objects.requireNonNullElseGet(teamColorObj, () -> R.color.mercedes_f1)));
+                }
             }
-        }
+        });
     }
 
     private void showPendingResults() {

@@ -167,7 +167,7 @@ public class ServiceLocator {
     public RaceRepository getRaceRepository(Application application, boolean b) {
         BaseWeeklyRaceLocalDataSource weeklyRaceLocalDataSource = new WeeklyRaceLocalDataSource(getRoomDatabase(application), new SharedPreferencesUtils(application));
         BaseWeeklyRaceRemoteDataSource weeklyRaceRemoteDataSource = new WeeklyRaceRemoteDataSource("");
-        return new RaceRepository(weeklyRaceRemoteDataSource, weeklyRaceLocalDataSource);
+        return new RaceRepository(weeklyRaceRemoteDataSource, weeklyRaceLocalDataSource, getRaceResultRepository(application, b));
     }
 
     public RaceResultRepository getRaceResultRepository(Application application, boolean b) {

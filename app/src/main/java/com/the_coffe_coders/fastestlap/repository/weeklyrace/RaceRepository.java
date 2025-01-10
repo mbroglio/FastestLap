@@ -10,8 +10,11 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.dto.RaceDTO;
 import com.the_coffe_coders.fastestlap.mapper.WeeklyRaceMapper;
+import com.the_coffe_coders.fastestlap.repository.result.IRaceResultRepository;
+import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.source.weeklyrace.BaseWeeklyRaceLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.weeklyrace.BaseWeeklyRaceRemoteDataSource;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,10 +26,12 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
     private final BaseWeeklyRaceRemoteDataSource raceRemoteDataSource;
     private final BaseWeeklyRaceLocalDataSource raceLocalDataSource;
 
+    private final IRaceResultRepository raceResultRepository;
+
     public static boolean isOutdate = true;
 
     private static final String TAG = "RaceRepository";
-    public RaceRepository(BaseWeeklyRaceRemoteDataSource raceRemoteDataSource, BaseWeeklyRaceLocalDataSource raceLocalDataSource) {
+    public RaceRepository(BaseWeeklyRaceRemoteDataSource raceRemoteDataSource, BaseWeeklyRaceLocalDataSource raceLocalDataSource, RaceResultRepository raceResultRepository) {
         this.weeklyRaceMutableLiveData = new MutableLiveData<>();
         this.nextRaceMutableLiveData = new MutableLiveData<>();
         this.lastRaceMutableLiveData = new MutableLiveData<>();
@@ -34,6 +39,7 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
         this.raceLocalDataSource = raceLocalDataSource;
         this.raceRemoteDataSource.setRaceCallback(this);
         this.raceLocalDataSource.setRaceCallback(this);
+        this.raceResultRepository = raceResultRepository;
     }
 
     @Override

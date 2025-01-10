@@ -56,7 +56,7 @@ public class PastEventsActivity extends AppCompatActivity {
 
     private void processEvents() {
         Log.i("PastEvent", "Process Event");
-        EventViewModel eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false))).get(EventViewModel.class);
+        EventViewModel eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false))).get(EventViewModel.class);
         MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getApplication(), false).fetchWeeklyRaces(0);
         data.observe(this, result -> {
             if (result.isSuccess()) {

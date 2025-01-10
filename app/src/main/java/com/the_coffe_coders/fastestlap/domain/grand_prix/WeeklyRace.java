@@ -155,4 +155,8 @@ public abstract class WeeklyRace {
     public Practice getFirstPractice() {
         return this.firstPractice;
     }
+
+    public void setFinalRaceResults(List<RaceResult> raceResults) {
+        this.finalRace.setResults(raceResults);
+    }
 }

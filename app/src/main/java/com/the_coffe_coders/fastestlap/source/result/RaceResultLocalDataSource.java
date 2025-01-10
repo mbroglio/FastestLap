@@ -5,9 +5,6 @@ import android.util.Log;
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.database.RaceResultDAO;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRaceClassic;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRaceSprint;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 
@@ -50,6 +47,7 @@ public class RaceResultLocalDataSource extends BaseRaceResultLocalDataSource {
             });
             sharedPreferencesUtil.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
                     Constants.SHARED_PREFERENCES_LAST_UPDATE, String.valueOf(System.currentTimeMillis()));
+
             raceResultCallback.onSuccessFromLocal(raceResultList);
         });
     }
