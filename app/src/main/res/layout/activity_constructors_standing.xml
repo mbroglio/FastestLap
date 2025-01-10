@@ -10,7 +10,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/top_bar_height_32_dp_top_margin"
+        android:layout_height="@dimen/top_bar_height_16_dp_top_margin"
         android:background="@color/ferrari_secondary"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -19,17 +19,18 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
             android:background="@color/ferrari_secondary"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="@dimen/medium_margin"
             app:navigationIcon="@drawable/arrow_back_ios_style"
             app:title="@string/constructors_upper_case"
             app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp"
             app:titleCentered="true" />
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/top_bar_height_32_dp_top_margin"
+        android:layout_marginTop="@dimen/top_bar_height_16_dp_top_margin"
         android:background="@color/screen_background_color"
         android:orientation="vertical">
 
@@ -37,9 +38,9 @@
         <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/small_margin"
-            android:layout_marginStart="@dimen/small_margin"
-            android:layout_marginEnd="@dimen/small_margin"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginEnd="@dimen/medium_margin"
             android:scrollbars="none">
 
             <LinearLayout
@@ -61,6 +62,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:visibility="gone"/>
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

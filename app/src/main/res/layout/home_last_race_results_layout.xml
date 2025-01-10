@@ -252,7 +252,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/small_margin"
+                    android:layout_marginStart="@dimen/medium_margin"
                     android:text="@string/raceResult"
                     android:fontFamily="@font/orbitron_bold"
                     android:textColor="@color/black">
@@ -266,7 +266,7 @@
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@id/raceResult"
                     android:layout_marginStart="5dp"
-                    android:layout_marginEnd="@dimen/small_margin"
+                    android:layout_marginEnd="@dimen/medium_margin"
                     app:srcCompat="@drawable/checkered_flag">
 
                 </ImageView>

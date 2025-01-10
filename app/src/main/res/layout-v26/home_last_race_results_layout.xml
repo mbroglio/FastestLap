@@ -4,8 +4,7 @@
     android:id="@+id/last_race_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:background="@color/black">
+    android:orientation="horizontal">
 
     <LinearLayout
         android:id="@+id/last_race_name_layout"
@@ -256,7 +255,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/small_margin"
+                    android:layout_marginStart="@dimen/medium_margin"
                     android:text="@string/raceResult"
                     android:textSize="@dimen/body_text_size"
                     android:fontFamily="@font/orbitron_bold"

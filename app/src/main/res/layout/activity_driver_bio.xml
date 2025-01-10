@@ -10,7 +10,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/top_bar_height_32_dp_top_margin"
+        android:layout_height="@dimen/top_bar_height_16_dp_top_margin"
         android:background="@color/mclaren_f1"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -32,7 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="@dimen/top_bar_height_32_dp_top_margin" />
+        app:layout_constraintGuide_begin="@dimen/top_bar_height_16_dp_top_margin" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_bottom"
