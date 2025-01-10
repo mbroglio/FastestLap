@@ -201,7 +201,7 @@
                                     android:layout_marginStart="3dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/rank"
-                                    android:textSize="@dimen/body_text_size"
+                                    android:textSize="@dimen/layout_subtitle_text_size"
                                     android:textColor="@color/screen_background_color">
 
                                 </TextView>
@@ -355,7 +355,7 @@
                                     android:layout_marginStart="3dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/rank"
-                                    android:textSize="@dimen/body_text_size"
+                                    android:textSize="@dimen/layout_subtitle_text_size"
                                     android:textColor="@color/screen_background_color">
 
                                 </TextView>
