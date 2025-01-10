@@ -5,6 +5,7 @@ import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorAPIResponse
 import com.the_coffe_coders.fastestlap.domain.driver.DriverAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 
 import java.util.List;
@@ -60,6 +61,17 @@ public abstract class Result {
 
         public ConstructorStandings getData() {
             return constructorStandings;
+        }
+    }
+
+    public static final class RaceResultSuccess extends Result {
+        private final List<RaceResult> raceResultList;
+
+        public RaceResultSuccess(List<RaceResult> raceResultList) {
+            this.raceResultList = raceResultList;
+        }
+        public List<RaceResult> getData() {
+            return raceResultList;
         }
     }
 

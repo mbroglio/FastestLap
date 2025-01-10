@@ -1,7 +1,4 @@
-package com.the_coffe_coders.fastestlap.source.constructor;
-
-
-import static android.content.ContentValues.TAG;
+package com.the_coffe_coders.fastestlap.source.result;
 
 import static com.the_coffe_coders.fastestlap.util.Constants.RETROFIT_ERROR;
 
@@ -11,36 +8,35 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.the_coffe_coders.fastestlap.api.ConstructorStandingsAPIResponse;
-import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
-import com.the_coffe_coders.fastestlap.dto.ConstructorDTO;
-import com.the_coffe_coders.fastestlap.dto.ConstructorStandingsElementDTO;
+import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
+import com.the_coffe_coders.fastestlap.api.RaceResultsAPIResponse;
+import com.the_coffe_coders.fastestlap.repository.weeklyrace.OperationType;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ConstructorRemoteDataSource extends BaseConstructorRemoteDataSource {
+public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource{
 
     private final ErgastAPIService ergastAPIService;
 
-    public ConstructorRemoteDataSource(String apiKey) {
-        this.ergastAPIService = ServiceLocator.getInstance().getConcreteErgastAPIService    ();
+    private static final String TAG = "RaceResultRemoteDataSource";
+
+    public RaceResultRemoteDataSource(String apiKey) {
+        this.ergastAPIService = ServiceLocator.getInstance().getConcreteErgastAPIService();
     }
 
     @Override
-    public void getConstructor() {
-        Log.i(TAG, "getConstructor: ");
-        Call<ResponseBody> newsResponseCall = ergastAPIService.getConstructorStandings();
-        newsResponseCall.enqueue(new Callback<>() {
+    public void getRaceResults(int round) {
+        Call<ResponseBody> responseCall = ergastAPIService.getRaceResults(round);
+        Log.i(TAG, "getRaceResults from remote");
+        responseCall.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
@@ -52,31 +48,20 @@ public class ConstructorRemoteDataSource extends BaseConstructorRemoteDataSource
                     }
                     JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
                     JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
-
                     JSONParserUtils jsonParserUtils = new JSONParserUtils();
-                    ConstructorStandingsAPIResponse constructorStandingsAPIResponse = jsonParserUtils.parseConstructorStandings(mrdata);
-                    System.out.println("CALLBACK");
-                    constructorCallback.onSuccessFromRemote(constructorStandingsAPIResponse, System.currentTimeMillis());
+                    RaceResultsAPIResponse raceResultsAPIResponse = jsonParserUtils.parseRaceResults(mrdata);
+
+                    raceResultCallback.onSuccessFromRemote(raceResultsAPIResponse);
                 } else {
-                    constructorCallback.onFailureFromRemote(new Exception());
+                    raceResultCallback.onFailureFromRemote(new Exception());
                 }
-
-
             }
 
+            @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                constructorCallback.onFailureFromRemote(new Exception(RETROFIT_ERROR));
+                raceResultCallback.onFailureFromRemote(new Exception(RETROFIT_ERROR));
             }
         });
-    }
-
-    @Override
-    public void getConstructorStandings() {
-
-    }
-
-    @Override
-    public void getConstructor(String constructorId) {
 
     }
 }

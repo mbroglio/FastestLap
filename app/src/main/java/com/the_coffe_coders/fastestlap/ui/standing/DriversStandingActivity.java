@@ -25,6 +25,7 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
+import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
@@ -63,7 +64,8 @@ public class DriversStandingActivity extends AppCompatActivity {
 
         driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverRepository(getApplication(), false))).get(DriverStandingsViewModel.class);
         MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
-
+        RaceResultRepository raceResultRepository = ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false);
+        raceResultRepository.fetchRaceResults(2, 0);
 
         data.observe(this, result -> {
             if (result.isSuccess()) {

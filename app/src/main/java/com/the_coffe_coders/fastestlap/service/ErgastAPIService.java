@@ -3,6 +3,7 @@ package com.the_coffe_coders.fastestlap.service;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 
 public interface ErgastAPIService {
     @GET("constructorstandings")
@@ -17,8 +18,11 @@ public interface ErgastAPIService {
     @GET("last/results.json")
     Call<ResponseBody> getLastRaceResults();
 
-    @GET("results.json")
-    Call<ResponseBody> getResults();
+    @GET("{round}/results.json")
+    Call<ResponseBody> getRaceResults(@Path("round") int round);
+
+    /*@GET("results.json")
+    Call<ResponseBody> getResults();*/
 
     @GET("next")
     Call<ResponseBody> getNextRace();

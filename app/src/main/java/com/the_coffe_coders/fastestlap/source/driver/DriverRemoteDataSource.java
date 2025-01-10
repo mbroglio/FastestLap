@@ -29,7 +29,7 @@ public class DriverRemoteDataSource extends BaseDriverRemoteDataSource {
     private final ErgastAPIService ergastAPIService;
 
     public DriverRemoteDataSource(String apiKey) {
-        this.ergastAPIService = ServiceLocator.getInstance().getDriverAPIService();
+        this.ergastAPIService = ServiceLocator.getInstance().getConcreteErgastAPIService();
     }
 
     public void getDrivers() {
