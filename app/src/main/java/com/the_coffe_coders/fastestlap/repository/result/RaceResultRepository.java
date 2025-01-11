@@ -22,12 +22,14 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
     private static final String TAG = "RaceResultRepository";
     public static boolean isOutdate = true;
     private final MutableLiveData<Result> raceResultMutableLiveData;
+    private final MutableLiveData<Result> allRaceResultMutableLiveData;
     private final BaseRaceResultRemoteDataSource raceResultRemoteDataSource;
     private final BaseRaceResultLocalDataSource raceResultLocalDataSource;
 
 
     public RaceResultRepository(BaseRaceResultRemoteDataSource raceResultRemoteDataSource, BaseRaceResultLocalDataSource raceResultLocalDataSource) {
         this.raceResultMutableLiveData = new MutableLiveData<>();
+        this.allRaceResultMutableLiveData = new MutableLiveData<>();
         this.raceResultRemoteDataSource = raceResultRemoteDataSource;
         this.raceResultLocalDataSource = raceResultLocalDataSource;
         this.raceResultRemoteDataSource.setRaceResultCallback(this);

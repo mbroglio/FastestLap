@@ -22,16 +22,12 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
     private static final String TAG = "RaceRepository";
     public static boolean isOutdate = true;
     private final MutableLiveData<Result> weeklyRaceMutableLiveData;
-    private final MutableLiveData<Result> nextRaceMutableLiveData;
-    private final MutableLiveData<Result> lastRaceMutableLiveData;
     private final BaseWeeklyRaceRemoteDataSource raceRemoteDataSource;
     private final BaseWeeklyRaceLocalDataSource raceLocalDataSource;
     private final IRaceResultRepository raceResultRepository;
 
     public RaceRepository(BaseWeeklyRaceRemoteDataSource raceRemoteDataSource, BaseWeeklyRaceLocalDataSource raceLocalDataSource, RaceResultRepository raceResultRepository) {
         this.weeklyRaceMutableLiveData = new MutableLiveData<>();
-        this.nextRaceMutableLiveData = new MutableLiveData<>();
-        this.lastRaceMutableLiveData = new MutableLiveData<>();
         this.raceRemoteDataSource = raceRemoteDataSource;
         this.raceLocalDataSource = raceLocalDataSource;
         this.raceRemoteDataSource.setRaceCallback(this);
