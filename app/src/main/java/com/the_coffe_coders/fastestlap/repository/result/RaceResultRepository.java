@@ -56,7 +56,7 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
         if (true) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
             //TODO fetch from remote
             Log.i(TAG, "Remote fetchAllRaceResults");
-            raceResultRemoteDataSource.getAllRaceResult();
+            raceResultRemoteDataSource.getAllRaceResults();
             isOutdate = false;
         }else{
             Log.i(TAG, "fetchAllRaceResults from local");

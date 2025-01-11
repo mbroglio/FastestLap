@@ -30,11 +30,6 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
     }
 
     @Override
-    public void getAllRaceResult() {
-
-    }
-
-    @Override
     public void getRaceResults(int round) {
         Call<ResponseBody> responseCall = ergastAPIService.getRaceResults(round);
         Log.i(TAG, "getRaceResults from remote");
@@ -84,9 +79,9 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
                     JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
                     JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
                     JSONParserUtils jsonParserUtils = new JSONParserUtils();
-                    Log.i(TAG, mrdata.getAsString());
-                    //RaceResultsAPIResponse raceResultsAPIResponse = jsonParserUtils.parseRaceResults(mrdata);
 
+                    RaceResultsAPIResponse raceResultsAPIResponse = jsonParserUtils.parseRaceResults(mrdata);
+                    Log.i(TAG, raceResultsAPIResponse.toString());
                     //raceResultCallback.onSuccessFromRemote(raceResultsAPIResponse);
                 } else {
                     raceResultCallback.onFailureFromRemote(new Exception());

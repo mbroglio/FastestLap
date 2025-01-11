@@ -9,8 +9,6 @@ public abstract class BaseRaceResultRemoteDataSource {
         this.raceResultCallback = raceResultCallback;
     }
 
-    public abstract void getAllRaceResult();
-
     public abstract void getRaceResults(int round);
     public abstract void getAllRaceResults();
 }
