@@ -220,7 +220,6 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:fontFamily="@font/orbitron_bold"
-                                    android:layout_marginStart="5dp"
                                     android:text="@string/not_found"
                                     android:textColor="@color/screen_background_color"
                                     android:textSize="@dimen/body_text_size">
@@ -255,7 +254,6 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="3dp"
-                                    android:layout_marginEnd="5dp"
                                     android:fontFamily="@font/orbitron_regular"
                                     android:text="@string/points_upper_case"
                                     android:textColor="@color/screen_background_color"
@@ -374,7 +372,6 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:fontFamily="@font/orbitron_bold"
-                                    android:layout_marginStart="5dp"
                                     android:text="@string/not_found"
                                     android:textColor="@color/screen_background_color"
                                     android:textSize="@dimen/body_text_size">
@@ -409,7 +406,6 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_marginStart="3dp"
-                                    android:layout_marginEnd="5dp"
                                     android:fontFamily="@font/orbitron_regular"
                                     android:text="@string/points_upper_case"
                                     android:textColor="@color/screen_background_color"

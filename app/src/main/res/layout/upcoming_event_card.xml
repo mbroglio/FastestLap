@@ -55,7 +55,7 @@
                     android:fontFamily="@font/orbitron_bold"
                     android:text="ROUND 22"
                     android:textColor="@color/white"
-                    android:textSize="10sp">
+                    android:textSize="@dimen/text_minor_importance_size">
 
                 </TextView>
 
@@ -67,6 +67,7 @@
                     android:layout_centerInParent="true"
                     android:fontFamily="@font/orbitron_bold"
                     android:text="Singapore Grand prix"
+                    android:textSize="@dimen/layout_subtitle_text_size"
                     android:textColor="@color/white">
 
                 </TextView>
@@ -80,6 +81,7 @@
                     android:layout_marginTop="5dp"
                     android:fontFamily="@font/orbitron_regular"
                     android:text="22-24"
+                    android:textSize="@dimen/body_text_size"
                     android:textColor="@color/white">
 
                 </TextView>
@@ -92,6 +94,7 @@
                     android:layout_centerInParent="true"
                     android:fontFamily="@font/orbitron_bold"
                     android:text="NOV"
+                    android:textSize="@dimen/layout_subtitle_text_size"
                     android:textColor="@color/white">
 
                 </TextView>

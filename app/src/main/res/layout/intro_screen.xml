@@ -41,7 +41,7 @@
         android:lineSpacingExtra="10dp"
         android:text="@string/by_the_coffee_coders"
         android:textColor="@color/white"
-        android:textSize="20sp"
+        android:textSize="@dimen/page_title_text_size"
         android:visibility="invisible">
 
     </TextView>

@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constructor_bio_table_row"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_bottom_margin_timer_grey"
+    android:orientation="vertical"
+    tools:context=".ui.bio.ConstructorBioActivity">
+
+    <LinearLayout
+        android:id="@+id/driver_history_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="1dp"
+        tools:ignore="UselessParent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="YEAR"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:fontFamily="@font/orbitron_bold"
+            android:textSize="@dimen/layout_subtitle_text_size"
+            android:layout_weight="0.2">
+
+        </TextView>
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="PODIUM"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:fontFamily="@font/orbitron_bold"
+            android:textSize="@dimen/layout_subtitle_text_size"
+            android:layout_weight="0.8">
+
+        </TextView>
+
+    </LinearLayout>
+
+</LinearLayout>
