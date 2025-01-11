@@ -252,7 +252,7 @@
                     android:fontFamily="@font/orbitron_bold"
                     android:text="DRIVERS"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/layout_title_text_size">
+                    android:textSize="@dimen/layout_title_1_text_size">
 
                 </TextView>
 
@@ -357,7 +357,7 @@
                     android:fontFamily="@font/orbitron_bold"
                     android:text="TEAM INFO"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/layout_title_text_size">
+                    android:textSize="@dimen/layout_title_1_text_size">
 
                 </TextView>
 
@@ -730,7 +730,7 @@
                         android:fontFamily="@font/orbitron_bold"
                         android:text="TEAM HISTORY:"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/layout_title_text_size" />
+                        android:textSize="@dimen/layout_title_1_text_size" />
 
                     <TableLayout
                         android:id="@+id/history_table"

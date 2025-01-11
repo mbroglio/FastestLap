@@ -287,7 +287,7 @@ public class EventActivity extends AppCompatActivity {
             ImageView flag = findViewById(Constants.SESSION_FLAG_FIELD.get(sessionId));
             flag.setVisibility(View.VISIBLE);
 
-            RelativeLayout currentSession = findViewById(Constants.SESSION_ROW.get(sessionId));
+            LinearLayout currentSession = findViewById(Constants.SESSION_ROW.get(sessionId));
             currentSession.setClickable(true);
             currentSession.setFocusable(true);
             currentSession.setOnClickListener(view -> Log.i(TAG, "session clicked"));

@@ -495,7 +495,7 @@
                     android:fontFamily="@font/orbitron_bold"
                     android:text="DRIVER HISTORY:"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/layout_title_text_size" />
+                    android:textSize="@dimen/layout_title_1_text_size" />
 
 
                 <TableLayout

@@ -23,7 +23,7 @@
             android:fontFamily="@font/orbitron_bold"
             android:text="@string/season_final_results"
             android:textColor="@color/white"
-            android:textSize="@dimen/layout_title_text_size">
+            android:textSize="@dimen/layout_title_1_text_size">
 
         </TextView>
 
