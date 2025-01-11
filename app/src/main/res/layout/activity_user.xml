@@ -10,7 +10,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/top_bar_height_32_dp_top_margin"
+        android:layout_height="@dimen/top_bar_height_16_dp_top_margin"
         android:background="@color/ferrari_secondary"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -18,7 +18,7 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="@dimen/medium_margin"
             android:background="@color/ferrari_secondary"
             app:navigationIcon="@drawable/arrow_back_ios_style"
             app:title="@string/profile_upper_case"
@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="@dimen/top_bar_height_32_dp_top_margin" />
+        app:layout_constraintGuide_begin="@dimen/top_bar_height_16_dp_top_margin" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_bottom"
@@ -83,8 +83,8 @@
                     android:layout_centerInParent="true"
                     android:fontFamily="@font/orbitron_bold"
                     android:text="Lorenzo_207378"
-                    android:textColor="@color/white"
-                    android:textSize="14sp" />
+                    android:textColor="@color/timer_gray"
+                    android:textSize="@dimen/body_text_size" />
 
                 <ImageView
                     android:id="@+id/edit_profile"
@@ -112,6 +112,7 @@
                     android:layout_marginStart="10dp"
                     android:fontFamily="@font/orbitron_bold"
                     android:text="Email:"
+                    android:textSize="@dimen/layout_subtitle_text_size"
                     android:textColor="@color/white">
 
                 </TextView>
@@ -137,7 +138,7 @@
                             android:inputType="textEmailAddress"
                             android:text="pierre.gasslee@gmail.com"
                             android:textColor="@color/timer_gray"
-                            android:textSize="14sp" />
+                            android:textSize="@dimen/body_text_size" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -193,6 +194,7 @@
                     android:layout_marginStart="10dp"
                     android:fontFamily="@font/orbitron_bold"
                     android:text="Password:"
+                    android:textSize="@dimen/layout_subtitle_text_size"
                     android:textColor="@color/white">
 
                 </TextView>
@@ -218,7 +220,7 @@
                             android:inputType="textPassword"
                             android:text="Lorenzo1"
                             android:textColor="@color/timer_gray"
-                            android:textSize="14sp" />
+                            android:textSize="@dimen/body_text_size" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -288,6 +290,7 @@
                     android:layout_marginStart="10dp"
                     android:fontFamily="@font/orbitron_bold"
                     android:text="Favourite Driver:"
+                    android:textSize="@dimen/layout_subtitle_text_size"
                     android:textColor="@color/white">
 
                 </TextView>
@@ -307,6 +310,7 @@
                         android:layout_centerInParent="true"
                         android:fontFamily="@font/orbitron_regular"
                         android:text="Lewis Hamilton"
+                        android:textSize="@dimen/body_text_size"
                         android:textColor="@color/timer_gray">
 
                     </TextView>
@@ -332,6 +336,7 @@
                             android:layout_marginBottom="5dp"
                             android:fontFamily="@font/orbitron_bold"
                             android:text="CHANGE"
+                            android:textSize="@dimen/layout_subtitle_text_size"
                             android:textColor="@color/black">
 
                         </TextView>
@@ -367,6 +372,7 @@
                     android:layout_marginStart="10dp"
                     android:fontFamily="@font/orbitron_bold"
                     android:text="Favourite Constructor:"
+                    android:textSize="@dimen/layout_subtitle_text_size"
                     android:textColor="@color/white">
 
                 </TextView>
@@ -386,6 +392,7 @@
                         android:layout_centerInParent="true"
                         android:fontFamily="@font/orbitron_regular"
                         android:text="Mercedes"
+                        android:textSize="@dimen/body_text_size"
                         android:textColor="@color/timer_gray">
 
                     </TextView>
@@ -411,6 +418,7 @@
                             android:layout_marginBottom="5dp"
                             android:fontFamily="@font/orbitron_bold"
                             android:text="CHANGE"
+                            android:textSize="@dimen/layout_subtitle_text_size"
                             android:textColor="@color/black">
 
                         </TextView>
@@ -441,6 +449,7 @@
                 android:backgroundTint="@color/timer_gray"
                 android:fontFamily="@font/orbitron_bold"
                 android:text="@string/save_upper_case"
+                android:textSize="@dimen/layout_subtitle_text_size"
                 android:textColor="@color/black"
                 android:visibility="invisible"
                 app:icon="@drawable/check_icon_black"
@@ -458,6 +467,7 @@
                 android:backgroundTint="@color/timer_gray"
                 android:fontFamily="@font/orbitron_bold"
                 android:text="@string/dismiss_upper_case"
+                android:textSize="@dimen/layout_subtitle_text_size"
                 android:textColor="@color/black"
                 android:visibility="invisible"
                 app:icon="@drawable/x_icon_black"
