@@ -5,9 +5,8 @@
     <item
         android:id="@+id/userActivity"
         android:icon="@drawable/anonymous_user_icon"
-        android:contentDescription="user"
         android:title="User"
-        app:showAsAction="ifRoom">
+        app:showAsAction="always">
 
     </item>
 

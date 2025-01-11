@@ -257,7 +257,7 @@ public class EditProfilePopup {
 
     private void checkForChanges() {
         boolean hasChanges = isUsernameModified || (isProfileImageModified && isConfirmIconClicked);
-        buttonsLayout.setVisibility(hasChanges ? View.VISIBLE : View.INVISIBLE);
+        buttonsLayout.setVisibility(hasChanges ? View.VISIBLE : View.GONE);
 
     }
 

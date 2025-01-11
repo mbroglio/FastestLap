@@ -46,10 +46,8 @@
         android:layout_marginStart="10dp"
         android:layout_marginBottom="30dp"
         android:layout_toEndOf="@id/profile_image_layout"
-        android:background="@drawable/circle_background_dark_grey"
         android:src="@drawable/arrow_back_ios_style"
-        android:visibility="invisible"
-        app:tint="@color/white">
+        android:visibility="invisible">
 
     </ImageView>
 
@@ -60,10 +58,8 @@
         android:layout_alignBottom="@id/profile_image_layout"
         android:layout_marginStart="10dp"
         android:layout_toEndOf="@id/profile_image_layout"
-        android:background="@drawable/circle_background_dark_grey"
         android:src="@drawable/check_icon_black"
-        android:visibility="invisible"
-        app:tint="@color/white">
+        android:visibility="invisible">
 
     </ImageView>
 
@@ -136,8 +132,7 @@
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@+id/profile_name_text_field"
             android:src="@drawable/check_icon_black"
-            android:visibility="invisible"
-            app:tint="@color/black" />
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/revert_edit_profile_name"
@@ -147,8 +142,7 @@
             android:layout_marginStart="20dp"
             android:layout_toEndOf="@id/edit_profile_name"
             android:src="@drawable/arrow_back_ios_style"
-            android:visibility="invisible"
-            app:tint="@color/black" />
+            android:visibility="invisible" />
 
     </RelativeLayout>
 
@@ -161,7 +155,7 @@
         android:layout_marginTop="15dp"
         android:gravity="center"
         android:orientation="vertical"
-        android:visibility="invisible">
+        android:visibility="gone">
 
         <Button
             android:id="@+id/dismiss_button"
@@ -172,8 +166,7 @@
             android:text="@string/dismiss_upper_case"
             android:textColor="@color/black"
             android:textSize="@dimen/layout_subtitle_text_size"
-            app:icon="@drawable/x_icon_black"
-            app:iconTint="@color/black">
+            app:icon="@drawable/x_icon_black">
 
         </Button>
 
@@ -187,8 +180,7 @@
             android:text="@string/save_upper_case"
             android:textColor="@color/black"
             android:textSize="@dimen/layout_subtitle_text_size"
-            app:icon="@drawable/check_icon_black"
-            app:iconTint="@color/black">
+            app:icon="@drawable/check_icon_black">
 
         </Button>
 
