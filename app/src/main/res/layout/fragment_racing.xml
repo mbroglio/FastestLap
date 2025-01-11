@@ -45,21 +45,18 @@
                 android:layout_margin="20dp"
                 android:clickable="true"
                 android:focusable="true"
+                app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="40dp"
                 app:strokeColor="@color/black"
                 app:strokeWidth="5dp">
 
-                <LinearLayout
+
+                <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/past_events_icon" />
 
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="fitXY"
-                        app:srcCompat="@drawable/past_event_image" />
-
-                </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -81,21 +78,18 @@
                 android:layout_margin="20dp"
                 android:clickable="true"
                 android:focusable="true"
+                app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="40dp"
                 app:strokeColor="@color/black"
                 app:strokeWidth="5dp">
 
-                <LinearLayout
+
+                <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/upcoming_events_icon" />
 
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="fitXY"
-                        app:srcCompat="@drawable/upcoming_races_image" />
-
-                </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 

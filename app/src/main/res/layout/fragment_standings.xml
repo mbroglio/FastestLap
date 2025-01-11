@@ -36,8 +36,8 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/drivers_card"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentStart="true"
@@ -72,7 +72,7 @@
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/constructors_card"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
