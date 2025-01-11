@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -272,7 +273,7 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
         listPopupWindow.setAnchorView(anchorView);
         listPopupWindow.setWidth((int) (220 * getResources().getDisplayMetrics().density)); // Set the width to 220dp
         listPopupWindow.setHeight((int) (250 * getResources().getDisplayMetrics().density)); // Set the height to 250dp
-        listPopupWindow.setBackgroundDrawable(getDrawable(R.drawable.circle_background_dark_grey));
+        listPopupWindow.setBackgroundDrawable(getDrawable(R.drawable.round_background_grey));
         listPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
             String selectedItemKey = items[position];
             if (isDriver) {
@@ -297,6 +298,8 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
         inputText.setEnabled(true);
         inputText.requestFocus();
         inputText.setSelection(inputText.getText().length());
+        InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        imm.showSoftInput(inputText, InputMethodManager.SHOW_IMPLICIT);
         editText.setVisibility(View.INVISIBLE);
         checkText.setVisibility(View.VISIBLE);
 

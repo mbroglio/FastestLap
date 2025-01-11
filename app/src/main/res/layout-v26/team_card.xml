@@ -29,7 +29,6 @@
                 android:fontFamily="@font/orbitron_bold"
                 android:gravity="start"
                 android:text="@string/not_found"
-                android:fontFamily="@font/orbitron_bold"
                 android:textSize="@dimen/layout_title_1_text_size"
                 android:textColor="@color/black" />
 
@@ -41,7 +40,6 @@
                 android:fontFamily="@font/orbitron_bold"
                 android:gravity="center"
                 android:text="@string/not_found"
-                android:fontFamily="@font/orbitron_bold"
                 android:textSize="@dimen/layout_title_1_text_size"
                 android:textColor="@color/black" />
 
@@ -54,10 +52,8 @@
                 android:fontFamily="@font/orbitron_bold"
                 android:gravity="end"
                 android:text="@string/not_found"
-                android:fontFamily="@font/orbitron_bold"
                 android:textSize="@dimen/layout_title_1_text_size"
-                android:textColor="@color/black"
-                android:layout_alignParentEnd="true" />
+                android:textColor="@color/black" />
 
         </RelativeLayout>
 

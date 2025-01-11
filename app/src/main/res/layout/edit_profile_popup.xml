@@ -15,7 +15,7 @@
         android:fontFamily="@font/orbitron_bold"
         android:text="Profile Image"
         android:textSize="@dimen/layout_subtitle_text_size"
-        android:textColor="@color/white">
+        android:textColor="@color/black">
 
     </TextView>
 
@@ -73,7 +73,7 @@
         android:layout_height="3dp"
         android:layout_below="@id/profile_image_layout"
         android:layout_marginTop="10dp"
-        android:background="@color/white"
+        android:background="@color/black"
         android:orientation="horizontal">
 
     </LinearLayout>
@@ -87,7 +87,7 @@
         android:fontFamily="@font/orbitron_bold"
         android:text="Profile Name"
         android:textSize="@dimen/layout_subtitle_text_size"
-        android:textColor="@color/white">
+        android:textColor="@color/black">
 
     </TextView>
 
@@ -125,8 +125,8 @@
             android:layout_centerInParent="true"
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@+id/profile_name_text_field"
-            android:background="@drawable/circle_background_dark_grey"
-            android:src="@drawable/pencil_icon_white" />
+            android:src="@drawable/pencil_icon_white"
+            app:tint="@color/black" />
 
         <ImageView
             android:id="@+id/confirm_edit_profile_name"
@@ -135,10 +135,9 @@
             android:layout_centerInParent="true"
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@+id/profile_name_text_field"
-            android:background="@drawable/circle_background_dark_grey"
             android:src="@drawable/check_icon_black"
             android:visibility="invisible"
-            app:tint="@color/white" />
+            app:tint="@color/black" />
 
         <ImageView
             android:id="@+id/revert_edit_profile_name"
@@ -147,10 +146,9 @@
             android:layout_centerInParent="true"
             android:layout_marginStart="20dp"
             android:layout_toEndOf="@id/edit_profile_name"
-            android:background="@drawable/circle_background_dark_grey"
             android:src="@drawable/arrow_back_ios_style"
             android:visibility="invisible"
-            app:tint="@color/white" />
+            app:tint="@color/black" />
 
     </RelativeLayout>
 
@@ -161,7 +159,8 @@
         android:layout_below="@id/profile_name_layout"
         android:layout_centerInParent="true"
         android:layout_marginTop="15dp"
-        android:orientation="horizontal"
+        android:gravity="center"
+        android:orientation="vertical"
         android:visibility="invisible">
 
         <Button
@@ -182,7 +181,7 @@
             android:id="@+id/save_button"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
             android:backgroundTint="@color/white"
             android:fontFamily="@font/orbitron_bold"
             android:text="@string/save_upper_case"

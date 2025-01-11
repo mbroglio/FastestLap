@@ -57,7 +57,7 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginTop="50dp"
-                android:background="@drawable/circle_background_dark_grey">
+                android:background="@drawable/circle_background_grey">
 
                 <ImageView
                     android:id="@+id/profile_image"
@@ -93,7 +93,6 @@
                     android:layout_centerInParent="true"
                     android:layout_marginStart="20dp"
                     android:layout_toEndOf="@+id/profile_text"
-                    android:background="@drawable/circle_background_black"
                     android:src="@drawable/pencil_icon_white" />
             </RelativeLayout>
 
@@ -112,8 +111,8 @@
                     android:layout_marginStart="10dp"
                     android:fontFamily="@font/orbitron_bold"
                     android:text="Email:"
-                    android:textSize="@dimen/layout_subtitle_text_size"
-                    android:textColor="@color/white">
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/layout_subtitle_text_size">
 
                 </TextView>
 
@@ -149,7 +148,6 @@
                         android:layout_centerInParent="true"
                         android:layout_marginStart="10dp"
                         android:layout_toEndOf="@+id/email_text_field"
-                        android:background="@drawable/circle_background_black"
                         android:src="@drawable/pencil_icon_white" />
 
                     <ImageView
@@ -159,7 +157,6 @@
                         android:layout_centerInParent="true"
                         android:layout_marginStart="10dp"
                         android:layout_toEndOf="@+id/email_text_field"
-                        android:background="@drawable/circle_background_black"
                         android:src="@drawable/check_icon_black"
                         android:visibility="invisible"
                         app:tint="@color/white" />
@@ -171,7 +168,6 @@
                         android:layout_centerInParent="true"
                         android:layout_marginStart="20dp"
                         android:layout_toEndOf="@id/edit_email"
-                        android:background="@drawable/circle_background_black"
                         android:src="@drawable/arrow_back_ios_style"
                         android:visibility="invisible"
                         app:tint="@color/white" />
@@ -194,8 +190,8 @@
                     android:layout_marginStart="10dp"
                     android:fontFamily="@font/orbitron_bold"
                     android:text="Password:"
-                    android:textSize="@dimen/layout_subtitle_text_size"
-                    android:textColor="@color/white">
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/layout_subtitle_text_size">
 
                 </TextView>
 
@@ -232,7 +228,7 @@
                         android:layout_centerInParent="true"
                         android:layout_marginStart="10dp"
                         android:layout_toEndOf="@+id/password_text_field"
-                        android:background="@drawable/circle_background_black"
+
                         android:src="@drawable/eye_icon_white" />
 
 
@@ -243,7 +239,6 @@
                         android:layout_centerInParent="true"
                         android:layout_marginStart="20dp"
                         android:layout_toEndOf="@+id/toggle_password_visibility"
-                        android:background="@drawable/circle_background_black"
                         android:src="@drawable/pencil_icon_white" />
 
                     <ImageView
@@ -253,7 +248,6 @@
                         android:layout_centerInParent="true"
                         android:layout_marginStart="20dp"
                         android:layout_toEndOf="@+id/toggle_password_visibility"
-                        android:background="@drawable/circle_background_black"
                         android:src="@drawable/check_icon_black"
                         android:visibility="invisible"
                         app:tint="@color/white" />
@@ -265,7 +259,6 @@
                         android:layout_centerInParent="true"
                         android:layout_marginStart="20dp"
                         android:layout_toEndOf="@id/edit_password"
-                        android:background="@drawable/circle_background_black"
                         android:src="@drawable/arrow_back_ios_style"
                         android:visibility="invisible"
                         app:tint="@color/white" />
@@ -290,8 +283,8 @@
                     android:layout_marginStart="10dp"
                     android:fontFamily="@font/orbitron_bold"
                     android:text="Favourite Driver:"
-                    android:textSize="@dimen/layout_subtitle_text_size"
-                    android:textColor="@color/white">
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/layout_subtitle_text_size">
 
                 </TextView>
 
@@ -310,8 +303,8 @@
                         android:layout_centerInParent="true"
                         android:fontFamily="@font/orbitron_regular"
                         android:text="Lewis Hamilton"
-                        android:textSize="@dimen/body_text_size"
-                        android:textColor="@color/timer_gray">
+                        android:textColor="@color/timer_gray"
+                        android:textSize="@dimen/body_text_size">
 
                     </TextView>
 
@@ -336,8 +329,8 @@
                             android:layout_marginBottom="5dp"
                             android:fontFamily="@font/orbitron_bold"
                             android:text="CHANGE"
-                            android:textSize="@dimen/layout_subtitle_text_size"
-                            android:textColor="@color/black">
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/layout_subtitle_text_size">
 
                         </TextView>
 
@@ -372,8 +365,8 @@
                     android:layout_marginStart="10dp"
                     android:fontFamily="@font/orbitron_bold"
                     android:text="Favourite Constructor:"
-                    android:textSize="@dimen/layout_subtitle_text_size"
-                    android:textColor="@color/white">
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/layout_subtitle_text_size">
 
                 </TextView>
 
@@ -392,8 +385,8 @@
                         android:layout_centerInParent="true"
                         android:fontFamily="@font/orbitron_regular"
                         android:text="Mercedes"
-                        android:textSize="@dimen/body_text_size"
-                        android:textColor="@color/timer_gray">
+                        android:textColor="@color/timer_gray"
+                        android:textSize="@dimen/body_text_size">
 
                     </TextView>
 
@@ -418,8 +411,8 @@
                             android:layout_marginBottom="5dp"
                             android:fontFamily="@font/orbitron_bold"
                             android:text="CHANGE"
-                            android:textSize="@dimen/layout_subtitle_text_size"
-                            android:textColor="@color/black">
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/layout_subtitle_text_size">
 
                         </TextView>
 
@@ -449,8 +442,8 @@
                 android:backgroundTint="@color/timer_gray"
                 android:fontFamily="@font/orbitron_bold"
                 android:text="@string/save_upper_case"
-                android:textSize="@dimen/layout_subtitle_text_size"
                 android:textColor="@color/black"
+                android:textSize="@dimen/layout_subtitle_text_size"
                 android:visibility="invisible"
                 app:icon="@drawable/check_icon_black"
                 app:iconTint="@color/black">
@@ -467,8 +460,8 @@
                 android:backgroundTint="@color/timer_gray"
                 android:fontFamily="@font/orbitron_bold"
                 android:text="@string/dismiss_upper_case"
-                android:textSize="@dimen/layout_subtitle_text_size"
                 android:textColor="@color/black"
+                android:textSize="@dimen/layout_subtitle_text_size"
                 android:visibility="invisible"
                 app:icon="@drawable/x_icon_black"
                 app:iconTint="@color/black">

@@ -46,7 +46,6 @@
                 app:cardCornerRadius="40dp"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardCornerRadius="40dp"
                 app:strokeColor="@color/black"
                 app:strokeWidth="5dp">
 
@@ -83,7 +82,6 @@
                 app:cardCornerRadius="40dp"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardCornerRadius="40dp"
                 app:strokeColor="@color/black"
                 app:strokeWidth="5dp">
 

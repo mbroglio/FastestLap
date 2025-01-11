@@ -2,7 +2,6 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="?materialCardViewElevatedStyle"
-
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="10dp"
@@ -20,24 +19,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/orbitron_regular"
             android:gravity="center"
             android:text="2025"
-            android:fontFamily="@font/orbitron_regular"
             android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size"
-            android:layout_weight="1"/>
+            android:textSize="@dimen/body_text_size" />
 
         <TextView
             android:id="@+id/driver_position"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:text="23"
-            android:gravity="center"
+            android:layout_weight="1"
             android:fontFamily="@font/orbitron_regular"
+            android:gravity="center"
+            android:text="23"
             android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size"
-            android:layout_weight="1">
+            android:textSize="@dimen/body_text_size">
 
         </TextView>
 
@@ -46,12 +45,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:text="Aston Martin"
+            android:layout_weight="0.8"
             android:fontFamily="@font/orbitron_regular"
-            android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size"
             android:gravity="center"
-            android:text="Aston Martin">
+            android:text="Aston Martin"
+            android:textColor="@color/black"
+            android:textSize="@dimen/body_text_size">
 
         </TextView>
 
@@ -60,11 +59,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
+            android:layout_weight="1"
             android:fontFamily="@font/orbitron_regular"
-            android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size"
             android:gravity="center"
-            android:text="400">
+            android:text="400"
+            android:textColor="@color/black"
+            android:textSize="@dimen/body_text_size">
 
         </TextView>
 
@@ -73,11 +73,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
+            android:layout_weight="1.05"
             android:fontFamily="@font/orbitron_regular"
-            android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size"
             android:gravity="center"
-            android:text="15">
+            android:text="15"
+            android:textColor="@color/black"
+            android:textSize="@dimen/body_text_size">
 
         </TextView>
 
@@ -86,12 +87,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:text="20"
+            android:layout_weight="1"
             android:fontFamily="@font/orbitron_regular"
-            android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size"
             android:gravity="center"
-            android:text="20">
+            android:text="20"
+            android:textColor="@color/black"
+            android:textSize="@dimen/body_text_size">
 
         </TextView>
 

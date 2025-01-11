@@ -29,8 +29,7 @@
             android:gravity="center"
             android:textColor="@color/black"
             android:text="@string/not_found"
-            android:textSize="@dimen/page_title_text_size"
-            android:fontFamily="@font/orbitron_bold">
+            android:textSize="@dimen/page_title_text_size">
 
 
         </TextView>
@@ -64,7 +63,6 @@
             android:layout_marginStart="5dp"
             android:layout_toEndOf="@id/team_logo"
             android:fontFamily="@font/orbitron_bold"
-            android:layout_gravity="center"
             android:textColor="@color/black"
             android:textSize="@dimen/layout_subtitle_text_size">
         </TextView>
@@ -80,7 +78,6 @@
             android:gravity="center"
             android:text="@string/not_found"
             android:textColor="@color/black"
-            android:fontFamily="@font/orbitron_bold"
             android:textSize="@dimen/page_title_text_size">
 
 

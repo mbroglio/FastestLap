@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,7 +19,7 @@ import androidx.viewpager.widget.ViewPager;
 import com.google.android.material.textfield.TextInputEditText;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.ProfileImageAdapter;
-import com.the_coffe_coders.fastestlap.utils.SimpleTextWatcher;
+import com.the_coffe_coders.fastestlap.util.SimpleTextWatcher;
 
 import java.util.Objects;
 
@@ -189,6 +190,8 @@ public class EditProfilePopup {
         inputText.setEnabled(true);
         inputText.requestFocus();
         inputText.setSelection(Objects.requireNonNull(inputText.getText()).length());
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(profileNameText, InputMethodManager.SHOW_IMPLICIT);
         editText.setVisibility(View.INVISIBLE);
         checkText.setVisibility(View.VISIBLE);
     }

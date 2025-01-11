@@ -18,7 +18,6 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:layout_marginTop="32dp"
             android:background="@color/ferrari_secondary"
             android:layout_marginTop="@dimen/medium_margin"
             app:navigationIcon="@drawable/arrow_back_ios_style"

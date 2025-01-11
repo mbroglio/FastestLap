@@ -289,7 +289,6 @@
                                 android:layout_marginStart="@dimen/medium_margin"
                                 android:text="@string/raceResult"
                                 android:fontFamily="@font/orbitron_bold"
-                                android:text="@string/raceResult"
                                 android:textColor="@color/black">
 
                             </TextView>
