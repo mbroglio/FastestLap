@@ -12,4 +12,5 @@ public abstract class BaseRaceResultRemoteDataSource {
     public abstract void getAllRaceResult();
 
     public abstract void getRaceResults(int round);
+    public abstract void getAllRaceResults();
 }

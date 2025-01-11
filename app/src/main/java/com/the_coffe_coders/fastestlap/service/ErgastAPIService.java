@@ -21,8 +21,8 @@ public interface ErgastAPIService {
     @GET("{round}/results.json")
     Call<ResponseBody> getRaceResults(@Path("round") int round);
 
-    /*@GET("results.json")
-    Call<ResponseBody> getResults();*/
+    @GET("results")
+    Call<ResponseBody> getResults();
 
     @GET("next")
     Call<ResponseBody> getNextRace();
