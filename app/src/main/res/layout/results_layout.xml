@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/race_result"
-    android:layout_width="270dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:clickable="true"
     android:focusable="true"
@@ -13,10 +13,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="10dp"
         android:fontFamily="@font/orbitron_bold"
         android:text="RACE RESULT:"
-        android:textColor="@color/black">
+        android:textColor="@color/black"
+        android:textSize="@dimen/layout_title_2_text_size">
 
     </TextView>
 
@@ -25,9 +25,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/race_text"
-        android:layout_marginStart="30dp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginStart="@dimen/medium_margin"
         android:orientation="vertical">
 
         <LinearLayout
@@ -39,8 +38,10 @@
                 android:layout_width="13dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/orbitron_bold"
+                android:gravity="center"
                 android:text="@string/_1_numeric"
-                android:textColor="@color/black">
+                android:textColor="@color/black"
+                android:textSize="@dimen/layout_subtitle_text_size">
 
             </TextView>
 
@@ -49,7 +50,6 @@
                 android:layout_width="8dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="10dp"
-                android:background="@color/mercedes_f1"
                 android:orientation="vertical">
 
             </LinearLayout>
@@ -60,8 +60,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:fontFamily="@font/orbitron_regular"
-                android:text="George Russell"
-                android:textColor="@color/black">
+                android:text="@string/not_found"
+                android:textColor="@color/black"
+                android:textSize="@dimen/body_text_size">
 
             </TextView>
 
@@ -79,7 +80,8 @@
                 android:fontFamily="@font/orbitron_bold"
                 android:gravity="center"
                 android:text="@string/_2_numeric"
-                android:textColor="@color/black">
+                android:textColor="@color/black"
+                android:textSize="@dimen/layout_subtitle_text_size">
 
             </TextView>
 
@@ -88,7 +90,6 @@
                 android:layout_width="8dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="10dp"
-                android:background="@color/mercedes_f1"
                 android:orientation="vertical">
 
             </LinearLayout>
@@ -99,8 +100,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:fontFamily="@font/orbitron_regular"
-                android:text="Lewis Hamilton"
-                android:textColor="@color/black">
+                android:text="@string/not_found"
+                android:textColor="@color/black"
+                android:textSize="@dimen/body_text_size">
 
             </TextView>
 
@@ -116,8 +118,10 @@
                 android:layout_width="13dp"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/orbitron_bold"
+                android:gravity="center"
                 android:text="@string/_3_numeric"
-                android:textColor="@color/black">
+                android:textColor="@color/black"
+                android:textSize="@dimen/layout_subtitle_text_size">
 
             </TextView>
 
@@ -126,7 +130,6 @@
                 android:layout_width="8dp"
                 android:layout_height="match_parent"
                 android:layout_marginStart="10dp"
-                android:background="@color/ferrari_f1"
                 android:orientation="vertical">
 
             </LinearLayout>
@@ -137,8 +140,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:fontFamily="@font/orbitron_regular"
-                android:text="Carlos Sainz"
-                android:textColor="@color/black">
+                android:text="@string/not_found"
+                android:textColor="@color/black"
+                android:textSize="@dimen/body_text_size">
 
             </TextView>
 
@@ -146,15 +150,24 @@
 
     </LinearLayout>
 
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_alignParentEnd="true"
-        android:layout_centerInParent="true"
-        android:layout_marginEnd="15dp"
-        app:srcCompat="@drawable/checkered_flag">
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/race_podium"
+        android:layout_alignTop="@id/race_podium"
+        android:layout_marginStart="10dp"
+        android:layout_toEndOf="@id/race_podium">
 
-    </ImageView>
+        <ImageView
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_centerInParent="true"
+            android:layout_marginEnd="15dp"
+            app:srcCompat="@drawable/checkered_flag">
+
+        </ImageView>
+
+    </RelativeLayout>
 
 
 </RelativeLayout>

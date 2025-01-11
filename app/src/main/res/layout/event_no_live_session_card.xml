@@ -8,7 +8,7 @@
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/no_live_session"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         app:cardBackgroundColor="@color/dark_red"
         app:cardCornerRadius="10dp"
         app:cardElevation="5dp"
@@ -23,23 +23,23 @@
             android:layout_marginBottom="5dp"
             tools:ignore="UseCompoundDrawables">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginEnd="5dp"
-                android:fontFamily="@font/orbitron_bold"
-                android:gravity="center"
-                android:text="@string/no_live_session_available_upper_case"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textColor="@color/black"
-                android:textStyle="bold">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="5dp"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:text="@string/no_live_session_available_upper_case"
+                    android:textSize="@dimen/layout_subtitle_text_size"
+                    android:textColor="@color/black"
+                    android:textStyle="bold">
 
             </TextView>
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="@dimen/icon_size"
+                android:layout_height="@dimen/icon_size"
                 android:layout_gravity="center"
                 app:srcCompat="@drawable/sad_face">
 

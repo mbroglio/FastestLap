@@ -21,7 +21,7 @@
         android:orientation="horizontal"
         app:layout_constraintGuide_end="0dp" />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/screen_background_color"
@@ -29,68 +29,73 @@
         app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
         app:layout_constraintTop_toTopOf="parent">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginLeft="40dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginRight="40dp"
-            android:orientation="vertical"
-            tools:ignore="UselessParent">
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/past_events_card"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="20dp"
                 android:clickable="true"
                 android:focusable="true"
+                app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="40dp"
                 app:strokeColor="@color/black"
                 app:strokeWidth="5dp">
 
-                <LinearLayout
+
+                <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/past_events_icon" />
 
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
-                        app:srcCompat="@drawable/past_event_image" />
-
-                </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/upcoming_events_card"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_marginTop="50dp"
+                android:layout_height="0dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentBottom="true"
+                android:layout_margin="20dp"
                 android:clickable="true"
                 android:focusable="true"
+                app:cardBackgroundColor="@color/white"
                 app:cardCornerRadius="40dp"
                 app:strokeColor="@color/black"
                 app:strokeWidth="5dp">
 
-                <LinearLayout
+
+                <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/upcoming_events_icon" />
 
-                    <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:scaleType="centerCrop"
-                        app:srcCompat="@drawable/upcoming_races_image" />
-
-                </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
-        </LinearLayout>
+        </RelativeLayout>
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <include
         android:id="@+id/loading_screen"

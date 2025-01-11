@@ -20,20 +20,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="2025" />
+            android:text="2025"
+            android:fontFamily="@font/orbitron_regular"
+            android:textColor="@color/black"
+            android:textSize="@dimen/body_text_size"
+            android:layout_weight="1"/>
 
         <TextView
             android:id="@+id/driver_position"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/orbitron_bold"
+            android:text="23"
             android:gravity="center"
-            android:text="23">
+            android:fontFamily="@font/orbitron_regular"
+            android:textColor="@color/black"
+            android:textSize="@dimen/body_text_size"
+            android:layout_weight="1">
 
         </TextView>
 
@@ -42,8 +46,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_weight="0.8"
-            android:fontFamily="@font/orbitron_bold"
+            android:text="Aston Martin"
+            android:fontFamily="@font/orbitron_regular"
+            android:textColor="@color/black"
+            android:textSize="@dimen/body_text_size"
             android:gravity="center"
             android:text="Aston Martin">
 
@@ -54,8 +60,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/orbitron_bold"
+            android:fontFamily="@font/orbitron_regular"
+            android:textColor="@color/black"
+            android:textSize="@dimen/body_text_size"
             android:gravity="center"
             android:text="400">
 
@@ -66,8 +73,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_weight="1.05"
-            android:fontFamily="@font/orbitron_bold"
+            android:fontFamily="@font/orbitron_regular"
+            android:textColor="@color/black"
+            android:textSize="@dimen/body_text_size"
             android:gravity="center"
             android:text="15">
 
@@ -78,16 +86,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_weight="1"
-            android:fontFamily="@font/orbitron_bold"
+            android:text="20"
+            android:fontFamily="@font/orbitron_regular"
+            android:textColor="@color/black"
+            android:textSize="@dimen/body_text_size"
             android:gravity="center"
             android:text="20">
 
         </TextView>
 
-
     </LinearLayout>
-
 
 </com.google.android.material.card.MaterialCardView>

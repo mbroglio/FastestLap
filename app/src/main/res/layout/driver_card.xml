@@ -27,8 +27,10 @@
             android:layout_marginStart="5dp"
             android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
+            android:textColor="@color/black"
             android:text="@string/not_found"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large">
+            android:textSize="@dimen/page_title_text_size"
+            android:fontFamily="@font/orbitron_bold">
 
 
         </TextView>
@@ -38,18 +40,20 @@
             android:layout_width="@dimen/small_image"
             android:layout_height="@dimen/small_image"
             android:layout_centerInParent="true"
+            android:layout_toEndOf="@id/driver_position"
             android:layout_gravity="center"
-            android:layout_marginStart="5dp"
-            android:layout_toEndOf="@id/driver_position"></ImageView>
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp">
+        </ImageView>
 
         <ImageView
             android:id="@+id/team_logo"
-            android:layout_width="@dimen/small_image"
-            android:layout_height="@dimen/small_image"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_toEndOf="@id/driver_image"></ImageView>
+            android:layout_toEndOf="@id/driver_image"
+            android:layout_centerInParent="true">
+        </ImageView>
 
         <TextView
             android:id="@+id/driver_name"
@@ -60,8 +64,10 @@
             android:layout_marginStart="5dp"
             android:layout_toEndOf="@id/team_logo"
             android:fontFamily="@font/orbitron_bold"
-            android:text="@string/not_found"
-            android:textAppearance="@style/TextAppearance.AppCompat.Body2"></TextView>
+            android:layout_gravity="center"
+            android:textColor="@color/black"
+            android:textSize="@dimen/layout_subtitle_text_size">
+        </TextView>
 
         <TextView
             android:id="@+id/driver_points"
@@ -73,7 +79,9 @@
             android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
             android:text="@string/not_found"
-            android:textAppearance="@style/TextAppearance.AppCompat.Large">
+            android:textColor="@color/black"
+            android:fontFamily="@font/orbitron_bold"
+            android:textSize="@dimen/page_title_text_size">
 
 
         </TextView>

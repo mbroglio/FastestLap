@@ -10,7 +10,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/top_bar_height_32_dp_top_margin"
+        android:layout_height="@dimen/top_bar_height_16_dp_top_margin"
         android:background="@color/ferrari_secondary"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -18,7 +18,7 @@
             android:id="@+id/top_app_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:layout_marginTop="32dp"
+            android:layout_marginTop="@dimen/medium_margin"
             android:background="@color/ferrari_secondary"
             app:title="FASTEST LAP"
             app:titleCentered="true"
@@ -39,13 +39,14 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:background="@color/ferrari_secondary"
-        app:itemIconSize="32dp"
+        app:itemIconSize="24dp"
         app:itemIconTint="@color/black"
         app:itemTextAppearanceActive="@style/TextAppearance.BottomNav.Selected"
+        app:itemTextAppearanceInactive="@style/TextAppearance.BottomNav.NotSelected"
         app:itemTextColor="@color/black"
-        app:labelVisibilityMode="labeled"
+        app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/home_menu">
 
@@ -56,6 +57,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="@dimen/top_bar_height_32_dp_top_margin" />
+        app:layout_constraintGuide_begin="@dimen/top_bar_height_16_dp_top_margin" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

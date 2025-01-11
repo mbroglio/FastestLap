@@ -82,47 +82,11 @@ public class DriverBioActivity extends AppCompatActivity {
         Typeface orbitronBold = ResourcesCompat.getFont(this, R.font.orbitron_bold);
         Typeface orbitronRegular = ResourcesCompat.getFont(this, R.font.orbitron_regular);
 
-        View tableHeader = inflater.inflate(R.layout.driver_bio_table_row, tableLayout, false);
+        View tableHeader = inflater.inflate(R.layout.driver_bio_table_header, tableLayout, false);
         TableLayout.LayoutParams paramsHeader = (TableLayout.LayoutParams) tableHeader.getLayoutParams();
         paramsHeader.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
         tableHeader.setLayoutParams(paramsHeader);
         tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.mclaren_f1));
-
-        TextView teamName = tableHeader.findViewById(R.id.team_name);
-        teamName.setText("TEAM");
-        teamName.setGravity(Gravity.CENTER);
-        teamName.setTypeface(orbitronBold);
-        teamName.setTextColor(ContextCompat.getColor(this, R.color.black));
-
-        TextView year = tableHeader.findViewById(R.id.season_year);
-        year.setText("YEAR");
-        year.setGravity(Gravity.CENTER);
-        year.setTypeface(orbitronBold);
-        year.setTextColor(ContextCompat.getColor(this, R.color.black));
-
-        TextView position = tableHeader.findViewById(R.id.driver_position);
-        position.setText("POS");
-        position.setGravity(Gravity.CENTER);
-        position.setTypeface(orbitronBold);
-        position.setTextColor(ContextCompat.getColor(this, R.color.black));
-
-        TextView points = tableHeader.findViewById(R.id.driver_points);
-        points.setText("PTS");
-        points.setGravity(Gravity.CENTER);
-        points.setTypeface(orbitronBold);
-        points.setTextColor(ContextCompat.getColor(this, R.color.black));
-
-        TextView wins = tableHeader.findViewById(R.id.driver_wins);
-        wins.setText("W");
-        wins.setGravity(Gravity.CENTER);
-        wins.setTypeface(orbitronBold);
-        wins.setTextColor(ContextCompat.getColor(this, R.color.black));
-
-        TextView podiums = tableHeader.findViewById(R.id.driver_podiums);
-        podiums.setText("POD");
-        podiums.setGravity(Gravity.CENTER);
-        podiums.setTypeface(orbitronBold);
-        podiums.setTextColor(ContextCompat.getColor(this, R.color.black));
 
         //set stroke of tableHeader
         tableLayout.addView(tableHeader);
