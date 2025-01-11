@@ -30,6 +30,11 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
     }
 
     @Override
+    public void getAllRaceResult() {
+
+    }
+
+    @Override
     public void getRaceResults(int round) {
         Call<ResponseBody> responseCall = ergastAPIService.getRaceResults(round);
         Log.i(TAG, "getRaceResults from remote");

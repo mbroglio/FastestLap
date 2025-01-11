@@ -51,6 +51,20 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
         return raceResultMutableLiveData;
     }
 
+    public MutableLiveData<Result> fetchAllRaceResults(long lastUpdate){
+        Log.i(TAG, "fetchAllRaceResults");
+        if (true) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
+            //TODO fetch from remote
+            Log.i(TAG, "Remote fetchAllRaceResults");
+            raceResultRemoteDataSource.getAllRaceResult();
+            isOutdate = false;
+        }else{
+            Log.i(TAG, "fetchAllRaceResults from local");
+            raceResultLocalDataSource.getAllRaceResult();
+        }
+     return allRaceResultMutableLiveData;
+    }
+
     @Override
     public MutableLiveData<Result> fetchRaceResult(String resultId, long lastUpdate) {
         return null;
