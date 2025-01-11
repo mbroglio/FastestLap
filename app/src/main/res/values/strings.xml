@@ -108,4 +108,7 @@
     <string name="missing_password">Forgot your password?</string>
 
     <string name="unknown">Unknown Value</string>
+    <string name="dismiss_upper_case">DISMISS</string>
+    <string name="save_upper_case">SAVE</string>
+    <string name="profile_upper_case">PROFILE</string>
 </resources>
