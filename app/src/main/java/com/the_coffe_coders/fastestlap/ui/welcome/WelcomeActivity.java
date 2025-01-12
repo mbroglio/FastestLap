@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.ui.login;
+package com.the_coffe_coders.fastestlap.ui.welcome;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -19,7 +19,7 @@ import com.the_coffe_coders.fastestlap.util.IntroScreen;
 
 import java.util.Objects;
 
-public class LoginActivity extends AppCompatActivity {
+public class WelcomeActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginFragment";
     private IntroScreen introScreen;
@@ -30,7 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_welcome);
 
         introScreen = new IntroScreen(findViewById(android.R.id.content), this);
         introScreen.showIntroScreen();
@@ -59,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Log.d(TAG, "Login button clicked");
-                Intent intent = new Intent(LoginActivity.this, HomePageActivity.class);
+                Intent intent = new Intent(WelcomeActivity.this, HomePageActivity.class);
                 startActivity(intent);
             }
         });

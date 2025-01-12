@@ -6,6 +6,7 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.user.User;
 
 import java.util.List;
 
@@ -93,21 +94,15 @@ public abstract class Result {
         }
     }
 
-    /*
-        public static final class UserSuccess extends Result {
-            private final User user;
-            public UserSuccess(User user) {
-                this.user = user;
-            }
-            public User getData() {
-                return user;
-            }
+    public static final class UserSuccess extends Result {
+        private final User user;
+        public UserSuccess(User user) {
+            this.user = user;
         }
-
-        /**
-         * Class that represents an error occurred during the interaction
-         * with a Web Service or a local database.
-         */
+        public User getData() {
+            return user;
+        }
+    }
     public static final class Error extends Result {
         private final String message;
 
