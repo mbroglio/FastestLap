@@ -2,6 +2,7 @@ package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
 import org.threeten.bp.LocalDateTime;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Race extends Session {
@@ -25,7 +26,7 @@ public class Race extends Session {
     }
 
     public Race() {
-
+        raceResults = new ArrayList<>();
     }
 
     public LocalDateTime getDateTime() {
@@ -82,6 +83,10 @@ public class Race extends Session {
 
     public void setResults(List<RaceResult> raceResults) {
         this.raceResults = raceResults;
+    }
+
+    public void addResult(RaceResult result) {
+        this.raceResults.add(result);
     }
     /*
     public String getDateInterval() {

@@ -1,6 +1,8 @@
 package com.the_coffe_coders.fastestlap.api;
 
 
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.dto.RaceDTO;
 import com.the_coffe_coders.fastestlap.dto.RaceTableDTO;
 import com.the_coffe_coders.fastestlap.dto.ResultDTO;
 
@@ -17,6 +19,8 @@ public class RaceResultsAPIResponse extends APIResponse {
     public RaceTableDTO getRaceTable() {
         return RaceTable;
     }
+
+    public RaceDTO getFinalRace(){ return RaceTable.getRace(); }
 
     public void setRaceTable(RaceTableDTO RaceTable) {
         this.RaceTable = RaceTable;
