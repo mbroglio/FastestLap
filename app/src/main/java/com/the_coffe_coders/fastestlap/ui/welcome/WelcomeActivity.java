@@ -44,6 +44,7 @@ import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.IntroScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 
 import org.apache.commons.validator.routines.EmailValidator;
 
@@ -162,7 +163,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     public void onFailure(@NonNull Exception e) {
                         // No saved credentials found. Launch the One Tap sign-up flow, or
                         // do nothing and continue presenting the signed-out UI.
-                        Log.d(TAG, e.getLocalizedMessage());
+                        Log.d(TAG, Objects.requireNonNull(e.getLocalizedMessage()));
 
                         Snackbar.make(findViewById(android.R.id.content),
                                 Constants.UNEXPECTED_ERROR,
@@ -227,8 +228,26 @@ public class WelcomeActivity extends AppCompatActivity {
     }
 
     private void processPreferences(User user, View dialogView) {
-        TextView favoiriteDriver = dialogView.findViewById(R.id.favourite_driver_text);
+        TextView favouriteDriver = dialogView.findViewById(R.id.favourite_driver_text);
         TextView favouriteConstructor = dialogView.findViewById(R.id.favourite_constructor_text);
+
+        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
+
+        sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
+                Constants.SHARED_PREFERENCES_FAVORITE_DRIVER,
+                favouriteDriver.getText().toString());
+
+        sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
+                Constants.SHARED_PREFERENCES_FAVORITE_TEAM,
+                favouriteConstructor.getText().toString());
+
+        userViewModel.saveUserPreferences(
+                favouriteDriver.getText().toString(),
+                favouriteConstructor.getText().toString(),
+                user.getIdToken()
+        );
+
+        startActivity(new Intent(WelcomeActivity.this, HomePageActivity.class));
     }
 
     /**

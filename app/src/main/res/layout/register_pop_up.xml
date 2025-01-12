@@ -123,7 +123,6 @@
                     android:text="@string/not_found"
                     android:textColor="@color/black"
                     android:textSize="@dimen/body_text_size">
-
                 </TextView>
 
                 <com.google.android.material.card.MaterialCardView

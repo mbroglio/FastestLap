@@ -46,9 +46,9 @@ public class UserViewModel extends ViewModel {
         return userFavoriteNewsMutableLiveData;
     }
 
-    public void saveUserPreferences(String favoriteCountry, Set<String> favoriteTopics, String idToken) {
+    public void saveUserPreferences(String favoriteDriver, String favoriteTeam, String idToken) {
         if (idToken != null) {
-            userRepository.saveUserPreferences(favoriteCountry, favoriteTopics, idToken);
+            userRepository.saveUserPreferences(favoriteDriver, favoriteTeam, idToken);
         }
     }
 
