@@ -6,6 +6,8 @@ import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
 import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
+import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
+import com.the_coffe_coders.fastestlap.repository.user.UserRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorLocalDataSource;
@@ -18,6 +20,10 @@ import com.the_coffe_coders.fastestlap.source.driver.DriverLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.DriverRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.result.RaceResultLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.result.RaceResultRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.user.BaseUserAuthenticationRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.user.BaseUserDataRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.user.UserAuthenticationFirebaseDataSource;
+import com.the_coffe_coders.fastestlap.source.user.UserFirebaseDataSource;
 import com.the_coffe_coders.fastestlap.source.weeklyrace.BaseWeeklyRaceLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.weeklyrace.BaseWeeklyRaceRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.weeklyrace.WeeklyRaceLocalDataSource;
@@ -174,5 +180,21 @@ public class ServiceLocator {
         RaceResultRemoteDataSource raceResultRemoteDataSource = new RaceResultRemoteDataSource("");
         RaceResultLocalDataSource raceResultLocalDataSource = new RaceResultLocalDataSource(getRoomDatabase(application), new SharedPreferencesUtils(application));
         return new RaceResultRepository(raceResultRemoteDataSource, raceResultLocalDataSource);
+    }
+
+    public IUserRepository getUserRepository(Application application) {
+        SharedPreferencesUtils sharedPreferencesUtil = new SharedPreferencesUtils(application);
+
+        BaseUserAuthenticationRemoteDataSource userRemoteAuthenticationDataSource =
+                new UserAuthenticationFirebaseDataSource();
+
+        BaseUserDataRemoteDataSource userDataRemoteDataSource =
+                new UserFirebaseDataSource(sharedPreferencesUtil);
+
+        /*BaseArticleLocalDataSource newsLocalDataSource =
+                new ArticleLocalDataSource(getNewsDao(application), sharedPreferencesUtil);*/
+
+        return new UserRepository(userRemoteAuthenticationDataSource,
+                userDataRemoteDataSource);
     }
 }

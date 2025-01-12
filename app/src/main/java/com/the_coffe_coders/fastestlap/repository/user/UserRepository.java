@@ -19,23 +19,22 @@ public class UserRepository implements IUserRepository, UserResponseCallback, Ar
     private static final String TAG = UserRepository.class.getSimpleName();
     private final BaseUserAuthenticationRemoteDataSource userRemoteDataSource;
     private final BaseUserDataRemoteDataSource userDataRemoteDataSource;
-    private final BaseArticleLocalDataSource articleLocalDataSource;
+    //private final BaseArticleLocalDataSource articleLocalDataSource;
     private final MutableLiveData<Result> userMutableLiveData;
     private final MutableLiveData<Result> userFavoriteNewsMutableLiveData;
     private final MutableLiveData<Result> userPreferencesMutableLiveData;
 
     public UserRepository(BaseUserAuthenticationRemoteDataSource userRemoteDataSource,
-                          BaseUserDataRemoteDataSource userDataRemoteDataSource,
-                          BaseArticleLocalDataSource newsLocalDataSource) {
+                          BaseUserDataRemoteDataSource userDataRemoteDataSource) {
         this.userRemoteDataSource = userRemoteDataSource;
         this.userDataRemoteDataSource = userDataRemoteDataSource;
-        this.articleLocalDataSource = newsLocalDataSource;
+        //this.articleLocalDataSource = newsLocalDataSource;
         this.userMutableLiveData = new MutableLiveData<>();
         this.userPreferencesMutableLiveData = new MutableLiveData<>();
         this.userFavoriteNewsMutableLiveData = new MutableLiveData<>();
         this.userRemoteDataSource.setUserResponseCallback(this);
         this.userDataRemoteDataSource.setUserResponseCallback(this);
-        this.articleLocalDataSource.setArticleCallback(this);
+        //this.articleLocalDataSource.setArticleCallback(this);
     }
 
     @Override

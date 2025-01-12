@@ -167,6 +167,7 @@
         </RelativeLayout>
 
         <Button
+            android:id="@+id/GoogleLoginButton"
             style="@style/Widget.Material3.Button.ElevatedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
