@@ -3,10 +3,8 @@ package com.the_coffe_coders.fastestlap.ui.user;
 import android.content.Context;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-
 import android.view.View;
 import android.view.ViewGroup;
-
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -30,13 +28,6 @@ public class EditProfilePopup {
     private final View parentView;
     private final int originalProfileImage;
     private final String originalUsername;
-
-    private int provisionalProfileImage;
-
-    private boolean isUsernameModified = false;
-    private boolean isProfileImageModified = false;
-    private boolean isConfirmIconClicked = false;
-
     LinearLayout buttonsLayout;
     Button dismissButton;
     Button saveButton;
@@ -48,9 +39,11 @@ public class EditProfilePopup {
     ImageView editProfileName;
     ImageView confirmEditProfileName;
     ImageView revertEditProfileName;
-
-
     int[] profileImages = {R.drawable.boy_icon, R.drawable.girl_icon, R.drawable.anonymous_user_icon};
+    private int provisionalProfileImage;
+    private boolean isUsernameModified = false;
+    private boolean isProfileImageModified = false;
+    private boolean isConfirmIconClicked = false;
 
 
     public EditProfilePopup(Context context, View parentView, int originalProfileImage, String originalUsername) {

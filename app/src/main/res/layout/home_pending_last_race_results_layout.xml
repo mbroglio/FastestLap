@@ -8,8 +8,8 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:fontFamily="@font/orbitron_bold"
-        android:textSize="@dimen/page_title_text_size"
-        android:textColor="@color/white">
+        android:textColor="@color/white"
+        android:textSize="@dimen/page_title_text_size">
 
     </TextView>
 

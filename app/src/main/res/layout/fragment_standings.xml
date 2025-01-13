@@ -38,14 +38,14 @@
                 android:id="@+id/drivers_card"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
                 android:layout_margin="20dp"
-                app:cardCornerRadius="40dp"
                 android:clickable="true"
                 android:focusable="true"
+                app:cardCornerRadius="40dp"
                 app:strokeColor="@color/black"
                 app:strokeWidth="5dp">
 
@@ -74,14 +74,14 @@
                 android:id="@+id/constructors_card"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
-                android:layout_alignParentStart="true"
                 android:layout_alignParentBottom="true"
                 android:layout_margin="20dp"
-                app:cardCornerRadius="40dp"
                 android:clickable="true"
                 android:focusable="true"
+                app:cardCornerRadius="40dp"
                 app:strokeColor="@color/black"
                 app:strokeWidth="5dp">
 

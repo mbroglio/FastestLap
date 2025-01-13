@@ -1,6 +1,5 @@
 package com.the_coffe_coders.fastestlap.mapper;
 
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Circuit;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.dto.RaceDTO;
 import com.the_coffe_coders.fastestlap.dto.ResultDTO;
@@ -15,7 +14,7 @@ public class RaceMapper {
         race.setStartDateTime(raceDTO.getDate(), raceDTO.getTime());
         race.setEndDateTime();
         race.setCircuit(CircuitMapper.toCircuit(raceDTO.getCircuit()));
-        for (ResultDTO resultDTO: raceDTO.getResults()) {
+        for (ResultDTO resultDTO : raceDTO.getResults()) {
             race.addResult(SessionMapper.toResult(resultDTO));
         }
         return race;

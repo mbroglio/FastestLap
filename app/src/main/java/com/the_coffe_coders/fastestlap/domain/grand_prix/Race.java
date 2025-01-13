@@ -49,12 +49,12 @@ public class Race extends Session {
         return round;
     }
 
-    public int getRoundAsInt() {
-        return Integer.parseInt(round);
-    }
-
     public void setRound(String round) {
         this.round = round;
+    }
+
+    public int getRoundAsInt() {
+        return Integer.parseInt(round);
     }
 
     public String getUrl() {

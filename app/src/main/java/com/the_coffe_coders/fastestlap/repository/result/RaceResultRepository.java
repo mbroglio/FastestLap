@@ -26,8 +26,8 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
     private final MutableLiveData<Result> raceResultMutableLiveData;
     private final MutableLiveData<Result> allRaceResultMutableLiveData;
     private final BaseRaceResultRemoteDataSource raceResultRemoteDataSource;
-    private List<Race> raceList = new ArrayList<>();
     private final BaseRaceResultLocalDataSource raceResultLocalDataSource;
+    private List<Race> raceList = new ArrayList<>();
 
 
     public RaceResultRepository(BaseRaceResultRemoteDataSource raceResultRemoteDataSource, BaseRaceResultLocalDataSource raceResultLocalDataSource) {
@@ -39,9 +39,9 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
         this.raceResultLocalDataSource.setRaceResultCallback(this);
     }
 
-    private synchronized void addRaces(Race race){
+    private synchronized void addRaces(Race race) {
         raceList.add(race);
-        if(raceList.size() == 24){
+        if (raceList.size() == 24) {
             allRaceResultMutableLiveData.postValue(new Result.RaceSuccess(raceList));
             Log.i(TAG, "posting value!!!");
         }
@@ -63,7 +63,7 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
         return raceResultMutableLiveData;
     }
 
-    public MutableLiveData<Result> fetchAllRaceResults(long lastUpdate){
+    public MutableLiveData<Result> fetchAllRaceResults(long lastUpdate) {
         Log.i(TAG, "fetchAllRaceResults");
         raceList = new ArrayList<>();
         if (true) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
@@ -72,7 +72,7 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
             raceResultRemoteDataSource.getAllRaceResults();
 
             isOutdate = false;
-        }else{
+        } else {
             Log.i(TAG, "fetchAllRaceResults from local");
             raceResultLocalDataSource.getAllRaceResult();
         }
@@ -95,7 +95,7 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
     public void onSuccessFromRemote(RaceResultsAPIResponse raceResultsAPIResponse, int type) {
         //Log.i(TAG, "onSuccessFromRemote");
         //Log.i(TAG, raceResultsAPIResponse.toString());
-        if(type == 1) {
+        if (type == 1) {
             addRaces(RaceMapper.toRace(raceResultsAPIResponse.getFinalRace()));
         } else {
             List<RaceResult> raceResult = new ArrayList<>();

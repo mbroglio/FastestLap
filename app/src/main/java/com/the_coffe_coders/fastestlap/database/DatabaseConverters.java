@@ -130,6 +130,7 @@ public class DatabaseConverters {
     public static String fromSprintQualifying(SprintQualifying sprintQualifying) {
         return gson.toJson(sprintQualifying);
     }
+
     @TypeConverter
     public static SprintQualifying toSprintQualifying(String json) {
         return gson.fromJson(json, SprintQualifying.class);

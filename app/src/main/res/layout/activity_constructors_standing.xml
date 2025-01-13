@@ -18,12 +18,12 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:background="@color/ferrari_secondary"
             android:layout_marginTop="@dimen/medium_margin"
+            android:background="@color/ferrari_secondary"
             app:navigationIcon="@drawable/arrow_back_ios_style"
             app:title="@string/constructors_upper_case"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp"
-            app:titleCentered="true" />
+            app:titleCentered="true"
+            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -38,8 +38,8 @@
         <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/medium_margin"
             android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginTop="@dimen/medium_margin"
             android:layout_marginEnd="@dimen/medium_margin"
             android:scrollbars="none">
 

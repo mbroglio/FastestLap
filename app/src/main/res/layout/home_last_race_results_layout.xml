@@ -21,10 +21,10 @@
             android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
-            android:fontFamily="@font/orbitron_bold"
-            android:autoSizeTextType="uniform"
-            android:autoSizeMinTextSize="9sp"
             android:autoSizeMaxTextSize="@dimen/page_title_text_size"
+            android:autoSizeMinTextSize="9sp"
+            android:autoSizeTextType="uniform"
+            android:fontFamily="@font/orbitron_bold"
             android:text="-!-"
             android:textColor="@color/white"
             android:textSize="20sp">
@@ -252,8 +252,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/medium_margin"
-                    android:text="@string/raceResult"
                     android:fontFamily="@font/orbitron_bold"
+                    android:text="@string/raceResult"
                     android:textColor="@color/black">
 
                 </TextView>

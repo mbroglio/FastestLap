@@ -201,8 +201,8 @@
                                     android:layout_marginStart="3dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/rank"
-                                    android:textSize="@dimen/layout_subtitle_text_size"
-                                    android:textColor="@color/screen_background_color">
+                                    android:textColor="@color/screen_background_color"
+                                    android:textSize="@dimen/layout_subtitle_text_size">
 
                                 </TextView>
 
@@ -354,8 +354,8 @@
                                     android:layout_marginStart="3dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/rank"
-                                    android:textSize="@dimen/layout_subtitle_text_size"
-                                    android:textColor="@color/screen_background_color">
+                                    android:textColor="@color/screen_background_color"
+                                    android:textSize="@dimen/layout_subtitle_text_size">
 
                                 </TextView>
 
@@ -450,8 +450,8 @@
                             android:layout_toEndOf="@id/favourite_constructor_flag"
                             android:fontFamily="@font/orbitron_regular"
                             android:text="@string/not_found"
-                            android:textSize="@dimen/body_text_size"
-                            android:textColor="@color/black">
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/body_text_size">
 
                         </TextView>
 

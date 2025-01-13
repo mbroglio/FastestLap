@@ -67,8 +67,8 @@
                 android:fontFamily="@font/orbitron_regular"
                 android:inputType="textEmailAddress"
                 android:textColor="@color/grey_card"
-                android:textSize="@dimen/body_text_size"
-                android:textColorHint="@color/black" />
+                android:textColorHint="@color/black"
+                android:textSize="@dimen/body_text_size" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -98,8 +98,8 @@
                 android:fontFamily="@font/orbitron_regular"
                 android:inputType="textPassword"
                 android:textColor="@color/grey_card"
-                android:textSize="@dimen/body_text_size"
-                android:textColorHint="@color/black" />
+                android:textColorHint="@color/black"
+                android:textSize="@dimen/body_text_size" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -112,8 +112,8 @@
             android:fontFamily="@font/orbitron_bold"
             android:gravity="start|center"
             android:text="@string/missing_password"
-            android:textSize="@dimen/layout_subtitle_text_size"
             android:textColor="@color/ferrari_f1"
+            android:textSize="@dimen/layout_subtitle_text_size"
             app:rippleColor="@android:color/transparent" />
 
         <Button
@@ -128,8 +128,8 @@
             android:backgroundTint="@color/white"
             android:fontFamily="@font/orbitron_bold"
             android:text="@string/login"
-            android:textSize="@dimen/layout_subtitle_text_size"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textSize="@dimen/layout_subtitle_text_size" />
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -154,7 +154,7 @@
                 android:fontFamily="@font/orbitron_regular"
                 android:text="@string/or"
                 android:textColor="@color/white"
-                android:textSize="@dimen/body_text_size"/>
+                android:textSize="@dimen/body_text_size" />
 
             <View
                 android:layout_width="100dp"
@@ -177,8 +177,8 @@
             android:backgroundTint="@color/white"
             android:fontFamily="@font/orbitron_bold"
             android:text="@string/login_with_google"
-            android:textSize="@dimen/layout_subtitle_text_size"
             android:textColor="@color/black"
+            android:textSize="@dimen/layout_subtitle_text_size"
             app:icon="@drawable/google_icon"
             app:iconGravity="textStart"
             app:iconTint="@null" />
@@ -202,9 +202,9 @@
             android:layout_gravity="center"
             android:backgroundTint="@color/white"
             android:fontFamily="@font/orbitron_bold"
-            android:textSize="@dimen/layout_subtitle_text_size"
             android:text="@string/register"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textSize="@dimen/layout_subtitle_text_size" />
 
     </LinearLayout>
 

@@ -27,8 +27,8 @@
             android:layout_marginStart="5dp"
             android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:textColor="@color/black"
             android:text="@string/not_found"
+            android:textColor="@color/black"
             android:textSize="@dimen/page_title_text_size">
 
 
@@ -39,20 +39,18 @@
             android:layout_width="@dimen/small_image"
             android:layout_height="@dimen/small_image"
             android:layout_centerInParent="true"
-            android:layout_toEndOf="@id/driver_position"
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp">
-        </ImageView>
+            android:layout_marginBottom="5dp"
+            android:layout_toEndOf="@id/driver_position"></ImageView>
 
         <ImageView
             android:id="@+id/team_logo"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:layout_centerInParent="true"
             android:layout_marginStart="5dp"
-            android:layout_toEndOf="@id/driver_image"
-            android:layout_centerInParent="true">
-        </ImageView>
+            android:layout_toEndOf="@id/driver_image"></ImageView>
 
         <TextView
             android:id="@+id/driver_name"
@@ -64,8 +62,7 @@
             android:layout_toEndOf="@id/team_logo"
             android:fontFamily="@font/orbitron_bold"
             android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
-        </TextView>
+            android:textSize="@dimen/layout_subtitle_text_size"></TextView>
 
         <TextView
             android:id="@+id/driver_points"

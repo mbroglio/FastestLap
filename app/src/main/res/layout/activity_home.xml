@@ -20,8 +20,8 @@
             android:layout_height="@dimen/top_bar_height"
             android:layout_marginTop="@dimen/medium_margin"
             android:background="@color/ferrari_secondary"
-            app:title="FASTEST LAP"
             app:menu="@menu/top_app_bar_menu"
+            app:title="FASTEST LAP"
             app:titleCentered="true"
             app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp" />
     </com.google.android.material.appbar.AppBarLayout>

@@ -21,11 +21,11 @@ public class ConstructorRepository implements IConstructorRepository, Constructo
     public static long FRESH_TIMEOUT = 60000;
     public static boolean isOutdate = true;
     private static ConstructorRepository instance;
-    String TAG = "ConstructorRepository";
     private final MutableLiveData<Result> constructorStandingsMutableLiveData;
     private final MutableLiveData<Result> constructorMutableLiveData;
     private final BaseConstructorRemoteDataSource constructorRemoteDataSource;
     private final BaseConstructorLocalDataSource constructorLocalDataSource;
+    String TAG = "ConstructorRepository";
 
     public ConstructorRepository(BaseConstructorRemoteDataSource constructorRemoteDataSource, BaseConstructorLocalDataSource constructorLocalDataSource) {
         this.constructorStandingsMutableLiveData = new MutableLiveData<>();

@@ -10,8 +10,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:fontFamily="@font/orbitron_bold"
-        android:textColor="@color/black"
         android:text="Next Session in:"
+        android:textColor="@color/black"
         android:textSize="@dimen/layout_title_2_text_size">
 
     </TextView>
