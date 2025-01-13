@@ -4,13 +4,13 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -64,19 +64,15 @@ public class EventActivity extends AppCompatActivity {
         Log.i(TAG, "Circuit ID: " + circuitId);
 
         processRaceData();
-
     }
 
     private void processRaceData() {
-        loadingScreen.showLoadingScreen();
         List<WeeklyRace> races = new ArrayList<>();
         MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getApplication(), false).fetchWeeklyRaces(0);
         data.observe(this, result -> {
-            loadingScreen.showLoadingScreen();
             if (result.isSuccess()) {
                 Log.i("PastEvent", "SUCCESS");
                 races.addAll(((Result.WeeklyRaceSuccess) result).getData());
-                loadingScreen.hideLoadingScreen();
                 WeeklyRace weeklyRace = null;
                 for (WeeklyRace race : races) {
                     if (race.getCircuit().getCircuitId().equals(circuitId)) {
@@ -138,7 +134,8 @@ public class EventActivity extends AppCompatActivity {
 
                 createWeekSchedule(sessions);
             }
-            loadingScreen.hideLoadingScreen();
+            Handler handler = new Handler();
+            handler.postDelayed(() -> loadingScreen.hideLoadingScreen(), 500); //The delay may be removed
         });
     }
 
@@ -210,7 +207,6 @@ public class EventActivity extends AppCompatActivity {
         ImageView trackOutline = findViewById(R.id.track_outline_image);
         Integer outline = Constants.EVENT_CIRCUIT.get(circuitId);
         trackOutline.setImageResource(Objects.requireNonNullElseGet(outline, () -> R.drawable.arrow_back_ios_style));
-        loadingScreen.hideLoadingScreen();
     }
 
     private void processRaceResults(WeeklyRace weeklyRace) {
@@ -234,8 +230,6 @@ public class EventActivity extends AppCompatActivity {
                     teamColor.setBackgroundColor(ContextCompat.getColor(this, Objects.requireNonNullElseGet(teamColorObj, () -> R.color.mercedes_f1)));
                 }
             }
-
-
         });
     }
 

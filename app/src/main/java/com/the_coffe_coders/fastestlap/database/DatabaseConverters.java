@@ -14,6 +14,7 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.Qualifying;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Sprint;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.SprintQualifying;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 
 import org.threeten.bp.LocalDateTime;
@@ -122,6 +123,16 @@ public class DatabaseConverters {
     @TypeConverter
     public static Qualifying toQualifying(String json) {
         return gson.fromJson(json, Qualifying.class);
+    }
+
+    //SprintQualifying
+    @TypeConverter
+    public static String fromSprintQualifying(SprintQualifying sprintQualifying) {
+        return gson.toJson(sprintQualifying);
+    }
+    @TypeConverter
+    public static SprintQualifying toSprintQualifying(String json) {
+        return gson.fromJson(json, SprintQualifying.class);
     }
 
     //LocalDateTime

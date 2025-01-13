@@ -49,7 +49,7 @@ public class WeeklyRaceMapper {
     }
 
     public static WeeklyRaceSprint toRaceSprint(RaceDTO race) {
-        return new WeeklyRaceSprint(SessionMapper.toQualifying(race.getSprintQualifying()),
+        return new WeeklyRaceSprint(SessionMapper.toSprintQualifying(race.getSprintQualifying()),
                 SessionMapper.toSprint(race.getSprint()));
     }
 }
