@@ -64,12 +64,15 @@ public class EventActivity extends AppCompatActivity {
         Log.i(TAG, "Circuit ID: " + circuitId);
 
         processRaceData();
+
     }
 
     private void processRaceData() {
+        loadingScreen.showLoadingScreen();
         List<WeeklyRace> races = new ArrayList<>();
         MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getApplication(), false).fetchWeeklyRaces(0);
         data.observe(this, result -> {
+            loadingScreen.showLoadingScreen();
             if (result.isSuccess()) {
                 Log.i("PastEvent", "SUCCESS");
                 races.addAll(((Result.WeeklyRaceSuccess) result).getData());
@@ -135,6 +138,7 @@ public class EventActivity extends AppCompatActivity {
 
                 createWeekSchedule(sessions);
             }
+            loadingScreen.hideLoadingScreen();
         });
     }
 
@@ -206,6 +210,7 @@ public class EventActivity extends AppCompatActivity {
         ImageView trackOutline = findViewById(R.id.track_outline_image);
         Integer outline = Constants.EVENT_CIRCUIT.get(circuitId);
         trackOutline.setImageResource(Objects.requireNonNullElseGet(outline, () -> R.drawable.arrow_back_ios_style));
+        loadingScreen.hideLoadingScreen();
     }
 
     private void processRaceResults(WeeklyRace weeklyRace) {
@@ -230,7 +235,7 @@ public class EventActivity extends AppCompatActivity {
                 }
             }
 
-            loadingScreen.hideLoadingScreen();
+
         });
     }
 

@@ -12,6 +12,8 @@ public class RaceMapper {
         race.setRound(raceDTO.getRound());
         race.setRaceName(raceDTO.getRaceName());
         race.setUrl(raceDTO.getUrl());
+        race.setStartDateTime(raceDTO.getDate(), raceDTO.getTime());
+        race.setEndDateTime();
         race.setCircuit(CircuitMapper.toCircuit(raceDTO.getCircuit()));
         for (ResultDTO resultDTO: raceDTO.getResults()) {
             race.addResult(SessionMapper.toResult(resultDTO));
