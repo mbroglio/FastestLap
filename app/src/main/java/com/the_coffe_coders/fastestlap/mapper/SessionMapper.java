@@ -27,6 +27,7 @@ public class SessionMapper {
         return new Sprint(sprintDTO.getDate(), sprintDTO.getTime());
     }
 
+
     public static RaceResult toResult(ResultDTO resultDTO) {
         RaceResult raceResult = new RaceResult();
         raceResult.setPosition(resultDTO.getPosition());

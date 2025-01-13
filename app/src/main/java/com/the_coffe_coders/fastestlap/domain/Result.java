@@ -4,6 +4,7 @@ import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorAPIResponse
 import com.the_coffe_coders.fastestlap.domain.driver.DriverAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 
@@ -81,6 +82,18 @@ public abstract class Result {
         }
     }
 
+    public static final class RaceSuccess extends Result {
+        private final List<Race> raceList;
+
+        public RaceSuccess(List<Race> raceList) {
+            this.raceList = raceList;
+        }
+
+        public List<Race> getData() {
+            return raceList;
+        }
+    }
+
     public static final class WeeklyRaceSuccess extends Result {
         private final List<WeeklyRace> weeklyRaceList;
 
@@ -119,4 +132,6 @@ public abstract class Result {
             return message;
         }
     }
+
+
 }
