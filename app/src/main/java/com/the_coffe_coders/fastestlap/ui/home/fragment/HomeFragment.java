@@ -449,7 +449,6 @@ public class HomeFragment extends Fragment {
             startActivity(intent);
         });
 
-        Handler handler = new Handler();
-        handler.postDelayed(() -> loadingScreen.hideLoadingScreen(), 500);
+        loadingScreen.hideLoadingScreen();
     }
 }

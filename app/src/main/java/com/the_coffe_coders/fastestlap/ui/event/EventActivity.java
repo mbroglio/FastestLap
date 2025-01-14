@@ -134,8 +134,7 @@ public class EventActivity extends AppCompatActivity {
 
                 createWeekSchedule(sessions);
             }
-            Handler handler = new Handler();
-            handler.postDelayed(() -> loadingScreen.hideLoadingScreen(), 500); //The delay may be removed
+            loadingScreen.hideLoadingScreen(); //The delay may be removed
         });
     }
 

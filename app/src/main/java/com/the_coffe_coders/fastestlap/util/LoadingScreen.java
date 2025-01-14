@@ -60,8 +60,11 @@ public class LoadingScreen {
     }
 
     public void hideLoadingScreen() {
+        handler.postDelayed(this::hide, 500);
+    }
+
+    public void hide() {
         loadingScreen.setVisibility(View.GONE);
         handler.removeCallbacks(dotRunnable);
-
     }
 }
