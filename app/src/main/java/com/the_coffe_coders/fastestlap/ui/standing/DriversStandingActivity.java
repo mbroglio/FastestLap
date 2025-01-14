@@ -63,7 +63,9 @@ public class DriversStandingActivity extends AppCompatActivity {
         LinearLayout driverStanding = findViewById(R.id.driver_standing);
 
         driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverRepository(getApplication(), false))).get(DriverStandingsViewModel.class);
-        MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
+        MutableLiveData<Result> livedata = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
+
+        /*
         RaceResultRepository raceResultRepository = ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false);
         MutableLiveData<Result> mldr = raceResultRepository.fetchAllRaceResults(0);
         mldr.observe(this, result -> {
@@ -74,8 +76,9 @@ public class DriversStandingActivity extends AppCompatActivity {
                 Log.i(TAG, "RACE RESULTS ERROR");
             }
         });
+        */
 
-        data.observe(this, result -> {
+        livedata.observe(this, result -> {
             if (result.isSuccess()) {
                 Log.i(TAG, "DRIVER STANDINGS SUCCESS");
                 driverStandings = ((Result.DriverStandingsSuccess) result).getData();

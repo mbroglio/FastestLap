@@ -24,12 +24,15 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+
+import java.util.List;
 
 public class ConstructorsStandingActivity extends AppCompatActivity {
 
@@ -38,6 +41,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
     private final boolean constructorToProcess = true;
     LoadingScreen loadingScreen;
     private TextView teamPointsTextView;
+    private ConstructorStandings constructorStandings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +66,31 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
         Log.i(TAG, "Constructor Standings: " + liveData);
         liveData.observe(this, result -> {
+            if (result.isSuccess()){
+                constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
+
+                List<ConstructorStandingsElement> constructorList = constructorStandings.getConstructorStandings();
+                int initialSize = constructorList.size();
+                loadingScreen.hideLoadingScreen();
+
+                for (ConstructorStandingsElement constructor : constructorList) {
+                    View teamCard = generateTeamCard(constructor, constructorId);
+                    teamStanding.addView(teamCard);
+                    View space = new View(ConstructorsStandingActivity.this);
+                    space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
+                    teamStanding.addView(space);
+                }
+
+            } else if (result instanceof Result.Error) {
+                Result.Error error = (Result.Error) result;
+                Log.e(TAG, "Error: " + error.getMessage());
+                loadingScreen.hideLoadingScreen();
+            }
+        });
+
+
+        /*
+        liveData.observe(this, result -> {
             if (result instanceof Result.ConstructorStandingsSuccess) {
                 Result.ConstructorStandingsSuccess constructorStandingsSuccess = (Result.ConstructorStandingsSuccess) result;
                 ConstructorStandings constructorStandings = constructorStandingsSuccess.getData();
@@ -79,6 +108,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                 Log.e(TAG, "Error: " + error.getMessage());
             }
         });
+        */
     }
 
     private View generateTeamCard(ConstructorStandingsElement standingElement, String constructorIdToHighlight) {

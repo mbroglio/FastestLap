@@ -60,7 +60,7 @@ public class LoadingScreen {
     }
 
     public void hideLoadingScreen() {
-        handler.postDelayed(this::hide, 500);
+        handler.postDelayed(this::hide, 1000);
     }
 
     public void hide() {

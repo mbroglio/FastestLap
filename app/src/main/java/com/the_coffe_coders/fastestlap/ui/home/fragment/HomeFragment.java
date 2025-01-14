@@ -36,6 +36,8 @@ import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
+import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
+import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
@@ -116,9 +118,6 @@ public class HomeFragment extends Fragment {
 
         pendingResults.setVisibility(View.VISIBLE);
         results.setVisibility(View.GONE);
-
-        //raceToProcess = false;
-        //checkIfAllDataLoaded();
     }
 
     private void showPodium(View view, WeeklyRace raceResult) {
@@ -256,6 +255,32 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildFinalTeamsStanding(View seasonEndedCard) {
+        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
+        MutableLiveData<Result> data = constructorStandingsViewModel.getConstructorStandingsLiveData(0); // TODO get last update from shared preferences
+
+        data.observe(getViewLifecycleOwner(), result -> {
+            if (result.isSuccess()) {
+                ConstructorStandings constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
+                List<ConstructorStandingsElement> constructorsList = constructorStandings.getConstructorStandings();
+
+                for (int i = 0; i < 3; i++) {
+                    ConstructorStandingsElement constructor = constructorsList.get(i);
+
+                    TextView constructorName = seasonEndedCard.findViewById(Constants.HOME_SEASON_TEAM_STANDINGS_NAME_FIELD.get(i));
+                    constructorName.setText(constructor.getConstructor().getName());
+
+                    View constructorColor = seasonEndedCard.findViewById(Constants.HOME_SEASON_TEAM_STANDINGS_COLOR_FIELD.get(i));
+                    Integer teamColor = Constants.TEAM_COLOR.get(constructor.getConstructor().getConstructorId());
+                    constructorColor.setBackgroundResource(teamColor);
+                }
+            } else {
+                Log.i(TAG, "CONSTRUCTOR STANDINGS ERROR");
+                loadingScreen.hideLoadingScreen();
+            }
+        });
+    }
+    /*
+    private void buildFinalTeamsStanding(View seasonEndedCard) {
         ConstructorRepository constructorRepository = ServiceLocator.getInstance().getConstructorRepository(getActivity().getApplication(), false);
         MutableLiveData<Result> liveData = constructorRepository.fetchConstructorStandings(0);
         Log.i(TAG, "Constructor Standings: " + liveData);
@@ -280,6 +305,8 @@ public class HomeFragment extends Fragment {
             }
         });
     }
+    */
+
 
     private void startCountdown(View view, LocalDateTime eventDate) {
         LinearLayout liveIconLayout = view.findViewById(R.id.timer_live_layout);
@@ -390,7 +417,7 @@ public class HomeFragment extends Fragment {
                     loadingScreen.hideLoadingScreen();
                 }
             });
-        }*/
+        }
 
         ConstructorRepository constructorRepository = ServiceLocator.getInstance().getConstructorRepository(getActivity().getApplication(), false);
         MutableLiveData<Result> liveData = constructorRepository.fetchConstructorStandings(0);
@@ -409,6 +436,25 @@ public class HomeFragment extends Fragment {
             } else if (result instanceof Result.Error) {
                 Result.Error error = (Result.Error) result;
                 Log.e(TAG, "Error: " + error.getMessage());
+            }
+        });
+
+         */
+
+        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
+        MutableLiveData<Result> data = constructorStandingsViewModel.getConstructorStandingsLiveData(0); // TODO get last update from shared preferences
+
+        data.observe(getViewLifecycleOwner(), result -> {
+            if (result.isSuccess()) {
+                ConstructorStandings constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
+                List<ConstructorStandingsElement> constructorsList = constructorStandings.getConstructorStandings();
+
+                ConstructorStandingsElement favouriteConstructor = constructorStandingsViewModel.getConstructorStandingsElement(constructorsList, Constants.FAVOURITE_TEAM);
+                Log.i(TAG, "Favorite Constructor: " + favouriteConstructor.toString());
+                buildConstructorCard(view, favouriteConstructor);
+            } else {
+                Log.i(TAG, "CONSTRUCTOR STANDINGS ERROR");
+                //loadingScreen.hideLoadingScreen();
             }
         });
     }
