@@ -29,17 +29,11 @@ public class HomePageActivity extends AppCompatActivity {
     private final String TAG = "HomePageActivity";
     private final ZoneId localZone = ZoneId.systemDefault();
 
-    protected LoadingScreen loadingScreen;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
-
-
-        //loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
-        //loadingScreen.showLoadingScreen();
 
         MaterialToolbar toolbar = findViewById(R.id.top_app_bar);
         setSupportActionBar(toolbar);

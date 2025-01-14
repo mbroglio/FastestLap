@@ -3,6 +3,7 @@ package com.the_coffe_coders.fastestlap.ui.home.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,7 +51,6 @@ import java.util.List;
 
 /**
  * TODO:
- *  - Fix loading screen
  *  - Implement fetchLastRace
  *  - Implement fetchNextRace
  *  - Fix setNextSessionCard to check if underway for live icon
@@ -82,8 +82,8 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         // Show loading screen initially
-        /*loadingScreen = new LoadingScreen(getActivity().getWindow().getDecorView(), getActivity());
-        loadingScreen.showLoadingScreen();*/
+        loadingScreen = new LoadingScreen(view, getContext());
+        loadingScreen.showLoadingScreen();
 
 
         setLastRaceCard(view);
@@ -448,5 +448,8 @@ public class HomeFragment extends Fragment {
             intent.putExtra("TEAM_ID", Constants.FAVOURITE_TEAM);
             startActivity(intent);
         });
+
+        Handler handler = new Handler();
+        handler.postDelayed(() -> loadingScreen.hideLoadingScreen(), 500);
     }
 }
