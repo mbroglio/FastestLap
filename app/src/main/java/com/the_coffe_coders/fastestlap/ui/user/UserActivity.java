@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +17,9 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
@@ -71,6 +75,17 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
         setContentView(R.layout.activity_user);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+
+        ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            params.topMargin = systemBars.top;
+            v.setLayoutParams(params);
+
+            return insets;
+        });
+
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         favouriteDriverText = findViewById(R.id.favourite_driver_text);

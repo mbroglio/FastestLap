@@ -4,9 +4,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.ViewGroup;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -36,6 +40,17 @@ public class HomePageActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         MaterialToolbar toolbar = findViewById(R.id.top_app_bar);
+
+        ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            params.topMargin = systemBars.top;
+            v.setLayoutParams(params);
+
+            return insets;
+        });
+
         setSupportActionBar(toolbar);
         toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.userActivity) {

@@ -10,7 +10,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/top_bar_height_16_dp_top_margin"
+        android:layout_height="wrap_content"
         android:background="@color/mclaren_f1"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -18,7 +18,6 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:layout_marginTop="@dimen/medium_margin"
             android:background="@color/mclaren_f1"
             app:navigationIcon="@drawable/arrow_back_ios_style"
             app:title="LANDO NORRIS"
@@ -32,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="@dimen/top_bar_height_16_dp_top_margin" />
+        app:layout_constraintGuide_begin="@dimen/top_bar_height" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_bottom"
@@ -54,7 +53,7 @@
         android:background="@color/screen_background_color"
         android:scrollbars="none"
         app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
-        app:layout_constraintTop_toBottomOf="@id/guideline_top"
+        app:layout_constraintTop_toBottomOf="@id/top_bar_layout"
         app:layout_constraintVertical_bias="1.0">
 
         <LinearLayout

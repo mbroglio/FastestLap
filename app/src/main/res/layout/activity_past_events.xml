@@ -11,7 +11,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/top_bar_height_16_dp_top_margin"
+        android:layout_height="wrap_content"
         android:background="@color/ferrari_secondary"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -19,12 +19,11 @@
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:layout_marginTop="@dimen/medium_margin"
             android:background="@color/ferrari_secondary"
             app:navigationIcon="@drawable/arrow_back_ios_style"
             app:title="PAST"
             app:titleCentered="true"
-            app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar" />
+            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.Guideline
@@ -43,8 +42,9 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/top_bar_height_16_dp_top_margin"
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/top_bar_layout"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:background="@color/screen_background_color"
         android:orientation="vertical">
 

@@ -454,7 +454,7 @@ public class HomeFragment extends Fragment {
                 buildConstructorCard(view, favouriteConstructor);
             } else {
                 Log.i(TAG, "CONSTRUCTOR STANDINGS ERROR");
-                //loadingScreen.hideLoadingScreen();
+                loadingScreen.hideLoadingScreen();
             }
         });
     }

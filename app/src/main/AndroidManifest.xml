@@ -23,28 +23,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity android:name=".ui.home.HomePageActivity" />
-
         <activity android:name=".ui.event.UpcomingEventsActivity" />
-
         <activity android:name=".ui.standing.ConstructorsStandingActivity" />
-
         <activity android:name=".ui.standing.DriversStandingActivity" />
-
         <activity android:name=".ui.event.EventActivity" />
-
         <activity android:name=".ui.event.PastEventsActivity" />
-
         <activity android:name=".ui.bio.TrackBioActivity" />
-
         <activity android:name=".ui.bio.ConstructorBioActivity" />
-
         <activity android:name=".ui.bio.DriverBioActivity" />
-
         <activity android:name=".ui.user.UserActivity" />
-
-
     </application>
 
 </manifest>
