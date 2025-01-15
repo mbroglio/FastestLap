@@ -24,6 +24,7 @@ roomCompiler = "2.6.1"
 firebaseDatabase = "21.0.0"
 firebaseAuth = "23.1.0"
 playServicesAuth = "21.3.0"
+firebaseFirestore = "25.1.1"
 
 [libraries]
 commons-validator = { module = "commons-validator:commons-validator", version.ref = "commonsValidator" }
@@ -53,6 +54,7 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 firebase-database = { group = "com.google.firebase", name = "firebase-database", version.ref = "firebaseDatabase" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 play-services-auth = { group = "com.google.android.gms", name = "play-services-auth", version.ref = "playServicesAuth" }
+firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

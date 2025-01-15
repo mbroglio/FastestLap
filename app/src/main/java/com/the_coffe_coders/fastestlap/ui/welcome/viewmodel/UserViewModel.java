@@ -15,7 +15,6 @@ public class UserViewModel extends ViewModel {
 
     private final IUserRepository userRepository;
     private MutableLiveData<Result> userMutableLiveData;
-    private MutableLiveData<Result> userFavoriteNewsMutableLiveData;
     private MutableLiveData<Result> userPreferencesMutableLiveData;
     private boolean authenticationError;
 
@@ -37,13 +36,6 @@ public class UserViewModel extends ViewModel {
             getUserData(token);
         }
         return userMutableLiveData;
-    }
-
-    public MutableLiveData<Result> getUserFavoriteNewsMutableLiveData(String idToken) {
-        if (userFavoriteNewsMutableLiveData == null) {
-            getUserFavoriteNews(idToken);
-        }
-        return userFavoriteNewsMutableLiveData;
     }
 
     public void saveUserPreferences(String favoriteDriver, String favoriteTeam, String idToken) {
@@ -71,10 +63,6 @@ public class UserViewModel extends ViewModel {
         }
 
         return userMutableLiveData;
-    }
-
-    private void getUserFavoriteNews(String idToken) {
-        userFavoriteNewsMutableLiveData = userRepository.getUserFavoriteNews(idToken);
     }
 
     public void getUser(String email, String password, boolean isUserRegistered) {

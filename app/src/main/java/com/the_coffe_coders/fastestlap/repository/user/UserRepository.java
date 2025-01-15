@@ -1,40 +1,30 @@
 package com.the_coffe_coders.fastestlap.repository.user;
 
 import androidx.lifecycle.MutableLiveData;
-
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.source.user.BaseUserAuthenticationRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.user.BaseUserDataRemoteDataSource;
-
-import java.util.List;
-import java.util.Set;
+import com.the_coffe_coders.fastestlap.domain.user.User;
 
 
 /**
  * Repository class to get the user information.
  */
-public class UserRepository implements IUserRepository, UserResponseCallback, ArticleResponseCallback {
-
+public class UserRepository implements IUserRepository, UserResponseCallback {
     private static final String TAG = UserRepository.class.getSimpleName();
+    private final MutableLiveData<Result> userMutableLiveData;
+    private final MutableLiveData<Result> userPreferencesMutableLiveData;
     private final BaseUserAuthenticationRemoteDataSource userRemoteDataSource;
     private final BaseUserDataRemoteDataSource userDataRemoteDataSource;
-    //private final BaseArticleLocalDataSource articleLocalDataSource;
-    private final MutableLiveData<Result> userMutableLiveData;
-    private final MutableLiveData<Result> userFavoriteNewsMutableLiveData;
-    private final MutableLiveData<Result> userPreferencesMutableLiveData;
 
     public UserRepository(BaseUserAuthenticationRemoteDataSource userRemoteDataSource,
                           BaseUserDataRemoteDataSource userDataRemoteDataSource) {
         this.userRemoteDataSource = userRemoteDataSource;
         this.userDataRemoteDataSource = userDataRemoteDataSource;
-        //this.articleLocalDataSource = newsLocalDataSource;
         this.userMutableLiveData = new MutableLiveData<>();
         this.userPreferencesMutableLiveData = new MutableLiveData<>();
-        this.userFavoriteNewsMutableLiveData = new MutableLiveData<>();
         this.userRemoteDataSource.setUserResponseCallback(this);
         this.userDataRemoteDataSource.setUserResponseCallback(this);
-        //this.articleLocalDataSource.setArticleCallback(this);
     }
 
     @Override
@@ -54,19 +44,13 @@ public class UserRepository implements IUserRepository, UserResponseCallback, Ar
     }
 
     @Override
-    public MutableLiveData<Result> getUserFavoriteNews(String idToken) {
-        userDataRemoteDataSource.getUserFavoriteNews(idToken);
-        return userFavoriteNewsMutableLiveData;
-    }
-
-    @Override
     public MutableLiveData<Result> getUserPreferences(String idToken) {
         userDataRemoteDataSource.getUserPreferences(idToken);
         return userPreferencesMutableLiveData;
     }
 
     @Override
-    public User getLoggedUser() {
+    public com.the_coffe_coders.fastestlap.domain.user.User getLoggedUser() {
         return userRemoteDataSource.getLoggedUser();
     }
 
@@ -92,8 +76,8 @@ public class UserRepository implements IUserRepository, UserResponseCallback, Ar
     }
 
     @Override
-    public void saveUserPreferences(String favoriteCountry, Set<String> favoriteTopics, String idToken) {
-        userDataRemoteDataSource.saveUserPreferences(favoriteCountry, favoriteTopics, idToken);
+    public void saveUserPreferences(String favoriteDriver, String favoriteTeam, String idToken) {
+        userDataRemoteDataSource.saveUserPreferences(favoriteDriver, favoriteTeam, idToken);
     }
 
     @Override
@@ -110,14 +94,9 @@ public class UserRepository implements IUserRepository, UserResponseCallback, Ar
     }
 
     @Override
-    public void onSuccessFromRemoteDatabase(User user) {
+    public void onSuccessFromRemoteDatabase(com.the_coffe_coders.fastestlap.domain.user.User user) {
         Result.UserSuccess result = new Result.UserSuccess(user);
         userMutableLiveData.postValue(result);
-    }
-
-    @Override
-    public void onSuccessFromRemoteDatabase(List<Article> articleList) {
-        articleLocalDataSource.insertArticles(articleList);
     }
 
     @Override
@@ -133,56 +112,6 @@ public class UserRepository implements IUserRepository, UserResponseCallback, Ar
 
     @Override
     public void onSuccessLogout() {
-
-    }
-
-    @Override
-    public void onSuccessFromRemote(ArticleAPIResponse articleAPIResponse, long lastUpdate) {
-
-    }
-
-    @Override
-    public void onFailureFromRemote(Exception exception) {
-
-    }
-
-    @Override
-    public void onSuccessFromLocal(List<Article> articlesList) {
-
-    }
-
-    @Override
-    public void onFailureFromLocal(Exception exception) {
-
-    }
-
-    @Override
-    public void onNewsFavoriteStatusChanged(Article article, List<Article> favoriteArticles) {
-
-    }
-
-    @Override
-    public void onNewsFavoriteStatusChanged(List<Article> news) {
-
-    }
-
-    @Override
-    public void onDeleteFavoriteNewsSuccess(List<Article> favoriteNews) {
-
-    }
-
-    //@Override
-    public void onSuccessFromCloudReading(List<Article> newsList) {
-
-    }
-
-    //@Override
-    public void onSuccessFromCloudWriting(Article article) {
-
-    }
-
-    //@Override
-    public void onFailureFromCloud(Exception exception) {
 
     }
 }

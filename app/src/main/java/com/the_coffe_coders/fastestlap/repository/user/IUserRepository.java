@@ -10,7 +10,6 @@ import java.util.Set;
 public interface IUserRepository {
     MutableLiveData<Result> getUser(String email, String password, boolean isUserRegistered);
     MutableLiveData<Result> getGoogleUser(String idToken);
-    MutableLiveData<Result> getUserFavoriteNews(String idToken);
     MutableLiveData<Result> getUserPreferences(String idToken);
     MutableLiveData<Result> logout();
     User getLoggedUser();
@@ -18,4 +17,6 @@ public interface IUserRepository {
     void signIn(String email, String password);
     void signInWithGoogle(String token);
     void saveUserPreferences(String favoriteDriver, String favoriteTeam, String idToken);
+
+    void onSuccessFromAuthentication(User user);
 }

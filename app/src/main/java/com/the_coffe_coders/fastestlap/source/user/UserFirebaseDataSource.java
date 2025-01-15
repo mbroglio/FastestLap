@@ -2,6 +2,9 @@ package com.the_coffe_coders.fastestlap.source.user;
 
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_USERS_COLLECTION;
+import static com.the_coffe_coders.fastestlap.util.Constants.SHARED_PREFERENCES_FAVORITE_DRIVER;
+import static com.the_coffe_coders.fastestlap.util.Constants.SHARED_PREFERENCES_FAVORITE_TEAM;
+import static com.the_coffe_coders.fastestlap.util.Constants.SHARED_PREFERENCES_FILENAME;
 
 import android.util.Log;
 
@@ -16,14 +19,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Class that gets the user information using Firebase Realtime Database.
@@ -75,58 +75,27 @@ public class UserFirebaseDataSource extends BaseUserDataRemoteDataSource {
     }
 
     @Override
-    public void getUserFavoriteNews(String idToken) {
-        databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
-                child(FIREBASE_FAVORITE_NEWS_COLLECTION).get().addOnCompleteListener(task -> {
-                    if (!task.isSuccessful()) {
-                        Log.d(TAG, "Error getting data", task.getException());
-                        userResponseCallback.onFailureFromRemoteDatabase(task.getException().getLocalizedMessage());
-                    }
-                    else {
-                        Log.d(TAG, "Successful read: " + task.getResult().getValue());
-
-                        List<Article> articlesList = new ArrayList<>();
-                        for(DataSnapshot ds : task.getResult().getChildren()) {
-                            Article article = ds.getValue(Article.class);
-                            articlesList.add(article);
-                        }
-
-                        userResponseCallback.onSuccessFromRemoteDatabase(articlesList);
-                    }
-                });
-    }
-
-    @Override
     public void getUserPreferences(String idToken) {
         databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
-                child(SHARED_PREFERENCES_COUNTRY_OF_INTEREST).get().addOnCompleteListener(task -> {
+                child(SHARED_PREFERENCES_FAVORITE_DRIVER).get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         String countryOfInterest = task.getResult().getValue(String.class);
                         sharedPreferencesUtil.writeStringData(
                                 SHARED_PREFERENCES_FILENAME,
-                                SHARED_PREFERENCES_COUNTRY_OF_INTEREST,
+                                SHARED_PREFERENCES_FAVORITE_DRIVER,
                                 countryOfInterest);
 
                         databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
-                                child(SHARED_PREFERENCES_CATEGORIES_OF_INTEREST).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                child(SHARED_PREFERENCES_FAVORITE_TEAM).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<DataSnapshot> task) {
                                         if (task.isSuccessful()) {
-                                            List<String> favoriteTopics = new ArrayList<>();
-                                            for(DataSnapshot ds : task.getResult().getChildren()) {
-                                                String favoriteTopic = ds.getValue(String.class);
-                                                favoriteTopics.add(favoriteTopic);
-                                            }
+                                            String favoriteTeam = task.getResult().getValue(String.class);
+                                            sharedPreferencesUtil.writeStringData(
+                                                    SHARED_PREFERENCES_FILENAME,
+                                                    SHARED_PREFERENCES_FAVORITE_TEAM,
+                                                    favoriteTeam);
 
-                                            if (favoriteTopics.size() > 0) {
-                                                Set<String> favoriteNewsSet = new HashSet<>(favoriteTopics);
-                                                favoriteNewsSet.addAll(favoriteTopics);
-
-                                                sharedPreferencesUtil.writeStringSetData(
-                                                        SHARED_PREFERENCES_FILENAME,
-                                                        SHARED_PREFERENCES_CATEGORIES_OF_INTEREST,
-                                                        favoriteNewsSet);
-                                            }
                                             userResponseCallback.onSuccessFromGettingUserPreferences();
                                         }
                                     }
@@ -136,13 +105,13 @@ public class UserFirebaseDataSource extends BaseUserDataRemoteDataSource {
     }
 
     @Override
-    public void saveUserPreferences(String favoriteCountry, Set<String> favoriteTopics, String idToken) {
+    public void saveUserPreferences(String favoriteDriver, String favoriteTeam, String idToken) {
 
         databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
-                child(SHARED_PREFERENCES_COUNTRY_OF_INTEREST).setValue(favoriteCountry);
+                child(SHARED_PREFERENCES_FAVORITE_DRIVER).setValue(favoriteDriver);
 
         databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
-                child(SHARED_PREFERENCES_CATEGORIES_OF_INTEREST).setValue(new ArrayList<>(favoriteTopics)).addOnSuccessListener(new OnSuccessListener<Void>() {
+                child(SHARED_PREFERENCES_FAVORITE_TEAM).setValue(favoriteTeam).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
                         Log.i(TAG, "fattoooo");
