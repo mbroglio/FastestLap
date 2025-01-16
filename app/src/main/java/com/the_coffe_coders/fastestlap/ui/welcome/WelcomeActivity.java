@@ -22,6 +22,7 @@ import androidx.activity.result.IntentSenderRequest;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
@@ -39,6 +40,7 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
+import com.the_coffe_coders.fastestlap.ui.welcome.fragment.SignUpFragment;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
@@ -129,9 +131,21 @@ public class WelcomeActivity extends AppCompatActivity {
 
         View rootView = findViewById(R.id.login_activity_layout);
         rootView.setOnClickListener(v -> resetHintPosition());
-
+/*
         Button registerButton = findViewById(R.id.RegisterButton);
-        registerButton.setOnClickListener(v -> showRegisterPopup());
+        //registerButton.setOnClickListener(v -> showRegisterPopup());
+        registerButton.setOnClickListener(v -> {
+            Intent intent = new Intent(WelcomeActivity.this, SignUpActivity.class);
+            startActivity(intent);
+        });
+*/
+        Button registerButton = findViewById(R.id.RegisterButton);
+        registerButton.setOnClickListener(v -> {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            SignUpFragment signUpFragment = new SignUpFragment();
+            signUpFragment.show(fragmentManager, "SignUpFragment");
+        });
+
 
         Button loginButton = findViewById(R.id.LoginButton);
         loginButton.setOnClickListener(v -> {

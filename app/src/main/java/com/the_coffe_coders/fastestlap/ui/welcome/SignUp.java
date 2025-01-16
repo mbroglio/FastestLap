@@ -1,4 +1,5 @@
-package com.the_coffe_coders.fastestlap.ui.welcome;
+
+/*package com.the_coffe_coders.fastestlap.ui.welcome;
 
 import android.app.AlertDialog;
 import android.app.Application;
@@ -67,3 +68,5 @@ public class SignUp {
         dialog.show();
     }
 }
+
+ */
