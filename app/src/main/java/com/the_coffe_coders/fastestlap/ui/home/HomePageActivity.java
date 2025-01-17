@@ -2,6 +2,7 @@ package com.the_coffe_coders.fastestlap.ui.home;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 
@@ -14,6 +15,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.ui.user.UserActivity;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
@@ -29,6 +32,7 @@ public class HomePageActivity extends AppCompatActivity {
     private final String TAG = "HomePageActivity";
     private final ZoneId localZone = ZoneId.systemDefault();
 
+
     protected LoadingScreen loadingScreen;
 
     @Override
@@ -37,15 +41,14 @@ public class HomePageActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
 
-
-        //loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
-        //loadingScreen.showLoadingScreen();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
         MaterialToolbar toolbar = findViewById(R.id.top_app_bar);
         setSupportActionBar(toolbar);
         toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.userActivity) {
                 Intent intent = new Intent(HomePageActivity.this, UserActivity.class);
+                intent.putExtra("USER", user);
                 startActivity(intent);
                 return true;
             }
@@ -62,6 +65,9 @@ public class HomePageActivity extends AppCompatActivity {
 
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
+
+        Log.i(TAG, "user: " + user.getEmail());
 
 
     }

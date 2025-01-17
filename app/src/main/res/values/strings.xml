@@ -111,4 +111,5 @@
     <string name="dismiss_upper_case">DISMISS</string>
     <string name="save_upper_case">SAVE</string>
     <string name="profile_upper_case">PROFILE</string>
+    <string name="sign_out_upper_case">SIGN OUT</string>
 </resources>

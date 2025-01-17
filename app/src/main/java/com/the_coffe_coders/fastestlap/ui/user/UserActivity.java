@@ -1,5 +1,6 @@
 package com.the_coffe_coders.fastestlap.ui.user;
 
+import android.content.Intent;
 import android.graphics.Typeface;
 
 import android.graphics.drawable.Drawable;
@@ -21,24 +22,27 @@ import androidx.appcompat.content.res.AppCompatResources;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.SpinnerAdapter;
+import com.the_coffe_coders.fastestlap.ui.welcome.WelcomeActivity;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.SimpleTextWatcher;
 
-public class UserActivity extends AppCompatActivity implements EditProfilePopup.EditProfileListener {
+public class UserActivity extends AppCompatActivity {
 
     private String originalUsername;
     private String originalPassword;
     private String originalEmail;
     private String originalDriver;
     private String originalConstructor;
-    private int originalProfileImage;
-    private float originalTextSize;
-    private Typeface originalTypeface;
+    //private int originalProfileImage;
+    //private float originalTextSize;
+    //private Typeface originalTypeface;
 
-    private ImageView profileImage;
-    private TextView usernameText;
+    //private ImageView profileImage;
+    //private TextView usernameText;
 
     private TextView favouriteDriverText;
     private MaterialCardView changeDriverButton;
@@ -50,18 +54,19 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
 
     private Button saveButton;
     private Button dismissButton;
+    private Button signOutButton;
 
-    private String provisionalUsername;
-    private int provisionalProfileImage;
+    //private String provisionalUsername;
+    //private int provisionalProfileImage;
     private String provisionalFavDriver;
     private String provisionalFavConstructor;
     private String provisionalEmail;
-    private String provisionalPassword;
+    //private String provisionalPassword;
 
-    private boolean isProfileImageModified = false;
-    private boolean isProfileNameModified = false;
+    //private boolean isProfileImageModified = false;
+    //private boolean isProfileNameModified = false;
     private boolean isEmailModified = false;
-    private boolean isPasswordModified = false;
+    //private boolean isPasswordModified = false;
     private boolean isFavDriverModified = false;
     private boolean isFavConstructorModified = false;
 
@@ -74,6 +79,8 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
+        FirebaseUser user = getIntent().getParcelableExtra("USER");
+
         favouriteDriverText = findViewById(R.id.favourite_driver_text);
         changeDriverButton = findViewById(R.id.change_driver_button);
 
@@ -82,6 +89,7 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
 
         saveButton = findViewById(R.id.save_button);
         dismissButton = findViewById(R.id.dismiss_button);
+        signOutButton = findViewById(R.id.sign_out_button);
 
         String[] drivers = Constants.DRIVER_FULLNAME.keySet().toArray(new String[0]);
         String[] constructors = Constants.TEAM_FULLNAME.keySet().toArray(new String[0]);
@@ -108,40 +116,44 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
             }
         });
 
-        profileImage = findViewById(R.id.profile_image);
-        originalProfileImage = getOriginalProfileImage(profileImage);
+        //profileImage = findViewById(R.id.profile_image);
+        //originalProfileImage = getOriginalProfileImage(profileImage);
 
+        /*
         usernameText = findViewById(R.id.profile_text);
         ImageView editProfile = findViewById(R.id.edit_profile);
         editProfile.setOnClickListener(v -> {
             EditProfilePopup editProfilePopup = new EditProfilePopup(this, findViewById(R.id.activity_user_layout), originalProfileImage, originalUsername);
             editProfilePopup.show();
         });
+        */
 
-
+        /*
         EditText passwordText = findViewById(R.id.password_text);
         ImageView togglePasswordVisibility = findViewById(R.id.toggle_password_visibility);
         ImageView editPassword = findViewById(R.id.edit_password);
         ImageView revertPassword = findViewById(R.id.revert_password);
         ImageView checkPassword = findViewById(R.id.confirm_edit_password);
+        */
 
         TextInputEditText emailText = findViewById(R.id.email_text);
+        emailText.setText(user.getEmail());
         ImageView editEmail = findViewById(R.id.edit_email);
         ImageView revertEmail = findViewById(R.id.revert_email);
         ImageView checkEmail = findViewById(R.id.confirm_edit_email);
 
         // Store original textSize, typeface, and background
-        originalTextSize = passwordText.getTextSize();
-        originalTypeface = passwordText.getTypeface();
+        //originalTextSize = passwordText.getTextSize();
+        //originalTypeface = passwordText.getTypeface();
 
         // Store original values
-        originalUsername = usernameText.getText().toString();
-        originalPassword = passwordText.getText().toString();
+        //originalUsername = usernameText.getText().toString();
+        //originalPassword = passwordText.getText().toString();
         originalEmail = emailText.getText().toString();
         originalDriver = favouriteDriverText.getText().toString();
         originalConstructor = favouriteConstructorText.getText().toString();
 
-
+        /*
         togglePasswordVisibility.setOnClickListener(v -> {
             if (passwordText.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
                 passwordText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
@@ -156,6 +168,7 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
             passwordText.setTypeface(originalTypeface);
         });
 
+
         editPassword.setOnClickListener(v -> {
             startEditing(passwordText, editPassword, checkPassword);
             checkForChanges();
@@ -168,6 +181,8 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
         revertPassword.setOnClickListener(v -> {
             revertEditing(passwordText, originalPassword, revertPassword, provisionalPassword);
         });
+
+         */
 
         editEmail.setOnClickListener(v -> {
             startEditing(emailText, editEmail, checkEmail);
@@ -182,7 +197,7 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
             revertEditing(emailText, originalEmail, revertEmail, provisionalEmail);
         });
 
-
+        /*
         // Add text change listeners
         passwordText.addTextChangedListener(new SimpleTextWatcher() {
             @Override
@@ -192,6 +207,7 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
                 checkForChanges();
             }
         });
+        */
 
         emailText.addTextChangedListener(new SimpleTextWatcher() {
             @Override
@@ -229,9 +245,11 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
             if (isEmailModified) {
                 dismissChanges(emailText, originalEmail, editEmail, checkEmail, revertEmail, provisionalEmail);
             }
+            /*
             if (isPasswordModified) {
                 dismissChanges(passwordText, originalPassword, editPassword, checkPassword, revertPassword, provisionalPassword);
             }
+            */
             if (isFavDriverModified) {
                 favouriteDriverText.setText(originalDriver);
                 provisionalFavDriver = null;
@@ -240,6 +258,7 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
                 favouriteConstructorText.setText(originalConstructor);
                 provisionalFavConstructor = null;
             }
+            /*
             if (isProfileImageModified) {
                 profileImage.setImageResource(originalProfileImage);
                 isProfileImageModified = false;
@@ -248,10 +267,18 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
                 usernameText.setText(originalUsername);
                 isProfileNameModified = false;
             }
+            */
             checkForChanges();
         });
-    }
 
+        signOutButton.setOnClickListener(v -> {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(UserActivity.this, WelcomeActivity.class);
+            intent.putExtra("SIGN_OUT", true);
+            startActivity(intent);
+        });
+    }
+    /*
     private int getOriginalProfileImage(ImageView profileImage) {
         Drawable currentDrawable = profileImage.getDrawable();
         int image = 0;
@@ -266,6 +293,7 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
         }
         return image;
     }
+     */
 
     private ListPopupWindow createListPopupWindow(String[] items, MaterialCardView anchorView, boolean isDriver) {
         ListPopupWindow listPopupWindow = new ListPopupWindow(this);
@@ -322,9 +350,7 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
     }
 
     private void checkForChanges() {
-        boolean hasChanges = isEmailModified || isPasswordModified ||
-                isFavDriverModified || isFavConstructorModified ||
-                isProfileImageModified || isProfileNameModified;
+        boolean hasChanges = isEmailModified || isFavDriverModified || isFavConstructorModified;
 
         saveButton.setVisibility(hasChanges ? View.VISIBLE : View.INVISIBLE);
         saveButton.setEnabled(hasChanges);
@@ -332,7 +358,7 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
         dismissButton.setEnabled(hasChanges);
     }
 
-
+    /*
     @Override
     public void onProfileImageChanged(int newProfileImage) {
         profileImage.setImageResource(newProfileImage);
@@ -348,4 +374,5 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
         isProfileNameModified = true;
         checkForChanges();
     }
+    */
 }

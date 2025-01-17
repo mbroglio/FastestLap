@@ -57,7 +57,8 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginTop="50dp"
-                android:background="@drawable/circle_background_grey">
+                android:background="@drawable/circle_background_grey"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/profile_image"
@@ -73,7 +74,8 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/profile_text"
@@ -95,6 +97,21 @@
                     android:layout_toEndOf="@+id/profile_text"
                     android:src="@drawable/pencil_icon_white" />
             </RelativeLayout>
+
+            <Button
+                android:id="@+id/sign_out_button"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/medium_margin"
+                android:backgroundTint="@color/timer_gray"
+                android:fontFamily="@font/orbitron_bold"
+                android:text="@string/sign_out_upper_case"
+                android:textColor="@color/black"
+                android:textSize="@dimen/layout_subtitle_text_size">
+
+            </Button>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -135,7 +152,7 @@
                             android:cursorVisible="true"
                             android:fontFamily="@font/orbitron_regular"
                             android:inputType="textEmailAddress"
-                            android:text="pierre.gasslee@gmail.com"
+                            android:text="@string/not_found"
                             android:textColor="@color/timer_gray"
                             android:textSize="@dimen/body_text_size" />
 

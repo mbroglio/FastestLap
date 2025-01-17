@@ -15,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.activity.result.ActivityResultLauncher;
@@ -31,10 +32,16 @@ import com.google.android.gms.auth.api.identity.Identity;
 import com.google.android.gms.auth.api.identity.SignInClient;
 import com.google.android.gms.auth.api.identity.SignInCredential;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.Firebase;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.user.User;
@@ -63,6 +70,9 @@ public class WelcomeActivity extends AppCompatActivity {
     private ActivityResultLauncher<IntentSenderRequest> activityResultLauncher;
     private ActivityResultContracts.StartIntentSenderForResult startIntentSenderForResult;
     private BeginSignInRequest signInRequest;
+    private FirebaseAuth mAuth;
+
+    private boolean fromSignOut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,13 +80,17 @@ public class WelcomeActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_welcome);
 
+        mAuth = FirebaseAuth.getInstance();
+
+        fromSignOut = getIntent().getBooleanExtra("SIGN_OUT", false);
+
         IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository((Application) getApplicationContext());
 
         userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
         userViewModel.setAuthenticationError(false);
 
         introScreen = new IntroScreen(findViewById(android.R.id.content), this);
-        introScreen.showIntroScreen();
+
 
         emailEditText = findViewById(R.id.textInputEmail);
         passwordEditText = findViewById(R.id.textInputPassword);
@@ -131,14 +145,7 @@ public class WelcomeActivity extends AppCompatActivity {
 
         View rootView = findViewById(R.id.login_activity_layout);
         rootView.setOnClickListener(v -> resetHintPosition());
-/*
-        Button registerButton = findViewById(R.id.RegisterButton);
-        //registerButton.setOnClickListener(v -> showRegisterPopup());
-        registerButton.setOnClickListener(v -> {
-            Intent intent = new Intent(WelcomeActivity.this, SignUpActivity.class);
-            startActivity(intent);
-        });
-*/
+
         Button registerButton = findViewById(R.id.RegisterButton);
         registerButton.setOnClickListener(v -> {
             FragmentManager fragmentManager = getSupportFragmentManager();
@@ -146,13 +153,35 @@ public class WelcomeActivity extends AppCompatActivity {
             signUpFragment.show(fragmentManager, "SignUpFragment");
         });
 
-
         Button loginButton = findViewById(R.id.LoginButton);
         loginButton.setOnClickListener(v -> {
             if (emailEditText.getText() != null && isEmailOk(emailEditText.getText().toString())) {
                 if (passwordEditText.getText() != null && isPasswordOk(passwordEditText.getText().toString())) {
-                    Intent intent = new Intent(WelcomeActivity.this, HomePageActivity.class);
-                    startActivity(intent);
+                    mAuth.signInWithEmailAndPassword(emailEditText.getText().toString(), passwordEditText.getText().toString())
+                            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        // Sign in success, update UI with the signed-in user's information
+                                        Log.d(TAG, "signInWithEmail:success");
+
+                                        FirebaseUser user = mAuth.getCurrentUser();
+
+                                        Log.d(TAG, "User: " + user.toString());
+
+                                        Intent intent = new Intent(WelcomeActivity.this, HomePageActivity.class);
+                                        //intent.putExtra("user info", user);
+                                        startActivity(intent);
+
+                                    } else {
+                                        // If sign in fails, display a message to the user.
+                                        Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                        Toast.makeText(WelcomeActivity.this, "Authentication failed.",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
                 } else {
                     passwordEditText.setError("Error Password Login");
                 }
@@ -217,6 +246,21 @@ public class WelcomeActivity extends AppCompatActivity {
                 return USER_COLLISION_ERROR;
             default:
                 return UNEXPECTED_ERROR;
+        }
+    }
+
+    @Override
+    public void onStart() {
+
+        Log.i("OnStart", Boolean.toString(fromSignOut));
+
+        super.onStart();
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            startActivity(new Intent(WelcomeActivity.this, HomePageActivity.class));
+        }else if (!fromSignOut) {
+            introScreen.showIntroScreen();
         }
     }
 
