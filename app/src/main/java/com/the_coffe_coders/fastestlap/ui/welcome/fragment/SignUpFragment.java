@@ -1,6 +1,11 @@
 package com.the_coffe_coders.fastestlap.ui.welcome.fragment;
 
+import static com.the_coffe_coders.fastestlap.util.Constants.UNEXPECTED_ERROR;
+import static com.the_coffe_coders.fastestlap.util.Constants.USER_COLLISION_ERROR;
+import static com.the_coffe_coders.fastestlap.util.Constants.WEAK_PASSWORD_ERROR;
+
 import android.app.Application;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,14 +22,22 @@ import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.SpinnerAdapter;
+import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
+import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
+import com.the_coffe_coders.fastestlap.ui.welcome.WelcomeActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
+
+import org.apache.commons.validator.routines.EmailValidator;
 
 import java.util.Objects;
 
@@ -33,6 +46,7 @@ public class SignUpFragment extends DialogFragment {
     private static final String TAG = "RegisterPopup";
     private UserViewModel userViewModel;
     private TextInputEditText textInputEmail, textInputPassword;
+    private String favouriteDriverKey, favouriteConstructorKey;
 
     private TextView favouriteDriverText;
     private MaterialCardView changeDriverButton;
@@ -85,12 +99,99 @@ public class SignUpFragment extends DialogFragment {
         submitButton.setOnClickListener(v -> {
             String email = Objects.requireNonNull(textInputEmail.getText()).toString();
             String password = Objects.requireNonNull(textInputPassword.getText()).toString();
-            Log.d(TAG, "Email: " + email);
-            Log.d(TAG, "Password: " + password);
-            dismiss();
+            checkSignUpCredentials(email, password);
+
+            Intent intent = new Intent(requireContext(), HomePageActivity.class);
+            Log.i(TAG, "Starting HomePageActivity");
+            startActivity(intent);
+            //dismiss();
         });
 
         return view;
+    }
+
+    private void checkSignUpCredentials(String email, String password) {
+        Log.d(TAG, "Email: " + email);
+        Log.d(TAG, "Password: " + password);
+        if (isEmailOk(email) & isPasswordOk(password)) {
+            //binding.progressBar.setVisibility(View.VISIBLE);
+            if (!userViewModel.isAuthenticationError()) {
+                userViewModel.getUserMutableLiveData(email, password, false).observe(
+                        this, result -> {
+                            if (result.isSuccess()) {
+                                User user = ((Result.UserSuccess) result).getData();
+                                //saveLoginData(email, password, user.getIdToken());
+                                userViewModel.setAuthenticationError(false);
+                                Log.i(TAG, "User: " + user.toString());
+                                SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this.getContext());
+                                saveSharedPreferences(sharedPreferencesUtils, user);
+                            } else {
+                                userViewModel.setAuthenticationError(true);
+                                Snackbar.make(requireView(),
+                                        getErrorMessage(((Result.Error) result).getMessage()), // Temporary
+                                        Snackbar.LENGTH_SHORT).show();
+                            }
+                        });
+            } else {
+                userViewModel.getUser(email, password, false);
+            }
+            //binding.progressBar.setVisibility(View.GONE);
+        } else {
+            userViewModel.setAuthenticationError(true);
+            Snackbar.make(requireView(),
+                    "Error Mail Login", Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    private boolean isEmailOk(String email) {
+        // Check if the email is valid through the use of this library:
+        // https://commons.apache.org/proper/commons-validator/
+        if (!EmailValidator.getInstance().isValid((email))) {
+            textInputEmail.setError("Error Email Login");
+            return false;
+        } else {
+            textInputEmail.setError(null);
+            return true;
+        }
+    }
+
+    private boolean isPasswordOk(String password) {
+        // Check if the password length is correct
+        if (password.isEmpty() || password.length() < Constants.MINIMUM_LENGTH_PASSWORD) {
+            textInputPassword.setError("Error Password Login");
+            return false;
+        } else {
+            textInputPassword.setError(null);
+            return true;
+        }
+    }
+
+    private String getErrorMessage(String message) {
+        switch (message) {
+            case WEAK_PASSWORD_ERROR:
+                return WEAK_PASSWORD_ERROR;
+            case USER_COLLISION_ERROR:
+                return USER_COLLISION_ERROR;
+            default:
+                return UNEXPECTED_ERROR;
+        }
+    }
+
+    private void saveSharedPreferences(SharedPreferencesUtils sharedPreferencesUtils, User user) {
+        Log.i(TAG, "Saving user preferences");
+        sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
+                Constants.SHARED_PREFERENCES_FAVORITE_DRIVER,
+                favouriteDriverKey);
+
+        sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
+                Constants.SHARED_PREFERENCES_FAVORITE_TEAM,
+                favouriteConstructorKey);
+
+        userViewModel.saveUserPreferences(
+                favouriteDriverKey,
+                favouriteConstructorKey,
+                user.getIdToken()
+        );
     }
 
     private ListPopupWindow createListPopupWindow(String[] items, MaterialCardView anchorView, boolean isDriver) {
@@ -103,9 +204,12 @@ public class SignUpFragment extends DialogFragment {
         listPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
             String selectedItemKey = items[position];
             if (isDriver) {
-                favouriteDriverText.setText(getString(Constants.DRIVER_FULLNAME.get(selectedItemKey)));
+                favouriteDriverKey = selectedItemKey;
+                favouriteDriverText.setText(getString(Constants.DRIVER_FULLNAME.get(favouriteDriverKey)));
+
             } else {
-                favouriteConstructorText.setText(getString(Constants.TEAM_FULLNAME.get(selectedItemKey)));
+                favouriteConstructorKey = selectedItemKey;
+                favouriteConstructorText.setText(getString(Constants.TEAM_FULLNAME.get(favouriteConstructorKey)));
             }
             listPopupWindow.dismiss();
         });

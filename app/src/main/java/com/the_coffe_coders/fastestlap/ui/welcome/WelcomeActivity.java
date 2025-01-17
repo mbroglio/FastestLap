@@ -186,90 +186,6 @@ public class WelcomeActivity extends AppCompatActivity {
                 }));
     }
 
-    private void showRegisterPopup() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = getLayoutInflater();
-        View dialogView = inflater.inflate(R.layout.register_pop_up, null);
-        builder.setView(dialogView);
-
-        AlertDialog dialog = builder.create();
-        Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(R.drawable.dialog_background);
-
-        Button submitButton = dialogView.findViewById(R.id.submit_button);
-        EditText emailEditText = dialogView.findViewById(R.id.textInputEmail);
-        EditText passwordEditText = dialogView.findViewById(R.id.textInputPassword);
-
-        submitButton.setOnClickListener(v -> {
-            String email = emailEditText.getText().toString();
-            String password = passwordEditText.getText().toString();
-            Log.d(TAG, "Email: " + email);
-            Log.d(TAG, "Password: " + password);
-
-            checkSignUpCredentials(email, password, dialogView);
-            dialog.dismiss();
-        });
-
-        dialog.show();
-    }
-
-    private void checkSignUpCredentials(String email, String password, View dialogView) {
-        if (isEmailOk(email) & isPasswordOk(password)) {
-            //binding.progressBar.setVisibility(View.VISIBLE);
-            if (!userViewModel.isAuthenticationError()) {
-                userViewModel.getUserMutableLiveData(email, password, false).observe(
-                        this, result -> {
-                            if (result.isSuccess()) {
-                                User user = ((Result.UserSuccess) result).getData();
-                                //saveLoginData(email, password, user.getIdToken());
-                                userViewModel.setAuthenticationError(false);
-                                processPreferences(user, dialogView);
-                            } else {
-                                userViewModel.setAuthenticationError(true);
-                                Snackbar.make(this.findViewById(android.R.id.content),
-                                        getErrorMessage(((Result.Error) result).getMessage()), // Temporary
-                                        Snackbar.LENGTH_SHORT).show();
-                            }
-                        });
-            } else {
-                userViewModel.getUser(email, password, false);
-            }
-            //binding.progressBar.setVisibility(View.GONE);
-        } else {
-            userViewModel.setAuthenticationError(true);
-            Snackbar.make(this.findViewById(android.R.id.content),
-                    "Error Mail Login", Snackbar.LENGTH_SHORT).show();
-        }
-    }
-
-    private void processPreferences(User user, View dialogView) {
-        TextView favouriteDriver = dialogView.findViewById(R.id.favourite_driver_text);
-        TextView favouriteConstructor = dialogView.findViewById(R.id.favourite_constructor_text);
-
-        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
-
-        sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
-                Constants.SHARED_PREFERENCES_FAVORITE_DRIVER,
-                favouriteDriver.getText().toString());
-
-        sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
-                Constants.SHARED_PREFERENCES_FAVORITE_TEAM,
-                favouriteConstructor.getText().toString());
-
-        userViewModel.saveUserPreferences(
-                favouriteDriver.getText().toString(),
-                favouriteConstructor.getText().toString(),
-                user.getIdToken()
-        );
-
-        startActivity(new Intent(WelcomeActivity.this, HomePageActivity.class));
-    }
-
-    /**
-     * Checks if the email address has a correct format.
-     *
-     * @param email The email address to be validated
-     * @return true if the email address is valid, false otherwise
-     */
     private boolean isEmailOk(String email) {
         // Check if the email is valid through the use of this library:
         // https://commons.apache.org/proper/commons-validator/
@@ -282,12 +198,6 @@ public class WelcomeActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Checks if the password is not empty.
-     *
-     * @param password The password to be checked
-     * @return True if the password has at least 6 characters, false otherwise
-     */
     private boolean isPasswordOk(String password) {
         // Check if the password length is correct
         if (password.isEmpty() || password.length() < Constants.MINIMUM_LENGTH_PASSWORD) {
