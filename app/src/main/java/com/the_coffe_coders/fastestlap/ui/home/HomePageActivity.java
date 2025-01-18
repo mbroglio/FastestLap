@@ -41,14 +41,12 @@ public class HomePageActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_home);
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-
         MaterialToolbar toolbar = findViewById(R.id.top_app_bar);
         setSupportActionBar(toolbar);
         toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.userActivity) {
                 Intent intent = new Intent(HomePageActivity.this, UserActivity.class);
-                intent.putExtra("USER", user);
+                //intent.putExtra("USER", user);
                 startActivity(intent);
                 return true;
             }
@@ -67,9 +65,7 @@ public class HomePageActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
 
-        Log.i(TAG, "user: " + user.getEmail());
-
-
+        //Log.i(TAG, "user: " + user.getEmail());
     }
 
     @Override
