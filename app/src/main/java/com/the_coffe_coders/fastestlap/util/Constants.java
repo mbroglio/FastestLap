@@ -177,7 +177,7 @@ public class Constants {
         put("haas", R.string.haas);
         put("sauber", R.string.sauber);
         put("williams", R.string.williams);
-        put("rb", R.string.red_bull);
+        put("rb", R.string.red_bull); // Racing Bulls
     }};
 
     public static final Map<String, Integer> TEAM_CAR = new HashMap<String, Integer>() {{

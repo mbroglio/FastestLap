@@ -1,5 +1,6 @@
 package com.the_coffe_coders.fastestlap.ui.home.fragment;
 
+import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -29,7 +30,9 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
+import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
@@ -37,9 +40,12 @@ import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
+import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
+import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
@@ -88,6 +94,10 @@ public class HomeFragment extends Fragment {
 
         setLastRaceCard(view);
         setNextSessionCard(view);
+
+        IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getActivity().getApplication());
+        UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+        User user = userViewModel.getLoggedUser();
         setFavouriteDriverCard(view);
         setFavouriteConstructorCard(view);
 
@@ -312,6 +322,20 @@ public class HomeFragment extends Fragment {
         }.start();
     }
 
+    private String getFavoriteDriverId() {
+        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
+        String favoriteDriver = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
+        Log.i(TAG, "Favorite Driver: " + favoriteDriver);
+        return favoriteDriver;
+    }
+
+    private String getFavoriteTeamId() {
+        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
+        String favoriteTeam = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
+        Log.i(TAG, "Favorite Team: " + favoriteTeam);
+        return favoriteTeam;
+    }
+
     private void setFavouriteDriverCard(View view) {
         DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
         MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
@@ -321,7 +345,7 @@ public class HomeFragment extends Fragment {
                 DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
                 List<DriverStandingsElement> driversList = driverStandings.getDriverStandingsElements();
 
-                DriverStandingsElement favouriteDriver = driverStandingsViewModel.getDriverStandingsElement(driversList, Constants.FAVOURITE_DRIVER);
+                DriverStandingsElement favouriteDriver = driverStandingsViewModel.getDriverStandingsElement(driversList, getFavoriteDriverId());
                 Log.i(TAG, "Favorite Driver: " + favouriteDriver.toString());
                 buildDriverCard(view, favouriteDriver);
             } else {
@@ -401,7 +425,7 @@ public class HomeFragment extends Fragment {
                 ConstructorStandings constructorStandings = constructorStandingsSuccess.getData();
                 Log.i(TAG, "Constructor Standings: " + constructorStandings);
                 for (ConstructorStandingsElement standingElement : constructorStandings.getConstructorStandings()) {
-                    if (standingElement.getConstructor().getConstructorId().equals(Constants.FAVOURITE_TEAM)) {
+                    if (standingElement.getConstructor().getConstructorId().equals(getFavoriteTeamId())) {
                         buildConstructorCard(view, standingElement);
                         break;
                     }

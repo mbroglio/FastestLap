@@ -79,11 +79,11 @@ public class UserFirebaseDataSource extends BaseUserDataRemoteDataSource {
         databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
                 child(SHARED_PREFERENCES_FAVORITE_DRIVER).get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        String countryOfInterest = task.getResult().getValue(String.class);
+                        String favoriteDriver = task.getResult().getValue(String.class);
                         sharedPreferencesUtil.writeStringData(
                                 SHARED_PREFERENCES_FILENAME,
                                 SHARED_PREFERENCES_FAVORITE_DRIVER,
-                                countryOfInterest);
+                                favoriteDriver);
 
                         databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
                                 child(SHARED_PREFERENCES_FAVORITE_TEAM).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {

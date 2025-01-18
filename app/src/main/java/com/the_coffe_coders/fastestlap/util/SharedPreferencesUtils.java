@@ -22,23 +22,9 @@ public class SharedPreferencesUtils {
         editor.apply();
     }
 
-    public void writeStringSetData(String sharedPreferencesFileName, String key, Set<String> value) {
-        SharedPreferences sharedPref = context.getSharedPreferences(sharedPreferencesFileName,
-                Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPref.edit();
-        editor.putStringSet(key, value);
-        editor.apply();
-    }
-
     public String readStringData(String sharedPreferencesFileName, String key) {
         SharedPreferences sharedPref = context.getSharedPreferences(sharedPreferencesFileName,
                 Context.MODE_PRIVATE);
         return sharedPref.getString(key, null);
-    }
-
-    public Set<String> readStringSetData(String sharedPreferencesFileName, String key) {
-        SharedPreferences sharedPref = context.getSharedPreferences(sharedPreferencesFileName,
-                Context.MODE_PRIVATE);
-        return sharedPref.getStringSet(key, null);
     }
 }
