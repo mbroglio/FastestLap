@@ -367,7 +367,7 @@ public class HomeFragment extends Fragment {
         nationality.setText(Constants.NATIONALITY_ABBREVIATION.get(driverNationality));
 
         ImageView driverImage = view.findViewById(R.id.favourite_driver_pic);
-        driverImage.setImageResource(Constants.DRIVER_IMAGE.get(Constants.FAVOURITE_DRIVER));
+        driverImage.setImageResource(Constants.DRIVER_IMAGE.get(standingElement.getDriver().getDriverId()));
 
         TextView driverPosition = view.findViewById(R.id.favourite_driver_position);
         driverPosition.setText(standingElement.getPosition());
@@ -377,7 +377,7 @@ public class HomeFragment extends Fragment {
 
         //set favourite driver card color
         RelativeLayout driverCard = view.findViewById(R.id.favourite_driver_layout);
-        driverCard.setBackgroundResource(Constants.TEAM_COLOR.get(Constants.DRIVER_TEAM.get(Constants.FAVOURITE_DRIVER)));
+        driverCard.setBackgroundResource(Constants.TEAM_COLOR.get(Constants.DRIVER_TEAM.get(standingElement.getDriver().getDriverId())));
 
         driverImage.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), DriverBioActivity.class);
@@ -425,6 +425,7 @@ public class HomeFragment extends Fragment {
                 ConstructorStandings constructorStandings = constructorStandingsSuccess.getData();
                 Log.i(TAG, "Constructor Standings: " + constructorStandings);
                 for (ConstructorStandingsElement standingElement : constructorStandings.getConstructorStandings()) {
+                    Log.i(TAG, "Constructor (standing element): " + standingElement.getConstructor().getConstructorId());
                     if (standingElement.getConstructor().getConstructorId().equals(getFavoriteTeamId())) {
                         buildConstructorCard(view, standingElement);
                         break;
@@ -442,7 +443,7 @@ public class HomeFragment extends Fragment {
         constructorName.setText(standingElement.getConstructor().getName());
 
         ImageView constructorCar = view.findViewById(R.id.favourite_constructor_car);
-        constructorCar.setImageResource(Constants.TEAM_CAR.get(Constants.FAVOURITE_TEAM));
+        constructorCar.setImageResource(Constants.TEAM_CAR.get(standingElement.getConstructor().getConstructorId().toLowerCase()));
 
         TextView constructorPosition = view.findViewById(R.id.favourite_constructor_position);
         constructorPosition.setText(standingElement.getPosition());
@@ -458,7 +459,7 @@ public class HomeFragment extends Fragment {
         constructorNationality.setText(Constants.NATIONALITY_ABBREVIATION.get(nationality));
 
         RelativeLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
-        constructorCard.setBackgroundResource(Constants.TEAM_COLOR.get(standingElement.getConstructor().getName().toLowerCase()));
+        constructorCard.setBackgroundResource(Constants.TEAM_COLOR.get(standingElement.getConstructor().getConstructorId().toLowerCase()));
 
         constructorCar.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ConstructorBioActivity.class);

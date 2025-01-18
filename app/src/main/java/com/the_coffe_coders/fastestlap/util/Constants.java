@@ -297,6 +297,7 @@ public class Constants {
         put("Mexico", R.drawable.mexico_flag);
         put("United States", R.drawable.united_states_flag);
         put("Germany", R.drawable.germany_flag);
+        put("France", R.drawable.france_flag);
     }};
 
     public static final Map<String, String> NATIONALITY_NATION = new HashMap<>() {{
