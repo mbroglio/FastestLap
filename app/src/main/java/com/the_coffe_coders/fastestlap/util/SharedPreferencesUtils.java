@@ -27,4 +27,5 @@ public class SharedPreferencesUtils {
                 Context.MODE_PRIVATE);
         return sharedPref.getString(key, null);
     }
+
 }

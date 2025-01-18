@@ -1,11 +1,14 @@
 package com.the_coffe_coders.fastestlap.ui.user;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.graphics.Typeface;
 
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -18,6 +21,7 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -26,8 +30,14 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.SpinnerAdapter;
+import com.the_coffe_coders.fastestlap.domain.user.User;
+import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.ui.welcome.WelcomeActivity;
+import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
+import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.SimpleTextWatcher;
 
 public class UserActivity extends AppCompatActivity {
@@ -79,12 +89,15 @@ public class UserActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        FirebaseUser user = getIntent().getParcelableExtra("USER");
+        IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
+        UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
 
         favouriteDriverText = findViewById(R.id.favourite_driver_text);
+        favouriteDriverText.setText(Constants.DRIVER_FULLNAME.get(getFavoriteDriverId()));
         changeDriverButton = findViewById(R.id.change_driver_button);
 
         favouriteConstructorText = findViewById(R.id.favourite_constructor_text);
+        favouriteConstructorText.setText(Constants.TEAM_FULLNAME.get(getFavoriteTeamId()));
         changeConstructorButton = findViewById(R.id.change_constructor_button);
 
         saveButton = findViewById(R.id.save_button);
@@ -137,7 +150,7 @@ public class UserActivity extends AppCompatActivity {
         */
 
         TextInputEditText emailText = findViewById(R.id.email_text);
-        emailText.setText(user.getEmail());
+        emailText.setText(userViewModel.getLoggedUser().getEmail());
         ImageView editEmail = findViewById(R.id.edit_email);
         ImageView revertEmail = findViewById(R.id.revert_email);
         ImageView checkEmail = findViewById(R.id.confirm_edit_email);
@@ -357,6 +370,21 @@ public class UserActivity extends AppCompatActivity {
         dismissButton.setVisibility(hasChanges ? View.VISIBLE : View.INVISIBLE);
         dismissButton.setEnabled(hasChanges);
     }
+
+    private String getFavoriteDriverId() {
+        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
+        String favoriteDriver = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
+        Log.i(TAG, "Favorite Driver: " + favoriteDriver);
+        return favoriteDriver;
+    }
+
+    private String getFavoriteTeamId() {
+        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
+        String favoriteTeam = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
+        Log.i(TAG, "Favorite Team: " + favoriteTeam);
+        return favoriteTeam;
+    }
+
 
     /*
     @Override

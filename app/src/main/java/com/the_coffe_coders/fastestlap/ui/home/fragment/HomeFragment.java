@@ -66,6 +66,7 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
     private final String TAG = HomeFragment.class.getSimpleName();
+    private final SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
 
     LoadingScreen loadingScreen;
 
@@ -97,7 +98,8 @@ public class HomeFragment extends Fragment {
 
         IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getActivity().getApplication());
         UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
-        User user = userViewModel.getLoggedUser();
+        //User user = userViewModel.getLoggedUser();
+
         setFavouriteDriverCard(view);
         setFavouriteConstructorCard(view);
 
@@ -322,6 +324,7 @@ public class HomeFragment extends Fragment {
         }.start();
     }
 
+
     private String getFavoriteDriverId() {
         SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
         String favoriteDriver = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
@@ -335,6 +338,8 @@ public class HomeFragment extends Fragment {
         Log.i(TAG, "Favorite Team: " + favoriteTeam);
         return favoriteTeam;
     }
+
+
 
     private void setFavouriteDriverCard(View view) {
         DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
@@ -357,7 +362,7 @@ public class HomeFragment extends Fragment {
 
     private void buildDriverCard(View view, DriverStandingsElement standingElement) {
         TextView driverName = view.findViewById(R.id.favourite_driver_name);
-        driverName.setText(Constants.DRIVER_FULLNAME.get(Constants.FAVOURITE_DRIVER));
+        driverName.setText(standingElement.getDriver().getGivenName() + " " + standingElement.getDriver().getFamilyName());
 
         String driverNationality = standingElement.getDriver().getNationality();
         ImageView driverFlag = view.findViewById(R.id.favourite_driver_flag);
