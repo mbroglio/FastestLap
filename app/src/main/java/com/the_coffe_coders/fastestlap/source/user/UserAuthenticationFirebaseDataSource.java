@@ -10,6 +10,8 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException;
@@ -125,6 +127,25 @@ public class UserAuthenticationFirebaseDataSource extends BaseUserAuthentication
         }
     }
 
+    @Override
+    public void updateEmail(String newEmail) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            user.updateEmail(newEmail)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            userResponseCallback.onSuccessEmailUpdate(
+
+                            );
+                        } else {
+                            userResponseCallback.onFailureEmailUpdate(getErrorMessage(task.getException()));
+                        }
+                    });
+        } else {
+            userResponseCallback.onFailureEmailUpdate("User not authenticated");
+        }
+    }
+
     private String getErrorMessage(Exception exception) {
         if (exception instanceof FirebaseAuthWeakPasswordException) {
             return WEAK_PASSWORD_ERROR;
@@ -137,4 +158,6 @@ public class UserAuthenticationFirebaseDataSource extends BaseUserAuthentication
         }
         return UNEXPECTED_ERROR;
     }
+
+
 }

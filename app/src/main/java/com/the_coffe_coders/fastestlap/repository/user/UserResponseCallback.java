@@ -11,4 +11,7 @@ public interface UserResponseCallback {
     void onSuccessFromGettingUserPreferences();
     void onFailureFromRemoteDatabase(String message);
     void onSuccessLogout();
+    void onSuccessEmailUpdate();
+    void onFailureEmailUpdate(String message);
+
 }

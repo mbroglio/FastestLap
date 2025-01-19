@@ -76,6 +76,11 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     }
 
     @Override
+    public void updateEmail(String newEmail) {
+        userRemoteDataSource.updateEmail(newEmail);
+    }
+
+    @Override
     public void saveUserPreferences(String favoriteDriver, String favoriteTeam, String idToken) {
         userDataRemoteDataSource.saveUserPreferences(favoriteDriver, favoriteTeam, idToken);
     }
@@ -113,5 +118,16 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     @Override
     public void onSuccessLogout() {
 
+    }
+
+    @Override
+    public void onSuccessEmailUpdate() {
+        // Handle email update success
+    }
+
+    @Override
+    public void onFailureEmailUpdate(String message) {
+        Result.Error result = new Result.Error(message);
+        userMutableLiveData.postValue(result);
     }
 }

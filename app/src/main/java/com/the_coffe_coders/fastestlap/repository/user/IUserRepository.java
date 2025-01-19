@@ -17,6 +17,7 @@ public interface IUserRepository {
     void signIn(String email, String password);
     void signInWithGoogle(String token);
     void saveUserPreferences(String favoriteDriver, String favoriteTeam, String idToken);
+    void updateEmail(String email);
 
     void onSuccessFromAuthentication(User user);
 }
