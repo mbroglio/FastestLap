@@ -44,10 +44,6 @@ public class UserViewModel extends ViewModel {
         }
     }
 
-    public void updateEmail(String email) {
-        userRepository.updateEmail(email);
-    }
-
     public MutableLiveData<Result> getUserPreferences(String idToken) {
         if (idToken != null) {
             userPreferencesMutableLiveData = userRepository.getUserPreferences(idToken);
@@ -68,7 +64,6 @@ public class UserViewModel extends ViewModel {
 
         return userMutableLiveData;
     }
-
 
     public void getUser(String email, String password, boolean isUserRegistered) {
         userRepository.getUser(email, password, isUserRegistered);

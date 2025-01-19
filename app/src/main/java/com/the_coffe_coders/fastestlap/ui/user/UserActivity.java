@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListPopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,11 +40,7 @@ import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.SimpleTextWatcher;
 
-import org.apache.commons.validator.routines.EmailValidator;
-
 public class UserActivity extends AppCompatActivity {
-
-    UserViewModel userViewModel;
 
     private String originalUsername;
     private String originalPassword;
@@ -58,8 +53,6 @@ public class UserActivity extends AppCompatActivity {
 
     //private ImageView profileImage;
     //private TextView usernameText;
-
-    TextInputEditText emailText;
 
     private TextView favouriteDriverText;
     private MaterialCardView changeDriverButton;
@@ -97,7 +90,7 @@ public class UserActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
-        userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+        UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
 
         favouriteDriverText = findViewById(R.id.favourite_driver_text);
         favouriteDriverText.setText(Constants.DRIVER_FULLNAME.get(getFavoriteDriverId()));
@@ -156,7 +149,7 @@ public class UserActivity extends AppCompatActivity {
         ImageView checkPassword = findViewById(R.id.confirm_edit_password);
         */
 
-        emailText = findViewById(R.id.email_text);
+        TextInputEditText emailText = findViewById(R.id.email_text);
         emailText.setText(userViewModel.getLoggedUser().getEmail());
         ImageView editEmail = findViewById(R.id.edit_email);
         ImageView revertEmail = findViewById(R.id.revert_email);
@@ -210,7 +203,7 @@ public class UserActivity extends AppCompatActivity {
         });
 
         checkEmail.setOnClickListener(v -> {
-            provisionalEmail = abortEditing(emailText, editEmail, checkEmail);
+            abortEditing(emailText, editEmail, checkEmail, provisionalEmail);
         });
 
         revertEmail.setOnClickListener(v -> {
@@ -292,23 +285,10 @@ public class UserActivity extends AppCompatActivity {
         });
 
         signOutButton.setOnClickListener(v -> {
-            userViewModel.logout();
+            FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(UserActivity.this, WelcomeActivity.class);
             intent.putExtra("SIGN_OUT", true);
             startActivity(intent);
-        });
-
-        saveButton.setOnClickListener(v -> {
-            Log.i(TAG, "provisionalEmail: " + provisionalEmail);
-            if(isEmailOk(provisionalEmail) && provisionalEmail != null) {
-                userViewModel.updateEmail(provisionalEmail);
-                Toast.makeText(UserActivity.this, "Email updated successfully", Toast.LENGTH_SHORT).show();
-                originalEmail = provisionalEmail;
-                checkForChanges();
-            }else {
-                emailText.setError("Error Email Login");
-                Toast.makeText(UserActivity.this, "Email error", Toast.LENGTH_SHORT).show();
-            }
         });
     }
     /*
@@ -348,12 +328,11 @@ public class UserActivity extends AppCompatActivity {
         return listPopupWindow;
     }
 
-    private String abortEditing(EditText inputText, ImageView editText, ImageView checkText) {
+    private void abortEditing(EditText inputText, ImageView editText, ImageView checkText, String provisionalText) {
         inputText.setEnabled(false);
-        String provisionalText = inputText.getText().toString();
+        provisionalText = inputText.getText().toString();
         editText.setVisibility(View.VISIBLE);
         checkText.setVisibility(View.INVISIBLE);
-        return provisionalText;
     }
 
     private void startEditing(EditText inputText, ImageView editText, ImageView checkText) {
@@ -404,10 +383,6 @@ public class UserActivity extends AppCompatActivity {
         String favoriteTeam = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
         Log.i(TAG, "Favorite Team: " + favoriteTeam);
         return favoriteTeam;
-    }
-
-    private boolean isEmailOk(String email) {
-        return EmailValidator.getInstance().isValid((email));
     }
 
 

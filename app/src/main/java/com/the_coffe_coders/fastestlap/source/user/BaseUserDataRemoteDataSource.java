@@ -17,6 +17,5 @@ public abstract class BaseUserDataRemoteDataSource {
         public abstract void getUserPreferences(String idToken);
 
         public abstract void saveUserPreferences(String favoriteDriver, String favoriteTeam, String idToken);
-
-}
+    }
 
