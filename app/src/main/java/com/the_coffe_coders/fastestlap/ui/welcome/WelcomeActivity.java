@@ -34,14 +34,17 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
+import com.the_coffe_coders.fastestlap.ui.profile.ProfileActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.fragment.SignUpFragment;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
@@ -56,6 +59,8 @@ import java.util.Objects;
 public class WelcomeActivity extends AppCompatActivity {
 
     private static final String TAG = "LoginFragment";
+    private static final int RC_SIGN_IN = 9001; // Request code for Google Sign-In
+
     private IntroScreen introScreen;
     private TextInputEditText emailEditText;
     private TextInputEditText passwordEditText;
@@ -84,7 +89,6 @@ public class WelcomeActivity extends AppCompatActivity {
         userViewModel.setAuthenticationError(false);
 
         introScreen = new IntroScreen(findViewById(android.R.id.content), this);
-
 
         emailEditText = findViewById(R.id.textInputEmail);
         passwordEditText = findViewById(R.id.textInputPassword);
@@ -115,20 +119,8 @@ public class WelcomeActivity extends AppCompatActivity {
                     String idToken = credential.getGoogleIdToken();
                     if (idToken != null) {
                         // Got an ID token from Google. Use it to authenticate with Firebase.
-                        userViewModel.getGoogleUserMutableLiveData(idToken).observe(this, authenticationResult -> {
-                            if (authenticationResult.isSuccess()) {
-                                User user = ((Result.UserSuccess) authenticationResult).getData();
-                                //saveLoginData(user.getEmail(), null, user.getIdToken());
-                                Log.i(TAG, "Logged as: " + user.getEmail());
-                                userViewModel.setAuthenticationError(false);
-                                startActivity(new Intent(WelcomeActivity.this, HomePageActivity.class));
-                            } else {
-                                userViewModel.setAuthenticationError(true);
-                                Snackbar.make(this.findViewById(android.R.id.content),
-                                        getErrorMessage(((Result.Error) authenticationResult).getMessage()),
-                                        Snackbar.LENGTH_SHORT).show();
-                            }
-                        });
+                        AuthCredential googleCredential = GoogleAuthProvider.getCredential(idToken, null);
+                        firebaseAuthWithGoogle(googleCredential);
                     }
                 } catch (ApiException e) {
                     Snackbar.make(this.findViewById(android.R.id.content),
@@ -207,6 +199,26 @@ public class WelcomeActivity extends AppCompatActivity {
                                 Snackbar.LENGTH_SHORT).show();
                     }
                 }));
+    }
+
+    private void firebaseAuthWithGoogle(AuthCredential googleCredential) {
+        mAuth.signInWithCredential(googleCredential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            Intent intent = new Intent(WelcomeActivity.this, ProfileActivity.class);
+                            startActivity(intent);
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            // ... (handle sign-in failure)
+                        }
+                    }
+                });
     }
 
     private boolean isEmailOk(String email) {
