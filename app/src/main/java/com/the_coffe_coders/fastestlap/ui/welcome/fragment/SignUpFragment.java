@@ -30,7 +30,6 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
-import com.the_coffe_coders.fastestlap.ui.welcome.WelcomeActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
@@ -44,19 +43,17 @@ import java.util.Objects;
 public class SignUpFragment extends DialogFragment {
 
     private static final String TAG = "RegisterPopup";
+    private final String[] drivers = Constants.DRIVER_FULLNAME.keySet().toArray(new String[0]);
+    private final String[] constructors = Constants.TEAM_FULLNAME.keySet().toArray(new String[0]);
     private UserViewModel userViewModel;
     private TextInputEditText textInputEmail, textInputPassword;
     private String favouriteDriverKey, favouriteConstructorKey;
-
     private TextView favouriteDriverText;
     private MaterialCardView changeDriverButton;
     private ListPopupWindow listPopupWindowDrivers;
-    private String[] drivers = Constants.DRIVER_FULLNAME.keySet().toArray(new String[0]);
-
     private TextView favouriteConstructorText;
     private MaterialCardView changeConstructorButton;
     private ListPopupWindow listPopupWindowConstructors;
-    private String[] constructors = Constants.TEAM_FULLNAME.keySet().toArray(new String[0]);
 
     @Nullable
     @Override

@@ -1,6 +1,5 @@
 package com.the_coffe_coders.fastestlap.ui.home.fragment;
 
-import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -30,9 +29,7 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
-import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
-import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
@@ -40,8 +37,6 @@ import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
-import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
-import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
@@ -88,18 +83,8 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        // Show loading screen initially
-        /*loadingScreen = new LoadingScreen(getActivity().getWindow().getDecorView(), getActivity());
-        loadingScreen.showLoadingScreen();*/
-
-
         setLastRaceCard(view);
         setNextSessionCard(view);
-
-        IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getActivity().getApplication());
-        UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
-        //User user = userViewModel.getLoggedUser();
-
         setFavouriteDriverCard(view);
         setFavouriteConstructorCard(view);
 
@@ -128,9 +113,6 @@ public class HomeFragment extends Fragment {
 
         pendingResults.setVisibility(View.VISIBLE);
         results.setVisibility(View.GONE);
-
-        //raceToProcess = false;
-        //checkIfAllDataLoaded();
     }
 
     private void showPodium(View view, WeeklyRace raceResult) {
@@ -339,8 +321,6 @@ public class HomeFragment extends Fragment {
         return favoriteTeam;
     }
 
-
-
     private void setFavouriteDriverCard(View view) {
         DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
         MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
@@ -386,14 +366,14 @@ public class HomeFragment extends Fragment {
 
         driverImage.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), DriverBioActivity.class);
-            intent.putExtra("DRIVER_ID", Constants.FAVOURITE_DRIVER);
+            intent.putExtra("DRIVER_ID", standingElement.getDriver().getDriverId());
             startActivity(intent);
         });
 
         MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
         driverRank.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), DriversStandingActivity.class);
-            intent.putExtra("DRIVER_ID", Constants.FAVOURITE_DRIVER);
+            intent.putExtra("DRIVER_ID", standingElement.getDriver().getDriverId());
             startActivity(intent);
         });
     }
@@ -468,14 +448,14 @@ public class HomeFragment extends Fragment {
 
         constructorCar.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ConstructorBioActivity.class);
-            intent.putExtra("DRIVER_NAME", Constants.FAVOURITE_TEAM);
+            intent.putExtra("DRIVER_NAME", standingElement.getConstructor().getConstructorId());
             startActivity(intent);
         });
 
         MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
         teamRank.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ConstructorsStandingActivity.class);
-            intent.putExtra("TEAM_ID", Constants.FAVOURITE_TEAM);
+            intent.putExtra("TEAM_ID", standingElement.getConstructor().getConstructorId());
             startActivity(intent);
         });
     }

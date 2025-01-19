@@ -35,8 +35,8 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
     private static final String TAG = "TeamCardActivity";
     private static final String BASE_URL = "https://api.jolpi.ca/ergast/f1/2024/";
-    LoadingScreen loadingScreen;
     private final boolean constructorToProcess = true;
+    LoadingScreen loadingScreen;
     private TextView teamPointsTextView;
 
     @Override

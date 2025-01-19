@@ -2,7 +2,6 @@ package com.the_coffe_coders.fastestlap.ui.home;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 
@@ -15,10 +14,8 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.ui.user.UserActivity;
+import com.the_coffe_coders.fastestlap.ui.profile.ProfileActivity;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 
 import org.threeten.bp.ZoneId;
@@ -45,7 +42,7 @@ public class HomePageActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.userActivity) {
-                Intent intent = new Intent(HomePageActivity.this, UserActivity.class);
+                Intent intent = new Intent(HomePageActivity.this, ProfileActivity.class);
                 //intent.putExtra("USER", user);
                 startActivity(intent);
                 return true;
@@ -74,5 +71,4 @@ public class HomePageActivity extends AppCompatActivity {
         inflater.inflate(R.menu.top_app_bar_menu, menu);
         return true;
     }
-
 }

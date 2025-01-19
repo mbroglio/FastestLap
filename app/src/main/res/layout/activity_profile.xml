@@ -5,7 +5,7 @@
     android:id="@+id/activity_user_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.user.UserActivity">
+    tools:context=".ui.profile.ProfileActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"

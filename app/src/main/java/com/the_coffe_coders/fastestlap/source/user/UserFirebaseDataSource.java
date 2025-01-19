@@ -22,9 +22,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Class that gets the user information using Firebase Realtime Database.
  */

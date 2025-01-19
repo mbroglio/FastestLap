@@ -42,7 +42,7 @@
 
         <activity android:name=".ui.bio.DriverBioActivity" />
 
-        <activity android:name=".ui.user.UserActivity" />
+        <activity android:name=".ui.profile.ProfileActivity" />
 
     </application>
 

@@ -97,7 +97,7 @@ public class UserAuthenticationFirebaseDataSource extends BaseUserAuthentication
 
     @Override
     public void signInWithGoogle(String idToken) {
-        if (idToken !=  null) {
+        if (idToken != null) {
             // Got an ID token from Google. Use it to authenticate with Firebase.
             AuthCredential firebaseCredential = GoogleAuthProvider.getCredential(idToken, null);
             firebaseAuth.signInWithCredential(firebaseCredential).addOnCompleteListener(task -> {

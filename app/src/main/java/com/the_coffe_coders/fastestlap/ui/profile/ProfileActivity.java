@@ -1,15 +1,10 @@
-package com.the_coffe_coders.fastestlap.ui.user;
+package com.the_coffe_coders.fastestlap.ui.profile;
 
 import static android.content.ContentValues.TAG;
 
 import android.content.Intent;
-import android.graphics.Typeface;
-
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.InputType;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -20,18 +15,17 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.SpinnerAdapter;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
+import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.WelcomeActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
@@ -40,7 +34,7 @@ import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.SimpleTextWatcher;
 
-public class UserActivity extends AppCompatActivity {
+public class ProfileActivity extends AppCompatActivity {
 
     private String originalUsername;
     private String originalPassword;
@@ -70,6 +64,8 @@ public class UserActivity extends AppCompatActivity {
     //private int provisionalProfileImage;
     private String provisionalFavDriver;
     private String provisionalFavConstructor;
+    private String favouriteDriverKey;
+    private String favouriteConstructorKey;
     private String provisionalEmail;
     //private String provisionalPassword;
 
@@ -80,17 +76,20 @@ public class UserActivity extends AppCompatActivity {
     private boolean isFavDriverModified = false;
     private boolean isFavConstructorModified = false;
 
+    private IUserRepository userRepository;
+    private UserViewModel userViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_user);
+        setContentView(R.layout.activity_profile);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
-        UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+        userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
+        userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
 
         favouriteDriverText = findViewById(R.id.favourite_driver_text);
         favouriteDriverText.setText(Constants.DRIVER_FULLNAME.get(getFavoriteDriverId()));
@@ -286,7 +285,7 @@ public class UserActivity extends AppCompatActivity {
 
         signOutButton.setOnClickListener(v -> {
             FirebaseAuth.getInstance().signOut();
-            Intent intent = new Intent(UserActivity.this, WelcomeActivity.class);
+            Intent intent = new Intent(ProfileActivity.this, WelcomeActivity.class);
             intent.putExtra("SIGN_OUT", true);
             startActivity(intent);
         });
@@ -318,8 +317,10 @@ public class UserActivity extends AppCompatActivity {
         listPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
             String selectedItemKey = items[position];
             if (isDriver) {
+                favouriteDriverKey = selectedItemKey;
                 favouriteDriverText.setText(getString(Constants.DRIVER_FULLNAME.get(selectedItemKey)));
             } else {
+                favouriteConstructorKey = selectedItemKey;
                 favouriteConstructorText.setText(getString(Constants.TEAM_FULLNAME.get(selectedItemKey)));
             }
             listPopupWindow.dismiss();
@@ -369,6 +370,42 @@ public class UserActivity extends AppCompatActivity {
         saveButton.setEnabled(hasChanges);
         dismissButton.setVisibility(hasChanges ? View.VISIBLE : View.INVISIBLE);
         dismissButton.setEnabled(hasChanges);
+
+        saveButton.setOnClickListener(v -> updatePreferences());
+    }
+
+    private void updatePreferences() {
+        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
+        User user = userViewModel.getLoggedUser();
+        saveSharedPreferences(sharedPreferencesUtils, user);
+
+        Intent intent = new Intent(ProfileActivity.this, HomePageActivity.class);
+        startActivity(intent);
+    }
+
+    private void saveSharedPreferences(SharedPreferencesUtils sharedPreferencesUtils, User user) {
+        Log.i(TAG, "Saving user preferences");
+        if (favouriteDriverKey != null) {
+            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
+                    Constants.SHARED_PREFERENCES_FAVORITE_DRIVER,
+                    favouriteDriverKey);
+        } else {
+            favouriteDriverKey = getFavoriteDriverId();
+        }
+
+        if (favouriteConstructorKey != null) {
+            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
+                    Constants.SHARED_PREFERENCES_FAVORITE_TEAM,
+                    favouriteConstructorKey);
+        } else {
+            favouriteConstructorKey = getFavoriteTeamId();
+        }
+
+        userViewModel.saveUserPreferences(
+                favouriteDriverKey,
+                favouriteConstructorKey,
+                user.getIdToken()
+        );
     }
 
     private String getFavoriteDriverId() {

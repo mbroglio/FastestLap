@@ -1,4 +1,3 @@
-
 /*package com.the_coffe_coders.fastestlap.ui.welcome;
 
 import android.app.AlertDialog;

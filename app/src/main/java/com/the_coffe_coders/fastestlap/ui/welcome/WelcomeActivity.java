@@ -5,16 +5,12 @@ import static com.the_coffe_coders.fastestlap.util.Constants.USER_COLLISION_ERRO
 import static com.the_coffe_coders.fastestlap.util.Constants.WEAK_PASSWORD_ERROR;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -38,7 +34,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -53,7 +48,6 @@ import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.IntroScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
-import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 
 import org.apache.commons.validator.routines.EmailValidator;
 
@@ -259,7 +253,7 @@ public class WelcomeActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             startActivity(new Intent(WelcomeActivity.this, HomePageActivity.class));
-        }else if (!fromSignOut) {
+        } else if (!fromSignOut) {
             introScreen.showIntroScreen();
         }
     }

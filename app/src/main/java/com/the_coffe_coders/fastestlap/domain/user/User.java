@@ -6,6 +6,17 @@ import android.os.Parcelable;
 import com.google.firebase.database.Exclude;
 
 public class User implements Parcelable {
+    public static final Creator<User> CREATOR = new Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel source) {
+            return new User(source);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
     private String name;
     private String email;
     private String idToken;
@@ -14,6 +25,12 @@ public class User implements Parcelable {
         this.name = name;
         this.email = email;
         this.idToken = idToken;
+    }
+
+    protected User(Parcel in) {
+        this.name = in.readString();
+        this.email = in.readString();
+        this.idToken = in.readString();
     }
 
     public String getName() {
@@ -67,22 +84,4 @@ public class User implements Parcelable {
         this.email = source.readString();
         this.idToken = source.readString();
     }
-
-    protected User(Parcel in) {
-        this.name = in.readString();
-        this.email = in.readString();
-        this.idToken = in.readString();
-    }
-
-    public static final Creator<User> CREATOR = new Creator<User>() {
-        @Override
-        public User createFromParcel(Parcel source) {
-            return new User(source);
-        }
-
-        @Override
-        public User[] newArray(int size) {
-            return new User[size];
-        }
-    };
 }
