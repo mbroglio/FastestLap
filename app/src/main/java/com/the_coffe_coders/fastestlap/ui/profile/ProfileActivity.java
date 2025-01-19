@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListPopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -92,11 +93,19 @@ public class ProfileActivity extends AppCompatActivity {
         userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
 
         favouriteDriverText = findViewById(R.id.favourite_driver_text);
-        favouriteDriverText.setText(Constants.DRIVER_FULLNAME.get(getFavoriteDriverId()));
+        if (getFavoriteDriverId() == null) {
+            favouriteDriverText.setText("No favourite driver selected");
+        } else {
+            favouriteDriverText.setText(Constants.DRIVER_FULLNAME.get(getFavoriteDriverId()));
+        }
         changeDriverButton = findViewById(R.id.change_driver_button);
 
         favouriteConstructorText = findViewById(R.id.favourite_constructor_text);
-        favouriteConstructorText.setText(Constants.TEAM_FULLNAME.get(getFavoriteTeamId()));
+        if (getFavoriteTeamId() == null) {
+            favouriteConstructorText.setText("No favourite constructor selected");
+        } else {
+            favouriteConstructorText.setText(Constants.TEAM_FULLNAME.get(getFavoriteTeamId()));
+        }
         changeConstructorButton = findViewById(R.id.change_constructor_button);
 
         saveButton = findViewById(R.id.save_button);
@@ -440,4 +449,14 @@ public class ProfileActivity extends AppCompatActivity {
         checkForChanges();
     }
     */
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        if (getFavoriteDriverId() == null || getFavoriteTeamId() == null) {
+            Toast.makeText(this, "Please select a favourite driver and constructor", Toast.LENGTH_SHORT).show();
+            return false;
+        } else {
+            return super.onSupportNavigateUp();
+        }
+    }
 }

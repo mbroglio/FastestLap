@@ -33,6 +33,7 @@ import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorReposit
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
+import com.the_coffe_coders.fastestlap.ui.profile.ProfileActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
@@ -331,6 +332,11 @@ public class HomeFragment extends Fragment {
                 List<DriverStandingsElement> driversList = driverStandings.getDriverStandingsElements();
 
                 DriverStandingsElement favouriteDriver = driverStandingsViewModel.getDriverStandingsElement(driversList, getFavoriteDriverId());
+                if(favouriteDriver == null){
+                    Log.i(TAG, "Favorite Driver not found");
+                    Intent intent = new Intent(getActivity(), ProfileActivity.class);
+                    startActivity(intent);
+                }
                 Log.i(TAG, "Favorite Driver: " + favouriteDriver.toString());
                 buildDriverCard(view, favouriteDriver);
             } else {
