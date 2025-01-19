@@ -54,6 +54,7 @@ import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import org.apache.commons.validator.routines.EmailValidator;
 
+import java.util.List;
 import java.util.Objects;
 
 public class WelcomeActivity extends AppCompatActivity {
@@ -72,6 +73,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
 
     private boolean fromSignOut;
+    private boolean fromEmailVerification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -199,6 +201,41 @@ public class WelcomeActivity extends AppCompatActivity {
                                 Snackbar.LENGTH_SHORT).show();
                     }
                 }));
+
+        Button forgotPasswordButton = findViewById(R.id.forgotten_password_button);
+        forgotPasswordButton.setOnClickListener(v -> {
+            if (emailEditText.getText() != null && isEmailOk(emailEditText.getText().toString())) {
+                String email = emailEditText.getText().toString();
+                mAuth.fetchSignInMethodsForEmail(email).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                List<String> signInMethods = task.getResult().getSignInMethods();
+                                boolean isEmailRegistered = signInMethods != null && !signInMethods.isEmpty();
+                                if (isEmailRegistered) {
+                                    FirebaseAuth.getInstance().sendPasswordResetEmail(email)
+                                            .addOnCompleteListener(resetTask -> {
+                                                if (resetTask.isSuccessful()) {
+                                                    Log.d(TAG, "Email sent.");
+                                                    fromEmailVerification = true;
+                                                    Toast.makeText(WelcomeActivity.this, "Email sent, check your inbox", Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    Log.d(TAG, "Email not sent.");
+                                                    Toast.makeText(WelcomeActivity.this, "Email not sent.", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                } else {
+                                    emailEditText.setError("Email not registered");
+                                    Toast.makeText(WelcomeActivity.this, "Email not registered", Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Log.d(TAG, "Error checking email registration", task.getException());
+                                Toast.makeText(WelcomeActivity.this, "Error checking email registration", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            } else {
+                emailEditText.setError("Error Email Login");
+                Toast.makeText(WelcomeActivity.this, "Provide Email", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void firebaseAuthWithGoogle(AuthCredential googleCredential) {
@@ -265,7 +302,7 @@ public class WelcomeActivity extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             startActivity(new Intent(WelcomeActivity.this, HomePageActivity.class));
-        } else if (!fromSignOut) {
+        } else if (!fromSignOut && !fromEmailVerification) {
             introScreen.showIntroScreen();
         }
     }
@@ -282,4 +319,5 @@ public class WelcomeActivity extends AppCompatActivity {
         emailEditText.clearFocus();
         passwordEditText.clearFocus();
     }
+
 }

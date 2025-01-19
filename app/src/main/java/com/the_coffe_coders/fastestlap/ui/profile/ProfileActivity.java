@@ -87,25 +87,27 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+
+        favouriteDriverText = findViewById(R.id.favourite_driver_text);
+        favouriteConstructorText = findViewById(R.id.favourite_constructor_text);
+
+        if (getFavoriteDriverId() == null || getFavoriteTeamId() == null) {
+            if (getFavoriteDriverId() == null) {
+                favouriteDriverText.setText("No favourite driver selected");
+            }if (getFavoriteTeamId() == null) {
+                favouriteConstructorText.setText("No favourite constructor selected");
+            }
+            toolbar.setNavigationOnClickListener(v -> Toast.makeText(this, "Please select a favourite driver and constructor", Toast.LENGTH_SHORT).show());
+        }else{
+            toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+            favouriteDriverText.setText(Constants.DRIVER_FULLNAME.get(getFavoriteDriverId()));
+            favouriteConstructorText.setText(Constants.TEAM_FULLNAME.get(getFavoriteTeamId()));
+        }
 
         userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
         userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
 
-        favouriteDriverText = findViewById(R.id.favourite_driver_text);
-        if (getFavoriteDriverId() == null) {
-            favouriteDriverText.setText("No favourite driver selected");
-        } else {
-            favouriteDriverText.setText(Constants.DRIVER_FULLNAME.get(getFavoriteDriverId()));
-        }
         changeDriverButton = findViewById(R.id.change_driver_button);
-
-        favouriteConstructorText = findViewById(R.id.favourite_constructor_text);
-        if (getFavoriteTeamId() == null) {
-            favouriteConstructorText.setText("No favourite constructor selected");
-        } else {
-            favouriteConstructorText.setText(Constants.TEAM_FULLNAME.get(getFavoriteTeamId()));
-        }
         changeConstructorButton = findViewById(R.id.change_constructor_button);
 
         saveButton = findViewById(R.id.save_button);
@@ -450,6 +452,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
     */
 
+    /*
     @Override
     public boolean onSupportNavigateUp() {
         if (getFavoriteDriverId() == null || getFavoriteTeamId() == null) {
@@ -459,4 +462,7 @@ public class ProfileActivity extends AppCompatActivity {
             return super.onSupportNavigateUp();
         }
     }
+
+     */
+
 }
