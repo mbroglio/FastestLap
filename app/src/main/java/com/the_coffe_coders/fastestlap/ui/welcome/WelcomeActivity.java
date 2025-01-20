@@ -40,24 +40,21 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.profile.ProfileActivity;
+import com.the_coffe_coders.fastestlap.ui.welcome.fragment.ForgotPasswordFragment;
 import com.the_coffe_coders.fastestlap.ui.welcome.fragment.SignUpFragment;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.IntroScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
-
 import org.apache.commons.validator.routines.EmailValidator;
 
-import java.util.List;
 import java.util.Objects;
 
-public class WelcomeActivity extends AppCompatActivity {
+public class WelcomeActivity extends AppCompatActivity implements ForgotPasswordFragment.OnFragmentInteractionListener{
 
     private static final String TAG = "LoginFragment";
     private static final int RC_SIGN_IN = 9001; // Request code for Google Sign-In
@@ -126,7 +123,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     }
                 } catch (ApiException e) {
                     Snackbar.make(this.findViewById(android.R.id.content),
-                            Constants.UNEXPECTED_ERROR, Snackbar.LENGTH_SHORT).show();
+                            UNEXPECTED_ERROR, Snackbar.LENGTH_SHORT).show();
                 }
             }
         });
@@ -153,13 +150,7 @@ public class WelcomeActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         // Sign in success, update UI with the signed-in user's information
                                         Log.d(TAG, "signInWithEmail:success");
-
-                                        FirebaseUser user = mAuth.getCurrentUser();
-
-                                        Log.d(TAG, "User: " + user.toString());
-
                                         Intent intent = new Intent(WelcomeActivity.this, HomePageActivity.class);
-                                        //intent.putExtra("user info", user);
                                         startActivity(intent);
 
                                     } else {
@@ -170,11 +161,7 @@ public class WelcomeActivity extends AppCompatActivity {
                                     }
                                 }
                             });
-                } else {
-                    passwordEditText.setError("Error Password Login");
                 }
-            } else {
-                emailEditText.setError("Error Email Login");
             }
         });
 
@@ -197,44 +184,16 @@ public class WelcomeActivity extends AppCompatActivity {
                         Log.d(TAG, Objects.requireNonNull(e.getLocalizedMessage()));
 
                         Snackbar.make(findViewById(android.R.id.content),
-                                Constants.UNEXPECTED_ERROR,
+                                UNEXPECTED_ERROR,
                                 Snackbar.LENGTH_SHORT).show();
                     }
                 }));
 
         Button forgotPasswordButton = findViewById(R.id.forgotten_password_button);
         forgotPasswordButton.setOnClickListener(v -> {
-            if (emailEditText.getText() != null && isEmailOk(emailEditText.getText().toString())) {
-                String email = emailEditText.getText().toString();
-                mAuth.fetchSignInMethodsForEmail(email).addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                List<String> signInMethods = task.getResult().getSignInMethods();
-                                boolean isEmailRegistered = signInMethods != null && !signInMethods.isEmpty();
-                                if (isEmailRegistered) {
-                                    FirebaseAuth.getInstance().sendPasswordResetEmail(email)
-                                            .addOnCompleteListener(resetTask -> {
-                                                if (resetTask.isSuccessful()) {
-                                                    Log.d(TAG, "Email sent.");
-                                                    fromEmailVerification = true;
-                                                    Toast.makeText(WelcomeActivity.this, "Email sent, check your inbox", Toast.LENGTH_SHORT).show();
-                                                } else {
-                                                    Log.d(TAG, "Email not sent.");
-                                                    Toast.makeText(WelcomeActivity.this, "Email not sent.", Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
-                                } else {
-                                    emailEditText.setError("Email not registered");
-                                    Toast.makeText(WelcomeActivity.this, "Email not registered", Toast.LENGTH_SHORT).show();
-                                }
-                            } else {
-                                Log.d(TAG, "Error checking email registration", task.getException());
-                                Toast.makeText(WelcomeActivity.this, "Error checking email registration", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-            } else {
-                emailEditText.setError("Error Email Login");
-                Toast.makeText(WelcomeActivity.this, "Provide Email", Toast.LENGTH_SHORT).show();
-            }
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            ForgotPasswordFragment forgotPasswordFragment = new ForgotPasswordFragment();
+            forgotPasswordFragment.show(fragmentManager, "ForgotPasswordFragment");
         });
     }
 
@@ -258,11 +217,13 @@ public class WelcomeActivity extends AppCompatActivity {
                 });
     }
 
+
     private boolean isEmailOk(String email) {
         // Check if the email is valid through the use of this library:
         // https://commons.apache.org/proper/commons-validator/
         if (!EmailValidator.getInstance().isValid((email))) {
-            emailEditText.setError("Error Email Login");
+            //emailEditText.setError("Error Email Login");
+            Toast.makeText(this, "Invalid email", Toast.LENGTH_SHORT).show();
             return false;
         } else {
             emailEditText.setError(null);
@@ -273,7 +234,8 @@ public class WelcomeActivity extends AppCompatActivity {
     private boolean isPasswordOk(String password) {
         // Check if the password length is correct
         if (password.isEmpty() || password.length() < Constants.MINIMUM_LENGTH_PASSWORD) {
-            passwordEditText.setError("Error Password Login");
+            //passwordEditText.setError("Error Password Login");
+            Toast.makeText(this, "Invalid password", Toast.LENGTH_SHORT).show();
             return false;
         } else {
             passwordEditText.setError(null);
@@ -290,6 +252,12 @@ public class WelcomeActivity extends AppCompatActivity {
             default:
                 return UNEXPECTED_ERROR;
         }
+    }
+
+
+    @Override
+    public void onFragmentDismissed(String value) {
+        fromEmailVerification = Boolean.parseBoolean(value);
     }
 
     @Override

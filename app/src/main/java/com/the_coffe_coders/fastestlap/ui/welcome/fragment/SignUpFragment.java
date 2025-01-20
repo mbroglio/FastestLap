@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListPopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +33,7 @@ import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
+
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
@@ -58,9 +60,10 @@ public class SignUpFragment extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.register_pop_up, container, false);
+        View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
 
         IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository((Application) requireActivity().getApplicationContext());
+
 
         userViewModel = new ViewModelProvider(this, new UserViewModelFactory(userRepository)).get(UserViewModel.class);
         userViewModel.setAuthenticationError(false);
@@ -140,29 +143,6 @@ public class SignUpFragment extends DialogFragment {
         }
     }
 
-    private boolean isEmailOk(String email) {
-        // Check if the email is valid through the use of this library:
-        // https://commons.apache.org/proper/commons-validator/
-        if (!EmailValidator.getInstance().isValid((email))) {
-            textInputEmail.setError("Error Email Login");
-            return false;
-        } else {
-            textInputEmail.setError(null);
-            return true;
-        }
-    }
-
-    private boolean isPasswordOk(String password) {
-        // Check if the password length is correct
-        if (password.isEmpty() || password.length() < Constants.MINIMUM_LENGTH_PASSWORD) {
-            textInputPassword.setError("Error Password Login");
-            return false;
-        } else {
-            textInputPassword.setError(null);
-            return true;
-        }
-    }
-
     private String getErrorMessage(String message) {
         switch (message) {
             case WEAK_PASSWORD_ERROR:
@@ -211,5 +191,30 @@ public class SignUpFragment extends DialogFragment {
             listPopupWindow.dismiss();
         });
         return listPopupWindow;
+    }
+
+    private boolean isEmailOk(String email) {
+        // Check if the email is valid through the use of this library:
+        // https://commons.apache.org/proper/commons-validator/
+        if (!EmailValidator.getInstance().isValid((email))) {
+            //emailEditText.setError("Error Email Login");
+            Toast.makeText(getContext(), "Invalid email", Toast.LENGTH_SHORT).show();
+            return false;
+        } else {
+            textInputEmail.setError(null);
+            return true;
+        }
+    }
+
+    private boolean isPasswordOk(String password) {
+        // Check if the password length is correct
+        if (password.isEmpty() || password.length() < Constants.MINIMUM_LENGTH_PASSWORD) {
+            //passwordEditText.setError("Error Password Login");
+            Toast.makeText(getContext(), "Invalid password", Toast.LENGTH_SHORT).show();
+            return false;
+        } else {
+            textInputPassword.setError(null);
+            return true;
+        }
     }
 }

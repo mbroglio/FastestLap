@@ -26,7 +26,7 @@
         android:layout_below="@id/profile_image_text_title"
         android:layout_centerInParent="true"
         android:layout_marginTop="10dp"
-        android:background="@drawable/background_all_margins_filled_white">
+        android:background="@drawable/background_all_margins_3_dp_filled_white">
 
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/profile_image_carousel"
