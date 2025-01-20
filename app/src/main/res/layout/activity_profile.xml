@@ -157,6 +157,8 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <!--
+
                     <ImageView
                         android:id="@+id/edit_email"
                         android:layout_width="wrap_content"
@@ -187,10 +189,12 @@
                         android:src="@drawable/arrow_back_ios_style"
                         android:visibility="invisible"
                         app:tint="@color/white" />
+                        -->
                 </RelativeLayout>
 
             </LinearLayout>
 
+            <!--
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -230,7 +234,7 @@
                             android:cursorVisible="true"
                             android:fontFamily="@font/orbitron_regular"
                             android:inputType="textPassword"
-                            android:text="Lorenzo1"
+                            android:text="default"
                             android:textColor="@color/timer_gray"
                             android:textSize="@dimen/body_text_size" />
 
@@ -244,7 +248,6 @@
                         android:layout_centerInParent="true"
                         android:layout_marginStart="10dp"
                         android:layout_toEndOf="@+id/password_text_field"
-
                         android:src="@drawable/eye_icon_white" />
 
 
@@ -282,6 +285,7 @@
                 </RelativeLayout>
 
             </LinearLayout>
+            -->
 
             <LinearLayout
                 android:id="@+id/favourite_driver_layout"

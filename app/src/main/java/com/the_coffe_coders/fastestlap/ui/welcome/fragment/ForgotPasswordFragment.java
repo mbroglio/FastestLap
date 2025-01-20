@@ -92,7 +92,6 @@ public class ForgotPasswordFragment extends DialogFragment {
         sendEmailButton.setOnClickListener(v -> {
             if (emailEditText.getText() != null && isEmailOk(emailEditText.getText().toString())) {
                 String email = emailEditText.getText().toString();
-                
                 userViewModel.getUserMutableLiveData(email, "default", true).observe(
                         this, result -> {
                             if (result.isSuccess()) {

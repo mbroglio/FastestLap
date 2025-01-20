@@ -282,7 +282,7 @@ public class HomeFragment extends Fragment {
             }
         });
     }
-    /*
+    /* old method
     private void buildFinalTeamsStanding(View seasonEndedCard) {
         ConstructorRepository constructorRepository = ServiceLocator.getInstance().getConstructorRepository(getActivity().getApplication(), false);
         MutableLiveData<Result> liveData = constructorRepository.fetchConstructorStandings(0);

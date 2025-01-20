@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +17,9 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
@@ -35,10 +39,12 @@ import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.SimpleTextWatcher;
 
+import org.apache.commons.validator.routines.EmailValidator;
+
 public class ProfileActivity extends AppCompatActivity {
 
-    private String originalUsername;
-    private String originalPassword;
+    //private String originalUsername;
+    //private String originalPassword;
     private String originalEmail;
     private String originalDriver;
     private String originalConstructor;
@@ -48,6 +54,8 @@ public class ProfileActivity extends AppCompatActivity {
 
     //private ImageView profileImage;
     //private TextView usernameText;
+
+    private TextInputEditText emailText;
 
     private TextView favouriteDriverText;
     private MaterialCardView changeDriverButton;
@@ -67,7 +75,7 @@ public class ProfileActivity extends AppCompatActivity {
     private String provisionalFavConstructor;
     private String favouriteDriverKey;
     private String favouriteConstructorKey;
-    private String provisionalEmail;
+    //private String provisionalEmail;
     //private String provisionalPassword;
 
     //private boolean isProfileImageModified = false;
@@ -77,6 +85,7 @@ public class ProfileActivity extends AppCompatActivity {
     private boolean isFavDriverModified = false;
     private boolean isFavConstructorModified = false;
 
+    private FirebaseAuth mAuth;
     private IUserRepository userRepository;
     private UserViewModel userViewModel;
 
@@ -86,7 +95,19 @@ public class ProfileActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
 
+        mAuth = FirebaseAuth.getInstance();
+
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+
+        ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            params.topMargin = systemBars.top;
+            v.setLayoutParams(params);
+
+            return insets;
+        });
 
         favouriteDriverText = findViewById(R.id.favourite_driver_text);
         favouriteConstructorText = findViewById(R.id.favourite_constructor_text);
@@ -159,12 +180,13 @@ public class ProfileActivity extends AppCompatActivity {
         ImageView checkPassword = findViewById(R.id.confirm_edit_password);
         */
 
-        TextInputEditText emailText = findViewById(R.id.email_text);
+        emailText = findViewById(R.id.email_text);
         emailText.setText(userViewModel.getLoggedUser().getEmail());
+        /*
         ImageView editEmail = findViewById(R.id.edit_email);
         ImageView revertEmail = findViewById(R.id.revert_email);
-        ImageView checkEmail = findViewById(R.id.confirm_edit_email);
-
+        ImageView confirmEmail = findViewById(R.id.confirm_edit_email);
+        */
         // Store original textSize, typeface, and background
         //originalTextSize = passwordText.getTextSize();
         //originalTypeface = passwordText.getTypeface();
@@ -205,22 +227,22 @@ public class ProfileActivity extends AppCompatActivity {
             revertEditing(passwordText, originalPassword, revertPassword, provisionalPassword);
         });
 
-         */
+
 
         editEmail.setOnClickListener(v -> {
-            startEditing(emailText, editEmail, checkEmail);
+            startEditing(emailText, editEmail, confirmEmail);
             checkForChanges();
         });
 
-        checkEmail.setOnClickListener(v -> {
-            abortEditing(emailText, editEmail, checkEmail, provisionalEmail);
+        confirmEmail.setOnClickListener(v -> {
+            provisionalEmail = abortEditing(emailText, editEmail, confirmEmail);
         });
 
         revertEmail.setOnClickListener(v -> {
-            revertEditing(emailText, originalEmail, revertEmail, provisionalEmail);
+            provisionalEmail = revertEditing(emailText, originalEmail, revertEmail);
         });
 
-        /*
+
         // Add text change listeners
         passwordText.addTextChangedListener(new SimpleTextWatcher() {
             @Override
@@ -230,7 +252,6 @@ public class ProfileActivity extends AppCompatActivity {
                 checkForChanges();
             }
         });
-        */
 
         emailText.addTextChangedListener(new SimpleTextWatcher() {
             @Override
@@ -240,6 +261,8 @@ public class ProfileActivity extends AppCompatActivity {
                 checkForChanges();
             }
         });
+
+         */
 
         favouriteDriverText.addTextChangedListener(new SimpleTextWatcher() {
             @Override
@@ -265,10 +288,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Set dismiss button listener
         dismissButton.setOnClickListener(v -> {
-            if (isEmailModified) {
-                dismissChanges(emailText, originalEmail, editEmail, checkEmail, revertEmail, provisionalEmail);
-            }
             /*
+            if (isEmailModified) {
+                provisionalEmail = dismissChanges(emailText, originalEmail, editEmail, confirmEmail, revertEmail);
+            }
+
             if (isPasswordModified) {
                 dismissChanges(passwordText, originalPassword, editPassword, checkPassword, revertPassword, provisionalPassword);
             }
@@ -340,11 +364,12 @@ public class ProfileActivity extends AppCompatActivity {
         return listPopupWindow;
     }
 
-    private void abortEditing(EditText inputText, ImageView editText, ImageView checkText, String provisionalText) {
+    private String abortEditing(EditText inputText, ImageView editText, ImageView checkText) {
         inputText.setEnabled(false);
-        provisionalText = inputText.getText().toString();
+        String provisionalText = inputText.getText().toString();
         editText.setVisibility(View.VISIBLE);
         checkText.setVisibility(View.INVISIBLE);
+        return provisionalText;
     }
 
     private void startEditing(EditText inputText, ImageView editText, ImageView checkText) {
@@ -358,20 +383,20 @@ public class ProfileActivity extends AppCompatActivity {
 
     }
 
-    private void revertEditing(EditText inputText, String originalText, ImageView revertText, String provisionalText) {
+    private String revertEditing(EditText inputText, String originalText, ImageView revertText) {
         inputText.setText(originalText);
-        provisionalText = null;
         inputText.setSelection(inputText.getText().length());
         revertText.setVisibility(View.INVISIBLE);
+        return null;
     }
 
-    private void dismissChanges(EditText inputText, String originalText, ImageView editText, ImageView checkText, ImageView revertText, String provisionalText) {
+    private String dismissChanges(EditText inputText, String originalText, ImageView editText, ImageView checkText, ImageView revertText) {
         inputText.setText(originalText);
         inputText.setEnabled(false);
-        provisionalText = null;
         editText.setVisibility(View.VISIBLE);
         checkText.setVisibility(View.INVISIBLE);
         revertText.setVisibility(View.INVISIBLE);
+        return null;
     }
 
     private void checkForChanges() {
@@ -382,7 +407,7 @@ public class ProfileActivity extends AppCompatActivity {
         dismissButton.setVisibility(hasChanges ? View.VISIBLE : View.INVISIBLE);
         dismissButton.setEnabled(hasChanges);
 
-        saveButton.setOnClickListener(v -> updatePreferences());
+        saveButton.setOnClickListener(v ->{updatePreferences();});
     }
 
     private void updatePreferences() {
@@ -433,7 +458,6 @@ public class ProfileActivity extends AppCompatActivity {
         return favoriteTeam;
     }
 
-
     /*
     @Override
     public void onProfileImageChanged(int newProfileImage) {
@@ -451,18 +475,4 @@ public class ProfileActivity extends AppCompatActivity {
         checkForChanges();
     }
     */
-
-    /*
-    @Override
-    public boolean onSupportNavigateUp() {
-        if (getFavoriteDriverId() == null || getFavoriteTeamId() == null) {
-            Toast.makeText(this, "Please select a favourite driver and constructor", Toast.LENGTH_SHORT).show();
-            return false;
-        } else {
-            return super.onSupportNavigateUp();
-        }
-    }
-
-     */
-
 }
