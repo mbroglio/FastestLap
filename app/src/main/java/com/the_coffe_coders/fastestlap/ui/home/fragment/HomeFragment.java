@@ -403,7 +403,7 @@ public class HomeFragment extends Fragment {
 
         //set favourite driver card color
         RelativeLayout driverCard = view.findViewById(R.id.favourite_driver_layout);
-        driverCard.setBackgroundResource(Constants.TEAM_COLOR.get(Constants.DRIVER_TEAM.get(standingElement.getDriver().getDriverId())));
+        //driverCard.setBackgroundResource(Constants.TEAM_COLOR.get(Constants.DRIVER_TEAM.get(standingElement.getDriver().getDriverId())));
 
         driverImage.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), DriverBioActivity.class);
@@ -502,7 +502,7 @@ public class HomeFragment extends Fragment {
         constructorNationality.setText(Constants.NATIONALITY_ABBREVIATION.get(nationality));
 
         RelativeLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
-        constructorCard.setBackgroundResource(Constants.TEAM_COLOR.get(standingElement.getConstructor().getConstructorId().toLowerCase()));
+        //constructorCard.setBackgroundResource(Constants.TEAM_COLOR.get(standingElement.getConstructor().getConstructorId().toLowerCase()));
 
         constructorCar.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ConstructorBioActivity.class);

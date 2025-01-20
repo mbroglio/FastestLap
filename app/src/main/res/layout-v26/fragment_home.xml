@@ -81,6 +81,7 @@
                 android:layout_marginStart="@dimen/medium_margin"
                 android:layout_marginTop="@dimen/medium_margin"
                 android:layout_marginEnd="@dimen/medium_margin"
+                app:cardBackgroundColor="@color/timer_gray"
                 app:strokeColor="@color/black"
                 app:strokeWidth="3dp">
 
@@ -282,6 +283,7 @@
                 android:layout_marginStart="@dimen/medium_margin"
                 android:layout_marginTop="@dimen/medium_margin"
                 android:layout_marginEnd="@dimen/medium_margin"
+                app:cardBackgroundColor="@color/timer_gray"
                 app:strokeColor="@color/black"
                 app:strokeWidth="3dp">
 
@@ -308,6 +310,9 @@
                         android:id="@+id/favourite_constructor_car"
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginStart="@dimen/medium_margin"
+                        android:layout_marginEnd="@dimen/medium_margin"
                         android:layout_below="@id/favourite_constructor_name">
 
                     </ImageView>
