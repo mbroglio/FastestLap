@@ -100,11 +100,6 @@ public class SignUpFragment extends DialogFragment {
             String email = Objects.requireNonNull(textInputEmail.getText()).toString();
             String password = Objects.requireNonNull(textInputPassword.getText()).toString();
             checkSignUpCredentials(email, password);
-
-            Intent intent = new Intent(requireContext(), HomePageActivity.class);
-            Log.i(TAG, "Starting HomePageActivity");
-            startActivity(intent);
-            //dismiss();
         });
 
         return view;
@@ -113,23 +108,30 @@ public class SignUpFragment extends DialogFragment {
     private void checkSignUpCredentials(String email, String password) {
         Log.d(TAG, "Email: " + email);
         Log.d(TAG, "Password: " + password);
+
         if (isEmailOk(email) & isPasswordOk(password)) {
             //binding.progressBar.setVisibility(View.VISIBLE);
             if (!userViewModel.isAuthenticationError()) {
+                Log.i(TAG, "Getting user");
+
                 userViewModel.getUserMutableLiveData(email, password, false).observe(
                         this, result -> {
                             if (result.isSuccess()) {
                                 User user = ((Result.UserSuccess) result).getData();
                                 //saveLoginData(email, password, user.getIdToken());
+
                                 userViewModel.setAuthenticationError(false);
                                 Log.i(TAG, "User: " + user.toString());
+
                                 SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this.getContext());
                                 saveSharedPreferences(sharedPreferencesUtils, user);
+
+                                Intent intent = new Intent(requireContext(), HomePageActivity.class);
+                                Log.i(TAG, "Starting HomePageActivity");
+                                startActivity(intent);
                             } else {
                                 userViewModel.setAuthenticationError(true);
-                                Snackbar.make(requireView(),
-                                        getErrorMessage(((Result.Error) result).getMessage()), // Temporary
-                                        Snackbar.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(),"Email already registered", Toast.LENGTH_SHORT).show();
                             }
                         });
             } else {
@@ -156,6 +158,9 @@ public class SignUpFragment extends DialogFragment {
 
     private void saveSharedPreferences(SharedPreferencesUtils sharedPreferencesUtils, User user) {
         Log.i(TAG, "Saving user preferences");
+        Log.i(TAG, "Favourite driver: " + favouriteDriverKey);
+        Log.i(TAG, "Favourite constructor: " + favouriteConstructorKey);
+
         sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
                 Constants.SHARED_PREFERENCES_FAVORITE_DRIVER,
                 favouriteDriverKey);

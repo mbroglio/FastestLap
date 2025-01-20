@@ -337,7 +337,7 @@ public class HomeFragment extends Fragment {
                     Intent intent = new Intent(getActivity(), ProfileActivity.class);
                     startActivity(intent);
                 }
-                Log.i(TAG, "Favorite Driver: " + favouriteDriver.toString());
+                //Log.i(TAG, "Favorite Driver: " + favouriteDriver.toString());
                 buildDriverCard(view, favouriteDriver);
             } else {
                 Log.i(TAG, "DRIVER STANDINGS ERROR");

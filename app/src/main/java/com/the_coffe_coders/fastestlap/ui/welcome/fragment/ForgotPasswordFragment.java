@@ -1,10 +1,12 @@
 package com.the_coffe_coders.fastestlap.ui.welcome.fragment;
 
+import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +19,10 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
+import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
+import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 
 import org.apache.commons.validator.routines.EmailValidator;
@@ -30,6 +36,7 @@ public class ForgotPasswordFragment extends DialogFragment {
     private RelativeLayout sendEmailButton;
     private FirebaseAuth mAuth;
     private ProgressBar progressIndicator;
+    private UserViewModel userViewModel;
 
     public interface OnFragmentInteractionListener {
         void onFragmentDismissed(String value);
@@ -69,6 +76,10 @@ public class ForgotPasswordFragment extends DialogFragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_forgot_password, container, false);
 
+        IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository((Application) requireActivity().getApplicationContext());
+
+        userViewModel = new ViewModelProvider(this, new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+
         mAuth = FirebaseAuth.getInstance();
 
         emailEditText = view.findViewById(R.id.textInputEmail);
@@ -80,23 +91,32 @@ public class ForgotPasswordFragment extends DialogFragment {
 
         sendEmailButton.setOnClickListener(v -> {
             if (emailEditText.getText() != null && isEmailOk(emailEditText.getText().toString())) {
-                progressIndicator.setVisibility(View.VISIBLE);
-                sendEmailButton.setVisibility(View.INVISIBLE);
                 String email = emailEditText.getText().toString();
-                mAuth.sendPasswordResetEmail(email)
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                Toast.makeText(getContext(), "Email sent, check your inbox", Toast.LENGTH_SHORT).show();
-                                if (mListener != null) {
-                                    mListener.onFragmentDismissed("true");
-                                }
-                                dismiss();
-                            } else {
-                                progressIndicator.setVisibility(View.INVISIBLE);
-                                sendEmailButton.setVisibility(View.VISIBLE);
-                                emailEditText.setError("Error Email Login");
-                                Toast.makeText(getContext(), "Error sending email", Toast.LENGTH_SHORT).show();
+                
+                userViewModel.getUserMutableLiveData(email, "default", true).observe(
+                        this, result -> {
+                            if (result.isSuccess()) {
+                                progressIndicator.setVisibility(View.VISIBLE);
+                                sendEmailButton.setVisibility(View.INVISIBLE);
+                                mAuth.sendPasswordResetEmail(email)
+                                        .addOnCompleteListener(task -> {
+                                            if (task.isSuccessful()) {
+                                                Toast.makeText(getContext(), "Email sent, check your inbox", Toast.LENGTH_SHORT).show();
+                                                if (mListener != null) {
+                                                    mListener.onFragmentDismissed("true");
+                                                }
+                                                dismiss();
+                                            } else {
+                                                progressIndicator.setVisibility(View.INVISIBLE);
+                                                sendEmailButton.setVisibility(View.VISIBLE);
+                                                emailEditText.setError("Error Email Login");
+                                                Toast.makeText(getContext(), "Error sending email", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+                            }else{
+                                Toast.makeText(getContext(), "Email not found", Toast.LENGTH_SHORT).show();
                             }
+
                         });
             }
         });
