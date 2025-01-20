@@ -1,5 +1,6 @@
 package com.the_coffe_coders.fastestlap.source.result;
 
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultResponseCallback;
 
@@ -12,11 +13,11 @@ public abstract class BaseRaceResultLocalDataSource {
         this.raceResultCallback = raceResultCallback;
     }
 
-    public abstract void getRaceResults();
-
     public abstract void getAllRaceResult();
 
     public abstract void getRaceResultById(int id);
+
+    public abstract void insertRaceList(List<Race> raceList);
 
     public abstract void insertRaceResultList(List<RaceResult> raceResultList);
 }

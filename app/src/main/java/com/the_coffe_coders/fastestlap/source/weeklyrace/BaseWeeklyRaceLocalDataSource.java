@@ -16,4 +16,6 @@ public abstract class BaseWeeklyRaceLocalDataSource {
 
     public abstract void insertWeeklyRaceList(List<WeeklyRace> weeklyRaceList);
 
+    public abstract void insertWeeklyRace(WeeklyRace weeklyRace);
+
 }

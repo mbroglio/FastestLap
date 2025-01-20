@@ -72,6 +72,7 @@ public class PastEventsActivity extends AppCompatActivity {
         //EventViewModel eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false))).get(EventViewModel.class);
         MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false).fetchAllRaceResults(0);
         data.observe(this, result -> {
+            Log.i("PastEvent", "observed");
             if (result.isSuccess()) {
                 List<Race> races = ((Result.RaceSuccess) result).getData();
                 races.sort(Comparator.comparingInt(Race::getRoundAsInt));

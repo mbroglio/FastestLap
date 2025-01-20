@@ -44,6 +44,8 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
         if (raceList.size() == 24) {
             allRaceResultMutableLiveData.postValue(new Result.RaceSuccess(raceList));
             Log.i(TAG, "posting value!!!");
+            List<RaceResult> raceResult = new ArrayList<>();
+            raceResultLocalDataSource.insertRaceList(raceList);
         }
         //Log.i(TAG, race.toString());
     }
@@ -51,14 +53,14 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
     @Override
     public MutableLiveData<Result> fetchRaceResults(int round, long lastUpdate) {
         Log.i(TAG, "fetchRaceResults");
-        if (true) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
+        if (isOutdate) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
             //TODO fetch from remote
             Log.i(TAG, "Remote fetchRaceResults");
             raceResultRemoteDataSource.getRaceResults(round);
             isOutdate = false;
         } else {
             Log.i(TAG, "fetchRaceResults from local");
-            raceResultLocalDataSource.getRaceResults();
+            raceResultLocalDataSource.getAllRaceResult();
         }
         return raceResultMutableLiveData;
     }
@@ -66,7 +68,7 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
     public MutableLiveData<Result> fetchAllRaceResults(long lastUpdate) {
         Log.i(TAG, "fetchAllRaceResults");
         raceList = new ArrayList<>();
-        if (true) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
+        if (isOutdate) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
             //TODO fetch from remote
             //Log.i(TAG, "Remote fetchAllRaceResults");
             raceResultRemoteDataSource.getAllRaceResults();
@@ -95,14 +97,17 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
     public void onSuccessFromRemote(RaceResultsAPIResponse raceResultsAPIResponse, int type) {
         //Log.i(TAG, "onSuccessFromRemote");
         //Log.i(TAG, raceResultsAPIResponse.toString());
+
+        System.out.println(type);
         if (type == 1) {
+            Log.i(TAG, "entered if");
             addRaces(RaceMapper.toRace(raceResultsAPIResponse.getFinalRace()));
         } else {
+            Log.i(TAG, "entered else");
             List<RaceResult> raceResult = new ArrayList<>();
             for (ResultDTO resultDTO : raceResultsAPIResponse.getRaceResults()) {
                 raceResult.add(SessionMapper.toResult(resultDTO));
             }
-            raceResultLocalDataSource.insertRaceResultList(raceResult);
         }
     }
 
@@ -116,14 +121,26 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
 
     }
 
-    @Override
+   @Override
     public void onSuccessFromLocal(List<RaceResult> raceResultList) {
         Log.i(TAG, "onSuccessFromLocal");
         new Handler(Looper.getMainLooper()).post(() -> {
             raceResultMutableLiveData.setValue(new Result.RaceResultSuccess(raceResultList));
         });
+        raceResultMutableLiveData.setValue(new Result.RaceResultSuccess(raceResultList));
         Log.i(TAG, raceResultMutableLiveData.toString());
     }
+
+    @Override
+    public void onSuccessFromLocalRaceList(List<Race> raceList) {
+        Log.i(TAG, "onSuccessFromLocal");
+       /* new Handler(Looper.getMainLooper()).post(() -> {
+            raceResultMutableLiveData.setValue(new Result.RaceResultSuccess(raceResultList));
+        });*/
+        raceResultMutableLiveData.setValue(new Result.RaceSuccess(raceList));
+        Log.i(TAG, raceResultMutableLiveData.toString());
+    }
+
 
     @Override
     public void onFailureFromLocal(Exception exception) {
