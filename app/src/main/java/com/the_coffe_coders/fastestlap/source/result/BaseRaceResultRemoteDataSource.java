@@ -10,4 +10,6 @@ public abstract class BaseRaceResultRemoteDataSource {
     }
 
     public abstract void getRaceResults(int round);
+
+    public abstract void getAllRaceResults();
 }

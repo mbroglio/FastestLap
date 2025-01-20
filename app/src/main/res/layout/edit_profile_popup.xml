@@ -14,8 +14,8 @@
         android:layout_alignParentTop="true"
         android:fontFamily="@font/orbitron_bold"
         android:text="Profile Image"
-        android:textSize="@dimen/layout_subtitle_text_size"
-        android:textColor="@color/black">
+        android:textColor="@color/black"
+        android:textSize="@dimen/layout_subtitle_text_size">
 
     </TextView>
 
@@ -82,8 +82,8 @@
         android:layout_marginTop="10dp"
         android:fontFamily="@font/orbitron_bold"
         android:text="Profile Name"
-        android:textSize="@dimen/layout_subtitle_text_size"
-        android:textColor="@color/black">
+        android:textColor="@color/black"
+        android:textSize="@dimen/layout_subtitle_text_size">
 
     </TextView>
 

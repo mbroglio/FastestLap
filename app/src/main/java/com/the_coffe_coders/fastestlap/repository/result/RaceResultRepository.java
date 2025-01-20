@@ -8,8 +8,10 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.the_coffe_coders.fastestlap.api.RaceResultsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.dto.ResultDTO;
+import com.the_coffe_coders.fastestlap.mapper.RaceMapper;
 import com.the_coffe_coders.fastestlap.mapper.SessionMapper;
 import com.the_coffe_coders.fastestlap.source.result.BaseRaceResultLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.result.BaseRaceResultRemoteDataSource;
@@ -22,16 +24,28 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
     private static final String TAG = "RaceResultRepository";
     public static boolean isOutdate = true;
     private final MutableLiveData<Result> raceResultMutableLiveData;
+    private final MutableLiveData<Result> allRaceResultMutableLiveData;
     private final BaseRaceResultRemoteDataSource raceResultRemoteDataSource;
     private final BaseRaceResultLocalDataSource raceResultLocalDataSource;
+    private List<Race> raceList = new ArrayList<>();
 
 
     public RaceResultRepository(BaseRaceResultRemoteDataSource raceResultRemoteDataSource, BaseRaceResultLocalDataSource raceResultLocalDataSource) {
         this.raceResultMutableLiveData = new MutableLiveData<>();
+        this.allRaceResultMutableLiveData = new MutableLiveData<>();
         this.raceResultRemoteDataSource = raceResultRemoteDataSource;
         this.raceResultLocalDataSource = raceResultLocalDataSource;
         this.raceResultRemoteDataSource.setRaceResultCallback(this);
         this.raceResultLocalDataSource.setRaceResultCallback(this);
+    }
+
+    private synchronized void addRaces(Race race) {
+        raceList.add(race);
+        if (raceList.size() == 24) {
+            allRaceResultMutableLiveData.postValue(new Result.RaceSuccess(raceList));
+            Log.i(TAG, "posting value!!!");
+        }
+        //Log.i(TAG, race.toString());
     }
 
     @Override
@@ -49,6 +63,23 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
         return raceResultMutableLiveData;
     }
 
+    public MutableLiveData<Result> fetchAllRaceResults(long lastUpdate) {
+        Log.i(TAG, "fetchAllRaceResults");
+        raceList = new ArrayList<>();
+        if (true) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
+            //TODO fetch from remote
+            //Log.i(TAG, "Remote fetchAllRaceResults");
+            raceResultRemoteDataSource.getAllRaceResults();
+
+            isOutdate = false;
+        } else {
+            Log.i(TAG, "fetchAllRaceResults from local");
+            raceResultLocalDataSource.getAllRaceResult();
+        }
+        Log.i(TAG, "fetchallreturn");
+        return allRaceResultMutableLiveData;
+    }
+
     @Override
     public MutableLiveData<Result> fetchRaceResult(String resultId, long lastUpdate) {
         return null;
@@ -57,13 +88,22 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
 
     @Override
     public void onSuccessFromRemote(RaceResultsAPIResponse raceResultsAPIResponse) {
-        Log.i(TAG, "onSuccessFromRemote");
-        Log.i(TAG, raceResultsAPIResponse.toString());
-        List<RaceResult> raceResult = new ArrayList<>();
-        for (ResultDTO resultDTO : raceResultsAPIResponse.getRaceResults()) {
-            raceResult.add(SessionMapper.toResult(resultDTO));
+
+    }
+
+    @Override
+    public void onSuccessFromRemote(RaceResultsAPIResponse raceResultsAPIResponse, int type) {
+        //Log.i(TAG, "onSuccessFromRemote");
+        //Log.i(TAG, raceResultsAPIResponse.toString());
+        if (type == 1) {
+            addRaces(RaceMapper.toRace(raceResultsAPIResponse.getFinalRace()));
+        } else {
+            List<RaceResult> raceResult = new ArrayList<>();
+            for (ResultDTO resultDTO : raceResultsAPIResponse.getRaceResults()) {
+                raceResult.add(SessionMapper.toResult(resultDTO));
+            }
+            raceResultLocalDataSource.insertRaceResultList(raceResult);
         }
-        raceResultLocalDataSource.insertRaceResultList(raceResult);
     }
 
     @Override

@@ -25,8 +25,8 @@
                 android:layout_gravity="center"
                 android:fontFamily="@font/orbitron_bold"
                 android:text="LIVE SESSION"
-                android:textSize="@dimen/layout_subtitle_text_size"
                 android:textColor="@color/screen_background_color"
+                android:textSize="@dimen/layout_subtitle_text_size"
                 android:textStyle="bold">
 
             </TextView>

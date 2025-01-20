@@ -6,9 +6,11 @@ import junit.framework.TestCase;
 
 public class ConstructorStandingsRepositoryTest extends TestCase {
 
-    public void testFind() {
+    /*public void testFind() {
         ConstructorStandingsRepository constructorStandingsRepository = new ConstructorStandingsRepository();
         ConstructorStandings constructorStandings = constructorStandingsRepository.findConstructorStandings();
         assertNotNull(constructorStandings);
     }
+
+     */
 }

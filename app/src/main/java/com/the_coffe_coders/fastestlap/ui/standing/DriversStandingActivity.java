@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -17,6 +18,9 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -57,17 +61,39 @@ public class DriversStandingActivity extends AppCompatActivity {
         String driverId = getIntent().getStringExtra("DRIVER_ID");
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+
+        ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            params.topMargin = systemBars.top;
+            v.setLayoutParams(params);
+
+            return insets;
+        });
+
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
 
         LinearLayout driverStanding = findViewById(R.id.driver_standing);
 
         driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverRepository(getApplication(), false))).get(DriverStandingsViewModel.class);
-        MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
-        RaceResultRepository raceResultRepository = ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false);
-        raceResultRepository.fetchRaceResults(2, 0);
+        MutableLiveData<Result> livedata = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
 
-        data.observe(this, result -> {
+        /*
+        RaceResultRepository raceResultRepository = ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false);
+        MutableLiveData<Result> mldr = raceResultRepository.fetchAllRaceResults(0);
+        mldr.observe(this, result -> {
+            if (result.isSuccess()) {
+                Log.i(TAG, ((Result.RaceSuccess) result).getData().toString());
+                Log.i(TAG, "RACE RESULTS SUCCESS");
+            } else {
+                Log.i(TAG, "RACE RESULTS ERROR");
+            }
+        });
+        */
+
+        livedata.observe(this, result -> {
             if (result.isSuccess()) {
                 Log.i(TAG, "DRIVER STANDINGS SUCCESS");
                 driverStandings = ((Result.DriverStandingsSuccess) result).getData();

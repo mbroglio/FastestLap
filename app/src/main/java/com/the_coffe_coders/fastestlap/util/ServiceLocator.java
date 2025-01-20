@@ -93,6 +93,15 @@ public class ServiceLocator {
             }
 
             @Override
+            public Call<ResponseBody> getResults() {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+                return retrofit.create(ErgastAPIService.class).getResults();
+            }
+
+            @Override
             public Call<ResponseBody> getLastRaceResults() {
 
                 Retrofit retrofit = new Retrofit.Builder()

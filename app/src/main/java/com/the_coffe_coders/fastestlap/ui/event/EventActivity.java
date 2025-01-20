@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
@@ -15,6 +17,9 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -62,17 +67,28 @@ public class EventActivity extends AppCompatActivity {
         circuitId = getIntent().getStringExtra("CIRCUIT_ID");
         Log.i(TAG, "Circuit ID: " + circuitId);
 
-        processRaceData();
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+
+        ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            params.topMargin = systemBars.top;
+            v.setLayoutParams(params);
+
+            return insets;
+        });
+
+        processRaceData(toolbar);
     }
 
-    private void processRaceData() {
+    private void processRaceData(MaterialToolbar toolbar) {
         List<WeeklyRace> races = new ArrayList<>();
         MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getApplication(), false).fetchWeeklyRaces(0);
         data.observe(this, result -> {
             if (result.isSuccess()) {
                 Log.i("PastEvent", "SUCCESS");
                 races.addAll(((Result.WeeklyRaceSuccess) result).getData());
-                loadingScreen.hideLoadingScreen();
                 WeeklyRace weeklyRace = null;
                 for (WeeklyRace race : races) {
                     if (race.getCircuit().getCircuitId().equals(circuitId)) {
@@ -80,7 +96,6 @@ public class EventActivity extends AppCompatActivity {
                     }
                 }
 
-                MaterialToolbar toolbar = findViewById(R.id.topAppBar);
                 toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
                 toolbar.setTitle(weeklyRace.getRaceName().toUpperCase());
 
@@ -134,6 +149,7 @@ public class EventActivity extends AppCompatActivity {
 
                 createWeekSchedule(sessions);
             }
+            loadingScreen.hideLoadingScreen(); //The delay may be removed
         });
     }
 
@@ -228,8 +244,6 @@ public class EventActivity extends AppCompatActivity {
                     teamColor.setBackgroundColor(ContextCompat.getColor(this, Objects.requireNonNullElseGet(teamColorObj, () -> R.color.mercedes_f1)));
                 }
             }
-
-            loadingScreen.hideLoadingScreen();
         });
     }
 

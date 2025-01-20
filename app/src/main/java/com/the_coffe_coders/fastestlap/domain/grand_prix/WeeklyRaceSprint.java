@@ -9,11 +9,11 @@ import java.util.List;
 
 @Entity(tableName = "WeeklyRaceSprint")
 public class WeeklyRaceSprint extends WeeklyRace {
-    private Qualifying sprintQualifying;
+    private SprintQualifying sprintQualifying;
     private Sprint sprint;
 
     @Ignore
-    public WeeklyRaceSprint(Qualifying sprintQualifying, Sprint sprint) {
+    public WeeklyRaceSprint(SprintQualifying sprintQualifying, Sprint sprint) {
         this.sprintQualifying = sprintQualifying;
         this.sprint = sprint;
     }
@@ -22,11 +22,11 @@ public class WeeklyRaceSprint extends WeeklyRace {
 
     }
 
-    public Qualifying getSprintQualifying() {
+    public SprintQualifying getSprintQualifying() {
         return sprintQualifying;
     }
 
-    public void setSprintQualifying(Qualifying sprintQualifying) {
+    public void setSprintQualifying(SprintQualifying sprintQualifying) {
         this.sprintQualifying = sprintQualifying;
     }
 

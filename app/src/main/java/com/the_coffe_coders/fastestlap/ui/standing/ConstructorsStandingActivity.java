@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,6 +17,9 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -24,12 +28,15 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+
+import java.util.List;
 
 public class ConstructorsStandingActivity extends AppCompatActivity {
 
@@ -38,6 +45,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
     private final boolean constructorToProcess = true;
     LoadingScreen loadingScreen;
     private TextView teamPointsTextView;
+    private ConstructorStandings constructorStandings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +61,17 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         Log.i(TAG, "Constructor ID: " + constructorId);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+
+        ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            params.topMargin = systemBars.top;
+            v.setLayoutParams(params);
+
+            return insets;
+        });
+
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         LinearLayout teamStanding = findViewById(R.id.team_standing);
@@ -61,6 +80,31 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         MutableLiveData<Result> liveData = constructorStandingsViewModel.getConstructorStandingsLiveData(0);
 
         Log.i(TAG, "Constructor Standings: " + liveData);
+        liveData.observe(this, result -> {
+            if (result.isSuccess()){
+                constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
+
+                List<ConstructorStandingsElement> constructorList = constructorStandings.getConstructorStandings();
+                int initialSize = constructorList.size();
+                loadingScreen.hideLoadingScreen();
+
+                for (ConstructorStandingsElement constructor : constructorList) {
+                    View teamCard = generateTeamCard(constructor, constructorId);
+                    teamStanding.addView(teamCard);
+                    View space = new View(ConstructorsStandingActivity.this);
+                    space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
+                    teamStanding.addView(space);
+                }
+
+            } else if (result instanceof Result.Error) {
+                Result.Error error = (Result.Error) result;
+                Log.e(TAG, "Error: " + error.getMessage());
+                loadingScreen.hideLoadingScreen();
+            }
+        });
+
+
+        /*
         liveData.observe(this, result -> {
             if (result instanceof Result.ConstructorStandingsSuccess) {
                 Result.ConstructorStandingsSuccess constructorStandingsSuccess = (Result.ConstructorStandingsSuccess) result;
@@ -79,6 +123,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                 Log.e(TAG, "Error: " + error.getMessage());
             }
         });
+        */
     }
 
     private View generateTeamCard(ConstructorStandingsElement standingElement, String constructorIdToHighlight) {

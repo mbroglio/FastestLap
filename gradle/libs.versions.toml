@@ -1,6 +1,6 @@
 [versions]
-agp = "8.7.3"
 commonsValidator = "1.9.0"
+agp = "8.8.0"
 firebaseBom = "33.7.0"
 fragmentKtx = "1.8.5"
 gson = "2.11.0"

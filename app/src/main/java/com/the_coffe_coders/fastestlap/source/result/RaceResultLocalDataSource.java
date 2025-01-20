@@ -31,6 +31,11 @@ public class RaceResultLocalDataSource extends BaseRaceResultLocalDataSource {
         raceResultCallback.onSuccessFromLocal(raceResultsList);
     }
 
+    @Override
+    public void getAllRaceResult() {
+
+    }
+
     public void getRaceResultById(int id) {
         Log.i(TAG, "getRaceResultById from local");
         RaceResult raceResult = raceResultDao.getRaceResultById(id);
