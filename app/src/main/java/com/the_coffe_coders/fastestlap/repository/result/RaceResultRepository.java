@@ -57,7 +57,7 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
             //TODO fetch from remote
             Log.i(TAG, "Remote fetchRaceResults");
             raceResultRemoteDataSource.getRaceResults(round);
-            isOutdate = false;
+            //isOutdate = false;
         } else {
             Log.i(TAG, "fetchRaceResults from local");
             raceResultLocalDataSource.getAllRaceResult();
@@ -108,6 +108,7 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
             for (ResultDTO resultDTO : raceResultsAPIResponse.getRaceResults()) {
                 raceResult.add(SessionMapper.toResult(resultDTO));
             }
+            raceResultMutableLiveData.postValue(new Result.RaceResultSuccess(raceResult));
         }
     }
 
