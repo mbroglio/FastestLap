@@ -90,7 +90,8 @@ public class DriverBioActivity extends AppCompatActivity {
             if (task.isSuccessful()) {
                 driver = task.getResult().getValue(Driver.class);
                 Log.i("DriverBioActivity", "Driver data: " + driver.toStringDB());
-                toolbar.setTitle(driverId);
+                String fullName = driver.getGivenName() + " " + driver.getFamilyName();
+                toolbar.setTitle(fullName.toUpperCase());
 
                 DatabaseReference nationReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_NATIONS_COLLECTION).child(driver.getNationality());
                 Log.i("DriverBioActivity", "Nation reference: " + nationReference.toString());

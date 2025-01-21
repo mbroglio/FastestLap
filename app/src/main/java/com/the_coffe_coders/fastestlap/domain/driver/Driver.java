@@ -5,10 +5,9 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -40,14 +39,32 @@ public class Driver implements Parcelable {
     private String best_result;
     private String birth_place;
     private String championships;
-    //private ArrayList<DriverHistory> driver_history;
+    @Ignore // Check if it generates errors
+    private List<DriverHistory> driver_history;
     private String driver_pic_url;
-    private String gp_entered;
     private String height;
     private String podiums;
     private String racing_number_pic_url;
     private String team_id;
     private String weight;
+
+    public Driver(String driverId, String givenName, String familyName, String dateOfBirth, String nationality, String best_result, String birth_place, String championships, List<DriverHistory> driver_history, String driver_pic_url, String height, String podiums, String racing_number_pic_url, String team_id, String weight) {
+        this.driverId = driverId;
+        this.givenName = givenName;
+        this.familyName = familyName;
+        this.dateOfBirth = dateOfBirth;
+        this.nationality = nationality;
+        this.best_result = best_result;
+        this.birth_place = birth_place;
+        this.championships = championships;
+        this.driver_history = driver_history;
+        this.driver_pic_url = driver_pic_url;
+        this.height = height;
+        this.podiums = podiums;
+        this.racing_number_pic_url = racing_number_pic_url;
+        this.team_id = team_id;
+        this.weight = weight;
+    }
 
     public Driver() {
 
@@ -65,20 +82,7 @@ public class Driver implements Parcelable {
         this.nationality = in.readString();
     }
 
-    public Driver(String driverId, String best_result, String birth_place, String championships, String driver_pic_url, String gp_entered, String height, String nationality, String podiums, String racing_number_pic_url, String team_id, String weight) {
-        this.driverId = driverId;
-        this.best_result = best_result;
-        this.birth_place = birth_place;
-        this.championships = championships;
-        this.driver_pic_url = driver_pic_url;
-        this.gp_entered = gp_entered;
-        this.height = height;
-        this.nationality = nationality;
-        this.podiums = podiums;
-        this.racing_number_pic_url = racing_number_pic_url;
-        this.team_id = team_id;
-        this.weight = weight;
-    }
+
 
     public long getUid() {
         return uid;
@@ -233,13 +237,13 @@ public class Driver implements Parcelable {
         this.championships = championships;
     }
 
-    /*public ArrayList<DriverHistory> getDriver_history() {
+    public List<DriverHistory> getDriver_history() {
         return driver_history;
     }
 
-    public void setDriver_history(ArrayList<DriverHistory> driver_history) {
+    public void setDriver_history(List<DriverHistory> driver_history) {
         this.driver_history = driver_history;
-    }*/
+    }
 
     public String getDriver_pic_url() {
         return driver_pic_url;
@@ -247,14 +251,6 @@ public class Driver implements Parcelable {
 
     public void setDriver_pic_url(String driver_pic_url) {
         this.driver_pic_url = driver_pic_url;
-    }
-
-    public String getGp_entered() {
-        return gp_entered;
-    }
-
-    public void setGp_entered(String gp_entered) {
-        this.gp_entered = gp_entered;
     }
 
     public String getHeight() {
@@ -303,7 +299,7 @@ public class Driver implements Parcelable {
                 ", birth_place='" + birth_place + '\'' +
                 ", championships='" + championships + '\'' +
                 ", driver_pic_url='" + driver_pic_url + '\'' +
-                ", gp_entered='" + gp_entered + '\'' +
+                ", driver_history=" + driver_history.toString() +
                 ", height='" + height + '\'' +
                 ", nationality_db='" + nationality + '\'' +
                 ", podiums='" + podiums + '\'' +

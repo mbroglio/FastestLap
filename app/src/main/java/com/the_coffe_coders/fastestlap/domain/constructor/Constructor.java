@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class Constructor implements Parcelable {
@@ -32,7 +31,6 @@ public class Constructor implements Parcelable {
     private String first_entry;
     private String full_name;
     private String hq;
-    private String nationality_db;
     private String podiums;
     private String power_unit;
     private List<ConstructorHistory> team_history;
@@ -48,7 +46,8 @@ public class Constructor implements Parcelable {
         this.nationality = nationality;
     }
 
-    public Constructor(String constructorId, String car_pic_url, String chassis, List<String> drivers, String first_entry, String full_name, String hq, String nationality_db, String podiums, String power_unit, List<ConstructorHistory> team_history, String team_logo_url, String team_principal, String wins, String world_championships) {
+    public Constructor(String name, String constructorId, String car_pic_url, String chassis, List<String> drivers, String first_entry, String full_name, String hq, String nationality, String podiums, String power_unit, List<ConstructorHistory> team_history, String team_logo_url, String team_principal, String wins, String world_championships) {
+        this.name = name;
         this.constructorId = constructorId;
         this.car_pic_url = car_pic_url;
         this.chassis = chassis;
@@ -56,7 +55,7 @@ public class Constructor implements Parcelable {
         this.first_entry = first_entry;
         this.full_name = full_name;
         this.hq = hq;
-        this.nationality_db = nationality_db;
+        this.nationality = nationality;
         this.podiums = podiums;
         this.power_unit = power_unit;
         this.team_history = team_history;
@@ -180,14 +179,6 @@ public class Constructor implements Parcelable {
         this.hq = hq;
     }
 
-    public String getNationality_db() {
-        return nationality_db;
-    }
-
-    public void setNationality_db(String nationality_db) {
-        this.nationality_db = nationality_db;
-    }
-
     public String getPodiums() {
         return podiums;
     }
@@ -253,7 +244,7 @@ public class Constructor implements Parcelable {
                 ", first_entry='" + first_entry + '\'' +
                 ", full_name='" + full_name + '\'' +
                 ", hq='" + hq + '\'' +
-                ", nationality_db='" + nationality_db + '\'' +
+                ", nationality_db='" + nationality + '\'' +
                 ", podiums='" + podiums + '\'' +
                 ", power_unit='" + power_unit + '\'' +
                 ", team_history=" + team_history.toString() +

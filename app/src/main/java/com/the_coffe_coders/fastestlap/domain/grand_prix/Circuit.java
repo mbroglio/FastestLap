@@ -1,6 +1,6 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
-import java.util.Arrays;
+import java.util.List;
 
 public class Circuit {
     private String circuitId;
@@ -10,7 +10,7 @@ public class Circuit {
 
     // Bio Data
     private String circuit_full_layout_url;
-    private CircuitHistory[] circuit_history;
+    private List<CircuitHistory> circuit_history;
     private String circuit_minimal_layout_url;
     private String circuit_pic_url;
     private String country;
@@ -27,7 +27,7 @@ public class Circuit {
         this.location = location;
     }
 
-    public Circuit(String circuitId, String circuit_full_layout_url, CircuitHistory[] circuit_history, String circuit_minimal_layout_url, String circuit_pic_url, String country, String gp_long_name, String gp_lap_record, String laps, String length, String race_distance) {
+    public Circuit(String circuitId, String circuit_full_layout_url, List<CircuitHistory> circuit_history, String circuit_minimal_layout_url, String circuit_pic_url, String country, String gp_long_name, String gp_lap_record, String laps, String length, String race_distance) {
         this.circuitId = circuitId;
         this.circuit_full_layout_url = circuit_full_layout_url;
         this.circuit_history = circuit_history;
@@ -95,11 +95,11 @@ public class Circuit {
         this.circuit_full_layout_url = circuit_full_layout_url;
     }
 
-    public CircuitHistory[] getCircuit_history() {
+    public List<CircuitHistory> getCircuit_history() {
         return circuit_history;
     }
 
-    public void setCircuit_history(CircuitHistory[] circuit_history) {
+    public void setCircuit_history(List<CircuitHistory> circuit_history) {
         this.circuit_history = circuit_history;
     }
 
@@ -171,7 +171,7 @@ public class Circuit {
         return "Circuit{" +
                 "circuitId='" + circuitId + '\'' +
                 ", circuit_full_layout_url='" + circuit_full_layout_url + '\'' +
-                ", circuit_history=" + Arrays.toString(circuit_history) +
+                ", circuit_history=" + circuit_history.toString() +
                 ", circuit_minimal_layout_url='" + circuit_minimal_layout_url + '\'' +
                 ", circuit_pic_url='" + circuit_pic_url + '\'' +
                 ", country='" + country + '\'' +
