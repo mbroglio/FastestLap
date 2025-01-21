@@ -66,6 +66,7 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
     implementation(libs.commons.validator)
+    implementation(libs.glide)
     /*compileOnly(libs.projectlombok.lombok)
     annotationProcessor(libs.projectlombok.lombok)*/
 }

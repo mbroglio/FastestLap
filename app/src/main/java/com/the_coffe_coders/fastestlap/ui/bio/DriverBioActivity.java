@@ -1,5 +1,10 @@
 package com.the_coffe_coders.fastestlap.ui.bio;
 
+import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_DRIVERS_COLLECTION;
+import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_NATIONS_COLLECTION;
+import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
+import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_TEAMS_COLLECTION;
+
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -20,10 +25,21 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
+import com.the_coffe_coders.fastestlap.domain.driver.Driver;
+import com.the_coffe_coders.fastestlap.domain.driver.DriverHistory;
+import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
+
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.Period;
+import org.threeten.bp.format.DateTimeFormatter;
 
 /*
  * TODO:
@@ -31,6 +47,10 @@ import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
  */
 
 public class DriverBioActivity extends AppCompatActivity {
+    private Driver driver;
+    private Nation nation;
+    private Constructor team;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +83,41 @@ public class DriverBioActivity extends AppCompatActivity {
 
         // Calculate 60% of the screen width
         int width_percent_60 = (int) (screenWidth * 0.6);
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_DRIVERS_COLLECTION).child(driverId);
+        Log.i("DriverBioActivity", "Database reference: " + databaseReference.toString());
+        databaseReference.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                driver = task.getResult().getValue(Driver.class);
+                Log.i("DriverBioActivity", "Driver data: " + driver.toStringDB());
+                toolbar.setTitle(driverId);
+
+                DatabaseReference nationReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_NATIONS_COLLECTION).child(driver.getNationality());
+                Log.i("DriverBioActivity", "Nation reference: " + nationReference.toString());
+                nationReference.get().addOnCompleteListener(nationTask -> {
+                    if (nationTask.isSuccessful()) {
+                        nation = nationTask.getResult().getValue(Nation.class);
+                        Log.i("DriverBioActivity", "Nation data: " + nation.toString());
+
+                        DatabaseReference teamReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_TEAMS_COLLECTION).child(driver.getTeam_id());
+                        Log.i("DriverBioActivity", "Team reference: " + teamReference.toString());
+                        teamReference.get().addOnCompleteListener(teamTask -> {
+                            if (teamTask.isSuccessful()) {
+                                team = teamTask.getResult().getValue(Constructor.class);
+                                Log.i("DriverBioActivity", "Team data: " + team.toString());
+                                setDriverData(driver, nation, team);
+                            } else {
+                                Log.e("DriverBioActivity", "Error getting team data", teamTask.getException());
+                            }
+                        });
+                    } else {
+                        Log.e("DriverBioActivity", "Error getting nation data", nationTask.getException());
+                    }
+                });
+            } else {
+                Log.e("DriverBioActivity", "Error getting driver data", task.getException());
+            }
+        });
 
 
         //set listener to team logo and define a method onclick
@@ -104,7 +159,6 @@ public class DriverBioActivity extends AppCompatActivity {
         //set stroke of tableHeader
         tableLayout.addView(tableHeader);
 
-
         for (int i = 0; i < 10; i++) {
             View tableRow = inflater.inflate(R.layout.driver_bio_table_row, tableLayout, false);
             tableRow.setBackgroundColor(ContextCompat.getColor(this, R.color.mclaren_f1_light));
@@ -138,5 +192,47 @@ public class DriverBioActivity extends AppCompatActivity {
 
 
         }
+    }
+
+    private void setDriverData(Driver driver, Nation nation, Constructor team) {
+        ImageView teamLogo = findViewById(R.id.team_logo_image);
+        Glide.with(this).load(team.getTeam_logo_url()).into(teamLogo);
+
+        ImageView driverFlag = findViewById(R.id.driver_flag);
+        Glide.with(this).load(nation.getNation_flag_url()).into(driverFlag);
+
+        ImageView driverPic = findViewById(R.id.driver_bio_pic);
+        Glide.with(this).load(driver.getDriver_pic_url()).into(driverPic);
+
+        TextView birthplace = findViewById(R.id.driver_birthplace);
+        birthplace.setText(driver.getBirth_place());
+
+        TextView birthdate = findViewById(R.id.driver_birthdate);
+        birthdate.setText(driver.getDateOfBirth());
+
+        TextView age = findViewById(R.id.driver_age);
+        //age.setText(calculateAge(driver.getDateOfBirth()));
+
+        TextView weight = findViewById(R.id.driver_weight);
+        weight.setText(driver.getWeight() + " kg");
+
+        TextView height = findViewById(R.id.driver_height);
+        height.setText(driver.getHeight()+ " m");
+
+        TextView bestResult = findViewById(R.id.driver_best_result);
+        bestResult.setText(driver.getBest_result());
+
+        TextView championships = findViewById(R.id.driver_championships);
+        championships.setText(driver.getChampionships());
+
+        ImageView racingNumber = findViewById(R.id.driver_number);
+        Glide.with(this).load(driver.getRacing_number_pic_url()).into(racingNumber);
+    }
+
+    public static int calculateAge(String dateOfBirth) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        LocalDate birthDate = LocalDate.parse(dateOfBirth, formatter);
+        LocalDate currentDate = LocalDate.now();
+        return Period.between(birthDate, currentDate).getYears();
     }
 }

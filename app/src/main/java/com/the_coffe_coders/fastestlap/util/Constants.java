@@ -516,4 +516,9 @@ public class Constants {
     public static final String FIREBASE_REALTIME_DATABASE = "https://fastest-lap-ac540-default-rtdb.europe-west1.firebasedatabase.app/";
     public static final String FIREBASE_USERS_COLLECTION = "users";
     public static final int MINIMUM_LENGTH_PASSWORD = 8;
+
+    public static final String FIREBASE_DRIVERS_COLLECTION = "drivers";
+    public static final String FIREBASE_TEAMS_COLLECTION = "teams";
+    public static final String FIREBASE_CIRCUITS_COLLECTION = "circuits";
+    public static final String FIREBASE_NATIONS_COLLECTION = "nations";
 }

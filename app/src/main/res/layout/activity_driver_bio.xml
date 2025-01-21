@@ -142,6 +142,7 @@
                     android:orientation="vertical">
 
                     <ImageView
+                        android:id="@+id/driver_bio_pic"
                         android:layout_width="match_parent"
                         android:layout_height="250dp"
                         android:layout_marginStart="10dp"
@@ -162,6 +163,7 @@
                         app:strokeWidth="3dp">
 
                         <ImageView
+                            android:id="@+id/driver_number"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_margin="5dp"
@@ -279,7 +281,7 @@
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="10dp"
                         android:fontFamily="@font/orbitron_bold"
-                        android:text="Grand Prix Entered:"
+                        android:text="Weight - Height:"
                         android:textColor="@color/white"
                         android:textSize="@dimen/layout_subtitle_text_size" />
 
@@ -287,10 +289,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="10dp"
-                        android:orientation="vertical">
+                        android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/driver_gp_entered"
+                            android:id="@+id/driver_weight"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
@@ -298,6 +300,18 @@
                             android:layout_marginTop="2dp"
                             android:fontFamily="@font/orbitron_regular"
                             android:text="100"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/body_text_size" />
+
+                        <TextView
+                            android:id="@+id/driver_height"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="2dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="180"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size" />
 
@@ -339,7 +353,7 @@
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="10dp"
                         android:fontFamily="@font/orbitron_bold"
-                        android:text="Podiums:"
+                        android:text="Championships:"
                         android:textColor="@color/white"
                         android:textSize="@dimen/layout_subtitle_text_size" />
 
@@ -350,7 +364,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/driver_podiums"
+                            android:id="@+id/driver_championships"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"

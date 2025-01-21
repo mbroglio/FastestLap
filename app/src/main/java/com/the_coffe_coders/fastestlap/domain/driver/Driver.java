@@ -7,6 +7,9 @@ import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 @Entity(tableName = "Driver")
@@ -31,18 +34,20 @@ public class Driver implements Parcelable {
     private String givenName;
     private String familyName;
     private String dateOfBirth;
-
-    /*public Driver(String driverId, String permanentNumber, String code, String url, String givenName, String familyName, String dateOfBirth, String nationality) {
-        this.driverId = driverId;
-        this.permanentNumber = permanentNumber;
-        this.code = code;
-        this.url = url;
-        this.givenName = givenName;
-        this.familyName = familyName;
-        this.dateOfBirth = dateOfBirth;
-        this.nationality = nationality;
-    }*/
     private String nationality;
+
+    // Bio Data
+    private String best_result;
+    private String birth_place;
+    private String championships;
+    //private ArrayList<DriverHistory> driver_history;
+    private String driver_pic_url;
+    private String gp_entered;
+    private String height;
+    private String podiums;
+    private String racing_number_pic_url;
+    private String team_id;
+    private String weight;
 
     public Driver() {
 
@@ -58,6 +63,21 @@ public class Driver implements Parcelable {
         this.familyName = in.readString();
         this.dateOfBirth = in.readString();
         this.nationality = in.readString();
+    }
+
+    public Driver(String driverId, String best_result, String birth_place, String championships, String driver_pic_url, String gp_entered, String height, String nationality, String podiums, String racing_number_pic_url, String team_id, String weight) {
+        this.driverId = driverId;
+        this.best_result = best_result;
+        this.birth_place = birth_place;
+        this.championships = championships;
+        this.driver_pic_url = driver_pic_url;
+        this.gp_entered = gp_entered;
+        this.height = height;
+        this.nationality = nationality;
+        this.podiums = podiums;
+        this.racing_number_pic_url = racing_number_pic_url;
+        this.team_id = team_id;
+        this.weight = weight;
     }
 
     public long getUid() {
@@ -187,5 +207,110 @@ public class Driver implements Parcelable {
         this.familyName = parcel.readString();
         this.dateOfBirth = parcel.readString();
         this.nationality = parcel.readString();
+    }
+
+    public String getBest_result() {
+        return best_result;
+    }
+
+    public void setBest_result(String best_result) {
+        this.best_result = best_result;
+    }
+
+    public String getBirth_place() {
+        return birth_place;
+    }
+
+    public void setBirth_place(String birth_place) {
+        this.birth_place = birth_place;
+    }
+
+    public String getChampionships() {
+        return championships;
+    }
+
+    public void setChampionships(String championships) {
+        this.championships = championships;
+    }
+
+    /*public ArrayList<DriverHistory> getDriver_history() {
+        return driver_history;
+    }
+
+    public void setDriver_history(ArrayList<DriverHistory> driver_history) {
+        this.driver_history = driver_history;
+    }*/
+
+    public String getDriver_pic_url() {
+        return driver_pic_url;
+    }
+
+    public void setDriver_pic_url(String driver_pic_url) {
+        this.driver_pic_url = driver_pic_url;
+    }
+
+    public String getGp_entered() {
+        return gp_entered;
+    }
+
+    public void setGp_entered(String gp_entered) {
+        this.gp_entered = gp_entered;
+    }
+
+    public String getHeight() {
+        return height;
+    }
+
+    public void setHeight(String height) {
+        this.height = height;
+    }
+
+    public String getPodiums() {
+        return podiums;
+    }
+
+    public void setPodiums(String podiums) {
+        this.podiums = podiums;
+    }
+
+    public String getRacing_number_pic_url() {
+        return racing_number_pic_url;
+    }
+
+    public void setRacing_number_pic_url(String racing_number_pic_url) {
+        this.racing_number_pic_url = racing_number_pic_url;
+    }
+
+    public String getTeam_id() {
+        return team_id;
+    }
+
+    public void setTeam_id(String team_id) {
+        this.team_id = team_id;
+    }
+
+    public String getWeight() {
+        return weight;
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
+    }
+
+    public String toStringDB() {
+        return "Driver{" +
+                "best_result='" + best_result + '\'' +
+                ", birth_place='" + birth_place + '\'' +
+                ", championships='" + championships + '\'' +
+                ", driver_pic_url='" + driver_pic_url + '\'' +
+                ", gp_entered='" + gp_entered + '\'' +
+                ", height='" + height + '\'' +
+                ", nationality_db='" + nationality + '\'' +
+                ", podiums='" + podiums + '\'' +
+                ", racing_number_pic_url='" + racing_number_pic_url + '\'' +
+                ", team_id='" + team_id + '\'' +
+                ", weight='" + weight + '\'' +
+                ", driverId='" + driverId + '\'' +
+                '}';
     }
 }
