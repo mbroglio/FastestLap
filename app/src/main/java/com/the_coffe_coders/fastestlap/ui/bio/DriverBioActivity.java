@@ -83,9 +83,21 @@ public class DriverBioActivity extends AppCompatActivity {
         //set listener to driver rank and define a method onclick
         MaterialCardView driverRank = findViewById(R.id.driver_current_standing);
         driverRank.setOnClickListener(v -> {
-            Intent intent = new Intent(DriverBioActivity.this, DriversStandingActivity.class);
-            intent.putExtra("DRIVER_ID", driverId);
-            startActivity(intent);
+            //Intent resultIntent = new Intent(DriverBioActivity.this, DriversStandingActivity.class);
+            //startActivity(resultIntent);
+            String callerActivity = getIntent().getStringExtra("CALLER");
+            assert callerActivity != null;
+            if (callerActivity.equals(DriversStandingActivity.class.getName())) {
+                //Intent resultIntent = new Intent();
+                //resultIntent.putExtra("DRIVER_ID", driverId);
+                //setResult(RESULT_OK, resultIntent);
+                finish();
+            }else {
+                Intent resultIntent = new Intent(DriverBioActivity.this, DriversStandingActivity.class);
+                resultIntent.putExtra("DRIVER_ID", driverId);
+                startActivity(resultIntent);
+            }
+
         });
 
 

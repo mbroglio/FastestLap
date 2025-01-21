@@ -15,6 +15,8 @@ public abstract class BaseRaceResultLocalDataSource {
 
     public abstract void getAllRaceResult();
 
+    public abstract void getAllRaceList();
+
     public abstract void getRaceResultById(int id);
 
     public abstract void insertRaceList(List<Race> raceList);

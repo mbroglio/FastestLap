@@ -48,6 +48,14 @@ public class Race extends Session {
         return season;
     }
 
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
+    }
+
     public void setSeason(String season) {
         this.season = season;
     }

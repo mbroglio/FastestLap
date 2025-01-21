@@ -159,6 +159,7 @@ public class DriversStandingActivity extends AppCompatActivity {
         driverCard.setOnClickListener(v -> {
             Intent intent = new Intent(DriversStandingActivity.this, DriverBioActivity.class);
             intent.putExtra("DRIVER_ID", driverId);
+            intent.putExtra("CALLER", DriversStandingActivity.class.getName());
             startActivity(intent);
         });
 

@@ -76,7 +76,7 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
             isOutdate = false;
         } else {
             Log.i(TAG, "fetchAllRaceResults from local");
-            raceResultLocalDataSource.getAllRaceResult();
+            raceResultLocalDataSource.getAllRaceList();
         }
         Log.i(TAG, "fetchallreturn");
         return allRaceResultMutableLiveData;
@@ -133,12 +133,12 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
 
     @Override
     public void onSuccessFromLocalRaceList(List<Race> raceList) {
-        Log.i(TAG, "onSuccessFromLocal");
+        Log.i(TAG, "onSuccessFromLocalRaceList" + raceList.size());
        /* new Handler(Looper.getMainLooper()).post(() -> {
             raceResultMutableLiveData.setValue(new Result.RaceResultSuccess(raceResultList));
         });*/
-        raceResultMutableLiveData.setValue(new Result.RaceSuccess(raceList));
-        Log.i(TAG, raceResultMutableLiveData.toString());
+        allRaceResultMutableLiveData.setValue(new Result.RaceSuccess(raceList));
+        Log.i(TAG, allRaceResultMutableLiveData.toString());
     }
 
 

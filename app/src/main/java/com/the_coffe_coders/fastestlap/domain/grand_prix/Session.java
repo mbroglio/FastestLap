@@ -87,7 +87,11 @@ public abstract class Session {
         }
     }
 
-    public String getSessionStatus() {
+    public SessionStatus getSessionStatus() {
+        return sessionStatus;
+    }
+
+    public String getSessionStatusAsString() {
         return sessionStatus.toString();
     }
 
