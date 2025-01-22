@@ -8,8 +8,12 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 import java.util.Objects;
+
+import retrofit2.http.GET;
 
 @Entity(tableName = "Driver")
 public class Driver implements Parcelable {
@@ -26,27 +30,27 @@ public class Driver implements Parcelable {
     };
     @PrimaryKey(autoGenerate = true)
     private long uid;
-    private String driverId;
-    private String permanentNumber;
-    private String code;
-    private String url;
-    private String givenName;
-    private String familyName;
-    private String dateOfBirth;
-    private String nationality;
+    private String driverId; // A
+    private String permanentNumber; // A
+    private String code; // A
+    private String url; // A
+    private String givenName; // F
+    private String familyName; // F
+    private String dateOfBirth; // F
+    private String nationality; // Must be overwitten by DB
 
     // Bio Data
-    private String best_result;
-    private String birth_place;
-    private String championships;
+    private String best_result; // F
+    private String birth_place; // F
+    private String championships; // F
     @Ignore // Check if it generates errors
-    private List<DriverHistory> driver_history;
-    private String driver_pic_url;
-    private String height;
-    private String podiums;
-    private String racing_number_pic_url;
-    private String team_id;
-    private String weight;
+    private List<DriverHistory> driver_history; // F
+    private String driver_pic_url; // F
+    private String height; // F
+    private String podiums; // F
+    private String racing_number_pic_url; // F
+    private String team_id; // F
+    private String weight; // F
 
     public Driver(String driverId, String givenName, String familyName, String dateOfBirth, String nationality, String best_result, String birth_place, String championships, List<DriverHistory> driver_history, String driver_pic_url, String height, String podiums, String racing_number_pic_url, String team_id, String weight) {
         this.driverId = driverId;
@@ -297,6 +301,7 @@ public class Driver implements Parcelable {
         return "Driver{" +
                 "best_result='" + best_result + '\'' +
                 ", birth_place='" + birth_place + '\'' +
+                ", dateOfBirth='" + dateOfBirth + '\'' +
                 ", championships='" + championships + '\'' +
                 ", driver_pic_url='" + driver_pic_url + '\'' +
                 ", driver_history=" + driver_history.toString() +

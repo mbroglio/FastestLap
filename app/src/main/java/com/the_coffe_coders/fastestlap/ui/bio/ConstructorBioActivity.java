@@ -51,6 +51,8 @@ public class ConstructorBioActivity extends AppCompatActivity {
         String teamId = getIntent().getStringExtra("TEAM_ID");
         Log.i("ConstructorBioActivity", "Team ID: " + teamId);
 
+
+
         MaterialCardView driverOneCard = findViewById(R.id.driver_1_card);
 
         driverOneCard.setOnClickListener(v -> {
