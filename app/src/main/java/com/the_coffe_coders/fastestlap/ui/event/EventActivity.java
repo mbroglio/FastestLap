@@ -224,6 +224,7 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void processRaceResults(WeeklyRace weeklyRace) {
+        Log.i(TAG, "Processing race results" + " " + weeklyRace.getRound());
         MutableLiveData<Result> resultMutableLiveData = eventViewModel.getRaceResults(0L, weeklyRace.getRound());
         Log.i(TAG, resultMutableLiveData.toString());
         resultMutableLiveData.observe(this, result -> {
@@ -231,6 +232,7 @@ public class EventActivity extends AppCompatActivity {
             if (podium == null) {
                 showPendingResults();
             } else {
+                Log.i(TAG, "Podium found" + podium.size());
                 for (int i = 0; i < 3; i++) {
                     String driverId = podium.get(i).getDriver().getDriverId();
                     String teamId = podium.get(i).getConstructor().getConstructorId();

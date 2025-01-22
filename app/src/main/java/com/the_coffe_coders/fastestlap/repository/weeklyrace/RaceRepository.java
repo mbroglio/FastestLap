@@ -20,7 +20,7 @@ import java.util.List;
 
 public class RaceRepository implements IRaceRepository, RaceResponseCallback {
     private static final String TAG = "RaceRepository";
-    public static boolean isOutdate = true;
+    public static boolean isOutdateRace = true;
     private final MutableLiveData<Result> weeklyRaceMutableLiveData;
     private final BaseWeeklyRaceRemoteDataSource raceRemoteDataSource;
     private final BaseWeeklyRaceLocalDataSource raceLocalDataSource;
@@ -38,11 +38,11 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
     @Override
     public MutableLiveData<Result> fetchWeeklyRaces(long lastUpdate) {
 
-        if (isOutdate) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
+        if (isOutdateRace) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
             //TODO fetch from remote
 
             raceRemoteDataSource.getWeeklyRaces();
-            isOutdate = false;
+            isOutdateRace = false;
         } else {
             Log.i(TAG, "fetchWeeklyRaces from local");
             raceLocalDataSource.getWeeklyRaces();

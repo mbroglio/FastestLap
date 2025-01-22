@@ -2,6 +2,7 @@ package com.the_coffe_coders.fastestlap.repository.result;
 
 import com.the_coffe_coders.fastestlap.api.RaceResultsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 
 import java.util.List;
 
@@ -16,6 +17,8 @@ public interface RaceResultResponseCallback {
     void onSuccessFromLocal(RaceResult raceResult);
 
     void onSuccessFromLocal(List<RaceResult> raceResultList);
+
+    void onSuccessFromLocalRaceList(List<Race> raceList);
 
     void onFailureFromLocal(Exception exception);
 

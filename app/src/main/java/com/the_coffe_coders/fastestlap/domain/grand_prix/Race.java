@@ -1,11 +1,18 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
 import org.threeten.bp.LocalDateTime;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Entity
 public class Race extends Session {
+
+    @PrimaryKey(autoGenerate = true)
+    private int uid;
     public List<RaceResult> raceResults;
     public LocalDateTime dateTime;//TODO REMOVE ?
     private String season;
@@ -39,6 +46,14 @@ public class Race extends Session {
 
     public String getSeason() {
         return season;
+    }
+
+    public int getUid() {
+        return uid;
+    }
+
+    public void setUid(int uid) {
+        this.uid = uid;
     }
 
     public void setSeason(String season) {

@@ -53,4 +53,9 @@ public class WeeklyRaceLocalDataSource extends BaseWeeklyRaceLocalDataSource {
             raceCallback.onSuccessFromLocal(weeklyRaceList);
         });
     }
+
+    @Override
+    public void insertWeeklyRace(WeeklyRace weeklyRace) {
+
+    }
 }
