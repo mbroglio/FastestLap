@@ -17,12 +17,16 @@ import com.the_coffe_coders.fastestlap.source.result.BaseRaceResultLocalDataSour
 import com.the_coffe_coders.fastestlap.source.result.BaseRaceResultRemoteDataSource;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RaceResultRepository implements IRaceResultRepository, RaceResultResponseCallback {
 
     private static final String TAG = "RaceResultRepository";
-    public static boolean isOutdate = true;
+
+    public static Map<Integer, Boolean> isOutdateRaceResult = new HashMap<>();
+    public static boolean isOutdateRaceResults = true;
     private final MutableLiveData<Result> raceResultMutableLiveData;
     private final MutableLiveData<Result> allRaceResultMutableLiveData;
     private final BaseRaceResultRemoteDataSource raceResultRemoteDataSource;
@@ -51,29 +55,35 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
     }
 
     @Override
-    public MutableLiveData<Result> fetchRaceResults(int round, long lastUpdate) {
+    public MutableLiveData<Result> fetchRaceResult(int round, long lastUpdate) {
         Log.i(TAG, "fetchRaceResults");
-        if (isOutdate) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
+        if (isOutdateRaceResult.get(round) == null) {
+            isOutdateRaceResult.put(round, true);
+        }
+        if (isOutdateRaceResult.get(round)) {
+            //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
             //TODO fetch from remote
             Log.i(TAG, "Remote fetchRaceResults");
             raceResultRemoteDataSource.getRaceResults(round);
-            //isOutdate = false;
+            isOutdateRaceResult.put(round, false);
+
         } else {
             Log.i(TAG, "fetchRaceResults from local");
             raceResultLocalDataSource.getAllRaceResult();
         }
+
         return raceResultMutableLiveData;
     }
 
     public MutableLiveData<Result> fetchAllRaceResults(long lastUpdate) {
         Log.i(TAG, "fetchAllRaceResults");
         raceList = new ArrayList<>();
-        if (isOutdate) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
+        if (isOutdateRaceResults) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
             //TODO fetch from remote
             //Log.i(TAG, "Remote fetchAllRaceResults");
             raceResultRemoteDataSource.getAllRaceResults();
 
-            isOutdate = false;
+            isOutdateRaceResults = false;
         } else {
             Log.i(TAG, "fetchAllRaceResults from local");
             raceResultLocalDataSource.getAllRaceList();
@@ -122,7 +132,7 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
 
     }
 
-   @Override
+    @Override
     public void onSuccessFromLocal(List<RaceResult> raceResultList) {
         Log.i(TAG, "onSuccessFromLocal");
         new Handler(Looper.getMainLooper()).post(() -> {

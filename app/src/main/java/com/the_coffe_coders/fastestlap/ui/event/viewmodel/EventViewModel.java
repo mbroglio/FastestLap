@@ -47,7 +47,7 @@ public class EventViewModel extends ViewModel {
 
     public MutableLiveData<Result> getRaceResults(long lastUpdate, String raceId) {
         System.out.println(raceId);
-        return raceResultRepository.fetchRaceResults(Integer.parseInt(raceId), 0L);
+        return raceResultRepository.fetchRaceResult(Integer.parseInt(raceId), 0L);
     }
 
     public MutableLiveData<Result> getPastEventLiveData(long lastUpdate) {
