@@ -118,7 +118,8 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
             for (ResultDTO resultDTO : raceResultsAPIResponse.getRaceResults()) {
                 raceResult.add(SessionMapper.toResult(resultDTO));
             }
-            raceResultMutableLiveData.postValue(new Result.RaceResultSuccess(raceResult));
+            raceResultLocalDataSource.insertRaceResultList(raceResult);
+            //raceResultMutableLiveData.postValue(new Result.RaceResultSuccess(raceResult));
         }
     }
 
@@ -135,10 +136,7 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
     @Override
     public void onSuccessFromLocal(List<RaceResult> raceResultList) {
         Log.i(TAG, "onSuccessFromLocal");
-        new Handler(Looper.getMainLooper()).post(() -> {
-            raceResultMutableLiveData.setValue(new Result.RaceResultSuccess(raceResultList));
-        });
-        raceResultMutableLiveData.setValue(new Result.RaceResultSuccess(raceResultList));
+        raceResultMutableLiveData.postValue(new Result.RaceResultSuccess(raceResultList));
         Log.i(TAG, raceResultMutableLiveData.toString());
     }
 
