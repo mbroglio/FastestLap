@@ -3,7 +3,6 @@ package com.the_coffe_coders.fastestlap.ui.home.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,10 +29,10 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
-import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
+import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
@@ -62,6 +61,7 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
     private final String TAG = HomeFragment.class.getSimpleName();
+    HomeViewModel homeViewModel;
 
     LoadingScreen loadingScreen;
 
@@ -97,7 +97,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void setLastRaceCard(View view) {
-        MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchLastRace(0);
+        MutableLiveData<Result> data = homeViewModel.getLastRace(0L);
         try {
             data.observe(getViewLifecycleOwner(), result -> {
                 if (result.isSuccess()) {
@@ -163,7 +163,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void setNextSessionCard(View view) {
-        MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchNextRace(0);
+        MutableLiveData<Result> data = homeViewModel.getNextRace(0L);
         try {
             data.observe(getViewLifecycleOwner(), result -> {
                 if (result.isSuccess()) {
