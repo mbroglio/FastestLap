@@ -53,6 +53,14 @@ public class DriverBioActivity extends AppCompatActivity {
     private Nation nation;
     private Constructor team;
 
+    private MaterialCardView teamLogoCard;
+    private ImageView teamLogoImage;
+
+    private MaterialCardView driverRank;
+
+    private MaterialCardView driverNumberCard;
+    private ImageView driverNumberImage;
+
     public static String calculateAge(String dateOfBirth) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate birthDate = LocalDate.parse(dateOfBirth, formatter);
@@ -93,22 +101,18 @@ public class DriverBioActivity extends AppCompatActivity {
         // Calculate 60% of the screen width
         int width_percent_60 = (int) (screenWidth * 0.6);
 
-        MaterialCardView teamLogo = findViewById(R.id.team_logo);
-        ImageView teamLogoImage = findViewById(R.id.team_logo_image);
-        String teamNameId = teamLogoImage.getContentDescription().toString();
+        teamLogoCard = findViewById(R.id.team_logo_card);
+        teamLogoImage = findViewById(R.id.team_logo_image);
 
-        ViewGroup.LayoutParams params = teamLogo.getLayoutParams();
+        driverNumberCard = findViewById(R.id.driver_number_card);
+        driverNumberImage = findViewById(R.id.driver_number_image);
+
+        ViewGroup.LayoutParams params = teamLogoCard.getLayoutParams();
         params.width = width_percent_60;
-        teamLogo.setLayoutParams(params);
-
-        teamLogo.setOnClickListener(v -> {
-            Intent intent = new Intent(DriverBioActivity.this, ConstructorBioActivity.class);
-            intent.putExtra("TEAM NAME", teamNameId);
-            startActivity(intent);
-        });
+        teamLogoCard.setLayoutParams(params);
 
         //set listener to driver rank and define a method onclick
-        MaterialCardView driverRank = findViewById(R.id.driver_current_standing);
+        driverRank = findViewById(R.id.driver_current_standing);
         driverRank.setOnClickListener(v -> {
             Intent intent = new Intent(DriverBioActivity.this, DriversStandingActivity.class);
             intent.putExtra("DRIVER_ID", driverId);
@@ -124,8 +128,17 @@ public class DriverBioActivity extends AppCompatActivity {
                 String fullName = driver.getGivenName() + " " + driver.getFamilyName();
 
                 toolbar.setTitle(fullName.toUpperCase());
-                toolbar.setBackgroundColor(Constants.TEAM_COLOR.get(driver.getTeam_id()));
-                appBarLayout.setBackgroundColor(Constants.TEAM_COLOR.get(driver.getTeam_id()));
+                toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
+                appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
+
+                teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
+                driverNumberCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
+
+                teamLogoCard.setOnClickListener(v -> {
+                    Intent intent = new Intent(DriverBioActivity.this, ConstructorBioActivity.class);
+                    intent.putExtra("TEAM NAME", driver.getTeam_id());
+                    startActivity(intent);
+                });
 
                 DatabaseReference nationReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_NATIONS_COLLECTION).child(driver.getNationality());
                 Log.i("DriverBioActivity", "Nation reference: " + nationReference.toString());
@@ -156,8 +169,7 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     private void setDriverData(Driver driver, Nation nation, Constructor team) {
-        ImageView teamLogo = findViewById(R.id.team_logo_image);
-        Glide.with(this).load(team.getTeam_logo_url()).into(teamLogo);
+        Glide.with(this).load(team.getTeam_logo_url()).into(teamLogoImage);
 
         ImageView driverFlag = findViewById(R.id.driver_flag);
         Glide.with(this).load(nation.getNation_flag_url()).into(driverFlag);
@@ -175,10 +187,10 @@ public class DriverBioActivity extends AppCompatActivity {
         age.setText(calculateAge(driver.getDateOfBirth()));
 
         TextView weight = findViewById(R.id.driver_weight);
-        weight.setText(driver.getWeight() + " kg");
+        weight.setText(driver.getWeight());
 
         TextView height = findViewById(R.id.driver_height);
-        height.setText(driver.getHeight() + " m");
+        height.setText(driver.getHeight());
 
         TextView bestResult = findViewById(R.id.driver_best_result);
         bestResult.setText(driver.getBest_result());
@@ -186,29 +198,27 @@ public class DriverBioActivity extends AppCompatActivity {
         TextView championships = findViewById(R.id.driver_championships);
         championships.setText(driver.getChampionships());
 
-        ImageView racingNumber = findViewById(R.id.driver_number);
-        Glide.with(this).load(driver.getRacing_number_pic_url()).into(racingNumber);
+        Glide.with(this).load(driver.getRacing_number_pic_url()).into(driverNumberImage);
 
-        createHitoryTable();
+        createHistoryTable();
     }
 
-    private void createHitoryTable() {
+    private void createHistoryTable() {
         TableLayout tableLayout = findViewById(R.id.history_table);
         LayoutInflater inflater = LayoutInflater.from(this);
-        Typeface orbitronRegular = ResourcesCompat.getFont(this, R.font.orbitron_regular);
 
         View tableHeader = inflater.inflate(R.layout.driver_bio_table_header, tableLayout, false);
         TableLayout.LayoutParams paramsHeader = (TableLayout.LayoutParams) tableHeader.getLayoutParams();
         paramsHeader.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
         tableHeader.setLayoutParams(paramsHeader);
-        tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.mclaren_f1));
+        tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray_dark));
 
         //set stroke of tableHeader
         tableLayout.addView(tableHeader);
 
         for (DriverHistory history : driver.getDriver_history()) {
             View tableRow = inflater.inflate(R.layout.driver_bio_table_row, tableLayout, false);
-            tableRow.setBackgroundColor(ContextCompat.getColor(this, R.color.mclaren_f1_light));
+            tableRow.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
             // Customize the row if needed
             TextView seasonYear, teamNameText, driverPosition, driverPoints, driverWins, driverPodiums;
             seasonYear = tableRow.findViewById(R.id.season_year);

@@ -11,14 +11,12 @@
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/mclaren_f1"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:background="@color/mclaren_f1"
             app:navigationIcon="@drawable/arrow_back_ios_style"
             app:title="LANDO NORRIS"
             app:titleCentered="true"
@@ -77,7 +75,7 @@
                     android:layout_weight="0.65">
 
                     <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/team_logo"
+                        android:id="@+id/team_logo_card"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_alignParentStart="true"
@@ -86,7 +84,6 @@
                         android:layout_alignParentBottom="true"
                         android:layout_margin="5dp"
                         app:cardBackgroundColor="@color/timer_gray"
-                        app:strokeColor="@color/mclaren_f1"
                         app:strokeWidth="3dp">
 
                         <ImageView
@@ -153,17 +150,17 @@
                     </ImageView>
 
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/driver_number_card"
                         android:layout_width="@dimen/driver_photo_in_card"
                         android:layout_height="@dimen/driver_photo_in_card"
                         android:layout_marginTop="10dp"
                         android:clickable="true"
                         android:focusable="true"
                         app:cardBackgroundColor="@color/timer_gray"
-                        app:strokeColor="@color/mclaren_f1"
                         app:strokeWidth="3dp">
 
                         <ImageView
-                            android:id="@+id/driver_number"
+                            android:id="@+id/driver_number_image"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_margin="5dp"
@@ -304,16 +301,50 @@
                             android:textSize="@dimen/body_text_size" />
 
                         <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="kg"
+                            android:layout_marginStart="3dp"
+                            android:layout_gravity="center"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/text_minor_importance_size"
+                            android:fontFamily="@font/orbitron_regular">
+
+                        </TextView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/separator_high_dash"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/body_text_size" />
+
+                        <TextView
                             android:id="@+id/driver_height"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
-                            android:layout_marginStart="20dp"
                             android:layout_marginTop="2dp"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="180"
+                            android:text="1.80"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="m"
+                            android:layout_marginStart="3dp"
+                            android:layout_gravity="center"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/text_minor_importance_size"
+                            android:fontFamily="@font/orbitron_regular">
+
+                        </TextView>
 
                     </LinearLayout>
 
