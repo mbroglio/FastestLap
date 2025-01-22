@@ -93,13 +93,15 @@ public class DriverBioActivity extends AppCompatActivity {
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        // Get the screen width
+        /* Get the screen width
         DisplayMetrics displayMetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
         int screenWidth = displayMetrics.widthPixels;
-
-        // Calculate 60% of the screen width
         int width_percent_60 = (int) (screenWidth * 0.6);
+        ViewGroup.LayoutParams params = teamLogoCard.getLayoutParams();
+        params.width = width_percent_60;
+        teamLogoCard.setLayoutParams(params);
+        */
 
         teamLogoCard = findViewById(R.id.team_logo_card);
         teamLogoImage = findViewById(R.id.team_logo_image);
@@ -107,17 +109,8 @@ public class DriverBioActivity extends AppCompatActivity {
         driverNumberCard = findViewById(R.id.driver_number_card);
         driverNumberImage = findViewById(R.id.driver_number_image);
 
-        ViewGroup.LayoutParams params = teamLogoCard.getLayoutParams();
-        params.width = width_percent_60;
-        teamLogoCard.setLayoutParams(params);
-
-        //set listener to driver rank and define a method onclick
         driverRank = findViewById(R.id.driver_current_standing);
-        driverRank.setOnClickListener(v -> {
-            Intent intent = new Intent(DriverBioActivity.this, DriversStandingActivity.class);
-            intent.putExtra("DRIVER_ID", driverId);
-            startActivity(intent);
-        });
+
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_DRIVERS_COLLECTION).child(driverId);
         Log.i("DriverBioActivity", "Database reference: " + databaseReference.toString());
@@ -130,13 +123,17 @@ public class DriverBioActivity extends AppCompatActivity {
                 toolbar.setTitle(fullName.toUpperCase());
                 toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
                 appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
-
-                teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
-                driverNumberCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
+                driverRank.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_SECONDARY_COLOR.get(driver.getTeam_id())));
 
                 teamLogoCard.setOnClickListener(v -> {
                     Intent intent = new Intent(DriverBioActivity.this, ConstructorBioActivity.class);
-                    intent.putExtra("TEAM NAME", driver.getTeam_id());
+                    intent.putExtra("TEAM_ID", driver.getTeam_id());
+                    startActivity(intent);
+                });
+
+                driverRank.setOnClickListener(v -> {
+                    Intent intent = new Intent(DriverBioActivity.this, DriversStandingActivity.class);
+                    intent.putExtra("DRIVER_ID", driverId);
                     startActivity(intent);
                 });
 
@@ -169,6 +166,9 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     private void setDriverData(Driver driver, Nation nation, Constructor team) {
+        teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
+        driverNumberCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
+
         Glide.with(this).load(team.getTeam_logo_url()).into(teamLogoImage);
 
         ImageView driverFlag = findViewById(R.id.driver_flag);

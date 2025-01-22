@@ -1,12 +1,19 @@
 package com.the_coffe_coders.fastestlap.ui.bio;
 
+import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_DRIVERS_COLLECTION;
+import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_NATIONS_COLLECTION;
+import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
+import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_TEAMS_COLLECTION;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TableLayout;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,10 +22,19 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
+import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorHistory;
+import com.the_coffe_coders.fastestlap.domain.driver.Driver;
+import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
+import com.the_coffe_coders.fastestlap.util.Constants;
 
 /*
  * TODO:
@@ -26,6 +42,28 @@ import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
  */
 
 public class ConstructorBioActivity extends AppCompatActivity {
+
+    private static final String TAG = "ConstructorBioActivity";
+
+    private Constructor team;
+    private Driver driverOne;
+    private Driver driverTwo;
+    private Nation nation;
+
+
+    private MaterialCardView teamLogoCard;
+    private ImageView teamLogoImage;
+
+    private ImageView teamCarImage;
+
+    private MaterialCardView driverOneCard;
+    private ImageView driverOneImage;
+    private MaterialCardView driverTwoCard;
+    private ImageView driverTwoImage;
+
+    private ImageView teamFlag;
+
+    private MaterialCardView teamRank;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +73,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        AppBarLayout appBarLayout = findViewById(R.id.top_bar_layout);
 
         ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -51,32 +90,140 @@ public class ConstructorBioActivity extends AppCompatActivity {
         String teamId = getIntent().getStringExtra("TEAM_ID");
         Log.i("ConstructorBioActivity", "Team ID: " + teamId);
 
+        teamLogoCard = findViewById(R.id.team_logo_card);
+        teamLogoImage = findViewById(R.id.team_logo_image);
 
+        teamCarImage = findViewById(R.id.team_car_image);
 
-        MaterialCardView driverOneCard = findViewById(R.id.driver_1_card);
+        driverOneCard = findViewById(R.id.driver_1_card);
+        driverOneImage = findViewById(R.id.driver_1_image);
+        driverTwoCard = findViewById(R.id.driver_2_card);
+        driverTwoImage = findViewById(R.id.driver_2_image);
 
-        driverOneCard.setOnClickListener(v -> {
-            Intent intent = new Intent(ConstructorBioActivity.this, DriverBioActivity.class);
-            intent.putExtra("DRIVER_ID", "leclerc");
-            startActivity(intent);
+        teamFlag = findViewById(R.id.team_flag);
+        teamRank = findViewById(R.id.team_current_standing);
+
+        DatabaseReference databaseReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_TEAMS_COLLECTION).child(teamId);
+        Log.i(TAG, "Database reference: " + databaseReference.toString());
+        databaseReference.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                team = task.getResult().getValue(Constructor.class);
+                Log.i(TAG, "Team data: " + team.toStringDB());
+                String teamName = team.getName();
+
+                toolbar.setTitle(teamName.toUpperCase());
+                toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+                appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+
+                teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+                driverOneCard.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+                driverTwoCard.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+                teamRank.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_SECONDARY_COLOR.get(teamId)));
+
+                teamRank.setOnClickListener(v -> {
+                    Intent intent = new Intent(ConstructorBioActivity.this, ConstructorsStandingActivity.class);
+                    intent.putExtra("TEAM_ID", teamId);
+                    startActivity(intent);
+                });
+
+                DatabaseReference nationReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_NATIONS_COLLECTION).child(team.getNationality());
+                Log.i(TAG, "Nation reference: " + nationReference.toString());
+                nationReference.get().addOnCompleteListener(nationTask -> {
+                    if (nationTask.isSuccessful()) {
+                        nation = nationTask.getResult().getValue(Nation.class);
+                        Log.i(TAG, "Nation data: " + nation.toString());
+
+                        DatabaseReference driverOneReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_DRIVERS_COLLECTION).child(team.getDrivers().get(0));
+                        Log.i(TAG, "Driver 1 reference: " + driverOneReference.toString());
+                        driverOneReference.get().addOnCompleteListener(driverOneTask -> {
+                            if (driverOneTask.isSuccessful()) {
+                                driverOne = driverOneTask.getResult().getValue(Driver.class);
+                                Log.i(TAG, "Driver 1 data: " + driverOne.toStringDB());
+
+                                driverOneCard.setOnClickListener(v -> {
+                                    Intent intent = new Intent(ConstructorBioActivity.this, DriverBioActivity.class);
+                                    intent.putExtra("DRIVER_ID", team.getDrivers().get(0));
+                                    startActivity(intent);
+                                });
+
+                                DatabaseReference driverTwoReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_DRIVERS_COLLECTION).child("verstappen");
+                                Log.i(TAG, "Driver 2 reference: " + driverTwoReference.toString());
+                                driverTwoReference.get().addOnCompleteListener(driverTwoTask -> {
+                                    if (driverTwoTask.isSuccessful()) {
+                                        driverTwo = driverTwoTask.getResult().getValue(Driver.class);
+                                        Log.i(TAG, "Driver 2 data: " + driverTwo.toStringDB());
+
+                                        driverTwoCard.setOnClickListener(v -> {
+                                            Intent intent = new Intent(ConstructorBioActivity.this, DriverBioActivity.class);
+                                            intent.putExtra("DRIVER_ID", team.getDrivers().get(0));
+                                            startActivity(intent);
+                                        });
+
+                                        setTeamData(team, nation, driverOne, driverTwo);
+                                    } else {
+                                        Log.e("DriverBioActivity", "Error getting team data", driverTwoTask.getException());
+                                    }
+                                });
+                            } else {
+                                Log.e("DriverBioActivity", "Error getting team data", driverOneTask.getException());
+                            }
+                        });
+                    } else {
+                        Log.e("DriverBioActivity", "Error getting nation data", nationTask.getException());
+                    }
+                });
+            } else {
+                Log.e("DriverBioActivity", "Error getting driver data", task.getException());
+            }
         });
+    }
 
-        MaterialCardView driverTwoCard = findViewById(R.id.driver_2_card);
-        driverTwoCard.setOnClickListener(v -> {
-            Intent intent = new Intent(ConstructorBioActivity.this, DriverBioActivity.class);
-            intent.putExtra("DRIVER_ID", "sainz");
-            startActivity(intent);
-        });
+    private void setTeamData(Constructor team, Nation nation, Driver driverOne, Driver driverTwo) {
+        Glide.with(this).load(team.getTeam_logo_url()).into(teamLogoImage);
+        Glide.with(this).load(nation.getNation_flag_url()).into(teamFlag);
+        Glide.with(this).load(team.getCar_pic_url()).into(teamCarImage);
+        Glide.with(this).load(driverOne.getDriver_pic_url()).into(driverOneImage);
+        Glide.with(this).load(driverTwo.getDriver_pic_url()).into(driverTwoImage);
 
-        //set listener to team rank and define a method onclick
-        MaterialCardView teamRank = findViewById(R.id.team_current_standing);
-        teamRank.setOnClickListener(v -> {
-            Intent intent = new Intent(ConstructorBioActivity.this, ConstructorsStandingActivity.class);
-            intent.putExtra("TEAM_ID", "ferrari");
-            startActivity(intent);
-        });
+        TextView driverOneName = findViewById(R.id.driver_1_name);
+        driverOneName.setText(driverOne.getGivenName()+" "+driverOne.getFamilyName());
 
+        TextView driverTwoName = findViewById(R.id.driver_2_name);
+        driverTwoName.setText(driverTwo.getGivenName()+" "+driverTwo.getFamilyName());
 
+        //Team Data
+        TextView teamFullName = findViewById(R.id.team_full_name_value);
+        teamFullName.setText(team.getFull_name());
+
+        TextView teamHq = findViewById(R.id.team_base_value);
+        teamHq.setText(team.getHq());
+
+        TextView teamPrincipal = findViewById(R.id.team_principal_value);
+        teamPrincipal.setText(team.getTeam_principal());
+
+        TextView teamChassis = findViewById(R.id.team_chassis_value);
+        teamChassis.setText(team.getChassis());
+
+        TextView teamPowerUnit = findViewById(R.id.team_power_unit_value);
+        teamPowerUnit.setText(team.getPower_unit());
+
+        TextView teamFirstEntry = findViewById(R.id.team_first_entry_value);
+        teamFirstEntry.setText(team.getFirst_entry());
+
+        TextView championships = findViewById(R.id.team_championships_value);
+        championships.setText(team.getWorld_championships());
+
+        TextView wins = findViewById(R.id.team_wins_value);
+        wins.setText(team.getWins());
+
+        TextView podiums = findViewById(R.id.team_podiums_value);
+        podiums.setText(team.getPodiums());
+
+        createHistoryTable();
+
+    }
+
+    private void createHistoryTable() {
         TableLayout tableLayout = findViewById(R.id.history_table);
         LayoutInflater inflater = LayoutInflater.from(this);
 
@@ -84,23 +231,37 @@ public class ConstructorBioActivity extends AppCompatActivity {
         TableLayout.LayoutParams paramsHeader = (TableLayout.LayoutParams) tableHeader.getLayoutParams();
         paramsHeader.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
         tableHeader.setLayoutParams(paramsHeader);
-        tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.ferrari_f1));
+        tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray_dark));
 
+        //set stroke of tableHeader
         tableLayout.addView(tableHeader);
 
-        // Add data rows
-        for (int i = 0; i < 10; i++) {
+        for (ConstructorHistory history : team.getTeam_history()) {
             View tableRow = inflater.inflate(R.layout.constructor_bio_table_row, tableLayout, false);
+            tableRow.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
+            // Customize the row if needed
+            TextView seasonYear, teamPosition, teamPoints, teamWins, teamPodiums;
+            seasonYear = tableRow.findViewById(R.id.season_year);
+            seasonYear.setText(history.getYear());
+
+            teamPosition = tableRow.findViewById(R.id.team_position);
+            teamPosition.setText(history.getPosition());
+
+            teamPoints = tableRow.findViewById(R.id.team_points);
+            teamPoints.setText(history.getPoints());
+
+            teamWins = tableRow.findViewById(R.id.team_wins);
+            teamWins.setText(history.getWins());
+
+            teamPodiums = tableRow.findViewById(R.id.team_podiums);
+            teamPodiums.setText(history.getPodiums());
 
             // Set bottom margin to 5dp
-            TableLayout.LayoutParams params = (TableLayout.LayoutParams) tableRow.getLayoutParams();
-            params.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
-            tableRow.setLayoutParams(params);
-            tableRow.setBackgroundColor(ContextCompat.getColor(this, R.color.ferrari_f1_light));
+            TableLayout.LayoutParams tableParams = (TableLayout.LayoutParams) tableRow.getLayoutParams();
+            tableParams.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
+            tableRow.setLayoutParams(tableParams);
 
             tableLayout.addView(tableRow);
-
-
         }
     }
 }
