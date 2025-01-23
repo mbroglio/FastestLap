@@ -96,8 +96,10 @@ public class EventActivity extends AppCompatActivity {
                     }
                 }
 
+                String grandPrixName = weeklyRace.getRaceName().toUpperCase();
+
                 toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
-                toolbar.setTitle(weeklyRace.getRaceName().toUpperCase());
+                toolbar.setTitle(grandPrixName);
 
                 ImageView countryFlag = findViewById(R.id.country_flag);
                 String nation = weeklyRace.getCircuit().getLocation().getCountry();
@@ -129,6 +131,7 @@ public class EventActivity extends AppCompatActivity {
                 track.setOnClickListener(v -> {
                     Intent intent = new Intent(EventActivity.this, TrackBioActivity.class);
                     intent.putExtra("CIRCUIT_ID", circuitId);
+                    intent.putExtra("GRAND_PRIX_NAME", grandPrixName);
                     Log.i(TAG, "Circuit ID: " + circuitId);
                     startActivity(intent);
                 });

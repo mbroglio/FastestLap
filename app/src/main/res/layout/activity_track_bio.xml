@@ -10,7 +10,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/top_bar_height"
+        android:layout_height="wrap_content"
         android:background="@color/ferrari_secondary"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -20,8 +20,8 @@
             android:layout_height="@dimen/top_bar_height"
             android:background="@color/ferrari_secondary"
             app:navigationIcon="@drawable/arrow_back_ios_style"
-            app:title="AZERBAIJAN GRAND PRIX"
-            app:titleCentered="true"
+            app:title="NA"
+            app:titleCentered="false"
             app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar" />
 
     </com.google.android.material.appbar.AppBarLayout>
@@ -74,7 +74,6 @@
                     app:strokeWidth="5dp">
 
                     <LinearLayout
-                        android:id="@+id/track_layout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_margin="8dp"
@@ -82,9 +81,10 @@
                         android:orientation="vertical">
 
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:scaleType="fitCenter"
+                            android:id="@+id/track_image"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="3dp"
                             app:srcCompat="@drawable/las_vegas_circuit">
 
                         </ImageView>

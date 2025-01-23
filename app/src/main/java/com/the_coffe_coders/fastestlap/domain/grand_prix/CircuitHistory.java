@@ -1,33 +1,35 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
+import java.util.List;
+
 public class CircuitHistory {
-    private String[] podium_drivers;
-    private String[] podium_teams;
+    private List<String> podium;
+    private List<String> team;
     private String year;
 
-    public CircuitHistory(String[] podium_drivers, String[] podium_teams, String year) {
-        this.podium_drivers = podium_drivers;
-        this.podium_teams = podium_teams;
+    public CircuitHistory(List<String> podium, List<String> team, String year) {
+        this.podium = podium;
+        this.team = team;
         this.year = year;
     }
 
     public CircuitHistory() {
     }
 
-    public String[] getPodium_drivers() {
-        return podium_drivers;
+    public List<String> getTeam() {
+        return team;
     }
 
-    public void setPodium_drivers(String[] podium_drivers) {
-        this.podium_drivers = podium_drivers;
+    public void setTeam(List<String> team) {
+        this.team = team;
     }
 
-    public String[] getPodium_teams() {
-        return podium_teams;
+    public List<String> getPodium() {
+        return podium;
     }
 
-    public void setPodium_teams(String[] podium_teams) {
-        this.podium_teams = podium_teams;
+    public void setPodium(List<String> podium) {
+        this.podium = podium;
     }
 
     public String getYear() {
@@ -36,5 +38,14 @@ public class CircuitHistory {
 
     public void setYear(String year) {
         this.year = year;
+    }
+
+    @Override
+    public String toString() {
+        return "CircuitHistory{" +
+                "podium=" + podium.toString() +
+                ", team=" + team.toString() +
+                ", year='" + year + '\'' +
+                '}';
     }
 }

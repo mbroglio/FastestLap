@@ -21,7 +21,7 @@
             android:background="@color/ferrari_secondary"
             app:navigationIcon="@drawable/arrow_back_ios_style"
             app:title="AZERBAIJAN GRAND PRIX"
-            app:titleCentered="true"
+            app:titleCentered="false"
             app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar" />
     </com.google.android.material.appbar.AppBarLayout>
 

@@ -1,5 +1,7 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
+import androidx.room.Ignore;
+
 import java.util.List;
 
 public class Circuit {
@@ -10,12 +12,13 @@ public class Circuit {
 
     // Bio Data
     private String circuit_full_layout_url;
+    @Ignore
     private List<CircuitHistory> circuit_history;
     private String circuit_minimal_layout_url;
     private String circuit_pic_url;
     private String country;
     private String gp_long_name;
-    private String gp_lap_record;
+    private String lap_record;
     private String laps;
     private String length;
     private String race_distance;
@@ -27,7 +30,7 @@ public class Circuit {
         this.location = location;
     }
 
-    public Circuit(String circuitId, String circuit_full_layout_url, List<CircuitHistory> circuit_history, String circuit_minimal_layout_url, String circuit_pic_url, String country, String gp_long_name, String gp_lap_record, String laps, String length, String race_distance) {
+    public Circuit(String circuitId, String circuit_full_layout_url, List<CircuitHistory> circuit_history, String circuit_minimal_layout_url, String circuit_pic_url, String country, String gp_long_name, String lap_record, String laps, String length, String race_distance) {
         this.circuitId = circuitId;
         this.circuit_full_layout_url = circuit_full_layout_url;
         this.circuit_history = circuit_history;
@@ -35,7 +38,7 @@ public class Circuit {
         this.circuit_pic_url = circuit_pic_url;
         this.country = country;
         this.gp_long_name = gp_long_name;
-        this.gp_lap_record = gp_lap_record;
+        this.lap_record = lap_record;
         this.laps = laps;
         this.length = length;
         this.race_distance = race_distance;
@@ -135,12 +138,12 @@ public class Circuit {
         this.gp_long_name = gp_long_name;
     }
 
-    public String getGp_lap_record() {
-        return gp_lap_record;
+    public String getLap_record() {
+        return lap_record;
     }
 
-    public void setGp_lap_record(String gp_lap_record) {
-        this.gp_lap_record = gp_lap_record;
+    public void setLap_record(String lap_record) {
+        this.lap_record = lap_record;
     }
 
     public String getLaps() {
@@ -176,7 +179,7 @@ public class Circuit {
                 ", circuit_pic_url='" + circuit_pic_url + '\'' +
                 ", country='" + country + '\'' +
                 ", gp_long_name='" + gp_long_name + '\'' +
-                ", gp_lap_record='" + gp_lap_record + '\'' +
+                ", lap_record='" + lap_record + '\'' +
                 ", laps='" + laps + '\'' +
                 ", length='" + length + '\'' +
                 ", race_distance='" + race_distance + '\'' +
