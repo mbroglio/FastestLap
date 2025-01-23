@@ -146,7 +146,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
                                     startActivity(intent);
                                 });
 
-                                DatabaseReference driverTwoReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_DRIVERS_COLLECTION).child("verstappen");
+                                DatabaseReference driverTwoReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_DRIVERS_COLLECTION).child("max_verstappen");
                                 Log.i(TAG, "Driver 2 reference: " + driverTwoReference.toString());
                                 driverTwoReference.get().addOnCompleteListener(driverTwoTask -> {
                                     if (driverTwoTask.isSuccessful()) {
