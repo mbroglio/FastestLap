@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -36,12 +38,15 @@ import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsView
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import java.util.List;
 
 public class DriversStandingActivity extends AppCompatActivity {
 
     private static final String TAG = "DriverCardActivity";
+
+    private GestureDetector tapDetector;
 
     private DriverStandings driverStandings;
 
@@ -55,6 +60,8 @@ public class DriversStandingActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_drivers_standing);
 
+        tapDetector = UIUtils.createTapDetector(this);
+
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
 
         loadingScreen.showLoadingScreen();
@@ -62,15 +69,7 @@ public class DriversStandingActivity extends AppCompatActivity {
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
-        ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            params.topMargin = systemBars.top;
-            v.setLayoutParams(params);
-
-            return insets;
-        });
+        UIUtils.applyWindowInsets(toolbar);
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
@@ -163,5 +162,17 @@ public class DriversStandingActivity extends AppCompatActivity {
         });
 
         return driverCard;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        tapDetector.onTouchEvent(ev);
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    protected void onResume() {
+        UIUtils.hideSystemUI(this);
+        super.onResume();
     }
 }

@@ -3,6 +3,8 @@ package com.the_coffe_coders.fastestlap.ui.event;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -28,6 +30,7 @@ import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -38,27 +41,24 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     private final boolean raceToProcess = true;
     LoadingScreen loadingScreen;
 
+    private GestureDetector tapDetector;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        UIUtils.hideSystemUI(this);
         setContentView(R.layout.activity_upcoming_events);
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
         loadingScreen.showLoadingScreen();
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
-        ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            params.topMargin = systemBars.top;
-            v.setLayoutParams(params);
-
-            return insets;
-        });
+        tapDetector = UIUtils.createTapDetector(this);
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+
+        UIUtils.applyWindowInsets(toolbar);
 
         processEvents();
     }
@@ -131,5 +131,17 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         });
 
         return eventCard;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        tapDetector.onTouchEvent(ev);
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    protected void onResume() {
+        UIUtils.hideSystemUI(this);
+        super.onResume();
     }
 }

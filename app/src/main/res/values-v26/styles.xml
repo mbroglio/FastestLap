@@ -3,6 +3,7 @@
 
     <style name="OrbitronBold_AutoSize_top_bar">
         <item name="android:textSize">20sp</item>
+        <item name="android:gravity">center</item>
         <item name="android:textColor">@color/black</item>
         <item name="android:fontFamily">@font/orbitron_bold</item>
         <item name="android:autoSizeTextType">uniform</item>

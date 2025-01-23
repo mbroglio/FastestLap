@@ -1,14 +1,18 @@
 package com.the_coffe_coders.fastestlap.util;
 
 import android.app.Activity;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class UIUtils {
 
@@ -31,13 +35,41 @@ public class UIUtils {
 
     public static void applyWindowInsets(MaterialToolbar toolbar) {
         ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
 
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
             params.topMargin = systemBars.top;
             v.setLayoutParams(params);
 
             return insets;
+        });
+    }
+
+    public static void applyWindowInsets(BottomNavigationView navbar) {
+        ViewCompat.setOnApplyWindowInsetsListener(navbar, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
+
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            params.bottomMargin = systemBars.top;
+            v.setLayoutParams(params);
+
+            return insets;
+        });
+    }
+
+    public static GestureDetector createTapDetector(Activity activity) {
+        return new GestureDetector(activity, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onSingleTapUp(@NonNull MotionEvent e) {
+                boolean visible = (activity.getWindow().getDecorView().getSystemUiVisibility() & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0;
+                if (visible) {
+                    UIUtils.hideSystemUI(activity);
+                } else {
+                    UIUtils.showSystemUI(activity);
+                }
+                UIUtils.hideSystemUI(activity);
+                return true;
+            }
         });
     }
     // SYSTEM_UI_FLAG_FULLSCREEN // Hide the status bar

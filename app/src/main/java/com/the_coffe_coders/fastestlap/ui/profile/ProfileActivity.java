@@ -5,6 +5,8 @@ import static android.content.ContentValues.TAG;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -30,6 +33,7 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.SpinnerAdapter;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
+import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.WelcomeActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
@@ -38,10 +42,13 @@ import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.SimpleTextWatcher;
+import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import org.apache.commons.validator.routines.EmailValidator;
 
 public class ProfileActivity extends AppCompatActivity {
+
+    private GestureDetector tapDetector;
 
     //private String originalUsername;
     //private String originalPassword;
@@ -93,21 +100,16 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        UIUtils.hideSystemUI(this);
         setContentView(R.layout.activity_profile);
+
+        tapDetector = UIUtils.createTapDetector(this);
 
         mAuth = FirebaseAuth.getInstance();
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
-        ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            params.topMargin = systemBars.top;
-            v.setLayoutParams(params);
-
-            return insets;
-        });
+        UIUtils.applyWindowInsets(toolbar);
 
         favouriteDriverText = findViewById(R.id.favourite_driver_text);
         favouriteConstructorText = findViewById(R.id.favourite_constructor_text);
@@ -475,4 +477,16 @@ public class ProfileActivity extends AppCompatActivity {
         checkForChanges();
     }
     */
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        tapDetector.onTouchEvent(ev);
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    protected void onResume() {
+        UIUtils.hideSystemUI(this);
+        super.onResume();
+    }
 }

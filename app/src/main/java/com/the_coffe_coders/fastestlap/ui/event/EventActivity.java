@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -15,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -30,12 +33,14 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.Practice;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
@@ -47,6 +52,9 @@ import java.util.Objects;
 
 public class EventActivity extends AppCompatActivity {
     private static final String TAG = "EventActivity";
+
+    private GestureDetector tapDetector;
+
     private final boolean eventToProcess = true;
     LoadingScreen loadingScreen;
     EventViewModel eventViewModel;
@@ -56,7 +64,11 @@ public class EventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        UIUtils.hideSystemUI(this);
         setContentView(R.layout.activity_event);
+
+        tapDetector = UIUtils.createTapDetector(this);
+
         eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false))).get(EventViewModel.class);
 
         // Show loading screen initially
@@ -69,15 +81,7 @@ public class EventActivity extends AppCompatActivity {
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
-        ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            params.topMargin = systemBars.top;
-            v.setLayoutParams(params);
-
-            return insets;
-        });
+        UIUtils.applyWindowInsets(toolbar);
 
         processRaceData(toolbar);
     }
@@ -99,7 +103,8 @@ public class EventActivity extends AppCompatActivity {
                 String grandPrixName = weeklyRace.getRaceName().toUpperCase();
 
                 toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
-                toolbar.setTitle(grandPrixName);
+                TextView title = findViewById(R.id.topAppBarTitle);
+                title.setText(grandPrixName);
 
                 ImageView countryFlag = findViewById(R.id.country_flag);
                 String nation = weeklyRace.getCircuit().getLocation().getCountry();
@@ -301,5 +306,17 @@ public class EventActivity extends AppCompatActivity {
             currentSession.setFocusable(true);
             currentSession.setOnClickListener(view -> Log.i(TAG, "session clicked"));
         }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        tapDetector.onTouchEvent(ev);
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    protected void onResume() {
+        UIUtils.hideSystemUI(this);
+        super.onResume();
     }
 }

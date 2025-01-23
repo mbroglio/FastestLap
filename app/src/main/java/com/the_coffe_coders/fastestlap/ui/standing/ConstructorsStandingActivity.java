@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -35,13 +37,16 @@ import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStanding
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import java.util.List;
 
 public class ConstructorsStandingActivity extends AppCompatActivity {
 
     private static final String TAG = "TeamCardActivity";
-    private static final String BASE_URL = "https://api.jolpi.ca/ergast/f1/2024/";
+
+    private GestureDetector tapDetector;
+
     private final boolean constructorToProcess = true;
     LoadingScreen loadingScreen;
     private TextView teamPointsTextView;
@@ -51,26 +56,23 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        UIUtils.hideSystemUI(this);
         setContentView(R.layout.activity_constructors_standing);
+
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
 
         // Show loading screen initially
         loadingScreen.showLoadingScreen();
+
+        tapDetector = UIUtils.createTapDetector(this);
+
 
         String constructorId = getIntent().getStringExtra("TEAM_ID");
         Log.i(TAG, "Constructor ID: " + constructorId);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
-        ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            params.topMargin = systemBars.top;
-            v.setLayoutParams(params);
-
-            return insets;
-        });
+        UIUtils.applyWindowInsets(toolbar);
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
@@ -186,5 +188,17 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         });
 
         return teamCard;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        tapDetector.onTouchEvent(ev);
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    protected void onResume() {
+        UIUtils.hideSystemUI(this);
+        super.onResume();
     }
 }

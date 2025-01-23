@@ -7,7 +7,9 @@ import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_TEAMS_COLL
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -15,6 +17,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -30,6 +33,10 @@ import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Circuit;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.CircuitHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
+import com.the_coffe_coders.fastestlap.util.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.UIUtils;
+
+import org.w3c.dom.Text;
 
 /*
  * TODO:
@@ -38,28 +45,31 @@ import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 
 public class TrackBioActivity extends AppCompatActivity {
 
+    private GestureDetector tapDetector;
+
     private Circuit circuit;
     private Nation nation;
     private ImageView circuitImage;
     private ImageView countryFlag;
 
+    LoadingScreen loadingScreen;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        UIUtils.hideSystemUI(this);
         setContentView(R.layout.activity_track_bio);
+
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
+        loadingScreen.showLoadingScreen();
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
-        ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+        tapDetector = UIUtils.createTapDetector(this);
 
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            params.topMargin = systemBars.top;
-            v.setLayoutParams(params);
 
-            return insets;
-        });
+        UIUtils.applyWindowInsets(toolbar);
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
@@ -69,7 +79,8 @@ public class TrackBioActivity extends AppCompatActivity {
         String grandPrixName = getIntent().getStringExtra("GRAND_PRIX_NAME");
         Log.i("TrackBioActivity", "GRAND_PRIX_NAME: " + grandPrixName);
 
-        toolbar.setTitle(grandPrixName);
+        TextView title = findViewById(R.id.topAppBarTitle);
+        title.setText(grandPrixName);
 
         circuitImage = findViewById(R.id.track_image);
         countryFlag = findViewById(R.id.country_flag);
@@ -164,5 +175,19 @@ public class TrackBioActivity extends AppCompatActivity {
 
             tableLayout.addView(tableRow);
         }
+
+        loadingScreen.hideLoadingScreen();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        tapDetector.onTouchEvent(ev);
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    protected void onResume() {
+        UIUtils.hideSystemUI(this);
+        super.onResume();
     }
 }

@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -27,31 +28,17 @@ public class HomePageActivity extends AppCompatActivity {
     private final String TAG = "HomePageActivity";
     private final ZoneId localZone = ZoneId.systemDefault();
 
-    private View decorView;
     private GestureDetector tapDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        decorView = getWindow().getDecorView();
         UIUtils.hideSystemUI(this);
 
         setContentView(R.layout.activity_home);
 
-        tapDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onSingleTapUp(MotionEvent e) {
-                boolean visible = (decorView.getSystemUiVisibility() & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0;
-                if (visible) {
-                    UIUtils.hideSystemUI(HomePageActivity.this);
-                } else {
-                    UIUtils.showSystemUI(HomePageActivity.this);
-                }
-                UIUtils.hideSystemUI(HomePageActivity.this);
-                return true;
-            }
-        });
+        tapDetector = UIUtils.createTapDetector(this);
 
         MaterialToolbar toolbar = findViewById(R.id.top_app_bar);
         UIUtils.applyWindowInsets(toolbar);
@@ -70,6 +57,8 @@ public class HomePageActivity extends AppCompatActivity {
         NavController navController = navHostFragment.getNavController();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.navbar);
+        UIUtils.applyWindowInsets(bottomNavigationView);
+
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.homeFragment, R.id.standingsFragment, R.id.racingFragment).build();
 
         NavigationUI.setupWithNavController(bottomNavigationView, navController);

@@ -9,6 +9,8 @@ import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -50,6 +52,8 @@ import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.IntroScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.UIUtils;
+
 import org.apache.commons.validator.routines.EmailValidator;
 
 import java.util.Objects;
@@ -69,6 +73,8 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
     private BeginSignInRequest signInRequest;
     private FirebaseAuth mAuth;
 
+    private GestureDetector tapDetector;
+
     private boolean fromSignOut;
     private boolean fromEmailVerification;
 
@@ -76,7 +82,10 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        UIUtils.hideSystemUI(this);
         setContentView(R.layout.activity_welcome);
+
+        tapDetector = UIUtils.createTapDetector(this);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -281,6 +290,18 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
         if (introScreen != null) {
             introScreen.releaseResources();
         }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        tapDetector.onTouchEvent(ev);
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    protected void onResume() {
+        UIUtils.hideSystemUI(this);
+        super.onResume();
     }
 
     private void resetHintPosition() {

@@ -8,7 +8,9 @@ import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_TEAMS_COLL
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -16,6 +18,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
@@ -33,17 +36,22 @@ import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorHistory;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
+import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 /*
  * TODO:
- * - Implement firebase to get the data from the remote database
+ * - manage nullPointerException events
  */
 
 public class ConstructorBioActivity extends AppCompatActivity {
 
     private static final String TAG = "ConstructorBioActivity";
+
+    private GestureDetector tapDetector;
 
     private Constructor team;
     private Driver driverOne;
@@ -65,25 +73,24 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
     private MaterialCardView teamRank;
 
+    LoadingScreen loadingScreen;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        UIUtils.hideSystemUI(this);
         setContentView(R.layout.activity_constructor_bio);
 
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
+        loadingScreen.showLoadingScreen();
+
+        tapDetector = UIUtils.createTapDetector(this);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         AppBarLayout appBarLayout = findViewById(R.id.top_bar_layout);
 
-        ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            params.topMargin = systemBars.top;
-            v.setLayoutParams(params);
-
-            return insets;
-        });
+        UIUtils.applyWindowInsets(toolbar);
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
@@ -263,5 +270,18 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
             tableLayout.addView(tableRow);
         }
+        loadingScreen.hideLoadingScreen();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        tapDetector.onTouchEvent(ev);
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    protected void onResume() {
+        UIUtils.hideSystemUI(this);
+        super.onResume();
     }
 }

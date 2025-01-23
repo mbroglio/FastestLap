@@ -39,7 +39,7 @@
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navbar"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="@dimen/bottom_nav_height"
         android:background="@color/ferrari_secondary"
         app:itemIconSize="24dp"
         app:itemIconTint="@color/black"

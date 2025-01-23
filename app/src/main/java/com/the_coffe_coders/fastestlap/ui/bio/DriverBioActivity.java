@@ -10,7 +10,9 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -18,6 +20,7 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
@@ -38,6 +41,8 @@ import com.the_coffe_coders.fastestlap.domain.driver.DriverHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.Period;
@@ -49,6 +54,9 @@ import org.threeten.bp.format.DateTimeFormatter;
  */
 
 public class DriverBioActivity extends AppCompatActivity {
+
+    private GestureDetector tapDetector;
+
     private Driver driver;
     private Nation nation;
     private Constructor team;
@@ -61,6 +69,8 @@ public class DriverBioActivity extends AppCompatActivity {
     private MaterialCardView driverNumberCard;
     private ImageView driverNumberImage;
 
+    LoadingScreen loadingScreen;
+
     public static String calculateAge(String dateOfBirth) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDate birthDate = LocalDate.parse(dateOfBirth, formatter);
@@ -72,24 +82,21 @@ public class DriverBioActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        UIUtils.hideSystemUI(this);
         setContentView(R.layout.activity_driver_bio);
+
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
+        loadingScreen.showLoadingScreen();
 
         String driverId = getIntent().getStringExtra("DRIVER_ID");
         Log.i("DriverBioActivity", "Driver ID: " + driverId);
 
+        tapDetector = UIUtils.createTapDetector(this);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         AppBarLayout appBarLayout = findViewById(R.id.top_bar_layout);
 
-        ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            params.topMargin = systemBars.top;
-            v.setLayoutParams(params);
-
-            return insets;
-        });
+        UIUtils.applyWindowInsets(toolbar);
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
@@ -247,5 +254,18 @@ public class DriverBioActivity extends AppCompatActivity {
 
             tableLayout.addView(tableRow);
         }
+        loadingScreen.hideLoadingScreen();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        tapDetector.onTouchEvent(ev);
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    protected void onResume() {
+        UIUtils.hideSystemUI(this);
+        super.onResume();
     }
 }
