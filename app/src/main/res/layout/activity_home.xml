@@ -43,9 +43,6 @@
         android:background="@color/ferrari_secondary"
         app:itemIconSize="24dp"
         app:itemIconTint="@color/black"
-        app:itemTextAppearanceActive="@style/TextAppearance.BottomNav.Selected"
-        app:itemTextAppearanceInactive="@style/TextAppearance.BottomNav.NotSelected"
-        app:itemTextColor="@color/black"
         app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/home_menu">

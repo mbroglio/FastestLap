@@ -2,15 +2,14 @@ package com.the_coffe_coders.fastestlap.ui.home;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.GestureDetector;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.ViewGroup;
+import android.view.MotionEvent;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -20,42 +19,47 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.ui.profile.ProfileActivity;
-import com.the_coffe_coders.fastestlap.util.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import org.threeten.bp.ZoneId;
-
-/**
- * TODO:
- *  - Fix loading screen
- */
 
 public class HomePageActivity extends AppCompatActivity {
     private final String TAG = "HomePageActivity";
     private final ZoneId localZone = ZoneId.systemDefault();
 
+    private View decorView;
+    private GestureDetector tapDetector;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        decorView = getWindow().getDecorView();
+        UIUtils.hideSystemUI(this);
+
         setContentView(R.layout.activity_home);
 
-        MaterialToolbar toolbar = findViewById(R.id.top_app_bar);
-
-        ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            params.topMargin = systemBars.top;
-            v.setLayoutParams(params);
-
-            return insets;
+        tapDetector = new GestureDetector(this, new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onSingleTapUp(MotionEvent e) {
+                boolean visible = (decorView.getSystemUiVisibility() & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0;
+                if (visible) {
+                    UIUtils.hideSystemUI(HomePageActivity.this);
+                } else {
+                    UIUtils.showSystemUI(HomePageActivity.this);
+                }
+                UIUtils.hideSystemUI(HomePageActivity.this);
+                return true;
+            }
         });
+
+        MaterialToolbar toolbar = findViewById(R.id.top_app_bar);
+        UIUtils.applyWindowInsets(toolbar);
 
         setSupportActionBar(toolbar);
         toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.userActivity) {
                 Intent intent = new Intent(HomePageActivity.this, ProfileActivity.class);
-                //intent.putExtra("USER", user);
                 startActivity(intent);
                 return true;
             }
@@ -63,11 +67,9 @@ public class HomePageActivity extends AppCompatActivity {
         });
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
-
         NavController navController = navHostFragment.getNavController();
 
         BottomNavigationView bottomNavigationView = findViewById(R.id.navbar);
-
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.homeFragment, R.id.standingsFragment, R.id.racingFragment).build();
 
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
@@ -79,5 +81,17 @@ public class HomePageActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.top_app_bar_menu, menu);
         return true;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        tapDetector.onTouchEvent(ev);
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
+    protected void onResume() {
+        UIUtils.hideSystemUI(this);
+        super.onResume();
     }
 }
