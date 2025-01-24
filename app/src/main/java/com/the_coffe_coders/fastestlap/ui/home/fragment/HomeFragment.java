@@ -43,6 +43,8 @@ import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsView
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
+
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
@@ -93,6 +95,7 @@ public class HomeFragment extends Fragment {
         // Show loading screen initially
         loadingScreen = new LoadingScreen(view, getContext());
         loadingScreen.showLoadingScreen();
+
 
         setLastRaceCard(view);
         setNextSessionCard(view);
@@ -260,8 +263,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildFinalTeamsStanding(View seasonEndedCard) {
-        if(true) return;
-        MutableLiveData<Result> data = null; // TODO get last update from shared preferences
+        MutableLiveData<Result> data = homeViewModel.getConstructorStandingsLiveData(0); // TODO get last update from shared preferences
 
         data.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
