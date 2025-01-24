@@ -73,6 +73,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:scrollbars="none"
         android:background="@color/screen_background_color"
         app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
         app:layout_constraintTop_toBottomOf="@id/top_bar_layout">
