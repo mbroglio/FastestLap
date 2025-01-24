@@ -2,6 +2,7 @@ package com.the_coffe_coders.fastestlap.ui.home.viewmodel;
 
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
@@ -9,6 +10,8 @@ import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
+import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
+import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 public class HomeViewModel extends ViewModel {
@@ -38,6 +41,10 @@ public class HomeViewModel extends ViewModel {
    public MutableLiveData<Result> getNextRace(long lastUpdate) {
        //ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchNextRace(0);
        return raceRepository.fetchNextRace(0);
+   }
+
+   public MutableLiveData<Result> getDriverStanding(long lastUpdate) {
+       return new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
    }
 
 
