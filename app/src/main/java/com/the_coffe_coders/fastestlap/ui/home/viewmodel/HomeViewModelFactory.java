@@ -8,17 +8,18 @@ import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorReposit
 import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
-import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
+import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
 
-public class HomeViewModelFactory implements ViewModelProvider.Factory{
-
+public class HomeViewModelFactory implements ViewModelProvider.Factory {
     private final RaceRepository raceRepository;
     private final RaceResultRepository raceResultRepository;
     private final DriverRepository driverRepository;
     private final ConstructorRepository constructorRepository;
 
-
-    public HomeViewModelFactory(RaceRepository raceRepository, RaceResultRepository raceResultRepository, DriverRepository driverRepository, ConstructorRepository constructorRepository) {
+    public HomeViewModelFactory(RaceRepository raceRepository,
+                                RaceResultRepository raceResultRepository,
+                                DriverRepository driverRepository,
+                                ConstructorRepository constructorRepository) {
         this.raceRepository = raceRepository;
         this.raceResultRepository = raceResultRepository;
         this.driverRepository = driverRepository;
@@ -26,15 +27,11 @@ public class HomeViewModelFactory implements ViewModelProvider.Factory{
     }
 
     @NonNull
-    @Override
+    @SuppressWarnings("unchecked")
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        if (modelClass.isAssignableFrom(EventViewModel.class)) {
-            // Suppress unchecked cast warning
-            @SuppressWarnings("unchecked")
-            T viewModel = (T) new HomeViewModel(raceRepository, raceResultRepository, driverRepository, constructorRepository);
-            return viewModel;
-        } else {
-            throw new IllegalArgumentException("Unknown ViewModel class");
+        if (modelClass.isAssignableFrom(HomeViewModel.class)) {
+            return (T) new HomeViewModel(raceRepository, raceResultRepository, driverRepository, constructorRepository);
         }
+        throw new IllegalArgumentException("Unknown ViewModel class");
     }
 }

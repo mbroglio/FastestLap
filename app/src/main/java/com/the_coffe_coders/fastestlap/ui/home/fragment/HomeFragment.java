@@ -33,6 +33,7 @@ import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
+import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
@@ -82,11 +83,16 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(
+                ServiceLocator.getInstance().getRaceRepository(requireActivity().getApplication(), false),
+                ServiceLocator.getInstance().getRaceResultRepository(requireActivity().getApplication(), false),
+                ServiceLocator.getInstance().getDriverRepository(requireActivity().getApplication(), false),
+                ServiceLocator.getInstance().getConstructorRepository(requireActivity().getApplication(), false)
+        )).get(HomeViewModel.class);
 
         // Show loading screen initially
         loadingScreen = new LoadingScreen(view, getContext());
         loadingScreen.showLoadingScreen();
-
 
         setLastRaceCard(view);
         setNextSessionCard(view);
@@ -254,7 +260,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildFinalTeamsStanding(View seasonEndedCard) {
-        MutableLiveData<Result> data = constructorStandingsViewModel.getConstructorStandingsLiveData(0); // TODO get last update from shared preferences
+        if(true) return;
+        MutableLiveData<Result> data = null; // TODO get last update from shared preferences
 
         data.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
