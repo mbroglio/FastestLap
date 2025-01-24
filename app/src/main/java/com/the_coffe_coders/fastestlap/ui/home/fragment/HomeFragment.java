@@ -339,15 +339,14 @@ public class HomeFragment extends Fragment {
     }
 
     private void setFavouriteDriverCard(View view) {
-        DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
-        MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
+        MutableLiveData<Result> data = homeViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
 
         data.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
                 DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
                 List<DriverStandingsElement> driversList = driverStandings.getDriverStandingsElements();
 
-                DriverStandingsElement favouriteDriver = driverStandingsViewModel.getDriverStandingsElement(driversList, Constants.FAVOURITE_DRIVER);
+                DriverStandingsElement favouriteDriver = homeViewModel.getDriverStandingsElement(driversList, Constants.FAVOURITE_DRIVER);
                 Log.i(TAG, "Favorite Driver: " + favouriteDriver.toString());
                 buildDriverCard(view, favouriteDriver);
             } else {
