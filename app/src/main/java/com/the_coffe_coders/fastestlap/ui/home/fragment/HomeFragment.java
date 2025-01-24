@@ -32,7 +32,6 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
-import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
@@ -42,6 +41,8 @@ import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsView
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
+
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
@@ -254,7 +255,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildFinalTeamsStanding(View seasonEndedCard) {
-        MutableLiveData<Result> data = constructorStandingsViewModel.getConstructorStandingsLiveData(0); // TODO get last update from shared preferences
+        MutableLiveData<Result> data = homeViewModel.getConstructorStandingsLiveData(0); // TODO get last update from shared preferences
 
         data.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {

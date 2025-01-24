@@ -1,5 +1,7 @@
 package com.the_coffe_coders.fastestlap.ui.home.viewmodel;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
@@ -52,6 +54,18 @@ public class HomeViewModel extends ViewModel {
             fetchDriverStandings(lastUpdate);
         }
         return driverStandings;
+    }
+
+    public MutableLiveData<Result> getConstructorStandingsLiveData(long lastUpdate) {
+        if(constructorStanding == null) {
+            fetchConstructorStandings(lastUpdate);
+        }
+
+        return constructorStanding;
+    }
+
+    private void fetchConstructorStandings(long lastUpdate) {
+        constructorStanding = constructorRepository.fetchConstructorStandings(lastUpdate);
     }
 
 
