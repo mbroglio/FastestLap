@@ -8,9 +8,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/united_kingdom_flag"
+        android:icon="@drawable/iconfl"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/uk_round_icon"
+        android:roundIcon="@drawable/iconfl"
         android:supportsRtl="true"
         android:theme="@style/Theme.FastestLap"
         tools:targetApi="31">
