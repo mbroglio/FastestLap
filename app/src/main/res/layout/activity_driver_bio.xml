@@ -18,7 +18,6 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
             app:navigationIcon="@drawable/arrow_back_ios_style"
-            app:title="LANDO NORRIS"
             app:titleCentered="true"
             app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar" />
     </com.google.android.material.appbar.AppBarLayout>
@@ -90,9 +89,7 @@
                             android:id="@+id/team_logo_image"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_margin="5dp"
-                            android:contentDescription="@string/mclaren"
-                            app:srcCompat="@drawable/mclarenlogo">
+                            android:layout_margin="5dp">
 
                         </ImageView>
 
@@ -113,8 +110,7 @@
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentBottom="true"
-                        android:layout_margin="16dp"
-                        app:srcCompat="@drawable/united_kingdom_flag">
+                        android:layout_margin="16dp">
 
                     </ImageView>
 
@@ -144,8 +140,7 @@
                         android:layout_height="250dp"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
-                        android:scaleType="centerCrop"
-                        app:srcCompat="@drawable/norris_pic">
+                        android:scaleType="centerCrop">
 
                     </ImageView>
 
@@ -163,8 +158,7 @@
                             android:id="@+id/driver_number_image"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_margin="5dp"
-                            app:srcCompat="@drawable/lando_norris_number">
+                            android:layout_margin="5dp">
 
                         </ImageView>
 
@@ -205,7 +199,7 @@
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="2dp"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="Bristol"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size" />
 
@@ -236,7 +230,7 @@
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="2dp"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="13/11/1999"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size" />
 
@@ -266,7 +260,7 @@
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="2dp"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="25"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size" />
 
@@ -296,19 +290,19 @@
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="2dp"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="100"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="kg"
-                            android:layout_marginStart="3dp"
                             android:layout_gravity="center"
+                            android:layout_marginStart="3dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="kg"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/text_minor_importance_size"
-                            android:fontFamily="@font/orbitron_regular">
+                            android:textSize="@dimen/text_minor_importance_size">
 
                         </TextView>
 
@@ -330,19 +324,19 @@
                             android:layout_gravity="start"
                             android:layout_marginTop="2dp"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="1.80"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="m"
-                            android:layout_marginStart="3dp"
                             android:layout_gravity="center"
+                            android:layout_marginStart="3dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="m"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/text_minor_importance_size"
-                            android:fontFamily="@font/orbitron_regular">
+                            android:textSize="@dimen/text_minor_importance_size">
 
                         </TextView>
 
@@ -372,7 +366,7 @@
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="2dp"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="1 (x5)"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size" />
 
@@ -402,7 +396,7 @@
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="2dp"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="20"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size" />
 
@@ -452,7 +446,6 @@
                             android:layout_marginTop="10dp"
                             android:clickable="true"
                             android:focusable="true"
-                            app:cardBackgroundColor="@color/mclaren_f1"
                             app:strokeColor="@color/black"
                             app:strokeWidth="3dp">
 
@@ -494,11 +487,12 @@
                                     android:orientation="horizontal">
 
                                     <TextView
+                                        android:id="@+id/driver_bio_rank_position"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:fontFamily="@font/orbitron_bold"
                                         android:gravity="center"
-                                        android:text="1"
+                                        android:text="@string/not_found"
                                         android:textColor="@color/black"
                                         android:textSize="@dimen/body_text_size">
 
@@ -517,11 +511,12 @@
                                     </TextView>
 
                                     <TextView
+                                        android:id="@+id/driver_bio_rank_points"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:fontFamily="@font/orbitron_bold"
                                         android:gravity="center"
-                                        android:text="390"
+                                        android:text="@string/not_found"
                                         android:textColor="@color/black"
                                         android:textSize="@dimen/body_text_size">
 

@@ -4,7 +4,8 @@
     android:id="@+id/last_race_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:background="@color/black">
 
     <LinearLayout
         android:id="@+id/last_race_name_layout"

@@ -27,6 +27,8 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
@@ -35,18 +37,27 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverHistory;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
+import com.the_coffe_coders.fastestlap.ui.profile.ProfileActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
+import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
+import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.Period;
 import org.threeten.bp.format.DateTimeFormatter;
+
+import java.util.List;
 
 /*
  * TODO:
@@ -54,6 +65,8 @@ import org.threeten.bp.format.DateTimeFormatter;
  */
 
 public class DriverBioActivity extends AppCompatActivity {
+
+    private final String TAG = "DriverBioActivity";
 
     private GestureDetector tapDetector;
 
@@ -131,6 +144,8 @@ public class DriverBioActivity extends AppCompatActivity {
                 toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
                 appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
                 driverRank.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_SECONDARY_COLOR.get(driver.getTeam_id())));
+
+                //setDriverRankingButton(driverId);
 
                 teamLogoCard.setOnClickListener(v -> {
                     Intent intent = new Intent(DriverBioActivity.this, ConstructorBioActivity.class);
@@ -256,6 +271,38 @@ public class DriverBioActivity extends AppCompatActivity {
         }
         loadingScreen.hideLoadingScreen();
     }
+/*  //METODO PER L'EVENTUALE RECUPERO DEL RANKING DEL PILOTA TRAMITE DRIVER VIEWMODEL
+    private void setDriverRankingButton(String driverId) {
+        DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this,
+                new DriverStandingsViewModelFactory(ServiceLocator.getInstance()
+                        .getDriverRepository(this.getApplication(), false)))
+                .get(DriverStandingsViewModel.class);
+        MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
+
+        data.observe(this, result -> {
+            if (result.isSuccess()) {
+                DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
+                List<DriverStandingsElement> driversList = driverStandings.getDriverStandingsElements();
+
+                DriverStandingsElement favouriteDriver = driverStandingsViewModel.getDriverStandingsElement(driversList, driverId);
+                if(favouriteDriver == null){
+                    Log.i( TAG, "Favorite Driver not found");
+                    Intent intent = new Intent(DriverBioActivity.this, ProfileActivity.class);
+                    startActivity(intent);
+                }
+                TextView driverPosition = findViewById(R.id.driver_bio_rank_position);
+                driverPosition.setText(favouriteDriver.getPosition());
+
+                TextView driverPoints = findViewById(R.id.driver_bio_rank_points);
+                driverPoints.setText(favouriteDriver.getPoints());
+            } else {
+                Log.i(TAG, "DRIVER STANDINGS ERROR");
+                loadingScreen.hideLoadingScreen();
+            }
+        });
+    }
+
+ */
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {

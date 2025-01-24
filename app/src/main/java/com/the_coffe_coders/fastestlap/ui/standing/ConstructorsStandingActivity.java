@@ -26,6 +26,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
@@ -131,6 +132,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
     private View generateTeamCard(ConstructorStandingsElement standingElement, String constructorIdToHighlight) {
         // Inflate the team card layout
         View teamCard = getLayoutInflater().inflate(R.layout.team_card, null);
+        MaterialCardView teamCardView = teamCard.findViewById(R.id.team_card_view);
 
         // Preparing all the views
         TextView teamNameTextView = teamCard.findViewById(R.id.team_name);
@@ -169,16 +171,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         teamPointsTextView.setText(standingElement.getPoints());
 
         if (teamId.equals(constructorIdToHighlight)) {
-            int startColor = ContextCompat.getColor(this, R.color.yellow); // Replace with actual highlight color
-            int endColor = Color.TRANSPARENT;
-
-            ValueAnimator colorAnimator = ObjectAnimator.ofInt(teamCard, "backgroundColor", startColor, endColor);
-            colorAnimator.setDuration(1000); // Duration in milliseconds
-            colorAnimator.setEvaluator(new ArgbEvaluator());
-            colorAnimator.setRepeatCount(5); // Repeat 5 times (includes forward and reverse)
-            colorAnimator.setRepeatMode(ValueAnimator.REVERSE);
-            colorAnimator.start();
-
+            UIUtils.animateCardBackgroundColor(this, teamCardView, R.color.yellow, Color.TRANSPARENT, 1000, 10);
         }
 
         teamCard.setOnClickListener(v -> {

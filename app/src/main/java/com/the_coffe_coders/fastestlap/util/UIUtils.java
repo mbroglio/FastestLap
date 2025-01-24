@@ -1,18 +1,26 @@
 package com.the_coffe_coders.fastestlap.util;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.content.Context;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.card.MaterialCardView;
 
 public class UIUtils {
 
@@ -71,6 +79,23 @@ public class UIUtils {
                 return true;
             }
         });
+    }
+
+    public static void animateCardBackgroundColor(Context context, MaterialCardView cardView, int startColorResId, int endColor, int duration, int repeatCount) {
+        int startColor = ContextCompat.getColor(context, startColorResId);
+
+        ValueAnimator colorAnimator = ObjectAnimator.ofInt(cardView, "cardBackgroundColor", startColor, endColor);
+        colorAnimator.setDuration(duration); // Duration in milliseconds
+        colorAnimator.setEvaluator(new ArgbEvaluator());
+        colorAnimator.setRepeatCount(repeatCount); // Repeat count
+        colorAnimator.setRepeatMode(ValueAnimator.REVERSE);
+        colorAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                cardView.setCardBackgroundColor(endColor);
+            }
+        });
+        colorAnimator.start();
     }
     // SYSTEM_UI_FLAG_FULLSCREEN // Hide the status bar
     // SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN // Let the layout expand into status bar

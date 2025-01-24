@@ -16,7 +16,8 @@
         tools:targetApi="31">
         <activity
             android:name=".ui.welcome.WelcomeActivity"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -24,25 +25,45 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".ui.home.HomePageActivity" />
+        <activity
+            android:name=".ui.home.HomePageActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.event.UpcomingEventsActivity" />
+        <activity
+            android:name=".ui.event.UpcomingEventsActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.standing.ConstructorsStandingActivity" />
+        <activity
+            android:name=".ui.standing.ConstructorsStandingActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.standing.DriversStandingActivity" />
+        <activity
+            android:name=".ui.standing.DriversStandingActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.event.EventActivity" />
+        <activity
+            android:name=".ui.event.EventActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.event.PastEventsActivity" />
+        <activity
+            android:name=".ui.event.PastEventsActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.bio.TrackBioActivity" />
+        <activity
+            android:name=".ui.bio.TrackBioActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.bio.ConstructorBioActivity" />
+        <activity
+            android:name=".ui.bio.ConstructorBioActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.bio.DriverBioActivity" />
+        <activity
+            android:name=".ui.bio.DriverBioActivity"
+            android:screenOrientation="portrait" />
 
-        <activity android:name=".ui.profile.ProfileActivity" />
+        <activity
+            android:name=".ui.profile.ProfileActivity"
+            android:screenOrientation="portrait" />
 
     </application>
 

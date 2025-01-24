@@ -52,7 +52,7 @@
                     android:layout_alignParentTop="true"
                     android:layout_centerInParent="true"
                     android:fontFamily="@font/orbitron_bold"
-                    android:text="ROUND 22"
+                    android:text="@string/not_found"
                     android:textColor="@color/white"
                     android:textSize="@dimen/text_minor_importance_size">
 
@@ -65,7 +65,7 @@
                     android:layout_below="@id/upcoming_round_number"
                     android:layout_centerInParent="true"
                     android:fontFamily="@font/orbitron_bold"
-                    android:text="Singapore Grand prix"
+                    android:text="@string/not_found"
                     android:textColor="@color/white"
                     android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -79,7 +79,7 @@
                     android:layout_centerInParent="true"
                     android:layout_marginTop="5dp"
                     android:fontFamily="@font/orbitron_regular"
-                    android:text="22-24"
+                    android:text="@string/not_found"
                     android:textColor="@color/white"
                     android:textSize="@dimen/body_text_size">
 
@@ -92,7 +92,7 @@
                     android:layout_below="@id/upcoming_date"
                     android:layout_centerInParent="true"
                     android:fontFamily="@font/orbitron_bold"
-                    android:text="NOV"
+                    android:text="@string/not_found"
                     android:textColor="@color/white"
                     android:textSize="@dimen/layout_subtitle_text_size">
 

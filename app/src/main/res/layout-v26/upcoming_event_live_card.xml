@@ -67,7 +67,6 @@
                     android:fontFamily="@font/orbitron_bold"
                     android:gravity="center"
                     android:maxLines="1"
-                    android:text="@string/not_found"
                     android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
                     android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
                     android:autoSizeTextType="uniform"
