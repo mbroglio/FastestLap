@@ -23,7 +23,7 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<Result> upcomingEventLiveData;
     private MutableLiveData<Result> driver;
     private MutableLiveData<Result> constructor;
-    private MutableLiveData<Result> driverStanding;
+    private MutableLiveData<Result> driverStandings;
     private MutableLiveData<Result> constructorStanding;
 
     public HomeViewModel(RaceRepository raceRepository, RaceResultRepository raceResultRepository, DriverRepository driverRepository, ConstructorRepository constructorRepository) {
@@ -43,9 +43,16 @@ public class HomeViewModel extends ViewModel {
        return raceRepository.fetchNextRace(0);
    }
 
-   public MutableLiveData<Result> getDriverStanding(long lastUpdate) {
-       return new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
-   }
+    private void fetchDriverStandings(long lastUpdate) {
+        this.driverStandings = driverRepository.fetchDriversStandings(lastUpdate);
+    }
+
+    public MutableLiveData<Result> getDriverStandingsLiveData(long lastUpdate) {
+        if (driverStandings == null) {
+            fetchDriverStandings(lastUpdate);
+        }
+        return driverStandings;
+    }
 
 
 
