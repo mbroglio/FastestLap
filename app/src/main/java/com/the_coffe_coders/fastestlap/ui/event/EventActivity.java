@@ -14,11 +14,13 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.Guideline;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -64,10 +66,10 @@ public class EventActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        UIUtils.hideSystemUI(this);
+        //UIUtils.hideSystemUI(this);
         setContentView(R.layout.activity_event);
 
-        tapDetector = UIUtils.createTapDetector(this);
+        //tapDetector = UIUtils.createTapDetector(this);
 
         eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false))).get(EventViewModel.class);
 
@@ -82,6 +84,10 @@ public class EventActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
         UIUtils.applyWindowInsets(toolbar);
+
+        ScrollView eventScrollLayout = findViewById(R.id.event_scroll_view);
+        UIUtils.applyWindowInsets(eventScrollLayout);
+
 
         processRaceData(toolbar);
     }
@@ -307,16 +313,18 @@ public class EventActivity extends AppCompatActivity {
             currentSession.setOnClickListener(view -> Log.i(TAG, "session clicked"));
         }
     }
-
+/*
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         tapDetector.onTouchEvent(ev);
         return super.dispatchTouchEvent(ev);
     }
 
+ */
+
     @Override
     protected void onResume() {
-        UIUtils.hideSystemUI(this);
+        //UIUtils.hideSystemUI(this);
         super.onResume();
     }
 }

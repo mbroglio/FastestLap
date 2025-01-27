@@ -57,7 +57,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        UIUtils.hideSystemUI(this);
+        //UIUtils.hideSystemUI(this);
         setContentView(R.layout.activity_constructors_standing);
 
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
@@ -65,7 +65,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         // Show loading screen initially
         loadingScreen.showLoadingScreen();
 
-        tapDetector = UIUtils.createTapDetector(this);
+        //tapDetector = UIUtils.createTapDetector(this);
 
 
         String constructorId = getIntent().getStringExtra("TEAM_ID");
@@ -74,6 +74,9 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
         UIUtils.applyWindowInsets(toolbar);
+
+        LinearLayout teamStandingLayout = findViewById(R.id.team_standing_layout);
+        UIUtils.applyWindowInsets(teamStandingLayout);
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
@@ -183,15 +186,18 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         return teamCard;
     }
 
+    /*
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         tapDetector.onTouchEvent(ev);
         return super.dispatchTouchEvent(ev);
     }
 
+     */
+
     @Override
     protected void onResume() {
-        UIUtils.hideSystemUI(this);
+        //UIUtils.hideSystemUI(this);
         super.onResume();
     }
 }

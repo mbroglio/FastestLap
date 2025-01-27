@@ -51,10 +51,10 @@ public class PastEventsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        UIUtils.hideSystemUI(this);
+        //UIUtils.hideSystemUI(this);
         setContentView(R.layout.activity_past_events);
 
-        tapDetector = UIUtils.createTapDetector(this);
+        //tapDetector = UIUtils.createTapDetector(this);
 
         eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false))).get(EventViewModel.class);
 
@@ -64,6 +64,9 @@ public class PastEventsActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
         UIUtils.applyWindowInsets(toolbar);
+
+        LinearLayout pastEventsLayout = findViewById(R.id.past_events_layout);
+        UIUtils.applyWindowInsets(pastEventsLayout);
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         Log.i("PastEvent", "onCreate");
@@ -172,15 +175,18 @@ public class PastEventsActivity extends AppCompatActivity {
         arrow.setVisibility(View.GONE);
     }
 
+/*
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         tapDetector.onTouchEvent(ev);
         return super.dispatchTouchEvent(ev);
     }
 
+ */
+
     @Override
     protected void onResume() {
-        UIUtils.hideSystemUI(this);
+        //UIUtils.hideSystemUI(this);
         super.onResume();
     }
 }

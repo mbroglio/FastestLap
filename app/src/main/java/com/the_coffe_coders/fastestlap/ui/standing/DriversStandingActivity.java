@@ -74,6 +74,9 @@ public class DriversStandingActivity extends AppCompatActivity {
 
         UIUtils.applyWindowInsets(toolbar);
 
+        LinearLayout driverStandingLayout = findViewById(R.id.driver_standing_layout);
+        UIUtils.applyWindowInsets(driverStandingLayout);
+
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
 
@@ -160,15 +163,18 @@ public class DriversStandingActivity extends AppCompatActivity {
         return driverCard;
     }
 
+    /*
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         tapDetector.onTouchEvent(ev);
         return super.dispatchTouchEvent(ev);
     }
 
+     */
+
     @Override
     protected void onResume() {
-        UIUtils.hideSystemUI(this);
+       // UIUtils.hideSystemUI(this);
         super.onResume();
     }
 }

@@ -47,18 +47,22 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        UIUtils.hideSystemUI(this);
+        //UIUtils.hideSystemUI(this);
         setContentView(R.layout.activity_upcoming_events);
+
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
         loadingScreen.showLoadingScreen();
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
-        tapDetector = UIUtils.createTapDetector(this);
+        //tapDetector = UIUtils.createTapDetector(this);
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         UIUtils.applyWindowInsets(toolbar);
+
+        LinearLayout upcomingEventsLayout = findViewById(R.id.upcoming_events_layout);
+        UIUtils.applyWindowInsets(upcomingEventsLayout);
 
         processEvents();
     }
@@ -132,16 +136,18 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
         return eventCard;
     }
-
+/*
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         tapDetector.onTouchEvent(ev);
         return super.dispatchTouchEvent(ev);
     }
+    
+ */
 
     @Override
     protected void onResume() {
-        UIUtils.hideSystemUI(this);
+        //UIUtils.hideSystemUI(this);
         super.onResume();
     }
 }

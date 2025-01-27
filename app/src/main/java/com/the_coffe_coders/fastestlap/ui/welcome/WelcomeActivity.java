@@ -13,6 +13,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -56,6 +57,7 @@ import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import org.apache.commons.validator.routines.EmailValidator;
 
+import java.util.List;
 import java.util.Objects;
 
 public class WelcomeActivity extends AppCompatActivity implements ForgotPasswordFragment.OnFragmentInteractionListener{
@@ -81,11 +83,14 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //EdgeToEdge.enable(this);
+        EdgeToEdge.enable(this);
         //UIUtils.hideSystemUI(this);
         setContentView(R.layout.activity_welcome);
 
-        tapDetector = UIUtils.createTapDetector(this);
+        LinearLayout loginLayout = findViewById(R.id.activity_login);
+        UIUtils.applyWindowInsets(loginLayout);
+
+        //tapDetector = UIUtils.createTapDetector(this);
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -292,15 +297,18 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
         }
     }
 
+    /*
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         tapDetector.onTouchEvent(ev);
         return super.dispatchTouchEvent(ev);
     }
 
+     */
+
     @Override
     protected void onResume() {
-        UIUtils.hideSystemUI(this);
+        //UIUtils.hideSystemUI(this);
         super.onResume();
     }
 
