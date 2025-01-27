@@ -1,5 +1,7 @@
 package com.the_coffe_coders.fastestlap.ui.standing.viewmodel;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -11,17 +13,15 @@ import java.util.List;
 
 public class DriverStandingsViewModel extends ViewModel {
     private static final String TAG = DriverStandingsViewModel.class.getSimpleName();
-
     private final DriverRepository driverRepository;
-    private final int page;
     private MutableLiveData<Result> driverStandingsLiveData;
 
     public DriverStandingsViewModel(DriverRepository driverRepository) {
         this.driverRepository = driverRepository;
-        this.page = 3;//TODO Verify
     }
 
     public MutableLiveData<Result> getDriverStandingsLiveData(long lastUpdate) {
+        Log.i(TAG, "getDriverStandingsLiveData");
         if (driverStandingsLiveData == null) {
             fetchDriverStandings(lastUpdate);
         }
@@ -29,6 +29,7 @@ public class DriverStandingsViewModel extends ViewModel {
     }
 
     private void fetchDriverStandings(long lastUpdate) {
+        Log.i(TAG, "fetchDriverStandings");
         this.driverStandingsLiveData = driverRepository.fetchDriversStandings(lastUpdate);
     }
 
