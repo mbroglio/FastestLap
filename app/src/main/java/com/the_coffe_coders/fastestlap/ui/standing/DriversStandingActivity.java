@@ -80,19 +80,6 @@ public class DriversStandingActivity extends AppCompatActivity {
         driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverRepository(getApplication(), false))).get(DriverStandingsViewModel.class);
         MutableLiveData<Result> livedata = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
 
-        /*
-        RaceResultRepository raceResultRepository = ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false);
-        MutableLiveData<Result> mldr = raceResultRepository.fetchAllRaceResults(0);
-        mldr.observe(this, result -> {
-            if (result.isSuccess()) {
-                Log.i(TAG, ((Result.RaceSuccess) result).getData().toString());
-                Log.i(TAG, "RACE RESULTS SUCCESS");
-            } else {
-                Log.i(TAG, "RACE RESULTS ERROR");
-            }
-        });
-        */
-
         livedata.observe(this, result -> {
             if (result.isSuccess()) {
                 Log.i(TAG, "DRIVER STANDINGS SUCCESS");

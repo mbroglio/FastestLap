@@ -3,7 +3,6 @@ package com.the_coffe_coders.fastestlap.ui.home.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,10 +29,11 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
-import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
+import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
+import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
@@ -43,6 +43,8 @@ import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsView
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
+
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
@@ -62,6 +64,7 @@ import java.util.List;
 
 public class HomeFragment extends Fragment {
     private final String TAG = HomeFragment.class.getSimpleName();
+    HomeViewModel homeViewModel;
 
     LoadingScreen loadingScreen;
 
@@ -82,6 +85,12 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+        homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(
+                ServiceLocator.getInstance().getRaceRepository(requireActivity().getApplication(), false),
+                ServiceLocator.getInstance().getRaceResultRepository(requireActivity().getApplication(), false),
+                ServiceLocator.getInstance().getDriverRepository(requireActivity().getApplication(), false),
+                ServiceLocator.getInstance().getConstructorRepository(requireActivity().getApplication(), false)
+        )).get(HomeViewModel.class);
 
         // Show loading screen initially
         loadingScreen = new LoadingScreen(view, getContext());
@@ -97,7 +106,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void setLastRaceCard(View view) {
-        MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchLastRace(0);
+        MutableLiveData<Result> data = homeViewModel.getLastRace(0L);
         try {
             data.observe(getViewLifecycleOwner(), result -> {
                 if (result.isSuccess()) {
@@ -163,7 +172,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void setNextSessionCard(View view) {
-        MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchNextRace(0);
+        MutableLiveData<Result> data = homeViewModel.getNextRace(0L);
         try {
             data.observe(getViewLifecycleOwner(), result -> {
                 if (result.isSuccess()) {
@@ -229,8 +238,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildFinalDriversStanding(View seasonEndedCard) {
-        DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
-        MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
+        MutableLiveData<Result> data = homeViewModel.getDriverStandingsLiveData(0L);
 
         data.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
@@ -255,8 +263,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildFinalTeamsStanding(View seasonEndedCard) {
-        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
-        MutableLiveData<Result> data = constructorStandingsViewModel.getConstructorStandingsLiveData(0); // TODO get last update from shared preferences
+        MutableLiveData<Result> data = homeViewModel.getConstructorStandingsLiveData(0); // TODO get last update from shared preferences
 
         data.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
@@ -340,15 +347,14 @@ public class HomeFragment extends Fragment {
     }
 
     private void setFavouriteDriverCard(View view) {
-        DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
-        MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
+        MutableLiveData<Result> data = homeViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
 
         data.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
                 DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
                 List<DriverStandingsElement> driversList = driverStandings.getDriverStandingsElements();
 
-                DriverStandingsElement favouriteDriver = driverStandingsViewModel.getDriverStandingsElement(driversList, Constants.FAVOURITE_DRIVER);
+                DriverStandingsElement favouriteDriver = homeViewModel.getDriverStandingsElement(driversList, Constants.FAVOURITE_DRIVER);
                 Log.i(TAG, "Favorite Driver: " + favouriteDriver.toString());
                 buildDriverCard(view, favouriteDriver);
             } else {
