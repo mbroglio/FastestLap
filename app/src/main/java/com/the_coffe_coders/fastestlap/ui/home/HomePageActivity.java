@@ -33,8 +33,8 @@ public class HomePageActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        UIUtils.hideSystemUI(this);
+        //EdgeToEdge.enable(this);
+        //UIUtils.hideSystemUI(this);
 
         setContentView(R.layout.activity_home);
 
@@ -80,7 +80,7 @@ public class HomePageActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        UIUtils.hideSystemUI(this);
+        //UIUtils.hideSystemUI(this);
         super.onResume();
     }
 }

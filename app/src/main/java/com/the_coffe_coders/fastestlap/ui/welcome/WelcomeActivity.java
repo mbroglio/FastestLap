@@ -81,8 +81,8 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        UIUtils.hideSystemUI(this);
+        //EdgeToEdge.enable(this);
+        //UIUtils.hideSystemUI(this);
         setContentView(R.layout.activity_welcome);
 
         tapDetector = UIUtils.createTapDetector(this);
