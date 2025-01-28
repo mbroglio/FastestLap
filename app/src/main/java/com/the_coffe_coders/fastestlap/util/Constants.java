@@ -15,7 +15,7 @@ public class Constants {
 
     public static final int SPACER_HEIGHT = 20;
 
-    public static final String SHARED_PREFERENCES_FILENAME = "";
+    public static final String SHARED_PREFERENCES_FILENAME = "shared";
     public static final String SHARED_PREFERENCES_FAVORITE_DRIVER = "driver_favorite";
     public static final String SHARED_PREFERENCES_FAVORITE_TEAM = "team_favorite";
 

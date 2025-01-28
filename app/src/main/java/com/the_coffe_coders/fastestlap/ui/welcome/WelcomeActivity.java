@@ -162,6 +162,9 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
                                 @Override
                                 public void onComplete(@NonNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
+
+                                        userViewModel.getUserPreferences(userViewModel.getLoggedUser().getIdToken());
+
                                         // Sign in success, update UI with the signed-in user's information
                                         Log.d(TAG, "signInWithEmail:success");
                                         Intent intent = new Intent(WelcomeActivity.this, HomePageActivity.class);
@@ -217,6 +220,7 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            userViewModel.getUserPreferences(userViewModel.getLoggedUser().getIdToken());
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();

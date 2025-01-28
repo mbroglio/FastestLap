@@ -83,18 +83,15 @@ public class UserFirebaseDataSource extends BaseUserDataRemoteDataSource {
                                 favoriteDriver);
 
                         databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
-                                child(SHARED_PREFERENCES_FAVORITE_TEAM).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<DataSnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            String favoriteTeam = task.getResult().getValue(String.class);
-                                            sharedPreferencesUtil.writeStringData(
-                                                    SHARED_PREFERENCES_FILENAME,
-                                                    SHARED_PREFERENCES_FAVORITE_TEAM,
-                                                    favoriteTeam);
-
+                                child(SHARED_PREFERENCES_FAVORITE_TEAM).get().addOnCompleteListener(taskTeam -> {
+                                    if (taskTeam.isSuccessful()) {
+                                        String favoriteTeam = taskTeam.getResult().getValue(String.class);
+                                        sharedPreferencesUtil.writeStringData(
+                                                SHARED_PREFERENCES_FILENAME,
+                                                SHARED_PREFERENCES_FAVORITE_TEAM,
+                                                favoriteTeam);
                                             userResponseCallback.onSuccessFromGettingUserPreferences();
-                                        }
+
                                     }
                                 });
                     }

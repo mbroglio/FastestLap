@@ -3,7 +3,6 @@ package com.the_coffe_coders.fastestlap.ui.home.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +29,6 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
-import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
@@ -89,7 +87,6 @@ public class HomeFragment extends Fragment {
         // Show loading screen initially
         loadingScreen = new LoadingScreen(view, getContext());
         loadingScreen.showLoadingScreen();
-
 
         setLastRaceCard(view);
         setNextSessionCard(view);
