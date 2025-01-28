@@ -5,6 +5,7 @@
     android:id="@+id/activity_driver_bio"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/screen_background_color"
     tools:context=".ui.bio.DriverBioActivity">
 
     <com.google.android.material.appbar.AppBarLayout

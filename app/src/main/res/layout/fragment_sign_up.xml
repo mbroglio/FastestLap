@@ -49,8 +49,8 @@
                 android:background="@drawable/background_top_left_right_margins"
                 android:fontFamily="@font/orbitron_regular"
                 android:inputType="textEmailAddress"
-                android:textSize="@dimen/body_text_size"
-                android:textColor="@color/grey_card" />
+                android:textColor="@color/grey_card"
+                android:textSize="@dimen/body_text_size" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -80,8 +80,8 @@
                 android:background="@drawable/background_top_left_right_margins"
                 android:fontFamily="@font/orbitron_regular"
                 android:inputType="textPassword"
-                android:textSize="@dimen/body_text_size"
-                android:textColor="@color/grey_card" />
+                android:textColor="@color/grey_card"
+                android:textSize="@dimen/body_text_size" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -123,8 +123,7 @@
                     android:fontFamily="@font/orbitron_regular"
                     android:text="@string/not_found"
                     android:textColor="@color/black"
-                    android:textSize="@dimen/body_text_size">
-                </TextView>
+                    android:textSize="@dimen/body_text_size"></TextView>
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/change_driver_button"
