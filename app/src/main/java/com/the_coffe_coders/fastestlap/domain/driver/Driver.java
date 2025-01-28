@@ -29,11 +29,11 @@ public class Driver implements Parcelable {
     private String driverId; // A
     private String permanentNumber; // A
     private String code; // A
-    private String url; // A
-    private String givenName; // F
-    private String familyName; // F
-    private String dateOfBirth; // F
-    private String nationality; // Must be overwitten by DB
+    private String url; // TODO: Remove DTO
+    private String givenName; // F/A
+    private String familyName; // F/A
+    private String dateOfBirth; // F/A
+    private String nationality; // TODO: Remove DTO
 
     // Bio Data
     private String best_result; // F
