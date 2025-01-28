@@ -53,12 +53,12 @@ public class UIUtils {
         });
     }
 
-    public static void applyWindowInsets(BottomNavigationView navbar) {
-        ViewCompat.setOnApplyWindowInsetsListener(navbar, (v, insets) -> {
+    public static void applyWindowInsets(View view) {
+        ViewCompat.setOnApplyWindowInsetsListener(view, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.navigationBars());
 
             ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            params.bottomMargin = systemBars.top;
+            params.bottomMargin = systemBars.bottom;
             v.setLayoutParams(params);
 
             return insets;

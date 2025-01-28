@@ -63,7 +63,7 @@ public class DriversStandingActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_drivers_standing);
 
-        tapDetector = UIUtils.createTapDetector(this);
+        //tapDetector = UIUtils.createTapDetector(this);
 
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
 
@@ -73,6 +73,9 @@ public class DriversStandingActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
         UIUtils.applyWindowInsets(toolbar);
+
+        LinearLayout driverStandingLayout = findViewById(R.id.driver_standing_layout);
+        UIUtils.applyWindowInsets(driverStandingLayout);
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
@@ -161,15 +164,18 @@ public class DriversStandingActivity extends AppCompatActivity {
         return driverCard;
     }
 
+    /*
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         tapDetector.onTouchEvent(ev);
         return super.dispatchTouchEvent(ev);
     }
 
+     */
+
     @Override
     protected void onResume() {
-        UIUtils.hideSystemUI(this);
+       // UIUtils.hideSystemUI(this);
         super.onResume();
     }
 }

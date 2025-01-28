@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListPopupWindow;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -100,16 +101,19 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        UIUtils.hideSystemUI(this);
+        //UIUtils.hideSystemUI(this);
         setContentView(R.layout.activity_profile);
 
-        tapDetector = UIUtils.createTapDetector(this);
+        //tapDetector = UIUtils.createTapDetector(this);
 
         mAuth = FirebaseAuth.getInstance();
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
         UIUtils.applyWindowInsets(toolbar);
+
+        ScrollView scrollView = findViewById(R.id.profile_layout);
+        UIUtils.applyWindowInsets(scrollView);
 
         favouriteDriverText = findViewById(R.id.favourite_driver_text);
         favouriteConstructorText = findViewById(R.id.favourite_constructor_text);
@@ -478,15 +482,18 @@ public class ProfileActivity extends AppCompatActivity {
     }
     */
 
+    /*
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         tapDetector.onTouchEvent(ev);
         return super.dispatchTouchEvent(ev);
     }
 
+     */
+
     @Override
     protected void onResume() {
-        UIUtils.hideSystemUI(this);
+        //UIUtils.hideSystemUI(this);
         super.onResume();
     }
 }

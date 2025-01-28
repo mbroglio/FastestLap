@@ -173,7 +173,7 @@
                         android:layout_marginBottom="5dp"
                         android:clickable="true"
                         android:focusable="true"
-                        app:cardBackgroundColor="@color/mclaren_f1"
+                        app:cardBackgroundColor="@color/timer_gray_dark"
                         app:strokeColor="@color/black"
                         app:strokeWidth="3dp">
 
@@ -203,7 +203,7 @@
                                     android:layout_marginStart="3dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/rank"
-                                    android:textColor="@color/screen_background_color"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/layout_subtitle_text_size">
 
                                 </TextView>
@@ -224,7 +224,7 @@
                                     android:layout_marginStart="5dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/not_found"
-                                    android:textColor="@color/screen_background_color"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/body_text_size">
 
                                 </TextView>
@@ -236,7 +236,7 @@
                                     android:layout_marginEnd="5dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/separator_high_dash"
-                                    android:textColor="@color/screen_background_color"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/body_text_size">
 
                                 </TextView>
@@ -248,7 +248,7 @@
                                     android:fontFamily="@font/orbitron_bold"
                                     android:gravity="center"
                                     android:text="@string/not_found"
-                                    android:textColor="@color/screen_background_color"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/body_text_size">
 
                                 </TextView>
@@ -259,7 +259,7 @@
                                     android:layout_marginStart="3dp"
                                     android:fontFamily="@font/orbitron_regular"
                                     android:text="@string/points_upper_case"
-                                    android:textColor="@color/screen_background_color"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/text_minor_importance_size">
 
                                 </TextView>
@@ -329,7 +329,7 @@
                         android:layout_marginBottom="5dp"
                         android:clickable="true"
                         android:focusable="true"
-                        app:cardBackgroundColor="@color/mclaren_f1"
+                        app:cardBackgroundColor="@color/timer_gray_dark"
                         app:strokeColor="@color/black"
                         app:strokeWidth="3dp">
 
@@ -360,7 +360,7 @@
                                     android:layout_marginStart="3dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/rank"
-                                    android:textColor="@color/screen_background_color"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/layout_subtitle_text_size">
 
                                 </TextView>
@@ -381,7 +381,7 @@
                                     android:layout_marginStart="5dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/not_found"
-                                    android:textColor="@color/screen_background_color"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/body_text_size">
 
                                 </TextView>
@@ -393,7 +393,7 @@
                                     android:layout_marginEnd="5dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/separator_high_dash"
-                                    android:textColor="@color/screen_background_color"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/body_text_size">
 
                                 </TextView>
@@ -405,7 +405,7 @@
                                     android:fontFamily="@font/orbitron_bold"
                                     android:gravity="center"
                                     android:text="@string/not_found"
-                                    android:textColor="@color/screen_background_color"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/body_text_size">
 
                                 </TextView>
@@ -416,7 +416,7 @@
                                     android:layout_marginStart="3dp"
                                     android:fontFamily="@font/orbitron_regular"
                                     android:text="@string/points_upper_case"
-                                    android:textColor="@color/screen_background_color"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/text_minor_importance_size">
 
                                 </TextView>

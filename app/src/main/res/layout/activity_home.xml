@@ -5,6 +5,7 @@
     android:id="@+id/activity_home"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/screen_background_color"
     tools:context=".ui.home.HomePageActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -41,7 +42,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottom_nav_height"
         android:background="@color/ferrari_secondary"
-        app:itemIconSize="24dp"
         app:itemIconTint="@color/black"
         app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"
