@@ -3,11 +3,6 @@ package com.the_coffe_coders.fastestlap.ui.welcome.fragment;
 import android.app.Application;
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +10,9 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.google.android.material.card.MaterialCardView;
+import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
+
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.the_coffe_coders.fastestlap.R;
@@ -24,10 +21,7 @@ import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
-
 import org.apache.commons.validator.routines.EmailValidator;
-
-import java.util.Objects;
 
 public class ForgotPasswordFragment extends DialogFragment {
 
@@ -37,12 +31,11 @@ public class ForgotPasswordFragment extends DialogFragment {
     private FirebaseAuth mAuth;
     private ProgressBar progressIndicator;
     private UserViewModel userViewModel;
-
-    public interface OnFragmentInteractionListener {
-        void onFragmentDismissed(String value);
-    }
-
     private OnFragmentInteractionListener mListener;
+
+    public ForgotPasswordFragment() {
+        // Required empty public constructor
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -50,7 +43,7 @@ public class ForgotPasswordFragment extends DialogFragment {
         if (context instanceof OnFragmentInteractionListener) {
             mListener = (OnFragmentInteractionListener) context;
         } else {
-            throw new RuntimeException(context.toString()
+            throw new RuntimeException(context
                     + " must implement OnFragmentInteractionListener");
         }
     }
@@ -59,10 +52,6 @@ public class ForgotPasswordFragment extends DialogFragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    public ForgotPasswordFragment() {
-        // Required empty public constructor
     }
 
     @Override
@@ -112,7 +101,7 @@ public class ForgotPasswordFragment extends DialogFragment {
                                                 Toast.makeText(getContext(), "Error sending email", Toast.LENGTH_SHORT).show();
                                             }
                                         });
-                            }else{
+                            } else {
                                 Toast.makeText(getContext(), "Email not found", Toast.LENGTH_SHORT).show();
                             }
 
@@ -134,6 +123,10 @@ public class ForgotPasswordFragment extends DialogFragment {
             emailEditText.setError(null);
             return true;
         }
+    }
+
+    public interface OnFragmentInteractionListener {
+        void onFragmentDismissed(String value);
     }
 
 }

@@ -8,12 +8,8 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.List;
 import java.util.Objects;
-
-import retrofit2.http.GET;
 
 @Entity(tableName = "Driver")
 public class Driver implements Parcelable {
@@ -85,7 +81,6 @@ public class Driver implements Parcelable {
         this.dateOfBirth = in.readString();
         this.nationality = in.readString();
     }
-
 
 
     public long getUid() {

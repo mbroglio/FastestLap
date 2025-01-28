@@ -6,29 +6,19 @@ import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_D
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_TEAMS_COLLECTION;
 
 import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
@@ -37,27 +27,18 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverHistory;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
-import com.the_coffe_coders.fastestlap.ui.profile.ProfileActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
-import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
-import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.Period;
 import org.threeten.bp.format.DateTimeFormatter;
-
-import java.util.List;
 
 /*
  * TODO:
@@ -67,22 +48,16 @@ import java.util.List;
 public class DriverBioActivity extends AppCompatActivity {
 
     private final String TAG = "DriverBioActivity";
-
+    LoadingScreen loadingScreen;
     private GestureDetector tapDetector;
-
     private Driver driver;
     private Nation nation;
     private Constructor team;
-
     private MaterialCardView teamLogoCard;
     private ImageView teamLogoImage;
-
     private MaterialCardView driverRank;
-
     private MaterialCardView driverNumberCard;
     private ImageView driverNumberImage;
-
-    LoadingScreen loadingScreen;
 
     public static String calculateAge(String dateOfBirth) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -133,7 +108,7 @@ public class DriverBioActivity extends AppCompatActivity {
 
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_DRIVERS_COLLECTION).child(driverId);
-        Log.i("DriverBioActivity", "Database reference: " + databaseReference.toString());
+        Log.i("DriverBioActivity", "Database reference: " + databaseReference);
         databaseReference.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 driver = task.getResult().getValue(Driver.class);
@@ -160,14 +135,14 @@ public class DriverBioActivity extends AppCompatActivity {
                 });
 
                 DatabaseReference nationReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_NATIONS_COLLECTION).child(driver.getNationality());
-                Log.i("DriverBioActivity", "Nation reference: " + nationReference.toString());
+                Log.i("DriverBioActivity", "Nation reference: " + nationReference);
                 nationReference.get().addOnCompleteListener(nationTask -> {
                     if (nationTask.isSuccessful()) {
                         nation = nationTask.getResult().getValue(Nation.class);
                         Log.i("DriverBioActivity", "Nation data: " + nation.toString());
 
                         DatabaseReference teamReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_TEAMS_COLLECTION).child(driver.getTeam_id());
-                        Log.i("DriverBioActivity", "Team reference: " + teamReference.toString());
+                        Log.i("DriverBioActivity", "Team reference: " + teamReference);
                         teamReference.get().addOnCompleteListener(teamTask -> {
                             if (teamTask.isSuccessful()) {
                                 team = teamTask.getResult().getValue(Constructor.class);

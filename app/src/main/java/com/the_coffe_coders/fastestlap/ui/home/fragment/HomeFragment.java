@@ -364,7 +364,7 @@ public class HomeFragment extends Fragment {
                 List<DriverStandingsElement> driversList = driverStandings.getDriverStandingsElements();
 
                 DriverStandingsElement favouriteDriver = driverStandingsViewModel.getDriverStandingsElement(driversList, getFavoriteDriverId());
-                if(favouriteDriver == null){
+                if (favouriteDriver == null) {
                     Log.i(TAG, "Favorite Driver not found");
                     Intent intent = new Intent(getActivity(), ProfileActivity.class);
                     startActivity(intent);

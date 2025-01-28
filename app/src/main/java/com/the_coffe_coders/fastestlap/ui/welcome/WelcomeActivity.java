@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -57,10 +56,9 @@ import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import org.apache.commons.validator.routines.EmailValidator;
 
-import java.util.List;
 import java.util.Objects;
 
-public class WelcomeActivity extends AppCompatActivity implements ForgotPasswordFragment.OnFragmentInteractionListener{
+public class WelcomeActivity extends AppCompatActivity implements ForgotPasswordFragment.OnFragmentInteractionListener {
 
     private static final String TAG = "LoginFragment";
     private static final int RC_SIGN_IN = 9001; // Request code for Google Sign-In

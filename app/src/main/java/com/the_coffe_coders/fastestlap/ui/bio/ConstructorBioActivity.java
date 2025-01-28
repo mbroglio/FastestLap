@@ -12,18 +12,13 @@ import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
@@ -36,7 +31,6 @@ import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorHistory;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
-import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
@@ -50,30 +44,21 @@ import com.the_coffe_coders.fastestlap.util.UIUtils;
 public class ConstructorBioActivity extends AppCompatActivity {
 
     private static final String TAG = "ConstructorBioActivity";
-
+    LoadingScreen loadingScreen;
     private GestureDetector tapDetector;
-
     private Constructor team;
     private Driver driverOne;
     private Driver driverTwo;
     private Nation nation;
-
-
     private MaterialCardView teamLogoCard;
     private ImageView teamLogoImage;
-
     private ImageView teamCarImage;
-
     private MaterialCardView driverOneCard;
     private ImageView driverOneImage;
     private MaterialCardView driverTwoCard;
     private ImageView driverTwoImage;
-
     private ImageView teamFlag;
-
     private MaterialCardView teamRank;
-
-    LoadingScreen loadingScreen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -111,7 +96,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
         teamRank = findViewById(R.id.team_current_standing);
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_TEAMS_COLLECTION).child(teamId);
-        Log.i(TAG, "Database reference: " + databaseReference.toString());
+        Log.i(TAG, "Database reference: " + databaseReference);
         databaseReference.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 team = task.getResult().getValue(Constructor.class);
@@ -134,14 +119,14 @@ public class ConstructorBioActivity extends AppCompatActivity {
                 });
 
                 DatabaseReference nationReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_NATIONS_COLLECTION).child(team.getNationality());
-                Log.i(TAG, "Nation reference: " + nationReference.toString());
+                Log.i(TAG, "Nation reference: " + nationReference);
                 nationReference.get().addOnCompleteListener(nationTask -> {
                     if (nationTask.isSuccessful()) {
                         nation = nationTask.getResult().getValue(Nation.class);
                         Log.i(TAG, "Nation data: " + nation.toString());
 
                         DatabaseReference driverOneReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_DRIVERS_COLLECTION).child(team.getDrivers().get(0));
-                        Log.i(TAG, "Driver 1 reference: " + driverOneReference.toString());
+                        Log.i(TAG, "Driver 1 reference: " + driverOneReference);
                         driverOneReference.get().addOnCompleteListener(driverOneTask -> {
                             if (driverOneTask.isSuccessful()) {
                                 driverOne = driverOneTask.getResult().getValue(Driver.class);
@@ -154,7 +139,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
                                 });
 
                                 DatabaseReference driverTwoReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_DRIVERS_COLLECTION).child("max_verstappen");
-                                Log.i(TAG, "Driver 2 reference: " + driverTwoReference.toString());
+                                Log.i(TAG, "Driver 2 reference: " + driverTwoReference);
                                 driverTwoReference.get().addOnCompleteListener(driverTwoTask -> {
                                     if (driverTwoTask.isSuccessful()) {
                                         driverTwo = driverTwoTask.getResult().getValue(Driver.class);
@@ -193,10 +178,10 @@ public class ConstructorBioActivity extends AppCompatActivity {
         Glide.with(this).load(driverTwo.getDriver_pic_url()).into(driverTwoImage);
 
         TextView driverOneName = findViewById(R.id.driver_1_name);
-        driverOneName.setText(driverOne.getGivenName()+" "+driverOne.getFamilyName());
+        driverOneName.setText(driverOne.getGivenName() + " " + driverOne.getFamilyName());
 
         TextView driverTwoName = findViewById(R.id.driver_2_name);
-        driverTwoName.setText(driverTwo.getGivenName()+" "+driverTwo.getFamilyName());
+        driverTwoName.setText(driverTwo.getGivenName() + " " + driverTwo.getFamilyName());
 
         //Team Data
         TextView teamFullName = findViewById(R.id.team_full_name_value);

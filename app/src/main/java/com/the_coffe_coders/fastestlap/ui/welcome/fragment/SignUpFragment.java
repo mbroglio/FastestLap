@@ -33,7 +33,6 @@ import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
-
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
@@ -131,7 +130,7 @@ public class SignUpFragment extends DialogFragment {
                                 startActivity(intent);
                             } else {
                                 userViewModel.setAuthenticationError(true);
-                                Toast.makeText(getContext(),"Email already registered", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), "Email already registered", Toast.LENGTH_SHORT).show();
                             }
                         });
             } else {

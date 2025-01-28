@@ -3,7 +3,6 @@ package com.the_coffe_coders.fastestlap.ui.bio;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_CIRCUITS_COLLECTION;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_NATIONS_COLLECTION;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
-import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_TEAMS_COLLECTION;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -11,32 +10,24 @@ import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Circuit;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.CircuitHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
-
-import org.w3c.dom.Text;
 
 /*
  * TODO:
@@ -45,14 +36,12 @@ import org.w3c.dom.Text;
 
 public class TrackBioActivity extends AppCompatActivity {
 
+    LoadingScreen loadingScreen;
     private GestureDetector tapDetector;
-
     private Circuit circuit;
     private Nation nation;
     private ImageView circuitImage;
     private ImageView countryFlag;
-
-    LoadingScreen loadingScreen;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,13 +75,13 @@ public class TrackBioActivity extends AppCompatActivity {
         countryFlag = findViewById(R.id.country_flag);
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_CIRCUITS_COLLECTION).child(circuitId);
-        Log.i("TrackBioActivity", "Database reference: " + databaseReference.toString());
+        Log.i("TrackBioActivity", "Database reference: " + databaseReference);
         databaseReference.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 circuit = task.getResult().getValue(Circuit.class);
                 Log.i("TrackBioActivity", "Circuit from DB: " + circuit.toStringDB());
                 DatabaseReference nationReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_NATIONS_COLLECTION).child(circuit.getCountry());
-                Log.i("DriverBioActivity", "Nation reference: " + nationReference.toString());
+                Log.i("DriverBioActivity", "Nation reference: " + nationReference);
                 nationReference.get().addOnCompleteListener(nationTask -> {
                     if (nationTask.isSuccessful()) {
                         nation = nationTask.getResult().getValue(Nation.class);
@@ -149,7 +138,7 @@ public class TrackBioActivity extends AppCompatActivity {
         tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray_dark));
         tableLayout.addView(tableHeader);
 
-        for(CircuitHistory history : circuit.getCircuit_history()) {
+        for (CircuitHistory history : circuit.getCircuit_history()) {
             View tableRow = inflater.inflate(R.layout.track_bio_table_row, tableLayout, false);
 
             TextView year = tableRow.findViewById(R.id.season_year);

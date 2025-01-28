@@ -6,9 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,11 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
@@ -34,7 +28,6 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.SpinnerAdapter;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
-import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.WelcomeActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
@@ -44,8 +37,6 @@ import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.SimpleTextWatcher;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
-
-import org.apache.commons.validator.routines.EmailValidator;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -88,7 +79,7 @@ public class ProfileActivity extends AppCompatActivity {
 
     //private boolean isProfileImageModified = false;
     //private boolean isProfileNameModified = false;
-    private boolean isEmailModified = false;
+    private final boolean isEmailModified = false;
     //private boolean isPasswordModified = false;
     private boolean isFavDriverModified = false;
     private boolean isFavConstructorModified = false;
@@ -121,11 +112,12 @@ public class ProfileActivity extends AppCompatActivity {
         if (getFavoriteDriverId() == null || getFavoriteTeamId() == null) {
             if (getFavoriteDriverId() == null) {
                 favouriteDriverText.setText("No favourite driver selected");
-            }if (getFavoriteTeamId() == null) {
+            }
+            if (getFavoriteTeamId() == null) {
                 favouriteConstructorText.setText("No favourite constructor selected");
             }
             toolbar.setNavigationOnClickListener(v -> Toast.makeText(this, "Please select a favourite driver and constructor", Toast.LENGTH_SHORT).show());
-        }else{
+        } else {
             toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
             favouriteDriverText.setText(Constants.DRIVER_FULLNAME.get(getFavoriteDriverId()));
             favouriteConstructorText.setText(Constants.TEAM_FULLNAME.get(getFavoriteTeamId()));
@@ -413,7 +405,9 @@ public class ProfileActivity extends AppCompatActivity {
         dismissButton.setVisibility(hasChanges ? View.VISIBLE : View.INVISIBLE);
         dismissButton.setEnabled(hasChanges);
 
-        saveButton.setOnClickListener(v ->{updatePreferences();});
+        saveButton.setOnClickListener(v -> {
+            updatePreferences();
+        });
     }
 
     private void updatePreferences() {

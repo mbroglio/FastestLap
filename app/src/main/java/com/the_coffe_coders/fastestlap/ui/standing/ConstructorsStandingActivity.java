@@ -1,16 +1,11 @@
 package com.the_coffe_coders.fastestlap.ui.standing;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -18,10 +13,6 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -31,7 +22,6 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModelFactory;
@@ -45,11 +35,9 @@ import java.util.List;
 public class ConstructorsStandingActivity extends AppCompatActivity {
 
     private static final String TAG = "TeamCardActivity";
-
-    private GestureDetector tapDetector;
-
     private final boolean constructorToProcess = true;
     LoadingScreen loadingScreen;
+    private GestureDetector tapDetector;
     private TextView teamPointsTextView;
     private ConstructorStandings constructorStandings;
 
@@ -87,7 +75,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
         Log.i(TAG, "Constructor Standings: " + liveData);
         liveData.observe(this, result -> {
-            if (result.isSuccess()){
+            if (result.isSuccess()) {
                 constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
 
                 List<ConstructorStandingsElement> constructorList = constructorStandings.getConstructorStandings();
