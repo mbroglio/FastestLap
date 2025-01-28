@@ -93,6 +93,7 @@ public class DriversStandingActivity extends AppCompatActivity {
                 Log.i(TAG, "RACE RESULTS ERROR");
             }
         });
+        
         */
 
         livedata.observe(this, result -> {
