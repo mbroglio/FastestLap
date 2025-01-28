@@ -58,7 +58,6 @@ public class ConstructorBioActivity extends AppCompatActivity {
     private MaterialCardView driverTwoCard;
     private ImageView driverTwoImage;
     private ImageView teamFlag;
-    private MaterialCardView teamRank;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,7 +92,6 @@ public class ConstructorBioActivity extends AppCompatActivity {
         driverTwoImage = findViewById(R.id.driver_2_image);
 
         teamFlag = findViewById(R.id.team_flag);
-        teamRank = findViewById(R.id.team_current_standing);
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_TEAMS_COLLECTION).child(teamId);
         Log.i(TAG, "Database reference: " + databaseReference);
@@ -110,13 +108,6 @@ public class ConstructorBioActivity extends AppCompatActivity {
                 teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
                 driverOneCard.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
                 driverTwoCard.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
-                teamRank.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_SECONDARY_COLOR.get(teamId)));
-
-                teamRank.setOnClickListener(v -> {
-                    Intent intent = new Intent(ConstructorBioActivity.this, ConstructorsStandingActivity.class);
-                    intent.putExtra("TEAM_ID", teamId);
-                    startActivity(intent);
-                });
 
                 DatabaseReference nationReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_NATIONS_COLLECTION).child(team.getNationality());
                 Log.i(TAG, "Nation reference: " + nationReference);
@@ -138,7 +129,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
                                     startActivity(intent);
                                 });
 
-                                DatabaseReference driverTwoReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_DRIVERS_COLLECTION).child("max_verstappen");
+                                DatabaseReference driverTwoReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_DRIVERS_COLLECTION).child("max_verstappen"); //Fuck it
                                 Log.i(TAG, "Driver 2 reference: " + driverTwoReference);
                                 driverTwoReference.get().addOnCompleteListener(driverTwoTask -> {
                                     if (driverTwoTask.isSuccessful()) {

@@ -503,7 +503,7 @@ public class HomeFragment extends Fragment {
 
         constructorCar.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ConstructorBioActivity.class);
-            intent.putExtra("DRIVER_NAME", standingElement.getConstructor().getConstructorId());
+            intent.putExtra("TEAM_ID", standingElement.getConstructor().getConstructorId());
             startActivity(intent);
         });
 

@@ -104,8 +104,6 @@ public class DriverBioActivity extends AppCompatActivity {
         driverNumberCard = findViewById(R.id.driver_number_card);
         driverNumberImage = findViewById(R.id.driver_number_image);
 
-        driverRank = findViewById(R.id.driver_current_standing);
-
 
         DatabaseReference databaseReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_DRIVERS_COLLECTION).child(driverId);
         Log.i("DriverBioActivity", "Database reference: " + databaseReference);
@@ -118,19 +116,12 @@ public class DriverBioActivity extends AppCompatActivity {
                 toolbar.setTitle(fullName.toUpperCase());
                 toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
                 appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
-                driverRank.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_SECONDARY_COLOR.get(driver.getTeam_id())));
 
                 //setDriverRankingButton(driverId);
 
                 teamLogoCard.setOnClickListener(v -> {
                     Intent intent = new Intent(DriverBioActivity.this, ConstructorBioActivity.class);
                     intent.putExtra("TEAM_ID", driver.getTeam_id());
-                    startActivity(intent);
-                });
-
-                driverRank.setOnClickListener(v -> {
-                    Intent intent = new Intent(DriverBioActivity.this, DriversStandingActivity.class);
-                    intent.putExtra("DRIVER_ID", driverId);
                     startActivity(intent);
                 });
 
@@ -246,38 +237,6 @@ public class DriverBioActivity extends AppCompatActivity {
         }
         loadingScreen.hideLoadingScreen();
     }
-/*  //METODO PER L'EVENTUALE RECUPERO DEL RANKING DEL PILOTA TRAMITE DRIVER VIEWMODEL
-    private void setDriverRankingButton(String driverId) {
-        DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this,
-                new DriverStandingsViewModelFactory(ServiceLocator.getInstance()
-                        .getDriverRepository(this.getApplication(), false)))
-                .get(DriverStandingsViewModel.class);
-        MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
-
-        data.observe(this, result -> {
-            if (result.isSuccess()) {
-                DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
-                List<DriverStandingsElement> driversList = driverStandings.getDriverStandingsElements();
-
-                DriverStandingsElement favouriteDriver = driverStandingsViewModel.getDriverStandingsElement(driversList, driverId);
-                if(favouriteDriver == null){
-                    Log.i( TAG, "Favorite Driver not found");
-                    Intent intent = new Intent(DriverBioActivity.this, ProfileActivity.class);
-                    startActivity(intent);
-                }
-                TextView driverPosition = findViewById(R.id.driver_bio_rank_position);
-                driverPosition.setText(favouriteDriver.getPosition());
-
-                TextView driverPoints = findViewById(R.id.driver_bio_rank_points);
-                driverPoints.setText(favouriteDriver.getPoints());
-            } else {
-                Log.i(TAG, "DRIVER STANDINGS ERROR");
-                loadingScreen.hideLoadingScreen();
-            }
-        });
-    }
-
- */
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
