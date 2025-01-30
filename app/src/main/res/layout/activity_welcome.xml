@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/login_activity_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/screen_background_color">
 
     <LinearLayout
         android:id="@+id/activity_login"
@@ -167,6 +168,7 @@
         </RelativeLayout>
 
         <Button
+            android:id="@+id/GoogleLoginButton"
             style="@style/Widget.Material3.Button.ElevatedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

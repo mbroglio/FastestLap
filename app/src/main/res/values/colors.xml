@@ -181,11 +181,24 @@
     <color name="alpine_transparent">#4D2173B8</color>
 
 
-    <color name="ferrari_secondary">#CA3144</color>
+    <color name="ferrari_secondary">#CA3131</color>
+    <color name="mclaren_secondary">#E67A1F</color>
+    <color name="mercedes_secondary">#2BC2A8</color>
+    <color name="redbull_secondary">#315FA8</color>
+    <color name="aston_martin_secondary">#21865F</color>
+    <color name="haas_secondary">#A1A6A8</color>
+    <color name="racing_bulls_secondary">#5C7EDB</color>
+    <color name="williams_secondary">#5BA9D9</color>
+    <color name="alpine_secondary">#0B82B2</color>
+    <color name="kick_secondary">#01E526</color>
+
+
     <color name="ferrari_secondary_light">#C98282</color>
     <color name="screen_background_color">#1E1E24</color>
     <color name="prova">#E47180</color>
     <color name="yellow">#FFD700</color>
     <color name="dark_red">#8B0000</color>
     <color name="grey_card">#3B3B37</color>
+
+    <color name="timer_gray_dark">#777474</color>
 </resources>

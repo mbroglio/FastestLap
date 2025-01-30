@@ -5,22 +5,20 @@
     android:id="@+id/activity_driver_bio"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/screen_background_color"
     tools:context=".ui.bio.DriverBioActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/mclaren_f1"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:background="@color/mclaren_f1"
             app:navigationIcon="@drawable/arrow_back_ios_style"
-            app:title="LANDO NORRIS"
             app:titleCentered="true"
             app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar" />
     </com.google.android.material.appbar.AppBarLayout>
@@ -77,7 +75,7 @@
                     android:layout_weight="0.65">
 
                     <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/team_logo"
+                        android:id="@+id/team_logo_card"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_alignParentStart="true"
@@ -86,16 +84,13 @@
                         android:layout_alignParentBottom="true"
                         android:layout_margin="5dp"
                         app:cardBackgroundColor="@color/timer_gray"
-                        app:strokeColor="@color/mclaren_f1"
                         app:strokeWidth="3dp">
 
                         <ImageView
                             android:id="@+id/team_logo_image"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_margin="5dp"
-                            android:contentDescription="@string/mclaren"
-                            app:srcCompat="@drawable/mclarenlogo">
+                            android:layout_margin="5dp">
 
                         </ImageView>
 
@@ -116,8 +111,7 @@
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentBottom="true"
-                        android:layout_margin="16dp"
-                        app:srcCompat="@drawable/united_kingdom_flag">
+                        android:layout_margin="16dp">
 
                     </ImageView>
 
@@ -142,30 +136,30 @@
                     android:orientation="vertical">
 
                     <ImageView
+                        android:id="@+id/driver_bio_pic"
                         android:layout_width="match_parent"
                         android:layout_height="250dp"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
-                        android:scaleType="centerCrop"
-                        app:srcCompat="@drawable/norris_pic">
+                        android:scaleType="centerCrop">
 
                     </ImageView>
 
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/driver_number_card"
                         android:layout_width="@dimen/driver_photo_in_card"
                         android:layout_height="@dimen/driver_photo_in_card"
                         android:layout_marginTop="10dp"
                         android:clickable="true"
                         android:focusable="true"
                         app:cardBackgroundColor="@color/timer_gray"
-                        app:strokeColor="@color/mclaren_f1"
                         app:strokeWidth="3dp">
 
                         <ImageView
+                            android:id="@+id/driver_number_image"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_margin="5dp"
-                            app:srcCompat="@drawable/lando_norris_number">
+                            android:layout_margin="5dp">
 
                         </ImageView>
 
@@ -206,7 +200,7 @@
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="2dp"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="Bristol"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size" />
 
@@ -237,7 +231,7 @@
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="2dp"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="13/11/1999"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size" />
 
@@ -267,7 +261,7 @@
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="2dp"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="25"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size" />
 
@@ -279,7 +273,7 @@
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="10dp"
                         android:fontFamily="@font/orbitron_bold"
-                        android:text="Grand Prix Entered:"
+                        android:text="Weight - Height:"
                         android:textColor="@color/white"
                         android:textSize="@dimen/layout_subtitle_text_size" />
 
@@ -287,19 +281,65 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="10dp"
-                        android:orientation="vertical">
+                        android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/driver_gp_entered"
+                            android:id="@+id/driver_weight"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="2dp"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="100"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="3dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="kg"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/text_minor_importance_size">
+
+                        </TextView>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginEnd="10dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/separator_high_dash"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/body_text_size" />
+
+                        <TextView
+                            android:id="@+id/driver_height"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_marginTop="2dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/body_text_size" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:layout_marginStart="3dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="m"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/text_minor_importance_size">
+
+                        </TextView>
 
                     </LinearLayout>
 
@@ -327,7 +367,7 @@
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="2dp"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="1 (x5)"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size" />
 
@@ -339,7 +379,7 @@
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="10dp"
                         android:fontFamily="@font/orbitron_bold"
-                        android:text="Podiums:"
+                        android:text="Championships:"
                         android:textColor="@color/white"
                         android:textSize="@dimen/layout_subtitle_text_size" />
 
@@ -350,14 +390,44 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/driver_podiums"
+                            android:id="@+id/driver_championships"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="2dp"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="20"
+                            android:text="@string/not_found"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/body_text_size" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/orbitron_bold"
+                        android:text="First Entry:"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/layout_subtitle_text_size" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/driver_first_entry"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="2dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="NA"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size" />
 
@@ -366,111 +436,7 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_gravity="bottom">
-
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/driver_current_standing"
-                            android:layout_width="150dp"
-                            android:layout_height="50dp"
-                            android:layout_centerInParent="true"
-                            android:layout_gravity="center"
-                            android:layout_marginTop="10dp"
-                            android:clickable="true"
-                            android:focusable="true"
-                            app:cardBackgroundColor="@color/mclaren_f1"
-                            app:strokeColor="@color/black"
-                            app:strokeWidth="3dp">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:gravity="center"
-                                android:orientation="vertical">
-
-                                <LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:orientation="horizontal">
-
-                                    <ImageView
-                                        android:layout_width="20dp"
-                                        android:layout_height="match_parent"
-                                        app:srcCompat="@drawable/podium">
-
-                                    </ImageView>
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginStart="3dp"
-                                        android:fontFamily="@font/orbitron_bold"
-                                        android:text="Rank:"
-                                        android:textColor="@color/black"
-                                        android:textSize="@dimen/layout_subtitle_text_size">
-
-                                    </TextView>
-
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:orientation="horizontal">
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="@font/orbitron_bold"
-                                        android:gravity="center"
-                                        android:text="1"
-                                        android:textColor="@color/black"
-                                        android:textSize="@dimen/body_text_size">
-
-                                    </TextView>
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginStart="5dp"
-                                        android:layout_marginEnd="5dp"
-                                        android:fontFamily="@font/orbitron_bold"
-                                        android:text="-"
-                                        android:textColor="@color/black"
-                                        android:textSize="@dimen/body_text_size">
-
-                                    </TextView>
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:fontFamily="@font/orbitron_bold"
-                                        android:gravity="center"
-                                        android:text="390"
-                                        android:textColor="@color/black"
-                                        android:textSize="@dimen/body_text_size">
-
-                                    </TextView>
-
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginStart="3dp"
-                                        android:fontFamily="@font/orbitron_regular"
-                                        android:text="PTS"
-                                        android:textColor="@color/black"
-                                        android:textSize="@dimen/text_minor_importance_size">
-
-                                    </TextView>
-
-                                </LinearLayout>
-
-
-                            </LinearLayout>
-
-                        </com.google.android.material.card.MaterialCardView>
-
-                    </RelativeLayout>
+                        android:layout_gravity="bottom"/>
 
                 </LinearLayout>
 
@@ -510,5 +476,14 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <include
+        android:id="@+id/loading_screen"
+        layout="@layout/loading_screen"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

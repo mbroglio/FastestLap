@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.ui.user;
+package com.the_coffe_coders.fastestlap.ui.profile;
 
 import android.content.Context;
 import android.view.Gravity;
@@ -219,7 +219,7 @@ public class EditProfilePopup {
         }
         setViewPagerScrollable(profileImageCarousel, true);
         provisionalProfileImage = originalProfileImage;
-        profileImageCarouselLayout.setBackground(AppCompatResources.getDrawable(context, R.drawable.background_all_margins_filled_white));
+        profileImageCarouselLayout.setBackground(AppCompatResources.getDrawable(context, R.drawable.background_all_margins_3_dp_filled_white));
         confirmEditProfileImage.setVisibility(View.INVISIBLE);
         revertEditProfileImage.setVisibility(View.INVISIBLE);
         isConfirmIconClicked = false;

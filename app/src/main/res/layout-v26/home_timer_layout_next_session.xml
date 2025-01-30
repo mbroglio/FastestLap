@@ -39,7 +39,6 @@
             android:autoSizeMinTextSize="8sp"
             android:autoSizeTextType="uniform"
             android:fontFamily="@font/orbitron_bold"
-            android:text="Emilia Romagna Grand Prix"
             android:textColor="@color/black">
 
         </TextView>

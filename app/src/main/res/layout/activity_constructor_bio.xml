@@ -4,22 +4,20 @@
     android:id="@+id/activity_constructor_bio"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/screen_background_color"
     tools:context=".ui.bio.ConstructorBioActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/ferrari_f1"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:background="@color/ferrari_f1"
             app:navigationIcon="@drawable/arrow_back_ios_style"
-            app:title="SCUDERIA FERRARI"
             app:titleCentered="true"
             app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar" />
     </com.google.android.material.appbar.AppBarLayout>
@@ -56,6 +54,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/screen_background_color"
+        android:scrollbars="none"
         app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
         app:layout_constraintTop_toBottomOf="@id/top_bar_layout">
 
@@ -80,6 +79,7 @@
                     android:layout_weight="0.65">
 
                     <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/team_logo_card"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_alignParentStart="true"
@@ -88,15 +88,13 @@
                         android:layout_alignParentBottom="true"
                         android:layout_margin="5dp"
                         app:cardBackgroundColor="@color/timer_gray"
-                        app:strokeColor="@color/ferrari_f1"
                         app:strokeWidth="3dp">
 
                         <ImageView
-                            android:id="@+id/team_logo"
+                            android:id="@+id/team_logo_image"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_margin="5dp"
-                            app:srcCompat="@drawable/ferrarilogo">
+                            android:layout_margin="5dp">
 
                         </ImageView>
 
@@ -110,14 +108,14 @@
                     android:layout_weight="0.35">
 
                     <ImageView
+                        android:id="@+id/team_flag"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_alignParentStart="true"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentBottom="true"
-                        android:layout_margin="16dp"
-                        app:srcCompat="@drawable/italy_flag">
+                        android:layout_margin="16dp">
 
                     </ImageView>
 
@@ -126,114 +124,14 @@
             </LinearLayout>
 
             <ImageView
+                android:id="@+id/team_car_image"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp"
-                app:srcCompat="@drawable/ferrari">
+                android:layout_marginEnd="10dp">
 
             </ImageView>
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/team_current_standing"
-                android:layout_width="wrap_content"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="10dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:cardBackgroundColor="@color/ferrari_f1"
-                app:strokeColor="@color/black"
-                app:strokeWidth="3dp">
-
-                <LinearLayout
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="20dp"
-                            android:layout_height="match_parent"
-                            app:srcCompat="@drawable/podium">
-
-                        </ImageView>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="3dp"
-                            android:fontFamily="@font/orbitron_bold"
-                            android:text="Rank:"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/layout_subtitle_text_size">
-
-                        </TextView>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="25dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="25dp"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/orbitron_bold"
-                            android:gravity="center"
-                            android:text="1"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/body_text_size">
-
-                        </TextView>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="5dp"
-                            android:layout_marginEnd="5dp"
-                            android:fontFamily="@font/orbitron_bold"
-                            android:text="-"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/body_text_size">
-
-                        </TextView>
-
-                        <TextView
-                            android:layout_width="40dp"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/orbitron_bold"
-                            android:gravity="center"
-                            android:text="390"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/body_text_size">
-
-                        </TextView>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:text="PTS"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/text_minor_importance_size">
-
-                        </TextView>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
 
             <LinearLayout
                 android:id="@+id/team_info"
@@ -274,15 +172,15 @@
                             android:layout_gravity="center"
                             android:clickable="true"
                             android:focusable="true"
-                            app:cardBackgroundColor="@color/ferrari_f1"
                             app:strokeColor="@color/black"
                             app:strokeWidth="3dp">
 
                             <ImageView
+                                android:id="@+id/driver_1_image"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                app:srcCompat="@drawable/leclerc_pic">
+                                android:layout_gravity="center"
+                                android:layout_margin="5dp">
 
                             </ImageView>
 
@@ -294,7 +192,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="Charles Leclerc"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size">
 
@@ -317,15 +215,15 @@
                             android:layout_gravity="center"
                             android:clickable="true"
                             android:focusable="true"
-                            app:cardBackgroundColor="@color/ferrari_f1"
                             app:strokeColor="@color/black"
                             app:strokeWidth="3dp">
 
                             <ImageView
+                                android:id="@+id/driver_2_image"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_marginTop="2dp"
-                                app:srcCompat="@drawable/sainz_pic">
+                                android:layout_gravity="center"
+                                android:layout_margin="5dp">
 
                             </ImageView>
 
@@ -337,7 +235,7 @@
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="Carlos Sainz"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size">
 
@@ -392,7 +290,7 @@
                             android:layout_marginEnd="2dp"
                             android:layout_toEndOf="@id/team_full_name_text"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="Scuderia Ferrari HP"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size">
 
@@ -426,7 +324,7 @@
                             android:layout_marginEnd="2dp"
                             android:layout_toEndOf="@id/team_base_text"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="Maranello"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size">
 
@@ -441,26 +339,26 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/team_chief_text"
+                            android:id="@+id/team_principal_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:fontFamily="@font/orbitron_bold"
-                            android:text="Team Chief:"
+                            android:text="Team Principal:"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size">
 
                         </TextView>
 
                         <TextView
-                            android:id="@+id/team_chief_value"
+                            android:id="@+id/team_principal_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity=""
                             android:layout_marginStart="20dp"
-                            android:layout_toEndOf="@id/team_chief_text"
+                            android:layout_toEndOf="@id/team_principal_text"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="Frederic Vasseur"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size">
 
@@ -493,7 +391,7 @@
                             android:layout_marginStart="20dp"
                             android:layout_toEndOf="@id/team_chassis_text"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="SF-24"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size">
 
@@ -527,7 +425,40 @@
                             android:layout_marginStart="20dp"
                             android:layout_toEndOf="@id/team_power_unit_text"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="Ferrari"
+                            android:text="@string/not_found"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/body_text_size">
+
+                        </TextView>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/team_first_entry_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="First Entry:"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/layout_subtitle_text_size">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/team_first_entry_value"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="20dp"
+                            android:layout_toEndOf="@id/team_first_entry_text"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size">
 
@@ -547,7 +478,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:fontFamily="@font/orbitron_bold"
-                            android:text="Constructors' Championships:"
+                            android:text="World Championships:"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -560,7 +491,7 @@
                             android:layout_marginStart="20dp"
                             android:layout_toEndOf="@id/team_championships_text"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="16"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size">
 
@@ -593,23 +524,9 @@
                             android:layout_marginStart="20dp"
                             android:layout_toEndOf="@id/team_wins_text"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="170"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size">
-
-                        </TextView>
-
-                        <TextView
-                            android:id="@+id/team_wins_this_season"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:layout_marginStart="20dp"
-                            android:layout_toEndOf="@id/team_wins_value"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:text="(4 - 2024)"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/text_minor_importance_size">
 
                         </TextView>
 
@@ -640,74 +557,14 @@
                             android:layout_marginStart="20dp"
                             android:layout_toEndOf="@id/team_podiums_text"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="190"
+                            android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size">
 
                         </TextView>
 
-                        <TextView
-                            android:id="@+id/team_podiums_this_season"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:layout_marginStart="20dp"
-                            android:layout_toEndOf="@id/team_podiums_value"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:text="(15 - 2024)"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/text_minor_importance_size">
-
-                        </TextView>
-
                     </RelativeLayout>
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/team_pole_positions_text"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:fontFamily="@font/orbitron_bold"
-                            android:text="Pole Positions:"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/layout_subtitle_text_size">
-
-                        </TextView>
-
-                        <TextView
-                            android:id="@+id/team_pole_positions_value"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="20dp"
-                            android:layout_toEndOf="@id/team_pole_positions_text"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:text="3"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size">
-
-                        </TextView>
-
-                        <TextView
-                            android:id="@+id/team_pole_positions_this_season"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:layout_marginStart="20dp"
-                            android:layout_toEndOf="@id/team_pole_positions_value"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:text="(15 - 2024)"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/text_minor_importance_size">
-
-                        </TextView>
-
-                    </RelativeLayout>
 
                 </LinearLayout>
 
@@ -746,5 +603,14 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <include
+        android:id="@+id/loading_screen"
+        layout="@layout/loading_screen"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,7 +5,7 @@
     android:id="@+id/activity_user_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.user.UserActivity">
+    tools:context=".ui.profile.ProfileActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"
@@ -40,11 +40,12 @@
         app:layout_constraintGuide_end="0dp" />
 
     <ScrollView
+        android:id="@+id/profile_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/top_bar_layout"
         android:background="@color/screen_background_color"
-        app:layout_constraintBottom_toTopOf="@id/guideline_bottom">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_bar_layout">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -56,7 +57,8 @@
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_marginTop="50dp"
-                android:background="@drawable/circle_background_grey">
+                android:background="@drawable/circle_background_grey"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/profile_image"
@@ -72,7 +74,8 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp">
+                android:layout_marginTop="5dp"
+                android:visibility="gone">
 
                 <TextView
                     android:id="@+id/profile_text"
@@ -94,6 +97,21 @@
                     android:layout_toEndOf="@+id/profile_text"
                     android:src="@drawable/pencil_icon_white" />
             </RelativeLayout>
+
+            <Button
+                android:id="@+id/sign_out_button"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_gravity="end"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/medium_margin"
+                android:backgroundTint="@color/timer_gray"
+                android:fontFamily="@font/orbitron_bold"
+                android:text="@string/sign_out_upper_case"
+                android:textColor="@color/black"
+                android:textSize="@dimen/layout_subtitle_text_size">
+
+            </Button>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -134,11 +152,13 @@
                             android:cursorVisible="true"
                             android:fontFamily="@font/orbitron_regular"
                             android:inputType="textEmailAddress"
-                            android:text="pierre.gasslee@gmail.com"
+                            android:text="@string/not_found"
                             android:textColor="@color/timer_gray"
                             android:textSize="@dimen/body_text_size" />
 
                     </com.google.android.material.textfield.TextInputLayout>
+
+                    <!--
 
                     <ImageView
                         android:id="@+id/edit_email"
@@ -170,10 +190,12 @@
                         android:src="@drawable/arrow_back_ios_style"
                         android:visibility="invisible"
                         app:tint="@color/white" />
+                        -->
                 </RelativeLayout>
 
             </LinearLayout>
 
+            <!--
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -213,7 +235,7 @@
                             android:cursorVisible="true"
                             android:fontFamily="@font/orbitron_regular"
                             android:inputType="textPassword"
-                            android:text="Lorenzo1"
+                            android:text="default"
                             android:textColor="@color/timer_gray"
                             android:textSize="@dimen/body_text_size" />
 
@@ -227,7 +249,6 @@
                         android:layout_centerInParent="true"
                         android:layout_marginStart="10dp"
                         android:layout_toEndOf="@+id/password_text_field"
-
                         android:src="@drawable/eye_icon_white" />
 
 
@@ -265,6 +286,7 @@
                 </RelativeLayout>
 
             </LinearLayout>
+            -->
 
             <LinearLayout
                 android:id="@+id/favourite_driver_layout"

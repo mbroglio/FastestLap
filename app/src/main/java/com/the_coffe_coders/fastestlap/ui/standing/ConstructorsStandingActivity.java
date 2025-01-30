@@ -1,14 +1,11 @@
 package com.the_coffe_coders.fastestlap.ui.standing;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -16,34 +13,31 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import java.util.List;
 
 public class ConstructorsStandingActivity extends AppCompatActivity {
 
     private static final String TAG = "TeamCardActivity";
-    private static final String BASE_URL = "https://api.jolpi.ca/ergast/f1/2024/";
     private final boolean constructorToProcess = true;
     LoadingScreen loadingScreen;
+    private GestureDetector tapDetector;
     private TextView teamPointsTextView;
     private ConstructorStandings constructorStandings;
 
@@ -51,26 +45,26 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        //UIUtils.hideSystemUI(this);
         setContentView(R.layout.activity_constructors_standing);
+
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
 
         // Show loading screen initially
         loadingScreen.showLoadingScreen();
+
+        //tapDetector = UIUtils.createTapDetector(this);
+
 
         String constructorId = getIntent().getStringExtra("TEAM_ID");
         Log.i(TAG, "Constructor ID: " + constructorId);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
-        ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+        UIUtils.applyWindowInsets(toolbar);
 
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            params.topMargin = systemBars.top;
-            v.setLayoutParams(params);
-
-            return insets;
-        });
+        LinearLayout teamStandingLayout = findViewById(R.id.team_standing_layout);
+        UIUtils.applyWindowInsets(teamStandingLayout);
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
@@ -81,7 +75,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
         Log.i(TAG, "Constructor Standings: " + liveData);
         liveData.observe(this, result -> {
-            if (result.isSuccess()){
+            if (result.isSuccess()) {
                 constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
 
                 List<ConstructorStandingsElement> constructorList = constructorStandings.getConstructorStandings();
@@ -129,6 +123,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
     private View generateTeamCard(ConstructorStandingsElement standingElement, String constructorIdToHighlight) {
         // Inflate the team card layout
         View teamCard = getLayoutInflater().inflate(R.layout.team_card, null);
+        MaterialCardView teamCardView = teamCard.findViewById(R.id.team_card_view);
 
         // Preparing all the views
         TextView teamNameTextView = teamCard.findViewById(R.id.team_name);
@@ -167,16 +162,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         teamPointsTextView.setText(standingElement.getPoints());
 
         if (teamId.equals(constructorIdToHighlight)) {
-            int startColor = ContextCompat.getColor(this, R.color.yellow); // Replace with actual highlight color
-            int endColor = Color.TRANSPARENT;
-
-            ValueAnimator colorAnimator = ObjectAnimator.ofInt(teamCard, "backgroundColor", startColor, endColor);
-            colorAnimator.setDuration(1000); // Duration in milliseconds
-            colorAnimator.setEvaluator(new ArgbEvaluator());
-            colorAnimator.setRepeatCount(5); // Repeat 5 times (includes forward and reverse)
-            colorAnimator.setRepeatMode(ValueAnimator.REVERSE);
-            colorAnimator.start();
-
+            UIUtils.animateCardBackgroundColor(this, teamCardView, R.color.yellow, Color.TRANSPARENT, 1000, 10);
         }
 
         teamCard.setOnClickListener(v -> {
@@ -186,5 +172,20 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         });
 
         return teamCard;
+    }
+
+    /*
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        tapDetector.onTouchEvent(ev);
+        return super.dispatchTouchEvent(ev);
+    }
+
+     */
+
+    @Override
+    protected void onResume() {
+        //UIUtils.hideSystemUI(this);
+        super.onResume();
     }
 }
