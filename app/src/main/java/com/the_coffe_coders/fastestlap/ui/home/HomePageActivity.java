@@ -22,7 +22,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModelFactory;
-import com.the_coffe_coders.fastestlap.ui.user.UserActivity;
+import com.the_coffe_coders.fastestlap.ui.profile.ProfileActivity;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
@@ -67,7 +67,7 @@ public class HomePageActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.userActivity) {
-                Intent intent = new Intent(HomePageActivity.this, UserActivity.class);
+                Intent intent = new Intent(HomePageActivity.this, ProfileActivity.class);
                 startActivity(intent);
                 return true;
             }

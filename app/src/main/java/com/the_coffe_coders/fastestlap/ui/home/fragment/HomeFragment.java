@@ -455,7 +455,7 @@ public class HomeFragment extends Fragment {
                 ConstructorStandings constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
                 List<ConstructorStandingsElement> constructorsList = constructorStandings.getConstructorStandings();
 
-                ConstructorStandingsElement favouriteConstructor = constructorStandingsViewModel.getConstructorStandingsElement(constructorsList, Constants.FAVOURITE_TEAM);
+                ConstructorStandingsElement favouriteConstructor = constructorStandingsViewModel.getConstructorStandingsElement(constructorsList, Constants.FAVOURITE_CONSTRUCTOR);
                 Log.i(TAG, "Favorite Constructor: " + favouriteConstructor.toString());
                 buildConstructorCard(view, favouriteConstructor);
             } else {
@@ -470,7 +470,7 @@ public class HomeFragment extends Fragment {
         constructorName.setText(standingElement.getConstructor().getName());
 
         ImageView constructorCar = view.findViewById(R.id.favourite_constructor_car);
-        constructorCar.setImageResource(Constants.TEAM_CAR.get(Constants.FAVOURITE_TEAM));
+        constructorCar.setImageResource(Constants.TEAM_CAR.get(Constants.FAVOURITE_CONSTRUCTOR));
 
         TextView constructorPosition = view.findViewById(R.id.favourite_constructor_position);
         constructorPosition.setText(standingElement.getPosition());
@@ -490,14 +490,14 @@ public class HomeFragment extends Fragment {
 
         constructorCar.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ConstructorBioActivity.class);
-            intent.putExtra("DRIVER_NAME", Constants.FAVOURITE_TEAM);
+            intent.putExtra("DRIVER_NAME", Constants.FAVOURITE_CONSTRUCTOR);
             startActivity(intent);
         });
 
         MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
         teamRank.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ConstructorsStandingActivity.class);
-            intent.putExtra("TEAM_ID", Constants.FAVOURITE_TEAM);
+            intent.putExtra("TEAM_ID", Constants.FAVOURITE_CONSTRUCTOR);
             startActivity(intent);
         });
 
