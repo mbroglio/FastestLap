@@ -31,6 +31,7 @@ import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
@@ -59,12 +60,7 @@ public class DriverBioActivity extends AppCompatActivity {
     private MaterialCardView driverNumberCard;
     private ImageView driverNumberImage;
 
-    public static String calculateAge(String dateOfBirth) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-        LocalDate birthDate = LocalDate.parse(dateOfBirth, formatter);
-        LocalDate currentDate = LocalDate.now();
-        return Integer.toString(Period.between(birthDate, currentDate).getYears());
-    }
+    private DriverViewModel driverViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -172,7 +168,7 @@ public class DriverBioActivity extends AppCompatActivity {
         birthdate.setText(driver.getDateOfBirth());
 
         TextView age = findViewById(R.id.driver_age);
-        age.setText(calculateAge(driver.getDateOfBirth()));
+        age.setText(driver.getDriverAge());
 
         TextView weight = findViewById(R.id.driver_weight);
         weight.setText(driver.getWeight());
