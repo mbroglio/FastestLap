@@ -103,7 +103,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         }
 
         ImageView trackOutline = eventCard.findViewById(R.id.upcoming_track_outline);
-        Integer track = Constants.EVENT_CIRCUIT.get(weeklyRace.getCircuit().getCircuitId());
+        Integer track = Constants.EVENT_CIRCUIT.get(weeklyRace.getTrack().getTrackId());
         trackOutline.setImageResource(Objects.requireNonNullElseGet(track, () -> R.string.unknown));
 
         TextView roundNumber = eventCard.findViewById(R.id.upcoming_round_number);
@@ -125,7 +125,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
         eventCard.setOnClickListener(v -> {
             Intent intent = new Intent(UpcomingEventsActivity.this, EventActivity.class);
-            intent.putExtra("CIRCUIT_ID", weeklyRace.getCircuit().getCircuitId());
+            intent.putExtra("CIRCUIT_ID", weeklyRace.getTrack().getTrackId());
             startActivity(intent);
         });
 

@@ -19,15 +19,15 @@ public class Race extends Session {
     private String round;
     private String url;
     private String raceName;
-    private Circuit Circuit;
+    private Track track;
 
-    public Race(String season, String round, String url, String raceName, Circuit circuit, List<RaceResult> raceResults, String sessionId, Boolean isFinished, Boolean isUnderway, String date, String time) {
+    public Race(String season, String round, String url, String raceName, Track track, List<RaceResult> raceResults, String sessionId, Boolean isFinished, Boolean isUnderway, String date, String time) {
         super(date, time);
         this.season = season;
         this.round = round;
         this.url = url;
         this.raceName = raceName;
-        this.Circuit = circuit;
+        this.track = track;
         this.raceResults = raceResults;
         setEndDateTime();
     }
@@ -88,12 +88,12 @@ public class Race extends Session {
         this.raceName = raceName;
     }
 
-    public Circuit getCircuit() {
-        return Circuit;
+    public Track getTrack() {
+        return track;
     }
 
-    public void setCircuit(Circuit circuit) {
-        Circuit = circuit;
+    public void setTrack(Track track) {
+        this.track = track;
     }
 
     public List<RaceResult> getResults() {
@@ -121,7 +121,7 @@ public class Race extends Session {
                 ", round='" + round + '\'' +
                 ", url='" + url + '\'' +
                 ", raceName='" + raceName + '\'' +
-                ", Circuit=" + Circuit +
+                ", Track=" + track +
                 '}';
     }
 }

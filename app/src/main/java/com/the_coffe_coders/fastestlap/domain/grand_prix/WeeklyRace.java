@@ -17,7 +17,7 @@ public abstract class WeeklyRace {
     private String round;
     private String url;
     private String raceName;
-    private Circuit Circuit;
+    private Track track;
     private Qualifying Qualifying;
     private Race finalRace;
 
@@ -58,12 +58,12 @@ public abstract class WeeklyRace {
         this.raceName = raceName;
     }
 
-    public com.the_coffe_coders.fastestlap.domain.grand_prix.Circuit getCircuit() {
-        return Circuit;
+    public Track getTrack() {
+        return track;
     }
 
-    public void setCircuit(com.the_coffe_coders.fastestlap.domain.grand_prix.Circuit circuit) {
-        Circuit = circuit;
+    public void setTrack(Track track) {
+        this.track = track;
     }
 
     public LocalDateTime getDateTime() {

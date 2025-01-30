@@ -6,7 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Circuit;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Practice;
@@ -108,13 +108,13 @@ public class DatabaseConverters {
 
     //Circuit
     @TypeConverter
-    public static String fromCircuit(Circuit circuit) {
-        return gson.toJson(circuit);
+    public static String fromCircuit(Track track) {
+        return gson.toJson(track);
     }
 
     @TypeConverter
-    public static Circuit toCircuit(String json) {
-        return gson.fromJson(json, Circuit.class);
+    public static Track toCircuit(String json) {
+        return gson.fromJson(json, Track.class);
     }
 
     //Practice

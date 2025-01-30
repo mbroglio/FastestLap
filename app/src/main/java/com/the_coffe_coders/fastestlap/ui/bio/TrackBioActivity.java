@@ -23,8 +23,8 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Circuit;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.CircuitHistory;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.TrackHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
@@ -38,7 +38,7 @@ public class TrackBioActivity extends AppCompatActivity {
 
     LoadingScreen loadingScreen;
     private GestureDetector tapDetector;
-    private Circuit circuit;
+    private Track track;
     private Nation nation;
     private ImageView circuitImage;
     private ImageView countryFlag;
@@ -78,16 +78,16 @@ public class TrackBioActivity extends AppCompatActivity {
         Log.i("TrackBioActivity", "Database reference: " + databaseReference);
         databaseReference.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                circuit = task.getResult().getValue(Circuit.class);
-                Log.i("TrackBioActivity", "Circuit from DB: " + circuit.toStringDB());
-                DatabaseReference nationReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_NATIONS_COLLECTION).child(circuit.getCountry());
+                track = task.getResult().getValue(Track.class);
+                Log.i("TrackBioActivity", "Circuit from DB: " + track.toStringDB());
+                DatabaseReference nationReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_NATIONS_COLLECTION).child(track.getCountry());
                 Log.i("DriverBioActivity", "Nation reference: " + nationReference);
                 nationReference.get().addOnCompleteListener(nationTask -> {
                     if (nationTask.isSuccessful()) {
                         nation = nationTask.getResult().getValue(Nation.class);
                         Log.i("DriverBioActivity", "Nation data: " + nation.toString());
 
-                        setCircuitData(circuit, nation);
+                        setCircuitData(track, nation);
 
                     } else {
                         Log.e("DriverBioActivity", "Error getting nation data", nationTask.getException());
@@ -100,8 +100,8 @@ public class TrackBioActivity extends AppCompatActivity {
         });
     }
 
-    private void setCircuitData(Circuit circuit, Nation nation) {
-        Glide.with(this).load(circuit.getCircuit_full_layout_url()).into(circuitImage);
+    private void setCircuitData(Track track, Nation nation) {
+        Glide.with(this).load(track.getTrack_full_layout_url()).into(circuitImage);
         Glide.with(this).load(nation.getNation_flag_url()).into(countryFlag);
 
         TextView circuitName = findViewById(R.id.circuit_name_value);
@@ -109,17 +109,17 @@ public class TrackBioActivity extends AppCompatActivity {
         circuitName.setText("NA");
 
         TextView numberOfLaps = findViewById(R.id.number_of_laps_value);
-        numberOfLaps.setText(circuit.getLaps());
+        numberOfLaps.setText(track.getLaps());
 
         TextView circuitLength = findViewById(R.id.circuit_length_value);
-        circuitLength.setText(circuit.getLength());
+        circuitLength.setText(track.getLength());
 
         TextView raceDistance = findViewById(R.id.race_distance_value);
-        raceDistance.setText(circuit.getRace_distance());
+        raceDistance.setText(track.getRace_distance());
 
-        String fastestLapValue = circuit.getLap_record().split(" ")[0];
+        String fastestLapValue = track.getLap_record().split(" ")[0];
 
-        String fastestLapDriver = circuit.getLap_record().substring(fastestLapValue.length() + 1);
+        String fastestLapDriver = track.getLap_record().substring(fastestLapValue.length() + 1);
 
         TextView fastestLap = findViewById(R.id.fastest_lap_value);
         fastestLap.setText(fastestLapValue);
@@ -138,7 +138,7 @@ public class TrackBioActivity extends AppCompatActivity {
         tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray_dark));
         tableLayout.addView(tableHeader);
 
-        for (CircuitHistory history : circuit.getCircuit_history()) {
+        for (TrackHistory history : track.getTrack_history()) {
             View tableRow = inflater.inflate(R.layout.track_bio_table_row, tableLayout, false);
 
             TextView year = tableRow.findViewById(R.id.season_year);

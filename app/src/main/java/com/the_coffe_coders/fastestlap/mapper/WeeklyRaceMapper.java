@@ -17,7 +17,7 @@ public class WeeklyRaceMapper {
         weeklyRace.setRaceName(raceDTO.getRaceName());
         weeklyRace.setRound(raceDTO.getRound());
         weeklyRace.setSeason(raceDTO.getSeason());
-        weeklyRace.setCircuit(CircuitMapper.toCircuit(raceDTO.getCircuit()));
+        weeklyRace.setTrack(TrackMapper.toTrack(raceDTO.getCircuit()));
         weeklyRace.setQualifying(SessionMapper.toQualifying(raceDTO.getQualifying()));
         weeklyRace.setFirstPractice(SessionMapper.toPractice(raceDTO.getFirstPractice(), 1));
         weeklyRace.setUrl(raceDTO.getUrl());
@@ -27,7 +27,7 @@ public class WeeklyRaceMapper {
         finalRace.setRound(raceDTO.getRound());
         finalRace.setRaceName(raceDTO.getRaceName());
         finalRace.setUrl(raceDTO.getUrl());
-        finalRace.setCircuit(CircuitMapper.toCircuit(raceDTO.getCircuit()));
+        finalRace.setTrack(TrackMapper.toTrack(raceDTO.getCircuit()));
         finalRace.setStartDateTime(raceDTO.getDate(), raceDTO.getTime());
         finalRace.setEndDateTime();
 

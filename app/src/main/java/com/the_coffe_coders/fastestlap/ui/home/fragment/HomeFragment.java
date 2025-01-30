@@ -38,12 +38,9 @@ import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModelFactory;
-import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
-import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
-import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
 
 
 import org.threeten.bp.LocalDate;
@@ -131,7 +128,7 @@ public class HomeFragment extends Fragment {
 
     private void showPodium(View view, WeeklyRace raceResult) {
         Race race = raceResult.getFinalRace();
-        String circuitId = race.getCircuit().getCircuitId();
+        String circuitId = race.getTrack().getTrackId();
 
         TextView raceName = view.findViewById(R.id.last_race_name);
         raceName.setText(race.getRaceName());
@@ -157,7 +154,7 @@ public class HomeFragment extends Fragment {
         MaterialCardView resultCard = view.findViewById(R.id.past_event_result);
         resultCard.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), EventActivity.class);
-            intent.putExtra("CIRCUIT_ID", race.getCircuit().getCircuitId());
+            intent.putExtra("CIRCUIT_ID", race.getTrack().getTrackId());
             startActivity(intent);
         });
     }
@@ -197,7 +194,7 @@ public class HomeFragment extends Fragment {
         nextRaceName.setText(nextRace.getRaceName());
 
         ImageView nextRaceFlag = view.findViewById(R.id.home_next_gp_flag);
-        String nation = nextRace.getCircuit().getLocation().getCountry();
+        String nation = nextRace.getTrack().getLocation().getCountry();
         nextRaceFlag.setImageResource(Constants.NATION_COUNTRY_FLAG.get(nation));
 
         List<Session> sessions = nextRace.getSessions();
@@ -213,7 +210,7 @@ public class HomeFragment extends Fragment {
         FrameLayout nextSessionCard = view.findViewById(R.id.timer_card_countdown);
         nextSessionCard.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), EventActivity.class);
-            intent.putExtra("CIRCUIT_ID", nextRace.getCircuit().getCircuitId());
+            intent.putExtra("CIRCUIT_ID", nextRace.getTrack().getTrackId());
             startActivity(intent);
         });
     }
