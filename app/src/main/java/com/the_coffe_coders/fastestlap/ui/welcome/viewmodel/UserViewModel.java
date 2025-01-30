@@ -36,10 +36,14 @@ public class UserViewModel extends ViewModel {
         return userMutableLiveData;
     }
 
-    public void saveUserPreferences(String favoriteDriver, String favoriteTeam, String idToken) {
+    public void saveUserPreferences(String favoriteDriver, String favoriteTeam, String autoLogin, String idToken) {
         if (idToken != null) {
-            userRepository.saveUserPreferences(favoriteDriver, favoriteTeam, idToken);
+            userRepository.saveUserPreferences(favoriteDriver, favoriteTeam, autoLogin, idToken);
         }
+    }
+
+    public boolean isAutoLoginEnabled(String idToken) {
+        return userRepository.isAutoLoginEnabled(idToken);
     }
 
     public MutableLiveData<Result> getUserPreferences(String idToken) {

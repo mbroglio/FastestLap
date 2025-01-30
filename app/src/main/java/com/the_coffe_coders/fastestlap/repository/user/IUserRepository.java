@@ -22,7 +22,9 @@ public interface IUserRepository {
 
     void signInWithGoogle(String token);
 
-    void saveUserPreferences(String favoriteDriver, String favoriteTeam, String idToken);
+    void saveUserPreferences(String favoriteDriver, String favoriteTeam, String autoLogin, String idToken);
 
     void onSuccessFromAuthentication(User user);
+
+    boolean isAutoLoginEnabled(String idToken);
 }

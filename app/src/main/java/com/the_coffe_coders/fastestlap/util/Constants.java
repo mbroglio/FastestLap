@@ -18,6 +18,7 @@ public class Constants {
     public static final String SHARED_PREFERENCES_FILENAME = "shared";
     public static final String SHARED_PREFERENCES_FAVORITE_DRIVER = "driver_favorite";
     public static final String SHARED_PREFERENCES_FAVORITE_TEAM = "team_favorite";
+    public static final String SHARED_PREFERENCES_AUTO_LOGIN = "auto_login";
 
     public static final String SHARED_PREFERENCES_LAST_UPDATE = "last_update";
 
@@ -534,4 +535,5 @@ public class Constants {
     public static final String FIREBASE_TEAMS_COLLECTION = "teams";
     public static final String FIREBASE_CIRCUITS_COLLECTION = "circuits";
     public static final String FIREBASE_NATIONS_COLLECTION = "nations";
+
 }

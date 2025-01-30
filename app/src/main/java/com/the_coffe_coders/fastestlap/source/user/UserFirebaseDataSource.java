@@ -2,6 +2,7 @@ package com.the_coffe_coders.fastestlap.source.user;
 
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_USERS_COLLECTION;
+import static com.the_coffe_coders.fastestlap.util.Constants.SHARED_PREFERENCES_AUTO_LOGIN;
 import static com.the_coffe_coders.fastestlap.util.Constants.SHARED_PREFERENCES_FAVORITE_DRIVER;
 import static com.the_coffe_coders.fastestlap.util.Constants.SHARED_PREFERENCES_FAVORITE_TEAM;
 import static com.the_coffe_coders.fastestlap.util.Constants.SHARED_PREFERENCES_FILENAME;
@@ -97,7 +98,7 @@ public class UserFirebaseDataSource extends BaseUserDataRemoteDataSource {
     }
 
     @Override
-    public void saveUserPreferences(String favoriteDriver, String favoriteTeam, String idToken) {
+    public void saveUserPreferences(String favoriteDriver, String favoriteTeam, String autoLogin, String idToken) {
 
         databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
                 child(SHARED_PREFERENCES_FAVORITE_DRIVER).setValue(favoriteDriver);
@@ -106,8 +107,31 @@ public class UserFirebaseDataSource extends BaseUserDataRemoteDataSource {
                 child(SHARED_PREFERENCES_FAVORITE_TEAM).setValue(favoriteTeam).addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
-                        Log.i(TAG, "fattoooo");
+                        Log.i(TAG, "fattoooo team");
                     }
                 });
+
+        databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
+                child(SHARED_PREFERENCES_AUTO_LOGIN).setValue(autoLogin).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.i(TAG, "fattoooo auto login");
+                    }
+                });
+    }
+
+    @Override
+    public boolean isAutoLoginEnabled(String idToken) {
+        final boolean[] autoLoginEnabled = {false};
+        databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
+                child(SHARED_PREFERENCES_AUTO_LOGIN).get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        String autoLogin = task.getResult().getValue(String.class);
+                        autoLoginEnabled[0] = Boolean.parseBoolean(autoLogin);
+                    } else {
+                        Log.e(TAG, "Failed to get auto_login value", task.getException());
+                    }
+                });
+        return autoLoginEnabled[0];
     }
 }

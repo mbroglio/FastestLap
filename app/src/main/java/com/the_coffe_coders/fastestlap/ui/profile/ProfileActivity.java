@@ -9,6 +9,7 @@ import android.view.GestureDetector;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListPopupWindow;
@@ -41,7 +42,8 @@ import com.the_coffe_coders.fastestlap.util.UIUtils;
 public class ProfileActivity extends AppCompatActivity {
 
     private GestureDetector tapDetector;
-
+    SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
+    User currentUser;
     //private String originalUsername;
     //private String originalPassword;
     private String originalEmail;
@@ -64,6 +66,7 @@ public class ProfileActivity extends AppCompatActivity {
     private MaterialCardView changeConstructorButton;
     private ListPopupWindow listPopupWindowConstructors;
 
+    private CheckBox autoLoginCheckBox;
     private Button saveButton;
     private Button dismissButton;
     private Button signOutButton;
@@ -74,6 +77,7 @@ public class ProfileActivity extends AppCompatActivity {
     private String provisionalFavConstructor;
     private String favouriteDriverKey;
     private String favouriteConstructorKey;
+    private String autoLoginKey;
     //private String provisionalEmail;
     //private String provisionalPassword;
 
@@ -83,6 +87,7 @@ public class ProfileActivity extends AppCompatActivity {
     //private boolean isPasswordModified = false;
     private boolean isFavDriverModified = false;
     private boolean isFavConstructorModified = false;
+    private boolean isCheckBoxChanged = false;
 
     private FirebaseAuth mAuth;
     private IUserRepository userRepository;
@@ -126,15 +131,29 @@ public class ProfileActivity extends AppCompatActivity {
         userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
         userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
 
+        currentUser = userViewModel.getLoggedUser();
+
         changeDriverButton = findViewById(R.id.change_driver_button);
         changeConstructorButton = findViewById(R.id.change_constructor_button);
 
+        autoLoginCheckBox = findViewById(R.id.remember_me_checkbox);
         saveButton = findViewById(R.id.save_button);
         dismissButton = findViewById(R.id.dismiss_button);
         signOutButton = findViewById(R.id.sign_out_button);
 
         String[] drivers = Constants.DRIVER_FULLNAME.keySet().toArray(new String[0]);
         String[] constructors = Constants.TEAM_FULLNAME.keySet().toArray(new String[0]);
+
+        setAutoLoginCheckBox();
+
+        autoLoginCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            isCheckBoxChanged = true;
+            checkForChanges();
+        });
+
+        //get value of aotulogin from shared preferences
+        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
+        sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_AUTO_LOGIN);
 
         // Initialize ListPopupWindow for drivers and constructors
         listPopupWindowDrivers = createListPopupWindow(drivers, changeDriverButton, true);
@@ -398,7 +417,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void checkForChanges() {
-        boolean hasChanges = isEmailModified || isFavDriverModified || isFavConstructorModified;
+        boolean hasChanges = isEmailModified || isFavDriverModified || isFavConstructorModified || isCheckBoxChanged;
 
         saveButton.setVisibility(hasChanges ? View.VISIBLE : View.INVISIBLE);
         saveButton.setEnabled(hasChanges);
@@ -411,9 +430,7 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void updatePreferences() {
-        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
-        User user = userViewModel.getLoggedUser();
-        saveSharedPreferences(sharedPreferencesUtils, user);
+        saveSharedPreferences(sharedPreferencesUtils, currentUser);
 
         Intent intent = new Intent(ProfileActivity.this, HomePageActivity.class);
         startActivity(intent);
@@ -437,25 +454,45 @@ public class ProfileActivity extends AppCompatActivity {
             favouriteConstructorKey = getFavoriteTeamId();
         }
 
+        if (isCheckBoxChanged) {
+            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
+                    Constants.SHARED_PREFERENCES_AUTO_LOGIN,
+                    String.valueOf(autoLoginCheckBox.isChecked()));
+        }else{
+            autoLoginKey = getAutoLoginValue();
+        }
+
         userViewModel.saveUserPreferences(
                 favouriteDriverKey,
                 favouriteConstructorKey,
+                String.valueOf(autoLoginCheckBox.isChecked()),
                 user.getIdToken()
         );
     }
 
+    private void setAutoLoginCheckBox() {
+        String autoLogin = getAutoLoginValue();
+        if (autoLogin != null) {
+            autoLoginCheckBox.setChecked(Boolean.parseBoolean(autoLogin));
+        }
+    }
+
     private String getFavoriteDriverId() {
-        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
         String favoriteDriver = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
         Log.i(TAG, "Favorite Driver: " + favoriteDriver);
         return favoriteDriver;
     }
 
     private String getFavoriteTeamId() {
-        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
         String favoriteTeam = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
         Log.i(TAG, "Favorite Team: " + favoriteTeam);
         return favoriteTeam;
+    }
+
+    private String getAutoLoginValue() {
+        String autoLogin = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_AUTO_LOGIN);
+        Log.i(TAG, "Auto Login: " + autoLogin);
+        return autoLogin;
     }
 
     /*

@@ -283,9 +283,10 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
 
         super.onStart();
 
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            startActivity(new Intent(WelcomeActivity.this, HomePageActivity.class));
+        if (userViewModel.getLoggedUser() != null) {
+            if(userViewModel.isAutoLoginEnabled(userViewModel.getLoggedUser().getIdToken())) {
+                startActivity(new Intent(WelcomeActivity.this, HomePageActivity.class));
+            }
         } else if (!fromSignOut && !fromEmailVerification) {
             introScreen.showIntroScreen();
         }

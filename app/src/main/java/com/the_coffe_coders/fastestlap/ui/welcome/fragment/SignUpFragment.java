@@ -168,9 +168,14 @@ public class SignUpFragment extends DialogFragment {
                 Constants.SHARED_PREFERENCES_FAVORITE_TEAM,
                 favouriteConstructorKey);
 
+        sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
+                Constants.SHARED_PREFERENCES_AUTO_LOGIN,
+                "false");
+
         userViewModel.saveUserPreferences(
                 favouriteDriverKey,
                 favouriteConstructorKey,
+                "false",
                 user.getIdToken()
         );
     }
