@@ -145,13 +145,20 @@ public class ProfileActivity extends AppCompatActivity {
         String[] constructors = Constants.TEAM_FULLNAME.keySet().toArray(new String[0]);
 
         setAutoLoginCheckBox();
+        boolean autoLogin = autoLoginCheckBox.isChecked();
+        Log.i(TAG, "Auto Login status: " + autoLogin);
 
         autoLoginCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            isCheckBoxChanged = true;
-            checkForChanges();
+            Log.i(TAG, "Auto Login status on click: " + autoLoginCheckBox.isChecked());
+            if(autoLoginCheckBox.isChecked() != autoLogin){
+                isCheckBoxChanged = true;
+                checkForChanges();
+            }else{
+                isCheckBoxChanged = false;
+                checkForChanges();
+            }
         });
 
-        //get value of aotulogin from shared preferences
         SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
         sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_AUTO_LOGIN);
 
@@ -336,7 +343,7 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
         signOutButton.setOnClickListener(v -> {
-            FirebaseAuth.getInstance().signOut();
+            userViewModel.logout();
             Intent intent = new Intent(ProfileActivity.this, WelcomeActivity.class);
             intent.putExtra("SIGN_OUT", true);
             startActivity(intent);
