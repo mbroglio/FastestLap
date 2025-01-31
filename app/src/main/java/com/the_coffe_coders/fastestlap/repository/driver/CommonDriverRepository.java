@@ -1,0 +1,67 @@
+package com.the_coffe_coders.fastestlap.repository.driver;
+
+import androidx.lifecycle.MediatorLiveData;
+
+import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.driver.Driver;
+import com.the_coffe_coders.fastestlap.source.driver.BaseDriverLocalDataSource;
+import com.the_coffe_coders.fastestlap.source.driver.BaseDriverRemoteDataSource;
+
+public class CommonDriverRepository {
+    private final MediatorLiveData<Result> allDriverMediatorLiveData;
+
+    private final FirebaseDriverRepository firebaseDriverRepository;
+    private final JolpicaDriverStandingsRepositoy jolpicaDriverRepository;
+    public CommonDriverRepository() {
+        this.allDriverMediatorLiveData = new MediatorLiveData<>();
+        jolpicaDriverRepository = new JolpicaDriverStandingsRepositoy();
+        firebaseDriverRepository = new FirebaseDriverRepository();
+    }
+
+    /*public MediatorLiveData<Result> getDriver(String driverId) {
+        allDriverMediatorLiveData.addSource(jolpicaDriverRepository.getDriver(driverId), allDriverMediatorLiveData::setValue);
+        firebaseDriverRepository.getDriverData(driverId,
+                new FirebaseDriverRepository.DriverCallback() {
+
+                    @Override
+                    public void onSuccess(Driver driver) {
+                        allDriverMediatorLiveData.setValue(new Result.DriverSuccess(driver));
+
+                    }
+
+                    @Override
+                    public void onFailure(Exception exception) {
+                        allDriverMediatorLiveData.setValue(new Result.Error(exception.getMessage()));
+                    }
+                });
+        
+        return allDriverMediatorLiveData;
+    }*/
+
+    public MediatorLiveData<Result> getDriver(String driverId) {
+        allDriverMediatorLiveData.addSource(jolpicaDriverRepository.getDriver(driverId), jolpicaResult -> {
+            if (jolpicaResult instanceof Result.DriverSuccess) {
+                Driver jolpicaDriver = ((Result.DriverSuccess) jolpicaResult).getData();
+
+                firebaseDriverRepository.getDriverData(driverId, new FirebaseDriverRepository.DriverCallback() {
+                    @Override
+                    public void onSuccess(Driver firebaseDriver) {
+                        firebaseDriver.setDriverId(jolpicaDriver.getDriverId());
+                        firebaseDriver.setPermanentNumber(jolpicaDriver.getPermanentNumber());
+                        firebaseDriver.setCode(jolpicaDriver.getCode());
+                        firebaseDriver.setUrl(jolpicaDriver.getUrl());
+                        allDriverMediatorLiveData.setValue(new Result.DriverSuccess(firebaseDriver));
+                    }
+
+                    @Override
+                    public void onFailure(Exception exception) {
+                        // Se Firebase fallisce, usa i dati di Jolpica
+                        allDriverMediatorLiveData.setValue(jolpicaResult);
+                    }
+                });
+            }
+        });
+
+        return allDriverMediatorLiveData;
+    }
+}

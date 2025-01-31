@@ -1,6 +1,7 @@
 package com.the_coffe_coders.fastestlap.domain;
 
 import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
@@ -24,14 +25,14 @@ public abstract class Result {
      * with a Web Service or a local database.
      */
     public static final class DriverSuccess extends Result {
-        private final DriverAPIResponse driverAPIResponse;
+        private final Driver driver;
 
-        public DriverSuccess(DriverAPIResponse driverStandingsAPIResponse) {
-            this.driverAPIResponse = driverStandingsAPIResponse;
+        public DriverSuccess(Driver driver) {
+            this.driver = driver;
         }
 
-        public DriverAPIResponse getData() {
-            return driverAPIResponse;
+        public Driver getData() {
+            return driver;
         }
     }
 

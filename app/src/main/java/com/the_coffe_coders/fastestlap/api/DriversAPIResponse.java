@@ -2,26 +2,27 @@ package com.the_coffe_coders.fastestlap.api;
 
 import com.google.gson.annotations.SerializedName;
 import com.the_coffe_coders.fastestlap.dto.DriverStandingsTableDTO;
+import com.the_coffe_coders.fastestlap.dto.DriverTableDTO;
 
 public class DriversAPIResponse extends APIResponse {
-    @SerializedName("StandingsTable")
-    private DriverStandingsTableDTO DriverStandingsTableDTO;
+    @SerializedName("DriverTable")
+    private DriverTableDTO driverTableDTO;
 
-    public DriversAPIResponse(String xmlns, String series, String url, String limit, String offset, String total, DriverStandingsTableDTO DriverStandingsTableDTO) {
+    public DriversAPIResponse(String xmlns, String series, String url, String limit, String offset, String total, DriverTableDTO driverTableDTO) {
         super(xmlns, series, url, limit, offset, total);
-        this.DriverStandingsTableDTO = DriverStandingsTableDTO;
+        this.driverTableDTO = driverTableDTO;
     }
 
-    public DriverStandingsTableDTO getStandingsTable() {
-        return DriverStandingsTableDTO;
+    public DriverTableDTO getStandingsTable() {
+        return driverTableDTO;
     }
 
-    public void setStandingsTable(DriverStandingsTableDTO driverStandingsTableDTO) {
-        DriverStandingsTableDTO = driverStandingsTableDTO;
+    public void setStandingsTable(DriverTableDTO driverTableDTO) {
+        this.driverTableDTO = driverTableDTO;
     }
 
     @Override
     public String toString() {
-        return "StandingsAPIResponse{" + super.toString() + "StandingsTable=" + DriverStandingsTableDTO + "}";
+        return "DriversAPIResponse{" + super.toString() + "DriverTable=" + driverTableDTO + "}";
     }
 }

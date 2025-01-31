@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.api.ConstructorStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
+import com.the_coffe_coders.fastestlap.api.DriversAPIResponse;
 import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.api.RaceResultsAPIResponse;
 
@@ -33,6 +34,10 @@ public class JSONParserUtils {
 
     public RaceResultsAPIResponse parseRaceResults(JsonObject jsonObject) {
         return new Gson().fromJson(jsonObject, RaceResultsAPIResponse.class);
+    }
+
+    public DriversAPIResponse parseDrivers(JsonObject mrdata) {
+        return new Gson().fromJson(mrdata, DriversAPIResponse.class);
     }
 
     /*public CircuitAPIResponse parseCircuit(JsonObject jsonObject) {

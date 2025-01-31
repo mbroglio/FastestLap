@@ -93,6 +93,10 @@ public class Driver implements Parcelable {
         return Period.between(birthDate, currentDate).getYears();
     }
 
+    public String getDriverAgeAsString() {
+        return String.valueOf(getDriverAge());
+    }
+
 
     public long getUid() {
         return uid;

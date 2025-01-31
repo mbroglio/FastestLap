@@ -1,14 +1,18 @@
 package com.the_coffe_coders.fastestlap.dto;
 
+import androidx.room.Ignore;
+
 public class DriverDTO {
 
     private String driverId;
     private String permanentNumber;
     private String code;
+    @Ignore
     private String url;
     private String givenName;
     private String familyName;
     private String dateOfBirth;
+    @Ignore
     private String nationality;
 
     public DriverDTO(String driverId, String permanentNumber, String code, String url, String givenName, String familyName, String dateOfBirth, String nationality) {

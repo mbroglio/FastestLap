@@ -1,17 +1,15 @@
 package com.the_coffe_coders.fastestlap.source.driver;
 
-import com.the_coffe_coders.fastestlap.repository.driver.DriverResponseCallback;
+import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsResponseCallback;
 
 public abstract class BaseDriverRemoteDataSource {
-    protected DriverResponseCallback driverCallback;
+    protected DriverStandingsResponseCallback driverCallback;
 
-    public void setDriverCallback(DriverResponseCallback driverCallback) {
+    public void setDriverCallback(DriverStandingsResponseCallback driverCallback) {
         this.driverCallback = driverCallback;
     }
 
     public abstract void getDrivers();
 
     public abstract void getDriversStandings();
-
-    public abstract void getDriver(String driverId);
 }
