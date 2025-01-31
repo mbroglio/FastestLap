@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
-import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
+import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
 
 import java.util.List;
 
@@ -15,18 +15,18 @@ public class ConstructorStandingsViewModel extends ViewModel {
 
     private static final String TAG = ConstructorStandingsViewModel.class.getSimpleName();
 
-    private final ConstructorRepository constructorRepository;
+    private final CommonConstructorRepository commonConstructorRepository;
     private final int page;
     private MutableLiveData<Result> constructorStandingsLiveData;
 
-    public ConstructorStandingsViewModel(ConstructorRepository constructorRepository) {
-        this.constructorRepository = constructorRepository;
+    public ConstructorStandingsViewModel(CommonConstructorRepository commonConstructorRepository) {
+        this.commonConstructorRepository = commonConstructorRepository;
         this.page = 3;//TODO Verify
     }
 
     private void fetchConstructorStandings(long lastUpdate) {
         Log.i(TAG, "fetchConstructorStandings");
-        constructorStandingsLiveData = constructorRepository.fetchConstructorStandings(lastUpdate);
+        constructorStandingsLiveData = commonConstructorRepository.fetchConstructorStandings(lastUpdate);
     }
 
     public MutableLiveData<Result> getConstructorStandingsLiveData(long lastUpdate) {
