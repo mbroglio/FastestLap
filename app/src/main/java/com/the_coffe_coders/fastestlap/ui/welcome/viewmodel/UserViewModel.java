@@ -3,6 +3,7 @@ package com.the_coffe_coders.fastestlap.ui.welcome.viewmodel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.google.android.gms.tasks.Task;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
@@ -42,7 +43,7 @@ public class UserViewModel extends ViewModel {
         }
     }
 
-    public boolean isAutoLoginEnabled(String idToken) {
+    public Task<Boolean> isAutoLoginEnabled(String idToken) {
         return userRepository.isAutoLoginEnabled(idToken);
     }
 

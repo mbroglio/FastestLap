@@ -1,5 +1,6 @@
 package com.the_coffe_coders.fastestlap.source.user;
 
+import com.google.android.gms.tasks.Task;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.UserResponseCallback;
 
@@ -16,6 +17,6 @@ public abstract class BaseUserDataRemoteDataSource {
 
     public abstract void saveUserPreferences(String favoriteDriver, String favoriteTeam, String autoLogin, String idToken);
 
-    public abstract boolean isAutoLoginEnabled(String idToken);
+    public abstract Task<Boolean> isAutoLoginEnabled(String idToken);
 }
 

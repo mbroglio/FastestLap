@@ -13,6 +13,8 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -120,18 +122,19 @@ public class UserFirebaseDataSource extends BaseUserDataRemoteDataSource {
                 });
     }
 
-    @Override
-    public boolean isAutoLoginEnabled(String idToken) {
-        final boolean[] autoLoginEnabled = {false};
-        databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
-                child(SHARED_PREFERENCES_AUTO_LOGIN).get().addOnCompleteListener(task -> {
+    public Task<Boolean> isAutoLoginEnabled(String idToken) {
+        TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
+        databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken)
+                .child(SHARED_PREFERENCES_AUTO_LOGIN).get().addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         String autoLogin = task.getResult().getValue(String.class);
-                        autoLoginEnabled[0] = Boolean.parseBoolean(autoLogin);
+                        taskCompletionSource.setResult(Boolean.parseBoolean(autoLogin));
                     } else {
                         Log.e(TAG, "Failed to get auto_login value", task.getException());
+                        taskCompletionSource.setResult(false);
                     }
                 });
-        return autoLoginEnabled[0];
+        return taskCompletionSource.getTask();
     }
+
 }

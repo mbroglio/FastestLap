@@ -2,6 +2,7 @@ package com.the_coffe_coders.fastestlap.repository.user;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.Task;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 
@@ -26,5 +27,5 @@ public interface IUserRepository {
 
     void onSuccessFromAuthentication(User user);
 
-    boolean isAutoLoginEnabled(String idToken);
+    Task<Boolean> isAutoLoginEnabled(String idToken);
 }

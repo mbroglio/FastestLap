@@ -2,6 +2,7 @@ package com.the_coffe_coders.fastestlap.repository.user;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.gms.tasks.Task;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.source.user.BaseUserAuthenticationRemoteDataSource;
@@ -82,7 +83,7 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     }
 
     @Override
-    public boolean isAutoLoginEnabled(String idToken) {
+    public Task<Boolean> isAutoLoginEnabled(String idToken) {
         return userDataRemoteDataSource.isAutoLoginEnabled(idToken);
     }
 

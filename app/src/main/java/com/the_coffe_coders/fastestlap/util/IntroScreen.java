@@ -71,7 +71,7 @@ public class IntroScreen {
                 }
 
                 handler.postDelayed(() -> {
-                    progressIndicator.setVisibility(View.VISIBLE);
+
                     handler.postDelayed(() -> {
                         hideIntroScreen();
                         progressIndicator.setVisibility(View.INVISIBLE);
@@ -82,6 +82,9 @@ public class IntroScreen {
     }
 
     public void hideIntroScreen() {
+        appName.setVisibility(View.GONE);
+        appCredits.setVisibility(View.GONE);
+        progressIndicator.setVisibility(View.GONE);
         introScreen.setVisibility(View.GONE);
     }
 
@@ -92,5 +95,11 @@ public class IntroScreen {
         if (logoMediaPlayer != null) {
             logoMediaPlayer.release();
         }
+    }
+
+    public void showForAutoLogin(){
+        introScreen.setVisibility(View.VISIBLE);
+        appName.setVisibility(View.VISIBLE);
+        appCredits.setVisibility(View.VISIBLE);
     }
 }

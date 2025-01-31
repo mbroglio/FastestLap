@@ -7,7 +7,9 @@ import static com.the_coffe_coders.fastestlap.util.Constants.WEAK_PASSWORD_ERROR
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
+import android.graphics.LinearGradient;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.View;
@@ -280,14 +282,26 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
     public void onStart() {
 
         Log.i("OnStart", Boolean.toString(fromSignOut));
-
         super.onStart();
 
         if (userViewModel.getLoggedUser() != null) {
-            if(userViewModel.isAutoLoginEnabled(userViewModel.getLoggedUser().getIdToken())) {
-                startActivity(new Intent(WelcomeActivity.this, HomePageActivity.class));
-            }
+            introScreen.showForAutoLogin();
+            Log.i("OnStart", "Show Intro Screen AutoLogin");
+            userViewModel.isAutoLoginEnabled(userViewModel.getLoggedUser().getIdToken()).addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    boolean autoLoginEnabled = task.getResult();
+                    if (autoLoginEnabled) {
+                        new Handler().postDelayed(() -> {
+                            startActivity(new Intent(WelcomeActivity.this, HomePageActivity.class));
+                        }, 500); // 2 seconds delay
+                    }
+                }else {
+                    Log.e(TAG, "Failed to get auto_login value", task.getException());
+                }
+            });
+
         } else if (!fromSignOut && !fromEmailVerification) {
+            Log.i("OnStart", "Show Intro Screen");
             introScreen.showIntroScreen();
         }
     }
