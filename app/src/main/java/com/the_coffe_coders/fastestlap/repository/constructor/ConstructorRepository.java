@@ -69,6 +69,11 @@ public class ConstructorRepository implements IConstructorRepository, Constructo
         return constructorStandingsMutableLiveData;
     }
 
+    @Override
+    public MutableLiveData<Result> fetchConstructors(long lastUpdate) {
+        return null;
+    }
+
     public MutableLiveData<Result> fetchConstructor(String constructorId, long lastUpdate) {
         long currentTime = System.currentTimeMillis();
 
