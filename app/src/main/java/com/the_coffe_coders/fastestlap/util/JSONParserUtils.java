@@ -9,6 +9,7 @@ import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.api.DriversAPIResponse;
 import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.api.RaceResultsAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorAPIResponse;
 
 public class JSONParserUtils {
     Context context;
@@ -38,6 +39,10 @@ public class JSONParserUtils {
 
     public DriversAPIResponse parseDrivers(JsonObject mrdata) {
         return new Gson().fromJson(mrdata, DriversAPIResponse.class);
+    }
+
+    public ConstructorAPIResponse parseConstructor(JsonObject mrdata) {
+        return new Gson().fromJson(mrdata, ConstructorAPIResponse.class);
     }
 
     /*public CircuitAPIResponse parseCircuit(JsonObject jsonObject) {

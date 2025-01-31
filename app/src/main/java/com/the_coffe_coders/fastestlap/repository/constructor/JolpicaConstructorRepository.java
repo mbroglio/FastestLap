@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.repository.driver;
+package com.the_coffe_coders.fastestlap.repository.constructor;
 
 import android.util.Log;
 
@@ -6,38 +6,32 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
-import com.the_coffe_coders.fastestlap.api.DriversAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.driver.Driver;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
-import com.the_coffe_coders.fastestlap.mapper.DriverMapper;
-import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
-import com.the_coffe_coders.fastestlap.source.driver.BaseDriverLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.driver.BaseDriverRemoteDataSource;
+import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorAPIResponse;
+import com.the_coffe_coders.fastestlap.mapper.ConstructorMapper;
+
 import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import java.io.IOException;
-import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class JolpicaDriverStandingsRepositoy {
-    private final String TAG = "JolpicaDriverRepository";
+public class JolpicaConstructorRepository {
+    private final String TAG = "JolpicaConstructorRepository";
 
-    private final MutableLiveData<Result> driverMutableLiveData;
+    private final MutableLiveData<Result> constructorMutableLiveData;
 
-    public JolpicaDriverStandingsRepositoy() {
-        driverMutableLiveData = new MutableLiveData<>();
+    public JolpicaConstructorRepository() {
+        constructorMutableLiveData = new MutableLiveData<>();
     }
 
-    public MutableLiveData<Result> getDriver(String driverId) {
-        Log.i(TAG, "getDriver");
-        Call<ResponseBody> responseCall = ServiceLocator.getInstance().getConcreteErgastAPIService().getDriver(driverId);
+    public MutableLiveData<Result> getConstructor(String constructorId) {
+        Log.i(TAG, "getConstructor");
+        Call<ResponseBody> responseCall = ServiceLocator.getInstance().getConcreteErgastAPIService().getConstructor(constructorId);
         responseCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -53,10 +47,10 @@ public class JolpicaDriverStandingsRepositoy {
                     JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
 
                     JSONParserUtils jsonParserUtils = new JSONParserUtils();
-                    DriversAPIResponse driversAPIResponse = jsonParserUtils.parseDrivers(mrdata);
-                    Log.i("Drivers", driversAPIResponse.toString());
+                    ConstructorAPIResponse constructorAPIResponse = jsonParserUtils.parseConstructor(mrdata);
+                    Log.i("Constructor", constructorAPIResponse.toString());
 
-                    driverMutableLiveData.setValue(new Result.DriverSuccess(DriverMapper.toDriver(driversAPIResponse.getStandingsTable().getDriverDTOList().get(0))));
+                    constructorMutableLiveData.setValue(new Result.ConstructorSuccess(ConstructorMapper.toConstructor(constructorAPIResponse.getStandingsTable().getConstructorDTOList().get(0))));
                 } else {
                     Log.i(TAG, "onFailure");
                 }
@@ -67,6 +61,6 @@ public class JolpicaDriverStandingsRepositoy {
                 Log.i(TAG, "onFailure");
             }
         });
-        return driverMutableLiveData;
+        return constructorMutableLiveData;
     }
 }

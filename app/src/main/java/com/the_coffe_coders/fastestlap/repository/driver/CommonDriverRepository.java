@@ -4,17 +4,15 @@ import androidx.lifecycle.MediatorLiveData;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
-import com.the_coffe_coders.fastestlap.source.driver.BaseDriverLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.driver.BaseDriverRemoteDataSource;
 
 public class CommonDriverRepository {
     private final MediatorLiveData<Result> allDriverMediatorLiveData;
 
     private final FirebaseDriverRepository firebaseDriverRepository;
-    private final JolpicaDriverStandingsRepositoy jolpicaDriverRepository;
+    private final JolpicaDriverRepositoy jolpicaDriverRepository;
     public CommonDriverRepository() {
         this.allDriverMediatorLiveData = new MediatorLiveData<>();
-        jolpicaDriverRepository = new JolpicaDriverStandingsRepositoy();
+        jolpicaDriverRepository = new JolpicaDriverRepositoy();
         firebaseDriverRepository = new FirebaseDriverRepository();
     }
 

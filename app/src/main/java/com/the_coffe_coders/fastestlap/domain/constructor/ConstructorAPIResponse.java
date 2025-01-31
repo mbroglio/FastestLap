@@ -1,6 +1,8 @@
 package com.the_coffe_coders.fastestlap.domain.constructor;
 
 
+import com.the_coffe_coders.fastestlap.dto.ConstructorTableDTO;
+
 import java.util.List;
 
 public class ConstructorAPIResponse {
