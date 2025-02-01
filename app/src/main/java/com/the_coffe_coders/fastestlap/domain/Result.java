@@ -38,24 +38,16 @@ public abstract class Result {
     }
 
     public static final class ConstructorSuccess extends Result {
-        private final ConstructorAPIResponse constructorAPIResponse;
+       // private final ConstructorAPIResponse constructorAPIResponse;
         private final Constructor constructor;
 
-        public ConstructorSuccess(Constructor constructor, ConstructorAPIResponse constructorAPIResponse) {
-            this.constructor = constructor;
-            this.constructorAPIResponse = constructorAPIResponse;
-        }
-
-        public ConstructorSuccess(ConstructorAPIResponse constructorStandingsAPIResponse) {
-            this.constructorAPIResponse = constructorStandingsAPIResponse;
-        }
 
         public ConstructorSuccess(Constructor constructor) {
             this.constructor = constructor;
         }
 
-        public ConstructorAPIResponse getData() {
-            return constructorAPIResponse;
+        public Constructor getData() {
+            return constructor;
         }
     }
 
