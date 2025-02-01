@@ -286,14 +286,19 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
 
         if (userViewModel.getLoggedUser() != null) {
             introScreen.showForAutoLogin();
+
             Log.i("OnStart", "Show Intro Screen AutoLogin");
+
             userViewModel.isAutoLoginEnabled(userViewModel.getLoggedUser().getIdToken()).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     boolean autoLoginEnabled = task.getResult();
                     if (autoLoginEnabled) {
                         new Handler().postDelayed(() -> {
                             startActivity(new Intent(WelcomeActivity.this, HomePageActivity.class));
-                        }, 500); // 2 seconds delay
+                        }, 500); // 0,5 seconds delay
+                    }else{
+                        introScreen.hideIntroScreen();
+                        introScreen.showIntroScreen();
                     }
                 }else {
                     Log.e(TAG, "Failed to get auto_login value", task.getException());

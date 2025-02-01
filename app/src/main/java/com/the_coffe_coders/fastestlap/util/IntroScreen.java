@@ -32,11 +32,9 @@ public class IntroScreen {
         appLogo = view.findViewById(R.id.app_logo);
         progressIndicator = view.findViewById(R.id.progress_indicator);
 
-        // Initialize MediaPlayer with the sound files
         mediaPlayer = MediaPlayer.create(context, R.raw.type_writer_short);
         logoMediaPlayer = MediaPlayer.create(context, R.raw.f1_car_sound);
 
-        // Set app name, app credits, and progress indicator initially invisible
         appName.setVisibility(View.INVISIBLE);
         appCredits.setVisibility(View.INVISIBLE);
         progressIndicator.setVisibility(View.INVISIBLE);
@@ -44,27 +42,23 @@ public class IntroScreen {
 
     public void showIntroScreen() {
         introScreen.setVisibility(View.VISIBLE);
-        Log.i(TAG, "Intro screen shown");
 
-        // Load animations
         Animation logoAnimation = AnimationUtils.loadAnimation(introScreen.getContext(), R.anim.slide_in);
         Animation nameAnimation = AnimationUtils.loadAnimation(introScreen.getContext(), R.anim.slide_up);
 
-        // Start animations in sequence with delays
         appLogo.startAnimation(logoAnimation);
         logoMediaPlayer.start(); // Start the logo sound
         handler.postDelayed(() -> {
             appName.startAnimation(nameAnimation);
             appName.setVisibility(View.VISIBLE);
             handler.postDelayed(() -> {
-                // App credits animation (writing machine effect)
+
                 String creditsText = introScreen.getContext().getString(R.string.by_the_coffee_coders);
-                int delay = 100; // milliseconds delay for each character
+                int delay = 100;
                 for (int i = 0; i < creditsText.length(); i++) {
                     final int index = i;
                     handler.postDelayed(() -> {
                         mediaPlayer.start();
-                        Log.i(TAG, "Playing sound");
                         appCredits.setVisibility(View.VISIBLE);
                         appCredits.setText(creditsText.substring(0, index + 1));
                     }, (long) delay * i);
@@ -72,13 +66,15 @@ public class IntroScreen {
 
                 handler.postDelayed(() -> {
 
+                    progressIndicator.setVisibility(View.VISIBLE);
+
                     handler.postDelayed(() -> {
                         hideIntroScreen();
                         progressIndicator.setVisibility(View.INVISIBLE);
                     }, 5000); // 5 seconds delay
                 }, (long) creditsText.length() * delay);
-            }, 1000); // 1 second delay
-        }, 2000); // 2 seconds delay
+            }, 1000);
+        }, 2000);
     }
 
     public void hideIntroScreen() {
@@ -102,4 +98,5 @@ public class IntroScreen {
         appName.setVisibility(View.VISIBLE);
         appCredits.setVisibility(View.VISIBLE);
     }
+
 }
