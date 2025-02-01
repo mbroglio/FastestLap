@@ -1,5 +1,6 @@
 package com.the_coffe_coders.fastestlap.domain;
 
+import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverAPIResponse;
@@ -38,9 +39,19 @@ public abstract class Result {
 
     public static final class ConstructorSuccess extends Result {
         private final ConstructorAPIResponse constructorAPIResponse;
+        private final Constructor constructor;
+
+        public ConstructorSuccess(Constructor constructor, ConstructorAPIResponse constructorAPIResponse) {
+            this.constructor = constructor;
+            this.constructorAPIResponse = constructorAPIResponse;
+        }
 
         public ConstructorSuccess(ConstructorAPIResponse constructorStandingsAPIResponse) {
             this.constructorAPIResponse = constructorStandingsAPIResponse;
+        }
+
+        public ConstructorSuccess(Constructor constructor) {
+            this.constructor = constructor;
         }
 
         public ConstructorAPIResponse getData() {

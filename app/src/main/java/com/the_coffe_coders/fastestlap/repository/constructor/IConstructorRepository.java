@@ -15,7 +15,7 @@ public interface IConstructorRepository {
     MutableLiveData<Result> fetchConstructorStandings(long lastUpdate);
     MutableLiveData<Result> fetchConstructors(long lastUpdate);
 
-    MutableLiveData<Result> fetchConstructor(String driverId, long lastUpdate);
+    MutableLiveData<Result> fetchConstructor(String constructorId, long lastUpdate);
 
 
 }

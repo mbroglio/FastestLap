@@ -10,19 +10,13 @@ import androidx.lifecycle.MutableLiveData;
 import com.the_coffe_coders.fastestlap.api.ConstructorStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
-import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
-import com.the_coffe_coders.fastestlap.mapper.ConstructorStandingsMapper;
-import com.the_coffe_coders.fastestlap.repository.driver.FirebaseDriverRepository;
-import com.the_coffe_coders.fastestlap.repository.driver.JolpicaDriverRepositoy;
-import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorRemoteDataSource;
 
 import java.util.Collections;
 import java.util.List;
 
 public class CommonConstructorRepository implements IConstructorRepository, ConstructorResponseCallback {
-
+    private final String TAG = "CommonConstructorRepository";
     private final MediatorLiveData<Result> allConstructorMediatorLiveData;
 
     private final FirebaseConstructorRepository firebaseConstructorRepository;
@@ -30,54 +24,32 @@ public class CommonConstructorRepository implements IConstructorRepository, Cons
     public CommonConstructorRepository() {
         this.allConstructorMediatorLiveData = new MediatorLiveData<>();
         jolpicaConstructorRepository = new JolpicaConstructorRepository();
-        firebaseConstructorRepository = new FirebaseConstructorRepository();
+        firebaseConstructorRepository = new FirebaseConstructorRepository();;
     }
 
-    /*public MediatorLiveData<Result> getDriver(String driverId) {
-        allDriverMediatorLiveData.addSource(jolpicaDriverRepository.getDriver(driverId), allDriverMediatorLiveData::setValue);
-        firebaseDriverRepository.getDriverData(driverId,
-                new FirebaseDriverRepository.DriverCallback() {
+    public MediatorLiveData<Result> getConstructor(String constructorId) {
+        allConstructorMediatorLiveData.addSource(jolpicaConstructorRepository.getConstructor(constructorId), jolpicaResult -> {
+            if (jolpicaResult instanceof Result.ConstructorSuccess) {
+                Constructor jolpicaConstructor = ((Result.ConstructorSuccess) jolpicaResult).getData();
 
+                firebaseConstructorRepository.getConstructorData(constructorId, new FirebaseConstructorRepository.ConstructorCallback() {
                     @Override
-                    public void onSuccess(Driver driver) {
-                        allDriverMediatorLiveData.setValue(new Result.DriverSuccess(driver));
-
-                    }
-
-                    @Override
-                    public void onFailure(Exception exception) {
-                        allDriverMediatorLiveData.setValue(new Result.Error(exception.getMessage()));
-                    }
-                });
-
-        return allDriverMediatorLiveData;
-    }*/
-
-    public MediatorLiveData<Result> getDriver(String driverId) {
-        allDriverMediatorLiveData.addSource(jolpicaDriverRepository.getDriver(driverId), jolpicaResult -> {
-            if (jolpicaResult instanceof Result.DriverSuccess) {
-                Driver jolpicaDriver = ((Result.DriverSuccess) jolpicaResult).getData();
-
-                firebaseDriverRepository.getDriverData(driverId, new FirebaseDriverRepository.DriverCallback() {
-                    @Override
-                    public void onSuccess(Driver firebaseDriver) {
-                        firebaseDriver.setDriverId(jolpicaDriver.getDriverId());
-                        firebaseDriver.setPermanentNumber(jolpicaDriver.getPermanentNumber());
-                        firebaseDriver.setCode(jolpicaDriver.getCode());
-                        firebaseDriver.setUrl(jolpicaDriver.getUrl());
-                        allDriverMediatorLiveData.setValue(new Result.DriverSuccess(firebaseDriver));
+                    public void onSuccess(Constructor firebaseConstructor) {
+                        firebaseConstructor.setConstructorId(jolpicaConstructor.getConstructorId());
+                        firebaseConstructor.setUrl(jolpicaConstructor.getUrl());
+                        allConstructorMediatorLiveData.setValue(new Result.ConstructorSuccess(firebaseConstructor));
                     }
 
                     @Override
                     public void onFailure(Exception exception) {
                         // Se Firebase fallisce, usa i dati di Jolpica
-                        allDriverMediatorLiveData.setValue(jolpicaResult);
+                        allConstructorMediatorLiveData.setValue(jolpicaResult);
                     }
                 });
             }
         });
 
-        return allDriverMediatorLiveData;
+        return allConstructorMediatorLiveData;
     }
 
     @Override
@@ -121,7 +93,7 @@ public class CommonConstructorRepository implements IConstructorRepository, Cons
     }
 
     @Override
-    public MutableLiveData<Result> fetchConstructor(String driverId, long lastUpdate) {
+    public MutableLiveData<Result> fetchConstructor(String constructorId, long lastUpdate) {
         return null;
     }
 }

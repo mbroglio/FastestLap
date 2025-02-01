@@ -18,6 +18,7 @@ import com.the_coffe_coders.fastestlap.source.driver.BaseDriverRemoteDataSource;
 import java.util.List;
 
 public class DriverStandingsRepository implements IDriverRepository, DriverStandingsResponseCallback {
+    private static final String TAG = "DriverStandingsRepository";
 
     public static long FRESH_TIMEOUT = 60000;
     public static boolean isOutdate = true;
@@ -28,7 +29,6 @@ public class DriverStandingsRepository implements IDriverRepository, DriverStand
     private final MutableLiveData<Result> driverStandingsMutableLiveData;
     private final BaseDriverRemoteDataSource driverRemoteDataSource;
     private final BaseDriverLocalDataSource driverLocalDataSource;
-    String TAG = "DriverRepository";
 
     //private Map<String, Driver> cache = new HashMap<>();//TODO
 
