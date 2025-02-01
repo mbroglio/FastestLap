@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
+import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
@@ -146,6 +147,16 @@ public class ServiceLocator {
 
                 return retrofit.create(ErgastAPIService.class).getDriver(driverId);
             }
+
+            @Override
+            public Call<ResponseBody> getConstructor(String constructorId) {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+
+                return retrofit.create(ErgastAPIService.class).getConstructor(constructorId);
+            }
         };
     }
 
@@ -171,7 +182,7 @@ public class ServiceLocator {
         return new DriverStandingsRepository(driverRemoteDataSource, driverLocalDataSource);
     }
 
-    public CommonConstructorRepository getConstructorRepository(Application application, boolean debugMode) {
+    public ConstructorStandingsRepository getConstructorRepository(Application application, boolean debugMode) {
         BaseConstructorRemoteDataSource constructorRemoteDataSource;
         BaseConstructorLocalDataSource constructorLocalDataSource;
         SharedPreferencesUtils sharedPreferencesUtil = new SharedPreferencesUtils(application);
@@ -186,7 +197,7 @@ public class ServiceLocator {
 
         constructorLocalDataSource = new ConstructorLocalDataSource(getRoomDatabase(application), sharedPreferencesUtil);
 
-        return new CommonConstructorRepository(constructorRemoteDataSource, constructorLocalDataSource);
+        return new ConstructorStandingsRepository(constructorRemoteDataSource, constructorLocalDataSource);
     }
 
     public RaceRepository getRaceRepository(Application application, boolean b) {

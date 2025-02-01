@@ -7,7 +7,8 @@ import androidx.lifecycle.MutableLiveData;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorAPIResponse;
+import com.the_coffe_coders.fastestlap.api.ConstructorAPIResponse;
+
 import com.the_coffe_coders.fastestlap.mapper.ConstructorMapper;
 
 import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
@@ -50,7 +51,7 @@ public class JolpicaConstructorRepository {
                     ConstructorAPIResponse constructorAPIResponse = jsonParserUtils.parseConstructor(mrdata);
                     Log.i("Constructor", constructorAPIResponse.toString());
 
-                    constructorMutableLiveData.setValue(new Result.ConstructorSuccess(ConstructorMapper.toConstructor(constructorAPIResponse.getStandingsTable().getConstructorDTOList().get(0))));
+                    constructorMutableLiveData.setValue(new Result.ConstructorSuccess(ConstructorMapper.toConstructor(constructorAPIResponse.getConstructorTableDTO().getConstructorDTOList().get(0))));
                 } else {
                     Log.i(TAG, "onFailure");
                 }

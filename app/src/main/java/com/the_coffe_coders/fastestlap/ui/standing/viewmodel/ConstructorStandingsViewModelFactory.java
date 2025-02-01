@@ -5,12 +5,13 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
+import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorStandingsRepository;
 
 public class ConstructorStandingsViewModelFactory implements ViewModelProvider.Factory {
-    private final CommonConstructorRepository commonConstructorRepository;
+    private final ConstructorStandingsRepository constructorRepository;
 
-    public ConstructorStandingsViewModelFactory(CommonConstructorRepository commonConstructorRepository) {
-        this.commonConstructorRepository = commonConstructorRepository;
+    public ConstructorStandingsViewModelFactory(ConstructorStandingsRepository constructorRepository) {
+        this.constructorRepository = constructorRepository;
     }
 
     @NonNull
@@ -19,7 +20,7 @@ public class ConstructorStandingsViewModelFactory implements ViewModelProvider.F
         if (modelClass.isAssignableFrom(ConstructorStandingsViewModel.class)) {
             // Suppress unchecked cast warning
             @SuppressWarnings("unchecked")
-            T viewModel = (T) new ConstructorStandingsViewModel(commonConstructorRepository);
+            T viewModel = (T) new ConstructorStandingsViewModel(constructorRepository);
             return viewModel;
         } else {
             throw new IllegalArgumentException("Unknown ViewModel class");

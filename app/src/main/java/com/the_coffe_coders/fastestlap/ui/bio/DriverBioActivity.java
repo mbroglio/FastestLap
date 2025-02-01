@@ -3,7 +3,7 @@ package com.the_coffe_coders.fastestlap.ui.bio;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_DRIVERS_COLLECTION;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_NATIONS_COLLECTION;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
-import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_TEAMS_COLLECTION;
+import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_CONSTRUCTOR_COLLECTION;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -128,7 +128,7 @@ public class DriverBioActivity extends AppCompatActivity {
                         nation = nationTask.getResult().getValue(Nation.class);
                         Log.i("DriverBioActivity", "Nation data: " + nation.toString());
 
-                        DatabaseReference teamReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_TEAMS_COLLECTION).child(driver.getTeam_id());
+                        DatabaseReference teamReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_CONSTRUCTOR_COLLECTION).child(driver.getTeam_id());
                         Log.i("DriverBioActivity", "Team reference: " + teamReference);
                         teamReference.get().addOnCompleteListener(teamTask -> {
                             if (teamTask.isSuccessful()) {

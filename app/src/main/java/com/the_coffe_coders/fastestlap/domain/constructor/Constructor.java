@@ -240,14 +240,14 @@ public class Constructor implements Parcelable {
                 "constructorId='" + constructorId + '\'' +
                 ", car_pic_url='" + car_pic_url + '\'' +
                 ", chassis='" + chassis + '\'' +
-                ", drivers=" + drivers.toString() +
+                //", drivers=" + drivers.toString() +
                 ", first_entry='" + first_entry + '\'' +
                 ", full_name='" + full_name + '\'' +
                 ", hq='" + hq + '\'' +
                 ", nationality_db='" + nationality + '\'' +
                 ", podiums='" + podiums + '\'' +
                 ", power_unit='" + power_unit + '\'' +
-                ", team_history=" + team_history.toString() +
+               // ", team_history=" + team_history.toString() +
                 ", team_logo_url='" + team_logo_url + '\'' +
                 ", team_principal='" + team_principal + '\'' +
                 ", wins='" + wins + '\'' +

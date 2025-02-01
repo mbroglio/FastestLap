@@ -3,7 +3,7 @@ package com.the_coffe_coders.fastestlap.ui.bio;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_DRIVERS_COLLECTION;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_NATIONS_COLLECTION;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
-import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_TEAMS_COLLECTION;
+import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_CONSTRUCTOR_COLLECTION;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -19,6 +19,7 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.MutableLiveData;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
@@ -27,10 +28,12 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorHistory;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
+import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
@@ -92,12 +95,15 @@ public class ConstructorBioActivity extends AppCompatActivity {
         driverTwoImage = findViewById(R.id.driver_2_image);
 
         teamFlag = findViewById(R.id.team_flag);
+        CommonConstructorRepository commonConstructorRepository = new CommonConstructorRepository();
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_TEAMS_COLLECTION).child(teamId);
-        Log.i(TAG, "Database reference: " + databaseReference);
-        databaseReference.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                team = task.getResult().getValue(Constructor.class);
+       // DatabaseReference databaseReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_CONSTRUCTOR_COLLECTION).child(teamId);
+        //Log.i(TAG, "Database reference: " + databaseReference);
+       // databaseReference.get().addOnCompleteListener(task -> {
+        MutableLiveData<Result> data = commonConstructorRepository.getConstructor(teamId);
+        data.observe(this, result -> {
+            if (result.isSuccess()) {
+                team = ((Result.ConstructorSuccess) result).getData();
                 Log.i(TAG, "Team data: " + team.toStringDB());
                 String teamName = team.getName();
 
@@ -109,7 +115,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
                 driverOneCard.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
                 driverTwoCard.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
 
-                DatabaseReference nationReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_NATIONS_COLLECTION).child(team.getNationality());
+               /* DatabaseReference nationReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_NATIONS_COLLECTION).child(team.getNationality());
                 Log.i(TAG, "Nation reference: " + nationReference);
                 nationReference.get().addOnCompleteListener(nationTask -> {
                     if (nationTask.isSuccessful()) {
@@ -154,9 +160,9 @@ public class ConstructorBioActivity extends AppCompatActivity {
                     } else {
                         Log.e("DriverBioActivity", "Error getting nation data", nationTask.getException());
                     }
-                });
+                });*/
             } else {
-                Log.e("DriverBioActivity", "Error getting driver data", task.getException());
+                Log.e("DriverBioActivity", "Error getting driver data");
             }
         });
     }
