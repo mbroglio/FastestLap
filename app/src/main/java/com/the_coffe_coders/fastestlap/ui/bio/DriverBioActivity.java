@@ -19,6 +19,7 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.MutableLiveData;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
@@ -27,10 +28,14 @@ import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
+import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
+import com.the_coffe_coders.fastestlap.repository.driver.CommonDriverRepository;
+import com.the_coffe_coders.fastestlap.repository.nation.FirebaseNationRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.util.Constants;
@@ -40,6 +45,8 @@ import com.the_coffe_coders.fastestlap.util.UIUtils;
 import org.threeten.bp.LocalDate;
 import org.threeten.bp.Period;
 import org.threeten.bp.format.DateTimeFormatter;
+
+import java.util.concurrent.Future;
 
 /*
  * TODO:
@@ -58,6 +65,8 @@ public class DriverBioActivity extends AppCompatActivity {
     private ImageView teamLogoImage;
     private MaterialCardView driverRank;
     private MaterialCardView driverNumberCard;
+    private MaterialToolbar toolbar;
+    private AppBarLayout appBarLayout;
     private ImageView driverNumberImage;
 
     private DriverViewModel driverViewModel;
@@ -77,22 +86,12 @@ public class DriverBioActivity extends AppCompatActivity {
 
         tapDetector = UIUtils.createTapDetector(this);
 
-        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-        AppBarLayout appBarLayout = findViewById(R.id.top_bar_layout);
+        toolbar = findViewById(R.id.topAppBar);
+        appBarLayout = findViewById(R.id.top_bar_layout);
 
         UIUtils.applyWindowInsets(toolbar);
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
-
-        /* Get the screen width
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int screenWidth = displayMetrics.widthPixels;
-        int width_percent_60 = (int) (screenWidth * 0.6);
-        ViewGroup.LayoutParams params = teamLogoCard.getLayoutParams();
-        params.width = width_percent_60;
-        teamLogoCard.setLayoutParams(params);
-        */
 
         teamLogoCard = findViewById(R.id.team_logo_card);
         teamLogoImage = findViewById(R.id.team_logo_image);
@@ -100,52 +99,71 @@ public class DriverBioActivity extends AppCompatActivity {
         driverNumberCard = findViewById(R.id.driver_number_card);
         driverNumberImage = findViewById(R.id.driver_number_image);
 
+        createDriverBioPage(driverId);
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_DRIVERS_COLLECTION).child(driverId);
-        Log.i("DriverBioActivity", "Database reference: " + databaseReference);
-        databaseReference.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                driver = task.getResult().getValue(Driver.class);
-                Log.i("DriverBioActivity", "Driver data: " + driver.toStringDB());
-                String fullName = driver.getGivenName() + " " + driver.getFamilyName();
 
-                toolbar.setTitle(fullName.toUpperCase());
-                toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
-                appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
+    }
 
-                //setDriverRankingButton(driverId);
+    public void createDriverBioPage(String driverId) {
+        CommonDriverRepository commonDriverRepository = new CommonDriverRepository();
 
-                teamLogoCard.setOnClickListener(v -> {
-                    Intent intent = new Intent(DriverBioActivity.this, ConstructorBioActivity.class);
-                    intent.putExtra("TEAM_ID", driver.getTeam_id());
-                    startActivity(intent);
-                });
 
-                DatabaseReference nationReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_NATIONS_COLLECTION).child(driver.getNationality());
-                Log.i("DriverBioActivity", "Nation reference: " + nationReference);
-                nationReference.get().addOnCompleteListener(nationTask -> {
-                    if (nationTask.isSuccessful()) {
-                        nation = nationTask.getResult().getValue(Nation.class);
-                        Log.i("DriverBioActivity", "Nation data: " + nation.toString());
+        MutableLiveData<Result> driverMutableLiveData = commonDriverRepository.getDriver(driverId);
 
-                        DatabaseReference teamReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_CONSTRUCTOR_COLLECTION).child(driver.getTeam_id());
-                        Log.i("DriverBioActivity", "Team reference: " + teamReference);
-                        teamReference.get().addOnCompleteListener(teamTask -> {
-                            if (teamTask.isSuccessful()) {
-                                team = teamTask.getResult().getValue(Constructor.class);
-                                Log.i("DriverBioActivity", "Team data: " + team.toString());
-                                setDriverData(driver, nation, team);
-                            } else {
-                                Log.e("DriverBioActivity", "Error getting team data", teamTask.getException());
-                            }
-                        });
-                    } else {
-                        Log.e("DriverBioActivity", "Error getting nation data", nationTask.getException());
-                    }
-                });
+        driverMutableLiveData.observe(this, result -> {
+            if (result.isSuccess()) {
+                driver = ((Result.DriverSuccess) result).getData();
+                Log.i(TAG, "DRIVER SUCCESS");
+                getTeamInfo(driver.getTeam_id());
             } else {
-                Log.e("DriverBioActivity", "Error getting driver data", task.getException());
+                Log.i(TAG, "DRIVER ERROR");
             }
+        });
+    }
+
+    public void getTeamInfo(String teamId) {
+        CommonConstructorRepository commonConstructorRepository = new CommonConstructorRepository();
+        MutableLiveData<Result> constructorMutableLiveData = commonConstructorRepository.getConstructor(teamId);
+
+        constructorMutableLiveData.observe(this, result -> {
+            if (result.isSuccess()) {
+                team = ((Result.ConstructorSuccess) result).getData();
+                Log.i(TAG, "GET CONSTRUCTOR FROM COMMON REPO: " + team.toString());
+                getNationInfo(driver.getNationality());
+            }else {
+                Log.i(TAG, "GET CONSTRUCTOR FROM COMMON REPO ERROR");
+            }
+        });
+    }
+
+    public void getNationInfo(String nationId) {
+        FirebaseNationRepository firebaseNationRepository = new FirebaseNationRepository();
+        MutableLiveData<Result> nationMutableLiveData = new MutableLiveData<>();
+        nationMutableLiveData = firebaseNationRepository.getNation(nationId);
+
+        nationMutableLiveData.observe(this, result -> {
+            if (result.isSuccess()) {
+                nation = ((Result.NationSuccess) result).getData();
+                Log.i(TAG, "GET NATION FROM FIREBASE REPO: " + nation);
+                setDriverData(driver, nation, team);
+                setToolbar();
+            }
+        });
+    }
+
+    public void setToolbar() {
+        String fullName = driver.getGivenName() + " " + driver.getFamilyName();
+
+        toolbar.setTitle(fullName.toUpperCase());
+        toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
+        appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
+
+        //setDriverRankingButton(driverId);
+
+        teamLogoCard.setOnClickListener(v -> {
+            Intent intent = new Intent(DriverBioActivity.this, ConstructorBioActivity.class);
+            intent.putExtra("TEAM_ID", driver.getTeam_id());
+            startActivity(intent);
         });
     }
 
@@ -168,7 +186,7 @@ public class DriverBioActivity extends AppCompatActivity {
         birthdate.setText(driver.getDateOfBirth());
 
         TextView age = findViewById(R.id.driver_age);
-        age.setText(driver.getDriverAge());
+        age.setText(driver.getDriverAgeAsString());
 
         TextView weight = findViewById(R.id.driver_weight);
         weight.setText(driver.getWeight());

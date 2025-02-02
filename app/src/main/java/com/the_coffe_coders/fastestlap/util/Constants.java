@@ -531,7 +531,7 @@ public class Constants {
     public static final int MINIMUM_LENGTH_PASSWORD = 8;
 
     public static final String FIREBASE_DRIVERS_COLLECTION = "drivers";
-    public static final String FIREBASE_CONSTRUCTOR_COLLECTION = "constructors";
+    public static final String FIREBASE_CONSTRUCTOR_COLLECTION = "teams";
     public static final String FIREBASE_CIRCUITS_COLLECTION = "circuits";
     public static final String FIREBASE_NATIONS_COLLECTION = "nations";
     public static final String FAVOURITE_DRIVER = "max_verstappen";

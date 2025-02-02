@@ -15,7 +15,7 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import java.util.Collections;
 import java.util.List;
 
-public class CommonConstructorRepository implements IConstructorRepository, ConstructorResponseCallback {
+public class CommonConstructorRepository {
     private final String TAG = "CommonConstructorRepository";
     private final MediatorLiveData<Result> allConstructorMediatorLiveData;
 
@@ -43,6 +43,7 @@ public class CommonConstructorRepository implements IConstructorRepository, Cons
                     @Override
                     public void onFailure(Exception exception) {
                         // Se Firebase fallisce, usa i dati di Jolpica
+                        Log.i(TAG, "FIREBASE FAILURE => " + exception.getMessage());
                         allConstructorMediatorLiveData.setValue(jolpicaResult);
                     }
                 });
@@ -50,50 +51,5 @@ public class CommonConstructorRepository implements IConstructorRepository, Cons
         });
 
         return allConstructorMediatorLiveData;
-    }
-
-    @Override
-    public void onSuccessFromRemote(ConstructorStandingsAPIResponse constructorStandingsAPIResponse, long lastUpdate) {
-
-    }
-
-    @Override
-    public void onFailureFromRemote(Exception e) {
-
-    }
-
-    @Override
-    public void onSuccessFromLocal(ConstructorStandings constructorStandings) {
-
-    }
-
-    @Override
-    public void onFailureFromLocal(Exception e) {
-
-    }
-
-    @Override
-    public List<Constructor> findConstructors() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Constructor find(String id) {
-        return null;
-    }
-
-    @Override
-    public MutableLiveData<Result> fetchConstructorStandings(long lastUpdate) {
-        return null;
-    }
-
-    @Override
-    public MutableLiveData<Result> fetchConstructors(long lastUpdate) {
-        return null;
-    }
-
-    @Override
-    public MutableLiveData<Result> fetchConstructor(String constructorId, long lastUpdate) {
-        return null;
     }
 }

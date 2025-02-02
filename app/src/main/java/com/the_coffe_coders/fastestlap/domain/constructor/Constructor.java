@@ -254,4 +254,12 @@ public class Constructor implements Parcelable {
                 ", world_championships='" + world_championships + '\'' +
                 '}';
     }
+
+    public String getDriverOneId() {
+        return drivers.get(0);
+    }
+
+    public String getDriverTwoId() {
+        return drivers.get(1);
+    }
 }

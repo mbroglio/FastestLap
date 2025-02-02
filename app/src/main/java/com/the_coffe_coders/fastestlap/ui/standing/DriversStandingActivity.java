@@ -27,8 +27,10 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
+import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
@@ -99,6 +101,17 @@ public class DriversStandingActivity extends AppCompatActivity {
             } else {
                 Log.i(TAG, "DRIVER STANDINGS ERROR");
                 loadingScreen.hideLoadingScreen();
+            }
+        });
+
+        CommonConstructorRepository commonConstructorRepository = new CommonConstructorRepository();
+
+        MutableLiveData<Result> constructorMutableLiveData = commonConstructorRepository.getConstructor("mercedes");
+
+        constructorMutableLiveData.observe(this, result -> {
+            if (result.isSuccess()) {
+                Constructor constructor = ((Result.ConstructorSuccess) result).getData();
+                Log.i(TAG, "GET CONSTRUCTOR FROM COMMON REPO: " + constructor.toString());
             }
         });
     }

@@ -9,6 +9,7 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 
 import java.util.List;
@@ -37,11 +38,20 @@ public abstract class Result {
         }
     }
 
+    public static final class NationSuccess extends Result {
+        private final Nation nation;
+        public NationSuccess(Nation nation) {
+            this.nation = nation;
+        }
+
+        public Nation getData() {
+            return nation;
+        }
+    }
+
     public static final class ConstructorSuccess extends Result {
        // private final ConstructorAPIResponse constructorAPIResponse;
         private final Constructor constructor;
-
-
         public ConstructorSuccess(Constructor constructor) {
             this.constructor = constructor;
         }
@@ -134,6 +144,4 @@ public abstract class Result {
             return message;
         }
     }
-
-
 }

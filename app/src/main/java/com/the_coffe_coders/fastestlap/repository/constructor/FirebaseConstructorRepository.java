@@ -3,6 +3,8 @@ package com.the_coffe_coders.fastestlap.repository.constructor;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_CONSTRUCTOR_COLLECTION;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
@@ -16,6 +18,8 @@ import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 public class FirebaseConstructorRepository {
     private final FirebaseDatabase database;
 
+    private final String TAG = "FirebaseConstructorRepository";
+
     public interface ConstructorCallback {
         void onSuccess(Constructor constructor);
         void onFailure(Exception exception);
@@ -25,12 +29,9 @@ public class FirebaseConstructorRepository {
         this.database = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
     }
 
-    public FirebaseConstructorRepository(FirebaseDatabase firebaseDatabase) {
-        this.database = firebaseDatabase;
-    }
-
-    public void getConstructorData(String constructorId, FirebaseConstructorRepository.ConstructorCallback callback) {
+    public void getConstructorData(String constructorId, ConstructorCallback callback) {
         DatabaseReference databaseReference = database.getReference(FIREBASE_CONSTRUCTOR_COLLECTION).child(constructorId);
+        Log.i(TAG, "FIREBASE => " + constructorId + "REFERENCE DB: " + databaseReference);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

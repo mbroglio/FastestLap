@@ -25,10 +25,6 @@ public class FirebaseDriverRepository {
         this.database = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
     }
 
-    public FirebaseDriverRepository(FirebaseDatabase firebaseDatabase) {
-        this.database = firebaseDatabase;
-    }
-
     public void getDriverData(String driverId, DriverCallback callback) {
         DatabaseReference databaseReference = database.getReference(FIREBASE_DRIVERS_COLLECTION).child(driverId);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
