@@ -9,6 +9,7 @@ import com.the_coffe_coders.fastestlap.repository.driver.CommonDriverRepository;
 import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.nation.FirebaseNationRepository;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
+import com.the_coffe_coders.fastestlap.repository.track.TrackRepository;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.repository.user.UserRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
@@ -202,15 +203,15 @@ public class ServiceLocator {
         return new ConstructorStandingsRepository(constructorRemoteDataSource, constructorLocalDataSource);
     }
 
-    public CommonDriverRepository getCommonDriverRepository(Application application, boolean b) {
+    public CommonDriverRepository getCommonDriverRepository() {
         return new CommonDriverRepository();
     }
 
-    public CommonConstructorRepository getCommonConstructorRepository(Application application, boolean b) {
+    public CommonConstructorRepository getCommonConstructorRepository() {
         return new CommonConstructorRepository();
     }
 
-    public FirebaseNationRepository getFirebaseNationRepository(Application application, boolean b) {
+    public FirebaseNationRepository getFirebaseNationRepository() {
         return new FirebaseNationRepository();
     }
 
@@ -240,5 +241,9 @@ public class ServiceLocator {
 
         return new UserRepository(userRemoteAuthenticationDataSource,
                 userDataRemoteDataSource);
+    }
+
+    public TrackRepository getTrackRepository() {
+        return new TrackRepository();
     }
 }

@@ -6,12 +6,12 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 
 public class CommonDriverRepository {
-    private final MediatorLiveData<Result> allDriverMediatorLiveData;
+    private MediatorLiveData<Result> allDriverMediatorLiveData;
 
     private final FirebaseDriverRepository firebaseDriverRepository;
     private final JolpicaDriverRepositoy jolpicaDriverRepository;
     public CommonDriverRepository() {
-        this.allDriverMediatorLiveData = new MediatorLiveData<>();
+        //this.allDriverMediatorLiveData = new MediatorLiveData<>();;
         jolpicaDriverRepository = new JolpicaDriverRepositoy();
         firebaseDriverRepository = new FirebaseDriverRepository();
     }
@@ -37,6 +37,7 @@ public class CommonDriverRepository {
     }*/
 
     public MediatorLiveData<Result> getDriver(String driverId) {
+        allDriverMediatorLiveData = new MediatorLiveData<>();
         allDriverMediatorLiveData.addSource(jolpicaDriverRepository.getDriver(driverId), jolpicaResult -> {
             if (jolpicaResult instanceof Result.DriverSuccess) {
                 Driver jolpicaDriver = ((Result.DriverSuccess) jolpicaResult).getData();

@@ -17,6 +17,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -27,8 +28,14 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.TrackHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
+import com.the_coffe_coders.fastestlap.repository.nation.FirebaseNationRepository;
 import com.the_coffe_coders.fastestlap.repository.track.TrackRepository;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 public class TrackBioActivity extends AppCompatActivity {
@@ -39,6 +46,10 @@ public class TrackBioActivity extends AppCompatActivity {
     private Nation nation;
     private ImageView circuitImage;
     private ImageView countryFlag;
+
+    private TrackViewModel trackViewModel;
+
+    private NationViewModel nationViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,28 +82,26 @@ public class TrackBioActivity extends AppCompatActivity {
         circuitImage = findViewById(R.id.track_image);
         countryFlag = findViewById(R.id.country_flag);
 
-        TrackRepository trackRepository = new TrackRepository();
-        MutableLiveData<Result> trackLiveData = trackRepository.getTrack(trackId);
+        trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory()).get(TrackViewModel.class);
+        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory()).get(NationViewModel.class);
+
+        MutableLiveData<Result> trackLiveData = trackViewModel.getTrack(trackId);
 
         try {
             trackLiveData.observe(this, trackResult -> {
                 if (trackResult.isSuccess()) {
                     track = ((Result.TrackSuccess) trackResult).getData();
                     Log.i("TrackBioActivity", "Circuit from DB: " + track.toStringDB());
-                    DatabaseReference nationReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_NATIONS_COLLECTION).child(track.getCountry());
-                    Log.i("DriverBioActivity", "Nation reference: " + nationReference);
-                    nationReference.get().addOnCompleteListener(nationTask -> {
-                        if (nationTask.isSuccessful()) {
-                            nation = nationTask.getResult().getValue(Nation.class);
-                            Log.i("DriverBioActivity", "Nation data: " + nation.toString());
 
+                    MutableLiveData<Result> nationLiveData = nationViewModel.getNation(track.getCountry());
+                    nationLiveData.observe(this, nationResult -> {
+                        if (nationResult.isSuccess()) {
+                            nation = ((Result.NationSuccess) nationResult).getData();
                             setCircuitData(track, nation);
-
-                        } else {
-                            Log.e("DriverBioActivity", "Error getting nation data", nationTask.getException());
+                        }else {
+                            Log.e("TrackBioActivity", "Error getting data");
                         }
                     });
-
                 } else {
                     Log.e("TrackBioActivity", "Error getting data");
                 }
@@ -100,9 +109,9 @@ public class TrackBioActivity extends AppCompatActivity {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-
     }
+
+
 
     private void setCircuitData(Track track, Nation nation) {
         Glide.with(this).load(track.getTrack_full_layout_url()).into(circuitImage);
@@ -130,7 +139,6 @@ public class TrackBioActivity extends AppCompatActivity {
 
         TextView fastestLapDriverName = findViewById(R.id.fastest_lap_driver);
         fastestLapDriverName.setText(fastestLapDriver);
-        //loadingScreen.hideLoadingScreen();
         createHistoryTable();
     }
 

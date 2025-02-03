@@ -92,9 +92,9 @@ public class DriverBioActivity extends AppCompatActivity {
         driverNumberCard = findViewById(R.id.driver_number_card);
         driverNumberImage = findViewById(R.id.driver_number_image);
 
-        driverViewModel =  new ViewModelProvider(this, new DriverViewModelFactory(ServiceLocator.getInstance().getCommonDriverRepository(getApplication(), false))).get(DriverViewModel.class);
-        constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(ServiceLocator.getInstance().getCommonConstructorRepository(getApplication(), false))).get(ConstructorViewModel.class);
-        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(ServiceLocator.getInstance().getFirebaseNationRepository(getApplication(), false))).get(NationViewModel.class);
+        driverViewModel =  new ViewModelProvider(this, new DriverViewModelFactory()).get(DriverViewModel.class);
+        constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
+        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory()).get(NationViewModel.class);
         createDriverBioPage(driverId);
 
 
