@@ -1,6 +1,5 @@
 package com.the_coffe_coders.fastestlap.ui.bio;
 
-import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_CIRCUITS_COLLECTION;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_NATIONS_COLLECTION;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
 
@@ -17,22 +16,20 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.MutableLiveData;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.TrackHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
+import com.the_coffe_coders.fastestlap.repository.track.TrackRepository;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
-
-/*
- * TODO:
- * - Implement firebase to get the data from the remote database
- */
 
 public class TrackBioActivity extends AppCompatActivity {
 
@@ -62,8 +59,8 @@ public class TrackBioActivity extends AppCompatActivity {
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        String circuitId = getIntent().getStringExtra("CIRCUIT_ID");
-        Log.i("TrackBioActivity", "CIRCUIT_ID: " + circuitId);
+        String trackId = getIntent().getStringExtra("CIRCUIT_ID");
+        Log.i("TrackBioActivity", "CIRCUIT_ID: " + trackId);
 
         String grandPrixName = getIntent().getStringExtra("GRAND_PRIX_NAME");
         Log.i("TrackBioActivity", "GRAND_PRIX_NAME: " + grandPrixName);
@@ -74,30 +71,37 @@ public class TrackBioActivity extends AppCompatActivity {
         circuitImage = findViewById(R.id.track_image);
         countryFlag = findViewById(R.id.country_flag);
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_CIRCUITS_COLLECTION).child(circuitId);
-        Log.i("TrackBioActivity", "Database reference: " + databaseReference);
-        databaseReference.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                track = task.getResult().getValue(Track.class);
-                Log.i("TrackBioActivity", "Circuit from DB: " + track.toStringDB());
-                DatabaseReference nationReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_NATIONS_COLLECTION).child(track.getCountry());
-                Log.i("DriverBioActivity", "Nation reference: " + nationReference);
-                nationReference.get().addOnCompleteListener(nationTask -> {
-                    if (nationTask.isSuccessful()) {
-                        nation = nationTask.getResult().getValue(Nation.class);
-                        Log.i("DriverBioActivity", "Nation data: " + nation.toString());
+        TrackRepository trackRepository = new TrackRepository();
+        MutableLiveData<Result> trackLiveData = trackRepository.getTrack(trackId);
 
-                        setCircuitData(track, nation);
+        try {
+            trackLiveData.observe(this, trackResult -> {
+                if (trackResult.isSuccess()) {
+                    track = ((Result.TrackSuccess) trackResult).getData();
+                    Log.i("TrackBioActivity", "Circuit from DB: " + track.toStringDB());
+                    DatabaseReference nationReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_NATIONS_COLLECTION).child(track.getCountry());
+                    Log.i("DriverBioActivity", "Nation reference: " + nationReference);
+                    nationReference.get().addOnCompleteListener(nationTask -> {
+                        if (nationTask.isSuccessful()) {
+                            nation = nationTask.getResult().getValue(Nation.class);
+                            Log.i("DriverBioActivity", "Nation data: " + nation.toString());
 
-                    } else {
-                        Log.e("DriverBioActivity", "Error getting nation data", nationTask.getException());
-                    }
-                });
+                            setCircuitData(track, nation);
 
-            } else {
-                Log.e("TrackBioActivity", "Error getting data", task.getException());
-            }
-        });
+                        } else {
+                            Log.e("DriverBioActivity", "Error getting nation data", nationTask.getException());
+                        }
+                    });
+
+                } else {
+                    Log.e("TrackBioActivity", "Error getting data");
+                }
+            });
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+
     }
 
     private void setCircuitData(Track track, Nation nation) {
@@ -126,7 +130,7 @@ public class TrackBioActivity extends AppCompatActivity {
 
         TextView fastestLapDriverName = findViewById(R.id.fastest_lap_driver);
         fastestLapDriverName.setText(fastestLapDriver);
-
+        //loadingScreen.hideLoadingScreen();
         createHistoryTable();
     }
 

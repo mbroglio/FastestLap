@@ -3,14 +3,12 @@ import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_DRIVERS_CO
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 
 public class FirebaseDriverRepository {
@@ -25,7 +23,7 @@ public class FirebaseDriverRepository {
         this.database = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
     }
 
-    public void getDriverData(String driverId, DriverCallback callback) {
+    public void getDriver(String driverId, DriverCallback callback) {
         DatabaseReference databaseReference = database.getReference(FIREBASE_DRIVERS_COLLECTION).child(driverId);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

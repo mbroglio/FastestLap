@@ -8,6 +8,7 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.domain.user.User;
@@ -46,6 +47,17 @@ public abstract class Result {
 
         public Nation getData() {
             return nation;
+        }
+    }
+
+    public static final class TrackSuccess extends Result {
+        private final Track track;
+        public TrackSuccess(Track track) {
+            this.track = track;
+        }
+
+        public Track getData() {
+            return track;
         }
     }
 

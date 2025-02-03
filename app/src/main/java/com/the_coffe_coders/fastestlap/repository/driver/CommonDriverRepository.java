@@ -41,7 +41,7 @@ public class CommonDriverRepository {
             if (jolpicaResult instanceof Result.DriverSuccess) {
                 Driver jolpicaDriver = ((Result.DriverSuccess) jolpicaResult).getData();
 
-                firebaseDriverRepository.getDriverData(driverId, new FirebaseDriverRepository.DriverCallback() {
+                firebaseDriverRepository.getDriver(driverId, new FirebaseDriverRepository.DriverCallback() {
                     @Override
                     public void onSuccess(Driver firebaseDriver) {
                         firebaseDriver.setDriverId(jolpicaDriver.getDriverId());

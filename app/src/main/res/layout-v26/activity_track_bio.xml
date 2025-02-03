@@ -138,7 +138,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:fontFamily="@font/orbitron_bold"
-                        android:text="Circuit Name:"
+                        android:text="Track Name:"
                         android:textColor="@color/white"
                         android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -248,7 +248,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
                         android:fontFamily="@font/orbitron_bold"
-                        android:text="Circuit Length:"
+                        android:text="Track Length:"
                         android:textColor="@color/white"
                         android:textSize="@dimen/layout_subtitle_text_size">
 

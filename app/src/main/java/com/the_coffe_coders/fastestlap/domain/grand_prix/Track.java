@@ -2,6 +2,8 @@ package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
 import androidx.room.Ignore;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 public class Track {
@@ -12,7 +14,7 @@ public class Track {
 
     // Bio Data
     private String track_full_layout_url;
-    @Ignore
+    @SerializedName("circuit_history")
     private List<TrackHistory> track_history;
     private String track_minimal_layout_url;
     private String track_pic_url;
@@ -174,7 +176,7 @@ public class Track {
         return "track{" +
                 "trackId='" + trackId + '\'' +
                 ", track_full_layout_url='" + track_full_layout_url + '\'' +
-                ", track_history=" + track_history.toString() +
+                ", track_history=" + track_history +
                 ", track_minimal_layout_url='" + track_minimal_layout_url + '\'' +
                 ", track_pic_url='" + track_pic_url + '\'' +
                 ", country='" + country + '\'' +
