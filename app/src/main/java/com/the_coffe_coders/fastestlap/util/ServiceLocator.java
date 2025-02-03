@@ -3,8 +3,8 @@ package com.the_coffe_coders.fastestlap.util;
 import android.app.Application;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
-import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
 import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.driver.CommonDriverRepository;
 import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
@@ -164,7 +164,7 @@ public class ServiceLocator {
         return AppRoomDatabase.getDatabase(application);
     }
 
-    public DriverStandingsRepository getDriverRepository(Application application, boolean debugMode) {
+    public DriverStandingsRepository getDriverStandingsRepository(Application application, boolean debugMode) {
         BaseDriverRemoteDataSource driverRemoteDataSource;
         BaseDriverLocalDataSource driverLocalDataSource;
         SharedPreferencesUtils sharedPreferencesUtil = new SharedPreferencesUtils(application);
@@ -198,6 +198,10 @@ public class ServiceLocator {
         constructorLocalDataSource = new ConstructorLocalDataSource(getRoomDatabase(application), sharedPreferencesUtil);
 
         return new ConstructorStandingsRepository(constructorRemoteDataSource, constructorLocalDataSource);
+    }
+
+    public CommonDriverRepository getCommonDriverRepository(Application application, boolean debugMode) {
+        return new CommonDriverRepository();
     }
 
     public RaceRepository getRaceRepository(Application application, boolean b) {

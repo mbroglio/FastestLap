@@ -23,7 +23,6 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.profile.ProfileActivity;
-import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import org.threeten.bp.ZoneId;
@@ -48,7 +47,7 @@ public class HomePageActivity extends AppCompatActivity {
         homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(
                 ServiceLocator.getInstance().getRaceRepository(getApplication(), false),
                 ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false),
-                ServiceLocator.getInstance().getDriverRepository(getApplication(), false),
+                ServiceLocator.getInstance().getDriverStandingsRepository(getApplication(), false),
                 ServiceLocator.getInstance().getConstructorRepository(getApplication(), false)
         )).get(HomeViewModel.class);
 

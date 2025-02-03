@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.the_coffe_coders.fastestlap.repository.driver.CommonDriverRepository;
-import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
 
 public class DriverViewModelFactory implements ViewModelProvider.Factory{
 
@@ -15,6 +14,7 @@ public class DriverViewModelFactory implements ViewModelProvider.Factory{
         this.driverRepository = driverRepository;
     }
 
+    @NonNull
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(DriverViewModel.class)) {
             // Suppress unchecked cast warning
@@ -25,4 +25,6 @@ public class DriverViewModelFactory implements ViewModelProvider.Factory{
             throw new IllegalArgumentException("Unknown ViewModel class");
         }
     }
+
+
 }
