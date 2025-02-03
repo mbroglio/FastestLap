@@ -20,6 +20,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
@@ -36,9 +37,16 @@ import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
 import com.the_coffe_coders.fastestlap.repository.driver.CommonDriverRepository;
 import com.the_coffe_coders.fastestlap.repository.nation.FirebaseNationRepository;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModelFactory;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 /*
@@ -63,6 +71,9 @@ public class ConstructorBioActivity extends AppCompatActivity {
     private MaterialCardView driverTwoCard;
     private ImageView driverTwoImage;
     private ImageView teamFlag;
+    private DriverViewModel driverViewModel;
+    private NationViewModel nationViewModel;
+    private ConstructorViewModel constructorViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,9 +107,12 @@ public class ConstructorBioActivity extends AppCompatActivity {
         driverTwoCard = findViewById(R.id.driver_2_card);
         driverTwoImage = findViewById(R.id.driver_2_image);
 
+        driverViewModel =  new ViewModelProvider(this, new DriverViewModelFactory(ServiceLocator.getInstance().getCommonDriverRepository(getApplication(), false))).get(DriverViewModel.class);
+        constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(ServiceLocator.getInstance().getCommonConstructorRepository(getApplication(), false))).get(ConstructorViewModel.class);
+        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(ServiceLocator.getInstance().getFirebaseNationRepository(getApplication(), false))).get(NationViewModel.class);
+
         teamFlag = findViewById(R.id.team_flag);
-        CommonConstructorRepository commonConstructorRepository = new CommonConstructorRepository();
-        MutableLiveData<Result> data = commonConstructorRepository.getConstructor(teamId);
+        MutableLiveData<Result> data = constructorViewModel.getSelectedConstructorLiveData(teamId);
         data.observe(this, result -> {
             if(result.isSuccess()) {
                 team = ((Result.ConstructorSuccess) result).getData();
@@ -118,8 +132,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     public void getDriverData(String driverId) {
-        CommonDriverRepository commonDriverRepository = new CommonDriverRepository();
-        MutableLiveData<Result> data = commonDriverRepository.getDriver(driverId);
+        MutableLiveData<Result> data = driverViewModel.getDriver(driverId);
 
         data.observe(this, result -> {
             if(result.isSuccess()) {
@@ -146,8 +159,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     public void getNationData(String nationId) {
-        FirebaseNationRepository firebaseNationRepository = new FirebaseNationRepository();
-        MutableLiveData<Result> data = firebaseNationRepository.getNation(nationId);
+        MutableLiveData<Result> data = nationViewModel.getNation(nationId);
 
         data.observe(this, result -> {
             if(result.isSuccess()) {
