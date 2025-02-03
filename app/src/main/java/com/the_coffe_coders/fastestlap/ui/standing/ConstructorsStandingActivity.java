@@ -70,7 +70,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
         LinearLayout teamStanding = findViewById(R.id.team_standing);
 
-        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorRepository(getApplication(), false))).get(ConstructorStandingsViewModel.class);
+        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorStandingsRepository(getApplication(), false))).get(ConstructorStandingsViewModel.class);
         MutableLiveData<Result> liveData = constructorStandingsViewModel.getConstructorStandingsLiveData(0);
 
         Log.i(TAG, "Constructor Standings: " + liveData);

@@ -86,7 +86,7 @@ public class HomeFragment extends Fragment {
                 ServiceLocator.getInstance().getRaceRepository(requireActivity().getApplication(), false),
                 ServiceLocator.getInstance().getRaceResultRepository(requireActivity().getApplication(), false),
                 ServiceLocator.getInstance().getDriverStandingsRepository(requireActivity().getApplication(), false),
-                ServiceLocator.getInstance().getConstructorRepository(requireActivity().getApplication(), false)
+                ServiceLocator.getInstance().getConstructorStandingsRepository(requireActivity().getApplication(), false)
         )).get(HomeViewModel.class);
 
         // Show loading screen initially
@@ -444,7 +444,7 @@ public class HomeFragment extends Fragment {
 
          */
 
-        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
+        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
         MutableLiveData<Result> data = constructorStandingsViewModel.getConstructorStandingsLiveData(0); // TODO get last update from shared preferences
 
         data.observe(getViewLifecycleOwner(), result -> {

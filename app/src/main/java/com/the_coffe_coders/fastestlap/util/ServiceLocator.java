@@ -183,7 +183,7 @@ public class ServiceLocator {
         return new DriverStandingsRepository(driverRemoteDataSource, driverLocalDataSource);
     }
 
-    public ConstructorStandingsRepository getConstructorRepository(Application application, boolean debugMode) {
+    public ConstructorStandingsRepository getConstructorStandingsRepository(Application application, boolean debugMode) {
         BaseConstructorRemoteDataSource constructorRemoteDataSource;
         BaseConstructorLocalDataSource constructorLocalDataSource;
         SharedPreferencesUtils sharedPreferencesUtil = new SharedPreferencesUtils(application);

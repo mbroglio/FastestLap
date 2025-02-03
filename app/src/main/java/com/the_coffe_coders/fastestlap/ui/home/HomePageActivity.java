@@ -48,7 +48,7 @@ public class HomePageActivity extends AppCompatActivity {
                 ServiceLocator.getInstance().getRaceRepository(getApplication(), false),
                 ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false),
                 ServiceLocator.getInstance().getDriverStandingsRepository(getApplication(), false),
-                ServiceLocator.getInstance().getConstructorRepository(getApplication(), false)
+                ServiceLocator.getInstance().getConstructorStandingsRepository(getApplication(), false)
         )).get(HomeViewModel.class);
 
         MaterialToolbar toolbar = findViewById(R.id.top_app_bar);
