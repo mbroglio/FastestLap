@@ -27,12 +27,12 @@ import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
-import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
-import com.the_coffe_coders.fastestlap.repository.nation.FirebaseNationRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModelFactory;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
@@ -61,7 +61,7 @@ public class DriverBioActivity extends AppCompatActivity {
     private ImageView driverNumberImage;
 
     private DriverViewModel driverViewModel;
-
+    private NationViewModel nationViewModel;
     private ConstructorViewModel constructorViewModel;
 
     @Override
@@ -94,7 +94,7 @@ public class DriverBioActivity extends AppCompatActivity {
 
         driverViewModel =  new ViewModelProvider(this, new DriverViewModelFactory(ServiceLocator.getInstance().getCommonDriverRepository(getApplication(), false))).get(DriverViewModel.class);
         constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(ServiceLocator.getInstance().getCommonConstructorRepository(getApplication(), false))).get(ConstructorViewModel.class);
-
+        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(ServiceLocator.getInstance().getFirebaseNationRepository(getApplication(), false))).get(NationViewModel.class);
         createDriverBioPage(driverId);
 
 
@@ -130,9 +130,7 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     public void getNationInfo(String nationId) {
-        FirebaseNationRepository firebaseNationRepository = new FirebaseNationRepository();
-        MutableLiveData<Result> nationMutableLiveData = new MutableLiveData<>();
-        nationMutableLiveData = firebaseNationRepository.getNation(nationId);
+        MutableLiveData<Result> nationMutableLiveData = nationViewModel.getNation(nationId);
 
         nationMutableLiveData.observe(this, result -> {
             if (result.isSuccess()) {

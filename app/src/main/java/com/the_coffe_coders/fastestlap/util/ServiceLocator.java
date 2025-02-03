@@ -7,6 +7,7 @@ import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorR
 import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.driver.CommonDriverRepository;
 import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.nation.FirebaseNationRepository;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.repository.user.UserRepository;
@@ -207,6 +208,10 @@ public class ServiceLocator {
 
     public CommonConstructorRepository getCommonConstructorRepository(Application application, boolean b) {
         return new CommonConstructorRepository();
+    }
+
+    public FirebaseNationRepository getFirebaseNationRepository(Application application, boolean b) {
+        return new FirebaseNationRepository();
     }
 
     public RaceRepository getRaceRepository(Application application, boolean b) {
