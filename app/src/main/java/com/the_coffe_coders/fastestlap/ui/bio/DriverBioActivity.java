@@ -1,10 +1,5 @@
 package com.the_coffe_coders.fastestlap.ui.bio;
 
-import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_DRIVERS_COLLECTION;
-import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_NATIONS_COLLECTION;
-import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
-import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_CONSTRUCTOR_COLLECTION;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,8 +20,6 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
@@ -34,19 +27,12 @@ import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
-import com.the_coffe_coders.fastestlap.repository.driver.CommonDriverRepository;
 import com.the_coffe_coders.fastestlap.repository.nation.FirebaseNationRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
-import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
-import org.threeten.bp.LocalDate;
-import org.threeten.bp.Period;
-import org.threeten.bp.format.DateTimeFormatter;
-
-import java.util.concurrent.Future;
 
 /*
  * TODO:
@@ -105,10 +91,7 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     public void createDriverBioPage(String driverId) {
-        CommonDriverRepository commonDriverRepository = new CommonDriverRepository();
-
-
-        MutableLiveData<Result> driverMutableLiveData = commonDriverRepository.getDriver(driverId);
+        MutableLiveData<Result> driverMutableLiveData = driverViewModel.getDriver(driverId);
 
         driverMutableLiveData.observe(this, result -> {
             if (result.isSuccess()) {
