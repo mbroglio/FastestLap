@@ -3,6 +3,7 @@ package com.the_coffe_coders.fastestlap.util;
 import android.app.Application;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
+import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
 import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.driver.CommonDriverRepository;
 import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsRepository;
@@ -200,8 +201,12 @@ public class ServiceLocator {
         return new ConstructorStandingsRepository(constructorRemoteDataSource, constructorLocalDataSource);
     }
 
-    public CommonDriverRepository getCommonDriverRepository(Application application, boolean debugMode) {
+    public CommonDriverRepository getCommonDriverRepository(Application application, boolean b) {
         return new CommonDriverRepository();
+    }
+
+    public CommonConstructorRepository getCommonConstructorRepository(Application application, boolean b) {
+        return new CommonConstructorRepository();
     }
 
     public RaceRepository getRaceRepository(Application application, boolean b) {

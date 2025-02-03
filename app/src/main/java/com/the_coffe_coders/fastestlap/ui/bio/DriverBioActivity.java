@@ -29,6 +29,8 @@ import com.the_coffe_coders.fastestlap.domain.driver.DriverHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
 import com.the_coffe_coders.fastestlap.repository.nation.FirebaseNationRepository;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
@@ -60,6 +62,8 @@ public class DriverBioActivity extends AppCompatActivity {
 
     private DriverViewModel driverViewModel;
 
+    private ConstructorViewModel constructorViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +93,7 @@ public class DriverBioActivity extends AppCompatActivity {
         driverNumberImage = findViewById(R.id.driver_number_image);
 
         driverViewModel =  new ViewModelProvider(this, new DriverViewModelFactory(ServiceLocator.getInstance().getCommonDriverRepository(getApplication(), false))).get(DriverViewModel.class);
+        constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(ServiceLocator.getInstance().getCommonConstructorRepository(getApplication(), false))).get(ConstructorViewModel.class);
 
         createDriverBioPage(driverId);
 
@@ -111,8 +116,7 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     public void getTeamInfo(String teamId) {
-        CommonConstructorRepository commonConstructorRepository = new CommonConstructorRepository();
-        MutableLiveData<Result> constructorMutableLiveData = commonConstructorRepository.getConstructor(teamId);
+        MutableLiveData<Result> constructorMutableLiveData = constructorViewModel.getSelectedConstructorLiveData(teamId);
 
         constructorMutableLiveData.observe(this, result -> {
             if (result.isSuccess()) {
