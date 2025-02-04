@@ -223,8 +223,8 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
                             userViewModel.getUserPreferences(userViewModel.getLoggedUser().getIdToken());
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
                             Intent intent = new Intent(WelcomeActivity.this, ProfileActivity.class);
+                            intent.putExtra("from_login", true);
                             startActivity(intent);
                         } else {
                             // If sign in fails, display a message to the user.

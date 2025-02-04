@@ -40,6 +40,7 @@ import com.the_coffe_coders.fastestlap.util.SimpleTextWatcher;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 public class ProfileActivity extends AppCompatActivity {
+    private static final String TAG = "ProfileActivity";
 
     private GestureDetector tapDetector;
     SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
@@ -89,6 +90,8 @@ public class ProfileActivity extends AppCompatActivity {
     private boolean isFavConstructorModified = false;
     private boolean isCheckBoxChanged = false;
 
+    private boolean isFromLogin;
+
     private FirebaseAuth mAuth;
     private IUserRepository userRepository;
     private UserViewModel userViewModel;
@@ -111,6 +114,9 @@ public class ProfileActivity extends AppCompatActivity {
         ScrollView scrollView = findViewById(R.id.profile_layout);
         UIUtils.applyWindowInsets(scrollView);
 
+        isFromLogin = getIntent().getBooleanExtra("from_login", false);
+        Log.i(TAG, "from login: " + isFromLogin);
+
         favouriteDriverText = findViewById(R.id.favourite_driver_text);
         favouriteConstructorText = findViewById(R.id.favourite_constructor_text);
 
@@ -123,9 +129,17 @@ public class ProfileActivity extends AppCompatActivity {
             }
             toolbar.setNavigationOnClickListener(v -> Toast.makeText(this, "Please select a favourite driver and constructor", Toast.LENGTH_SHORT).show());
         } else {
-            toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
             favouriteDriverText.setText(Constants.DRIVER_FULLNAME.get(getFavoriteDriverId()));
             favouriteConstructorText.setText(Constants.TEAM_FULLNAME.get(getFavoriteTeamId()));
+            if(isFromLogin){
+                toolbar.setNavigationOnClickListener(v -> {
+                    Intent intent = new Intent(ProfileActivity.this, HomePageActivity.class);
+                    startActivity(intent);
+                });
+            }else{
+                toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+            }
+
         }
 
         userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
