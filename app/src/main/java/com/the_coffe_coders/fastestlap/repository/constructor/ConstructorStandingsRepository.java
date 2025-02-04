@@ -2,24 +2,18 @@ package com.the_coffe_coders.fastestlap.repository.constructor;
 
 import android.util.Log;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.the_coffe_coders.fastestlap.api.ConstructorStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.mapper.ConstructorStandingsMapper;
 import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorRemoteDataSource;
 
-import java.util.Collections;
-import java.util.List;
-
 public class ConstructorStandingsRepository implements IConstructorRepository, ConstructorResponseCallback {
 
-    String TAG = "ConstructorStandingsRepository";
     public static long FRESH_TIMEOUT = 60000;
     public static boolean isOutdate = true;
     public final MediatorLiveData<Result> allConstructorMediatorLiveData;
@@ -28,6 +22,7 @@ public class ConstructorStandingsRepository implements IConstructorRepository, C
     private final MutableLiveData<Result> constructorStandingsMutableLiveData;
     private final BaseConstructorRemoteDataSource constructorRemoteDataSource;
     private final BaseConstructorLocalDataSource constructorLocalDataSource;
+    String TAG = "ConstructorStandingsRepository";
 
     public ConstructorStandingsRepository(BaseConstructorRemoteDataSource constructorRemoteDataSource, BaseConstructorLocalDataSource constructorLocalDataSource) {
         this.allConstructorMediatorLiveData = new MediatorLiveData<>();

@@ -21,11 +21,6 @@ public class FirebaseTrackRepository {
         this.database = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
     }
 
-    public interface TrackCallback {
-        void onSuccess(Track track);
-        void onFailure(Exception exception);
-    }
-
     public MutableLiveData<Result> getTrack(String trackId, TrackCallback callback) {
         DatabaseReference databaseReference = database.getReference(FIREBASE_CIRCUITS_COLLECTION).child(trackId);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -49,5 +44,11 @@ public class FirebaseTrackRepository {
             }
         });
         return null;
+    }
+
+    public interface TrackCallback {
+        void onSuccess(Track track);
+
+        void onFailure(Exception exception);
     }
 }

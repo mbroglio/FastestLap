@@ -35,7 +35,6 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 
@@ -92,11 +91,10 @@ public class DriverBioActivity extends AppCompatActivity {
         driverNumberCard = findViewById(R.id.driver_number_card);
         driverNumberImage = findViewById(R.id.driver_number_image);
 
-        driverViewModel =  new ViewModelProvider(this, new DriverViewModelFactory()).get(DriverViewModel.class);
+        driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory()).get(DriverViewModel.class);
         constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
         nationViewModel = new ViewModelProvider(this, new NationViewModelFactory()).get(NationViewModel.class);
         createDriverBioPage(driverId);
-
 
 
     }
@@ -123,7 +121,7 @@ public class DriverBioActivity extends AppCompatActivity {
                 team = ((Result.ConstructorSuccess) result).getData();
                 Log.i(TAG, "GET CONSTRUCTOR FROM COMMON REPO: " + team.toString());
                 getNationInfo(driver.getNationality());
-            }else {
+            } else {
                 Log.i(TAG, "GET CONSTRUCTOR FROM COMMON REPO ERROR");
             }
         });

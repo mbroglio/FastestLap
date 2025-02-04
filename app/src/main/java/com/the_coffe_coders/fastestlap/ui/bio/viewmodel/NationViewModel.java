@@ -14,7 +14,7 @@ public class NationViewModel extends ViewModel {
         this.nationRepository = nationRepository;
     }
 
-    public MutableLiveData<Result> getNation(String nationId){
+    public MutableLiveData<Result> getNation(String nationId) {
         return nationRepository.getNation(nationId);
     }
 

@@ -247,7 +247,7 @@ public class Constructor implements Parcelable {
                 ", nationality_db='" + nationality + '\'' +
                 ", podiums='" + podiums + '\'' +
                 ", power_unit='" + power_unit + '\'' +
-               // ", team_history=" + team_history.toString() +
+                // ", team_history=" + team_history.toString() +
                 ", team_logo_url='" + team_logo_url + '\'' +
                 ", team_principal='" + team_principal + '\'' +
                 ", wins='" + wins + '\'' +

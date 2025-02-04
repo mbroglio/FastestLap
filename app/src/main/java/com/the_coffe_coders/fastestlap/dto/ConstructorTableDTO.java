@@ -9,6 +9,7 @@ public class ConstructorTableDTO {
     String season;
     @SerializedName("Constructors")
     List<ConstructorDTO> constructorDTOList;
+
     public ConstructorTableDTO(String constructorId, String season, List<ConstructorDTO> constructorDTOList) {
         this.constructorId = constructorId;
         this.season = season;

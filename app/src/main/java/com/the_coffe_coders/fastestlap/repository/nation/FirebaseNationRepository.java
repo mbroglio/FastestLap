@@ -13,10 +13,8 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 
 public class FirebaseNationRepository {
-    private final String TAG = "FirebaseNationRepository";
-
     private static FirebaseDatabase firebaseDatabase;
-
+    private final String TAG = "FirebaseNationRepository";
     private final MutableLiveData<Result> nationMutableLiveData;
 
     public FirebaseNationRepository() {

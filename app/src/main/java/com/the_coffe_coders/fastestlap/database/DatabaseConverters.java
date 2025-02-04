@@ -6,7 +6,6 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Practice;
@@ -16,6 +15,7 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Sprint;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.SprintQualifying;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 
 import org.threeten.bp.LocalDateTime;

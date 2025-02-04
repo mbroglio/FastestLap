@@ -1,9 +1,7 @@
 package com.the_coffe_coders.fastestlap.domain;
 
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
-import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
-import com.the_coffe_coders.fastestlap.domain.driver.DriverAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
@@ -41,6 +39,7 @@ public abstract class Result {
 
     public static final class NationSuccess extends Result {
         private final Nation nation;
+
         public NationSuccess(Nation nation) {
             this.nation = nation;
         }
@@ -52,6 +51,7 @@ public abstract class Result {
 
     public static final class TrackSuccess extends Result {
         private final Track track;
+
         public TrackSuccess(Track track) {
             this.track = track;
         }
@@ -62,8 +62,9 @@ public abstract class Result {
     }
 
     public static final class ConstructorSuccess extends Result {
-       // private final ConstructorAPIResponse constructorAPIResponse;
+        // private final ConstructorAPIResponse constructorAPIResponse;
         private final Constructor constructor;
+
         public ConstructorSuccess(Constructor constructor) {
             this.constructor = constructor;
         }

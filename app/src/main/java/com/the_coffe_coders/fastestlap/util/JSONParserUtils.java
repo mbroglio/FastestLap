@@ -4,12 +4,12 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.the_coffe_coders.fastestlap.api.ConstructorAPIResponse;
 import com.the_coffe_coders.fastestlap.api.ConstructorStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.api.DriversAPIResponse;
 import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.api.RaceResultsAPIResponse;
-import com.the_coffe_coders.fastestlap.api.ConstructorAPIResponse;
 
 public class JSONParserUtils {
     Context context;

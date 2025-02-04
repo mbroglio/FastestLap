@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.the_coffe_coders.fastestlap.repository.driver.CommonDriverRepository;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
-public class DriverViewModelFactory implements ViewModelProvider.Factory{
+public class DriverViewModelFactory implements ViewModelProvider.Factory {
 
     private final CommonDriverRepository driverRepository;
 

@@ -1,7 +1,5 @@
 package com.the_coffe_coders.fastestlap.ui.profile;
 
-import static android.content.ContentValues.TAG;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -41,50 +39,43 @@ import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 public class ProfileActivity extends AppCompatActivity {
     private static final String TAG = "ProfileActivity";
-
-    private GestureDetector tapDetector;
+    //private boolean isProfileImageModified = false;
+    //private boolean isProfileNameModified = false;
+    private final boolean isEmailModified = false;
     SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
     User currentUser;
+    private GestureDetector tapDetector;
     //private String originalUsername;
     //private String originalPassword;
     private String originalEmail;
     private String originalDriver;
-    private String originalConstructor;
     //private int originalProfileImage;
     //private float originalTextSize;
     //private Typeface originalTypeface;
 
     //private ImageView profileImage;
     //private TextView usernameText;
-
+    private String originalConstructor;
     private TextInputEditText emailText;
-
     private TextView favouriteDriverText;
     private MaterialCardView changeDriverButton;
     private ListPopupWindow listPopupWindowDrivers;
-
     private TextView favouriteConstructorText;
     private MaterialCardView changeConstructorButton;
     private ListPopupWindow listPopupWindowConstructors;
-
     private CheckBox autoLoginCheckBox;
     private Button saveButton;
     private Button dismissButton;
     private Button signOutButton;
-
     //private String provisionalUsername;
     //private int provisionalProfileImage;
     private String provisionalFavDriver;
     private String provisionalFavConstructor;
     private String favouriteDriverKey;
     private String favouriteConstructorKey;
-    private String autoLoginKey;
     //private String provisionalEmail;
     //private String provisionalPassword;
-
-    //private boolean isProfileImageModified = false;
-    //private boolean isProfileNameModified = false;
-    private final boolean isEmailModified = false;
+    private String autoLoginKey;
     //private boolean isPasswordModified = false;
     private boolean isFavDriverModified = false;
     private boolean isFavConstructorModified = false;
@@ -131,12 +122,12 @@ public class ProfileActivity extends AppCompatActivity {
         } else {
             favouriteDriverText.setText(Constants.DRIVER_FULLNAME.get(getFavoriteDriverId()));
             favouriteConstructorText.setText(Constants.TEAM_FULLNAME.get(getFavoriteTeamId()));
-            if(isFromLogin){
+            if (isFromLogin) {
                 toolbar.setNavigationOnClickListener(v -> {
                     Intent intent = new Intent(ProfileActivity.this, HomePageActivity.class);
                     startActivity(intent);
                 });
-            }else{
+            } else {
                 toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
             }
 
@@ -164,10 +155,10 @@ public class ProfileActivity extends AppCompatActivity {
 
         autoLoginCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             Log.i(TAG, "Auto Login status on click: " + autoLoginCheckBox.isChecked());
-            if(autoLoginCheckBox.isChecked() != autoLogin){
+            if (autoLoginCheckBox.isChecked() != autoLogin) {
                 isCheckBoxChanged = true;
                 checkForChanges();
-            }else{
+            } else {
                 isCheckBoxChanged = false;
                 checkForChanges();
             }
@@ -479,7 +470,7 @@ public class ProfileActivity extends AppCompatActivity {
             sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
                     Constants.SHARED_PREFERENCES_AUTO_LOGIN,
                     String.valueOf(autoLoginCheckBox.isChecked()));
-        }else{
+        } else {
             autoLoginKey = getAutoLoginValue();
         }
 

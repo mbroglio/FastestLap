@@ -1,4 +1,5 @@
 package com.the_coffe_coders.fastestlap.repository.driver;
+
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_DRIVERS_COLLECTION;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
 
@@ -13,11 +14,6 @@ import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 
 public class FirebaseDriverRepository {
     private final FirebaseDatabase database;
-
-    public interface DriverCallback {
-        void onSuccess(Driver driver);
-        void onFailure(Exception exception);
-    }
 
     public FirebaseDriverRepository() {
         this.database = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
@@ -45,5 +41,11 @@ public class FirebaseDriverRepository {
                 callback.onFailure(error.toException());
             }
         });
+    }
+
+    public interface DriverCallback {
+        void onSuccess(Driver driver);
+
+        void onFailure(Exception exception);
     }
 }

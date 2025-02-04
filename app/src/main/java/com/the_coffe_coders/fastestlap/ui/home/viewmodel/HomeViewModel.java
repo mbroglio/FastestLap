@@ -4,9 +4,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
-import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
 import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
@@ -34,15 +32,15 @@ public class HomeViewModel extends ViewModel {
         this.constructorRepository = constructorRepository;
     }
 
-   public MutableLiveData<Result> getLastRace(long lastUpdate) {
-      // ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchLastRace(0);
-       return raceRepository.fetchLastRace(0);
-   }
+    public MutableLiveData<Result> getLastRace(long lastUpdate) {
+        // ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchLastRace(0);
+        return raceRepository.fetchLastRace(0);
+    }
 
-   public MutableLiveData<Result> getNextRace(long lastUpdate) {
-       //ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchNextRace(0);
-       return raceRepository.fetchNextRace(0);
-   }
+    public MutableLiveData<Result> getNextRace(long lastUpdate) {
+        //ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchNextRace(0);
+        return raceRepository.fetchNextRace(0);
+    }
 
     private void fetchDriverStandings(long lastUpdate) {
         this.driverStandings = driverRepository.fetchDriversStandings(lastUpdate);
@@ -54,6 +52,7 @@ public class HomeViewModel extends ViewModel {
         }
         return driverStandings;
     }
+
     public DriverStandingsElement getDriverStandingsElement(List<DriverStandingsElement> driversList, String driverID) {
         for (DriverStandingsElement driver : driversList) {
             if (driver.getDriver().getDriverId().equals(driverID)) {
@@ -66,7 +65,7 @@ public class HomeViewModel extends ViewModel {
 
 
     public MutableLiveData<Result> getConstructorStandingsLiveData(long lastUpdate) {
-        if(constructorStanding == null) {
+        if (constructorStanding == null) {
             fetchConstructorStandings(lastUpdate);
         }
         return constructorStanding;
@@ -75,8 +74,6 @@ public class HomeViewModel extends ViewModel {
     private void fetchConstructorStandings(long lastUpdate) {
         constructorStanding = constructorRepository.fetchConstructorStandings(lastUpdate);
     }
-
-
 
 
 }

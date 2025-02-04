@@ -3,17 +3,10 @@ package com.the_coffe_coders.fastestlap.repository.constructor;
 
 import android.util.Log;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
-import androidx.lifecycle.MutableLiveData;
 
-import com.the_coffe_coders.fastestlap.api.ConstructorStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
-
-import java.util.Collections;
-import java.util.List;
 
 public class CommonConstructorRepository {
     private final String TAG = "CommonConstructorRepository";
@@ -21,10 +14,11 @@ public class CommonConstructorRepository {
 
     private final FirebaseConstructorRepository firebaseConstructorRepository;
     private final JolpicaConstructorRepository jolpicaConstructorRepository;
+
     public CommonConstructorRepository() {
         this.allConstructorMediatorLiveData = new MediatorLiveData<>();
         jolpicaConstructorRepository = new JolpicaConstructorRepository();
-        firebaseConstructorRepository = new FirebaseConstructorRepository();;
+        firebaseConstructorRepository = new FirebaseConstructorRepository();
     }
 
     public MediatorLiveData<Result> getConstructor(String constructorId) {

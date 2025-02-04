@@ -1,7 +1,5 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
-import androidx.room.Ignore;
-
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;

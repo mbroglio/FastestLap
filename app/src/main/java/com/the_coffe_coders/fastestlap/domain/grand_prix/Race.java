@@ -11,10 +11,10 @@ import java.util.List;
 @Entity
 public class Race extends Session {
 
-    @PrimaryKey(autoGenerate = true)
-    private int uid;
     public List<RaceResult> raceResults;
     public LocalDateTime dateTime;//TODO REMOVE ?
+    @PrimaryKey(autoGenerate = true)
+    private int uid;
     private String season;
     private String round;
     private String url;
@@ -48,16 +48,16 @@ public class Race extends Session {
         return season;
     }
 
+    public void setSeason(String season) {
+        this.season = season;
+    }
+
     public int getUid() {
         return uid;
     }
 
     public void setUid(int uid) {
         this.uid = uid;
-    }
-
-    public void setSeason(String season) {
-        this.season = season;
     }
 
     public String getRound() {

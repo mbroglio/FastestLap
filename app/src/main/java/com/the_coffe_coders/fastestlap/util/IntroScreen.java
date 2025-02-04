@@ -3,7 +3,6 @@ package com.the_coffe_coders.fastestlap.util;
 import android.content.Context;
 import android.media.MediaPlayer;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -93,7 +92,7 @@ public class IntroScreen {
         }
     }
 
-    public void showForAutoLogin(){
+    public void showForAutoLogin() {
         introScreen.setVisibility(View.VISIBLE);
         appName.setVisibility(View.VISIBLE);
         appCredits.setVisibility(View.VISIBLE);

@@ -101,21 +101,20 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
-                android:orientation="horizontal"
+                android:layout_marginStart="@dimen/medium_margin"
                 android:layout_marginTop="@dimen/medium_margin"
                 android:layout_marginEnd="@dimen/medium_margin"
-                android:layout_marginStart="@dimen/medium_margin">
+                android:orientation="horizontal">
 
                 <CheckBox
                     android:id="@+id/remember_me_checkbox"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Remember Me"
-                    android:textSize="@dimen/layout_subtitle_text_size"
-                    android:textColor="@color/white"
                     android:fontFamily="@font/orbitron_bold"
-                    app:buttonIconTint="@color/white"
-                    >
+                    android:text="Remember Me"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/layout_subtitle_text_size"
+                    app:buttonIconTint="@color/white">
 
                 </CheckBox>
 
@@ -133,7 +132,6 @@
                 </Button>
 
             </RelativeLayout>
-
 
 
             <LinearLayout

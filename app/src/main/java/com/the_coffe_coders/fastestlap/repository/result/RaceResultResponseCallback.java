@@ -1,8 +1,8 @@
 package com.the_coffe_coders.fastestlap.repository.result;
 
 import com.the_coffe_coders.fastestlap.api.RaceResultsAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 
 import java.util.List;
 

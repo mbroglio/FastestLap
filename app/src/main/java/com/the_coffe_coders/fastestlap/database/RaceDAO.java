@@ -10,6 +10,7 @@ import androidx.room.Query;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 
 import java.util.List;
+
 @Dao
 public interface RaceDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)

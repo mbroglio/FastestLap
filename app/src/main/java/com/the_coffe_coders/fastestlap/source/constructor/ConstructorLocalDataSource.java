@@ -2,12 +2,9 @@ package com.the_coffe_coders.fastestlap.source.constructor;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.database.ConstructorStandingsDAO;
-import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
-
-import java.util.List;
 
 public class ConstructorLocalDataSource extends BaseConstructorLocalDataSource {
     private final ConstructorStandingsDAO constructorStandingsDAO;

@@ -107,6 +107,7 @@ public class RaceResultLocalDataSource extends BaseRaceResultLocalDataSource {
             }
         });
     }
+
     @Override
     public void insertRaceResultList(List<RaceResult> raceResultList) {
         Log.i(TAG, "insertRaceResultList");

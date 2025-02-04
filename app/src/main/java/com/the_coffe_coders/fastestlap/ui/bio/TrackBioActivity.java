@@ -1,8 +1,5 @@
 package com.the_coffe_coders.fastestlap.ui.bio;
 
-import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_NATIONS_COLLECTION;
-import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -21,21 +18,16 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.TrackHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
-import com.the_coffe_coders.fastestlap.repository.nation.FirebaseNationRepository;
-import com.the_coffe_coders.fastestlap.repository.track.TrackRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 public class TrackBioActivity extends AppCompatActivity {
@@ -98,7 +90,7 @@ public class TrackBioActivity extends AppCompatActivity {
                         if (nationResult.isSuccess()) {
                             nation = ((Result.NationSuccess) nationResult).getData();
                             setCircuitData(track, nation);
-                        }else {
+                        } else {
                             Log.e("TrackBioActivity", "Error getting data");
                         }
                     });
@@ -110,7 +102,6 @@ public class TrackBioActivity extends AppCompatActivity {
             throw new RuntimeException(e);
         }
     }
-
 
 
     private void setCircuitData(Track track, Nation nation) {

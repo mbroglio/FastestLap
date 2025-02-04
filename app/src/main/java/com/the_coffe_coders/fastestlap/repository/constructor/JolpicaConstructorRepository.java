@@ -6,11 +6,9 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.api.ConstructorAPIResponse;
-
+import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.mapper.ConstructorMapper;
-
 import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 

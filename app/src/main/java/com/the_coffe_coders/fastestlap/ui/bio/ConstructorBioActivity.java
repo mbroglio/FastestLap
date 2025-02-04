@@ -1,10 +1,5 @@
 package com.the_coffe_coders.fastestlap.ui.bio;
 
-import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_DRIVERS_COLLECTION;
-import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_NATIONS_COLLECTION;
-import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
-import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_TEAMS_COLLECTION;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,27 +21,20 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorHistory;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
-import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
-import com.the_coffe_coders.fastestlap.repository.driver.CommonDriverRepository;
-import com.the_coffe_coders.fastestlap.repository.nation.FirebaseNationRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
-import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 /*
@@ -107,14 +95,14 @@ public class ConstructorBioActivity extends AppCompatActivity {
         driverTwoCard = findViewById(R.id.driver_2_card);
         driverTwoImage = findViewById(R.id.driver_2_image);
 
-        driverViewModel =  new ViewModelProvider(this, new DriverViewModelFactory()).get(DriverViewModel.class);
+        driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory()).get(DriverViewModel.class);
         constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
         nationViewModel = new ViewModelProvider(this, new NationViewModelFactory()).get(NationViewModel.class);
 
         teamFlag = findViewById(R.id.team_flag);
         MutableLiveData<Result> data = constructorViewModel.getSelectedConstructorLiveData(teamId);
         data.observe(this, result -> {
-            if(result.isSuccess()) {
+            if (result.isSuccess()) {
                 team = ((Result.ConstructorSuccess) result).getData();
                 String teamName = team.getName();
 
@@ -136,8 +124,8 @@ public class ConstructorBioActivity extends AppCompatActivity {
         MutableLiveData<Result> data = driverViewModel.getDriver(driverId);
 
         data.observe(this, result -> {
-            if(result.isSuccess()) {
-                if(driverId.equals(team.getDriverOneId())) {
+            if (result.isSuccess()) {
+                if (driverId.equals(team.getDriverOneId())) {
                     driverOne = ((Result.DriverSuccess) result).getData();
                     driverOneCard.setOnClickListener(v -> {
                         Intent intent = new Intent(ConstructorBioActivity.this, DriverBioActivity.class);
@@ -164,7 +152,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
         MutableLiveData<Result> data = nationViewModel.getNation(nationId);
 
         data.observe(this, result -> {
-            if(result.isSuccess()) {
+            if (result.isSuccess()) {
                 nation = ((Result.NationSuccess) result).getData();
                 setTeamData(team, nation, driverOne, driverTwo);
             }

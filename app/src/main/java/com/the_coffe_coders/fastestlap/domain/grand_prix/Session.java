@@ -91,12 +91,12 @@ public abstract class Session {
         return sessionStatus;
     }
 
-    public String getSessionStatusAsString() {
-        return sessionStatus.toString();
-    }
-
     public void setSessionStatus(SessionStatus sessionStatus) {
         this.sessionStatus = sessionStatus;
+    }
+
+    public String getSessionStatusAsString() {
+        return sessionStatus.toString();
     }
 
     @NonNull

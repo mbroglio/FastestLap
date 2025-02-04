@@ -8,6 +8,7 @@ import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 public class TrackViewModelFactory implements ViewModelProvider.Factory {
     private final TrackRepository trackRepository;
+
     public TrackViewModelFactory(TrackRepository trackRepository) {
         this.trackRepository = trackRepository;
     }

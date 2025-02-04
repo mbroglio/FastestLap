@@ -6,10 +6,10 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 
 public class CommonDriverRepository {
-    private MediatorLiveData<Result> allDriverMediatorLiveData;
-
     private final FirebaseDriverRepository firebaseDriverRepository;
     private final JolpicaDriverRepositoy jolpicaDriverRepository;
+    private MediatorLiveData<Result> allDriverMediatorLiveData;
+
     public CommonDriverRepository() {
         //this.allDriverMediatorLiveData = new MediatorLiveData<>();;
         jolpicaDriverRepository = new JolpicaDriverRepositoy();

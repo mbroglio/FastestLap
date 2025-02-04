@@ -1,7 +1,7 @@
 package com.the_coffe_coders.fastestlap.repository.constructor;
 
-import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_TEAMS_COLLECTION;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
+import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_TEAMS_COLLECTION;
 
 import android.util.Log;
 
@@ -19,11 +19,6 @@ public class FirebaseConstructorRepository {
     private final FirebaseDatabase database;
 
     private final String TAG = "FirebaseConstructorRepository";
-
-    public interface ConstructorCallback {
-        void onSuccess(Constructor constructor);
-        void onFailure(Exception exception);
-    }
 
     public FirebaseConstructorRepository() {
         this.database = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
@@ -52,5 +47,11 @@ public class FirebaseConstructorRepository {
                 callback.onFailure(error.toException());
             }
         });
+    }
+
+    public interface ConstructorCallback {
+        void onSuccess(Constructor constructor);
+
+        void onFailure(Exception exception);
     }
 }

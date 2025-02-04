@@ -7,7 +7,6 @@ import static com.the_coffe_coders.fastestlap.util.Constants.WEAK_PASSWORD_ERROR
 import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
-import android.graphics.LinearGradient;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -41,7 +40,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
@@ -296,11 +294,11 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
                         new Handler().postDelayed(() -> {
                             startActivity(new Intent(WelcomeActivity.this, HomePageActivity.class));
                         }, 500); // 0,5 seconds delay
-                    }else{
+                    } else {
                         introScreen.hideIntroScreen();
                         introScreen.showIntroScreen();
                     }
-                }else {
+                } else {
                     Log.e(TAG, "Failed to get auto_login value", task.getException());
                 }
             });

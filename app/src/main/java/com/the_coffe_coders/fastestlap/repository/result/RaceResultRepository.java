@@ -1,7 +1,5 @@
 package com.the_coffe_coders.fastestlap.repository.result;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
