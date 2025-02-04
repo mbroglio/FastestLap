@@ -16,26 +16,6 @@ public class CommonDriverRepository {
         firebaseDriverRepository = new FirebaseDriverRepository();
     }
 
-    /*public MediatorLiveData<Result> getDriver(String driverId) {
-        allDriverMediatorLiveData.addSource(jolpicaDriverRepository.getDriver(driverId), allDriverMediatorLiveData::setValue);
-        firebaseDriverRepository.getDriverData(driverId,
-                new FirebaseDriverRepository.DriverCallback() {
-
-                    @Override
-                    public void onSuccess(Driver driver) {
-                        allDriverMediatorLiveData.setValue(new Result.DriverSuccess(driver));
-
-                    }
-
-                    @Override
-                    public void onFailure(Exception exception) {
-                        allDriverMediatorLiveData.setValue(new Result.Error(exception.getMessage()));
-                    }
-                });
-        
-        return allDriverMediatorLiveData;
-    }*/
-
     public MediatorLiveData<Result> getDriver(String driverId) {
         allDriverMediatorLiveData = new MediatorLiveData<>();
         allDriverMediatorLiveData.addSource(jolpicaDriverRepository.getDriver(driverId), jolpicaResult -> {
