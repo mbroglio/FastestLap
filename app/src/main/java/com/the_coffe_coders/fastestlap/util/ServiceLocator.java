@@ -3,9 +3,13 @@ package com.the_coffe_coders.fastestlap.util;
 import android.app.Application;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
-import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
-import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
+import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
+import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.driver.CommonDriverRepository;
+import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.nation.FirebaseNationRepository;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
+import com.the_coffe_coders.fastestlap.repository.track.TrackRepository;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.repository.user.UserRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
@@ -136,6 +140,26 @@ public class ServiceLocator {
             public Call<ResponseBody> getCircuits() {
                 return null;
             }
+
+            @Override
+            public Call<ResponseBody> getDriver(String driverId) {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+
+                return retrofit.create(ErgastAPIService.class).getDriver(driverId);
+            }
+
+            @Override
+            public Call<ResponseBody> getConstructor(String constructorId) {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+
+                return retrofit.create(ErgastAPIService.class).getConstructor(constructorId);
+            }
         };
     }
 
@@ -143,7 +167,7 @@ public class ServiceLocator {
         return AppRoomDatabase.getDatabase(application);
     }
 
-    public DriverRepository getDriverRepository(Application application, boolean debugMode) {
+    public DriverStandingsRepository getDriverStandingsRepository(Application application, boolean debugMode) {
         BaseDriverRemoteDataSource driverRemoteDataSource;
         BaseDriverLocalDataSource driverLocalDataSource;
         SharedPreferencesUtils sharedPreferencesUtil = new SharedPreferencesUtils(application);
@@ -158,10 +182,10 @@ public class ServiceLocator {
 
         driverLocalDataSource = new DriverLocalDataSource(getRoomDatabase(application), sharedPreferencesUtil);
 
-        return new DriverRepository(driverRemoteDataSource, driverLocalDataSource);
+        return new DriverStandingsRepository(driverRemoteDataSource, driverLocalDataSource);
     }
 
-    public ConstructorRepository getConstructorRepository(Application application, boolean debugMode) {
+    public ConstructorStandingsRepository getConstructorStandingsRepository(Application application, boolean debugMode) {
         BaseConstructorRemoteDataSource constructorRemoteDataSource;
         BaseConstructorLocalDataSource constructorLocalDataSource;
         SharedPreferencesUtils sharedPreferencesUtil = new SharedPreferencesUtils(application);
@@ -176,7 +200,19 @@ public class ServiceLocator {
 
         constructorLocalDataSource = new ConstructorLocalDataSource(getRoomDatabase(application), sharedPreferencesUtil);
 
-        return new ConstructorRepository(constructorRemoteDataSource, constructorLocalDataSource);
+        return new ConstructorStandingsRepository(constructorRemoteDataSource, constructorLocalDataSource);
+    }
+
+    public CommonDriverRepository getCommonDriverRepository() {
+        return new CommonDriverRepository();
+    }
+
+    public CommonConstructorRepository getCommonConstructorRepository() {
+        return new CommonConstructorRepository();
+    }
+
+    public FirebaseNationRepository getFirebaseNationRepository() {
+        return new FirebaseNationRepository();
     }
 
     public RaceRepository getRaceRepository(Application application, boolean b) {
@@ -205,5 +241,9 @@ public class ServiceLocator {
 
         return new UserRepository(userRemoteAuthenticationDataSource,
                 userDataRemoteDataSource);
+    }
+
+    public TrackRepository getTrackRepository() {
+        return new TrackRepository();
     }
 }

@@ -1,12 +1,16 @@
 package com.the_coffe_coders.fastestlap.domain;
 
+import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 
 import java.util.List;
@@ -24,26 +28,48 @@ public abstract class Result {
      * with a Web Service or a local database.
      */
     public static final class DriverSuccess extends Result {
-        private final DriverAPIResponse driverAPIResponse;
+        private final Driver driver;
 
-        public DriverSuccess(DriverAPIResponse driverStandingsAPIResponse) {
-            this.driverAPIResponse = driverStandingsAPIResponse;
+        public DriverSuccess(Driver driver) {
+            this.driver = driver;
         }
 
-        public DriverAPIResponse getData() {
-            return driverAPIResponse;
+        public Driver getData() {
+            return driver;
+        }
+    }
+
+    public static final class NationSuccess extends Result {
+        private final Nation nation;
+        public NationSuccess(Nation nation) {
+            this.nation = nation;
+        }
+
+        public Nation getData() {
+            return nation;
+        }
+    }
+
+    public static final class TrackSuccess extends Result {
+        private final Track track;
+        public TrackSuccess(Track track) {
+            this.track = track;
+        }
+
+        public Track getData() {
+            return track;
         }
     }
 
     public static final class ConstructorSuccess extends Result {
-        private final ConstructorAPIResponse constructorAPIResponse;
-
-        public ConstructorSuccess(ConstructorAPIResponse constructorStandingsAPIResponse) {
-            this.constructorAPIResponse = constructorStandingsAPIResponse;
+       // private final ConstructorAPIResponse constructorAPIResponse;
+        private final Constructor constructor;
+        public ConstructorSuccess(Constructor constructor) {
+            this.constructor = constructor;
         }
 
-        public ConstructorAPIResponse getData() {
-            return constructorAPIResponse;
+        public Constructor getData() {
+            return constructor;
         }
     }
 
@@ -130,6 +156,4 @@ public abstract class Result {
             return message;
         }
     }
-
-
 }

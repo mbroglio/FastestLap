@@ -2,18 +2,18 @@ package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
 import java.util.List;
 
-public class CircuitHistory {
+public class TrackHistory {
     private List<String> podium;
     private List<String> team;
     private String year;
 
-    public CircuitHistory(List<String> podium, List<String> team, String year) {
+    public TrackHistory(List<String> podium, List<String> team, String year) {
         this.podium = podium;
         this.team = team;
         this.year = year;
     }
 
-    public CircuitHistory() {
+    public TrackHistory() {
     }
 
     public List<String> getTeam() {
@@ -42,7 +42,7 @@ public class CircuitHistory {
 
     @Override
     public String toString() {
-        return "CircuitHistory{" +
+        return "TrackHistory{" +
                 "podium=" + podium.toString() +
                 ", team=" + team.toString() +
                 ", year='" + year + '\'' +

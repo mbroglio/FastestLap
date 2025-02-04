@@ -1,6 +1,5 @@
 package com.the_coffe_coders.fastestlap.ui.bio;
 
-import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_CIRCUITS_COLLECTION;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_NATIONS_COLLECTION;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
 
@@ -17,26 +16,40 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Circuit;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.CircuitHistory;
+import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.TrackHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
+import com.the_coffe_coders.fastestlap.repository.nation.FirebaseNationRepository;
+import com.the_coffe_coders.fastestlap.repository.track.TrackRepository;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 public class TrackBioActivity extends AppCompatActivity {
 
     LoadingScreen loadingScreen;
     private GestureDetector tapDetector;
-    private Circuit circuit;
+    private Track track;
     private Nation nation;
     private ImageView circuitImage;
     private ImageView countryFlag;
+
+    private TrackViewModel trackViewModel;
+
+    private NationViewModel nationViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +70,8 @@ public class TrackBioActivity extends AppCompatActivity {
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        String circuitId = getIntent().getStringExtra("CIRCUIT_ID");
-        Log.i("TrackBioActivity", "CIRCUIT_ID: " + circuitId);
+        String trackId = getIntent().getStringExtra("CIRCUIT_ID");
+        Log.i("TrackBioActivity", "CIRCUIT_ID: " + trackId);
 
         String grandPrixName = getIntent().getStringExtra("GRAND_PRIX_NAME");
         Log.i("TrackBioActivity", "GRAND_PRIX_NAME: " + grandPrixName);
@@ -69,34 +82,39 @@ public class TrackBioActivity extends AppCompatActivity {
         circuitImage = findViewById(R.id.track_image);
         countryFlag = findViewById(R.id.country_flag);
 
-        DatabaseReference databaseReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_CIRCUITS_COLLECTION).child(circuitId);
-        Log.i("TrackBioActivity", "Database reference: " + databaseReference);
-        databaseReference.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                circuit = task.getResult().getValue(Circuit.class);
-                Log.i("TrackBioActivity", "Circuit from DB: " + circuit.toStringDB());
-                DatabaseReference nationReference = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE).getReference(FIREBASE_NATIONS_COLLECTION).child(circuit.getCountry());
-                Log.i("DriverBioActivity", "Nation reference: " + nationReference);
-                nationReference.get().addOnCompleteListener(nationTask -> {
-                    if (nationTask.isSuccessful()) {
-                        nation = nationTask.getResult().getValue(Nation.class);
-                        Log.i("DriverBioActivity", "Nation data: " + nation.toString());
+        trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory()).get(TrackViewModel.class);
+        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory()).get(NationViewModel.class);
 
-                        setCircuitData(circuit, nation);
+        MutableLiveData<Result> trackLiveData = trackViewModel.getTrack(trackId);
 
-                    } else {
-                        Log.e("DriverBioActivity", "Error getting nation data", nationTask.getException());
-                    }
-                });
+        try {
+            trackLiveData.observe(this, trackResult -> {
+                if (trackResult.isSuccess()) {
+                    track = ((Result.TrackSuccess) trackResult).getData();
+                    Log.i("TrackBioActivity", "Circuit from DB: " + track.toStringDB());
 
-            } else {
-                Log.e("TrackBioActivity", "Error getting data", task.getException());
-            }
-        });
+                    MutableLiveData<Result> nationLiveData = nationViewModel.getNation(track.getCountry());
+                    nationLiveData.observe(this, nationResult -> {
+                        if (nationResult.isSuccess()) {
+                            nation = ((Result.NationSuccess) nationResult).getData();
+                            setCircuitData(track, nation);
+                        }else {
+                            Log.e("TrackBioActivity", "Error getting data");
+                        }
+                    });
+                } else {
+                    Log.e("TrackBioActivity", "Error getting data");
+                }
+            });
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private void setCircuitData(Circuit circuit, Nation nation) {
-        Glide.with(this).load(circuit.getCircuit_full_layout_url()).into(circuitImage);
+
+
+    private void setCircuitData(Track track, Nation nation) {
+        Glide.with(this).load(track.getTrack_full_layout_url()).into(circuitImage);
         Glide.with(this).load(nation.getNation_flag_url()).into(countryFlag);
 
         TextView circuitName = findViewById(R.id.circuit_name_value);
@@ -104,24 +122,23 @@ public class TrackBioActivity extends AppCompatActivity {
         circuitName.setText("NA"); // TODO: Change this
 
         TextView numberOfLaps = findViewById(R.id.number_of_laps_value);
-        numberOfLaps.setText(circuit.getLaps());
+        numberOfLaps.setText(track.getLaps());
 
         TextView circuitLength = findViewById(R.id.circuit_length_value);
-        circuitLength.setText(circuit.getLength());
+        circuitLength.setText(track.getLength());
 
         TextView raceDistance = findViewById(R.id.race_distance_value);
-        raceDistance.setText(circuit.getRace_distance());
+        raceDistance.setText(track.getRace_distance());
 
-        String fastestLapValue = circuit.getLap_record().split(" ")[0];
+        String fastestLapValue = track.getLap_record().split(" ")[0];
 
-        String fastestLapDriver = circuit.getLap_record().substring(fastestLapValue.length() + 1);
+        String fastestLapDriver = track.getLap_record().substring(fastestLapValue.length() + 1);
 
         TextView fastestLap = findViewById(R.id.fastest_lap_value);
         fastestLap.setText(fastestLapValue);
 
         TextView fastestLapDriverName = findViewById(R.id.fastest_lap_driver);
         fastestLapDriverName.setText(fastestLapDriver);
-
         createHistoryTable();
     }
 
@@ -133,7 +150,7 @@ public class TrackBioActivity extends AppCompatActivity {
         tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray_dark));
         tableLayout.addView(tableHeader);
 
-        for (CircuitHistory history : circuit.getCircuit_history()) {
+        for (TrackHistory history : track.getTrack_history()) {
             View tableRow = inflater.inflate(R.layout.track_bio_table_row, tableLayout, false);
 
             TextView year = tableRow.findViewById(R.id.season_year);

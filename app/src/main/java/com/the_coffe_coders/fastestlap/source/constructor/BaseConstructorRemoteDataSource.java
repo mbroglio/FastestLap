@@ -9,9 +9,5 @@ public abstract class BaseConstructorRemoteDataSource {
         this.constructorCallback = constructorCallback;
     }
 
-    public abstract void getConstructor();
-
     public abstract void getConstructorStandings();
-
-    public abstract void getConstructor(String constructorId);
 }

@@ -1,11 +1,14 @@
 package com.the_coffe_coders.fastestlap.ui.standing;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -14,30 +17,32 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
+import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
-import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import java.util.List;
 
 public class DriversStandingActivity extends AppCompatActivity {
 
     private static final String TAG = "DriverCardActivity";
-
-    private GestureDetector tapDetector;
 
     private DriverStandings driverStandings;
 
@@ -51,8 +56,6 @@ public class DriversStandingActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_drivers_standing);
 
-        //tapDetector = UIUtils.createTapDetector(this);
-
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
 
         loadingScreen.showLoadingScreen();
@@ -60,32 +63,23 @@ public class DriversStandingActivity extends AppCompatActivity {
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
-        UIUtils.applyWindowInsets(toolbar);
+        ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
 
-        LinearLayout driverStandingLayout = findViewById(R.id.driver_standing_layout);
-        UIUtils.applyWindowInsets(driverStandingLayout);
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
+            params.topMargin = systemBars.top;
+            v.setLayoutParams(params);
+
+            return insets;
+        });
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
 
         LinearLayout driverStanding = findViewById(R.id.driver_standing);
 
-        driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverRepository(getApplication(), false))).get(DriverStandingsViewModel.class);
+        driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverStandingsRepository(getApplication(), false))).get(DriverStandingsViewModel.class);
         MutableLiveData<Result> livedata = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
-
-        /*
-        RaceResultRepository raceResultRepository = ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false);
-        MutableLiveData<Result> mldr = raceResultRepository.fetchAllRaceResults(0);
-        mldr.observe(this, result -> {
-            if (result.isSuccess()) {
-                Log.i(TAG, ((Result.RaceSuccess) result).getData().toString());
-                Log.i(TAG, "RACE RESULTS SUCCESS");
-            } else {
-                Log.i(TAG, "RACE RESULTS ERROR");
-            }
-        });
-        
-        */
 
         livedata.observe(this, result -> {
             if (result.isSuccess()) {
@@ -108,12 +102,22 @@ public class DriversStandingActivity extends AppCompatActivity {
                 loadingScreen.hideLoadingScreen();
             }
         });
+
+        CommonConstructorRepository commonConstructorRepository = new CommonConstructorRepository();
+
+        MutableLiveData<Result> constructorMutableLiveData = commonConstructorRepository.getConstructor("mercedes");
+
+        constructorMutableLiveData.observe(this, result -> {
+            if (result.isSuccess()) {
+                Constructor constructor = ((Result.ConstructorSuccess) result).getData();
+                Log.i(TAG, "GET CONSTRUCTOR FROM COMMON REPO: " + constructor.toString());
+            }
+        });
     }
 
     private View generateDriverCard(DriverStandingsElement standingElement, String driverIdToHighlight) {
         // Inflate the team card layout
         View driverCard = getLayoutInflater().inflate(R.layout.driver_card, null);
-        MaterialCardView driverCardView = driverCard.findViewById(R.id.driver_card_view);
 
         // Preparing all the views
         TextView driverPosition = driverCard.findViewById(R.id.driver_position);
@@ -140,30 +144,24 @@ public class DriversStandingActivity extends AppCompatActivity {
         driverPoints.setText(points);
 
         if (driverId.equals(driverIdToHighlight)) {
-            UIUtils.animateCardBackgroundColor(this, driverCardView, R.color.yellow, Color.TRANSPARENT, 1000, 10);
+            int startColor = ContextCompat.getColor(this, R.color.yellow); // Replace with actual highlight color
+            int endColor = Color.TRANSPARENT;
+
+            ValueAnimator colorAnimator = ObjectAnimator.ofInt(driverCard, "backgroundColor", startColor, endColor);
+            colorAnimator.setDuration(1000); // Duration in milliseconds
+            colorAnimator.setEvaluator(new ArgbEvaluator());
+            colorAnimator.setRepeatCount(5); // Repeat 5 times (includes forward and reverse)
+            colorAnimator.setRepeatMode(ValueAnimator.REVERSE);
+            colorAnimator.start();
         }
 
         driverCard.setOnClickListener(v -> {
             Intent intent = new Intent(DriversStandingActivity.this, DriverBioActivity.class);
             intent.putExtra("DRIVER_ID", driverId);
+            intent.putExtra("CALLER", DriversStandingActivity.class.getName());
             startActivity(intent);
         });
 
         return driverCard;
-    }
-
-    /*
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        tapDetector.onTouchEvent(ev);
-        return super.dispatchTouchEvent(ev);
-    }
-
-     */
-
-    @Override
-    protected void onResume() {
-        // UIUtils.hideSystemUI(this);
-        super.onResume();
     }
 }

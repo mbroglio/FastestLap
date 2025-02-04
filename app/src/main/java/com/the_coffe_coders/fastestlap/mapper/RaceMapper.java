@@ -13,7 +13,7 @@ public class RaceMapper {
         race.setUrl(raceDTO.getUrl());
         race.setStartDateTime(raceDTO.getDate(), raceDTO.getTime());
         race.setEndDateTime();
-        race.setCircuit(CircuitMapper.toCircuit(raceDTO.getCircuit()));
+        race.setTrack(TrackMapper.toTrack(raceDTO.getCircuit()));
         for (ResultDTO resultDTO : raceDTO.getResults()) {
             race.addResult(SessionMapper.toResult(resultDTO));
         }

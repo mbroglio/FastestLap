@@ -24,16 +24,6 @@ public class ConstructorLocalDataSource extends BaseConstructorLocalDataSource {
     }
 
     @Override
-    public void insertConstructors(List<Constructor> constructorsList) {
-
-    }
-
-    @Override
-    public void getConstructor() {
-
-    }
-
-    @Override
     public void insertConstructorsStandings(ConstructorStandings constructorStandings) {
         AppRoomDatabase.databaseWriteExecutor.execute(() -> {
             constructorStandingsDAO.insert(constructorStandings);

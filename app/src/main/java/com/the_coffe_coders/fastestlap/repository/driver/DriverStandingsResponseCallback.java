@@ -6,7 +6,7 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 
 import java.util.List;
 
-public interface DriverResponseCallback {
+public interface DriverStandingsResponseCallback {
     void onSuccessFromRemote(DriverStandingsAPIResponse driverAPIResponse, long lastUpdate);
 
     void onFailureFromRemote(Exception exception);

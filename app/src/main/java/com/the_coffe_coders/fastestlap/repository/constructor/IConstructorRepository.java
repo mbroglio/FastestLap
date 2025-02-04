@@ -1,11 +1,9 @@
 package com.the_coffe_coders.fastestlap.repository.constructor;
 
-import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
+import androidx.lifecycle.MutableLiveData;
 
-import java.util.List;
+import com.the_coffe_coders.fastestlap.domain.Result;
 
 public interface IConstructorRepository {
-    List<Constructor> findConstructors();
-
-    Constructor find(String id);
+    MutableLiveData<Result> fetchConstructorStandings(long lastUpdate);
 }

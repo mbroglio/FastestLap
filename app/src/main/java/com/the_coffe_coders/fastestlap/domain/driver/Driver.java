@@ -8,6 +8,10 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import org.threeten.bp.LocalDate;
+import org.threeten.bp.Period;
+import org.threeten.bp.format.DateTimeFormatter;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -80,6 +84,17 @@ public class Driver implements Parcelable {
         this.familyName = in.readString();
         this.dateOfBirth = in.readString();
         this.nationality = in.readString();
+    }
+
+    public int getDriverAge() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate birthDate = LocalDate.parse(dateOfBirth, formatter);
+        LocalDate currentDate = LocalDate.now();
+        return Period.between(birthDate, currentDate).getYears();
+    }
+
+    public String getDriverAgeAsString() {
+        return String.valueOf(getDriverAge());
     }
 
 

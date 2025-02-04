@@ -96,9 +96,4 @@ public class DriverRemoteDataSource extends BaseDriverRemoteDataSource {
         });
 
     }
-
-    @Override
-    public void getDriver(String driverId) {
-
-    }
 }

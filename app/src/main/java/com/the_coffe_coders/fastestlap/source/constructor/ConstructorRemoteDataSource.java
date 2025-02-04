@@ -31,7 +31,7 @@ public class ConstructorRemoteDataSource extends BaseConstructorRemoteDataSource
     }
 
     @Override
-    public void getConstructor() {
+    public void getConstructorStandings() {
         Log.i(TAG, "getConstructor: ");
         Call<ResponseBody> newsResponseCall = ergastAPIService.getConstructorStandings();
         newsResponseCall.enqueue(new Callback<>() {
@@ -62,15 +62,5 @@ public class ConstructorRemoteDataSource extends BaseConstructorRemoteDataSource
                 constructorCallback.onFailureFromRemote(new Exception(RETROFIT_ERROR));
             }
         });
-    }
-
-    @Override
-    public void getConstructorStandings() {
-
-    }
-
-    @Override
-    public void getConstructor(String constructorId) {
-
     }
 }

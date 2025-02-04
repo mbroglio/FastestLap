@@ -49,7 +49,7 @@ public class EventActivity extends AppCompatActivity {
     LoadingScreen loadingScreen;
     EventViewModel eventViewModel;
     private GestureDetector tapDetector;
-    private String circuitId;
+    private String trackId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +67,8 @@ public class EventActivity extends AppCompatActivity {
         loadingScreen.showLoadingScreen();
         Log.i(TAG, "Loading screen shown");
 
-        circuitId = getIntent().getStringExtra("CIRCUIT_ID");
-        Log.i(TAG, "Circuit ID: " + circuitId);
+        trackId = getIntent().getStringExtra("CIRCUIT_ID");
+        Log.i(TAG, "Circuit ID: " + trackId);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
@@ -90,7 +90,7 @@ public class EventActivity extends AppCompatActivity {
                 races.addAll(((Result.WeeklyRaceSuccess) result).getData());
                 WeeklyRace weeklyRace = null;
                 for (WeeklyRace race : races) {
-                    if (race.getCircuit().getCircuitId().equals(circuitId)) {
+                    if (race.getTrack().getTrackId().equals(trackId)) {
                         weeklyRace = race;
                     }
                 }
@@ -102,12 +102,12 @@ public class EventActivity extends AppCompatActivity {
                 title.setText(grandPrixName);
 
                 ImageView countryFlag = findViewById(R.id.country_flag);
-                String nation = weeklyRace.getCircuit().getLocation().getCountry();
+                String nation = weeklyRace.getTrack().getLocation().getCountry();
                 Integer flag = Constants.NATION_COUNTRY_FLAG.get(nation);
                 countryFlag.setImageResource(Objects.requireNonNullElseGet(flag, () -> R.drawable.austria_flag));
 
                 ImageView trackMap = findViewById(R.id.track_outline_image);
-                Integer outline = Constants.EVENT_CIRCUIT.get(circuitId);
+                Integer outline = Constants.EVENT_CIRCUIT.get(trackId);
                 trackMap.setImageResource(Objects.requireNonNullElseGet(outline, () -> R.drawable.back_curved_arrow));
 
                 TextView roundNumber = findViewById(R.id.round_number);
@@ -119,7 +119,7 @@ public class EventActivity extends AppCompatActivity {
                 seasonYear.setText(year);
 
                 TextView name = findViewById(R.id.gp_name);
-                name.setText(Constants.TRACK_LONG_GP_NAME.get(circuitId));
+                name.setText(Constants.TRACK_LONG_GP_NAME.get(trackId));
 
                 setEventImage();
 
@@ -127,12 +127,12 @@ public class EventActivity extends AppCompatActivity {
                 eventDate.setText(weeklyRace.getDateInterval());
 
                 LinearLayout track = findViewById(R.id.track_outline_layout);
-                Log.i(TAG, "Track: " + track);
+                Log.i(TAG, "track: " + track);
                 track.setOnClickListener(v -> {
                     Intent intent = new Intent(EventActivity.this, TrackBioActivity.class);
-                    intent.putExtra("CIRCUIT_ID", circuitId);
+                    intent.putExtra("CIRCUIT_ID", trackId);
                     intent.putExtra("GRAND_PRIX_NAME", grandPrixName);
-                    Log.i(TAG, "Circuit ID: " + circuitId);
+                    Log.i(TAG, "Circuit ID: " + trackId);
                     startActivity(intent);
                 });
 
@@ -157,7 +157,7 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void setEventImage() {
-        Integer eventImage = Constants.EVENT_PICTURE.get(circuitId);
+        Integer eventImage = Constants.EVENT_PICTURE.get(trackId);
         Drawable picture = ContextCompat.getDrawable(this, Objects.requireNonNullElseGet(eventImage, () -> R.drawable.australia_image));
         if (picture != null) {
             picture.setAlpha(76);
@@ -222,7 +222,7 @@ public class EventActivity extends AppCompatActivity {
 
         // Set podium circuit image
         ImageView trackOutline = findViewById(R.id.track_outline_image);
-        Integer outline = Constants.EVENT_CIRCUIT.get(circuitId);
+        Integer outline = Constants.EVENT_CIRCUIT.get(trackId);
         trackOutline.setImageResource(Objects.requireNonNullElseGet(outline, () -> R.drawable.arrow_back_ios_style));
     }
 

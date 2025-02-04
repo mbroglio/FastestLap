@@ -108,7 +108,7 @@ public class PastEventsActivity extends AppCompatActivity {
         month.setText(monthString);
 
         ImageView trackOutline = eventCard.findViewById(R.id.past_track_outline);
-        Integer track = Constants.EVENT_CIRCUIT.get(weeklyRace.getCircuit().getCircuitId());
+        Integer track = Constants.EVENT_CIRCUIT.get(weeklyRace.getTrack().getTrackId());
         trackOutline.setImageResource(Objects.requireNonNullElseGet(track, () -> R.string.unknown));
 
         TextView round = eventCard.findViewById(R.id.past_round_number);
@@ -123,7 +123,7 @@ public class PastEventsActivity extends AppCompatActivity {
         Log.i("PastEvent", "gpName: " + weeklyRace.getRaceName());
         eventCard.setOnClickListener(v -> {
             Intent intent = new Intent(PastEventsActivity.this, EventActivity.class);
-            intent.putExtra("CIRCUIT_ID", weeklyRace.getCircuit().getCircuitId());
+            intent.putExtra("CIRCUIT_ID", weeklyRace.getTrack().getTrackId());
             startActivity(intent);
         });
         return eventCard;

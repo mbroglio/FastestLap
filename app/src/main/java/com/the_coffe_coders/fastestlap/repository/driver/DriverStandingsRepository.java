@@ -3,12 +3,13 @@ package com.the_coffe_coders.fastestlap.repository.driver;
 
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
-import com.the_coffe_coders.fastestlap.domain.driver.DriverAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.mapper.DriverStandingsMapper;
 import com.the_coffe_coders.fastestlap.source.driver.BaseDriverLocalDataSource;
@@ -16,23 +17,35 @@ import com.the_coffe_coders.fastestlap.source.driver.BaseDriverRemoteDataSource;
 
 import java.util.List;
 
-public class DriverRepository implements IDriverRepository, DriverResponseCallback {
+public class DriverStandingsRepository implements IDriverRepository, DriverStandingsResponseCallback {
+    private static final String TAG = "DriverStandingsRepository";
 
     public static long FRESH_TIMEOUT = 60000;
     public static boolean isOutdate = true;
-    private final MutableLiveData<Result> allDriverMutableLiveData;//shuld be final
-    private final MutableLiveData<Result> driverStandingsMutableLiveData;//shuld be final
-    private final BaseDriverRemoteDataSource driverRemoteDataSource;//shuld be final
-    private final BaseDriverLocalDataSource driverLocalDataSource;//shuld be final
-    String TAG = "DriverRepository";
 
-    public DriverRepository(BaseDriverRemoteDataSource driverRemoteDataSource, BaseDriverLocalDataSource driverLocalDataSource) {
+    public final MediatorLiveData<Result> allDriverMediatorLiveData;
+    public final MutableLiveData<Result> jolpicaDriversMutableLiveData;
+    private final MutableLiveData<Result> allDriverMutableLiveData;
+    private final MutableLiveData<Result> driverStandingsMutableLiveData;
+    private final BaseDriverRemoteDataSource driverRemoteDataSource;
+    private final BaseDriverLocalDataSource driverLocalDataSource;
+
+    //private Map<String, Driver> cache = new HashMap<>();//TODO
+
+    public DriverStandingsRepository(BaseDriverRemoteDataSource driverRemoteDataSource, BaseDriverLocalDataSource driverLocalDataSource) {
+        this.allDriverMediatorLiveData = new MediatorLiveData<>();
+        this.jolpicaDriversMutableLiveData = new MutableLiveData<>();
         this.allDriverMutableLiveData = new MutableLiveData<>();
         this.driverStandingsMutableLiveData = new MutableLiveData<>();
         this.driverRemoteDataSource = driverRemoteDataSource;
         this.driverLocalDataSource = driverLocalDataSource;
         this.driverRemoteDataSource.setDriverCallback(this);
         this.driverLocalDataSource.setDriverCallback(this);
+    }
+
+    public LiveData<Result> getDrivers() {
+
+        return allDriverMediatorLiveData;
     }
 
     @Override
@@ -81,18 +94,6 @@ public class DriverRepository implements IDriverRepository, DriverResponseCallba
         return driverStandingsMutableLiveData;
     }
 
-    /*@Override
-    public void onSuccessFromRemote(DriversAPIResponse driverAPIResponse, long lastUpdate) {
-
-        List<Driver> drivers = new ArrayList<>();
-
-        for (DriverStandingsElementDTO driver: driverAPIResponse.getStandingsTable().getStandingsLists().get(0).getDriverStandings()) {
-            drivers.add(DriverMapper.toDriver(driver.getDriver()));
-            Log.i("onSuccessFromRemoteDriver", "DRIVER: " + driver.getDriver());
-        }
-        driverLocalDataSource.insertDrivers(drivers);
-    }*/
-
     @Override
     public void onSuccessFromRemote(DriverStandingsAPIResponse driverAPIResponse, long lastUpdate) {
         Log.i("onSuccessFromRemoteDriver", "DRIVER API RESPONSE: " + driverAPIResponse);
@@ -108,8 +109,8 @@ public class DriverRepository implements IDriverRepository, DriverResponseCallba
 
     @Override
     public void onSuccessFromLocal(List<Driver> driverList) {
-        Result.DriverSuccess result = new Result.DriverSuccess(new DriverAPIResponse(driverList));
-        allDriverMutableLiveData.postValue(result);
+        //Result.DriverSuccess result = new Result.DriverSuccess(new DriverAPIResponse(driverList));
+        //allDriverMutableLiveData.postValue(result);
     }
 
     public void onSuccessFromLocal(DriverStandings driverStandings) {

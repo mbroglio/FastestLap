@@ -1,22 +1,17 @@
 package com.the_coffe_coders.fastestlap.ui.home.viewmodel;
 
-import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
-import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
-import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
+import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
+import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
-import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
-import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
-import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import java.util.List;
 
@@ -24,15 +19,15 @@ public class HomeViewModel extends ViewModel {
     private static final String TAG = EventViewModel.class.getSimpleName();
     private final RaceRepository raceRepository;
     private final RaceResultRepository raceResultRepository;
-    private final DriverRepository driverRepository;
-    private final ConstructorRepository constructorRepository;
+    private final DriverStandingsRepository driverRepository;
+    private final ConstructorStandingsRepository constructorRepository;
     private MutableLiveData<Result> upcomingEventLiveData;
     private MutableLiveData<Result> driver;
     private MutableLiveData<Result> constructor;
     private MutableLiveData<Result> driverStandings;
     private MutableLiveData<Result> constructorStanding;
 
-    public HomeViewModel(RaceRepository raceRepository, RaceResultRepository raceResultRepository, DriverRepository driverRepository, ConstructorRepository constructorRepository) {
+    public HomeViewModel(RaceRepository raceRepository, RaceResultRepository raceResultRepository, DriverStandingsRepository driverRepository, ConstructorStandingsRepository constructorRepository) {
         this.raceRepository = raceRepository;
         this.raceResultRepository = raceResultRepository;
         this.driverRepository = driverRepository;
@@ -74,7 +69,6 @@ public class HomeViewModel extends ViewModel {
         if(constructorStanding == null) {
             fetchConstructorStandings(lastUpdate);
         }
-
         return constructorStanding;
     }
 

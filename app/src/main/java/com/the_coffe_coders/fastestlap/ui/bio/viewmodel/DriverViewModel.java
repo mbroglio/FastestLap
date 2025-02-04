@@ -4,13 +4,17 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
-import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
+import com.the_coffe_coders.fastestlap.repository.driver.CommonDriverRepository;
+import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsRepository;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class DriverViewModel extends ViewModel {
+
+    private final CommonDriverRepository driverRepository;
 
     /*DriverViewModel() {
         driverRepository = DriverRepository.getInstance();
@@ -19,11 +23,15 @@ public class DriverViewModel extends ViewModel {
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
-    private DriverRepository driverRepository;//TODO shuld be final
+    private DriverStandingsRepository driverStandingsRepository;//TODO shuld be final
 
 
-    public DriverViewModel() {
-        //driverRepository = DriverRepository.getInstance();
+    public DriverViewModel(CommonDriverRepository driverRepository) {
+        this.driverRepository = driverRepository;
+    }
+
+    public MutableLiveData<Result> getDriver(String driverId) {
+        return driverRepository.getDriver(driverId);
     }
 
     public LiveData<Driver> getSelectedDriverLiveData() {
@@ -37,20 +45,5 @@ public class DriverViewModel extends ViewModel {
     public LiveData<String> getErrorLiveData() {
         return errorLiveData;
     }
-
-    /*public void fetchDriverById(String driverId) {
-        isLoading.setValue(true);
-        executorService.execute(() -> {
-            try {
-                Driver driver = driverRepository.find(driverId);
-                selectedDriverLiveData.postValue(driver);
-                isLoading.postValue(false);
-            } catch (Exception e) {
-                errorLiveData.postValue("Failed to fetch driver with ID: " + driverId + ". Error: " + e.getMessage());
-                isLoading.postValue(false);
-            }
-        });
-    }*/
-
 
 }
