@@ -122,7 +122,7 @@ public class HomeFragment extends Fragment {
 
     private void showPodium(View view, WeeklyRace raceResult) {
         Race race = raceResult.getFinalRace();
-        String circuitId = race.getCircuit().getCircuitId();
+        String circuitId = race.getTrack().getTrackId();
 
         TextView raceName = view.findViewById(R.id.last_race_name);
         raceName.setText(race.getRaceName());
@@ -148,7 +148,7 @@ public class HomeFragment extends Fragment {
         MaterialCardView resultCard = view.findViewById(R.id.past_event_result);
         resultCard.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), EventActivity.class);
-            intent.putExtra("CIRCUIT_ID", race.getCircuit().getCircuitId());
+            intent.putExtra("CIRCUIT_ID", race.getTrack().getTrackId());
             startActivity(intent);
         });
     }
@@ -188,7 +188,7 @@ public class HomeFragment extends Fragment {
         nextRaceName.setText(nextRace.getRaceName());
 
         ImageView nextRaceFlag = view.findViewById(R.id.home_next_gp_flag);
-        String nation = nextRace.getCircuit().getLocation().getCountry();
+        String nation = nextRace.getTrack().getLocation().getCountry();
         nextRaceFlag.setImageResource(Constants.NATION_COUNTRY_FLAG.get(nation));
 
         List<Session> sessions = nextRace.getSessions();
@@ -204,7 +204,7 @@ public class HomeFragment extends Fragment {
         FrameLayout nextSessionCard = view.findViewById(R.id.timer_card_countdown);
         nextSessionCard.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), EventActivity.class);
-            intent.putExtra("CIRCUIT_ID", nextRace.getCircuit().getCircuitId());
+            intent.putExtra("CIRCUIT_ID", nextRace.getTrack().getTrackId());
             startActivity(intent);
         });
     }
@@ -229,7 +229,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildFinalDriversStanding(View seasonEndedCard) {
-        DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
+        DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverStandingsRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
         MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
 
         data.observe(getViewLifecycleOwner(), result -> {
@@ -255,7 +255,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildFinalTeamsStanding(View seasonEndedCard) {
-        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
+        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
         MutableLiveData<Result> data = constructorStandingsViewModel.getConstructorStandingsLiveData(0); // TODO get last update from shared preferences
 
         data.observe(getViewLifecycleOwner(), result -> {
@@ -355,7 +355,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void setFavouriteDriverCard(View view) {
-        DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
+        DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverStandingsRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
         MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
 
         data.observe(getViewLifecycleOwner(), result -> {
@@ -460,7 +460,7 @@ public class HomeFragment extends Fragment {
             }
         });*/
 
-        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
+        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
         MutableLiveData<Result> data = constructorStandingsViewModel.getConstructorStandingsLiveData(0); // TODO get last update from shared preferences
 
         data.observe(getViewLifecycleOwner(), result -> {

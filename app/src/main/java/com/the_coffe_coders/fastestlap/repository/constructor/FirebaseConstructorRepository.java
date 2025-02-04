@@ -1,6 +1,6 @@
 package com.the_coffe_coders.fastestlap.repository.constructor;
 
-import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_CONSTRUCTOR_COLLECTION;
+import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_TEAMS_COLLECTION;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
 
 import android.util.Log;
@@ -30,7 +30,7 @@ public class FirebaseConstructorRepository {
     }
 
     public void getConstructorData(String constructorId, ConstructorCallback callback) {
-        DatabaseReference databaseReference = database.getReference(FIREBASE_CONSTRUCTOR_COLLECTION).child(constructorId);
+        DatabaseReference databaseReference = database.getReference(FIREBASE_TEAMS_COLLECTION).child(constructorId);
         Log.i(TAG, "FIREBASE => " + constructorId + "REFERENCE DB: " + databaseReference);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

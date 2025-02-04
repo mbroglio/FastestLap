@@ -3,7 +3,7 @@ package com.the_coffe_coders.fastestlap.ui.bio;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_DRIVERS_COLLECTION;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_NATIONS_COLLECTION;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
-import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_CONSTRUCTOR_COLLECTION;
+import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_TEAMS_COLLECTION;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -132,6 +132,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     public void getDriverData(String driverId) {
+        Log.i("ConstructorBioActivity", "Getting driver data");
         MutableLiveData<Result> data = driverViewModel.getDriver(driverId);
 
         data.observe(this, result -> {
@@ -159,6 +160,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     public void getNationData(String nationId) {
+        Log.i("ConstructorBioActivity", "Getting nation data");
         MutableLiveData<Result> data = nationViewModel.getNation(nationId);
 
         data.observe(this, result -> {
@@ -172,6 +174,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     private void setTeamData(Constructor team, Nation nation, Driver driverOne, Driver driverTwo) {
+        Log.i("ConstructorBioActivity", "Setting team data");
         Glide.with(this).load(team.getTeam_logo_url()).into(teamLogoImage);
         Glide.with(this).load(nation.getNation_flag_url()).into(teamFlag);
         Glide.with(this).load(team.getCar_pic_url()).into(teamCarImage);
@@ -217,7 +220,9 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     private void createHistoryTable() {
+        Log.i("ConstructorBioActivity", "Creating history table");
         TableLayout tableLayout = findViewById(R.id.history_table);
+        tableLayout.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
 
         View tableHeader = inflater.inflate(R.layout.constructor_bio_table_header, tableLayout, false);
@@ -228,7 +233,6 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
         //set stroke of tableHeader
         tableLayout.addView(tableHeader);
-
         for (ConstructorHistory history : team.getTeam_history()) {
             View tableRow = inflater.inflate(R.layout.constructor_bio_table_row, tableLayout, false);
             tableRow.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
