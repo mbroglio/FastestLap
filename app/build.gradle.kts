@@ -55,12 +55,18 @@ dependencies {
     implementation(libs.navigation.ui)
     implementation(libs.room.common)
     implementation(libs.room.runtime)
+    implementation(libs.firebase.database)
+    implementation(libs.firebase.auth)
+    implementation(libs.play.services.auth)
+    implementation(libs.firebase.firestore)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     annotationProcessor(libs.room.compiler)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+    implementation(libs.commons.validator)
+    implementation(libs.glide)
     /*compileOnly(libs.projectlombok.lombok)
     annotationProcessor(libs.projectlombok.lombok)*/
 }

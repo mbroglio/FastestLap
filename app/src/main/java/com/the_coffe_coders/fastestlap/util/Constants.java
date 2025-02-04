@@ -15,8 +15,10 @@ public class Constants {
 
     public static final int SPACER_HEIGHT = 20;
 
-    public static final String SHARED_PREFERENCES_FILENAME = "";
-    //public static final String SHARED_PREFERENCES_FAVORITE_DRIVER = "driver_favorite";
+    public static final String SHARED_PREFERENCES_FILENAME = "shared";
+    public static final String SHARED_PREFERENCES_FAVORITE_DRIVER = "driver_favorite";
+    public static final String SHARED_PREFERENCES_FAVORITE_TEAM = "team_favorite";
+    public static final String SHARED_PREFERENCES_AUTO_LOGIN = "auto_login";
 
     public static final String SHARED_PREFERENCES_LAST_UPDATE = "last_update";
 
@@ -30,11 +32,6 @@ public class Constants {
 
     public static final String RETROFIT_ERROR = "retrofit_error";
     public static final String API_KEY_ERROR = "api_key_error";
-    public static final String UNEXPECTED_ERROR = "unexpected_error";
-    public static final String INVALID_USER_ERROR = "invalidUserError";
-    public static final String INVALID_CREDENTIALS_ERROR = "invalidCredentials";
-    public static final String USER_COLLISION_ERROR = "userCollisionError";
-    public static final String WEAK_PASSWORD_ERROR = "passwordIsWeak";
     public static final Map<String, Integer> DRIVER_IMAGE = new HashMap<String, Integer>() {{
         put("hamilton", R.drawable.hamilton_pic);
         put("russell", R.drawable.russell_pic);
@@ -158,6 +155,19 @@ public class Constants {
         put("rb", R.color.racing_bulls_f1); // Racing Bulls
     }};
 
+    public static final Map<String, Integer> TEAM_SECONDARY_COLOR = new HashMap<String, Integer>() {{
+        put("mercedes", R.color.mercedes_secondary);
+        put("red_bull", R.color.redbull_secondary);
+        put("mclaren", R.color.mclaren_secondary);
+        put("ferrari", R.color.ferrari_secondary);
+        put("aston_martin", R.color.aston_martin_secondary);
+        put("alpine", R.color.alpine_secondary);
+        put("haas", R.color.haas_secondary);
+        put("sauber", R.color.kick_secondary);
+        put("williams", R.color.williams_secondary);
+        put("rb", R.color.racing_bulls_secondary); // Racing Bulls
+    }};
+
     public static final Map<String, Integer> TEAM_GRADIENT_COLOR = new HashMap<String, Integer>() {{
         put("mercedes", R.drawable.gradient_color_mercedes);
         put("red_bull", R.drawable.gradient_color_red_bull);
@@ -181,7 +191,7 @@ public class Constants {
         put("haas", R.string.haas);
         put("sauber", R.string.sauber);
         put("williams", R.string.williams);
-        put("rb", R.string.red_bull);
+        put("rb", R.string.racing_bulls); // Racing Bulls
     }};
 
     public static final Map<String, Integer> TEAM_CAR = new HashMap<String, Integer>() {{
@@ -301,6 +311,7 @@ public class Constants {
         put("Mexico", R.drawable.mexico_flag);
         put("United States", R.drawable.united_states_flag);
         put("Germany", R.drawable.germany_flag);
+        put("France", R.drawable.france_flag);
         put("Switzerland", R.drawable.switzerland_flag);
     }};
 
@@ -511,8 +522,18 @@ public class Constants {
             R.id.third_team_color
     );
 
-    public static final String FAVOURITE_DRIVER = "hamilton";
-    public static final String FAVOURITE_TEAM = "mercedes";
+    public static final String INVALID_USER_ERROR = "invalidUserError";
+    public static final String INVALID_CREDENTIALS_ERROR = "invalidCredentials";
+    public static final String USER_COLLISION_ERROR = "userCollisionError";
+    public static final String WEAK_PASSWORD_ERROR = "passwordIsWeak";
+    public static final String UNEXPECTED_ERROR = "unexpected_error";
+    public static final String FIREBASE_REALTIME_DATABASE = "https://fastest-lap-ac540-default-rtdb.europe-west1.firebasedatabase.app/";
+    public static final String FIREBASE_USERS_COLLECTION = "users";
+    public static final int MINIMUM_LENGTH_PASSWORD = 8;
 
+    public static final String FIREBASE_DRIVERS_COLLECTION = "drivers";
+    public static final String FIREBASE_TEAMS_COLLECTION = "teams";
+    public static final String FIREBASE_CIRCUITS_COLLECTION = "circuits";
+    public static final String FIREBASE_NATIONS_COLLECTION = "nations";
 
 }

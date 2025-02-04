@@ -4,22 +4,19 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -36,6 +33,7 @@ import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
@@ -50,13 +48,18 @@ public class EventActivity extends AppCompatActivity {
     private final boolean eventToProcess = true;
     LoadingScreen loadingScreen;
     EventViewModel eventViewModel;
+    private GestureDetector tapDetector;
     private String circuitId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+        //UIUtils.hideSystemUI(this);
         setContentView(R.layout.activity_event);
+
+        //tapDetector = UIUtils.createTapDetector(this);
+
         eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false))).get(EventViewModel.class);
 
         // Show loading screen initially
@@ -69,15 +72,11 @@ public class EventActivity extends AppCompatActivity {
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
-        ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+        UIUtils.applyWindowInsets(toolbar);
 
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            params.topMargin = systemBars.top;
-            v.setLayoutParams(params);
+        ScrollView eventScrollLayout = findViewById(R.id.event_scroll_view);
+        UIUtils.applyWindowInsets(eventScrollLayout);
 
-            return insets;
-        });
 
         processRaceData(toolbar);
     }
@@ -96,8 +95,11 @@ public class EventActivity extends AppCompatActivity {
                     }
                 }
 
+                String grandPrixName = weeklyRace.getRaceName().toUpperCase();
+
                 toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
-                toolbar.setTitle(weeklyRace.getRaceName().toUpperCase());
+                TextView title = findViewById(R.id.topAppBarTitle);
+                title.setText(grandPrixName);
 
                 ImageView countryFlag = findViewById(R.id.country_flag);
                 String nation = weeklyRace.getCircuit().getLocation().getCountry();
@@ -129,6 +131,7 @@ public class EventActivity extends AppCompatActivity {
                 track.setOnClickListener(v -> {
                     Intent intent = new Intent(EventActivity.this, TrackBioActivity.class);
                     intent.putExtra("CIRCUIT_ID", circuitId);
+                    intent.putExtra("GRAND_PRIX_NAME", grandPrixName);
                     Log.i(TAG, "Circuit ID: " + circuitId);
                     startActivity(intent);
                 });
@@ -300,5 +303,19 @@ public class EventActivity extends AppCompatActivity {
             currentSession.setFocusable(true);
             currentSession.setOnClickListener(view -> Log.i(TAG, "session clicked"));
         }
+    }
+/*
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        tapDetector.onTouchEvent(ev);
+        return super.dispatchTouchEvent(ev);
+    }
+
+ */
+
+    @Override
+    protected void onResume() {
+        //UIUtils.hideSystemUI(this);
+        super.onResume();
     }
 }

@@ -26,6 +26,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/screen_background_color"
+        android:scrollbars="none"
         app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -81,6 +82,7 @@
                 android:layout_marginStart="@dimen/medium_margin"
                 android:layout_marginTop="@dimen/medium_margin"
                 android:layout_marginEnd="@dimen/medium_margin"
+                app:cardBackgroundColor="@color/timer_gray"
                 app:strokeColor="@color/black"
                 app:strokeWidth="3dp">
 
@@ -150,8 +152,8 @@
                     </ImageView>
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="@dimen/icon_size"
+                        android:layout_height="@dimen/icon_size"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:layout_marginTop="5dp"
@@ -171,7 +173,7 @@
                         android:layout_marginBottom="5dp"
                         android:clickable="true"
                         android:focusable="true"
-                        app:cardBackgroundColor="@color/mclaren_f1"
+                        app:cardBackgroundColor="@color/timer_gray_dark"
                         app:strokeColor="@color/black"
                         app:strokeWidth="3dp">
 
@@ -201,7 +203,7 @@
                                     android:layout_marginStart="3dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/rank"
-                                    android:textColor="@color/screen_background_color"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/layout_subtitle_text_size">
 
                                 </TextView>
@@ -222,7 +224,7 @@
                                     android:layout_marginStart="5dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/not_found"
-                                    android:textColor="@color/screen_background_color"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/body_text_size">
 
                                 </TextView>
@@ -234,7 +236,7 @@
                                     android:layout_marginEnd="5dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/separator_high_dash"
-                                    android:textColor="@color/screen_background_color"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/body_text_size">
 
                                 </TextView>
@@ -246,7 +248,7 @@
                                     android:fontFamily="@font/orbitron_bold"
                                     android:gravity="center"
                                     android:text="@string/not_found"
-                                    android:textColor="@color/screen_background_color"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/body_text_size">
 
                                 </TextView>
@@ -257,7 +259,7 @@
                                     android:layout_marginStart="3dp"
                                     android:fontFamily="@font/orbitron_regular"
                                     android:text="@string/points_upper_case"
-                                    android:textColor="@color/screen_background_color"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/text_minor_importance_size">
 
                                 </TextView>
@@ -282,6 +284,7 @@
                 android:layout_marginStart="@dimen/medium_margin"
                 android:layout_marginTop="@dimen/medium_margin"
                 android:layout_marginEnd="@dimen/medium_margin"
+                app:cardBackgroundColor="@color/timer_gray"
                 app:strokeColor="@color/black"
                 app:strokeWidth="3dp">
 
@@ -308,7 +311,10 @@
                         android:id="@+id/favourite_constructor_car"
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
-                        android:layout_below="@id/favourite_constructor_name">
+                        android:layout_below="@id/favourite_constructor_name"
+                        android:layout_marginStart="@dimen/medium_margin"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="@dimen/medium_margin">
 
                     </ImageView>
 
@@ -323,7 +329,7 @@
                         android:layout_marginBottom="5dp"
                         android:clickable="true"
                         android:focusable="true"
-                        app:cardBackgroundColor="@color/mclaren_f1"
+                        app:cardBackgroundColor="@color/timer_gray_dark"
                         app:strokeColor="@color/black"
                         app:strokeWidth="3dp">
 
@@ -354,7 +360,7 @@
                                     android:layout_marginStart="3dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/rank"
-                                    android:textColor="@color/screen_background_color"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/layout_subtitle_text_size">
 
                                 </TextView>
@@ -375,7 +381,7 @@
                                     android:layout_marginStart="5dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/not_found"
-                                    android:textColor="@color/screen_background_color"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/body_text_size">
 
                                 </TextView>
@@ -387,7 +393,7 @@
                                     android:layout_marginEnd="5dp"
                                     android:fontFamily="@font/orbitron_bold"
                                     android:text="@string/separator_high_dash"
-                                    android:textColor="@color/screen_background_color"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/body_text_size">
 
                                 </TextView>
@@ -399,7 +405,7 @@
                                     android:fontFamily="@font/orbitron_bold"
                                     android:gravity="center"
                                     android:text="@string/not_found"
-                                    android:textColor="@color/screen_background_color"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/body_text_size">
 
                                 </TextView>
@@ -410,7 +416,7 @@
                                     android:layout_marginStart="3dp"
                                     android:fontFamily="@font/orbitron_regular"
                                     android:text="@string/points_upper_case"
-                                    android:textColor="@color/screen_background_color"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/text_minor_importance_size">
 
                                 </TextView>
@@ -458,8 +464,8 @@
                     </RelativeLayout>
 
                     <ImageView
-                        android:layout_width="20dp"
-                        android:layout_height="20dp"
+                        android:layout_width="@dimen/icon_size"
+                        android:layout_height="@dimen/icon_size"
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:layout_marginTop="5dp"

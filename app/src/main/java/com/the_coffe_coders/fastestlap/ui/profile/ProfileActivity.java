@@ -1,47 +1,63 @@
-package com.the_coffe_coders.fastestlap.ui.user;
+package com.the_coffe_coders.fastestlap.ui.profile;
 
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
+import static android.content.ContentValues.TAG;
+
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.InputType;
-import android.util.TypedValue;
+import android.util.Log;
+import android.view.GestureDetector;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListPopupWindow;
+import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.SpinnerAdapter;
+import com.the_coffe_coders.fastestlap.domain.user.User;
+import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
+import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
+import com.the_coffe_coders.fastestlap.ui.welcome.WelcomeActivity;
+import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
+import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.SimpleTextWatcher;
+import com.the_coffe_coders.fastestlap.util.UIUtils;
 
-public class UserActivity extends AppCompatActivity implements EditProfilePopup.EditProfileListener {
+public class ProfileActivity extends AppCompatActivity {
+    private static final String TAG = "ProfileActivity";
 
-    private String originalUsername;
-    private String originalPassword;
+    private GestureDetector tapDetector;
+    SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
+    User currentUser;
+    //private String originalUsername;
+    //private String originalPassword;
     private String originalEmail;
     private String originalDriver;
     private String originalConstructor;
-    private int originalProfileImage;
-    private float originalTextSize;
-    private Typeface originalTypeface;
+    //private int originalProfileImage;
+    //private float originalTextSize;
+    //private Typeface originalTypeface;
 
-    private ImageView profileImage;
-    private TextView usernameText;
+    //private ImageView profileImage;
+    //private TextView usernameText;
+
+    private TextInputEditText emailText;
 
     private TextView favouriteDriverText;
     private MaterialCardView changeDriverButton;
@@ -51,54 +67,114 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
     private MaterialCardView changeConstructorButton;
     private ListPopupWindow listPopupWindowConstructors;
 
+    private CheckBox autoLoginCheckBox;
     private Button saveButton;
     private Button dismissButton;
+    private Button signOutButton;
 
-    private String provisionalUsername;
-    private int provisionalProfileImage;
+    //private String provisionalUsername;
+    //private int provisionalProfileImage;
     private String provisionalFavDriver;
     private String provisionalFavConstructor;
-    private String provisionalEmail;
-    private String provisionalPassword;
+    private String favouriteDriverKey;
+    private String favouriteConstructorKey;
+    private String autoLoginKey;
+    //private String provisionalEmail;
+    //private String provisionalPassword;
 
-    private boolean isProfileImageModified = false;
-    private boolean isProfileNameModified = false;
-    private boolean isEmailModified = false;
-    private boolean isPasswordModified = false;
+    //private boolean isProfileImageModified = false;
+    //private boolean isProfileNameModified = false;
+    private final boolean isEmailModified = false;
+    //private boolean isPasswordModified = false;
     private boolean isFavDriverModified = false;
     private boolean isFavConstructorModified = false;
+    private boolean isCheckBoxChanged = false;
+
+    private boolean isFromLogin;
+
+    private FirebaseAuth mAuth;
+    private IUserRepository userRepository;
+    private UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_user);
+        //UIUtils.hideSystemUI(this);
+        setContentView(R.layout.activity_profile);
+
+        //tapDetector = UIUtils.createTapDetector(this);
+
+        mAuth = FirebaseAuth.getInstance();
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
-        ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+        UIUtils.applyWindowInsets(toolbar);
 
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) v.getLayoutParams();
-            params.topMargin = systemBars.top;
-            v.setLayoutParams(params);
+        ScrollView scrollView = findViewById(R.id.profile_layout);
+        UIUtils.applyWindowInsets(scrollView);
 
-            return insets;
-        });
-
-        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+        isFromLogin = getIntent().getBooleanExtra("from_login", false);
+        Log.i(TAG, "from login: " + isFromLogin);
 
         favouriteDriverText = findViewById(R.id.favourite_driver_text);
-        changeDriverButton = findViewById(R.id.change_driver_button);
-
         favouriteConstructorText = findViewById(R.id.favourite_constructor_text);
+
+        if (getFavoriteDriverId() == null || getFavoriteTeamId() == null) {
+            if (getFavoriteDriverId() == null) {
+                favouriteDriverText.setText("No favourite driver selected");
+            }
+            if (getFavoriteTeamId() == null) {
+                favouriteConstructorText.setText("No favourite constructor selected");
+            }
+            toolbar.setNavigationOnClickListener(v -> Toast.makeText(this, "Please select a favourite driver and constructor", Toast.LENGTH_SHORT).show());
+        } else {
+            favouriteDriverText.setText(Constants.DRIVER_FULLNAME.get(getFavoriteDriverId()));
+            favouriteConstructorText.setText(Constants.TEAM_FULLNAME.get(getFavoriteTeamId()));
+            if(isFromLogin){
+                toolbar.setNavigationOnClickListener(v -> {
+                    Intent intent = new Intent(ProfileActivity.this, HomePageActivity.class);
+                    startActivity(intent);
+                });
+            }else{
+                toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+            }
+
+        }
+
+        userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
+        userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+
+        currentUser = userViewModel.getLoggedUser();
+
+        changeDriverButton = findViewById(R.id.change_driver_button);
         changeConstructorButton = findViewById(R.id.change_constructor_button);
 
+        autoLoginCheckBox = findViewById(R.id.remember_me_checkbox);
         saveButton = findViewById(R.id.save_button);
         dismissButton = findViewById(R.id.dismiss_button);
+        signOutButton = findViewById(R.id.sign_out_button);
 
         String[] drivers = Constants.DRIVER_FULLNAME.keySet().toArray(new String[0]);
         String[] constructors = Constants.TEAM_FULLNAME.keySet().toArray(new String[0]);
+
+        setAutoLoginCheckBox();
+        boolean autoLogin = autoLoginCheckBox.isChecked();
+        Log.i(TAG, "Auto Login status: " + autoLogin);
+
+        autoLoginCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Log.i(TAG, "Auto Login status on click: " + autoLoginCheckBox.isChecked());
+            if(autoLoginCheckBox.isChecked() != autoLogin){
+                isCheckBoxChanged = true;
+                checkForChanges();
+            }else{
+                isCheckBoxChanged = false;
+                checkForChanges();
+            }
+        });
+
+        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
+        sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_AUTO_LOGIN);
 
         // Initialize ListPopupWindow for drivers and constructors
         listPopupWindowDrivers = createListPopupWindow(drivers, changeDriverButton, true);
@@ -122,40 +198,45 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
             }
         });
 
-        profileImage = findViewById(R.id.profile_image);
-        originalProfileImage = getOriginalProfileImage(profileImage);
+        //profileImage = findViewById(R.id.profile_image);
+        //originalProfileImage = getOriginalProfileImage(profileImage);
 
+        /*
         usernameText = findViewById(R.id.profile_text);
         ImageView editProfile = findViewById(R.id.edit_profile);
         editProfile.setOnClickListener(v -> {
             EditProfilePopup editProfilePopup = new EditProfilePopup(this, findViewById(R.id.activity_user_layout), originalProfileImage, originalUsername);
             editProfilePopup.show();
         });
+        */
 
-
+        /*
         EditText passwordText = findViewById(R.id.password_text);
         ImageView togglePasswordVisibility = findViewById(R.id.toggle_password_visibility);
         ImageView editPassword = findViewById(R.id.edit_password);
         ImageView revertPassword = findViewById(R.id.revert_password);
         ImageView checkPassword = findViewById(R.id.confirm_edit_password);
+        */
 
-        TextInputEditText emailText = findViewById(R.id.email_text);
+        emailText = findViewById(R.id.email_text);
+        emailText.setText(userViewModel.getLoggedUser().getEmail());
+        /*
         ImageView editEmail = findViewById(R.id.edit_email);
         ImageView revertEmail = findViewById(R.id.revert_email);
-        ImageView checkEmail = findViewById(R.id.confirm_edit_email);
-
+        ImageView confirmEmail = findViewById(R.id.confirm_edit_email);
+        */
         // Store original textSize, typeface, and background
-        originalTextSize = passwordText.getTextSize();
-        originalTypeface = passwordText.getTypeface();
+        //originalTextSize = passwordText.getTextSize();
+        //originalTypeface = passwordText.getTypeface();
 
         // Store original values
-        originalUsername = usernameText.getText().toString();
-        originalPassword = passwordText.getText().toString();
+        //originalUsername = usernameText.getText().toString();
+        //originalPassword = passwordText.getText().toString();
         originalEmail = emailText.getText().toString();
         originalDriver = favouriteDriverText.getText().toString();
         originalConstructor = favouriteConstructorText.getText().toString();
 
-
+        /*
         togglePasswordVisibility.setOnClickListener(v -> {
             if (passwordText.getInputType() == (InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)) {
                 passwordText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
@@ -170,6 +251,7 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
             passwordText.setTypeface(originalTypeface);
         });
 
+
         editPassword.setOnClickListener(v -> {
             startEditing(passwordText, editPassword, checkPassword);
             checkForChanges();
@@ -183,17 +265,19 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
             revertEditing(passwordText, originalPassword, revertPassword, provisionalPassword);
         });
 
+
+
         editEmail.setOnClickListener(v -> {
-            startEditing(emailText, editEmail, checkEmail);
+            startEditing(emailText, editEmail, confirmEmail);
             checkForChanges();
         });
 
-        checkEmail.setOnClickListener(v -> {
-            abortEditing(emailText, editEmail, checkEmail, provisionalEmail);
+        confirmEmail.setOnClickListener(v -> {
+            provisionalEmail = abortEditing(emailText, editEmail, confirmEmail);
         });
 
         revertEmail.setOnClickListener(v -> {
-            revertEditing(emailText, originalEmail, revertEmail, provisionalEmail);
+            provisionalEmail = revertEditing(emailText, originalEmail, revertEmail);
         });
 
 
@@ -215,6 +299,8 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
                 checkForChanges();
             }
         });
+
+         */
 
         favouriteDriverText.addTextChangedListener(new SimpleTextWatcher() {
             @Override
@@ -240,12 +326,15 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
 
         // Set dismiss button listener
         dismissButton.setOnClickListener(v -> {
+            /*
             if (isEmailModified) {
-                dismissChanges(emailText, originalEmail, editEmail, checkEmail, revertEmail, provisionalEmail);
+                provisionalEmail = dismissChanges(emailText, originalEmail, editEmail, confirmEmail, revertEmail);
             }
+
             if (isPasswordModified) {
                 dismissChanges(passwordText, originalPassword, editPassword, checkPassword, revertPassword, provisionalPassword);
             }
+            */
             if (isFavDriverModified) {
                 favouriteDriverText.setText(originalDriver);
                 provisionalFavDriver = null;
@@ -254,6 +343,7 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
                 favouriteConstructorText.setText(originalConstructor);
                 provisionalFavConstructor = null;
             }
+            /*
             if (isProfileImageModified) {
                 profileImage.setImageResource(originalProfileImage);
                 isProfileImageModified = false;
@@ -262,10 +352,18 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
                 usernameText.setText(originalUsername);
                 isProfileNameModified = false;
             }
+            */
             checkForChanges();
         });
-    }
 
+        signOutButton.setOnClickListener(v -> {
+            userViewModel.logout();
+            Intent intent = new Intent(ProfileActivity.this, WelcomeActivity.class);
+            intent.putExtra("SIGN_OUT", true);
+            startActivity(intent);
+        });
+    }
+    /*
     private int getOriginalProfileImage(ImageView profileImage) {
         Drawable currentDrawable = profileImage.getDrawable();
         int image = 0;
@@ -280,6 +378,7 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
         }
         return image;
     }
+     */
 
     private ListPopupWindow createListPopupWindow(String[] items, MaterialCardView anchorView, boolean isDriver) {
         ListPopupWindow listPopupWindow = new ListPopupWindow(this);
@@ -291,8 +390,10 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
         listPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
             String selectedItemKey = items[position];
             if (isDriver) {
+                favouriteDriverKey = selectedItemKey;
                 favouriteDriverText.setText(getString(Constants.DRIVER_FULLNAME.get(selectedItemKey)));
             } else {
+                favouriteConstructorKey = selectedItemKey;
                 favouriteConstructorText.setText(getString(Constants.TEAM_FULLNAME.get(selectedItemKey)));
             }
             listPopupWindow.dismiss();
@@ -301,11 +402,12 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
         return listPopupWindow;
     }
 
-    private void abortEditing(EditText inputText, ImageView editText, ImageView checkText, String provisionalText) {
+    private String abortEditing(EditText inputText, ImageView editText, ImageView checkText) {
         inputText.setEnabled(false);
-        provisionalText = inputText.getText().toString();
+        String provisionalText = inputText.getText().toString();
         editText.setVisibility(View.VISIBLE);
         checkText.setVisibility(View.INVISIBLE);
+        return provisionalText;
     }
 
     private void startEditing(EditText inputText, ImageView editText, ImageView checkText) {
@@ -319,34 +421,102 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
 
     }
 
-    private void revertEditing(EditText inputText, String originalText, ImageView revertText, String provisionalText) {
+    private String revertEditing(EditText inputText, String originalText, ImageView revertText) {
         inputText.setText(originalText);
-        provisionalText = null;
         inputText.setSelection(inputText.getText().length());
         revertText.setVisibility(View.INVISIBLE);
+        return null;
     }
 
-    private void dismissChanges(EditText inputText, String originalText, ImageView editText, ImageView checkText, ImageView revertText, String provisionalText) {
+    private String dismissChanges(EditText inputText, String originalText, ImageView editText, ImageView checkText, ImageView revertText) {
         inputText.setText(originalText);
         inputText.setEnabled(false);
-        provisionalText = null;
         editText.setVisibility(View.VISIBLE);
         checkText.setVisibility(View.INVISIBLE);
         revertText.setVisibility(View.INVISIBLE);
+        return null;
     }
 
     private void checkForChanges() {
-        boolean hasChanges = isEmailModified || isPasswordModified ||
-                isFavDriverModified || isFavConstructorModified ||
-                isProfileImageModified || isProfileNameModified;
+        boolean hasChanges = isEmailModified || isFavDriverModified || isFavConstructorModified || isCheckBoxChanged;
 
         saveButton.setVisibility(hasChanges ? View.VISIBLE : View.INVISIBLE);
         saveButton.setEnabled(hasChanges);
         dismissButton.setVisibility(hasChanges ? View.VISIBLE : View.INVISIBLE);
         dismissButton.setEnabled(hasChanges);
+
+        saveButton.setOnClickListener(v -> {
+            updatePreferences();
+        });
     }
 
+    private void updatePreferences() {
+        saveSharedPreferences(sharedPreferencesUtils, currentUser);
 
+        Intent intent = new Intent(ProfileActivity.this, HomePageActivity.class);
+        startActivity(intent);
+    }
+
+    private void saveSharedPreferences(SharedPreferencesUtils sharedPreferencesUtils, User user) {
+        Log.i(TAG, "Saving user preferences");
+        if (favouriteDriverKey != null) {
+            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
+                    Constants.SHARED_PREFERENCES_FAVORITE_DRIVER,
+                    favouriteDriverKey);
+        } else {
+            favouriteDriverKey = getFavoriteDriverId();
+        }
+
+        if (favouriteConstructorKey != null) {
+            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
+                    Constants.SHARED_PREFERENCES_FAVORITE_TEAM,
+                    favouriteConstructorKey);
+        } else {
+            favouriteConstructorKey = getFavoriteTeamId();
+        }
+
+        if (isCheckBoxChanged) {
+            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
+                    Constants.SHARED_PREFERENCES_AUTO_LOGIN,
+                    String.valueOf(autoLoginCheckBox.isChecked()));
+        }else{
+            autoLoginKey = getAutoLoginValue();
+        }
+
+        userViewModel.saveUserPreferences(
+                favouriteDriverKey,
+                favouriteConstructorKey,
+                String.valueOf(autoLoginCheckBox.isChecked()),
+                user.getIdToken()
+        );
+    }
+
+    private void setAutoLoginCheckBox() {
+        String autoLogin = getAutoLoginValue();
+        if (autoLogin != null) {
+            autoLoginCheckBox.setChecked(Boolean.parseBoolean(autoLogin));
+        }
+    }
+
+    private String getFavoriteDriverId() {
+        String favoriteDriver = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
+        Log.i(TAG, "Favorite Driver: " + favoriteDriver);
+        return favoriteDriver;
+    }
+
+    private String getFavoriteTeamId() {
+        String favoriteTeam = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
+        Log.i(TAG, "Favorite Team: " + favoriteTeam);
+        return favoriteTeam;
+    }
+
+    private String getAutoLoginValue() {
+        String autoLogin = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_AUTO_LOGIN);
+        Log.i(TAG, "Auto Login: " + autoLogin);
+        return autoLogin;
+    }
+
+    /*
     @Override
     public void onProfileImageChanged(int newProfileImage) {
         profileImage.setImageResource(newProfileImage);
@@ -361,5 +531,21 @@ public class UserActivity extends AppCompatActivity implements EditProfilePopup.
         provisionalUsername = newUsername;
         isProfileNameModified = true;
         checkForChanges();
+    }
+    */
+
+    /*
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        tapDetector.onTouchEvent(ev);
+        return super.dispatchTouchEvent(ev);
+    }
+
+     */
+
+    @Override
+    protected void onResume() {
+        //UIUtils.hideSystemUI(this);
+        super.onResume();
     }
 }
