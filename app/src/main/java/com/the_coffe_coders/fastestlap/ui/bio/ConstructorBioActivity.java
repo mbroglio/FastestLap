@@ -38,7 +38,7 @@ import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 /*
  * TODO:
- * - manage nullPointerException events
+ *  - manage nullPointerExceptions
  */
 
 public class ConstructorBioActivity extends AppCompatActivity {
@@ -159,6 +159,8 @@ public class ConstructorBioActivity extends AppCompatActivity {
                 Log.e("DriverBioActivity", "Error getting driver data", task.getException());
             }
         });
+
+        loadingScreen.hideLoadingScreen();
     }
 
     private void setTeamData(Constructor team, Nation nation, Driver driverOne, Driver driverTwo) {
@@ -246,7 +248,6 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
             tableLayout.addView(tableRow);
         }
-        loadingScreen.hideLoadingScreen();
     }
 
     @Override

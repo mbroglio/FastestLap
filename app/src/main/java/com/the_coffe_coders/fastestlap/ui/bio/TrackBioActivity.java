@@ -29,11 +29,6 @@ import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
-/*
- * TODO:
- * - Implement firebase to get the data from the remote database
- */
-
 public class TrackBioActivity extends AppCompatActivity {
 
     LoadingScreen loadingScreen;
@@ -106,7 +101,7 @@ public class TrackBioActivity extends AppCompatActivity {
 
         TextView circuitName = findViewById(R.id.circuit_name_value);
         //circuitName.setText(circuit.getCircuitName());
-        circuitName.setText("NA");
+        circuitName.setText("NA"); // TODO: Change this
 
         TextView numberOfLaps = findViewById(R.id.number_of_laps_value);
         numberOfLaps.setText(circuit.getLaps());

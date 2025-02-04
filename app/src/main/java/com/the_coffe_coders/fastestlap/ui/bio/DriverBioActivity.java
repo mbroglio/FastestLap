@@ -40,11 +40,6 @@ import org.threeten.bp.LocalDate;
 import org.threeten.bp.Period;
 import org.threeten.bp.format.DateTimeFormatter;
 
-/*
- * TODO:
- * - Implement firebase to get the data from the remote database
- */
-
 public class DriverBioActivity extends AppCompatActivity {
 
     private final String TAG = "DriverBioActivity";
@@ -88,16 +83,6 @@ public class DriverBioActivity extends AppCompatActivity {
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        /* Get the screen width
-        DisplayMetrics displayMetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        int screenWidth = displayMetrics.widthPixels;
-        int width_percent_60 = (int) (screenWidth * 0.6);
-        ViewGroup.LayoutParams params = teamLogoCard.getLayoutParams();
-        params.width = width_percent_60;
-        teamLogoCard.setLayoutParams(params);
-        */
-
         teamLogoCard = findViewById(R.id.team_logo_card);
         teamLogoImage = findViewById(R.id.team_logo_image);
 
@@ -116,8 +101,6 @@ public class DriverBioActivity extends AppCompatActivity {
                 toolbar.setTitle(fullName.toUpperCase());
                 toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
                 appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
-
-                //setDriverRankingButton(driverId);
 
                 teamLogoCard.setOnClickListener(v -> {
                     Intent intent = new Intent(DriverBioActivity.this, ConstructorBioActivity.class);

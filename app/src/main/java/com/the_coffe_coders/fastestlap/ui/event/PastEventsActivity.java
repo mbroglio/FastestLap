@@ -129,32 +129,16 @@ public class PastEventsActivity extends AppCompatActivity {
     }
 
     private void generatePodium(View eventCard, Race weeklyRace) {
-        //MutableLiveData<Result> resultMutableLiveData = eventViewModel.getRaceResults(0L, weeklyRace.getRound());
-        /*resultMutableLiveData.observe(this, result -> {
-            List<RaceResult> podium = ((Result.RaceResultSuccess) result).getData();
-            try {
-                for (int i = 0; i < 3; i++) {
-                    RaceResult raceResult = podium.get(i);
-                    Log.i("PastEvent", "raceResult: " + weeklyRace.getRaceName() + " " + raceResult.getDriver().getDriverId() + i);
-                    TextView driverName = eventCard.findViewById(Constants.PAST_RACE_DRIVER_NAME.get(i));
-
-                    Integer driverFullName = Constants.DRIVER_FULLNAME.get(raceResult.getDriver().getDriverId());
-                    driverName.setText(Objects.requireNonNullElseGet(driverFullName, () -> R.string.unknown));
-                }
-            } catch (Exception e) {
-                setPendingPodium(eventCard);
+        if (weeklyRace.getResults() == null) {
+            setPendingPodium(eventCard);
+        } else {
+            for (int i = 0; i < 3; i++) {
+                RaceResult raceResult = weeklyRace.getResults().get(i);
+                TextView driverName = eventCard.findViewById(Constants.PAST_RACE_DRIVER_NAME.get(i));
+                Integer driverFullName = Constants.DRIVER_FULLNAME.get(raceResult.getDriver().getDriverId());
+                driverName.setText(Objects.requireNonNullElseGet(driverFullName, () -> R.string.unknown));
             }
-
-            loadingScreen.hideLoadingScreen();
-        });*/
-        for (int i = 0; i < 3; i++) {
-            RaceResult raceResult = weeklyRace.getResults().get(i);
-            TextView driverName = eventCard.findViewById(Constants.PAST_RACE_DRIVER_NAME.get(i));
-            Integer driverFullName = Constants.DRIVER_FULLNAME.get(raceResult.getDriver().getDriverId());
-            driverName.setText(Objects.requireNonNullElseGet(driverFullName, () -> R.string.unknown));
         }
-
-
     }
 
     private void setPendingPodium(View eventCard) {
