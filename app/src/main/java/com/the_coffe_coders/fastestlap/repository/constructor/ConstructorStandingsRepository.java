@@ -40,48 +40,14 @@ public class ConstructorStandingsRepository implements IConstructorRepository, C
         this.constructorLocalDataSource.setConstructorCallback(this);
     }
 
-    public LiveData<Result> getConstructors() {
-        return allConstructorMediatorLiveData;
-    }
-
-    @Override
-    public MutableLiveData<Result> fetchConstructors(long lastUpdate) {
-        long currentTime = System.currentTimeMillis();
-        System.out.println(currentTime);
-        System.out.println(lastUpdate);
-        System.out.println("FETCH CONSTRUCTOR METHOD");
-        Log.i(TAG, "FETCH CONSTRUCTOR METHOD");
-        if (currentTime - lastUpdate > FRESH_TIMEOUT) { //currentTime - lastUpdate > FRESH_TIMEOUT
-            constructorRemoteDataSource.getConstructor();
-        } else {
-            constructorLocalDataSource.getConstructor();
-        }
-        return allConstructorMutableLiveData;
-    }
-
-    @Override
-    public MutableLiveData<Result> fetchConstructor(String constructorId, long lastUpdate) {
-        long currentTime = System.currentTimeMillis();
-
-        if (isOutdate) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT
-            constructorRemoteDataSource.getConstructor();
-            isOutdate = false;
-        } else {
-            constructorLocalDataSource.getConstructor();
-        }
-        return null;
-    }
-
     @Override
     public MutableLiveData<Result> fetchConstructorStandings(long lastUpdate) {
         long currentTime = System.currentTimeMillis();
-        Log.i(TAG, "FETCH CONSTRUCTORSTANDINGS METHOD");
-        if (isOutdate) {
+        if (true) {
             Log.i(TAG, "FETCH CONSTRUCTORSTANDINGS METHOD");
             constructorRemoteDataSource.getConstructorStandings();
             isOutdate = false;
         } else {
-            Log.i(TAG, "" + isOutdate);
             constructorLocalDataSource.getConstructorStandings();
         }
         return constructorStandingsMutableLiveData;
@@ -93,6 +59,7 @@ public class ConstructorStandingsRepository implements IConstructorRepository, C
         ConstructorStandings constructorStandings = ConstructorStandingsMapper.toConstructorStandings(constructorStandingsAPIResponse.getStandingsTable().getStandingsLists().get(0));
         Log.i("onSuccessFromRemoteConstructor", "CONSTRUCTOR STANDINGS: " + constructorStandings);
         constructorLocalDataSource.insertConstructorsStandings(constructorStandings);
+        isOutdate = false;
     }
 
     @Override
@@ -104,25 +71,17 @@ public class ConstructorStandingsRepository implements IConstructorRepository, C
     public void onSuccessFromLocal(ConstructorStandings constructorStandings) {
         Log.i("onSuccessFromLocalConstructor", "CONSTRUCTOR STANDINGS: " + constructorStandings);
         Result.ConstructorStandingsSuccess result = new Result.ConstructorStandingsSuccess(constructorStandings);
-        constructorStandingsMutableLiveData.postValue(result);
+        if (constructorStandings != null) {
+            isOutdate = false;
+            constructorStandingsMutableLiveData.postValue(result);
+        } else {
+            isOutdate = true;
+            constructorRemoteDataSource.getConstructorStandings();
+        }
     }
 
     @Override
     public void onFailureFromLocal(Exception e) {
 
     }
-
-    @Override
-    public List<Constructor> findConstructors() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    public Constructor find(String id) {
-        return null;
-    }
-
-
-
-
 }
