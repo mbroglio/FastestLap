@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -46,7 +47,6 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
     private static final String TAG = "ConstructorBioActivity";
     LoadingScreen loadingScreen;
-    private GestureDetector tapDetector;
     private Constructor team;
     private Driver driverOne;
     private Driver driverTwo;
@@ -59,6 +59,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
     private MaterialCardView driverTwoCard;
     private ImageView driverTwoImage;
     private ImageView teamFlag;
+    private ScrollView scrollView;
     private DriverViewModel driverViewModel;
     private NationViewModel nationViewModel;
     private ConstructorViewModel constructorViewModel;
@@ -67,13 +68,10 @@ public class ConstructorBioActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        UIUtils.hideSystemUI(this);
         setContentView(R.layout.activity_constructor_bio);
 
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
         loadingScreen.showLoadingScreen();
-
-        tapDetector = UIUtils.createTapDetector(this);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         AppBarLayout appBarLayout = findViewById(R.id.top_bar_layout);
@@ -81,6 +79,9 @@ public class ConstructorBioActivity extends AppCompatActivity {
         UIUtils.applyWindowInsets(toolbar);
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+
+        scrollView = findViewById(R.id.constructor_bio_scroll);
+        UIUtils.applyWindowInsets(scrollView);
 
         String teamId = getIntent().getStringExtra("TEAM_ID");
         Log.i("ConstructorBioActivity", "Team ID: " + teamId);
@@ -251,14 +252,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        tapDetector.onTouchEvent(ev);
-        return super.dispatchTouchEvent(ev);
-    }
-
-    @Override
     protected void onResume() {
-        UIUtils.hideSystemUI(this);
         super.onResume();
     }
 }

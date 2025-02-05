@@ -46,6 +46,7 @@
         app:layout_constraintGuide_percent="0.62" />
 
     <ScrollView
+        android:id="@+id/driver_bio_scroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/screen_background_color"

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -47,7 +48,6 @@ public class DriverBioActivity extends AppCompatActivity {
 
     private final String TAG = "DriverBioActivity";
     LoadingScreen loadingScreen;
-    private GestureDetector tapDetector;
     private Driver driver;
     private Nation nation;
     private Constructor team;
@@ -58,6 +58,7 @@ public class DriverBioActivity extends AppCompatActivity {
     private MaterialToolbar toolbar;
     private AppBarLayout appBarLayout;
     private ImageView driverNumberImage;
+    private ScrollView scrollView;
 
     private DriverViewModel driverViewModel;
     private NationViewModel nationViewModel;
@@ -67,7 +68,7 @@ public class DriverBioActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        UIUtils.hideSystemUI(this);
+
         setContentView(R.layout.activity_driver_bio);
 
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
@@ -76,14 +77,15 @@ public class DriverBioActivity extends AppCompatActivity {
         String driverId = getIntent().getStringExtra("DRIVER_ID");
         Log.i("DriverBioActivity", "Driver ID: " + driverId);
 
-        tapDetector = UIUtils.createTapDetector(this);
-
         toolbar = findViewById(R.id.topAppBar);
         appBarLayout = findViewById(R.id.top_bar_layout);
 
         UIUtils.applyWindowInsets(toolbar);
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+
+        scrollView = findViewById(R.id.driver_bio_scroll);
+        UIUtils.applyWindowInsets(scrollView);
 
         teamLogoCard = findViewById(R.id.team_logo_card);
         teamLogoImage = findViewById(R.id.team_logo_image);
@@ -242,14 +244,7 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        tapDetector.onTouchEvent(ev);
-        return super.dispatchTouchEvent(ev);
-    }
-
-    @Override
     protected void onResume() {
-        UIUtils.hideSystemUI(this);
         super.onResume();
     }
 }

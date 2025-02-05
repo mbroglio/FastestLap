@@ -37,16 +37,12 @@ public class PastEventsActivity extends AppCompatActivity {
 
     LoadingScreen loadingScreen;
     EventViewModel eventViewModel;
-    private GestureDetector tapDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        //UIUtils.hideSystemUI(this);
         setContentView(R.layout.activity_past_events);
-
-        //tapDetector = UIUtils.createTapDetector(this);
 
         eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false))).get(EventViewModel.class);
 
@@ -152,18 +148,8 @@ public class PastEventsActivity extends AppCompatActivity {
         arrow.setVisibility(View.GONE);
     }
 
-/*
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        tapDetector.onTouchEvent(ev);
-        return super.dispatchTouchEvent(ev);
-    }
-
- */
-
     @Override
     protected void onResume() {
-        //UIUtils.hideSystemUI(this);
         super.onResume();
     }
 }

@@ -39,21 +39,16 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     private final boolean raceToProcess = true;
     LoadingScreen loadingScreen;
 
-    private GestureDetector tapDetector;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        //UIUtils.hideSystemUI(this);
         setContentView(R.layout.activity_upcoming_events);
 
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
         loadingScreen.showLoadingScreen();
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-
-        //tapDetector = UIUtils.createTapDetector(this);
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
@@ -134,18 +129,9 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
         return eventCard;
     }
-/*
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        tapDetector.onTouchEvent(ev);
-        return super.dispatchTouchEvent(ev);
-    }
-    
- */
 
     @Override
     protected void onResume() {
-        //UIUtils.hideSystemUI(this);
         super.onResume();
     }
 }

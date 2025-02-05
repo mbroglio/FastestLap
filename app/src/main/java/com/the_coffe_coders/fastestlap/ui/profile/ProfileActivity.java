@@ -83,7 +83,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     private boolean isFromLogin;
 
-    private FirebaseAuth mAuth;
     private IUserRepository userRepository;
     private UserViewModel userViewModel;
 
@@ -91,12 +90,7 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        //UIUtils.hideSystemUI(this);
         setContentView(R.layout.activity_profile);
-
-        //tapDetector = UIUtils.createTapDetector(this);
-
-        mAuth = FirebaseAuth.getInstance();
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
@@ -525,18 +519,8 @@ public class ProfileActivity extends AppCompatActivity {
     }
     */
 
-    /*
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        tapDetector.onTouchEvent(ev);
-        return super.dispatchTouchEvent(ev);
-    }
-
-     */
-
     @Override
     protected void onResume() {
-        //UIUtils.hideSystemUI(this);
         super.onResume();
     }
 }

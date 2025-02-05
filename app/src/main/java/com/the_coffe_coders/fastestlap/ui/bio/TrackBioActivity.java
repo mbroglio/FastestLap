@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -33,11 +34,11 @@ import com.the_coffe_coders.fastestlap.util.UIUtils;
 public class TrackBioActivity extends AppCompatActivity {
 
     LoadingScreen loadingScreen;
-    private GestureDetector tapDetector;
     private Track track;
     private Nation nation;
     private ImageView circuitImage;
     private ImageView countryFlag;
+    private ScrollView scrollView;
 
     private TrackViewModel trackViewModel;
 
@@ -47,7 +48,7 @@ public class TrackBioActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        UIUtils.hideSystemUI(this);
+
         setContentView(R.layout.activity_track_bio);
 
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
@@ -55,12 +56,12 @@ public class TrackBioActivity extends AppCompatActivity {
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
-        tapDetector = UIUtils.createTapDetector(this);
-
-
         UIUtils.applyWindowInsets(toolbar);
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+
+        scrollView = findViewById(R.id.track_bio_scroll);
+        UIUtils.applyWindowInsets(scrollView);
 
         String trackId = getIntent().getStringExtra("CIRCUIT_ID");
         Log.i("TrackBioActivity", "CIRCUIT_ID: " + trackId);
@@ -172,14 +173,7 @@ public class TrackBioActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        tapDetector.onTouchEvent(ev);
-        return super.dispatchTouchEvent(ev);
-    }
-
-    @Override
     protected void onResume() {
-        UIUtils.hideSystemUI(this);
         super.onResume();
     }
 }

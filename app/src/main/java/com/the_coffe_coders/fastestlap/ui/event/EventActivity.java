@@ -48,17 +48,16 @@ public class EventActivity extends AppCompatActivity {
     private final boolean eventToProcess = true;
     LoadingScreen loadingScreen;
     EventViewModel eventViewModel;
-    private GestureDetector tapDetector;
     private String trackId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        //UIUtils.hideSystemUI(this);
+
         setContentView(R.layout.activity_event);
 
-        //tapDetector = UIUtils.createTapDetector(this);
+
 
         eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false))).get(EventViewModel.class);
 
@@ -304,18 +303,9 @@ public class EventActivity extends AppCompatActivity {
             currentSession.setOnClickListener(view -> Log.i(TAG, "session clicked"));
         }
     }
-/*
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        tapDetector.onTouchEvent(ev);
-        return super.dispatchTouchEvent(ev);
-    }
-
- */
 
     @Override
     protected void onResume() {
-        //UIUtils.hideSystemUI(this);
         super.onResume();
     }
 }

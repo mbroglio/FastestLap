@@ -72,9 +72,7 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
     private ActivityResultContracts.StartIntentSenderForResult startIntentSenderForResult;
     private BeginSignInRequest signInRequest;
     private FirebaseAuth mAuth;
-
-    private GestureDetector tapDetector;
-
+    
     private boolean fromSignOut;
     private boolean fromEmailVerification;
 
@@ -82,13 +80,13 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        //UIUtils.hideSystemUI(this);
+
         setContentView(R.layout.activity_welcome);
 
         LinearLayout loginLayout = findViewById(R.id.activity_login);
         UIUtils.applyWindowInsets(loginLayout);
 
-        //tapDetector = UIUtils.createTapDetector(this);
+
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -317,18 +315,8 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
         }
     }
 
-    /*
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        tapDetector.onTouchEvent(ev);
-        return super.dispatchTouchEvent(ev);
-    }
-
-     */
-
     @Override
     protected void onResume() {
-        //UIUtils.hideSystemUI(this);
         super.onResume();
     }
 

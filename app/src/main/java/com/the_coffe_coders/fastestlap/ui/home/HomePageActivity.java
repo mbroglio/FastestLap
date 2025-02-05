@@ -25,17 +25,12 @@ public class HomePageActivity extends AppCompatActivity {
     private final String TAG = "HomePageActivity";
     private final ZoneId localZone = ZoneId.systemDefault();
 
-    private GestureDetector tapDetector;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        //UIUtils.hideSystemUI(this);
 
         setContentView(R.layout.activity_home);
-
-        tapDetector = UIUtils.createTapDetector(this);
 
         MaterialToolbar toolbar = findViewById(R.id.top_app_bar);
         UIUtils.applyWindowInsets(toolbar);
@@ -68,18 +63,9 @@ public class HomePageActivity extends AppCompatActivity {
         inflater.inflate(R.menu.top_app_bar_menu, menu);
         return true;
     }
-/*
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        tapDetector.onTouchEvent(ev);
-        return super.dispatchTouchEvent(ev);
-    }
-
- */
 
     @Override
     protected void onResume() {
-        //UIUtils.hideSystemUI(this);
         super.onResume();
     }
 

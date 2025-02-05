@@ -25,6 +25,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
@@ -37,6 +38,7 @@ import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsView
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import java.util.List;
 
@@ -118,6 +120,7 @@ public class DriversStandingActivity extends AppCompatActivity {
     private View generateDriverCard(DriverStandingsElement standingElement, String driverIdToHighlight) {
         // Inflate the team card layout
         View driverCard = getLayoutInflater().inflate(R.layout.driver_card, null);
+        MaterialCardView driverCardView = driverCard.findViewById(R.id.driver_card_view);
 
         // Preparing all the views
         TextView driverPosition = driverCard.findViewById(R.id.driver_position);
@@ -144,15 +147,7 @@ public class DriversStandingActivity extends AppCompatActivity {
         driverPoints.setText(points);
 
         if (driverId.equals(driverIdToHighlight)) {
-            int startColor = ContextCompat.getColor(this, R.color.yellow); // Replace with actual highlight color
-            int endColor = Color.TRANSPARENT;
-
-            ValueAnimator colorAnimator = ObjectAnimator.ofInt(driverCard, "backgroundColor", startColor, endColor);
-            colorAnimator.setDuration(1000); // Duration in milliseconds
-            colorAnimator.setEvaluator(new ArgbEvaluator());
-            colorAnimator.setRepeatCount(5); // Repeat 5 times (includes forward and reverse)
-            colorAnimator.setRepeatMode(ValueAnimator.REVERSE);
-            colorAnimator.start();
+            UIUtils.animateCardBackgroundColor(this, driverCardView, R.color.yellow, Color.TRANSPARENT, 1000, 10);
         }
 
         driverCard.setOnClickListener(v -> {

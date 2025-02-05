@@ -37,7 +37,6 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
     private static final String TAG = "TeamCardActivity";
     private final boolean constructorToProcess = true;
     LoadingScreen loadingScreen;
-    private GestureDetector tapDetector;
     private TextView teamPointsTextView;
     private ConstructorStandings constructorStandings;
 
@@ -45,16 +44,12 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        //UIUtils.hideSystemUI(this);
         setContentView(R.layout.activity_constructors_standing);
 
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
 
         // Show loading screen initially
         loadingScreen.showLoadingScreen();
-
-        //tapDetector = UIUtils.createTapDetector(this);
-
 
         String constructorId = getIntent().getStringExtra("TEAM_ID");
         Log.i(TAG, "Constructor ID: " + constructorId);
@@ -174,18 +169,8 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         return teamCard;
     }
 
-    /*
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        tapDetector.onTouchEvent(ev);
-        return super.dispatchTouchEvent(ev);
-    }
-
-     */
-
     @Override
     protected void onResume() {
-        //UIUtils.hideSystemUI(this);
         super.onResume();
     }
 }
