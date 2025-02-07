@@ -18,7 +18,6 @@ public class ConstructorStandingsRepository implements IConstructorRepository, C
     public static boolean isOutdate = true;
     public final MediatorLiveData<Result> allConstructorMediatorLiveData;
     public final MutableLiveData<Result> jolpicaConstructorsMutableLiveData;
-    private final MutableLiveData<Result> allConstructorMutableLiveData;
     private final MutableLiveData<Result> constructorStandingsMutableLiveData;
     private final BaseConstructorRemoteDataSource constructorRemoteDataSource;
     private final BaseConstructorLocalDataSource constructorLocalDataSource;
@@ -27,7 +26,6 @@ public class ConstructorStandingsRepository implements IConstructorRepository, C
     public ConstructorStandingsRepository(BaseConstructorRemoteDataSource constructorRemoteDataSource, BaseConstructorLocalDataSource constructorLocalDataSource) {
         this.allConstructorMediatorLiveData = new MediatorLiveData<>();
         this.jolpicaConstructorsMutableLiveData = new MutableLiveData<>();
-        this.allConstructorMutableLiveData = new MutableLiveData<>();
         this.constructorStandingsMutableLiveData = new MutableLiveData<>();
         this.constructorRemoteDataSource = constructorRemoteDataSource;
         this.constructorLocalDataSource = constructorLocalDataSource;
@@ -50,6 +48,12 @@ public class ConstructorStandingsRepository implements IConstructorRepository, C
 
     @Override
     public void onSuccessFromRemote(ConstructorStandingsAPIResponse constructorStandingsAPIResponse, long lastUpdate) {
+        if (constructorStandingsAPIResponse.getStandingsTable().getStandingsLists().isEmpty()) {
+            //post an error on all...
+            Log.i("onSuccessFromRemoteConstructor", "CONSTRUCTOR API RESPONSE EMPTY");
+            constructorStandingsMutableLiveData.postValue(new Result.Error("No data available"));
+            return;
+        }
         Log.i("onSuccessFromRemoteConstructor", "CONSTRUCTOR API RESPONSE: " + constructorStandingsAPIResponse);
         ConstructorStandings constructorStandings = ConstructorStandingsMapper.toConstructorStandings(constructorStandingsAPIResponse.getStandingsTable().getStandingsLists().get(0));
         Log.i("onSuccessFromRemoteConstructor", "CONSTRUCTOR STANDINGS: " + constructorStandings);

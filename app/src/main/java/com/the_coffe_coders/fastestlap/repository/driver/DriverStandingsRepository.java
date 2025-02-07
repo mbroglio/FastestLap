@@ -25,7 +25,6 @@ public class DriverStandingsRepository implements IDriverRepository, DriverStand
 
     public final MediatorLiveData<Result> allDriverMediatorLiveData;
     public final MutableLiveData<Result> jolpicaDriversMutableLiveData;
-    private final MutableLiveData<Result> allDriverMutableLiveData;
     private final MutableLiveData<Result> driverStandingsMutableLiveData;
     private final BaseDriverRemoteDataSource driverRemoteDataSource;
     private final BaseDriverLocalDataSource driverLocalDataSource;
@@ -35,7 +34,6 @@ public class DriverStandingsRepository implements IDriverRepository, DriverStand
     public DriverStandingsRepository(BaseDriverRemoteDataSource driverRemoteDataSource, BaseDriverLocalDataSource driverLocalDataSource) {
         this.allDriverMediatorLiveData = new MediatorLiveData<>();
         this.jolpicaDriversMutableLiveData = new MutableLiveData<>();
-        this.allDriverMutableLiveData = new MutableLiveData<>();
         this.driverStandingsMutableLiveData = new MutableLiveData<>();
         this.driverRemoteDataSource = driverRemoteDataSource;
         this.driverLocalDataSource = driverLocalDataSource;
@@ -43,47 +41,12 @@ public class DriverStandingsRepository implements IDriverRepository, DriverStand
         this.driverLocalDataSource.setDriverCallback(this);
     }
 
-    public LiveData<Result> getDrivers() {
-
-        return allDriverMediatorLiveData;
-    }
-
-    @Override
-    public MutableLiveData<Result> fetchDrivers(long lastUpdate) {
-        long currentTime = System.currentTimeMillis();
-        System.out.println(currentTime);
-        System.out.println(lastUpdate);
-        System.out.println("FETCH DRIVER METHOD");
-        Log.i(TAG, "FETCH DRIVER METHOD");
-        if (currentTime - lastUpdate > FRESH_TIMEOUT) { //currentTime - lastUpdate > FRESH_TIMEOUT
-            driverRemoteDataSource.getDrivers();
-        } else {
-            driverLocalDataSource.getDrivers();
-        }
-
-        return allDriverMutableLiveData;
-    }
-
-    @Override
-    public MutableLiveData<Result> fetchDriver(String driverId, long lastUpdate) {
-        long currentTime = System.currentTimeMillis();
-
-        if (isOutdate) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT
-            driverRemoteDataSource.getDrivers();
-            isOutdate = false;
-        } else {
-            driverLocalDataSource.getDrivers();
-        }
-
-        return null;
-    }
-
     @Override
     public MutableLiveData<Result> fetchDriversStandings(long lastUpdate) {
         long currentTime = System.currentTimeMillis();
         //controllo che il dispositivo sia collegato ad internet
         Log.i(TAG, "FETCH DRIVER STANDINGS METHOD");
-        if (isOutdate) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT
+        if (true) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT
             Log.i(TAG, "FETCH DRIVER STANDINGS METHOD");
             driverRemoteDataSource.getDriversStandings();
             isOutdate = false;
@@ -97,9 +60,17 @@ public class DriverStandingsRepository implements IDriverRepository, DriverStand
     @Override
     public void onSuccessFromRemote(DriverStandingsAPIResponse driverAPIResponse, long lastUpdate) {
         Log.i("onSuccessFromRemoteDriver", "DRIVER API RESPONSE: " + driverAPIResponse);
+        if(driverAPIResponse.getStandingsTable().getStandingsLists().isEmpty()) {
+            //post an error on all...
+            Log.i("onSuccessFromRemoteDriver", "DRIVER API RESPONSE EMPTY");
+            driverStandingsMutableLiveData.postValue(new Result.Error("No data available"));
+            return;
+        }
+
         DriverStandings driverStandings = DriverStandingsMapper.toDriverStandings(driverAPIResponse.getStandingsTable().getStandingsLists().get(0));
         Log.i("onSuccessFromRemoteDriver", "DRIVER STANDINGS: " + driverStandings);
         driverLocalDataSource.insertDriversStandings(driverStandings);
+
     }
 
     @Override

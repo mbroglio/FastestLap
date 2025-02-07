@@ -53,7 +53,10 @@ public class RaceTableDTO {
     }
 
     public RaceDTO getRace() {
-        return races.get(0);
+        if(races.isEmpty())
+            return null;
+        else
+            return races.get(0);
     }
 
     @Override

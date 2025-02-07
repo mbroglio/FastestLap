@@ -76,7 +76,7 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
     public MutableLiveData<Result> fetchAllRaceResults(long lastUpdate) {
         Log.i(TAG, "fetchAllRaceResults");
         raceList = new ArrayList<>();
-        if (isOutdateRaceResults) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
+        if (true) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
             //TODO fetch from remote
             //Log.i(TAG, "Remote fetchAllRaceResults");
             raceResultRemoteDataSource.getAllRaceResults();
@@ -109,6 +109,11 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
         System.out.println(type);
         if (type == 1) {
             Log.i(TAG, "entered if");
+            if (raceResultsAPIResponse.getFinalRace() == null) {
+                raceResultMutableLiveData.postValue(new Result.Error("No data available"));
+                allRaceResultMutableLiveData.postValue(new Result.Error("No data available"));
+                return;
+            }
             addRaces(RaceMapper.toRace(raceResultsAPIResponse.getFinalRace()));
         } else {
             Log.i(TAG, "entered else");

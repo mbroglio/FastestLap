@@ -77,6 +77,8 @@ public class PastEventsActivity extends AppCompatActivity {
                     createEventCard(race);
                 }
                 loadingScreen.hideLoadingScreen();
+            } else {
+                loadingScreen.hideLoadingScreen();
             }
         });
     }

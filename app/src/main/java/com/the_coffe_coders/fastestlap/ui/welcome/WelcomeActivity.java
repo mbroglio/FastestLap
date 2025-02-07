@@ -86,6 +86,10 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
         LinearLayout loginLayout = findViewById(R.id.activity_login);
         UIUtils.applyWindowInsets(loginLayout);
 
+        String season_year = getIntent().getStringExtra("season_year");
+
+        Log.d("LaunchFlag", "Valore ricevuto: " + season_year);
+        ServiceLocator.setCurrentYearBaseUrl(season_year);
 
 
         mAuth = FirebaseAuth.getInstance();
