@@ -37,7 +37,7 @@ public class FirebaseDriverRepository {
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError error) {
                 callback.onFailure(error.toException());
             }
         });

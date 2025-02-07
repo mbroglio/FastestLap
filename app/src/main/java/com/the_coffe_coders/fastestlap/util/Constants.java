@@ -337,6 +337,28 @@ public class Constants {
         put("Swiss", "Switzerland");
     }};
 
+    public static final Map<String, String> NATIONALITY_NATION_DB = new HashMap<>() {{
+        put("British", "gb");
+        put("Dutch", "nl");
+        put("Australian", "as");
+        put("Japanese", "jp");
+        put("Chinese", "cn");
+        put("American", "us");
+        put("Monégasque", "mon");
+        put("Canadian", "ca");
+        put("Spanish", "sp");
+        put("French", "fr");
+        put("Mexican", "mx");
+        put("Brazilian", "br");
+        put("Italian", "it");
+        put("Azerbaijani", "az");
+        put("Singaporean", "sgp");
+        put("Qatari", "qat");
+        put("Emirati", "uae");
+        put("German", "de");
+        put("Swiss", "ch");
+    }};
+
     public static final Map<String, String> NATIONALITY_ABBREVIATION = new HashMap<>() {{
         put("British", "GBR");
         put("Dutch", "NED");

@@ -1,6 +1,7 @@
 package com.the_coffe_coders.fastestlap.ui.event;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -124,6 +125,7 @@ public class PastEventsActivity extends AppCompatActivity {
             intent.putExtra("CIRCUIT_ID", weeklyRace.getTrack().getTrackId());
             startActivity(intent);
         });
+
         return eventCard;
     }
 

@@ -20,9 +20,11 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
@@ -30,8 +32,11 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.ui.profile.ProfileActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
@@ -280,34 +285,6 @@ public class HomeFragment extends Fragment {
             }
         });
     }
-    /* old method
-    private void buildFinalTeamsStanding(View seasonEndedCard) {
-        ConstructorRepository constructorRepository = ServiceLocator.getInstance().getConstructorRepository(getActivity().getApplication(), false);
-        MutableLiveData<Result> liveData = constructorRepository.fetchConstructorStandings(0);
-        Log.i(TAG, "Constructor Standings: " + liveData);
-        liveData.observe(getViewLifecycleOwner(), result -> {
-            if (result instanceof Result.ConstructorStandingsSuccess) {
-                Result.ConstructorStandingsSuccess constructorStandingsSuccess = (Result.ConstructorStandingsSuccess) result;
-                ConstructorStandings constructorStandings = constructorStandingsSuccess.getData();
-                Log.i(TAG, "Constructor Standings: " + constructorStandings);
-                for (int i = 0; i < 3; i++) {
-                    ConstructorStandingsElement constructor = constructorStandings.getConstructorStandings().get(i);
-
-                    TextView constructorName = seasonEndedCard.findViewById(Constants.HOME_SEASON_TEAM_STANDINGS_NAME_FIELD.get(i));
-                    constructorName.setText(constructor.getConstructor().getName());
-
-                    View constructorColor = seasonEndedCard.findViewById(Constants.HOME_SEASON_TEAM_STANDINGS_COLOR_FIELD.get(i));
-                    Integer teamColor = Constants.TEAM_COLOR.get(constructor.getConstructor().getConstructorId());
-                    constructorColor.setBackgroundResource(teamColor);
-                }
-            } else if (result instanceof Result.Error) {
-                Result.Error error = (Result.Error) result;
-                Log.e(TAG, "Error: " + error.getMessage());
-            }
-        });
-    }
-    */
-
 
     private void startCountdown(View view, LocalDateTime eventDate) {
         LinearLayout liveIconLayout = view.findViewById(R.id.timer_live_layout);
@@ -380,10 +357,11 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildDriverCard(View view, DriverStandingsElement standingElement) {
+        Driver driver = standingElement.getDriver();
         TextView driverName = view.findViewById(R.id.favourite_driver_name);
-        driverName.setText(standingElement.getDriver().getGivenName() + " " + standingElement.getDriver().getFamilyName());
+        driverName.setText(driver.getGivenName() + " " + driver.getFamilyName());
 
-        String driverNationality = standingElement.getDriver().getNationality();
+        String driverNationality = driver.getNationality();
         ImageView driverFlag = view.findViewById(R.id.favourite_driver_flag);
         driverFlag.setImageResource(Constants.NATION_COUNTRY_FLAG.get(Constants.NATIONALITY_NATION.get(driverNationality)));
 
@@ -391,7 +369,7 @@ public class HomeFragment extends Fragment {
         nationality.setText(Constants.NATIONALITY_ABBREVIATION.get(driverNationality));
 
         ImageView driverImage = view.findViewById(R.id.favourite_driver_pic);
-        driverImage.setImageResource(Constants.DRIVER_IMAGE.get(standingElement.getDriver().getDriverId()));
+        driverImage.setImageResource(Constants.DRIVER_IMAGE.get(driver.getDriverId()));
 
         TextView driverPosition = view.findViewById(R.id.favourite_driver_position);
         driverPosition.setText(standingElement.getPosition());
@@ -402,7 +380,7 @@ public class HomeFragment extends Fragment {
         //set favourite driver card color
         RelativeLayout driverCard = view.findViewById(R.id.favourite_driver_layout);
         //driverCard.setBackgroundResource(Constants.TEAM_COLOR.get(Constants.DRIVER_TEAM.get(standingElement.getDriver().getDriverId())));
-
+        driverCard.setBackgroundColor(Color.WHITE);
         driverImage.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), DriverBioActivity.class);
             intent.putExtra("DRIVER_ID", standingElement.getDriver().getDriverId());
@@ -418,49 +396,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void setFavouriteConstructorCard(View view) {
-        // FIX: The implementation with the ViewModel is not working
-
-        /*ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
-        MutableLiveData<Result> data = constructorStandingsViewModel.getConstructorStandingsLiveData(0);//TODO get last update from shared preferences
-
-        if(data != null){
-            data.observe(getViewLifecycleOwner(), result -> {
-                if (result.isSuccess()) {
-                    Log.i(TAG, "CONSTRUCTOR STANDINGS SUCCESS");
-
-                    ConstructorStandings constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
-                    List<ConstructorStandingsElement> constructorsList = constructorStandings.getConstructorStandings();
-
-                    ConstructorStandingsElement favouriteConstructor = constructorStandingsViewModel.getConstructorStandingsElement(constructorsList, Constants.FAVOURITE_TEAM);
-                    buildConstructorCard(view, favouriteConstructor);
-                } else {
-                    Log.i(TAG, "CONSTRUCTOR STANDINGS ERROR");
-                    loadingScreen.hideLoadingScreen();
-                }
-            });
-        }*/
-
-        /*ConstructorRepository constructorRepository = ServiceLocator.getInstance().getConstructorRepository(getActivity().getApplication(), false);
-        MutableLiveData<Result> liveData = constructorRepository.fetchConstructorStandings(0);
-        Log.i(TAG, "Constructor Standings: " + liveData);
-        liveData.observe(getViewLifecycleOwner(), result -> {
-            if (result instanceof Result.ConstructorStandingsSuccess) {
-                Result.ConstructorStandingsSuccess constructorStandingsSuccess = (Result.ConstructorStandingsSuccess) result;
-                ConstructorStandings constructorStandings = constructorStandingsSuccess.getData();
-                Log.i(TAG, "Constructor Standings: " + constructorStandings);
-                for (ConstructorStandingsElement standingElement : constructorStandings.getConstructorStandings()) {
-                    Log.i(TAG, "Constructor (standing element): " + standingElement.getConstructor().getConstructorId());
-                    if (standingElement.getConstructor().getConstructorId().equals(getFavoriteTeamId())) {
-                        buildConstructorCard(view, standingElement);
-                        break;
-                    }
-                }
-            } else if (result instanceof Result.Error) {
-                Result.Error error = (Result.Error) result;
-                Log.e(TAG, "Error: " + error.getMessage());
-            }
-        });*/
-
         ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
         MutableLiveData<Result> data = constructorStandingsViewModel.getConstructorStandingsLiveData(0); // TODO get last update from shared preferences
 
@@ -471,7 +406,16 @@ public class HomeFragment extends Fragment {
 
                 ConstructorStandingsElement favouriteConstructor = constructorStandingsViewModel.getConstructorStandingsElement(constructorsList, getFavoriteTeamId());
                 Log.i(TAG, "Favorite Constructor: " + favouriteConstructor.toString());
-                buildConstructorCard(view, favouriteConstructor);
+                NationViewModel nationViewModel = new ViewModelProvider(this, new NationViewModelFactory()).get(NationViewModel.class);
+                nationViewModel.getNation(Constants.NATIONALITY_NATION_DB.get(favouriteConstructor.getConstructor().getNationality())).observe(getViewLifecycleOwner(), nationResult -> {
+                    if(nationResult.isSuccess()) {
+                        Nation nation = ((Result.NationSuccess) nationResult).getData();
+                        Log.i(TAG, "NATION: " + nation.toString());
+                        buildConstructorCard(view, favouriteConstructor, nation);
+                    }else {
+                        //TODO
+                    }
+                });
             } else {
                 Log.i(TAG, "CONSTRUCTOR STANDINGS ERROR");
                 loadingScreen.hideLoadingScreen();
@@ -479,7 +423,7 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void buildConstructorCard(View view, ConstructorStandingsElement standingElement) {
+    private void buildConstructorCard(View view, ConstructorStandingsElement standingElement, Nation nation) {
         TextView constructorName = view.findViewById(R.id.favourite_constructor_name);
         constructorName.setText(standingElement.getConstructor().getName());
 
@@ -494,8 +438,8 @@ public class HomeFragment extends Fragment {
 
         ImageView constructorFlag = view.findViewById(R.id.favourite_constructor_flag);
         String nationality = standingElement.getConstructor().getNationality();
-        constructorFlag.setImageResource(Constants.NATION_COUNTRY_FLAG.get(Constants.NATIONALITY_NATION.get(nationality)));
-
+        //Glide.with(this).load(team.getTeam_logo_url()).into(teamLogoImage);
+        Glide.with(this).load(nation.getNation_flag_url()).into(constructorFlag);
         TextView constructorNationality = view.findViewById(R.id.favourite_constructor_nationality);
         constructorNationality.setText(Constants.NATIONALITY_ABBREVIATION.get(nationality));
 
