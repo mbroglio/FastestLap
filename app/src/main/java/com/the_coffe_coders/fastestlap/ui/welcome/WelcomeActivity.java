@@ -50,7 +50,6 @@ import com.the_coffe_coders.fastestlap.ui.welcome.fragment.SignUpFragment;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.IntroScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
@@ -63,7 +62,7 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
     private static final String TAG = "LoginFragment";
     private static final int RC_SIGN_IN = 9001; // Request code for Google Sign-In
 
-    private IntroScreen introScreen;
+   // private IntroScreen introScreen;
     private TextInputEditText emailEditText;
     private TextInputEditText passwordEditText;
     private UserViewModel userViewModel;
@@ -94,14 +93,14 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
 
         mAuth = FirebaseAuth.getInstance();
 
-        fromSignOut = getIntent().getBooleanExtra("SIGN_OUT", false);
+       // fromSignOut = getIntent().getBooleanExtra("SIGN_OUT", false);
 
         IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository((Application) getApplicationContext());
 
         userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
         userViewModel.setAuthenticationError(false);
 
-        introScreen = new IntroScreen(findViewById(android.R.id.content), this);
+        //introScreen = new IntroScreen(findViewById(android.R.id.content), this);
 
         emailEditText = findViewById(R.id.textInputEmail);
         passwordEditText = findViewById(R.id.textInputPassword);
@@ -278,6 +277,7 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
         fromEmailVerification = Boolean.parseBoolean(value);
     }
 
+    /*
     @Override
     public void onStart() {
 
@@ -311,6 +311,7 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
         }
     }
 
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -318,6 +319,8 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
             introScreen.releaseResources();
         }
     }
+
+     */
 
     @Override
     protected void onResume() {
