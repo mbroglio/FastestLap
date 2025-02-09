@@ -50,6 +50,10 @@ public class IntroScreenActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_intro_screen);
 
+        String season_year = getIntent().getStringExtra("season_year");
+        Log.d("LaunchFlag", "Valore ricevuto: " + season_year);
+        ServiceLocator.setCurrentYearBaseUrl(season_year);
+
         userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(ServiceLocator.getInstance().getUserRepository((Application) getApplicationContext()))).get(UserViewModel.class);
 
         appName = findViewById(R.id.app_name);
@@ -63,6 +67,8 @@ public class IntroScreenActivity extends AppCompatActivity {
         progressIndicator.setVisibility(View.INVISIBLE);
 
         setupIntro();
+
+
     }
 
     private void showIntroScreen() {

@@ -27,6 +27,7 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
     public static boolean isOutdateRaceResults = true;
     private final MutableLiveData<Result> raceResultMutableLiveData;
     private final MutableLiveData<Result> allRaceResultMutableLiveData;
+    private final MutableLiveData<Result> singleRaceMutableLiveData;
     private final BaseRaceResultRemoteDataSource raceResultRemoteDataSource;
     private final BaseRaceResultLocalDataSource raceResultLocalDataSource;
     private List<Race> raceList = new ArrayList<>();
@@ -39,6 +40,7 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
         this.raceResultLocalDataSource = raceResultLocalDataSource;
         this.raceResultRemoteDataSource.setRaceResultCallback(this);
         this.raceResultLocalDataSource.setRaceResultCallback(this);
+        singleRaceMutableLiveData = new MutableLiveData<>();
     }
 
     private synchronized void addRaces(Race race) {
@@ -91,12 +93,6 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
     }
 
     @Override
-    public MutableLiveData<Result> fetchRaceResult(String resultId, long lastUpdate) {
-        return null;
-    }
-
-
-    @Override
     public void onSuccessFromRemote(RaceResultsAPIResponse raceResultsAPIResponse) {
 
     }
@@ -108,15 +104,14 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
 
         System.out.println(type);
         if (type == 1) {
-            Log.i(TAG, "entered if");
             if (raceResultsAPIResponse.getFinalRace() == null) {
                 raceResultMutableLiveData.postValue(new Result.Error("No data available"));
                 allRaceResultMutableLiveData.postValue(new Result.Error("No data available"));
                 return;
             }
             addRaces(RaceMapper.toRace(raceResultsAPIResponse.getFinalRace()));
-        } else {
-            Log.i(TAG, "entered else");
+        }
+        else {
             List<RaceResult> raceResult = new ArrayList<>();
             for (ResultDTO resultDTO : raceResultsAPIResponse.getRaceResults()) {
                 raceResult.add(SessionMapper.toResult(resultDTO));

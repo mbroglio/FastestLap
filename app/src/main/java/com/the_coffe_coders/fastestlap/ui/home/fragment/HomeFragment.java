@@ -30,9 +30,12 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsEle
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
+import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
+import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
@@ -108,9 +111,14 @@ public class HomeFragment extends Fragment {
             data.observe(getViewLifecycleOwner(), result -> {
                 if (result.isSuccess()) {
                     WeeklyRace raceResult = ((Result.NextRaceSuccess) result).getData(); // TODO: fix index requirement
-                    Log.i(TAG, "LAST RACE CARD RESULT: " + raceResult.toString());
+                    Log.i(TAG, "LAST RACE CARD RESULT: " + raceResult);
+                    if(raceResult.getRound().equals("1")) {
+                        loadingScreen.hideLoadingScreen();
+                    }else {
+                        Log.i(TAG, "LAST RACE CARD RESULT ELSE: " + raceResult);
+                        showPodium(view, raceResult);
+                    }
 
-                    showPodium(view, raceResult);
                 }
             });
         } catch (Exception e) {
@@ -126,8 +134,10 @@ public class HomeFragment extends Fragment {
         results.setVisibility(View.GONE);
     }
 
-    private void showPodium(View view, WeeklyRace raceResult) {
-        Race race = raceResult.getFinalRace();
+    private void showPodium(View view, WeeklyRace race) {
+        //Race race = raceResult.getFinalRace();
+        if(race == null)
+            return;
         String circuitId = race.getTrack().getTrackId();
 
         TextView raceName = view.findViewById(R.id.last_race_name);
@@ -137,7 +147,7 @@ public class HomeFragment extends Fragment {
         trackOutline.setImageResource(Constants.EVENT_CIRCUIT.get(circuitId));
 
         TextView raceDate = view.findViewById(R.id.last_race_date);
-        LocalDate date = race.getStartDateTime().toLocalDate();
+        LocalDate date = race.getDateTime().toLocalDate();
         raceDate.setText(String.valueOf(date.getDayOfMonth()));
 
         // Get the first three characters of the month in capital letters
@@ -148,8 +158,15 @@ public class HomeFragment extends Fragment {
         TextView roundNumber = view.findViewById(R.id.last_race_round);
         String round = "Round " + race.getRound();
         roundNumber.setText(round);
+        MutableLiveData<Result> mutableLiveData = ServiceLocator.getInstance().getRaceResultRepository(getActivity().getApplication(), false).fetchRaceResult(Integer.parseInt(race.getRound()), 0L);
 
-        setDriverNames(view, raceResult);
+        mutableLiveData.observe(getViewLifecycleOwner(), result -> {
+            if(result.isSuccess()) {
+                List<RaceResult> raceResults = ((Result.RacesResultSuccess) result).getData();
+                setDriverNames(view, raceResults);
+            }
+        });
+
 
         MaterialCardView resultCard = view.findViewById(R.id.past_event_result);
         resultCard.setOnClickListener(v -> {
@@ -159,9 +176,9 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void setDriverNames(View view, WeeklyRace raceResults) {
+    private void setDriverNames(View view, List<RaceResult> raceResults) {
         for (int i = 0; i < 3; i++) {
-            String driverId = raceResults.getFinalRace().getResults().get(i).getDriver().getDriverId();
+            String driverId = raceResults.get(i).getDriver().getDriverId();
             Integer driverFullName = Constants.DRIVER_FULLNAME.get(driverId);
             TextView driver = view.findViewById(Constants.LAST_RACE_DRIVER_NAME.get(i));
             driver.setText(driverFullName);
@@ -195,13 +212,15 @@ public class HomeFragment extends Fragment {
         ImageView nextRaceFlag = view.findViewById(R.id.home_next_gp_flag);
         String nation = nextRace.getTrack().getLocation().getCountry();
         nextRaceFlag.setImageResource(Constants.NATION_COUNTRY_FLAG.get(nation));
-
+        /*TODO FINISH NEXT SESSIONS IMPLEMENTATION
         List<Session> sessions = nextRace.getSessions();
         Session nextEvent = nextRace.findNextEvent(sessions);
         if (nextEvent != null) {
             LocalDateTime eventDateTime = nextEvent.getStartDateTime();
             startCountdown(view, eventDateTime);
         }
+
+         */
 
         TextView sessionType = view.findViewById(R.id.next_session_type);
         //sessionType.setText(Constants.SESSION_NAMES.get(nextEvent.getClass().getSimpleName()));

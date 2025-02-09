@@ -117,16 +117,18 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
 
     void handleNextRaceSuccess(RaceAPIResponse weeklyRaceAPIResponse) {
         Log.i(TAG, "handleNextRaceSuccess");
-        WeeklyRace race = WeeklyRaceMapper.toWeeklyRace(weeklyRaceAPIResponse.getRaceTable().getRaces().get(0));
+        WeeklyRace race = WeeklyRaceMapper.toWeeklyRaceNext(weeklyRaceAPIResponse.getRaceTable().getRaces().get(0));
         Log.i(TAG, "handleNextRaceSuccess" + race);
         nextRaceMutableLiveData.postValue(new Result.NextRaceSuccess(race));
     }
 
     void handleLastRaceSuccess(RaceAPIResponse weeklyRaceAPIResponse) {
-        Log.i(TAG, "lastRaceSuccess" + weeklyRaceAPIResponse.getRaceTable());
+        if(weeklyRaceAPIResponse.getRaceTable().getRaces().isEmpty()  || weeklyRaceAPIResponse.getRaceTable().getRace().getRound().equals("1")) {
+            lastRaceMutableLiveData.postValue(new Result.Error("no races available"));
+        } else {
+            WeeklyRace weeklyRace = WeeklyRaceMapper.toWeeklyRace(weeklyRaceAPIResponse.getRaceTable().getRaces().get(0));
+            lastRaceMutableLiveData.postValue(new Result.NextRaceSuccess(weeklyRace));
+        }
 
-        WeeklyRace race = WeeklyRaceMapper.toWeeklyRace(weeklyRaceAPIResponse.getRaceTable().getRaces().get(0));
-        lastRaceMutableLiveData.postValue(new Result.NextRaceSuccess(race));
-        Log.i(TAG, "lastRaceSuccess" + race);
     }
 }

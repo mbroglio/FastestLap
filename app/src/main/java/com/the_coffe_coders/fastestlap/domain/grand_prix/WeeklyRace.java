@@ -113,9 +113,9 @@ public abstract class WeeklyRace {
 
     public void setSessions(List<Session> sessions) {
         LocalDateTime currentDateTime = LocalDateTime.now();
-
         for (Session session : sessions) {
-            session.setSessionStatus();
+            if(session != null)
+                session.setSessionStatus();
         }
     }
 
@@ -159,5 +159,20 @@ public abstract class WeeklyRace {
 
     public void setFinalRaceResults(List<RaceResult> raceResults) {
         this.finalRace.setResults(raceResults);
+    }
+
+    @Override
+    public String toString() {
+        return "WeeklyRace{" +
+                "firstPractice=" + firstPractice +
+                ", uid=" + uid +
+                ", season='" + season + '\'' +
+                ", round='" + round + '\'' +
+                ", url='" + url + '\'' +
+                ", raceName='" + raceName + '\'' +
+                ", track=" + track +
+                ", Qualifying=" + Qualifying +
+                ", finalRace=" + finalRace +
+                '}';
     }
 }

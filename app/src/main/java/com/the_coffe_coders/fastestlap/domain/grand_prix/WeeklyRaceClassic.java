@@ -49,7 +49,7 @@ public class WeeklyRaceClassic extends WeeklyRace {
     @NonNull
     @Override
     public String toString() {
-        return super.toString() + "WeeklyRaceClassic{" +
+        return super.toString() + "{" +
                 "secondPractice=" + secondPractice +
                 ", thirdPractice=" + thirdPractice +
                 '}';
