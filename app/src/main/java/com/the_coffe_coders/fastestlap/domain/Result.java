@@ -169,4 +169,14 @@ public abstract class Result {
             return message;
         }
     }
+
+    public static class LastRaceResultsSuccess extends Result {
+        private final Race race;
+        public LastRaceResultsSuccess(Race race) {
+            this.race = race;
+        }
+        public Race getData() {
+            return race;
+        }
+    }
 }

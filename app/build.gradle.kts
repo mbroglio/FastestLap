@@ -68,6 +68,6 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.commons.validator)
     implementation(libs.glide)
-    /*compileOnly(libs.projectlombok.lombok)
-    annotationProcessor(libs.projectlombok.lombok)*/
+    compileOnly("org.projectlombok:lombok:1.18.20")
+    annotationProcessor("org.projectlombok:lombok:1.18.20")
 }

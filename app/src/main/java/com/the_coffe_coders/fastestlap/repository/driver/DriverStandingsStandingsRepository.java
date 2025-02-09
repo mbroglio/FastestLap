@@ -3,7 +3,6 @@ package com.the_coffe_coders.fastestlap.repository.driver;
 
 import android.util.Log;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -17,21 +16,21 @@ import com.the_coffe_coders.fastestlap.source.driver.BaseDriverRemoteDataSource;
 
 import java.util.List;
 
-public class DriverStandingsRepository implements IDriverRepository, DriverStandingsResponseCallback {
+public class DriverStandingsStandingsRepository implements IDriverStandingsRepository, DriverStandingsResponseCallback {
     private static final String TAG = "DriverStandingsRepository";
 
     public static long FRESH_TIMEOUT = 60000;
     public static boolean isOutdate = true;
 
-    public final MediatorLiveData<Result> allDriverMediatorLiveData;
-    public final MutableLiveData<Result> jolpicaDriversMutableLiveData;
+    private final MediatorLiveData<Result> allDriverMediatorLiveData;
+    private final MutableLiveData<Result> jolpicaDriversMutableLiveData;
     private final MutableLiveData<Result> driverStandingsMutableLiveData;
     private final BaseDriverRemoteDataSource driverRemoteDataSource;
     private final BaseDriverLocalDataSource driverLocalDataSource;
 
     //private Map<String, Driver> cache = new HashMap<>();//TODO
 
-    public DriverStandingsRepository(BaseDriverRemoteDataSource driverRemoteDataSource, BaseDriverLocalDataSource driverLocalDataSource) {
+    public DriverStandingsStandingsRepository(BaseDriverRemoteDataSource driverRemoteDataSource, BaseDriverLocalDataSource driverLocalDataSource) {
         this.allDriverMediatorLiveData = new MediatorLiveData<>();
         this.jolpicaDriversMutableLiveData = new MutableLiveData<>();
         this.driverStandingsMutableLiveData = new MutableLiveData<>();
@@ -91,9 +90,5 @@ public class DriverStandingsRepository implements IDriverRepository, DriverStand
     }
 
     @Override
-    public void onFailureFromLocal(Exception exception) {
-
-    }
+    public void onFailureFromLocal(Exception exception) {}
 }
-
-

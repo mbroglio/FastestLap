@@ -193,8 +193,6 @@ public class DatabaseConverters {
     public static WeeklyRace toWeeklyRace(String json) {
         return gson.fromJson(json, WeeklyRace.class);
     }
-    //ZoneDateTimeConverter
-
 
     //Session
     @TypeConverter

@@ -4,12 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsStandingsRepository;
 
 public class DriverStandingsViewModelFactory implements ViewModelProvider.Factory {
-    private final DriverStandingsRepository driverRepository;
+    private final DriverStandingsStandingsRepository driverRepository;
 
-    public DriverStandingsViewModelFactory(DriverStandingsRepository driverRepository) {
+    public DriverStandingsViewModelFactory(DriverStandingsStandingsRepository driverRepository) {
         this.driverRepository = driverRepository;
     }
 

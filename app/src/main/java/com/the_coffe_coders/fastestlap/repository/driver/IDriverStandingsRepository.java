@@ -4,7 +4,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
 
-public interface IDriverRepository {
-
+public interface IDriverStandingsRepository {
     MutableLiveData<Result> fetchDriversStandings(long lastUpdate);
 }

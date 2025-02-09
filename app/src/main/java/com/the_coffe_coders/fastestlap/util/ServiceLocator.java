@@ -6,7 +6,7 @@ import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
 import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.driver.CommonDriverRepository;
-import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.nation.FirebaseNationRepository;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.track.TrackRepository;
@@ -117,13 +117,23 @@ public class ServiceLocator {
 
             @Override
             public Call<ResponseBody> getLastRaceResults() {
-
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(CURRENT_YEAR_BASE_URL)
                         .addConverterFactory(ScalarsConverterFactory.create())
                         .build();
 
                 return retrofit.create(ErgastAPIService.class).getLastRaceResults();
+            }
+
+            @Override
+            public Call<ResponseBody> getLastRace() {
+
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+
+                return retrofit.create(ErgastAPIService.class).getLastRace();
             }
 
             @Override
@@ -177,7 +187,7 @@ public class ServiceLocator {
         return AppRoomDatabase.getDatabase(application);
     }
 
-    public DriverStandingsRepository getDriverStandingsRepository(Application application, boolean debugMode) {
+    public DriverStandingsStandingsRepository getDriverStandingsRepository(Application application, boolean debugMode) {
         BaseDriverRemoteDataSource driverRemoteDataSource;
         BaseDriverLocalDataSource driverLocalDataSource;
         SharedPreferencesUtils sharedPreferencesUtil = new SharedPreferencesUtils(application);
@@ -192,7 +202,7 @@ public class ServiceLocator {
 
         driverLocalDataSource = new DriverLocalDataSource(getRoomDatabase(application), sharedPreferencesUtil);
 
-        return new DriverStandingsRepository(driverRemoteDataSource, driverLocalDataSource);
+        return new DriverStandingsStandingsRepository(driverRemoteDataSource, driverLocalDataSource);
     }
 
     public ConstructorStandingsRepository getConstructorStandingsRepository(Application application, boolean debugMode) {

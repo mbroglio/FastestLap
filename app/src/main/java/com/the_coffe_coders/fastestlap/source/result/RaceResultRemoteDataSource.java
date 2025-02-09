@@ -78,6 +78,38 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
         }
     }
 
+    @Override
+    public void getLastRaceResults() {
+        Call<ResponseBody> responseCall = ergastAPIService.getLastRaceResults();
+        responseCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call,
+                                   @NonNull Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String responseString = null;
+                    try {
+                        responseString = response.body().string();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
+                    JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
+                    JSONParserUtils jsonParserUtils = new JSONParserUtils();
+                    RaceResultsAPIResponse raceResultsAPIResponse = jsonParserUtils.parseRaceResults(mrdata);
+                    Log.i(TAG, "LAST RACE RESULTS !!!!" + raceResultsAPIResponse.toString());
+                    raceResultCallback.onSuccessFromRemote(raceResultsAPIResponse, 0);
+                } else {
+                    raceResultCallback.onFailureFromRemote(new Exception());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+
+            }
+        });
+    }
+
     private void fetchRaceResult(int raceNumber, int currentRetry,
                                  AtomicInteger successCount, AtomicInteger failureCount,
                                  int totalRaces) {
