@@ -107,8 +107,8 @@ public class HomeFragment extends Fragment {
         try {
             data.observe(getViewLifecycleOwner(), result -> {
                 if (result.isSuccess()) {
-                    WeeklyRace raceResult = ((Result.WeeklyRaceSuccess) result).getData().get(0); // TODO: fix index requirement
-                    Log.i("PastEvent", "SUCCESS");
+                    WeeklyRace raceResult = ((Result.NextRaceSuccess) result).getData(); // TODO: fix index requirement
+                    Log.i(TAG, "LAST RACE CARD RESULT: " + raceResult.toString());
 
                     showPodium(view, raceResult);
                 }
@@ -170,18 +170,16 @@ public class HomeFragment extends Fragment {
 
     private void setNextSessionCard(View view) {
         MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchNextRace(0);
-        try {
-            data.observe(getViewLifecycleOwner(), result -> {
-                if (result.isSuccess()) {
-                    WeeklyRace nextRace = ((Result.WeeklyRaceSuccess) result).getData().get(0); // TODO: fix index requirement
-                    Log.i("PastEvent", "SUCCESS");
 
-                    processNextRace(view, nextRace);
-                }
-            });
-        } catch (Exception e) {
-            setSeasonEnded(view);
-        }
+        data.observe(getViewLifecycleOwner(), result -> {
+            if (result.isSuccess()) {
+                WeeklyRace nextRace = ((Result.NextRaceSuccess) result).getData();
+                Log.i(TAG, "" + nextRace.toString());
+                processNextRace(view, nextRace);
+            }else {
+                Log.i(TAG, "NEXT RACE ERROR");
+            }
+        });
 
         // CHECK IF CORRECT
         ImageView iconImageView = view.findViewById(R.id.live_icon);
@@ -190,6 +188,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void processNextRace(View view, WeeklyRace nextRace) {
+        Log.i(TAG, "NEXT RACE:" + nextRace.toString());
         TextView nextRaceName = view.findViewById(R.id.home_next_gp_name);
         nextRaceName.setText(nextRace.getRaceName());
 
@@ -205,7 +204,7 @@ public class HomeFragment extends Fragment {
         }
 
         TextView sessionType = view.findViewById(R.id.next_session_type);
-        sessionType.setText(Constants.SESSION_NAMES.get(nextEvent.getClass().getSimpleName()));
+        //sessionType.setText(Constants.SESSION_NAMES.get(nextEvent.getClass().getSimpleName()));
 
         FrameLayout nextSessionCard = view.findViewById(R.id.timer_card_countdown);
         nextSessionCard.setOnClickListener(v -> {

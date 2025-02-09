@@ -81,7 +81,7 @@ public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource {
 
                     JSONParserUtils jsonParserUtils = new JSONParserUtils();
                     RaceAPIResponse raceAPIResponse = jsonParserUtils.parseRace(mrdata);
-                    System.out.println("CALLBACK");
+                    Log.i(TAG, "FETCH NEXT RACE" + raceAPIResponse.getRaceTable());
                     raceCallback.onSuccessFromRemote(raceAPIResponse, OperationType.FETCH_NEXT_RACE);
                 } else {
                     raceCallback.onFailureFromRemote(new Exception());
@@ -116,7 +116,7 @@ public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource {
 
                     JSONParserUtils jsonParserUtils = new JSONParserUtils();
                     RaceAPIResponse raceAPIResponse = jsonParserUtils.parseRace(mrdata);
-                    System.out.println("CALLBACK");
+                    System.out.println("LAST RACE RESULTS" + mrdata);
                     raceCallback.onSuccessFromRemote(raceAPIResponse, OperationType.FETCH_LAST_RACE);
                 } else {
                     raceCallback.onFailureFromRemote(new Exception());

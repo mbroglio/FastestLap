@@ -139,7 +139,7 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
     @Override
     public void onSuccessFromLocal(List<RaceResult> raceResultList) {
         Log.i(TAG, "onSuccessFromLocal");
-        raceResultMutableLiveData.postValue(new Result.RaceResultSuccess(raceResultList));
+        raceResultMutableLiveData.postValue(new Result.RacesResultSuccess(raceResultList));
         Log.i(TAG, raceResultMutableLiveData.toString());
     }
 

@@ -98,10 +98,22 @@ public abstract class Result {
         }
     }
 
-    public static final class RaceResultSuccess extends Result {
+    public static final class NextRaceSuccess extends Result {
+        private final WeeklyRace race;
+
+        public NextRaceSuccess(WeeklyRace race) {
+            this.race = race;
+        }
+
+        public WeeklyRace getData() {
+            return race;
+        }
+    }
+
+    public static final class RacesResultSuccess extends Result {
         private final List<RaceResult> raceResultList;
 
-        public RaceResultSuccess(List<RaceResult> raceResultList) {
+        public RacesResultSuccess(List<RaceResult> raceResultList) {
             this.raceResultList = raceResultList;
         }
 

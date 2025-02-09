@@ -230,7 +230,7 @@ public class EventActivity extends AppCompatActivity {
         MutableLiveData<Result> resultMutableLiveData = eventViewModel.getRaceResults(0L, weeklyRace.getRound());
         Log.i(TAG, resultMutableLiveData.toString());
         resultMutableLiveData.observe(this, result -> {
-            List<RaceResult> podium = ((Result.RaceResultSuccess) result).getData();
+            List<RaceResult> podium = ((Result.RacesResultSuccess) result).getData();
             if (podium == null) {
                 showPendingResults();
             } else {

@@ -7,8 +7,10 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.dto.RaceDTO;
+import com.the_coffe_coders.fastestlap.mapper.RaceMapper;
 import com.the_coffe_coders.fastestlap.mapper.WeeklyRaceMapper;
 import com.the_coffe_coders.fastestlap.repository.result.IRaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
@@ -23,16 +25,21 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
     public static boolean isOutdateRace = true;
     private final MutableLiveData<Result> weeklyRaceMutableLiveData;
     private final BaseWeeklyRaceRemoteDataSource raceRemoteDataSource;
+
+    private final MutableLiveData<Result> nextRaceMutableLiveData;
+    private final MutableLiveData<Result> lastRaceMutableLiveData;
     private final BaseWeeklyRaceLocalDataSource raceLocalDataSource;
     private final IRaceResultRepository raceResultRepository;
 
     public RaceRepository(BaseWeeklyRaceRemoteDataSource raceRemoteDataSource, BaseWeeklyRaceLocalDataSource raceLocalDataSource, RaceResultRepository raceResultRepository) {
         this.weeklyRaceMutableLiveData = new MutableLiveData<>();
+        this.lastRaceMutableLiveData = new MutableLiveData<>();
         this.raceRemoteDataSource = raceRemoteDataSource;
         this.raceLocalDataSource = raceLocalDataSource;
         this.raceRemoteDataSource.setRaceCallback(this);
         this.raceLocalDataSource.setRaceCallback(this);
         this.raceResultRepository = raceResultRepository;
+        this.nextRaceMutableLiveData = new MutableLiveData<>();
     }
 
     @Override
@@ -52,27 +59,29 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
 
     @Override
     public MutableLiveData<Result> fetchNextRace(long lastUpdate) {
-        return null;
+        raceRemoteDataSource.getNextRace();
+        return nextRaceMutableLiveData;
     }
 
     @Override
     public MutableLiveData<Result> fetchLastRace(long lastUpdate) {
-        return null;
+        raceRemoteDataSource.getLastRace();
+        return lastRaceMutableLiveData;
     }
 
     @Override
     public void onSuccessFromRemote(RaceAPIResponse weeklyRaceAPIResponse, OperationType operationType) {
-        Log.i(TAG, "onSuccessFromRemote");
+        Log.i(TAG, "onSuccessFromRemote" + operationType);
 
         switch (operationType) {
             case FETCH_WEEKLY_RACES:
                 handleWeeklyRacesSuccess(weeklyRaceAPIResponse);
                 break;
             case FETCH_NEXT_RACE:
-                handleNextRaceSuccess();
+                handleNextRaceSuccess(weeklyRaceAPIResponse);
                 break;
             case FETCH_LAST_RACE:
-                handleLastRaceSuccess();
+                handleLastRaceSuccess(weeklyRaceAPIResponse);
                 break;
             default:
                 Log.i(TAG, "Operation type not supported");
@@ -106,11 +115,18 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
         raceLocalDataSource.insertWeeklyRaceList(weeklyRaceList);
     }
 
-    void handleNextRaceSuccess() {
-
+    void handleNextRaceSuccess(RaceAPIResponse weeklyRaceAPIResponse) {
+        Log.i(TAG, "handleNextRaceSuccess");
+        WeeklyRace race = WeeklyRaceMapper.toWeeklyRace(weeklyRaceAPIResponse.getRaceTable().getRaces().get(0));
+        Log.i(TAG, "handleNextRaceSuccess" + race);
+        nextRaceMutableLiveData.postValue(new Result.NextRaceSuccess(race));
     }
 
-    void handleLastRaceSuccess() {
+    void handleLastRaceSuccess(RaceAPIResponse weeklyRaceAPIResponse) {
+        Log.i(TAG, "lastRaceSuccess" + weeklyRaceAPIResponse.getRaceTable());
 
+        WeeklyRace race = WeeklyRaceMapper.toWeeklyRace(weeklyRaceAPIResponse.getRaceTable().getRaces().get(0));
+        lastRaceMutableLiveData.postValue(new Result.NextRaceSuccess(race));
+        Log.i(TAG, "lastRaceSuccess" + race);
     }
 }
