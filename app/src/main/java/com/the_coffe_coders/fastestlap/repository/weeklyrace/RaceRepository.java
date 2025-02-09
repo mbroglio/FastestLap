@@ -126,7 +126,7 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
         if(weeklyRaceAPIResponse.getRaceTable().getRaces().isEmpty()  || weeklyRaceAPIResponse.getRaceTable().getRace().getRound().equals("1")) {
             lastRaceMutableLiveData.postValue(new Result.Error("no races available"));
         } else {
-            WeeklyRace weeklyRace = WeeklyRaceMapper.toWeeklyRace(weeklyRaceAPIResponse.getRaceTable().getRaces().get(0));
+            WeeklyRace weeklyRace = WeeklyRaceMapper.toWeeklyRaceNext(weeklyRaceAPIResponse.getRaceTable().getRaces().get(0));
             lastRaceMutableLiveData.postValue(new Result.NextRaceSuccess(weeklyRace));
         }
 
