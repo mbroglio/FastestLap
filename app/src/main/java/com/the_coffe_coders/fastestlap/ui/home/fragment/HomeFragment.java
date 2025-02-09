@@ -24,20 +24,28 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Practice;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
+import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
+import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.profile.ProfileActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
@@ -70,10 +78,13 @@ public class HomeFragment extends Fragment {
     private final String TAG = HomeFragment.class.getSimpleName();
     private final SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
 
+    private HomeViewModel homeViewModel;
+
     LoadingScreen loadingScreen;
 
 
     public HomeFragment() {
+
         // Required empty public constructor
     }
 
@@ -90,6 +101,8 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getDriverStandingsRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false))).get(HomeViewModel.class);
+
         // Show loading screen initially
         loadingScreen = new LoadingScreen(view, getContext());
         loadingScreen.showLoadingScreen();
@@ -97,33 +110,30 @@ public class HomeFragment extends Fragment {
         setLastRaceCard(view);
         setNextSessionCard(view);
         setFavouriteDriverCard(view);
-        setFavouriteConstructorCard(view);
 
         return view;
     }
 
     private void setLastRaceCard(View view) {
         MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchLastRace(0);
-        try {
-            data.observe(getViewLifecycleOwner(), result -> {
-                if (result.isSuccess()) {
-                    WeeklyRace raceResult = ((Result.NextRaceSuccess) result).getData(); // TODO: fix index requirement
-                    Log.i(TAG, "LAST RACE CARD RESULT: " + raceResult);
-                    if(raceResult.getRound().equals("1")) {
-                        loadingScreen.hideLoadingScreen();
-                    }else {
-                        Log.i(TAG, "LAST RACE CARD RESULT ELSE: " + raceResult);
-                        showPodium(view, raceResult);
-                    }
-
+        data.observe(getViewLifecycleOwner(), result -> {
+            if (result.isSuccess()) {
+                WeeklyRace raceResult = ((Result.NextRaceSuccess) result).getData(); // TODO: fix index requirement
+                Log.i(TAG, "LAST RACE CARD RESULT: " + raceResult);
+                try {
+                    showPodium(view, raceResult);
+                } catch (Exception e) {
+                    loadPendingResultsLayout(view);
                 }
-            });
-        } catch (Exception e) {
-            loadPendingResultsLayout(view);
-        }
+            } else {
+                Log.i(TAG, "LAST RACE ERROR");
+                loadPendingResultsLayout(view);
+            }
+        });
     }
 
     private void loadPendingResultsLayout(View view) {
+        Log.i(TAG, "Results not available");
         View pendingResults = view.findViewById(R.id.pending_last_race_results);
         View results = view.findViewById(R.id.last_race_results);
 
@@ -131,9 +141,13 @@ public class HomeFragment extends Fragment {
         results.setVisibility(View.GONE);
     }
 
-    private void showPodium(View view, WeeklyRace race) {
+    private void showPodium(View view, WeeklyRace race) throws Exception {
+        if (race.getFinalRace().getResults().isEmpty()) {
+            throw new Exception("Results not available");
+        }
+
         //Race race = raceResult.getFinalRace();
-        if(race == null)
+        if (race == null)
             return;
         String circuitId = race.getTrack().getTrackId();
 
@@ -155,10 +169,10 @@ public class HomeFragment extends Fragment {
         TextView roundNumber = view.findViewById(R.id.last_race_round);
         String round = "Round " + race.getRound();
         roundNumber.setText(round);
-        MutableLiveData<Result> mutableLiveData = ServiceLocator.getInstance().getRaceResultRepository(getActivity().getApplication(), false).fetchRaceResult(Integer.parseInt(race.getRound()), 0L);
 
+        MutableLiveData<Result> mutableLiveData = ServiceLocator.getInstance().getRaceResultRepository(getActivity().getApplication(), false).fetchRaceResult(Integer.parseInt(race.getRound()), 0L);
         mutableLiveData.observe(getViewLifecycleOwner(), result -> {
-            if(result.isSuccess()) {
+            if (result.isSuccess()) {
                 List<RaceResult> raceResults = ((Result.RacesResultSuccess) result).getData();
                 setDriverNames(view, raceResults);
             }
@@ -183,7 +197,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void setNextSessionCard(View view) {
-        MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchNextRace(0);
+        MutableLiveData<Result> data = homeViewModel.getNextRaceLiveData(0L);
 
         data.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
@@ -194,7 +208,7 @@ public class HomeFragment extends Fragment {
                 } catch (Exception e) {
                     setSeasonEnded(view);
                 }
-            }else {
+            } else {
                 Log.i(TAG, "NEXT RACE ERROR");
             }
         });
@@ -213,7 +227,7 @@ public class HomeFragment extends Fragment {
         ImageView nextRaceFlag = view.findViewById(R.id.home_next_gp_flag);
         String nation = nextRace.getTrack().getLocation().getCountry();
         nextRaceFlag.setImageResource(Constants.NATION_COUNTRY_FLAG.get(nation));
-        if(!nextRace.getSeason().equals(ServiceLocator.getCurrentYear())){
+        if (!nextRace.getSeason().equals(ServiceLocator.getCurrentYear())) {
             throw new Exception("Season mismatch");
         }
         List<Session> sessions = nextRace.getSessions();
@@ -224,7 +238,14 @@ public class HomeFragment extends Fragment {
         }
 
         TextView sessionType = view.findViewById(R.id.next_session_type);
-        //sessionType.setText(Constants.SESSION_NAMES.get(nextEvent.getClass().getSimpleName()));
+        String sessionId = "";
+        if (nextEvent.getClass().getSimpleName().equals("Practice")) {
+            Practice practice = (Practice) nextEvent;
+            sessionId = "Practice" + practice.getNumber();
+        } else {
+            sessionId = nextEvent.getClass().getSimpleName();
+        }
+        sessionType.setText(Constants.SESSION_NAMES.get(sessionId));
 
         FrameLayout nextSessionCard = view.findViewById(R.id.timer_card_countdown);
         nextSessionCard.setOnClickListener(v -> {
@@ -249,8 +270,6 @@ public class HomeFragment extends Fragment {
 
         buildFinalDriversStanding(seasonResults);
         buildFinalTeamsStanding(seasonResults);
-
-        //nextRaceToProcess = false;
     }
 
     private void buildFinalDriversStanding(View seasonEndedCard) {
@@ -359,17 +378,36 @@ public class HomeFragment extends Fragment {
             if (result.isSuccess()) {
                 DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
                 List<DriverStandingsElement> driversList = driverStandings.getDriverStandingsElements();
-
                 DriverStandingsElement favouriteDriver = driverStandingsViewModel.getDriverStandingsElement(driversList, getFavoriteDriverId());
+
                 if (favouriteDriver == null) {
                     Log.i(TAG, "Favorite Driver not found");
                     Intent intent = new Intent(getActivity(), ProfileActivity.class);
                     startActivity(intent);
                 }
-                //Log.i(TAG, "Favorite Driver: " + favouriteDriver.toString());
                 buildDriverCard(view, favouriteDriver);
             } else {
                 Log.i(TAG, "DRIVER STANDINGS ERROR");
+                buildDriverCard(view, getFavoriteDriverId());
+                loadingScreen.hideLoadingScreen();
+            }
+
+            setFavouriteConstructorCard(view);
+        });
+    }
+
+    private void buildDriverCard(View view, String favoriteDriverId) {
+        DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(ServiceLocator.getInstance().getCommonDriverRepository())).get(DriverViewModel.class);
+        MutableLiveData<Result> data = driverViewModel.getDriver(favoriteDriverId);
+
+        data.observe(getViewLifecycleOwner(), result -> {
+            if (result.isSuccess()) {
+                Driver driver = ((Result.DriverSuccess) result).getData();
+                DriverStandingsElement standingElement = new DriverStandingsElement();
+                standingElement.setDriver(driver);
+                buildDriverCard(view, standingElement);
+            } else {
+                Log.i(TAG, "DRIVER ERROR");
                 loadingScreen.hideLoadingScreen();
             }
         });
@@ -381,34 +419,55 @@ public class HomeFragment extends Fragment {
         driverName.setText(driver.getGivenName() + " " + driver.getFamilyName());
 
         String driverNationality = driver.getNationality();
+        NationViewModel nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(ServiceLocator.getInstance().getFirebaseNationRepository())).get(NationViewModel.class);
+        MutableLiveData<Result> nationData = nationViewModel.getNation(driverNationality);
+        nationData.observe(getViewLifecycleOwner(), nationResult -> {
+            if (nationResult.isSuccess()) {
+                Nation nation = ((Result.NationSuccess) nationResult).getData();
+
+                buildDriverCard(view, standingElement, nation);
+            }
+        });
+    }
+
+    private void buildDriverCard(View view, DriverStandingsElement standingElement, Nation nation) {
+        Driver driver = standingElement.getDriver();
+
         ImageView driverFlag = view.findViewById(R.id.favourite_driver_flag);
-        driverFlag.setImageResource(Constants.NATION_COUNTRY_FLAG.get(Constants.NATIONALITY_NATION.get(driverNationality)));
+        Glide.with(this).load(nation.getNation_flag_url()).into(driverFlag);
 
         TextView nationality = view.findViewById(R.id.favourite_driver_nationality);
-        nationality.setText(Constants.NATIONALITY_ABBREVIATION.get(driverNationality));
+        nationality.setText(nation.getAbbreviation());
 
         ImageView driverImage = view.findViewById(R.id.favourite_driver_pic);
-        driverImage.setImageResource(Constants.DRIVER_IMAGE.get(driver.getDriverId()));
+        Glide.with(this).load(driver.getDriver_pic_url()).into(driverImage);
 
-        TextView driverPosition = view.findViewById(R.id.favourite_driver_position);
-        driverPosition.setText(standingElement.getPosition());
+        if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
+            TextView driverPosition = view.findViewById(R.id.favourite_driver_position);
+            driverPosition.setText(standingElement.getPosition());
 
-        TextView driverPoints = view.findViewById(R.id.favourite_driver_points);
-        driverPoints.setText(standingElement.getPoints());
+            TextView driverPoints = view.findViewById(R.id.favourite_driver_points);
+            driverPoints.setText(standingElement.getPoints());
+
+            MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
+            driverRank.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), DriversStandingActivity.class);
+                intent.putExtra("DRIVER_ID", standingElement.getDriver().getDriverId());
+                startActivity(intent);
+            });
+        } else {
+            Log.i(TAG, "Driver not found in standings");
+            MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
+            driverRank.setClickable(false);
+        }
+
 
         //set favourite driver card color
         RelativeLayout driverCard = view.findViewById(R.id.favourite_driver_layout);
-        //driverCard.setBackgroundResource(Constants.TEAM_COLOR.get(Constants.DRIVER_TEAM.get(standingElement.getDriver().getDriverId())));
         //driverCard.setBackgroundColor(Color.WHITE);
+
         driverImage.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), DriverBioActivity.class);
-            intent.putExtra("DRIVER_ID", standingElement.getDriver().getDriverId());
-            startActivity(intent);
-        });
-
-        MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
-        driverRank.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), DriversStandingActivity.class);
             intent.putExtra("DRIVER_ID", standingElement.getDriver().getDriverId());
             startActivity(intent);
         });
@@ -422,60 +481,89 @@ public class HomeFragment extends Fragment {
             if (result.isSuccess()) {
                 ConstructorStandings constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
                 List<ConstructorStandingsElement> constructorsList = constructorStandings.getConstructorStandings();
-
                 ConstructorStandingsElement favouriteConstructor = constructorStandingsViewModel.getConstructorStandingsElement(constructorsList, getFavoriteTeamId());
-                Log.i(TAG, "Favorite Constructor: " + favouriteConstructor.toString());
-                NationViewModel nationViewModel = new ViewModelProvider(this, new NationViewModelFactory()).get(NationViewModel.class);
-                nationViewModel.getNation(Constants.NATIONALITY_NATION_DB.get(favouriteConstructor.getConstructor().getNationality())).observe(getViewLifecycleOwner(), nationResult -> {
-                    if(nationResult.isSuccess()) {
-                        Nation nation = ((Result.NationSuccess) nationResult).getData();
-                        Log.i(TAG, "NATION: " + nation.toString());
-                        buildConstructorCard(view, favouriteConstructor, nation);
-                    }else {
-                        //TODO
-                    }
-                });
+
+                if (favouriteConstructor == null) {
+                    Log.i(TAG, "Favorite Constructor not found");
+                    Intent intent = new Intent(getActivity(), ProfileActivity.class);
+                    startActivity(intent);
+                }
+                buildConstructorCard(view, favouriteConstructor);
             } else {
                 Log.i(TAG, "CONSTRUCTOR STANDINGS ERROR");
+                buildConstructorCard(view, getFavoriteTeamId());
                 loadingScreen.hideLoadingScreen();
             }
         });
     }
 
-    private void buildConstructorCard(View view, ConstructorStandingsElement standingElement, Nation nation) {
+    private void buildConstructorCard(View view, String favoriteTeamId) {
+        ConstructorViewModel constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(ServiceLocator.getInstance().getCommonConstructorRepository())).get(ConstructorViewModel.class);
+        MutableLiveData<Result> data = constructorViewModel.getSelectedConstructorLiveData(favoriteTeamId);
+
+        data.observe(getViewLifecycleOwner(), result -> {
+            if (result.isSuccess()) {
+                Constructor constructor = ((Result.ConstructorSuccess) result).getData();
+                ConstructorStandingsElement standingElement = new ConstructorStandingsElement();
+                standingElement.setConstructor(constructor);
+                buildConstructorCard(view, standingElement);
+            } else {
+                Log.i(TAG, "CONSTRUCTOR ERROR");
+                loadingScreen.hideLoadingScreen();
+            }
+        });
+    }
+
+    private void buildConstructorCard(View view, ConstructorStandingsElement standingElement) {
+        Constructor constructor = standingElement.getConstructor();
         TextView constructorName = view.findViewById(R.id.favourite_constructor_name);
-        constructorName.setText(standingElement.getConstructor().getName());
+        constructorName.setText(constructor.getName());
 
         ImageView constructorCar = view.findViewById(R.id.favourite_constructor_car);
-        constructorCar.setImageResource(Constants.TEAM_CAR.get(standingElement.getConstructor().getConstructorId().toLowerCase()));
+        Glide.with(this).load(constructor.getCar_pic_url()).into(constructorCar);
 
-        TextView constructorPosition = view.findViewById(R.id.favourite_constructor_position);
-        constructorPosition.setText(standingElement.getPosition());
-
-        TextView constructorPoints = view.findViewById(R.id.favourite_constructor_points);
-        constructorPoints.setText(standingElement.getPoints());
-
-        ImageView constructorFlag = view.findViewById(R.id.favourite_constructor_flag);
+        NationViewModel nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(ServiceLocator.getInstance().getFirebaseNationRepository())).get(NationViewModel.class);
         String nationality = standingElement.getConstructor().getNationality();
-        //Glide.with(this).load(team.getTeam_logo_url()).into(teamLogoImage);
+        MutableLiveData<Result> nationData = nationViewModel.getNation(nationality);
+        nationData.observe(getViewLifecycleOwner(), teamNationResult -> {
+            if (teamNationResult.isSuccess()) {
+                Nation nation = ((Result.NationSuccess) teamNationResult).getData();
+
+                buildConstructorCard(view, standingElement, nation);
+            }
+        });
+    }
+
+    private void buildConstructorCard(View view, ConstructorStandingsElement standingElement, Nation nation) {
+        ImageView constructorFlag = view.findViewById(R.id.favourite_constructor_flag);
         Glide.with(this).load(nation.getNation_flag_url()).into(constructorFlag);
+
         TextView constructorNationality = view.findViewById(R.id.favourite_constructor_nationality);
-        constructorNationality.setText(Constants.NATIONALITY_ABBREVIATION.get(nationality));
+        constructorNationality.setText(nation.getAbbreviation());
+        if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
+            TextView constructorPosition = view.findViewById(R.id.favourite_constructor_position);
+            constructorPosition.setText(standingElement.getPosition());
+
+            TextView constructorPoints = view.findViewById(R.id.favourite_constructor_points);
+            constructorPoints.setText(standingElement.getPoints());
+
+            MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
+            teamRank.setOnClickListener(v -> {
+                Intent intent = new Intent(getActivity(), ConstructorsStandingActivity.class);
+                intent.putExtra("TEAM_ID", standingElement.getConstructor().getConstructorId());
+                startActivity(intent);
+            });
+        } else {
+            Log.i(TAG, "Constructor not found in standings");
+            MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
+            teamRank.setClickable(false);
+        }
 
         RelativeLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
-        //constructorCard.setBackgroundResource(Constants.TEAM_COLOR.get(standingElement.getConstructor().getConstructorId().toLowerCase()));
-        //set card color to white
-        constructorCard.setBackgroundColor(Color.WHITE);
+        constructorCard.setBackgroundColor(Color.parseColor("#F4F2F3"));
 
-        constructorCar.setOnClickListener(v -> {
+        constructorCard.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ConstructorBioActivity.class);
-            intent.putExtra("TEAM_ID", standingElement.getConstructor().getConstructorId());
-            startActivity(intent);
-        });
-
-        MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
-        teamRank.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), ConstructorsStandingActivity.class);
             intent.putExtra("TEAM_ID", standingElement.getConstructor().getConstructorId());
             startActivity(intent);
         });

@@ -53,7 +53,6 @@ public abstract class WeeklyRace {
     public abstract List<Session> getSessions();
 
     public void setSessions(List<Session> sessions) {
-        LocalDateTime currentDateTime = LocalDateTime.now();
         for (Session session : sessions) {
             if(session != null)
                 session.setSessionStatus();
@@ -77,7 +76,7 @@ public abstract class WeeklyRace {
 
     public boolean isUnderway() {
         for (Session session : this.getSessions()) {
-            if (session.isUnderway()) {
+            if (session.getSessionStatus().equals(SessionStatus.IN_PROGRESS)) {
                 return true;
             }
         }

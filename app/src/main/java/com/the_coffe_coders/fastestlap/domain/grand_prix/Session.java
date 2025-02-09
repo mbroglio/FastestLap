@@ -60,11 +60,11 @@ public abstract class Session {
     }
 
     public Boolean isFinished() {
-        return true;
+        return this.getSessionStatus().equals(SessionStatus.FINISHED);
     }
 
     public Boolean isUnderway() {
-        return true;
+        return this.getSessionStatus().equals(SessionStatus.IN_PROGRESS);
     }
 
     public void setSessionStatus() {

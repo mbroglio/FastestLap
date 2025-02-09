@@ -10,6 +10,7 @@ import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsStanding
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class HomeViewModel extends ViewModel {
     private MutableLiveData<Result> constructor;
     private MutableLiveData<Result> driverStandings;
     private MutableLiveData<Result> constructorStanding;
+    private MutableLiveData<Result> nextRace;
 
     public HomeViewModel(RaceRepository raceRepository, RaceResultRepository raceResultRepository, DriverStandingsStandingsRepository driverRepository, ConstructorStandingsRepository constructorRepository) {
         this.raceRepository = raceRepository;
@@ -37,13 +39,12 @@ public class HomeViewModel extends ViewModel {
         return raceRepository.fetchLastRace(0);
     }
 
-    public MutableLiveData<Result> getNextRace(long lastUpdate) {
-        //ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchNextRace(0);
-        return raceRepository.fetchNextRace(0);
-    }
-
     private void fetchDriverStandings(long lastUpdate) {
         this.driverStandings = driverRepository.fetchDriversStandings(lastUpdate);
+    }
+
+    private void fetchNextRace(long lastUpdate){
+        this.nextRace = raceRepository.fetchNextRace(lastUpdate);
     }
 
     public MutableLiveData<Result> getDriverStandingsLiveData(long lastUpdate) {
@@ -63,7 +64,6 @@ public class HomeViewModel extends ViewModel {
         return null;
     }
 
-
     public MutableLiveData<Result> getConstructorStandingsLiveData(long lastUpdate) {
         if (constructorStanding == null) {
             fetchConstructorStandings(lastUpdate);
@@ -71,9 +71,17 @@ public class HomeViewModel extends ViewModel {
         return constructorStanding;
     }
 
+    public MutableLiveData<Result> getNextRaceLiveData(long lastUpdate) {
+        if (nextRace == null) {
+            fetchNextRace(lastUpdate);
+        }
+        return nextRace;
+    }
+
     private void fetchConstructorStandings(long lastUpdate) {
         constructorStanding = constructorRepository.fetchConstructorStandings(lastUpdate);
     }
+
 
 
 }

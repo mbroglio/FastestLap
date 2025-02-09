@@ -175,7 +175,8 @@
                         android:focusable="true"
                         app:cardBackgroundColor="@color/timer_gray_dark"
                         app:strokeColor="@color/black"
-                        app:strokeWidth="3dp">
+                        app:strokeWidth="3dp"
+                        android:visibility="visible">
 
                         <RelativeLayout
                             android:layout_width="match_parent"
