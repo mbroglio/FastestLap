@@ -29,13 +29,10 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
-import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
-import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
@@ -192,7 +189,11 @@ public class HomeFragment extends Fragment {
             if (result.isSuccess()) {
                 WeeklyRace nextRace = ((Result.NextRaceSuccess) result).getData();
                 Log.i(TAG, "" + nextRace.toString());
-                processNextRace(view, nextRace);
+                try {
+                    processNextRace(view, nextRace);
+                } catch (Exception e) {
+                    setSeasonEnded(view);
+                }
             }else {
                 Log.i(TAG, "NEXT RACE ERROR");
             }
@@ -204,7 +205,7 @@ public class HomeFragment extends Fragment {
         iconImageView.startAnimation(pulseAnimation);
     }
 
-    private void processNextRace(View view, WeeklyRace nextRace) {
+    private void processNextRace(View view, WeeklyRace nextRace) throws Exception {
         Log.i(TAG, "NEXT RACE:" + nextRace.toString());
         TextView nextRaceName = view.findViewById(R.id.home_next_gp_name);
         nextRaceName.setText(nextRace.getRaceName());
@@ -212,15 +213,15 @@ public class HomeFragment extends Fragment {
         ImageView nextRaceFlag = view.findViewById(R.id.home_next_gp_flag);
         String nation = nextRace.getTrack().getLocation().getCountry();
         nextRaceFlag.setImageResource(Constants.NATION_COUNTRY_FLAG.get(nation));
-        /*TODO FINISH NEXT SESSIONS IMPLEMENTATION
+        if(!nextRace.getSeason().equals(ServiceLocator.getCurrentYear())){
+            throw new Exception("Season mismatch");
+        }
         List<Session> sessions = nextRace.getSessions();
         Session nextEvent = nextRace.findNextEvent(sessions);
         if (nextEvent != null) {
             LocalDateTime eventDateTime = nextEvent.getStartDateTime();
             startCountdown(view, eventDateTime);
         }
-
-         */
 
         TextView sessionType = view.findViewById(R.id.next_session_type);
         //sessionType.setText(Constants.SESSION_NAMES.get(nextEvent.getClass().getSimpleName()));

@@ -117,7 +117,7 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
 
     void handleNextRaceSuccess(RaceAPIResponse weeklyRaceAPIResponse) {
         Log.i(TAG, "handleNextRaceSuccess");
-        WeeklyRace race = WeeklyRaceMapper.toWeeklyRaceNext(weeklyRaceAPIResponse.getRaceTable().getRaces().get(0));
+        WeeklyRace race = WeeklyRaceMapper.toWeeklyRace(weeklyRaceAPIResponse.getRaceTable().getRaces().get(0));
         Log.i(TAG, "handleNextRaceSuccess" + race);
         nextRaceMutableLiveData.postValue(new Result.NextRaceSuccess(race));
     }

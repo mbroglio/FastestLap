@@ -94,7 +94,7 @@ public class WeeklyRaceMapper {
                 SessionMapper.toSprint(race.getSprint()));
     }
 
-    public static WeeklyRace toWeeklyRaceNext(RaceDTO raceDTO) {
+    public static WeeklyRace toWeeklyRaceNext(RaceDTO raceDTO) { // ???
         WeeklyRace weeklyRace;
         if (raceDTO.getSprint() != null) {
             weeklyRace = toRaceSprint(raceDTO);

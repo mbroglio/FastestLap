@@ -44,6 +44,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 public class ServiceLocator {
 
     public static ServiceLocator instance;
+    public static String currentYear = "2024";
     public static final String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
     public static String CURRENT_YEAR_BASE_URL = BASE_URL + "2024/";
 
@@ -55,7 +56,12 @@ public class ServiceLocator {
     }
 
     public static void setCurrentYearBaseUrl(String seasonYear) {
+        currentYear = seasonYear;
         CURRENT_YEAR_BASE_URL = BASE_URL + seasonYear + "/";
+    }
+
+    public static String getCurrentYear() {
+        return currentYear;
     }
 
     public ErgastAPIService getConcreteErgastAPIService() {
