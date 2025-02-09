@@ -70,6 +70,7 @@ public class IntroScreenActivity extends AppCompatActivity {
         Animation nameAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_up);
 
         appLogo.startAnimation(logoAnimation);
+        appLogo.setVisibility(View.VISIBLE);
         logoMediaPlayer.start();  // Start the logo sound
         handler.postDelayed(() -> {
             appName.startAnimation(nameAnimation);
@@ -128,6 +129,8 @@ public class IntroScreenActivity extends AppCompatActivity {
 
     protected void setupIntro(){
 
+        Log.d(TAG, "Setting up intro screen");
+        Log.d(TAG, "Logged user: " + userViewModel.getLoggedUser());
         if (userViewModel.getLoggedUser() != null) {
             showForAutoLogin();
 
@@ -143,6 +146,8 @@ public class IntroScreenActivity extends AppCompatActivity {
                     }
                 }
             });
+        }else{
+            showIntroScreen();
         }
     }
 

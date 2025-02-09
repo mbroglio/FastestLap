@@ -446,7 +446,7 @@ public class HomeFragment extends Fragment {
         RelativeLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
         //constructorCard.setBackgroundResource(Constants.TEAM_COLOR.get(standingElement.getConstructor().getConstructorId().toLowerCase()));
         //set card color to white
-        //constructorCard.setBackgroundColor(Color.WHITE);
+        constructorCard.setBackgroundColor(Color.WHITE);
 
         constructorCar.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ConstructorBioActivity.class);
