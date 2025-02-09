@@ -344,7 +344,6 @@ public class ProfileActivity extends AppCompatActivity {
         signOutButton.setOnClickListener(v -> {
             userViewModel.logout();
             Intent intent = new Intent(ProfileActivity.this, WelcomeActivity.class);
-            intent.putExtra("SIGN_OUT", true);
             startActivity(intent);
         });
     }

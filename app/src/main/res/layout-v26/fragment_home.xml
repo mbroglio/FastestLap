@@ -52,7 +52,7 @@
 
                 <include
                     android:id="@+id/pending_last_race_results"
-                    layout="@layout/home_pending_last_race_results_layout"
+                    layout="@layout/home_results_not_available_layout"
                     android:visibility="gone" />
             </FrameLayout>
 

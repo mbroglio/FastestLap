@@ -379,7 +379,7 @@ public class HomeFragment extends Fragment {
         //set favourite driver card color
         RelativeLayout driverCard = view.findViewById(R.id.favourite_driver_layout);
         //driverCard.setBackgroundResource(Constants.TEAM_COLOR.get(Constants.DRIVER_TEAM.get(standingElement.getDriver().getDriverId())));
-        driverCard.setBackgroundColor(Color.WHITE);
+        //driverCard.setBackgroundColor(Color.WHITE);
         driverImage.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), DriverBioActivity.class);
             intent.putExtra("DRIVER_ID", standingElement.getDriver().getDriverId());
