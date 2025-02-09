@@ -111,7 +111,7 @@ public class WeeklyRaceMapper {
         weeklyRace.setFirstPractice(SessionMapper.toPractice(raceDTO.getFirstPractice(), 1));
         weeklyRace.setUrl(raceDTO.getUrl());
 
-        /*Race finalRace = new Race();
+        Race finalRace = new Race();
         finalRace.setSeason(raceDTO.getSeason());
         finalRace.setRound(raceDTO.getRound());
         finalRace.setRaceName(raceDTO.getRaceName());
@@ -128,7 +128,7 @@ public class WeeklyRaceMapper {
         */
 
 
-        //weeklyRace.setFinalRace(finalRace);
+        weeklyRace.setFinalRace(finalRace);
         return weeklyRace;
     }
 }

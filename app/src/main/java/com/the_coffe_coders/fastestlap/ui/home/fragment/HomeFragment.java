@@ -44,6 +44,8 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
+import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
+import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.profile.ProfileActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
@@ -76,10 +78,13 @@ public class HomeFragment extends Fragment {
     private final String TAG = HomeFragment.class.getSimpleName();
     private final SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
 
+    private HomeViewModel homeViewModel;
+
     LoadingScreen loadingScreen;
 
 
     public HomeFragment() {
+
         // Required empty public constructor
     }
 
@@ -95,6 +100,8 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getDriverStandingsRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false))).get(HomeViewModel.class);
 
         // Show loading screen initially
         loadingScreen = new LoadingScreen(view, getContext());
@@ -190,7 +197,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void setNextSessionCard(View view) {
-        MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchNextRace(0);
+        MutableLiveData<Result> data = homeViewModel.getNextRaceLiveData(0L);
 
         data.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
