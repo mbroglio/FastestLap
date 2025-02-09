@@ -1,5 +1,18 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = true)
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class Practice extends Session {
     private int number;
 
@@ -7,18 +20,6 @@ public class Practice extends Session {
         super(date, time);
         this.number = number;
         setEndDateTime();
-    }
-
-    public Practice() {
-        super();
-    }
-
-    public int getNumber() {
-        return number;
-    }
-
-    public void setNumber(int number) {
-        this.number = number;
     }
 
     public String getPractice() {
