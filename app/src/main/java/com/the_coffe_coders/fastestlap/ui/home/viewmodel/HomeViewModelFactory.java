@@ -5,19 +5,19 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorStandingsRepository;
-import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 
 public class HomeViewModelFactory implements ViewModelProvider.Factory {
     private final RaceRepository raceRepository;
     private final RaceResultRepository raceResultRepository;
-    private final DriverStandingsStandingsRepository driverRepository;
+    private final DriverStandingsRepository driverRepository;
     private final ConstructorStandingsRepository constructorRepository;
 
     public HomeViewModelFactory(RaceRepository raceRepository,
                                 RaceResultRepository raceResultRepository,
-                                DriverStandingsStandingsRepository driverRepository,
+                                DriverStandingsRepository driverRepository,
                                 ConstructorStandingsRepository constructorRepository) {
         this.raceRepository = raceRepository;
         this.raceResultRepository = raceResultRepository;
