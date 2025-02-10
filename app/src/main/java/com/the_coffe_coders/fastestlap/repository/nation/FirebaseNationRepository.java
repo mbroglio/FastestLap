@@ -15,14 +15,14 @@ import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 public class FirebaseNationRepository {
     private static FirebaseDatabase firebaseDatabase;
     private final String TAG = "FirebaseNationRepository";
-    private final MutableLiveData<Result> nationMutableLiveData;
+    private MutableLiveData<Result> nationMutableLiveData;
 
     public FirebaseNationRepository() {
-        nationMutableLiveData = new MutableLiveData<>();
         firebaseDatabase = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
     }
 
     public MutableLiveData<Result> getNation(String nationId) {
+        nationMutableLiveData = new MutableLiveData<>();
         DatabaseReference nationReference = firebaseDatabase.getReference(FIREBASE_NATIONS_COLLECTION).child(nationId);
         Log.i(TAG, "Nation reference: " + nationReference);
 
