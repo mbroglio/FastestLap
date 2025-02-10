@@ -49,7 +49,11 @@ public class JolpicaDriverRepositoy {
                     DriversAPIResponse driversAPIResponse = jsonParserUtils.parseDrivers(mrdata);
                     Log.i("Drivers", driversAPIResponse.toString());
 
-                    driverMutableLiveData.setValue(new Result.DriverSuccess(DriverMapper.toDriver(driversAPIResponse.getStandingsTable().getDriverDTOList().get(0))));
+                    try {
+                        driverMutableLiveData.setValue(new Result.DriverSuccess(DriverMapper.toDriver(driversAPIResponse.getStandingsTable().getDriverDTOList().get(0))));
+                    } catch (Exception e) {
+                        driverMutableLiveData.setValue(new Result.Error(e.getMessage()));
+                    }
                 } else {
                     Log.i(TAG, "onFailure");
                 }

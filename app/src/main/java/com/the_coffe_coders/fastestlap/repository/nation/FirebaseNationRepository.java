@@ -15,14 +15,15 @@ import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 public class FirebaseNationRepository {
     private static FirebaseDatabase firebaseDatabase;
     private final String TAG = "FirebaseNationRepository";
-    private MutableLiveData<Result> nationMutableLiveData;
+
 
     public FirebaseNationRepository() {
         firebaseDatabase = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
     }
 
     public MutableLiveData<Result> getNation(String nationId) {
-        nationMutableLiveData = new MutableLiveData<>();
+        Log.i(TAG, "Fetching nation with ID: " + nationId);
+        MutableLiveData<Result> nationMutableLiveData = new MutableLiveData<>();
         DatabaseReference nationReference = firebaseDatabase.getReference(FIREBASE_NATIONS_COLLECTION).child(nationId);
         Log.i(TAG, "Nation reference: " + nationReference);
 
@@ -30,7 +31,6 @@ public class FirebaseNationRepository {
             if (nationTask.isSuccessful()) {
                 Nation nation = nationTask.getResult().getValue(Nation.class);
                 Log.i("DriverBioActivity", "Nation data: " + nation);
-
                 nationMutableLiveData.postValue(new Result.NationSuccess(nation));
             }
         });

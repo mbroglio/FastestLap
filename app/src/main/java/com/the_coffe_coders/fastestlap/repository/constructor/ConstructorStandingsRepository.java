@@ -16,9 +16,9 @@ public class ConstructorStandingsRepository implements IConstructorRepository, C
 
     public static long FRESH_TIMEOUT = 60000;
     public static boolean isOutdate = true;
-    public final MediatorLiveData<Result> allConstructorMediatorLiveData;
-    public final MutableLiveData<Result> jolpicaConstructorsMutableLiveData;
-    private final MutableLiveData<Result> constructorStandingsMutableLiveData;
+    public MediatorLiveData<Result> allConstructorMediatorLiveData;
+    public MutableLiveData<Result> jolpicaConstructorsMutableLiveData;
+    private MutableLiveData<Result> constructorStandingsMutableLiveData;
     private final BaseConstructorRemoteDataSource constructorRemoteDataSource;
     private final BaseConstructorLocalDataSource constructorLocalDataSource;
     String TAG = "ConstructorStandingsRepository";
@@ -36,6 +36,7 @@ public class ConstructorStandingsRepository implements IConstructorRepository, C
     @Override
     public MutableLiveData<Result> fetchConstructorStandings(long lastUpdate) {
         long currentTime = System.currentTimeMillis();
+        this.constructorStandingsMutableLiveData = new MutableLiveData<>();
         if (true) {
             Log.i(TAG, "FETCH CONSTRUCTORSTANDINGS METHOD");
             constructorRemoteDataSource.getConstructorStandings();

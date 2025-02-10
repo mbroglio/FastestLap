@@ -419,12 +419,13 @@ public class HomeFragment extends Fragment {
         driverName.setText(driver.getGivenName() + " " + driver.getFamilyName());
 
         String driverNationality = driver.getNationality();
+        Log.i(TAG, "DRIVER NATIONALITY: " + driverNationality);
         NationViewModel nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(ServiceLocator.getInstance().getFirebaseNationRepository())).get(NationViewModel.class);
         MutableLiveData<Result> nationData = nationViewModel.getNation(driverNationality);
         nationData.observe(getViewLifecycleOwner(), nationResult -> {
             if (nationResult.isSuccess()) {
                 Nation nation = ((Result.NationSuccess) nationResult).getData();
-
+                Log.i(TAG, "NATION: " + nation);
                 buildDriverCard(view, standingElement, nation);
             }
         });

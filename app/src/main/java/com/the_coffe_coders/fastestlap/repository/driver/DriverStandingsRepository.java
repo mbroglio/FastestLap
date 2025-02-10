@@ -22,9 +22,9 @@ public class DriverStandingsRepository implements IDriverStandingsRepository, Dr
     public static long FRESH_TIMEOUT = 60000;
     public static boolean isOutdate = true;
 
-    private final MediatorLiveData<Result> allDriverMediatorLiveData;
-    private final MutableLiveData<Result> jolpicaDriversMutableLiveData;
-    private final MutableLiveData<Result> driverStandingsMutableLiveData;
+    private MediatorLiveData<Result> allDriverMediatorLiveData;
+    private MutableLiveData<Result> jolpicaDriversMutableLiveData;
+    private MutableLiveData<Result> driverStandingsMutableLiveData;
     private final BaseDriverRemoteDataSource driverRemoteDataSource;
     private final BaseDriverLocalDataSource driverLocalDataSource;
 
@@ -43,6 +43,7 @@ public class DriverStandingsRepository implements IDriverStandingsRepository, Dr
     @Override
     public MutableLiveData<Result> fetchDriversStandings(long lastUpdate) {
         long currentTime = System.currentTimeMillis();
+        this.driverStandingsMutableLiveData = new MediatorLiveData<>();
         //controllo che il dispositivo sia collegato ad internet
         Log.i(TAG, "FETCH DRIVER STANDINGS METHOD");
         if (true) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT
