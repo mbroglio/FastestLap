@@ -21,7 +21,8 @@
             android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:fontFamily="@font/orbitron_regular"
-            android:gravity="center|center_horizontal"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:text="2025"
             android:textColor="@color/black"
             android:textSize="@dimen/body_text_size" />
@@ -33,6 +34,7 @@
             android:layout_marginStart="10dp"
             android:layout_weight="1"
             android:fontFamily="@font/orbitron_regular"
+            android:layout_gravity="center"
             android:gravity="center"
             android:text="23"
             android:textColor="@color/black"
@@ -47,8 +49,9 @@
             android:layout_marginStart="5dp"
             android:layout_weight="0.8"
             android:fontFamily="@font/orbitron_regular"
+            android:layout_gravity="center"
             android:gravity="center"
-            android:text="Aston Martin"
+            android:text="Aston\nMartin"
             android:textColor="@color/black"
             android:textSize="@dimen/body_text_size">
 
@@ -62,6 +65,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/orbitron_regular"
             android:gravity="center"
+            android:layout_gravity="center"
             android:text="400"
             android:textColor="@color/black"
             android:textSize="@dimen/body_text_size">
@@ -76,6 +80,7 @@
             android:layout_weight="1.05"
             android:fontFamily="@font/orbitron_regular"
             android:gravity="center"
+            android:layout_gravity="center"
             android:text="15"
             android:textColor="@color/black"
             android:textSize="@dimen/body_text_size">
@@ -90,6 +95,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/orbitron_regular"
             android:gravity="center"
+            android:layout_gravity="center"
             android:text="20"
             android:textColor="@color/black"
             android:textSize="@dimen/body_text_size">

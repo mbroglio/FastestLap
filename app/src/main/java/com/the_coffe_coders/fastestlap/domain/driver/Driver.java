@@ -50,9 +50,10 @@ public class Driver implements Parcelable {
     private String podiums; // F
     private String racing_number_pic_url; // F
     private String team_id; // F
-    private String weight; // F
+    private String weight;// F
+    private String first_entry; // F
 
-    public Driver(String driverId, String givenName, String familyName, String dateOfBirth, String nationality, String best_result, String birth_place, String championships, List<DriverHistory> driver_history, String driver_pic_url, String height, String podiums, String racing_number_pic_url, String team_id, String weight) {
+    public Driver(String driverId, String givenName, String familyName, String dateOfBirth, String nationality, String best_result, String birth_place, String championships, List<DriverHistory> driver_history, String driver_pic_url, String height, String podiums, String racing_number_pic_url, String team_id, String weight, String first_entry) {
         this.driverId = driverId;
         this.givenName = givenName;
         this.familyName = familyName;
@@ -68,6 +69,7 @@ public class Driver implements Parcelable {
         this.racing_number_pic_url = racing_number_pic_url;
         this.team_id = team_id;
         this.weight = weight;
+        this.first_entry = first_entry;
     }
 
     public Driver() {
@@ -307,6 +309,14 @@ public class Driver implements Parcelable {
         this.weight = weight;
     }
 
+    public String getFirst_entry() {
+        return first_entry;
+    }
+
+    public void setFirst_entry(String first_entry) {
+        this.first_entry = first_entry;
+    }
+
     public String toStringDB() {
         return "Driver{" +
                 "best_result='" + best_result + '\'' +
@@ -321,6 +331,7 @@ public class Driver implements Parcelable {
                 ", racing_number_pic_url='" + racing_number_pic_url + '\'' +
                 ", team_id='" + team_id + '\'' +
                 ", weight='" + weight + '\'' +
+                ", firstEntry='" + first_entry + '\'' +
                 ", driverId='" + driverId + '\'' +
                 '}';
     }

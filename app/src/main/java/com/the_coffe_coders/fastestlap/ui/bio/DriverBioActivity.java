@@ -145,7 +145,9 @@ public class DriverBioActivity extends AppCompatActivity {
     public void setToolbar() {
         String fullName = driver.getGivenName() + " " + driver.getFamilyName();
 
-        toolbar.setTitle(fullName.toUpperCase());
+        TextView toolbarTitle = findViewById(R.id.topAppBarTitle);
+        toolbarTitle.setText(fullName.toUpperCase());
+
         toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
         appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
 
@@ -190,6 +192,9 @@ public class DriverBioActivity extends AppCompatActivity {
 
         TextView championships = findViewById(R.id.driver_championships);
         championships.setText(driver.getChampionships());
+
+        TextView firstEntry = findViewById(R.id.driver_first_entry);
+        firstEntry.setText(driver.getFirst_entry());
 
         Glide.with(this).load(driver.getRacing_number_pic_url()).into(driverNumberImage);
 
