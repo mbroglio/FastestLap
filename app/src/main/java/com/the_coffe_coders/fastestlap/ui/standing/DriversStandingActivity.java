@@ -1,8 +1,5 @@
 package com.the_coffe_coders.fastestlap.ui.standing;
 
-import android.animation.ArgbEvaluator;
-import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -17,7 +14,6 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -29,6 +25,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
+import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
@@ -89,15 +86,26 @@ public class DriversStandingActivity extends AppCompatActivity {
                 driverStandings = ((Result.DriverStandingsSuccess) result).getData();
 
                 List<DriverStandingsElement> driverList = driverStandings.getDriverStandingsElements();
-                int initialSize = driverList.size();
-                loadingScreen.hideLoadingScreen();
+                if (driverList.isEmpty()) {
+                    Log.i(TAG, "DRIVER STANDINGS EMPTY");
+                    List<Driver> drivers = fetchDriversList();
 
-                for (DriverStandingsElement driver : driverList) {
-                    View driverCard = generateDriverCard(driver, driverId);
-                    driverStanding.addView(driverCard);
-                    View space = new View(DriversStandingActivity.this);
-                    space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
-                    driverStanding.addView(space);
+                    for (Driver driver : drivers) {
+                        View driverCard = generateDriverCard(driver, driverId);
+                        driverStanding.addView(driverCard);
+                        View space = new View(DriversStandingActivity.this);
+                        space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
+                        driverStanding.addView(space);
+                    }
+                } else {
+                    Log.i(TAG, "DRIVER STANDINGS NOT EMPTY");
+                    for (DriverStandingsElement driver : driverList) {
+                        View driverCard = generateDriverCard(driver, driverId);
+                        driverStanding.addView(driverCard);
+                        View space = new View(DriversStandingActivity.this);
+                        space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
+                        driverStanding.addView(space);
+                    }
                 }
             } else {
                 Log.i(TAG, "DRIVER STANDINGS ERROR");
@@ -105,7 +113,9 @@ public class DriversStandingActivity extends AppCompatActivity {
             }
         });
 
-        CommonConstructorRepository commonConstructorRepository = new CommonConstructorRepository();
+        loadingScreen.hideLoadingScreen();
+
+        /*CommonConstructorRepository commonConstructorRepository = new CommonConstructorRepository();
 
         MutableLiveData<Result> constructorMutableLiveData = commonConstructorRepository.getConstructor("mercedes");
 
@@ -114,7 +124,20 @@ public class DriversStandingActivity extends AppCompatActivity {
                 Constructor constructor = ((Result.ConstructorSuccess) result).getData();
                 Log.i(TAG, "GET CONSTRUCTOR FROM COMMON REPO: " + constructor.toString());
             }
-        });
+        });*/
+    }
+
+
+    private List<Driver> fetchDriversList() {
+        return null;
+    }
+    private View generateDriverCard(Driver driver, String driverId) {
+        DriverStandingsElement driverStandingsElement = new DriverStandingsElement();
+        driverStandingsElement.setDriver(driver);
+
+        driverStandingsElement.setPoints("0");
+
+        return generateDriverCard(driverStandingsElement, driverId);
     }
 
     private View generateDriverCard(DriverStandingsElement standingElement, String driverIdToHighlight) {

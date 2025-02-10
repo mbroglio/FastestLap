@@ -77,10 +77,8 @@ import java.util.List;
 public class HomeFragment extends Fragment {
     private final String TAG = HomeFragment.class.getSimpleName();
     private final SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
-
-    private HomeViewModel homeViewModel;
-
     LoadingScreen loadingScreen;
+    private HomeViewModel homeViewModel;
 
 
     public HomeFragment() {
@@ -110,6 +108,8 @@ public class HomeFragment extends Fragment {
         setLastRaceCard(view);
         setNextSessionCard(view);
         setFavouriteDriverCard(view);
+
+        loadingScreen.hideLoadingScreen();
 
         return view;
     }
@@ -374,25 +374,59 @@ public class HomeFragment extends Fragment {
         DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverStandingsRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
         MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
 
-        data.observe(getViewLifecycleOwner(), result -> {
-            if (result.isSuccess()) {
-                DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
-                List<DriverStandingsElement> driversList = driverStandings.getDriverStandingsElements();
-                DriverStandingsElement favouriteDriver = driverStandingsViewModel.getDriverStandingsElement(driversList, getFavoriteDriverId());
-
-                if (favouriteDriver == null) {
-                    Log.i(TAG, "Favorite Driver not found");
-                    Intent intent = new Intent(getActivity(), ProfileActivity.class);
-                    startActivity(intent);
+        try {
+            data.observe(getViewLifecycleOwner(), result -> {
+                if (result.isSuccess()) {
+                    DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
+                    List<DriverStandingsElement> driversList = driverStandings.getDriverStandingsElements();
+                    DriverStandingsElement favouriteDriver = driverStandingsViewModel.getDriverStandingsElement(driversList, getFavoriteDriverId());
+                    if (favouriteDriver == null) {
+                        Log.i(TAG, "Favorite Driver not found");
+                        showSelectFavouriteDriver(view);
+                    } else {
+                        buildDriverCard(view, favouriteDriver);
+                    }
+                } else {
+                    Log.i(TAG, "DRIVER STANDINGS ERROR");
+                    buildDriverCard(view, getFavoriteDriverId());
+                    loadingScreen.hideLoadingScreen();
                 }
-                buildDriverCard(view, favouriteDriver);
-            } else {
-                Log.i(TAG, "DRIVER STANDINGS ERROR");
-                buildDriverCard(view, getFavoriteDriverId());
-                loadingScreen.hideLoadingScreen();
-            }
 
-            setFavouriteConstructorCard(view);
+                //setFavouriteConstructorCard(view);
+            });
+        } catch (Exception e) {
+            Log.i(TAG, "Driver not found");
+            showDriverNotFound(view);
+        }
+    }
+
+    private void showSelectFavouriteDriver(View view) {
+        View favDriver = view.findViewById(R.id.favorite_driver);
+        View selectFavDriver = view.findViewById(R.id.pending_favorite_driver);
+        View missingFavDriver = view.findViewById(R.id.missing_favorite_driver);
+
+        selectFavDriver.setVisibility(View.VISIBLE);
+        favDriver.setVisibility(View.GONE);
+        missingFavDriver.setVisibility(View.GONE);
+
+        selectFavDriver.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), DriversStandingActivity.class);
+            startActivity(intent);
+        });
+    }
+
+    private void showDriverNotFound(View view) {
+        View favDriver = view.findViewById(R.id.favorite_driver);
+        View selectFavDriver = view.findViewById(R.id.pending_favorite_driver);
+        View missingFavDriver = view.findViewById(R.id.missing_favorite_driver);
+
+        missingFavDriver.setVisibility(View.VISIBLE);
+        selectFavDriver.setVisibility(View.GONE);
+        favDriver.setVisibility(View.GONE);
+
+        missingFavDriver.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), DriversStandingActivity.class);
+            startActivity(intent);
         });
     }
 

@@ -44,17 +44,8 @@ import java.util.Objects;
 public class SignUpFragment extends DialogFragment {
 
     private static final String TAG = "RegisterPopup";
-    private final String[] drivers = Constants.DRIVER_FULLNAME.keySet().toArray(new String[0]);
-    private final String[] constructors = Constants.TEAM_FULLNAME.keySet().toArray(new String[0]);
     private UserViewModel userViewModel;
     private TextInputEditText textInputEmail, textInputPassword;
-    private String favouriteDriverKey, favouriteConstructorKey;
-    private TextView favouriteDriverText;
-    private MaterialCardView changeDriverButton;
-    private ListPopupWindow listPopupWindowDrivers;
-    private TextView favouriteConstructorText;
-    private MaterialCardView changeConstructorButton;
-    private ListPopupWindow listPopupWindowConstructors;
 
     @Nullable
     @Override
@@ -69,29 +60,6 @@ public class SignUpFragment extends DialogFragment {
 
         textInputEmail = view.findViewById(R.id.textInputEmail);
         textInputPassword = view.findViewById(R.id.textInputPassword);
-
-        favouriteDriverText = view.findViewById(R.id.favourite_driver_text);
-        changeDriverButton = view.findViewById(R.id.change_driver_button);
-        changeDriverButton.setOnClickListener(v -> {
-            if (listPopupWindowDrivers.isShowing()) {
-                listPopupWindowDrivers.dismiss();
-            } else {
-                listPopupWindowDrivers.show();
-            }
-        });
-
-        favouriteConstructorText = view.findViewById(R.id.favourite_constructor_text);
-        changeConstructorButton = view.findViewById(R.id.change_constructor_button);
-        changeConstructorButton.setOnClickListener(v -> {
-            if (listPopupWindowConstructors.isShowing()) {
-                listPopupWindowConstructors.dismiss();
-            } else {
-                listPopupWindowConstructors.show();
-            }
-        });
-
-        listPopupWindowDrivers = createListPopupWindow(drivers, changeDriverButton, true);
-        listPopupWindowConstructors = createListPopupWindow(constructors, changeConstructorButton, false);
 
         Button submitButton = view.findViewById(R.id.submit_button);
 
@@ -121,9 +89,6 @@ public class SignUpFragment extends DialogFragment {
 
                                 userViewModel.setAuthenticationError(false);
                                 Log.i(TAG, "User: " + user.toString());
-
-                                SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this.getContext());
-                                saveSharedPreferences(sharedPreferencesUtils, user);
 
                                 Intent intent = new Intent(requireContext(), HomePageActivity.class);
                                 Log.i(TAG, "Starting HomePageActivity");
@@ -155,7 +120,7 @@ public class SignUpFragment extends DialogFragment {
         }
     }
 
-    private void saveSharedPreferences(SharedPreferencesUtils sharedPreferencesUtils, User user) {
+    /*private void saveSharedPreferences(SharedPreferencesUtils sharedPreferencesUtils, User user) {
         Log.i(TAG, "Saving user preferences");
         Log.i(TAG, "Favourite driver: " + favouriteDriverKey);
         Log.i(TAG, "Favourite constructor: " + favouriteConstructorKey);
@@ -178,29 +143,7 @@ public class SignUpFragment extends DialogFragment {
                 "false",
                 user.getIdToken()
         );
-    }
-
-    private ListPopupWindow createListPopupWindow(String[] items, MaterialCardView anchorView, boolean isDriver) {
-        ListPopupWindow listPopupWindow = new ListPopupWindow(requireContext());
-        listPopupWindow.setAdapter(new SpinnerAdapter(requireContext(), items, isDriver));
-        listPopupWindow.setAnchorView(anchorView);
-        listPopupWindow.setWidth((int) (220 * getResources().getDisplayMetrics().density)); // Set the width to 220dp
-        listPopupWindow.setHeight((int) (250 * getResources().getDisplayMetrics().density)); // Set the height to 250dp
-        listPopupWindow.setBackgroundDrawable(AppCompatResources.getDrawable(requireContext(), R.drawable.round_background_grey));
-        listPopupWindow.setOnItemClickListener((parent, view, position, id) -> {
-            String selectedItemKey = items[position];
-            if (isDriver) {
-                favouriteDriverKey = selectedItemKey;
-                favouriteDriverText.setText(getString(Constants.DRIVER_FULLNAME.get(favouriteDriverKey)));
-
-            } else {
-                favouriteConstructorKey = selectedItemKey;
-                favouriteConstructorText.setText(getString(Constants.TEAM_FULLNAME.get(favouriteConstructorKey)));
-            }
-            listPopupWindow.dismiss();
-        });
-        return listPopupWindow;
-    }
+    }*/
 
     private boolean isEmailOk(String email) {
         // Check if the email is valid through the use of this library:
