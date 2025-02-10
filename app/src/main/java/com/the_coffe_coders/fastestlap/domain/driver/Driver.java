@@ -61,6 +61,10 @@ public class Driver {
         return Period.between(birthDate, currentDate).getYears();
     }
 
+    public String getDriverId(){
+        return driverId;
+    }
+
     public String getDriverAgeAsString() {
         return String.valueOf(getDriverAge());
     }
