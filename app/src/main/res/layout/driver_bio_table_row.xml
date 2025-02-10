@@ -21,7 +21,7 @@
             android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:fontFamily="@font/orbitron_regular"
-            android:gravity="center"
+            android:gravity="center|center_horizontal"
             android:text="2025"
             android:textColor="@color/black"
             android:textSize="@dimen/body_text_size" />
