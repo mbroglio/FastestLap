@@ -7,16 +7,16 @@ import androidx.lifecycle.ViewModel;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
-import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsRepository;
 
 import java.util.List;
 
 public class DriverStandingsViewModel extends ViewModel {
     private static final String TAG = DriverStandingsViewModel.class.getSimpleName();
-    private final DriverStandingsStandingsRepository driverRepository;
+    private final DriverStandingsRepository driverRepository;
     private MutableLiveData<Result> driverStandingsLiveData;
 
-    public DriverStandingsViewModel(DriverStandingsStandingsRepository driverRepository) {
+    public DriverStandingsViewModel(DriverStandingsRepository driverRepository) {
         this.driverRepository = driverRepository;
     }
 
