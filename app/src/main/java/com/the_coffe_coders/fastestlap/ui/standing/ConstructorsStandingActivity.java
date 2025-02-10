@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,6 +19,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
@@ -72,19 +72,29 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         liveData.observe(this, result -> {
             if (result.isSuccess()) {
                 constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
-
                 List<ConstructorStandingsElement> constructorList = constructorStandings.getConstructorStandings();
-                int initialSize = constructorList.size();
-                loadingScreen.hideLoadingScreen();
 
-                for (ConstructorStandingsElement constructor : constructorList) {
-                    View teamCard = generateTeamCard(constructor, constructorId);
-                    teamStanding.addView(teamCard);
-                    View space = new View(ConstructorsStandingActivity.this);
-                    space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
-                    teamStanding.addView(space);
+                if (constructorList.isEmpty()) {
+                    Log.i(TAG, "Constructor Standings is empty");
+                    List<Constructor> constructors = fetchConstructorsList();
+
+                    for (Constructor constructor : constructors) {
+                        View teamCard = generateTeamCard(constructor, constructorId);
+                        teamStanding.addView(teamCard);
+                        View space = new View(ConstructorsStandingActivity.this);
+                        space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
+                        teamStanding.addView(space);
+                    }
+                } else {
+                    Log.i(TAG, "Constructor Standings is not empty");
+                    for (ConstructorStandingsElement constructor : constructorList) {
+                        View teamCard = generateTeamCard(constructor, constructorId);
+                        teamStanding.addView(teamCard);
+                        View space = new View(ConstructorsStandingActivity.this);
+                        space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
+                        teamStanding.addView(space);
+                    }
                 }
-
             } else if (result instanceof Result.Error) {
                 Result.Error error = (Result.Error) result;
                 Log.e(TAG, "Error: " + error.getMessage());
@@ -92,27 +102,19 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
             }
         });
 
+        loadingScreen.hideLoadingScreen();
+    }
 
-        /*
-        liveData.observe(this, result -> {
-            if (result instanceof Result.ConstructorStandingsSuccess) {
-                Result.ConstructorStandingsSuccess constructorStandingsSuccess = (Result.ConstructorStandingsSuccess) result;
-                ConstructorStandings constructorStandings = constructorStandingsSuccess.getData();
-                Log.i(TAG, "Constructor Standings: " + constructorStandings);
-                for (ConstructorStandingsElement standingElement : constructorStandings.getConstructorStandings()) {
-                    View teamCard = generateTeamCard(standingElement, constructorId);
-                    teamStanding.addView(teamCard);
-                    View space = new View(ConstructorsStandingActivity.this);
-                    space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
-                    teamStanding.addView(space);
-                }
-                loadingScreen.hideLoadingScreen();
-            } else if (result instanceof Result.Error) {
-                Result.Error error = (Result.Error) result;
-                Log.e(TAG, "Error: " + error.getMessage());
-            }
-        });
-        */
+    private List<Constructor> fetchConstructorsList() {
+        return null;
+    }
+
+    private View generateTeamCard(Constructor constructor, String constructorId) {
+        ConstructorStandingsElement constructorStandingsElement = new ConstructorStandingsElement();
+        constructorStandingsElement.setConstructor(constructor);
+        constructorStandingsElement.setPoints("0");
+
+        return generateTeamCard(constructorStandingsElement, constructorId);
     }
 
     private View generateTeamCard(ConstructorStandingsElement standingElement, String constructorIdToHighlight) {

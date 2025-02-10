@@ -84,8 +84,8 @@ public class DriversStandingActivity extends AppCompatActivity {
             if (result.isSuccess()) {
                 Log.i(TAG, "DRIVER STANDINGS SUCCESS");
                 driverStandings = ((Result.DriverStandingsSuccess) result).getData();
-
                 List<DriverStandingsElement> driverList = driverStandings.getDriverStandingsElements();
+
                 if (driverList.isEmpty()) {
                     Log.i(TAG, "DRIVER STANDINGS EMPTY");
                     List<Driver> drivers = fetchDriversList();
@@ -114,17 +114,6 @@ public class DriversStandingActivity extends AppCompatActivity {
         });
 
         loadingScreen.hideLoadingScreen();
-
-        /*CommonConstructorRepository commonConstructorRepository = new CommonConstructorRepository();
-
-        MutableLiveData<Result> constructorMutableLiveData = commonConstructorRepository.getConstructor("mercedes");
-
-        constructorMutableLiveData.observe(this, result -> {
-            if (result.isSuccess()) {
-                Constructor constructor = ((Result.ConstructorSuccess) result).getData();
-                Log.i(TAG, "GET CONSTRUCTOR FROM COMMON REPO: " + constructor.toString());
-            }
-        });*/
     }
 
 
@@ -134,7 +123,6 @@ public class DriversStandingActivity extends AppCompatActivity {
     private View generateDriverCard(Driver driver, String driverId) {
         DriverStandingsElement driverStandingsElement = new DriverStandingsElement();
         driverStandingsElement.setDriver(driver);
-
         driverStandingsElement.setPoints("0");
 
         return generateDriverCard(driverStandingsElement, driverId);
