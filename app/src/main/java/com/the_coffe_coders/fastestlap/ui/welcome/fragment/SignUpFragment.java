@@ -46,6 +46,7 @@ public class SignUpFragment extends DialogFragment {
     private static final String TAG = "RegisterPopup";
     private UserViewModel userViewModel;
     private TextInputEditText textInputEmail, textInputPassword;
+    private SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(requireContext());
 
     @Nullable
     @Override
@@ -86,7 +87,7 @@ public class SignUpFragment extends DialogFragment {
                             if (result.isSuccess()) {
                                 User user = ((Result.UserSuccess) result).getData();
                                 //saveLoginData(email, password, user.getIdToken());
-
+                                saveSharedPreferences(sharedPreferencesUtils, user);
                                 userViewModel.setAuthenticationError(false);
                                 Log.i(TAG, "User: " + user.toString());
 
@@ -120,30 +121,26 @@ public class SignUpFragment extends DialogFragment {
         }
     }
 
-    /*private void saveSharedPreferences(SharedPreferencesUtils sharedPreferencesUtils, User user) {
-        Log.i(TAG, "Saving user preferences");
-        Log.i(TAG, "Favourite driver: " + favouriteDriverKey);
-        Log.i(TAG, "Favourite constructor: " + favouriteConstructorKey);
-
+    private void saveSharedPreferences(SharedPreferencesUtils sharedPreferencesUtils, User user) {
         sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
                 Constants.SHARED_PREFERENCES_FAVORITE_DRIVER,
-                favouriteDriverKey);
+                "null");
 
         sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
                 Constants.SHARED_PREFERENCES_FAVORITE_TEAM,
-                favouriteConstructorKey);
+                "null");
 
         sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
                 Constants.SHARED_PREFERENCES_AUTO_LOGIN,
-                "false");
+                "true");
 
         userViewModel.saveUserPreferences(
-                favouriteDriverKey,
-                favouriteConstructorKey,
-                "false",
+                "null",
+                "null",
+                "true",
                 user.getIdToken()
         );
-    }*/
+    }
 
     private boolean isEmailOk(String email) {
         // Check if the email is valid through the use of this library:

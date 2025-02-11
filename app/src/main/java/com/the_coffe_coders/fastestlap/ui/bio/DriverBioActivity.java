@@ -3,9 +3,7 @@ package com.the_coffe_coders.fastestlap.ui.bio;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -28,14 +26,20 @@ import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
+import com.the_coffe_coders.fastestlap.domain.user.User;
+import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
+import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
+import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 
@@ -98,7 +102,23 @@ public class DriverBioActivity extends AppCompatActivity {
         nationViewModel = new ViewModelProvider(this, new NationViewModelFactory()).get(NationViewModel.class);
         createDriverBioPage(driverId);
 
+        View favIcon = findViewById(R.id.favourite_icon);
+        favIcon.setOnClickListener(v -> updateFavouriteDriver(driverId));
+    }
 
+    private void updateFavouriteDriver(String driverId) {
+        IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
+        UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+        User currentUser = userViewModel.getLoggedUser();
+
+        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
+        sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
+                Constants.SHARED_PREFERENCES_FAVORITE_DRIVER,
+                driverId);
+
+        userViewModel.saveUserDriverPreferences(driverId, currentUser.getIdToken());
+
+        Log.i(TAG, "Favourite driver updated: " + driverId);
     }
 
     public void createDriverBioPage(String driverId) {

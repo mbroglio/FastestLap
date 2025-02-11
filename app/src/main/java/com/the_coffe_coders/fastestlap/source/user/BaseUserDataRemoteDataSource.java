@@ -17,6 +17,12 @@ public abstract class BaseUserDataRemoteDataSource {
 
     public abstract void saveUserPreferences(String favoriteDriver, String favoriteTeam, String autoLogin, String idToken);
 
+    public abstract void saveUserDriverPreferences(String favoriteDriver, String idToken);
+
+    public abstract void saveUserConstructorPreferences(String favoriteTeam, String idToken);
+
+    public abstract void saveUserAutoLoginPreferences(String autoLogin, String idToken);
+
     public abstract Task<Boolean> isAutoLoginEnabled(String idToken);
 }
 

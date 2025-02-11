@@ -93,7 +93,7 @@
                     <include
                         android:id="@+id/favorite_driver"
                         layout="@layout/home_favorite_driver_layout"
-                        android:visibility="gone" />
+                        android:visibility="visible" />
 
                     <include
                         android:id="@+id/missing_favorite_driver"
@@ -103,7 +103,7 @@
                     <include
                         android:id="@+id/pending_favorite_driver"
                         layout="@layout/home_select_favorite_driver_layout"
-                        android:visibility="visible" />
+                        android:visibility="gone" />
 
                 </FrameLayout>
 

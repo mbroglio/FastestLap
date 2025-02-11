@@ -46,7 +46,6 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModelFactory;
-import com.the_coffe_coders.fastestlap.ui.profile.ProfileActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
@@ -384,7 +383,15 @@ public class HomeFragment extends Fragment {
                         Log.i(TAG, "Favorite Driver is null");
                         showSelectFavouriteDriver(view);
                     } else {
-                        buildDriverCard(view, favouriteDriver);
+                        DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(ServiceLocator.getInstance().getCommonDriverRepository())).get(DriverViewModel.class);
+                        MutableLiveData<Result> driverData = driverViewModel.getDriver(getFavoriteDriverId());
+                        driverData.observe(getViewLifecycleOwner(), driverResult -> {
+                            if (driverResult.isSuccess()) {
+                                Driver driver = ((Result.DriverSuccess) driverResult).getData();
+                                favouriteDriver.setDriver(driver);
+                                buildDriverCard(view, favouriteDriver);
+                            }
+                        });
                     }
                 } else {
                     Log.i(TAG, "DRIVER STANDINGS ERROR");
@@ -521,9 +528,9 @@ public class HomeFragment extends Fragment {
                     if (favouriteConstructor == null) {
                         Log.i(TAG, "Favorite Constructor is null");
                         showSelectFavouriteConstructor(view);
+                    } else {
+                        buildConstructorCard(view, favouriteConstructor);
                     }
-                    else{
-                    buildConstructorCard(view, favouriteConstructor);}
                 } else {
                     Log.i(TAG, "CONSTRUCTOR STANDINGS ERROR");
                     buildConstructorCard(view, getFavoriteTeamId());
