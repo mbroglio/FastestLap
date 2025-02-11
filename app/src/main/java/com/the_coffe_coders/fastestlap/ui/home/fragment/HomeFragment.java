@@ -107,6 +107,7 @@ public class HomeFragment extends Fragment {
         setLastRaceCard(view);
         setNextSessionCard(view);
         setFavouriteDriverCard(view);
+        setFavouriteConstructorCard(view);
 
         loadingScreen.hideLoadingScreen();
 
@@ -114,8 +115,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void setLastRaceCard(View view) {
-        MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchLastRace(0);
-        data.observe(getViewLifecycleOwner(), result -> {
+        MutableLiveData<Result> lastRace = ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchLastRace(0);
+        lastRace.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
                 WeeklyRace raceResult = ((Result.NextRaceSuccess) result).getData(); // TODO: fix index requirement
                 Log.i(TAG, "LAST RACE CARD RESULT: " + raceResult);
@@ -196,9 +197,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void setNextSessionCard(View view) {
-        MutableLiveData<Result> data = homeViewModel.getNextRaceLiveData(0L);
+        MutableLiveData<Result> nextRaceLiveData = homeViewModel.getNextRaceLiveData(0L);
 
-        data.observe(getViewLifecycleOwner(), result -> {
+        nextRaceLiveData.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
                 WeeklyRace nextRace = ((Result.NextRaceSuccess) result).getData();
                 Log.i(TAG, "" + nextRace.toString());
@@ -273,9 +274,9 @@ public class HomeFragment extends Fragment {
 
     private void buildFinalDriversStanding(View seasonEndedCard) {
         DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverStandingsRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
-        MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
+        MutableLiveData<Result> driverStandingsLiveData = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
 
-        data.observe(getViewLifecycleOwner(), result -> {
+        driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
                 DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
                 List<DriverStandingsElement> driversList = driverStandings.getDriverStandingsElements();
@@ -299,9 +300,9 @@ public class HomeFragment extends Fragment {
 
     private void buildFinalTeamsStanding(View seasonEndedCard) {
         ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
-        MutableLiveData<Result> data = constructorStandingsViewModel.getConstructorStandingsLiveData(0); // TODO get last update from shared preferences
+        MutableLiveData<Result> constructorStandingsLiveData = constructorStandingsViewModel.getConstructorStandingsLiveData(0); // TODO get last update from shared preferences
 
-        data.observe(getViewLifecycleOwner(), result -> {
+        constructorStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
                 ConstructorStandings constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
                 List<ConstructorStandingsElement> constructorsList = constructorStandings.getConstructorStandings();
@@ -371,10 +372,10 @@ public class HomeFragment extends Fragment {
 
     private void setFavouriteDriverCard(View view) {
         DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverStandingsRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
-        MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
+        MutableLiveData<Result> driverStandingsLiveData = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
 
         try {
-            data.observe(getViewLifecycleOwner(), result -> {
+            driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
                 if (result.isSuccess()) {
                     DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
                     List<DriverStandingsElement> driversList = driverStandings.getDriverStandingsElements();
@@ -398,8 +399,6 @@ public class HomeFragment extends Fragment {
                     buildDriverCard(view, getFavoriteDriverId());
                     loadingScreen.hideLoadingScreen();
                 }
-
-                setFavouriteConstructorCard(view);
             });
         } catch (Exception e) {
             Log.i(TAG, "Driver not found");
@@ -439,9 +438,9 @@ public class HomeFragment extends Fragment {
 
     private void buildDriverCard(View view, String favoriteDriverId) {
         DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(ServiceLocator.getInstance().getCommonDriverRepository())).get(DriverViewModel.class);
-        MutableLiveData<Result> data = driverViewModel.getDriver(favoriteDriverId);
+        MutableLiveData<Result> driverData = driverViewModel.getDriver(favoriteDriverId);
 
-        data.observe(getViewLifecycleOwner(), result -> {
+        driverData.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
                 Driver driver = ((Result.DriverSuccess) result).getData();
                 DriverStandingsElement standingElement = new DriverStandingsElement();
@@ -516,10 +515,10 @@ public class HomeFragment extends Fragment {
 
     private void setFavouriteConstructorCard(View view) {
         ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
-        MutableLiveData<Result> data = constructorStandingsViewModel.getConstructorStandingsLiveData(0); // TODO get last update from shared preferences
+        MutableLiveData<Result> standingsData = constructorStandingsViewModel.getConstructorStandingsLiveData(0); // TODO get last update from shared preferences
 
         try {
-            data.observe(getViewLifecycleOwner(), result -> {
+            standingsData.observe(getViewLifecycleOwner(), result -> {
                 if (result.isSuccess()) {
                     ConstructorStandings constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
                     List<ConstructorStandingsElement> constructorsList = constructorStandings.getConstructorStandings();
@@ -529,7 +528,15 @@ public class HomeFragment extends Fragment {
                         Log.i(TAG, "Favorite Constructor is null");
                         showSelectFavouriteConstructor(view);
                     } else {
-                        buildConstructorCard(view, favouriteConstructor);
+                        ConstructorViewModel constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(ServiceLocator.getInstance().getCommonConstructorRepository())).get(ConstructorViewModel.class);
+                        MutableLiveData<Result> constructorData = constructorViewModel.getSelectedConstructorLiveData(getFavoriteTeamId());
+                        constructorData.observe(getViewLifecycleOwner(), constructorResult -> {
+                            if (constructorResult.isSuccess()) {
+                                Constructor constructor = ((Result.ConstructorSuccess) constructorResult).getData();
+                                favouriteConstructor.setConstructor(constructor);
+                                buildConstructorCard(view, favouriteConstructor);
+                            }
+                        });
                     }
                 } else {
                     Log.i(TAG, "CONSTRUCTOR STANDINGS ERROR");
@@ -575,9 +582,9 @@ public class HomeFragment extends Fragment {
 
     private void buildConstructorCard(View view, String favoriteTeamId) {
         ConstructorViewModel constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(ServiceLocator.getInstance().getCommonConstructorRepository())).get(ConstructorViewModel.class);
-        MutableLiveData<Result> data = constructorViewModel.getSelectedConstructorLiveData(favoriteTeamId);
+        MutableLiveData<Result> constructorLiveData = constructorViewModel.getSelectedConstructorLiveData(favoriteTeamId);
 
-        data.observe(getViewLifecycleOwner(), result -> {
+        constructorLiveData.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
                 Constructor constructor = ((Result.ConstructorSuccess) result).getData();
                 ConstructorStandingsElement standingElement = new ConstructorStandingsElement();
