@@ -8,9 +8,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -62,7 +60,7 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
     private static final String TAG = "LoginFragment";
     private static final int RC_SIGN_IN = 9001; // Request code for Google Sign-In
 
-   // private IntroScreen introScreen;
+    // private IntroScreen introScreen;
     private TextInputEditText emailEditText;
     private TextInputEditText passwordEditText;
     private UserViewModel userViewModel;
@@ -71,7 +69,7 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
     private ActivityResultContracts.StartIntentSenderForResult startIntentSenderForResult;
     private BeginSignInRequest signInRequest;
     private FirebaseAuth mAuth;
-    
+
     private boolean fromSignOut;
     private boolean fromEmailVerification;
 
@@ -86,11 +84,9 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
         UIUtils.applyWindowInsets(loginLayout);
 
 
-
-
         mAuth = FirebaseAuth.getInstance();
 
-       // fromSignOut = getIntent().getBooleanExtra("SIGN_OUT", false);
+        // fromSignOut = getIntent().getBooleanExtra("SIGN_OUT", false);
 
         IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository((Application) getApplicationContext());
 

@@ -3,7 +3,6 @@ package com.the_coffe_coders.fastestlap.repository.driver;
 
 import android.util.Log;
 
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -60,7 +59,7 @@ public class DriverStandingsRepository implements IDriverRepository, DriverStand
     @Override
     public void onSuccessFromRemote(DriverStandingsAPIResponse driverAPIResponse, long lastUpdate) {
         Log.i("onSuccessFromRemoteDriver", "DRIVER API RESPONSE: " + driverAPIResponse);
-        if(driverAPIResponse.getStandingsTable().getStandingsLists().isEmpty()) {
+        if (driverAPIResponse.getStandingsTable().getStandingsLists().isEmpty()) {
             //post an error on all...
             Log.i("onSuccessFromRemoteDriver", "DRIVER API RESPONSE EMPTY");
             driverStandingsMutableLiveData.postValue(new Result.Error("No data available"));

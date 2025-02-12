@@ -5,7 +5,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -56,7 +55,6 @@ public class EventActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
 
         setContentView(R.layout.activity_event);
-
 
 
         eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false))).get(EventViewModel.class);
@@ -137,11 +135,8 @@ public class EventActivity extends AppCompatActivity {
 
                 List<Session> sessions = weeklyRace.getSessions();
                 Session nextEvent = weeklyRace.findNextEvent(sessions);
-                boolean underway = false;
-                if (weeklyRace.isUnderway() && !weeklyRace.isWeekFinished()) {
-                    underway = true;
-                    //setLiveSession();
-                }
+                boolean underway = weeklyRace.isUnderway() && !weeklyRace.isWeekFinished();
+                //setLiveSession();
                 if (nextEvent != null && !underway) {
                     LocalDateTime eventDateTime = nextEvent.getStartDateTime();
                     startCountdown(eventDateTime);

@@ -149,12 +149,7 @@ public class ProfileActivity extends AppCompatActivity {
             autoLoginKey = getAutoLoginValue();
         }
 
-        userViewModel.saveUserPreferences(
-                getFavoriteDriverId(),
-                getFavoriteTeamId(),
-                String.valueOf(autoLoginCheckBox.isChecked()),
-                user.getIdToken()
-        );
+        userViewModel.saveUserAutoLoginPreferences(String.valueOf(autoLoginCheckBox.isChecked()), user.getIdToken());
     }
 
     private void setAutoLoginCheckBox() {
@@ -162,18 +157,6 @@ public class ProfileActivity extends AppCompatActivity {
         if (autoLogin != null) {
             autoLoginCheckBox.setChecked(Boolean.parseBoolean(autoLogin));
         }
-    }
-
-    private String getFavoriteDriverId() {
-        String favoriteDriver = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
-        Log.i(TAG, "Favorite Driver: " + favoriteDriver);
-        return favoriteDriver;
-    }
-
-    private String getFavoriteTeamId() {
-        String favoriteTeam = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
-        Log.i(TAG, "Favorite Team: " + favoriteTeam);
-        return favoriteTeam;
     }
 
     private String getAutoLoginValue() {

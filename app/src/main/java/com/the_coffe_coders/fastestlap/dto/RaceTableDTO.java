@@ -53,7 +53,7 @@ public class RaceTableDTO {
     }
 
     public RaceDTO getRace() {
-        if(races.isEmpty())
+        if (races.isEmpty())
             return null;
         else
             return races.get(0);

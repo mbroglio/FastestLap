@@ -12,21 +12,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ListPopupWindow;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.adapter.SpinnerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
@@ -46,7 +41,7 @@ public class SignUpFragment extends DialogFragment {
     private static final String TAG = "RegisterPopup";
     private UserViewModel userViewModel;
     private TextInputEditText textInputEmail, textInputPassword;
-    private SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(requireContext());
+    private final SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(requireContext());
 
     @Nullable
     @Override
@@ -89,7 +84,7 @@ public class SignUpFragment extends DialogFragment {
                                 //saveLoginData(email, password, user.getIdToken());
                                 saveSharedPreferences(sharedPreferencesUtils, user);
                                 userViewModel.setAuthenticationError(false);
-                                Log.i(TAG, "User: " + user.toString());
+                                Log.i(TAG, "User: " + user);
 
                                 Intent intent = new Intent(requireContext(), HomePageActivity.class);
                                 Log.i(TAG, "Starting HomePageActivity");

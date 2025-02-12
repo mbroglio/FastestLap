@@ -3,7 +3,6 @@ package com.the_coffe_coders.fastestlap.ui.event;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;

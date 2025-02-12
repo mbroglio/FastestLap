@@ -16,9 +16,6 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.the_coffe_coders.fastestlap.R;
@@ -29,8 +26,6 @@ import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import org.apache.commons.logging.LogFactory;
 
-import java.io.IOException;
-
 public class IntroScreenActivity extends AppCompatActivity {
 
     private static final String TAG = "IntroScreenActivity";
@@ -39,7 +34,7 @@ public class IntroScreenActivity extends AppCompatActivity {
     private TextView appCredits;
     private ProgressBar progressIndicator;
     private ImageView appLogo;
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
     private MediaPlayer mediaPlayer;
     private MediaPlayer logoMediaPlayer;
     private UserViewModel userViewModel;
@@ -133,7 +128,7 @@ public class IntroScreenActivity extends AppCompatActivity {
     }
 
 
-    protected void setupIntro(){
+    protected void setupIntro() {
 
         Log.d(TAG, "Setting up intro screen");
         Log.d(TAG, "Logged user: " + userViewModel.getLoggedUser());
@@ -152,7 +147,7 @@ public class IntroScreenActivity extends AppCompatActivity {
                     }
                 }
             });
-        }else{
+        } else {
             showIntroScreen();
         }
     }

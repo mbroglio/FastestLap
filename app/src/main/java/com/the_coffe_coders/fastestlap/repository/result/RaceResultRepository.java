@@ -110,8 +110,7 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
                 return;
             }
             addRaces(RaceMapper.toRace(raceResultsAPIResponse.getFinalRace()));
-        }
-        else {
+        } else {
             List<RaceResult> raceResult = new ArrayList<>();
             for (ResultDTO resultDTO : raceResultsAPIResponse.getRaceResults()) {
                 raceResult.add(SessionMapper.toResult(resultDTO));

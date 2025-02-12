@@ -10,7 +10,6 @@ import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsReposito
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import java.util.List;
 
@@ -43,7 +42,7 @@ public class HomeViewModel extends ViewModel {
         this.driverStandings = driverRepository.fetchDriversStandings(lastUpdate);
     }
 
-    private void fetchNextRace(long lastUpdate){
+    private void fetchNextRace(long lastUpdate) {
         this.nextRace = raceRepository.fetchNextRace(lastUpdate);
     }
 
@@ -81,7 +80,6 @@ public class HomeViewModel extends ViewModel {
     private void fetchConstructorStandings(long lastUpdate) {
         constructorStanding = constructorRepository.fetchConstructorStandings(lastUpdate);
     }
-
 
 
 }

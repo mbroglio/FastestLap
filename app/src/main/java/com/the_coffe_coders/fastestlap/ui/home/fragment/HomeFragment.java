@@ -202,7 +202,7 @@ public class HomeFragment extends Fragment {
         nextRaceLiveData.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
                 WeeklyRace nextRace = ((Result.NextRaceSuccess) result).getData();
-                Log.i(TAG, "" + nextRace.toString());
+                Log.i(TAG, nextRace.toString());
                 try {
                     processNextRace(view, nextRace);
                 } catch (Exception e) {

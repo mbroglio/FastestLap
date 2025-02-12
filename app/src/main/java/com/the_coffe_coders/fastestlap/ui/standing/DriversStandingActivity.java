@@ -24,11 +24,9 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
-import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
@@ -120,6 +118,7 @@ public class DriversStandingActivity extends AppCompatActivity {
     private List<Driver> fetchDriversList() {
         return null;
     }
+
     private View generateDriverCard(Driver driver, String driverId) {
         DriverStandingsElement driverStandingsElement = new DriverStandingsElement();
         driverStandingsElement.setDriver(driver);

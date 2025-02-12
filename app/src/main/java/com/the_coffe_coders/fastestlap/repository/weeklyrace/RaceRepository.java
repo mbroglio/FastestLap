@@ -7,10 +7,8 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.dto.RaceDTO;
-import com.the_coffe_coders.fastestlap.mapper.RaceMapper;
 import com.the_coffe_coders.fastestlap.mapper.WeeklyRaceMapper;
 import com.the_coffe_coders.fastestlap.repository.result.IRaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
@@ -123,7 +121,7 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
     }
 
     void handleLastRaceSuccess(RaceAPIResponse weeklyRaceAPIResponse) {
-        if(weeklyRaceAPIResponse.getRaceTable().getRaces().isEmpty()  || weeklyRaceAPIResponse.getRaceTable().getRace().getRound().equals("1")) {
+        if (weeklyRaceAPIResponse.getRaceTable().getRaces().isEmpty() || weeklyRaceAPIResponse.getRaceTable().getRace().getRound().equals("1")) {
             lastRaceMutableLiveData.postValue(new Result.Error("no races available"));
         } else {
             WeeklyRace weeklyRace = WeeklyRaceMapper.toWeeklyRaceNext(weeklyRaceAPIResponse.getRaceTable().getRaces().get(0));
