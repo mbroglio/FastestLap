@@ -107,7 +107,7 @@ public class HomeFragment extends Fragment {
         setLastRaceCard(view);
         setNextSessionCard(view);
         setFavouriteDriverCard(view);
-        setFavouriteConstructorCard(view);
+        //setFavouriteConstructorCard(view);
 
         loadingScreen.hideLoadingScreen();
 

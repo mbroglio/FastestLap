@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -102,8 +104,13 @@ public class DriverBioActivity extends AppCompatActivity {
         nationViewModel = new ViewModelProvider(this, new NationViewModelFactory()).get(NationViewModel.class);
         createDriverBioPage(driverId);
 
-        View favIcon = findViewById(R.id.favourite_icon);
-        favIcon.setOnClickListener(v -> updateFavouriteDriver(driverId));
+        Menu menu = toolbar.getMenu();
+        MenuItem item = menu.findItem(R.id.favourite_icon_outline);
+        item.setOnMenuItemClickListener(v -> {
+            updateFavouriteDriver(driverId);
+            item.setIcon(R.drawable.star_fav);
+            return false;
+        });
     }
 
     private void updateFavouriteDriver(String driverId) {
