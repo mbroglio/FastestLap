@@ -78,6 +78,7 @@ public class HomeFragment extends Fragment {
     private final SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
     LoadingScreen loadingScreen;
     private HomeViewModel homeViewModel;
+    private ConstructorViewModel constructorViewModel;
 
 
     public HomeFragment() {
@@ -104,12 +105,11 @@ public class HomeFragment extends Fragment {
         loadingScreen = new LoadingScreen(view, getContext());
         loadingScreen.showLoadingScreen();
 
+        constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(ServiceLocator.getInstance().getCommonConstructorRepository())).get(ConstructorViewModel.class);
+
         setLastRaceCard(view);
         setNextSessionCard(view);
         setFavouriteDriverCard(view);
-        //setFavouriteConstructorCard(view);
-
-        loadingScreen.hideLoadingScreen();
 
         return view;
     }
@@ -399,6 +399,8 @@ public class HomeFragment extends Fragment {
                     buildDriverCard(view, getFavoriteDriverId());
                     loadingScreen.hideLoadingScreen();
                 }
+
+                setFavouriteConstructorCard(view);
             });
         } catch (Exception e) {
             Log.i(TAG, "Driver not found");
@@ -528,7 +530,6 @@ public class HomeFragment extends Fragment {
                         Log.i(TAG, "Favorite Constructor is null");
                         showSelectFavouriteConstructor(view);
                     } else {
-                        ConstructorViewModel constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(ServiceLocator.getInstance().getCommonConstructorRepository())).get(ConstructorViewModel.class);
                         MutableLiveData<Result> constructorData = constructorViewModel.getSelectedConstructorLiveData(getFavoriteTeamId());
                         constructorData.observe(getViewLifecycleOwner(), constructorResult -> {
                             if (constructorResult.isSuccess()) {
@@ -581,9 +582,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildConstructorCard(View view, String favoriteTeamId) {
-        ConstructorViewModel constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(ServiceLocator.getInstance().getCommonConstructorRepository())).get(ConstructorViewModel.class);
         MutableLiveData<Result> constructorLiveData = constructorViewModel.getSelectedConstructorLiveData(favoriteTeamId);
-
         constructorLiveData.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
                 Constructor constructor = ((Result.ConstructorSuccess) result).getData();
