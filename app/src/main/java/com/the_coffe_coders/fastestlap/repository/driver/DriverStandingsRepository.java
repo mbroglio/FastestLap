@@ -15,25 +15,16 @@ import com.the_coffe_coders.fastestlap.source.driver.BaseDriverLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.BaseDriverRemoteDataSource;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class DriverStandingsRepository implements IDriverStandingsRepository, DriverStandingsResponseCallback {
     private static final String TAG = "DriverStandingsRepository";
-
     public static long FRESH_TIMEOUT = 60000;
-    public static boolean isOutdate = true;
-
-    private MediatorLiveData<Result> allDriverMediatorLiveData;
-    private MutableLiveData<Result> jolpicaDriversMutableLiveData;
-    private MutableLiveData<Result> driverStandingsMutableLiveData;
     private final BaseDriverRemoteDataSource driverRemoteDataSource;
     private final BaseDriverLocalDataSource driverLocalDataSource;
-
-    //private Map<String, Driver> cache = new HashMap<>();//TODO
-
+    // CompletableFuture per gestire le operazioni asincrone e restituire i risultati
+    private CompletableFuture<Result> currentDriverStandingsFuture;
     public DriverStandingsRepository(BaseDriverRemoteDataSource driverRemoteDataSource, BaseDriverLocalDataSource driverLocalDataSource) {
-        this.allDriverMediatorLiveData = new MediatorLiveData<>();
-        this.jolpicaDriversMutableLiveData = new MutableLiveData<>();
-        this.driverStandingsMutableLiveData = new MutableLiveData<>();
         this.driverRemoteDataSource = driverRemoteDataSource;
         this.driverLocalDataSource = driverLocalDataSource;
         this.driverRemoteDataSource.setDriverCallback(this);
@@ -41,55 +32,63 @@ public class DriverStandingsRepository implements IDriverStandingsRepository, Dr
     }
 
     @Override
-    public MutableLiveData<Result> fetchDriversStandings(long lastUpdate) {
+    public CompletableFuture<Result> fetchDriversStandings(long lastUpdate) {
         long currentTime = System.currentTimeMillis();
-        this.driverStandingsMutableLiveData = new MediatorLiveData<>();
-        //controllo che il dispositivo sia collegato ad internet
-        Log.i(TAG, "FETCH DRIVER STANDINGS METHOD");
-        if (true) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT
-            Log.i(TAG, "FETCH DRIVER STANDINGS METHOD");
+        currentDriverStandingsFuture = new CompletableFuture<>();
+        if (currentTime - lastUpdate > FRESH_TIMEOUT) {
+            Log.i(TAG, "FETCHING FROM REMOTE SOURCE");
             driverRemoteDataSource.getDriversStandings();
-            isOutdate = false;
         } else {
-            Log.i(TAG, "" + isOutdate);
+            Log.i(TAG, "FETCHING FROM LOCAL SOURCE");
             driverLocalDataSource.getDriversStandings();
         }
-        return driverStandingsMutableLiveData;
+
+        return currentDriverStandingsFuture;
     }
 
     @Override
     public void onSuccessFromRemote(DriverStandingsAPIResponse driverAPIResponse, long lastUpdate) {
         Log.i("onSuccessFromRemoteDriver", "DRIVER API RESPONSE: " + driverAPIResponse);
         if(driverAPIResponse.getStandingsTable().getStandingsLists().isEmpty()) {
-            //post an error on all...
             Log.i("onSuccessFromRemoteDriver", "DRIVER API RESPONSE EMPTY");
-            driverStandingsMutableLiveData.postValue(new Result.Error("No data available"));
+            currentDriverStandingsFuture.complete(new Result.Error("No data available"));
             return;
         }
 
-        DriverStandings driverStandings = DriverStandingsMapper.toDriverStandings(driverAPIResponse.getStandingsTable().getStandingsLists().get(0));
+        DriverStandings driverStandings = DriverStandingsMapper.toDriverStandings(
+                driverAPIResponse.getStandingsTable().getStandingsLists().get(0));
+
         Log.i("onSuccessFromRemoteDriver", "DRIVER STANDINGS: " + driverStandings);
         driverLocalDataSource.insertDriversStandings(driverStandings);
 
+        // Non completare ancora il future, aspetta che l'inserimento locale sia completato
     }
 
     @Override
     public void onFailureFromRemote(Exception exception) {
-
+        Log.e(TAG, "Remote data fetch failed", exception);
+        // Prova a recuperare i dati dal database locale come fallback
+        driverLocalDataSource.getDriversStandings();
     }
 
     @Override
     public void onSuccessFromLocal(List<Driver> driverList) {
-        //Result.DriverSuccess result = new Result.DriverSuccess(new DriverAPIResponse(driverList));
-        //allDriverMutableLiveData.postValue(result);
+        // Questo metodo non è utilizzato per gli standings, ma è richiesto dall'interfaccia
     }
 
     public void onSuccessFromLocal(DriverStandings driverStandings) {
         Log.i("onSuccessFromLocalDriver", "DRIVER STANDINGS: " + driverStandings);
         Result.DriverStandingsSuccess result = new Result.DriverStandingsSuccess(driverStandings);
-        driverStandingsMutableLiveData.postValue(result);
+        if (currentDriverStandingsFuture != null && !currentDriverStandingsFuture.isDone()) {
+            currentDriverStandingsFuture.complete(result);
+        }
     }
 
     @Override
-    public void onFailureFromLocal(Exception exception) {}
+    public void onFailureFromLocal(Exception exception) {
+        Log.e(TAG, "Local data fetch failed", exception);
+        if (currentDriverStandingsFuture != null && !currentDriverStandingsFuture.isDone()) {
+            currentDriverStandingsFuture.complete(new Result.Error("Failed to get driver standings: " + exception.getMessage()));
+        }
+    }
 }

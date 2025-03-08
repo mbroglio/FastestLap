@@ -1,5 +1,6 @@
 package com.the_coffe_coders.fastestlap.ui.home.viewmodel;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -15,14 +16,22 @@ import java.util.List;
 
 public class HomeViewModel extends ViewModel {
     private static final String TAG = EventViewModel.class.getSimpleName();
+    // Correct implementation
+    private final DriverStandingsRepository driverRepository;
+    private final MutableLiveData<Result> driverStandings;
+    private final MutableLiveData<String> errorMessageLiveData;
+    private final MutableLiveData<Boolean> isLoadingLiveData;
+    private long lastUpdateTimestamp = 0;
+
+    //TODO implement this like the driver standings
     private final RaceRepository raceRepository;
     private final RaceResultRepository raceResultRepository;
-    private final DriverStandingsRepository driverRepository;
+
     private final ConstructorStandingsRepository constructorRepository;
     private MutableLiveData<Result> upcomingEventLiveData;
     private MutableLiveData<Result> driver;
     private MutableLiveData<Result> constructor;
-    private MutableLiveData<Result> driverStandings;
+
     private MutableLiveData<Result> constructorStanding;
     private MutableLiveData<Result> nextRace;
 
@@ -31,6 +40,9 @@ public class HomeViewModel extends ViewModel {
         this.raceResultRepository = raceResultRepository;
         this.driverRepository = driverRepository;
         this.constructorRepository = constructorRepository;
+        driverStandings = new MutableLiveData<>();
+        errorMessageLiveData = new MutableLiveData<>();
+        isLoadingLiveData = new MutableLiveData<>();
     }
 
     public MutableLiveData<Result> getLastRace(long lastUpdate) {
@@ -38,8 +50,36 @@ public class HomeViewModel extends ViewModel {
         return raceRepository.fetchLastRace(0);
     }
 
+    public LiveData<Result> getDriverStandings() {
+        return driverStandings;
+    }
+
+    public LiveData<Boolean> isLoading() {
+        return isLoadingLiveData;
+    }
+
+    public LiveData<String> getErrorMessage() {
+        return errorMessageLiveData;
+    }
+
     private void fetchDriverStandings(long lastUpdate) {
-        this.driverStandings = driverRepository.fetchDriversStandings(lastUpdate);
+        //isLoadingLiveData.setValue(true);
+        errorMessageLiveData.setValue(null);
+        driverRepository.fetchDriversStandings(lastUpdateTimestamp)
+                .thenAccept(result -> {
+                    isLoadingLiveData.postValue(false);
+                    if (result instanceof Result.Error) {
+                        //errorMessageLiveData.postValue(((Result.Error) result).getError());
+                    } else if (result instanceof Result.DriverStandingsSuccess) {
+                        lastUpdateTimestamp = System.currentTimeMillis();
+                    }
+                    driverStandings.postValue(result);
+                })
+                .exceptionally(throwable -> {
+                    //isLoadingLiveData.postValue(false);
+                    errorMessageLiveData.postValue("Si è verificato un errore: " + throwable.getMessage());
+                    return null;
+                });
     }
 
     private void fetchNextRace(long lastUpdate){

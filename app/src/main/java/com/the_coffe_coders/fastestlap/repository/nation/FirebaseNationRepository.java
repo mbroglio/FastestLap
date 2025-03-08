@@ -16,7 +16,6 @@ public class FirebaseNationRepository {
     private static FirebaseDatabase firebaseDatabase;
     private final String TAG = "FirebaseNationRepository";
 
-
     public FirebaseNationRepository() {
         firebaseDatabase = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
     }
@@ -30,7 +29,6 @@ public class FirebaseNationRepository {
         nationReference.get().addOnCompleteListener(nationTask -> {
             if (nationTask.isSuccessful()) {
                 Nation nation = nationTask.getResult().getValue(Nation.class);
-                Log.i("DriverBioActivity", "Nation data: " + nation);
                 nationMutableLiveData.postValue(new Result.NationSuccess(nation));
             }
         });

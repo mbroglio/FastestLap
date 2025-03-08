@@ -426,12 +426,18 @@ public class HomeFragment extends Fragment {
             if (nationResult.isSuccess()) {
                 Nation nation = ((Result.NationSuccess) nationResult).getData();
                 Log.i(TAG, "NATION: " + nation);
-                buildDriverCard(view, standingElement, nation);
+                try {
+                    buildDriverCard(view, standingElement, nation);
+                } catch (Exception e) {
+                    //throw new RuntimeException(e);
+                    Log.i(TAG, "DRIVER CARD BUILD ERROR");
+                }
+
             }
         });
     }
 
-    private void buildDriverCard(View view, DriverStandingsElement standingElement, Nation nation) {
+    private void buildDriverCard(View view, DriverStandingsElement standingElement, Nation nation) throws Exception{
         Driver driver = standingElement.getDriver();
 
         ImageView driverFlag = view.findViewById(R.id.favourite_driver_flag);
@@ -529,13 +535,17 @@ public class HomeFragment extends Fragment {
         nationData.observe(getViewLifecycleOwner(), teamNationResult -> {
             if (teamNationResult.isSuccess()) {
                 Nation nation = ((Result.NationSuccess) teamNationResult).getData();
-
-                buildConstructorCard(view, standingElement, nation);
+                try {
+                    buildConstructorCard(view, standingElement, nation);
+                } catch (Exception e) {
+                    Log.i(TAG, "CONSTRUCTOR CARD BUILD ERROR");
+                    loadingScreen.hideLoadingScreen();
+                }
             }
         });
     }
 
-    private void buildConstructorCard(View view, ConstructorStandingsElement standingElement, Nation nation) {
+    private void buildConstructorCard(View view, ConstructorStandingsElement standingElement, Nation nation) throws Exception{
         ImageView constructorFlag = view.findViewById(R.id.favourite_constructor_flag);
         Glide.with(this).load(nation.getNation_flag_url()).into(constructorFlag);
 
