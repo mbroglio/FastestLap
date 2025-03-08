@@ -1,9 +1,4 @@
 package com.the_coffe_coders.fastestlap.domain.driver;
-
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -13,8 +8,6 @@ import org.threeten.bp.Period;
 import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.List;
-import java.util.Objects;
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -32,6 +25,7 @@ import lombok.ToString;
 public class Driver {
     @PrimaryKey(autoGenerate = true)
     private long uid;
+    @Getter
     private String driverId; // A
     private String permanentNumber; // A
     private String code; // A
@@ -59,10 +53,6 @@ public class Driver {
         LocalDate birthDate = LocalDate.parse(dateOfBirth, formatter);
         LocalDate currentDate = LocalDate.now();
         return Period.between(birthDate, currentDate).getYears();
-    }
-
-    public String getDriverId(){
-        return driverId;
     }
 
     public String getDriverAgeAsString() {

@@ -18,10 +18,10 @@ import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorLocalDa
 import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.constructor.ConstructorLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.constructor.ConstructorRemoteDataSource;
-import com.the_coffe_coders.fastestlap.source.driver.BaseDriverLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.driver.BaseDriverRemoteDataSource;
-import com.the_coffe_coders.fastestlap.source.driver.DriverLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.driver.DriverRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.driver.BaseDriverStandingsLocalDataSource;
+import com.the_coffe_coders.fastestlap.source.driver.BaseDriverStandingsRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.driver.DriverStandingsLocalDataSource;
+import com.the_coffe_coders.fastestlap.source.driver.DriverStandingsRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.result.RaceResultLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.result.RaceResultRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.user.BaseUserAuthenticationRemoteDataSource;
@@ -188,8 +188,8 @@ public class ServiceLocator {
     }
 
     public DriverStandingsRepository getDriverStandingsRepository(Application application, boolean debugMode) {
-        BaseDriverRemoteDataSource driverRemoteDataSource;
-        BaseDriverLocalDataSource driverLocalDataSource;
+        BaseDriverStandingsRemoteDataSource driverRemoteDataSource;
+        BaseDriverStandingsLocalDataSource driverLocalDataSource;
         SharedPreferencesUtils sharedPreferencesUtil = new SharedPreferencesUtils(application);
 
         if (false) {//TODO change in debugMode
@@ -197,10 +197,10 @@ public class ServiceLocator {
             newsRemoteDataSource =
                     new DriverMockDataSource(jsonParserUtil);*/
         } else {
-            driverRemoteDataSource = new DriverRemoteDataSource("");
+            driverRemoteDataSource = new DriverStandingsRemoteDataSource();
         }
 
-        driverLocalDataSource = new DriverLocalDataSource(getRoomDatabase(application), sharedPreferencesUtil);
+        driverLocalDataSource = new DriverStandingsLocalDataSource(getRoomDatabase(application), sharedPreferencesUtil);
 
         return new DriverStandingsRepository(driverRemoteDataSource, driverLocalDataSource);
     }
