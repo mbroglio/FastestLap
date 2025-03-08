@@ -1,13 +1,7 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
-import androidx.annotation.NonNull;
-
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
-import com.the_coffe_coders.fastestlap.dto.DriverDTO;
 
 import java.util.List;
 

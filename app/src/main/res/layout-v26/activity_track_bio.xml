@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/screen_background_color"
-    tools:context=".ui.bio.TrackBioActivity">
+    tools:context=".presentation.ui.bio.TrackBioActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"
