@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/background_bottom_margin_timer_grey"
     android:orientation="vertical"
-    tools:context=".presentation.ui.bio.ConstructorBioActivity">
+    tools:context=".ui.bio.ConstructorBioActivity">
 
     <LinearLayout
         android:id="@+id/driver_history_row"

@@ -1,7 +1,7 @@
 package com.the_coffe_coders.fastestlap.source.driver;
 
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
-import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsResponseCallback;
+import com.the_coffe_coders.fastestlap.repository.standings.DriverStandingsResponseCallback;
 
 import lombok.Setter;
 
