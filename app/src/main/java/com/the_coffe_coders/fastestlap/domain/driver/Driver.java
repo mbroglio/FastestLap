@@ -46,7 +46,8 @@ public class Driver {
     private String podiums; // F
     private String racing_number_pic_url; // F
     private String team_id; // F
-    private String weight; // F
+    private String weight;// F
+    private String first_entry; // F
 
     public int getDriverAge() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");

@@ -46,7 +46,6 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModelFactory;
-import com.the_coffe_coders.fastestlap.ui.profile.ProfileActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
@@ -77,10 +76,9 @@ import java.util.List;
 public class HomeFragment extends Fragment {
     private final String TAG = HomeFragment.class.getSimpleName();
     private final SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
-
-    private HomeViewModel homeViewModel;
-
     LoadingScreen loadingScreen;
+    private HomeViewModel homeViewModel;
+    private ConstructorViewModel constructorViewModel;
 
 
     public HomeFragment() {
@@ -107,6 +105,8 @@ public class HomeFragment extends Fragment {
         loadingScreen = new LoadingScreen(view, getContext());
         loadingScreen.showLoadingScreen();
 
+        constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(ServiceLocator.getInstance().getCommonConstructorRepository())).get(ConstructorViewModel.class);
+
         setLastRaceCard(view);
         setNextSessionCard(view);
         setFavouriteDriverCard(view);
@@ -115,8 +115,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void setLastRaceCard(View view) {
-        MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchLastRace(0);
-        data.observe(getViewLifecycleOwner(), result -> {
+        MutableLiveData<Result> lastRace = ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchLastRace(0);
+        lastRace.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
                 WeeklyRace raceResult = ((Result.NextRaceSuccess) result).getData(); // TODO: fix index requirement
                 Log.i(TAG, "LAST RACE CARD RESULT: " + raceResult);
@@ -197,12 +197,12 @@ public class HomeFragment extends Fragment {
     }
 
     private void setNextSessionCard(View view) {
-        MutableLiveData<Result> data = homeViewModel.getNextRaceLiveData(0L);
+        MutableLiveData<Result> nextRaceLiveData = homeViewModel.getNextRaceLiveData(0L);
 
-        data.observe(getViewLifecycleOwner(), result -> {
+        nextRaceLiveData.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
                 WeeklyRace nextRace = ((Result.NextRaceSuccess) result).getData();
-                Log.i(TAG, "" + nextRace.toString());
+                Log.i(TAG, nextRace.toString());
                 try {
                     processNextRace(view, nextRace);
                 } catch (Exception e) {
@@ -274,9 +274,9 @@ public class HomeFragment extends Fragment {
 
     private void buildFinalDriversStanding(View seasonEndedCard) {
         DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverStandingsRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
-        MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
+        MutableLiveData<Result> driverStandingsLiveData = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
 
-        data.observe(getViewLifecycleOwner(), result -> {
+        driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
                 DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
                 List<DriverStandingsElement> driversList = driverStandings.getDriverStandingsElements();
@@ -372,35 +372,77 @@ public class HomeFragment extends Fragment {
 
     private void setFavouriteDriverCard(View view) {
         DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverStandingsRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
-        MutableLiveData<Result> data = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
+        MutableLiveData<Result> driverStandingsLiveData = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
 
-        data.observe(getViewLifecycleOwner(), result -> {
-            if (result.isSuccess()) {
-                DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
-                List<DriverStandingsElement> driversList = driverStandings.getDriverStandingsElements();
-                DriverStandingsElement favouriteDriver = driverStandingsViewModel.getDriverStandingsElement(driversList, getFavoriteDriverId());
-
-                if (favouriteDriver == null) {
-                    Log.i(TAG, "Favorite Driver not found");
-                    Intent intent = new Intent(getActivity(), ProfileActivity.class);
-                    startActivity(intent);
+        try {
+            driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
+                if (result.isSuccess()) {
+                    DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
+                    List<DriverStandingsElement> driversList = driverStandings.getDriverStandingsElements();
+                    DriverStandingsElement favouriteDriver = driverStandingsViewModel.getDriverStandingsElement(driversList, getFavoriteDriverId());
+                    if (favouriteDriver == null) {
+                        Log.i(TAG, "Favorite Driver is null");
+                        showSelectFavouriteDriver(view);
+                    } else {
+                        DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(ServiceLocator.getInstance().getCommonDriverRepository())).get(DriverViewModel.class);
+                        MutableLiveData<Result> driverData = driverViewModel.getDriver(getFavoriteDriverId());
+                        driverData.observe(getViewLifecycleOwner(), driverResult -> {
+                            if (driverResult.isSuccess()) {
+                                Driver driver = ((Result.DriverSuccess) driverResult).getData();
+                                favouriteDriver.setDriver(driver);
+                                buildDriverCard(view, favouriteDriver);
+                            }
+                        });
+                    }
+                } else {
+                    Log.i(TAG, "DRIVER STANDINGS ERROR");
+                    buildDriverCard(view, getFavoriteDriverId());
+                    loadingScreen.hideLoadingScreen();
                 }
-                buildDriverCard(view, favouriteDriver);
-            } else {
-                Log.i(TAG, "DRIVER STANDINGS ERROR");
-                buildDriverCard(view, getFavoriteDriverId());
-                loadingScreen.hideLoadingScreen();
-            }
 
-            setFavouriteConstructorCard(view);
+                setFavouriteConstructorCard(view);
+            });
+        } catch (Exception e) {
+            Log.i(TAG, "Driver not found");
+            showDriverNotFound(view);
+        }
+    }
+
+    private void showSelectFavouriteDriver(View view) {
+        View favDriver = view.findViewById(R.id.favorite_driver);
+        View selectFavDriver = view.findViewById(R.id.pending_favorite_driver);
+        View missingFavDriver = view.findViewById(R.id.missing_favorite_driver);
+
+        selectFavDriver.setVisibility(View.VISIBLE);
+        favDriver.setVisibility(View.GONE);
+        missingFavDriver.setVisibility(View.GONE);
+
+        selectFavDriver.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), DriversStandingActivity.class);
+            startActivity(intent);
+        });
+    }
+
+    private void showDriverNotFound(View view) {
+        View favDriver = view.findViewById(R.id.favorite_driver);
+        View selectFavDriver = view.findViewById(R.id.pending_favorite_driver);
+        View missingFavDriver = view.findViewById(R.id.missing_favorite_driver);
+
+        missingFavDriver.setVisibility(View.VISIBLE);
+        selectFavDriver.setVisibility(View.GONE);
+        favDriver.setVisibility(View.GONE);
+
+        missingFavDriver.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), DriversStandingActivity.class);
+            startActivity(intent);
         });
     }
 
     private void buildDriverCard(View view, String favoriteDriverId) {
         DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(ServiceLocator.getInstance().getCommonDriverRepository())).get(DriverViewModel.class);
-        MutableLiveData<Result> data = driverViewModel.getDriver(favoriteDriverId);
+        MutableLiveData<Result> driverData = driverViewModel.getDriver(favoriteDriverId);
 
-        data.observe(getViewLifecycleOwner(), result -> {
+        driverData.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
                 Driver driver = ((Result.DriverSuccess) result).getData();
                 DriverStandingsElement standingElement = new DriverStandingsElement();
@@ -485,31 +527,71 @@ public class HomeFragment extends Fragment {
         MutableLiveData<Result> data = (MutableLiveData<Result>) constructorStandingsViewModel.getConstructorStandings();
                 constructorStandingsViewModel.fetchConstructorStandings(0); // TODO get last update from shared preferences
 
-        data.observe(getViewLifecycleOwner(), result -> {
-            if (result.isSuccess()) {
-                ConstructorStandings constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
-                List<ConstructorStandingsElement> constructorsList = constructorStandings.getConstructorStandings();
-                ConstructorStandingsElement favouriteConstructor = constructorStandingsViewModel.getConstructorStandingsElement(constructorsList, getFavoriteTeamId());
+        try {
+            standingsData.observe(getViewLifecycleOwner(), result -> {
+                if (result.isSuccess()) {
+                    ConstructorStandings constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
+                    List<ConstructorStandingsElement> constructorsList = constructorStandings.getConstructorStandings();
+                    ConstructorStandingsElement favouriteConstructor = constructorStandingsViewModel.getConstructorStandingsElement(constructorsList, getFavoriteTeamId());
 
-                if (favouriteConstructor == null) {
-                    Log.i(TAG, "Favorite Constructor not found");
-                    Intent intent = new Intent(getActivity(), ProfileActivity.class);
-                    startActivity(intent);
+                    if (favouriteConstructor == null) {
+                        Log.i(TAG, "Favorite Constructor is null");
+                        showSelectFavouriteConstructor(view);
+                    } else {
+                        MutableLiveData<Result> constructorData = constructorViewModel.getSelectedConstructorLiveData(getFavoriteTeamId());
+                        constructorData.observe(getViewLifecycleOwner(), constructorResult -> {
+                            if (constructorResult.isSuccess()) {
+                                Constructor constructor = ((Result.ConstructorSuccess) constructorResult).getData();
+                                favouriteConstructor.setConstructor(constructor);
+                                buildConstructorCard(view, favouriteConstructor);
+                            }
+                        });
+                    }
+                } else {
+                    Log.i(TAG, "CONSTRUCTOR STANDINGS ERROR");
+                    buildConstructorCard(view, getFavoriteTeamId());
+                    loadingScreen.hideLoadingScreen();
                 }
-                buildConstructorCard(view, favouriteConstructor);
-            } else {
-                Log.i(TAG, "CONSTRUCTOR STANDINGS ERROR");
-                buildConstructorCard(view, getFavoriteTeamId());
-                loadingScreen.hideLoadingScreen();
-            }
+            });
+        } catch (Exception e) {
+            Log.i(TAG, "Constructor not found");
+            showConstructorNotFound(view);
+        }
+    }
+
+    private void showSelectFavouriteConstructor(View view) {
+        View favConstructor = view.findViewById(R.id.favorite_constructor);
+        View selectFavConstructor = view.findViewById(R.id.pending_favorite_constructor);
+        View missingFavConstructor = view.findViewById(R.id.missing_favorite_constructor);
+
+        selectFavConstructor.setVisibility(View.VISIBLE);
+        favConstructor.setVisibility(View.GONE);
+        missingFavConstructor.setVisibility(View.GONE);
+
+        selectFavConstructor.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ConstructorsStandingActivity.class);
+            startActivity(intent);
+        });
+    }
+
+    private void showConstructorNotFound(View view) {
+        View favConstructor = view.findViewById(R.id.favorite_constructor);
+        View selectFavConstructor = view.findViewById(R.id.pending_favorite_constructor);
+        View missingFavConstructor = view.findViewById(R.id.missing_favorite_constructor);
+
+        missingFavConstructor.setVisibility(View.VISIBLE);
+        selectFavConstructor.setVisibility(View.GONE);
+        favConstructor.setVisibility(View.GONE);
+
+        missingFavConstructor.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), ConstructorsStandingActivity.class);
+            startActivity(intent);
         });
     }
 
     private void buildConstructorCard(View view, String favoriteTeamId) {
-        ConstructorViewModel constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(ServiceLocator.getInstance().getCommonConstructorRepository())).get(ConstructorViewModel.class);
-        MutableLiveData<Result> data = constructorViewModel.getSelectedConstructorLiveData(favoriteTeamId);
-
-        data.observe(getViewLifecycleOwner(), result -> {
+        MutableLiveData<Result> constructorLiveData = constructorViewModel.getSelectedConstructorLiveData(favoriteTeamId);
+        constructorLiveData.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
                 Constructor constructor = ((Result.ConstructorSuccess) result).getData();
                 ConstructorStandingsElement standingElement = new ConstructorStandingsElement();

@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ScrollView;
@@ -26,14 +28,20 @@ import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
+import com.the_coffe_coders.fastestlap.domain.user.User;
+import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
+import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
+import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 
@@ -96,7 +104,28 @@ public class DriverBioActivity extends AppCompatActivity {
         nationViewModel = new ViewModelProvider(this, new NationViewModelFactory()).get(NationViewModel.class);
         createDriverBioPage(driverId);
 
+        Menu menu = toolbar.getMenu();
+        MenuItem item = menu.findItem(R.id.favourite_icon_outline);
+        item.setOnMenuItemClickListener(v -> {
+            updateFavouriteDriver(driverId);
+            item.setIcon(R.drawable.star_fav);
+            return false;
+        });
+    }
 
+    private void updateFavouriteDriver(String driverId) {
+        IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
+        UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+        User currentUser = userViewModel.getLoggedUser();
+
+        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
+        sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
+                Constants.SHARED_PREFERENCES_FAVORITE_DRIVER,
+                driverId);
+
+        userViewModel.saveUserDriverPreferences(driverId, currentUser.getIdToken());
+
+        Log.i(TAG, "Favourite driver updated: " + driverId);
     }
 
     public void createDriverBioPage(String driverId) {
@@ -143,7 +172,9 @@ public class DriverBioActivity extends AppCompatActivity {
     public void setToolbar() {
         String fullName = driver.getGivenName() + " " + driver.getFamilyName();
 
-        toolbar.setTitle(fullName.toUpperCase());
+        TextView toolbarTitle = findViewById(R.id.topAppBarTitle);
+        toolbarTitle.setText(fullName.toUpperCase());
+
         toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
         appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
 
@@ -188,6 +219,9 @@ public class DriverBioActivity extends AppCompatActivity {
 
         TextView championships = findViewById(R.id.driver_championships);
         championships.setText(driver.getChampionships());
+
+        TextView firstEntry = findViewById(R.id.driver_first_entry);
+        firstEntry.setText(driver.getFirst_entry());
 
         Glide.with(this).load(driver.getRacing_number_pic_url()).into(driverNumberImage);
 

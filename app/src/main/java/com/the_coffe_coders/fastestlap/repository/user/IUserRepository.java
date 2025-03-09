@@ -25,6 +25,12 @@ public interface IUserRepository {
 
     void saveUserPreferences(String favoriteDriver, String favoriteTeam, String autoLogin, String idToken);
 
+    void saveUserDriverPreferences(String favoriteDriver, String idToken);
+
+    void saveUserConstructorPreferences(String favoriteTeam, String idToken);
+
+    void saveUserAutoLoginPreferences(String autoLogin, String idToken);
+
     void onSuccessFromAuthentication(User user);
 
     Task<Boolean> isAutoLoginEnabled(String idToken);

@@ -43,6 +43,24 @@ public class UserViewModel extends ViewModel {
         }
     }
 
+    public void saveUserDriverPreferences(String favoriteDriver, String idToken) {
+        if (idToken != null) {
+            userRepository.saveUserDriverPreferences(favoriteDriver, idToken);
+        }
+    }
+
+    public void saveUserConstructorPreferences(String favoriteTeam, String idToken) {
+        if (idToken != null) {
+            userRepository.saveUserConstructorPreferences(favoriteTeam, idToken);
+        }
+    }
+
+    public void saveUserAutoLoginPreferences(String autoLogin, String idToken) {
+        if (idToken != null) {
+            userRepository.saveUserAutoLoginPreferences(autoLogin, idToken);
+        }
+    }
+
     public Task<Boolean> isAutoLoginEnabled(String idToken) {
         return userRepository.isAutoLoginEnabled(idToken);
     }

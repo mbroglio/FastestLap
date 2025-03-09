@@ -73,11 +73,10 @@ public class WeeklyRaceMapper {
         finalRace.setEndDateTime();
 
         List<RaceResult> results = new ArrayList<>();
-        for (ResultDTO resultDTO: raceDTO.getResults()) {
+        for (ResultDTO resultDTO : raceDTO.getResults()) {
             results.add(SessionMapper.toResult(resultDTO));
         }
         finalRace.setResults(results);
-
 
 
         weeklyRace.setFinalRace(finalRace);
@@ -107,7 +106,7 @@ public class WeeklyRaceMapper {
         weeklyRace.setRound(raceDTO.getRound());
         weeklyRace.setSeason(raceDTO.getSeason());
         weeklyRace.setTrack(TrackMapper.toTrack(raceDTO.getCircuit()));
-        if(raceDTO.getQualifying() != null) {
+        if (raceDTO.getQualifying() != null) {
             weeklyRace.setQualifying(SessionMapper.toQualifying(raceDTO.getQualifying()));
         }
         weeklyRace.setFirstPractice(SessionMapper.toPractice(raceDTO.getFirstPractice(), 1));

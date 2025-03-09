@@ -57,7 +57,6 @@ public class EventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event);
 
 
-
         eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false))).get(EventViewModel.class);
 
         // Show loading screen initially
@@ -136,11 +135,8 @@ public class EventActivity extends AppCompatActivity {
 
                 List<Session> sessions = weeklyRace.getSessions();
                 Session nextEvent = weeklyRace.findNextEvent(sessions);
-                boolean underway = false;
-                if (weeklyRace.isUnderway() && !weeklyRace.isWeekFinished()) {
-                    underway = true;
-                    //setLiveSession();
-                }
+                boolean underway = weeklyRace.isUnderway() && !weeklyRace.isWeekFinished();
+                //setLiveSession();
                 if (nextEvent != null && !underway) {
                     LocalDateTime eventDateTime = nextEvent.getStartDateTime();
                     startCountdown(eventDateTime);

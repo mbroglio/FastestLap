@@ -83,6 +83,22 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     }
 
     @Override
+    public void saveUserDriverPreferences(String favoriteDriver, String idToken) {
+        userDataRemoteDataSource.saveUserDriverPreferences(favoriteDriver, idToken);
+    }
+
+    @Override
+    public void saveUserConstructorPreferences(String favoriteTeam, String idToken) {
+        userDataRemoteDataSource.saveUserConstructorPreferences(favoriteTeam, idToken);
+    }
+
+
+    @Override
+    public void saveUserAutoLoginPreferences(String autoLogin, String idToken) {
+        userDataRemoteDataSource.saveUserAutoLoginPreferences(autoLogin, idToken);
+    }
+
+    @Override
     public Task<Boolean> isAutoLoginEnabled(String idToken) {
         return userDataRemoteDataSource.isAutoLoginEnabled(idToken);
     }

@@ -19,8 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
             android:background="@color/ferrari_secondary"
-            app:navigationIcon="@drawable/arrow_back_ios_style"
-            app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar">
+            app:navigationIcon="@drawable/arrow_back_ios_style">
 
             <RelativeLayout
                 android:layout_width="match_parent"

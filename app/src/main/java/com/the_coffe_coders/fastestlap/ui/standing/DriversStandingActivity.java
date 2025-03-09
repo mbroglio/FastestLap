@@ -24,10 +24,9 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
+import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
-import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
@@ -83,17 +82,28 @@ public class DriversStandingActivity extends AppCompatActivity {
             if (result.isSuccess()) {
                 Log.i(TAG, "DRIVER STANDINGS SUCCESS");
                 driverStandings = ((Result.DriverStandingsSuccess) result).getData();
-
                 List<DriverStandingsElement> driverList = driverStandings.getDriverStandingsElements();
-                int initialSize = driverList.size();
-                loadingScreen.hideLoadingScreen();
 
-                for (DriverStandingsElement driver : driverList) {
-                    View driverCard = generateDriverCard(driver, driverId);
-                    driverStanding.addView(driverCard);
-                    View space = new View(DriversStandingActivity.this);
-                    space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
-                    driverStanding.addView(space);
+                if (driverList.isEmpty()) {
+                    Log.i(TAG, "DRIVER STANDINGS EMPTY");
+                    List<Driver> drivers = fetchDriversList();
+
+                    for (Driver driver : drivers) {
+                        View driverCard = generateDriverCard(driver, driverId);
+                        driverStanding.addView(driverCard);
+                        View space = new View(DriversStandingActivity.this);
+                        space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
+                        driverStanding.addView(space);
+                    }
+                } else {
+                    Log.i(TAG, "DRIVER STANDINGS NOT EMPTY");
+                    for (DriverStandingsElement driver : driverList) {
+                        View driverCard = generateDriverCard(driver, driverId);
+                        driverStanding.addView(driverCard);
+                        View space = new View(DriversStandingActivity.this);
+                        space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
+                        driverStanding.addView(space);
+                    }
                 }
             } else {
                 Log.i(TAG, "DRIVER STANDINGS ERROR");
@@ -101,16 +111,20 @@ public class DriversStandingActivity extends AppCompatActivity {
             }
         });
 
-        CommonConstructorRepository commonConstructorRepository = new CommonConstructorRepository();
+        loadingScreen.hideLoadingScreen();
+    }
 
-        MutableLiveData<Result> constructorMutableLiveData = commonConstructorRepository.getConstructor("mercedes");
 
-        constructorMutableLiveData.observe(this, result -> {
-            if (result.isSuccess()) {
-                Constructor constructor = ((Result.ConstructorSuccess) result).getData();
-                Log.i(TAG, "GET CONSTRUCTOR FROM COMMON REPO: " + constructor.toString());
-            }
-        });
+    private List<Driver> fetchDriversList() {
+        return null;
+    }
+
+    private View generateDriverCard(Driver driver, String driverId) {
+        DriverStandingsElement driverStandingsElement = new DriverStandingsElement();
+        driverStandingsElement.setDriver(driver);
+        driverStandingsElement.setPoints("0");
+
+        return generateDriverCard(driverStandingsElement, driverId);
     }
 
     private View generateDriverCard(DriverStandingsElement standingElement, String driverIdToHighlight) {

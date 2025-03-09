@@ -54,7 +54,7 @@ public abstract class WeeklyRace {
 
     public void setSessions(List<Session> sessions) {
         for (Session session : sessions) {
-            if(session != null)
+            if (session != null)
                 session.setSessionStatus();
         }
     }

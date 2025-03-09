@@ -34,7 +34,7 @@ public class IntroScreenActivity extends AppCompatActivity {
     private TextView appCredits;
     private ProgressBar progressIndicator;
     private ImageView appLogo;
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
     private MediaPlayer mediaPlayer;
     private MediaPlayer logoMediaPlayer;
     private UserViewModel userViewModel;
@@ -128,7 +128,7 @@ public class IntroScreenActivity extends AppCompatActivity {
     }
 
 
-    protected void setupIntro(){
+    protected void setupIntro() {
 
         Log.d(TAG, "Setting up intro screen");
         Log.d(TAG, "Logged user: " + userViewModel.getLoggedUser());
@@ -147,7 +147,7 @@ public class IntroScreenActivity extends AppCompatActivity {
                     }
                 }
             });
-        }else{
+        } else {
             showIntroScreen();
         }
     }

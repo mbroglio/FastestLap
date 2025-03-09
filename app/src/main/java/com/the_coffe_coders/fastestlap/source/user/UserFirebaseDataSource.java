@@ -122,6 +122,39 @@ public class UserFirebaseDataSource extends BaseUserDataRemoteDataSource {
                 });
     }
 
+    @Override
+    public void saveUserDriverPreferences(String favoriteDriver, String idToken) {
+        databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
+                child(SHARED_PREFERENCES_FAVORITE_DRIVER).setValue(favoriteDriver).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.i(TAG, "fattoooo driver");
+                    }
+                });
+    }
+
+    @Override
+    public void saveUserConstructorPreferences(String favoriteTeam, String idToken) {
+        databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
+                child(SHARED_PREFERENCES_FAVORITE_TEAM).setValue(favoriteTeam).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.i(TAG, "fattoooo team");
+                    }
+                });
+    }
+
+    @Override
+    public void saveUserAutoLoginPreferences(String autoLogin, String idToken) {
+        databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
+                child(SHARED_PREFERENCES_AUTO_LOGIN).setValue(autoLogin).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void unused) {
+                        Log.i(TAG, "fattoooo auto login");
+                    }
+                });
+    }
+
     public Task<Boolean> isAutoLoginEnabled(String idToken) {
         TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
         databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken)
