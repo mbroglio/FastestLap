@@ -528,7 +528,7 @@ public class HomeFragment extends Fragment {
                 constructorStandingsViewModel.fetchConstructorStandings(0); // TODO get last update from shared preferences
 
         try {
-            standingsData.observe(getViewLifecycleOwner(), result -> {
+            data.observe(getViewLifecycleOwner(), result -> {
                 if (result.isSuccess()) {
                     ConstructorStandings constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
                     List<ConstructorStandingsElement> constructorsList = constructorStandings.getConstructorStandings();

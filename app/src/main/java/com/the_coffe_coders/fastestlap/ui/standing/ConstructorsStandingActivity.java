@@ -76,7 +76,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
                 if (constructorList.isEmpty()) {
                     Log.i(TAG, "Constructor Standings is empty");
-                    List<Constructor> constructors = fetchConstructorsList();
+                    List<Constructor> constructors = null;
 
                     for (Constructor constructor : constructors) {
                         View teamCard = generateTeamCard(constructor, constructorId);
@@ -94,6 +94,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                         space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
                         teamStanding.addView(space);
                     }
+                    loadingScreen.hideLoadingScreen();
                 }
             } else if (result instanceof Result.Error) {
                 Result.Error error = (Result.Error) result;
