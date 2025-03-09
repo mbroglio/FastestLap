@@ -41,7 +41,7 @@ public class SignUpFragment extends DialogFragment {
     private static final String TAG = "RegisterPopup";
     private UserViewModel userViewModel;
     private TextInputEditText textInputEmail, textInputPassword;
-    private final SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(requireContext());
+    private SharedPreferencesUtils sharedPreferencesUtils;
 
     @Nullable
     @Override
@@ -50,6 +50,7 @@ public class SignUpFragment extends DialogFragment {
 
         IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository((Application) requireActivity().getApplicationContext());
 
+        sharedPreferencesUtils = new SharedPreferencesUtils(requireContext());
 
         userViewModel = new ViewModelProvider(this, new UserViewModelFactory(userRepository)).get(UserViewModel.class);
         userViewModel.setAuthenticationError(false);
