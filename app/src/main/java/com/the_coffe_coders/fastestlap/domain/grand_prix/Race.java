@@ -8,6 +8,15 @@ import org.threeten.bp.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = true)
+@ToString
 @Entity
 public class Race extends Session {
 
@@ -36,64 +45,8 @@ public class Race extends Session {
         raceResults = new ArrayList<>();
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public void setDateTime(LocalDateTime dateTime) {
-        this.dateTime = dateTime;
-    }
-
-    public String getSeason() {
-        return season;
-    }
-
-    public void setSeason(String season) {
-        this.season = season;
-    }
-
-    public int getUid() {
-        return uid;
-    }
-
-    public void setUid(int uid) {
-        this.uid = uid;
-    }
-
-    public String getRound() {
-        return round;
-    }
-
-    public void setRound(String round) {
-        this.round = round;
-    }
-
     public int getRoundAsInt() {
         return Integer.parseInt(round);
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getRaceName() {
-        return raceName;
-    }
-
-    public void setRaceName(String raceName) {
-        this.raceName = raceName;
-    }
-
-    public Track getTrack() {
-        return track;
-    }
-
-    public void setTrack(Track track) {
-        this.track = track;
     }
 
     public List<RaceResult> getResults() {
@@ -106,22 +59,5 @@ public class Race extends Session {
 
     public void addResult(RaceResult result) {
         this.raceResults.add(result);
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        for (RaceResult raceResult : raceResults) {
-            sb.append(raceResult.toString());
-        }
-        return "Race{" +
-                "raceResults=" + sb +
-                ", dateTime=" + dateTime +
-                ", season='" + season + '\'' +
-                ", round='" + round + '\'' +
-                ", url='" + url + '\'' +
-                ", raceName='" + raceName + '\'' +
-                ", Track=" + track +
-                '}';
     }
 }

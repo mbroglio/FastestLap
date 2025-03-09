@@ -82,7 +82,7 @@ public class TrackBioActivity extends AppCompatActivity {
             trackLiveData.observe(this, trackResult -> {
                 if (trackResult.isSuccess()) {
                     track = ((Result.TrackSuccess) trackResult).getData();
-                    Log.i("TrackBioActivity", "Circuit from DB: " + track.toStringDB());
+                    Log.i("TrackBioActivity", "Circuit from DB: " + track);
 
                     MutableLiveData<Result> nationLiveData = nationViewModel.getNation(track.getCountry());
                     nationLiveData.observe(this, nationResult -> {

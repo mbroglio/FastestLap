@@ -2,14 +2,24 @@ package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.the_coffe_coders.fastestlap.util.Constants;
 
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public abstract class Session {
     private LocalDateTime startDateTime;
     private LocalDateTime endDateTime;
@@ -19,19 +29,6 @@ public abstract class Session {
         setStartDateTime(date, time);
         setSessionStatus();
     }
-
-    public Session() {
-
-    }
-
-    public LocalDateTime getStartDateTime() {
-        return startDateTime;
-    }
-
-    public void setStartDateTime(LocalDateTime startDateTime) {
-        this.startDateTime = startDateTime;
-    }
-
     public void setStartDateTime(String date, String time) {
         if (!time.contains("Z")) {
             time = time.concat("Z");
@@ -42,15 +39,6 @@ public abstract class Session {
         ZonedDateTime localZonedDateTime = zonedDateTime.withZoneSameInstant(localZone);
         this.startDateTime = localZonedDateTime.toLocalDateTime();
     }
-
-    public LocalDateTime getEndDateTime() {
-        return endDateTime;
-    }
-
-    public void setEndDateTime(LocalDateTime endDateTime) {
-        this.endDateTime = endDateTime;
-    }
-
     public void setEndDateTime() {
         Log.i("Session", this.getClass().getSimpleName());
         @SuppressWarnings("ConstantConditions")
@@ -86,29 +74,4 @@ public abstract class Session {
             sessionStatus = SessionStatus.IN_PROGRESS;
         }
     }
-
-    public SessionStatus getSessionStatus() {
-        return sessionStatus;
-    }
-
-    public void setSessionStatus(SessionStatus sessionStatus) {
-        this.sessionStatus = sessionStatus;
-    }
-
-    public String getSessionStatusAsString() {
-        return sessionStatus.toString();
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "Session{" +
-                ", isFinished=" + isFinished() +
-                ", isUnderway=" + isUnderway() +
-                ", startDateTime=" + startDateTime +
-                ", endDateTime=" + endDateTime +
-                '}';
-    }
-
-
 }

@@ -7,7 +7,17 @@ import androidx.room.PrimaryKey;
 import org.threeten.bp.LocalDateTime;
 
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
 @Entity(tableName = "WeeklyRace")
 public abstract class WeeklyRace {
     protected Practice firstPractice;
@@ -20,51 +30,6 @@ public abstract class WeeklyRace {
     private Track track;
     private Qualifying Qualifying;
     private Race finalRace;
-
-    @Ignore
-    public WeeklyRace() {
-
-    }
-
-    public String getSeason() {
-        return season;
-    }
-
-    public void setSeason(String season) {
-        this.season = season;
-    }
-
-    public String getRound() {
-        return round;
-    }
-
-    public void setRound(String round) {
-        this.round = round;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getRaceName() {
-        return raceName;
-    }
-
-    public void setRaceName(String raceName) {
-        this.raceName = raceName;
-    }
-
-    public Track getTrack() {
-        return track;
-    }
-
-    public void setTrack(Track track) {
-        this.track = track;
-    }
 
     public LocalDateTime getDateTime() {
         return finalRace.getStartDateTime();
@@ -83,30 +48,6 @@ public abstract class WeeklyRace {
         }
 
         return fullDate;
-    }
-
-    public com.the_coffe_coders.fastestlap.domain.grand_prix.Qualifying getQualifying() {
-        return Qualifying;
-    }
-
-    public void setQualifying(com.the_coffe_coders.fastestlap.domain.grand_prix.Qualifying qualifying) {
-        Qualifying = qualifying;
-    }
-
-    public Race getFinalRace() {
-        return finalRace;
-    }
-
-    public void setFinalRace(Race finalRace) {
-        this.finalRace = finalRace;
-    }
-
-    public int getUid() {
-        return uid;
-    }
-
-    public void setUid(int uid) {
-        this.uid = uid;
     }
 
     public abstract List<Session> getSessions();
@@ -146,32 +87,5 @@ public abstract class WeeklyRace {
     public boolean isWeekFinished() {
         LocalDateTime now = LocalDateTime.now();
         return now.isAfter(this.getFinalRace().getEndDateTime());
-    }
-
-    public Practice getFirstPractice() {
-        return this.firstPractice;
-    }
-
-    public void setFirstPractice(Practice firstPractice) {
-        this.firstPractice = firstPractice;
-    }
-
-    public void setFinalRaceResults(List<RaceResult> raceResults) {
-        this.finalRace.setResults(raceResults);
-    }
-
-    @Override
-    public String toString() {
-        return "WeeklyRace{" +
-                "firstPractice=" + firstPractice +
-                ", uid=" + uid +
-                ", season='" + season + '\'' +
-                ", round='" + round + '\'' +
-                ", url='" + url + '\'' +
-                ", raceName='" + raceName + '\'' +
-                ", track=" + track +
-                ", Qualifying=" + Qualifying +
-                ", finalRace=" + finalRace +
-                '}';
     }
 }

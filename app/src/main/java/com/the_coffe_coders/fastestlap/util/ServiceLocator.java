@@ -4,9 +4,9 @@ import android.app.Application;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
-import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.standings.ConstructorStandingsStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.driver.CommonDriverRepository;
-import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.standings.DriverStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.nation.FirebaseNationRepository;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.track.TrackRepository;
@@ -14,14 +14,14 @@ import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.repository.user.UserRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
-import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorRemoteDataSource;
-import com.the_coffe_coders.fastestlap.source.constructor.ConstructorLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.constructor.ConstructorRemoteDataSource;
-import com.the_coffe_coders.fastestlap.source.driver.BaseDriverLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.driver.BaseDriverRemoteDataSource;
-import com.the_coffe_coders.fastestlap.source.driver.DriverLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.driver.DriverRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorStandingsLocalDataSource;
+import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorStandingsRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.constructor.ConstructorStandingsStandingsLocalDataSource;
+import com.the_coffe_coders.fastestlap.source.constructor.ConstructorStandingsRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.driver.BaseDriverStandingsLocalDataSource;
+import com.the_coffe_coders.fastestlap.source.driver.BaseDriverStandingsRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.driver.DriverStandingsLocalDataSource;
+import com.the_coffe_coders.fastestlap.source.driver.DriverStandingsRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.result.RaceResultLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.result.RaceResultRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.user.BaseUserAuthenticationRemoteDataSource;
@@ -117,13 +117,23 @@ public class ServiceLocator {
 
             @Override
             public Call<ResponseBody> getLastRaceResults() {
-
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(CURRENT_YEAR_BASE_URL)
                         .addConverterFactory(ScalarsConverterFactory.create())
                         .build();
 
                 return retrofit.create(ErgastAPIService.class).getLastRaceResults();
+            }
+
+            @Override
+            public Call<ResponseBody> getLastRace() {
+
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+
+                return retrofit.create(ErgastAPIService.class).getLastRace();
             }
 
             @Override
@@ -178,8 +188,8 @@ public class ServiceLocator {
     }
 
     public DriverStandingsRepository getDriverStandingsRepository(Application application, boolean debugMode) {
-        BaseDriverRemoteDataSource driverRemoteDataSource;
-        BaseDriverLocalDataSource driverLocalDataSource;
+        BaseDriverStandingsRemoteDataSource driverRemoteDataSource;
+        BaseDriverStandingsLocalDataSource driverLocalDataSource;
         SharedPreferencesUtils sharedPreferencesUtil = new SharedPreferencesUtils(application);
 
         if (false) {//TODO change in debugMode
@@ -187,17 +197,17 @@ public class ServiceLocator {
             newsRemoteDataSource =
                     new DriverMockDataSource(jsonParserUtil);*/
         } else {
-            driverRemoteDataSource = new DriverRemoteDataSource("");
+            driverRemoteDataSource = new DriverStandingsRemoteDataSource();
         }
 
-        driverLocalDataSource = new DriverLocalDataSource(getRoomDatabase(application), sharedPreferencesUtil);
+        driverLocalDataSource = new DriverStandingsLocalDataSource(getRoomDatabase(application), sharedPreferencesUtil);
 
         return new DriverStandingsRepository(driverRemoteDataSource, driverLocalDataSource);
     }
 
-    public ConstructorStandingsRepository getConstructorStandingsRepository(Application application, boolean debugMode) {
-        BaseConstructorRemoteDataSource constructorRemoteDataSource;
-        BaseConstructorLocalDataSource constructorLocalDataSource;
+    public ConstructorStandingsStandingsRepository getConstructorStandingsRepository(Application application, boolean debugMode) {
+        BaseConstructorStandingsRemoteDataSource constructorRemoteDataSource;
+        BaseConstructorStandingsLocalDataSource constructorLocalDataSource;
         SharedPreferencesUtils sharedPreferencesUtil = new SharedPreferencesUtils(application);
 
         if (false) {//TODO change in debugMode
@@ -205,12 +215,12 @@ public class ServiceLocator {
             newsRemoteDataSource =
                     new DriverMockDataSource(jsonParserUtil);*/
         } else {
-            constructorRemoteDataSource = new ConstructorRemoteDataSource("");
+            constructorRemoteDataSource = new ConstructorStandingsRemoteDataSource("");
         }
 
-        constructorLocalDataSource = new ConstructorLocalDataSource(getRoomDatabase(application), sharedPreferencesUtil);
+        constructorLocalDataSource = new ConstructorStandingsStandingsLocalDataSource(getRoomDatabase(application), sharedPreferencesUtil);
 
-        return new ConstructorStandingsRepository(constructorRemoteDataSource, constructorLocalDataSource);
+        return new ConstructorStandingsStandingsRepository(constructorRemoteDataSource, constructorLocalDataSource);
     }
 
     public CommonDriverRepository getCommonDriverRepository() {

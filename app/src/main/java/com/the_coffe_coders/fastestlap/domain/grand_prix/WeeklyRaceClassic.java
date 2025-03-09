@@ -6,32 +6,22 @@ import androidx.room.Entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@EqualsAndHashCode(callSuper = true)
+@ToString
+@NoArgsConstructor
 @Entity(tableName = "WeeklyRaceClassic")
 public class WeeklyRaceClassic extends WeeklyRace {
     private Practice secondPractice;
     private Practice thirdPractice;
-
-    public WeeklyRaceClassic(Practice secondPractice, Practice thirdPractice) {
-        this.secondPractice = secondPractice;
-        this.thirdPractice = thirdPractice;
-    }
-
-    public Practice getSecondPractice() {
-        return secondPractice;
-    }
-
-    public void setSecondPractice(Practice secondPractice) {
-        this.secondPractice = secondPractice;
-    }
-
-    public Practice getThirdPractice() {
-        return thirdPractice;
-    }
-
-    public void setThirdPractice(Practice thirdPractice) {
-        this.thirdPractice = thirdPractice;
-    }
-
     @Override
     public List<Session> getSessions() {
         List<Session> sessions = new ArrayList<>();
@@ -44,14 +34,5 @@ public class WeeklyRaceClassic extends WeeklyRace {
         setSessions(sessions);
 
         return sessions;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return super.toString() + "{" +
-                "secondPractice=" + secondPractice +
-                ", thirdPractice=" + thirdPractice +
-                '}';
     }
 }

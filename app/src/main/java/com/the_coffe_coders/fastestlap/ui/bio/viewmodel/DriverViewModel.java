@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.repository.driver.CommonDriverRepository;
-import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.standings.DriverStandingsRepository;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

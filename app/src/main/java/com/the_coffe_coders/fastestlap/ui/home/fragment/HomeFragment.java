@@ -300,9 +300,9 @@ public class HomeFragment extends Fragment {
 
     private void buildFinalTeamsStanding(View seasonEndedCard) {
         ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
-        MutableLiveData<Result> constructorStandingsLiveData = constructorStandingsViewModel.getConstructorStandingsLiveData(0); // TODO get last update from shared preferences
-
-        constructorStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
+        MutableLiveData<Result> data = (MutableLiveData<Result>) constructorStandingsViewModel.getConstructorStandings();
+        constructorStandingsViewModel.fetchConstructorStandings(0L);
+        data.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
                 ConstructorStandings constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
                 List<ConstructorStandingsElement> constructorsList = constructorStandings.getConstructorStandings();
@@ -461,18 +461,25 @@ public class HomeFragment extends Fragment {
         driverName.setText(driver.getGivenName() + " " + driver.getFamilyName());
 
         String driverNationality = driver.getNationality();
+        Log.i(TAG, "DRIVER NATIONALITY: " + driverNationality);
         NationViewModel nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(ServiceLocator.getInstance().getFirebaseNationRepository())).get(NationViewModel.class);
         MutableLiveData<Result> nationData = nationViewModel.getNation(driverNationality);
         nationData.observe(getViewLifecycleOwner(), nationResult -> {
             if (nationResult.isSuccess()) {
                 Nation nation = ((Result.NationSuccess) nationResult).getData();
+                Log.i(TAG, "NATION: " + nation);
+                try {
+                    buildDriverCard(view, standingElement, nation);
+                } catch (Exception e) {
+                    //throw new RuntimeException(e);
+                    Log.i(TAG, "DRIVER CARD BUILD ERROR");
+                }
 
-                buildDriverCard(view, standingElement, nation);
             }
         });
     }
 
-    private void buildDriverCard(View view, DriverStandingsElement standingElement, Nation nation) {
+    private void buildDriverCard(View view, DriverStandingsElement standingElement, Nation nation) throws Exception{
         Driver driver = standingElement.getDriver();
 
         ImageView driverFlag = view.findViewById(R.id.favourite_driver_flag);
@@ -517,10 +524,11 @@ public class HomeFragment extends Fragment {
 
     private void setFavouriteConstructorCard(View view) {
         ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
-        MutableLiveData<Result> standingsData = constructorStandingsViewModel.getConstructorStandingsLiveData(0); // TODO get last update from shared preferences
+        MutableLiveData<Result> data = (MutableLiveData<Result>) constructorStandingsViewModel.getConstructorStandings();
+                constructorStandingsViewModel.fetchConstructorStandings(0); // TODO get last update from shared preferences
 
         try {
-            standingsData.observe(getViewLifecycleOwner(), result -> {
+            data.observe(getViewLifecycleOwner(), result -> {
                 if (result.isSuccess()) {
                     ConstructorStandings constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
                     List<ConstructorStandingsElement> constructorsList = constructorStandings.getConstructorStandings();
@@ -610,13 +618,17 @@ public class HomeFragment extends Fragment {
         nationData.observe(getViewLifecycleOwner(), teamNationResult -> {
             if (teamNationResult.isSuccess()) {
                 Nation nation = ((Result.NationSuccess) teamNationResult).getData();
-
-                buildConstructorCard(view, standingElement, nation);
+                try {
+                    buildConstructorCard(view, standingElement, nation);
+                } catch (Exception e) {
+                    Log.i(TAG, "CONSTRUCTOR CARD BUILD ERROR");
+                    loadingScreen.hideLoadingScreen();
+                }
             }
         });
     }
 
-    private void buildConstructorCard(View view, ConstructorStandingsElement standingElement, Nation nation) {
+    private void buildConstructorCard(View view, ConstructorStandingsElement standingElement, Nation nation) throws Exception{
         ImageView constructorFlag = view.findViewById(R.id.favourite_constructor_flag);
         Glide.with(this).load(nation.getNation_flag_url()).into(constructorFlag);
 

@@ -27,6 +27,8 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
     public static boolean isOutdateRaceResults = true;
     private final MutableLiveData<Result> raceResultMutableLiveData;
     private final MutableLiveData<Result> allRaceResultMutableLiveData;
+
+    private final MutableLiveData<Result> lastRaceResultsMutableLiveData;
     private final MutableLiveData<Result> singleRaceMutableLiveData;
     private final BaseRaceResultRemoteDataSource raceResultRemoteDataSource;
     private final BaseRaceResultLocalDataSource raceResultLocalDataSource;
@@ -36,6 +38,7 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
     public RaceResultRepository(BaseRaceResultRemoteDataSource raceResultRemoteDataSource, BaseRaceResultLocalDataSource raceResultLocalDataSource) {
         this.raceResultMutableLiveData = new MutableLiveData<>();
         this.allRaceResultMutableLiveData = new MutableLiveData<>();
+        this.lastRaceResultsMutableLiveData = new MutableLiveData<>();
         this.raceResultRemoteDataSource = raceResultRemoteDataSource;
         this.raceResultLocalDataSource = raceResultLocalDataSource;
         this.raceResultRemoteDataSource.setRaceResultCallback(this);
@@ -52,6 +55,13 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
             raceResultLocalDataSource.insertRaceList(raceList);
         }
         //Log.i(TAG, race.toString());
+    }
+
+
+    public MutableLiveData<Result> fetchLastRaceResults(long lastUpdate) {
+        Log.i(TAG, "fetchLastRaceResults");
+        raceResultRemoteDataSource.getLastRaceResults();
+        return lastRaceResultsMutableLiveData;
     }
 
     @Override
@@ -103,14 +113,17 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
         //Log.i(TAG, raceResultsAPIResponse.toString());
 
         System.out.println(type);
-        if (type == 1) {
+        if(type == 0) {
+            Race race = RaceMapper.toRace(raceResultsAPIResponse.getFinalRace());
+            lastRaceResultsMutableLiveData.postValue(new Result.LastRaceResultsSuccess(race));
+        }else if (type == 1) {
             if (raceResultsAPIResponse.getFinalRace() == null) {
                 raceResultMutableLiveData.postValue(new Result.Error("No data available"));
                 allRaceResultMutableLiveData.postValue(new Result.Error("No data available"));
                 return;
             }
             addRaces(RaceMapper.toRace(raceResultsAPIResponse.getFinalRace()));
-        } else {
+        }else {
             List<RaceResult> raceResult = new ArrayList<>();
             for (ResultDTO resultDTO : raceResultsAPIResponse.getRaceResults()) {
                 raceResult.add(SessionMapper.toResult(resultDTO));

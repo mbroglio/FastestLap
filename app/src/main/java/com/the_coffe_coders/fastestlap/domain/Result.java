@@ -13,12 +13,21 @@ import com.the_coffe_coders.fastestlap.domain.user.User;
 
 import java.util.List;
 
+import lombok.Getter;
+
 public abstract class Result {
     private Result() {
     }
 
     public boolean isSuccess() {
         return !(this instanceof Error);
+    }
+
+    public String getError() {
+        if (this instanceof Error) {
+            return ((Error) this).getMessage();
+        }
+        return null;
     }
 
     /**
@@ -158,6 +167,7 @@ public abstract class Result {
         }
     }
 
+    @Getter
     public static final class Error extends Result {
         private final String message;
 
@@ -165,8 +175,15 @@ public abstract class Result {
             this.message = message;
         }
 
-        public String getMessage() {
-            return message;
+    }
+
+    public static class LastRaceResultsSuccess extends Result {
+        private final Race race;
+        public LastRaceResultsSuccess(Race race) {
+            this.race = race;
+        }
+        public Race getData() {
+            return race;
         }
     }
 }

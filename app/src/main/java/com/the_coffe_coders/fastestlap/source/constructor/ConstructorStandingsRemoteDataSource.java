@@ -22,11 +22,11 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ConstructorRemoteDataSource extends BaseConstructorRemoteDataSource {
+public class ConstructorStandingsRemoteDataSource extends BaseConstructorStandingsRemoteDataSource {
 
     private final ErgastAPIService ergastAPIService;
 
-    public ConstructorRemoteDataSource(String apiKey) {
+    public ConstructorStandingsRemoteDataSource(String apiKey) {
         this.ergastAPIService = ServiceLocator.getInstance().getConcreteErgastAPIService();
     }
 

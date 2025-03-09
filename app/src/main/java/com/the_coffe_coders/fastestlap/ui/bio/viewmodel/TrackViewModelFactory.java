@@ -1,5 +1,6 @@
 package com.the_coffe_coders.fastestlap.ui.bio.viewmodel;
 
+import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -17,7 +18,9 @@ public class TrackViewModelFactory implements ViewModelProvider.Factory {
         this.trackRepository = ServiceLocator.getInstance().getTrackRepository();
     }
 
+    @NonNull
     @Override
+    @SuppressWarnings("unchecked")
     public <T extends ViewModel> T create(Class<T> modelClass) {
         if (modelClass.isAssignableFrom(TrackViewModel.class)) {
             return (T) new TrackViewModel(trackRepository);

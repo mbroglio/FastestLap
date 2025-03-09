@@ -66,8 +66,8 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         LinearLayout teamStanding = findViewById(R.id.team_standing);
 
         ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorStandingsRepository(getApplication(), false))).get(ConstructorStandingsViewModel.class);
-        MutableLiveData<Result> liveData = constructorStandingsViewModel.getConstructorStandingsLiveData(0);
-
+        MutableLiveData<Result> liveData = (MutableLiveData<Result>) constructorStandingsViewModel.getConstructorStandings();
+        constructorStandingsViewModel.fetchConstructorStandings(0);
         Log.i(TAG, "Constructor Standings: " + liveData);
         liveData.observe(this, result -> {
             if (result.isSuccess()) {
@@ -76,7 +76,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
                 if (constructorList.isEmpty()) {
                     Log.i(TAG, "Constructor Standings is empty");
-                    List<Constructor> constructors = fetchConstructorsList();
+                    List<Constructor> constructors = null;
 
                     for (Constructor constructor : constructors) {
                         View teamCard = generateTeamCard(constructor, constructorId);
@@ -94,6 +94,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                         space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
                         teamStanding.addView(space);
                     }
+                    loadingScreen.hideLoadingScreen();
                 }
             } else if (result instanceof Result.Error) {
                 Result.Error error = (Result.Error) result;
@@ -101,12 +102,6 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                 loadingScreen.hideLoadingScreen();
             }
         });
-
-        loadingScreen.hideLoadingScreen();
-    }
-
-    private List<Constructor> fetchConstructorsList() {
-        return null;
     }
 
     private View generateTeamCard(Constructor constructor, String constructorId) {

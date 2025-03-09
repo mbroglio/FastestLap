@@ -60,6 +60,10 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.lifecycle.livedata)
+    compileOnly(libs.lombok.v11830)
+    annotationProcessor(libs.lombok.v11830)
+    testCompileOnly (libs.lombok.v11830)
+    testAnnotationProcessor (libs.lombok.v11830)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -68,6 +72,5 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.commons.validator)
     implementation(libs.glide)
-    /*compileOnly(libs.projectlombok.lombok)
-    annotationProcessor(libs.projectlombok.lombok)*/
+
 }

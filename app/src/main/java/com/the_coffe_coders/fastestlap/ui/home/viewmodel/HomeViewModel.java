@@ -1,12 +1,14 @@
 package com.the_coffe_coders.fastestlap.ui.home.viewmodel;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
-import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorStandingsRepository;
-import com.the_coffe_coders.fastestlap.repository.driver.DriverStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.standings.ConstructorStandingsStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.standings.DriverStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
@@ -15,31 +17,103 @@ import java.util.List;
 
 public class HomeViewModel extends ViewModel {
     private static final String TAG = EventViewModel.class.getSimpleName();
+
+    // Driver related fields
+    private final DriverStandingsRepository driverRepository;
+    private final MutableLiveData<Result> driverStandings;
+    private long driverLastUpdateTimestamp = 0;
+
+    // Constructor related fields
+    private final ConstructorStandingsStandingsRepository constructorRepository;
+    private final MutableLiveData<Result> constructorStandings;
+    private long constructorLastUpdateTimestamp = 0;
+
+    // Race related fields
     private final RaceRepository raceRepository;
     private final RaceResultRepository raceResultRepository;
-    private final DriverStandingsRepository driverRepository;
-    private final ConstructorStandingsRepository constructorRepository;
-    private MutableLiveData<Result> upcomingEventLiveData;
-    private MutableLiveData<Result> driver;
-    private MutableLiveData<Result> constructor;
-    private MutableLiveData<Result> driverStandings;
-    private MutableLiveData<Result> constructorStanding;
     private MutableLiveData<Result> nextRace;
 
-    public HomeViewModel(RaceRepository raceRepository, RaceResultRepository raceResultRepository, DriverStandingsRepository driverRepository, ConstructorStandingsRepository constructorRepository) {
+    // Common UI state fields
+    private final MutableLiveData<String> errorMessageLiveData;
+    private final MutableLiveData<Boolean> isLoadingLiveData;
+
+    public HomeViewModel(RaceRepository raceRepository,
+                         RaceResultRepository raceResultRepository,
+                         DriverStandingsRepository driverRepository,
+                         ConstructorStandingsStandingsRepository constructorRepository) {
         this.raceRepository = raceRepository;
         this.raceResultRepository = raceResultRepository;
         this.driverRepository = driverRepository;
         this.constructorRepository = constructorRepository;
+
+        // Initialize LiveData objects
+        driverStandings = new MutableLiveData<>();
+        constructorStandings = new MutableLiveData<>();
+        errorMessageLiveData = new MutableLiveData<>();
+        isLoadingLiveData = new MutableLiveData<>();
     }
 
     public MutableLiveData<Result> getLastRace(long lastUpdate) {
-        // ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchLastRace(0);
-        return raceRepository.fetchLastRace(0);
+        return raceRepository.fetchLastRace(lastUpdate);
     }
 
+    public LiveData<Result> getDriverStandings() {
+        return driverStandings;
+    }
+
+    public LiveData<Result> getConstructorStandings() {
+        return constructorStandings;
+    }
+
+    public LiveData<Boolean> isLoading() {
+        return isLoadingLiveData;
+    }
+
+    public LiveData<String> getErrorMessage() {
+        return errorMessageLiveData;
+    }
+
+    // Method to fetch driver standings data
     private void fetchDriverStandings(long lastUpdate) {
-        this.driverStandings = driverRepository.fetchDriversStandings(lastUpdate);
+        isLoadingLiveData.setValue(true);
+        errorMessageLiveData.setValue(null);
+
+        driverRepository.fetchDriversStandings(lastUpdate)
+                .thenAccept(result -> {
+                    isLoadingLiveData.postValue(false);
+                    if (result instanceof Result.Error) {
+                        errorMessageLiveData.postValue(((Result.Error) result).getError());
+                    } else if (result instanceof Result.DriverStandingsSuccess) {
+                        driverLastUpdateTimestamp = System.currentTimeMillis();
+                    }
+                    driverStandings.postValue(result);
+                })
+                .exceptionally(throwable -> {
+                    isLoadingLiveData.postValue(false);
+                    errorMessageLiveData.postValue("An error occurred: " + throwable.getMessage());
+                    return null;
+                });
+    }
+
+    // Method to fetch constructor standings data with similar approach to drivers
+    private void fetchConstructorStandings(long lastUpdate) {
+        isLoadingLiveData.setValue(true);
+        errorMessageLiveData.setValue(null);
+        constructorRepository.fetchConstructorStandings(lastUpdate)
+                .thenAccept(result -> {
+                    isLoadingLiveData.postValue(false);
+                    if (result instanceof Result.Error) {
+                        errorMessageLiveData.postValue(((Result.Error) result).getError());
+                    } else if (result instanceof Result.ConstructorStandingsSuccess) {
+                        constructorLastUpdateTimestamp = System.currentTimeMillis();
+                    }
+                    constructorStandings.postValue(result);
+                })
+                .exceptionally(throwable -> {
+                    isLoadingLiveData.postValue(false);
+                    errorMessageLiveData.postValue("An error occurred: " + throwable.getMessage());
+                    return null;
+                });
     }
 
     private void fetchNextRace(long lastUpdate) {
@@ -47,27 +121,13 @@ public class HomeViewModel extends ViewModel {
     }
 
     public MutableLiveData<Result> getDriverStandingsLiveData(long lastUpdate) {
-        if (driverStandings == null) {
-            fetchDriverStandings(lastUpdate);
-        }
+        fetchDriverStandings(lastUpdate);
         return driverStandings;
     }
 
-    public DriverStandingsElement getDriverStandingsElement(List<DriverStandingsElement> driversList, String driverID) {
-        for (DriverStandingsElement driver : driversList) {
-            if (driver.getDriver().getDriverId().equals(driverID)) {
-                return driver;
-            }
-        }
-
-        return null;
-    }
-
     public MutableLiveData<Result> getConstructorStandingsLiveData(long lastUpdate) {
-        if (constructorStanding == null) {
-            fetchConstructorStandings(lastUpdate);
-        }
-        return constructorStanding;
+        fetchConstructorStandings(lastUpdate);
+        return constructorStandings;
     }
 
     public MutableLiveData<Result> getNextRaceLiveData(long lastUpdate) {
@@ -77,9 +137,23 @@ public class HomeViewModel extends ViewModel {
         return nextRace;
     }
 
-    private void fetchConstructorStandings(long lastUpdate) {
-        constructorStanding = constructorRepository.fetchConstructorStandings(lastUpdate);
+    // Helper method to find a specific driver in the standings list
+    public DriverStandingsElement getDriverStandingsElement(List<DriverStandingsElement> driversList, String driverId) {
+        for (DriverStandingsElement driver : driversList) {
+            if (driver.getDriver().getDriverId().equals(driverId)) {
+                return driver;
+            }
+        }
+        return null;
     }
 
-
+    // Helper method to find a specific constructor in the standings list
+    public ConstructorStandingsElement getConstructorStandingsElement(List<ConstructorStandingsElement> constructorList, String constructorId) {
+        for (ConstructorStandingsElement constructor : constructorList) {
+            if (constructor.getConstructor().getConstructorId().equals(constructorId)) {
+                return constructor;
+            }
+        }
+        return null;
+    }
 }

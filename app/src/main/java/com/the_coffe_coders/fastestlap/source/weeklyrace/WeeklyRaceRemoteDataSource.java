@@ -99,7 +99,7 @@ public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource {
 
     @Override
     public void getLastRace() {
-        Call<ResponseBody> responseCall = ergastAPIService.getLastRaceResults();
+        Call<ResponseBody> responseCall = ergastAPIService.getLastRace();
 
         responseCall.enqueue(new Callback<>() {
             @Override

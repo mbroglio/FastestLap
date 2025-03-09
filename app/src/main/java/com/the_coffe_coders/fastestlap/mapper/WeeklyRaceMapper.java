@@ -84,8 +84,10 @@ public class WeeklyRaceMapper {
     }
 
     public static WeeklyRaceClassic toRaceClassic(RaceDTO race) {
-        return new WeeklyRaceClassic(SessionMapper.toPractice(race.getSecondPractice(), 2),
-                SessionMapper.toPractice(race.getThirdPractice(), 3));
+        WeeklyRaceClassic weeklyRaceClassic = new WeeklyRaceClassic();
+        weeklyRaceClassic.setSecondPractice(SessionMapper.toPractice(race.getSecondPractice(), 2));
+        weeklyRaceClassic.setThirdPractice(SessionMapper.toPractice(race.getThirdPractice(), 3));
+        return weeklyRaceClassic;
     }
 
     public static WeeklyRaceSprint toRaceSprint(RaceDTO race) {

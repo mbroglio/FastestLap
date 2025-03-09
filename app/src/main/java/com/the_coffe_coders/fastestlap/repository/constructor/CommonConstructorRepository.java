@@ -10,7 +10,7 @@ import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 
 public class CommonConstructorRepository {
     private final String TAG = "CommonConstructorRepository";
-    private final MediatorLiveData<Result> allConstructorMediatorLiveData;
+    private MediatorLiveData<Result> allConstructorMediatorLiveData;
 
     private final FirebaseConstructorRepository firebaseConstructorRepository;
     private final JolpicaConstructorRepository jolpicaConstructorRepository;
@@ -22,6 +22,7 @@ public class CommonConstructorRepository {
     }
 
     public MediatorLiveData<Result> getConstructor(String constructorId) {
+        this.allConstructorMediatorLiveData = new MediatorLiveData<>();
         allConstructorMediatorLiveData.addSource(jolpicaConstructorRepository.getConstructor(constructorId), jolpicaResult -> {
             if (jolpicaResult instanceof Result.ConstructorSuccess) {
                 Constructor jolpicaConstructor = ((Result.ConstructorSuccess) jolpicaResult).getData();

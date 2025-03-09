@@ -6,11 +6,11 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 
-public class ConstructorLocalDataSource extends BaseConstructorLocalDataSource {
+public class ConstructorStandingsStandingsLocalDataSource extends BaseConstructorStandingsLocalDataSource {
     private final ConstructorStandingsDAO constructorStandingsDAO;
     private final SharedPreferencesUtils sharedPreferencesUtil;
 
-    public ConstructorLocalDataSource(AppRoomDatabase appRoomDatabase, SharedPreferencesUtils sharedPreferencesUtil) {
+    public ConstructorStandingsStandingsLocalDataSource(AppRoomDatabase appRoomDatabase, SharedPreferencesUtils sharedPreferencesUtil) {
         this.constructorStandingsDAO = appRoomDatabase.constructorStandingsDao();
         this.sharedPreferencesUtil = sharedPreferencesUtil;
     }
