@@ -371,9 +371,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void setFavouriteDriverCard(View view) {
+
         DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverStandingsRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
         MutableLiveData<Result> driverStandingsLiveData = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
-
         try {
             driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
                 if (result.isSuccess()) {
@@ -527,44 +527,40 @@ public class HomeFragment extends Fragment {
     }
 
     private void setFavouriteConstructorCard(View view) {
-        if (getFavoriteTeamId().equals("null")) {
-            showSelectFavouriteConstructor(view);
-            loadingScreen.hideLoadingScreen();
-        } else {
-            ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
-            MutableLiveData<Result> data = (MutableLiveData<Result>) constructorStandingsViewModel.getConstructorStandings();
-            constructorStandingsViewModel.fetchConstructorStandings(0); // TODO get last update from shared preferences
 
-            try {
-                data.observe(getViewLifecycleOwner(), result -> {
-                    if (result.isSuccess()) {
-                        ConstructorStandings constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
-                        List<ConstructorStandingsElement> constructorsList = constructorStandings.getConstructorStandings();
-                        ConstructorStandingsElement favouriteConstructor = constructorStandingsViewModel.getConstructorStandingsElement(constructorsList, getFavoriteTeamId());
+        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
+        MutableLiveData<Result> data = (MutableLiveData<Result>) constructorStandingsViewModel.getConstructorStandings();
+        constructorStandingsViewModel.fetchConstructorStandings(0); // TODO get last update from shared preferences
 
-                        if (favouriteConstructor == null) {
-                            Log.i(TAG, "Favorite Constructor is null");
-                            showSelectFavouriteConstructor(view);
-                        } else {
-                            MutableLiveData<Result> constructorData = constructorViewModel.getSelectedConstructorLiveData(getFavoriteTeamId());
-                            constructorData.observe(getViewLifecycleOwner(), constructorResult -> {
-                                if (constructorResult.isSuccess()) {
-                                    Constructor constructor = ((Result.ConstructorSuccess) constructorResult).getData();
-                                    favouriteConstructor.setConstructor(constructor);
-                                    buildConstructorCard(view, favouriteConstructor);
-                                }
-                            });
-                        }
+        try {
+            data.observe(getViewLifecycleOwner(), result -> {
+                if (result.isSuccess()) {
+                    ConstructorStandings constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
+                    List<ConstructorStandingsElement> constructorsList = constructorStandings.getConstructorStandings();
+                    ConstructorStandingsElement favouriteConstructor = constructorStandingsViewModel.getConstructorStandingsElement(constructorsList, getFavoriteTeamId());
+
+                    if (favouriteConstructor == null) {
+                        Log.i(TAG, "Favorite Constructor is null");
+                        showSelectFavouriteConstructor(view);
                     } else {
-                        Log.i(TAG, "CONSTRUCTOR STANDINGS ERROR");
-                        buildConstructorCard(view, getFavoriteTeamId());
-                        loadingScreen.hideLoadingScreen();
+                        MutableLiveData<Result> constructorData = constructorViewModel.getSelectedConstructorLiveData(getFavoriteTeamId());
+                        constructorData.observe(getViewLifecycleOwner(), constructorResult -> {
+                            if (constructorResult.isSuccess()) {
+                                Constructor constructor = ((Result.ConstructorSuccess) constructorResult).getData();
+                                favouriteConstructor.setConstructor(constructor);
+                                buildConstructorCard(view, favouriteConstructor);
+                            }
+                        });
                     }
-                });
-            } catch (Exception e) {
-                Log.i(TAG, "Constructor not found");
-                showConstructorNotFound(view);
-            }
+                } else {
+                    Log.i(TAG, "CONSTRUCTOR STANDINGS ERROR");
+                    buildConstructorCard(view, getFavoriteTeamId());
+                    loadingScreen.hideLoadingScreen();
+                }
+            });
+        } catch (Exception e) {
+            Log.i(TAG, "Constructor not found");
+            showConstructorNotFound(view);
         }
     }
 
@@ -581,6 +577,8 @@ public class HomeFragment extends Fragment {
             Intent intent = new Intent(getActivity(), ConstructorsStandingActivity.class);
             startActivity(intent);
         });
+
+        loadingScreen.hideLoadingScreen();
     }
 
     private void showConstructorNotFound(View view) {
@@ -596,6 +594,8 @@ public class HomeFragment extends Fragment {
             Intent intent = new Intent(getActivity(), ConstructorsStandingActivity.class);
             startActivity(intent);
         });
+
+        loadingScreen.hideLoadingScreen();
     }
 
     private void buildConstructorCard(View view, String favoriteTeamId) {
