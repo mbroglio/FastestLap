@@ -72,5 +72,5 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.commons.validator)
     implementation(libs.glide)
-
+    annotationProcessor(libs.compiler)
 }

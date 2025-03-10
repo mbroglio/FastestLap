@@ -421,6 +421,8 @@ public class HomeFragment extends Fragment {
             Intent intent = new Intent(getActivity(), DriversStandingActivity.class);
             startActivity(intent);
         });
+
+        loadingScreen.hideLoadingScreen();
     }
 
     private void showDriverNotFound(View view) {
@@ -436,6 +438,8 @@ public class HomeFragment extends Fragment {
             Intent intent = new Intent(getActivity(), DriversStandingActivity.class);
             startActivity(intent);
         });
+
+        loadingScreen.hideLoadingScreen();
     }
 
     private void buildDriverCard(View view, String favoriteDriverId) {
@@ -479,7 +483,7 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void buildDriverCard(View view, DriverStandingsElement standingElement, Nation nation) throws Exception{
+    private void buildDriverCard(View view, DriverStandingsElement standingElement, Nation nation) throws Exception {
         Driver driver = standingElement.getDriver();
 
         ImageView driverFlag = view.findViewById(R.id.favourite_driver_flag);
@@ -523,39 +527,44 @@ public class HomeFragment extends Fragment {
     }
 
     private void setFavouriteConstructorCard(View view) {
-        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
-        MutableLiveData<Result> data = (MutableLiveData<Result>) constructorStandingsViewModel.getConstructorStandings();
-                constructorStandingsViewModel.fetchConstructorStandings(0); // TODO get last update from shared preferences
+        if (getFavoriteTeamId().equals("null")) {
+            showSelectFavouriteConstructor(view);
+            loadingScreen.hideLoadingScreen();
+        } else {
+            ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
+            MutableLiveData<Result> data = (MutableLiveData<Result>) constructorStandingsViewModel.getConstructorStandings();
+            constructorStandingsViewModel.fetchConstructorStandings(0); // TODO get last update from shared preferences
 
-        try {
-            data.observe(getViewLifecycleOwner(), result -> {
-                if (result.isSuccess()) {
-                    ConstructorStandings constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
-                    List<ConstructorStandingsElement> constructorsList = constructorStandings.getConstructorStandings();
-                    ConstructorStandingsElement favouriteConstructor = constructorStandingsViewModel.getConstructorStandingsElement(constructorsList, getFavoriteTeamId());
+            try {
+                data.observe(getViewLifecycleOwner(), result -> {
+                    if (result.isSuccess()) {
+                        ConstructorStandings constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
+                        List<ConstructorStandingsElement> constructorsList = constructorStandings.getConstructorStandings();
+                        ConstructorStandingsElement favouriteConstructor = constructorStandingsViewModel.getConstructorStandingsElement(constructorsList, getFavoriteTeamId());
 
-                    if (favouriteConstructor == null) {
-                        Log.i(TAG, "Favorite Constructor is null");
-                        showSelectFavouriteConstructor(view);
+                        if (favouriteConstructor == null) {
+                            Log.i(TAG, "Favorite Constructor is null");
+                            showSelectFavouriteConstructor(view);
+                        } else {
+                            MutableLiveData<Result> constructorData = constructorViewModel.getSelectedConstructorLiveData(getFavoriteTeamId());
+                            constructorData.observe(getViewLifecycleOwner(), constructorResult -> {
+                                if (constructorResult.isSuccess()) {
+                                    Constructor constructor = ((Result.ConstructorSuccess) constructorResult).getData();
+                                    favouriteConstructor.setConstructor(constructor);
+                                    buildConstructorCard(view, favouriteConstructor);
+                                }
+                            });
+                        }
                     } else {
-                        MutableLiveData<Result> constructorData = constructorViewModel.getSelectedConstructorLiveData(getFavoriteTeamId());
-                        constructorData.observe(getViewLifecycleOwner(), constructorResult -> {
-                            if (constructorResult.isSuccess()) {
-                                Constructor constructor = ((Result.ConstructorSuccess) constructorResult).getData();
-                                favouriteConstructor.setConstructor(constructor);
-                                buildConstructorCard(view, favouriteConstructor);
-                            }
-                        });
+                        Log.i(TAG, "CONSTRUCTOR STANDINGS ERROR");
+                        buildConstructorCard(view, getFavoriteTeamId());
+                        loadingScreen.hideLoadingScreen();
                     }
-                } else {
-                    Log.i(TAG, "CONSTRUCTOR STANDINGS ERROR");
-                    buildConstructorCard(view, getFavoriteTeamId());
-                    loadingScreen.hideLoadingScreen();
-                }
-            });
-        } catch (Exception e) {
-            Log.i(TAG, "Constructor not found");
-            showConstructorNotFound(view);
+                });
+            } catch (Exception e) {
+                Log.i(TAG, "Constructor not found");
+                showConstructorNotFound(view);
+            }
         }
     }
 
@@ -628,7 +637,7 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private void buildConstructorCard(View view, ConstructorStandingsElement standingElement, Nation nation) throws Exception{
+    private void buildConstructorCard(View view, ConstructorStandingsElement standingElement, Nation nation) throws Exception {
         ImageView constructorFlag = view.findViewById(R.id.favourite_constructor_flag);
         Glide.with(this).load(nation.getNation_flag_url()).into(constructorFlag);
 
