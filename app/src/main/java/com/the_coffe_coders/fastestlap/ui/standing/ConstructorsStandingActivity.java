@@ -82,15 +82,6 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
                 if (constructorList.isEmpty()) {
                     Log.i(TAG, "Constructor Standings is empty");
-                    List<Constructor> constructors = null;
-
-                    for (Constructor constructor : constructors) {
-                        View teamCard = generateTeamCard(constructor, constructorId);
-                        teamStanding.addView(teamCard);
-                        View space = new View(ConstructorsStandingActivity.this);
-                        space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
-                        teamStanding.addView(space);
-                    }
                 } else {
                     Log.i(TAG, "Constructor Standings is not empty");
                     for (ConstructorStandingsElement constructor : constructorList) {
@@ -191,9 +182,6 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         });
 
         return teamCard;
-    }
-
-    private void buildTeamCard(ConstructorStandingsElement standingElement, String constructorIdToHighlight) {
     }
 
     @Override
