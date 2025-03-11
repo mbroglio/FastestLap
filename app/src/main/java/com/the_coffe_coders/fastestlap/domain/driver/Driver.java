@@ -59,4 +59,8 @@ public class Driver {
     public String getDriverAgeAsString() {
         return String.valueOf(getDriverAge());
     }
+
+    public String getFullName() {
+        return givenName + " " + familyName;
+    }
 }

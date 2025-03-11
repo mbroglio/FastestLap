@@ -20,14 +20,20 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
@@ -128,43 +134,52 @@ public class DriversStandingActivity extends AppCompatActivity {
     }
 
     private View generateDriverCard(DriverStandingsElement standingElement, String driverIdToHighlight) {
-        // Inflate the team card layout
+        DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(ServiceLocator.getInstance().getCommonDriverRepository())).get(DriverViewModel.class);
+        MutableLiveData<Result> driverLiveData = driverViewModel.getDriver(standingElement.getDriver().getDriverId());
+
         View driverCard = getLayoutInflater().inflate(R.layout.driver_card, null);
-        MaterialCardView driverCardView = driverCard.findViewById(R.id.driver_card_view);
+        driverLiveData.observe(this, result -> {
+            if (result.isSuccess()) {
+                Driver driver = ((Result.DriverSuccess) result).getData();
 
-        // Preparing all the views
-        TextView driverPosition = driverCard.findViewById(R.id.driver_position);
-        ImageView driverImageView = driverCard.findViewById(R.id.driver_image);
-        TextView driverName = driverCard.findViewById(R.id.driver_name);
-        TextView driverPoints = driverCard.findViewById(R.id.driver_points);
+                ImageView driverImageView = driverCard.findViewById(R.id.driver_image);
+                Glide.with(this).load(driver.getDriver_pic_url()).into(driverImageView);
 
-        ImageView teamLogoImageView = driverCard.findViewById(R.id.team_logo);
-        RelativeLayout driverColor = driverCard.findViewById(R.id.small_driver_card);
+                TextView driverName = driverCard.findViewById(R.id.driver_name);
+                driverName.setText(driver.getFullName());
 
-        // Setting the values
-        String driverId = standingElement.getDriver().getDriverId();
-        driverImageView.setImageResource(Constants.DRIVER_IMAGE.get(driverId));
-        driverName.setText(getText(Constants.DRIVER_FULLNAME.get(driverId)));
+                TextView driverPosition = driverCard.findViewById(R.id.driver_position);
+                driverPosition.setText(standingElement.getPosition());
 
-        String team = Constants.DRIVER_TEAM.get(driverId);
-        teamLogoImageView.setImageResource(Constants.TEAM_LOGO_DRIVER_CARD.get(team));
-        driverColor.setBackground(AppCompatResources.getDrawable(this, Constants.TEAM_GRADIENT_COLOR.get(team)));
+                TextView driverPoints = driverCard.findViewById(R.id.driver_points);
+                driverPoints.setText(standingElement.getPoints());
 
-        String position = standingElement.getPosition();
-        driverPosition.setText(position);
+                if (standingElement.getDriver().getDriverId().equals(driverIdToHighlight)) {
+                    MaterialCardView driverCardView = driverCard.findViewById(R.id.driver_card_view);
+                    UIUtils.animateCardBackgroundColor(this, driverCardView, R.color.yellow, Color.TRANSPARENT, 1000, 10);
+                }
 
-        String points = standingElement.getPoints();
-        driverPoints.setText(points);
+                ConstructorViewModel constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(ServiceLocator.getInstance().getCommonConstructorRepository())).get(ConstructorViewModel.class);
+                MutableLiveData<Result> constructorLiveData = constructorViewModel.getSelectedConstructorLiveData(driver.getTeam_id());
+                constructorLiveData.observe(this, constructorResult -> {
+                    if (constructorResult.isSuccess()) {
+                        Constructor constructor = ((Result.ConstructorSuccess) constructorResult).getData();
 
-        if (driverId.equals(driverIdToHighlight)) {
-            UIUtils.animateCardBackgroundColor(this, driverCardView, R.color.yellow, Color.TRANSPARENT, 1000, 10);
-        }
+                        ImageView teamLogoImageView = driverCard.findViewById(R.id.team_logo);
+                        Glide.with(this).load(constructor.getTeam_logo_url()).into(teamLogoImageView);
 
-        driverCard.setOnClickListener(v -> {
-            Intent intent = new Intent(DriversStandingActivity.this, DriverBioActivity.class);
-            intent.putExtra("DRIVER_ID", driverId);
-            intent.putExtra("CALLER", DriversStandingActivity.class.getName());
-            startActivity(intent);
+                        RelativeLayout driverColor = driverCard.findViewById(R.id.small_driver_card);
+                        driverColor.setBackground(AppCompatResources.getDrawable(this, Constants.TEAM_GRADIENT_COLOR.get(driver.getTeam_id())));
+
+                        driverCard.setOnClickListener(v -> {
+                            Intent intent = new Intent(DriversStandingActivity.this, DriverBioActivity.class);
+                            intent.putExtra("DRIVER_ID", standingElement.getDriver().getDriverId());
+                            intent.putExtra("CALLER", DriversStandingActivity.class.getName());
+                            startActivity(intent);
+                        });
+                    }
+                });
+            }
         });
 
         return driverCard;

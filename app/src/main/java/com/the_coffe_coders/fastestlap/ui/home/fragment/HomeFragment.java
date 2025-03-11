@@ -33,6 +33,7 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Practice;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
@@ -43,6 +44,8 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModelFactory;
@@ -145,54 +148,56 @@ public class HomeFragment extends Fragment {
         if (race.getFinalRace().getResults().isEmpty()) {
             throw new Exception("Results not available");
         }
-
-        //Race race = raceResult.getFinalRace();
-        if (race == null)
-            return;
         String circuitId = race.getTrack().getTrackId();
 
-        TextView raceName = view.findViewById(R.id.last_race_name);
-        raceName.setText(race.getRaceName());
+        TrackViewModel trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(ServiceLocator.getInstance().getTrackRepository())).get(TrackViewModel.class);
+        MutableLiveData<Result> trackData = trackViewModel.getTrack(circuitId);
 
-        ImageView trackOutline = view.findViewById(R.id.last_race_track_outline);
-        trackOutline.setImageResource(Constants.EVENT_CIRCUIT.get(circuitId));
-
-        TextView raceDate = view.findViewById(R.id.last_race_date);
-        LocalDate date = race.getDateTime().toLocalDate();
-        raceDate.setText(String.valueOf(date.getDayOfMonth()));
-
-        // Get the first three characters of the month in capital letters
-        TextView raceMonth = view.findViewById(R.id.last_race_month);
-        String month = date.getMonth().toString().substring(0, 3).toUpperCase();
-        raceMonth.setText(month);
-
-        TextView roundNumber = view.findViewById(R.id.last_race_round);
-        String round = "Round " + race.getRound();
-        roundNumber.setText(round);
-
-        MutableLiveData<Result> mutableLiveData = ServiceLocator.getInstance().getRaceResultRepository(getActivity().getApplication(), false).fetchRaceResult(Integer.parseInt(race.getRound()), 0L);
-        mutableLiveData.observe(getViewLifecycleOwner(), result -> {
+        trackData.observe(getViewLifecycleOwner(), result -> {
             if (result.isSuccess()) {
-                List<RaceResult> raceResults = ((Result.RacesResultSuccess) result).getData();
-                setDriverNames(view, raceResults);
+                Track track = ((Result.TrackSuccess) result).getData();
+
+                TextView raceName = view.findViewById(R.id.last_race_name);
+                raceName.setText(race.getRaceName());
+
+                ImageView trackOutline = view.findViewById(R.id.last_race_track_outline);
+                Glide.with(getActivity()).load(track.getTrack_minimal_layout_url()).into(trackOutline);
+
+                TextView raceDate = view.findViewById(R.id.last_race_date);
+                LocalDate date = race.getDateTime().toLocalDate();
+                raceDate.setText(String.valueOf(date.getDayOfMonth()));
+
+                // Get the first three characters of the month in capital letters
+                TextView raceMonth = view.findViewById(R.id.last_race_month);
+                String month = date.getMonth().toString().substring(0, 3).toUpperCase();
+                raceMonth.setText(month);
+
+                TextView roundNumber = view.findViewById(R.id.last_race_round);
+                String round = "Round " + race.getRound();
+                roundNumber.setText(round);
+
+                MutableLiveData<Result> mutableLiveData = ServiceLocator.getInstance().getRaceResultRepository(getActivity().getApplication(), false).fetchRaceResult(Integer.parseInt(race.getRound()), 0L);
+                mutableLiveData.observe(getViewLifecycleOwner(), result1 -> {
+                    if (result1.isSuccess()) {
+                        List<RaceResult> raceResults = ((Result.RacesResultSuccess) result1).getData();
+                        setDriverNames(view, raceResults);
+                    }
+                });
+
+                MaterialCardView resultCard = view.findViewById(R.id.past_event_result);
+                resultCard.setOnClickListener(v -> {
+                    Intent intent = new Intent(getActivity(), EventActivity.class);
+                    intent.putExtra("CIRCUIT_ID", race.getTrack().getTrackId());
+                    startActivity(intent);
+                });
             }
-        });
-
-
-        MaterialCardView resultCard = view.findViewById(R.id.past_event_result);
-        resultCard.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), EventActivity.class);
-            intent.putExtra("CIRCUIT_ID", race.getTrack().getTrackId());
-            startActivity(intent);
         });
     }
 
     private void setDriverNames(View view, List<RaceResult> raceResults) {
         for (int i = 0; i < 3; i++) {
-            String driverId = raceResults.get(i).getDriver().getDriverId();
-            Integer driverFullName = Constants.DRIVER_FULLNAME.get(driverId);
             TextView driver = view.findViewById(Constants.LAST_RACE_DRIVER_NAME.get(i));
-            driver.setText(driverFullName);
+            driver.setText(raceResults.get(i).getDriver().getFullName());
         }
     }
 
@@ -220,13 +225,39 @@ public class HomeFragment extends Fragment {
     }
 
     private void processNextRace(View view, WeeklyRace nextRace) throws Exception {
+        TrackViewModel trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(ServiceLocator.getInstance().getTrackRepository())).get(TrackViewModel.class);
+        MutableLiveData<Result> trackData = trackViewModel.getTrack(nextRace.getTrack().getTrackId());
+
+        trackData.observe(getViewLifecycleOwner(), result -> {
+            if (result.isSuccess()) {
+                Track track = ((Result.TrackSuccess) result).getData();
+                nextRace.setTrack(track);
+
+                NationViewModel nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(ServiceLocator.getInstance().getFirebaseNationRepository())).get(NationViewModel.class);
+                MutableLiveData<Result> nationData = nationViewModel.getNation(track.getCountry());
+
+                nationData.observe(getViewLifecycleOwner(), nationResult -> {
+                    if (nationResult.isSuccess()) {
+                        Nation nation = ((Result.NationSuccess) nationResult).getData();
+                        try {
+                            setNextRaceCard(view, nextRace, nation);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void setNextRaceCard(View view, WeeklyRace nextRace, Nation nation) throws Exception {
         Log.i(TAG, "NEXT RACE:" + nextRace.toString());
         TextView nextRaceName = view.findViewById(R.id.home_next_gp_name);
         nextRaceName.setText(nextRace.getRaceName());
 
         ImageView nextRaceFlag = view.findViewById(R.id.home_next_gp_flag);
-        String nation = nextRace.getTrack().getLocation().getCountry();
-        nextRaceFlag.setImageResource(Constants.NATION_COUNTRY_FLAG.get(nation));
+        Glide.with(this).load(nation.getNation_flag_url()).into(nextRaceFlag);
+
         if (!nextRace.getSeason().equals(ServiceLocator.getCurrentYear())) {
             throw new Exception("Season mismatch");
         }
@@ -284,16 +315,28 @@ public class HomeFragment extends Fragment {
                 for (int i = 0; i < 3; i++) {
                     DriverStandingsElement driver = driversList.get(i);
 
-                    TextView driverName = seasonEndedCard.findViewById(Constants.HOME_SEASON_DRIVER_STANDINGS_NAME_FIELD.get(i));
-                    driverName.setText(Constants.DRIVER_FULLNAME.get(driver.getDriver().getDriverId()));
-
-                    View driverColor = seasonEndedCard.findViewById(Constants.HOME_SEASON_DRIVER_STANDINGS_COLOR_FIELD.get(i));
-                    String team = Constants.DRIVER_TEAM.get(driver.getDriver().getDriverId());
-                    driverColor.setBackgroundResource(Constants.TEAM_COLOR.get(team));
+                    setStandingFields(seasonEndedCard, driver.getDriver().getDriverId(), i);
                 }
             } else {
                 Log.i(TAG, "DRIVER STANDINGS ERROR");
                 loadingScreen.hideLoadingScreen();
+            }
+        });
+    }
+
+    private void setStandingFields(View seasonEndedCard, String driverId, int i) {
+        DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(ServiceLocator.getInstance().getCommonDriverRepository())).get(DriverViewModel.class);
+        MutableLiveData<Result> driverData = driverViewModel.getDriver(driverId);
+
+        driverData.observe(getViewLifecycleOwner(), result -> {
+            if (result.isSuccess()) {
+                Driver driver = ((Result.DriverSuccess) result).getData();
+
+                TextView driverName = seasonEndedCard.findViewById(Constants.HOME_SEASON_DRIVER_STANDINGS_NAME_FIELD.get(i));
+                driverName.setText(driver.getFullName());
+
+                View driverColor = seasonEndedCard.findViewById(Constants.HOME_SEASON_DRIVER_STANDINGS_COLOR_FIELD.get(i));
+                driverColor.setBackgroundResource(Constants.TEAM_COLOR.get(driver.getTeam_id()));
             }
         });
     }

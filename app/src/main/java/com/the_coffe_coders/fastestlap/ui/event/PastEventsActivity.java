@@ -13,11 +13,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
@@ -94,34 +100,42 @@ public class PastEventsActivity extends AppCompatActivity {
     private View generateEventCard(Race weeklyRace) {
         View eventCard = getLayoutInflater().inflate(R.layout.past_event_card, null);
 
-        LocalDateTime raceDateTime = weeklyRace.getStartDateTime();
+        TrackViewModel trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(ServiceLocator.getInstance().getTrackRepository())).get(TrackViewModel.class);
+        MutableLiveData<Result> trackData = trackViewModel.getTrack(weeklyRace.getTrack().getTrackId());
 
-        TextView day = eventCard.findViewById(R.id.past_date);
-        String dayString = raceDateTime.getDayOfMonth() + "";
-        day.setText(dayString);
+        trackData.observe(this, result -> {
+            if (result.isSuccess()) {
+                Track track = ((Result.TrackSuccess) result).getData();
 
-        TextView month = eventCard.findViewById(R.id.past_month);
-        String monthString = raceDateTime.getMonth().toString().substring(0, 3); //Ex: JAN, FEB, etc
-        month.setText(monthString);
+                LocalDateTime raceDateTime = weeklyRace.getStartDateTime();
 
-        ImageView trackOutline = eventCard.findViewById(R.id.past_track_outline);
-        Integer track = Constants.EVENT_CIRCUIT.get(weeklyRace.getTrack().getTrackId());
-        trackOutline.setImageResource(Objects.requireNonNullElseGet(track, () -> R.string.unknown));
+                TextView day = eventCard.findViewById(R.id.past_date);
+                String dayString = raceDateTime.getDayOfMonth() + "";
+                day.setText(dayString);
 
-        TextView round = eventCard.findViewById(R.id.past_round_number);
-        String roundString = "ROUND " + weeklyRace.getRound();
-        round.setText(roundString);
+                TextView month = eventCard.findViewById(R.id.past_month);
+                String monthString = raceDateTime.getMonth().toString().substring(0, 3); //Ex: JAN, FEB, etc
+                month.setText(monthString);
 
-        TextView gpName = eventCard.findViewById(R.id.past_gp_name);
-        gpName.setText(weeklyRace.getRaceName());
+                ImageView trackOutline = eventCard.findViewById(R.id.past_track_outline);
+                Glide.with(this).load(track.getTrack_minimal_layout_url()).into(trackOutline);
 
-        generatePodium(eventCard, weeklyRace);
+                TextView round = eventCard.findViewById(R.id.past_round_number);
+                String roundString = "ROUND " + weeklyRace.getRound();
+                round.setText(roundString);
 
-        Log.i("PastEvent", "gpName: " + weeklyRace.getRaceName());
-        eventCard.setOnClickListener(v -> {
-            Intent intent = new Intent(PastEventsActivity.this, EventActivity.class);
-            intent.putExtra("CIRCUIT_ID", weeklyRace.getTrack().getTrackId());
-            startActivity(intent);
+                TextView gpName = eventCard.findViewById(R.id.past_gp_name);
+                gpName.setText(weeklyRace.getRaceName());
+
+                generatePodium(eventCard, weeklyRace);
+
+                Log.i("PastEvent", "gpName: " + weeklyRace.getRaceName());
+                eventCard.setOnClickListener(v -> {
+                    Intent intent = new Intent(PastEventsActivity.this, EventActivity.class);
+                    intent.putExtra("CIRCUIT_ID", weeklyRace.getTrack().getTrackId());
+                    startActivity(intent);
+                });
+            }
         });
 
         return eventCard;
@@ -134,8 +148,7 @@ public class PastEventsActivity extends AppCompatActivity {
             for (int i = 0; i < 3; i++) {
                 RaceResult raceResult = weeklyRace.getResults().get(i);
                 TextView driverName = eventCard.findViewById(Constants.PAST_RACE_DRIVER_NAME.get(i));
-                Integer driverFullName = Constants.DRIVER_FULLNAME.get(raceResult.getDriver().getDriverId());
-                driverName.setText(Objects.requireNonNullElseGet(driverFullName, () -> R.string.unknown));
+                driverName.setText(raceResult.getDriver().getFullName());
             }
         }
     }

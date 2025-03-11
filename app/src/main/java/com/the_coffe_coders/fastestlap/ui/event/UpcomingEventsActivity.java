@@ -15,16 +15,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
+
+import org.threeten.bp.LocalDateTime;
 
 import java.util.List;
 import java.util.Objects;
@@ -99,31 +105,40 @@ public class UpcomingEventsActivity extends AppCompatActivity {
             eventCard = getLayoutInflater().inflate(R.layout.upcoming_event_card, null);
         }
 
-        ImageView trackOutline = eventCard.findViewById(R.id.upcoming_track_outline);
-        Integer track = Constants.EVENT_CIRCUIT.get(weeklyRace.getTrack().getTrackId());
-        trackOutline.setImageResource(Objects.requireNonNullElseGet(track, () -> R.string.unknown));
+        TrackViewModel trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(ServiceLocator.getInstance().getTrackRepository())).get(TrackViewModel.class);
+        MutableLiveData<Result> trackData = trackViewModel.getTrack(weeklyRace.getTrack().getTrackId());
 
-        TextView roundNumber = eventCard.findViewById(R.id.upcoming_round_number);
-        String round = "ROUND " + weeklyRace.getRound();
-        roundNumber.setText(round);
+        View finalEventCard = eventCard;
+        trackData.observe(this, result -> {
+            if (result.isSuccess()) {
+                Track track = ((Result.TrackSuccess) result).getData();
 
-        TextView gpName = eventCard.findViewById(R.id.upcoming_gp_name);
-        gpName.setText(weeklyRace.getRaceName());
+                ImageView trackOutline = finalEventCard.findViewById(R.id.upcoming_track_outline);
+                Glide.with(this).load(track.getTrack_minimal_layout_url()).into(trackOutline);
 
-        TextView gpDate = eventCard.findViewById(R.id.upcoming_date);
-        String fp1Day = String.valueOf(weeklyRace.getFirstPractice().getStartDateTime().getDayOfMonth());
-        String raceDay = String.valueOf(weeklyRace.getDateTime().getDayOfMonth());
-        String date = fp1Day + " - " + raceDay;
-        gpDate.setText(date);
+                TextView roundNumber = finalEventCard.findViewById(R.id.upcoming_round_number);
+                String round = "ROUND " + weeklyRace.getRound();
+                roundNumber.setText(round);
 
-        TextView gpMonth = eventCard.findViewById(R.id.upcoming_month);
-        String fp1Month = weeklyRace.getDateTime().getMonth().toString().substring(0, 3);
-        gpMonth.setText(fp1Month);
+                TextView gpName = finalEventCard.findViewById(R.id.upcoming_gp_name);
+                gpName.setText(weeklyRace.getRaceName());
 
-        eventCard.setOnClickListener(v -> {
-            Intent intent = new Intent(UpcomingEventsActivity.this, EventActivity.class);
-            intent.putExtra("CIRCUIT_ID", weeklyRace.getTrack().getTrackId());
-            startActivity(intent);
+                TextView gpDate = finalEventCard.findViewById(R.id.upcoming_date);
+                String fp1Day = String.valueOf(weeklyRace.getFirstPractice().getStartDateTime().getDayOfMonth());
+                String raceDay = String.valueOf(weeklyRace.getDateTime().getDayOfMonth());
+                String date = fp1Day + " - " + raceDay;
+                gpDate.setText(date);
+
+                TextView gpMonth = finalEventCard.findViewById(R.id.upcoming_month);
+                String fp1Month = weeklyRace.getDateTime().getMonth().toString().substring(0, 3);
+                gpMonth.setText(fp1Month);
+
+                finalEventCard.setOnClickListener(v -> {
+                    Intent intent = new Intent(UpcomingEventsActivity.this, EventActivity.class);
+                    intent.putExtra("CIRCUIT_ID", weeklyRace.getTrack().getTrackId());
+                    startActivity(intent);
+                });
+            }
         });
 
         return eventCard;
