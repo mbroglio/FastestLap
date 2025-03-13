@@ -226,8 +226,8 @@ public class HomeFragment extends Fragment {
         iconImageView.startAnimation(pulseAnimation);
     }
 
-    private void processNextRace(View view, WeeklyRace nextRace) throws Exception{
-        if(nextRace == null)
+    private void processNextRace(View view, WeeklyRace nextRace) throws Exception {
+        if (nextRace == null)
             throw new Exception("Next race not found");
         TrackViewModel trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(ServiceLocator.getInstance().getTrackRepository())).get(TrackViewModel.class);
         MutableLiveData<Result> trackData = trackViewModel.getTrack(nextRace.getTrack().getTrackId());

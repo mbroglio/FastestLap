@@ -7,6 +7,7 @@ import com.the_coffe_coders.fastestlap.util.Constants;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -29,6 +30,7 @@ public abstract class Session {
         setStartDateTime(date, time);
         setSessionStatus();
     }
+
     public void setStartDateTime(String date, String time) {
         if (!time.contains("Z")) {
             time = time.concat("Z");
@@ -39,6 +41,7 @@ public abstract class Session {
         ZonedDateTime localZonedDateTime = zonedDateTime.withZoneSameInstant(localZone);
         this.startDateTime = localZonedDateTime.toLocalDateTime();
     }
+
     public void setEndDateTime() {
         Log.i("Session", this.getClass().getSimpleName());
         @SuppressWarnings("ConstantConditions")

@@ -87,10 +87,10 @@
         android:layout_marginBottom="5dp"
         android:clickable="true"
         android:focusable="true"
+        android:visibility="visible"
         app:cardBackgroundColor="@color/timer_gray_dark"
         app:strokeColor="@color/black"
-        app:strokeWidth="3dp"
-        android:visibility="visible">
+        app:strokeWidth="3dp">
 
         <RelativeLayout
             android:layout_width="match_parent"

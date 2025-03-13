@@ -23,6 +23,7 @@ public class ConstructorViewModel extends ViewModel {
 
     /**
      * Gets constructor data as LiveData, converting the CompletableFuture result to LiveData
+     *
      * @param teamId The ID of the constructor/team to fetch
      * @return MutableLiveData that will be updated with the constructor result
      */

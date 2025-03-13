@@ -54,8 +54,8 @@ public class ConstructorStandingsViewModel extends ViewModel {
                 .thenAccept(result -> {
                     isLoadingLiveData.postValue(false);
                     if (result instanceof Result.Error) {
-                        Log.e(TAG, "Error fetching constructor standings: " + ((Result.Error) result).getError());
-                        errorMessageLiveData.postValue(((Result.Error) result).getError());
+                        Log.e(TAG, "Error fetching constructor standings: " + result.getError());
+                        errorMessageLiveData.postValue(result.getError());
                     } else if (result instanceof Result.ConstructorStandingsSuccess) {
                         Log.i(TAG, "Successfully fetched constructor standings");
                         lastUpdateTimestamp = System.currentTimeMillis();

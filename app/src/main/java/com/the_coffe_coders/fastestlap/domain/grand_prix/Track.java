@@ -2,8 +2,8 @@ package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
 import com.google.gson.annotations.SerializedName;
 
-
 import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

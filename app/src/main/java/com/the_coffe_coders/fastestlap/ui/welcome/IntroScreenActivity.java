@@ -30,11 +30,11 @@ public class IntroScreenActivity extends AppCompatActivity {
 
     private static final String TAG = "IntroScreenActivity";
     private static final org.apache.commons.logging.Log log = LogFactory.getLog(IntroScreenActivity.class);
+    private final Handler handler = new Handler();
     private TextView appName;
     private TextView appCredits;
     private ProgressBar progressIndicator;
     private ImageView appLogo;
-    private final Handler handler = new Handler();
     private MediaPlayer mediaPlayer;
     private MediaPlayer logoMediaPlayer;
     private UserViewModel userViewModel;

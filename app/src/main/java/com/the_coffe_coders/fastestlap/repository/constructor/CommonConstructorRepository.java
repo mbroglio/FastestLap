@@ -1,7 +1,6 @@
 package com.the_coffe_coders.fastestlap.repository.constructor;
 
 import android.util.Log;
-import androidx.annotation.NonNull;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
@@ -11,9 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class CommonConstructorRepository {
-    private static final String TAG = "CommonConstructorRepository";
     public static final long FRESH_TIMEOUT = 60000; // 1 minute
-
+    private static final String TAG = "CommonConstructorRepository";
     private final JolpicaConstructorRepository jolpicaRepository;
     private final FirebaseConstructorRepository firebaseRepository;
 

@@ -10,9 +10,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class CommonDriverRepository {
-    private static final String TAG = "CommonDriverRepository";
     public static final long FRESH_TIMEOUT = 60000; // 1 minute
-
+    private static final String TAG = "CommonDriverRepository";
     private final JolpicaDriverRepository jolpicaDriverRepository;
     private final FirebaseDriverRepository firebaseDriverRepository;
 

@@ -7,5 +7,6 @@ import lombok.Setter;
 @Setter
 public abstract class BaseConstructorStandingsRemoteDataSource {
     protected ConstructorStandingsResponseCallback constructorCallback;
+
     public abstract void getConstructorStandings();
 }

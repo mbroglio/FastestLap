@@ -113,17 +113,17 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
         //Log.i(TAG, raceResultsAPIResponse.toString());
 
         System.out.println(type);
-        if(type == 0) {
+        if (type == 0) {
             Race race = RaceMapper.toRace(raceResultsAPIResponse.getFinalRace());
             lastRaceResultsMutableLiveData.postValue(new Result.LastRaceResultsSuccess(race));
-        }else if (type == 1) {
+        } else if (type == 1) {
             if (raceResultsAPIResponse.getFinalRace() == null) {
                 raceResultMutableLiveData.postValue(new Result.Error("No data available"));
                 allRaceResultMutableLiveData.postValue(new Result.Error("No data available"));
                 return;
             }
             addRaces(RaceMapper.toRace(raceResultsAPIResponse.getFinalRace()));
-        }else {
+        } else {
             List<RaceResult> raceResult = new ArrayList<>();
             for (ResultDTO resultDTO : raceResultsAPIResponse.getRaceResults()) {
                 raceResult.add(SessionMapper.toResult(resultDTO));

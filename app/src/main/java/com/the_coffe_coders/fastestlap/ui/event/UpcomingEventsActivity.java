@@ -30,10 +30,7 @@ import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
-import org.threeten.bp.LocalDateTime;
-
 import java.util.List;
-import java.util.Objects;
 
 // TODO:
 //  Check if it works with 2025 data

@@ -4,6 +4,7 @@ import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_DRIVERS_CO
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
 
 import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;

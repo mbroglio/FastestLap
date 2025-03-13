@@ -1,12 +1,10 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
-import androidx.annotation.NonNull;
 import androidx.room.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +20,7 @@ import lombok.ToString;
 public class WeeklyRaceClassic extends WeeklyRace {
     private Practice secondPractice;
     private Practice thirdPractice;
+
     @Override
     public List<Session> getSessions() {
         List<Session> sessions = new ArrayList<>();

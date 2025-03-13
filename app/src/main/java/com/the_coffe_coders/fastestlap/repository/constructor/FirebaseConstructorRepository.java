@@ -114,6 +114,7 @@ public class FirebaseConstructorRepository {
 
     public interface ConstructorCallback {
         void onSuccess(Constructor constructor);
+
         void onFailure(Exception exception);
     }
 }

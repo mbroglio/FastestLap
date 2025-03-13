@@ -16,9 +16,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class DriverStandingsRepository implements IDriverStandingsRepository, DriverStandingsResponseCallback {
-    private static final String TAG = "DriverStandingsRepository";
     public static final long FRESH_TIMEOUT = 60000; // 1 minuto
-
+    private static final String TAG = "DriverStandingsRepository";
     private final BaseDriverStandingsRemoteDataSource driverRemoteDataSource;
     private final BaseDriverStandingsLocalDataSource driverLocalDataSource;
 
