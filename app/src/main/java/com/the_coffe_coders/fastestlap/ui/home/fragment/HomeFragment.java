@@ -208,7 +208,12 @@ public class HomeFragment extends Fragment {
             if (result.isSuccess()) {
                 WeeklyRace nextRace = ((Result.NextRaceSuccess) result).getData();
                 Log.i(TAG, nextRace.toString());
-                processNextRace(view, nextRace);
+                try {
+                    processNextRace(view, nextRace);
+                } catch (Exception e) {
+                    Log.i(TAG, "NEXT RACE ERROR");
+                    setSeasonEnded(view);
+                }
 
             } else {
                 Log.i(TAG, "NEXT RACE ERROR");
@@ -221,7 +226,9 @@ public class HomeFragment extends Fragment {
         iconImageView.startAnimation(pulseAnimation);
     }
 
-    private void processNextRace(View view, WeeklyRace nextRace) {
+    private void processNextRace(View view, WeeklyRace nextRace) throws Exception{
+        if(nextRace == null)
+            throw new Exception("Next race not found");
         TrackViewModel trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(ServiceLocator.getInstance().getTrackRepository())).get(TrackViewModel.class);
         MutableLiveData<Result> trackData = trackViewModel.getTrack(nextRace.getTrack().getTrackId());
 
