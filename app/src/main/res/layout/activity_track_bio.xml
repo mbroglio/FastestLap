@@ -108,8 +108,7 @@
                             android:id="@+id/track_image"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_margin="3dp"
-                            app:srcCompat="">
+                            android:layout_margin="3dp">
 
                         </ImageView>
 
@@ -164,8 +163,7 @@
                         android:layout_width="70dp"
                         android:layout_height="45dp"
                         android:layout_alignParentTop="true"
-                        android:layout_alignParentEnd="true"
-                        app:srcCompat="">
+                        android:layout_alignParentEnd="true">
 
                     </ImageView>
 

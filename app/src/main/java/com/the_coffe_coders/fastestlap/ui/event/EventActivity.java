@@ -234,7 +234,7 @@ public class EventActivity extends AppCompatActivity {
                     @Override
                     public void onLoadCleared(@Nullable Drawable placeholder) {
                         // Use default image if loading fails
-                        Drawable defaultImage = ContextCompat.getDrawable(getApplicationContext(), R.drawable.australia_image);
+                        Drawable defaultImage = ContextCompat.getDrawable(getApplicationContext(), R.drawable.constructors_image);
                         if (defaultImage != null) {
                             defaultImage.setAlpha(76);
                         }

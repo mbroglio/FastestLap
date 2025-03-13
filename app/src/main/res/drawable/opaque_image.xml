@@ -2,7 +2,6 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/track_image">
         <bitmap
-            android:alpha="0.3"
-            android:src="" />
+            android:alpha="0.3" />
     </item>
 </layer-list>

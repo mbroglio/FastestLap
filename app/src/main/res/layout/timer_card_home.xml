@@ -69,8 +69,7 @@
                     android:id="@+id/home_next_gp_flag"
                     android:layout_width="55dp"
                     android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    app:srcCompat="">
+                    android:layout_gravity="center">
 
                 </ImageView>
 
