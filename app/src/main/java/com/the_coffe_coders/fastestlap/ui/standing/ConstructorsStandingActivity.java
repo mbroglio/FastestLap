@@ -124,7 +124,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                 teamColor.setBackground(AppCompatResources.getDrawable(this, Constants.TEAM_GRADIENT_COLOR.get(teamId)));
 
                 TextView teamNameTextView = teamCard.findViewById(R.id.team_name);
-                teamNameTextView.setText(constructor.getFull_name());
+                teamNameTextView.setText(constructor.getName());
 
                 ImageView teamLogoImageView = teamCard.findViewById(R.id.team_logo);
                 Glide.with(this).load(constructor.getTeam_logo_url()).into(teamLogoImageView);

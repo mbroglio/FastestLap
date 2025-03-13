@@ -169,7 +169,11 @@ public class DriversStandingActivity extends AppCompatActivity {
                         Glide.with(this).load(constructor.getTeam_logo_url()).into(teamLogoImageView);
 
                         RelativeLayout driverColor = driverCard.findViewById(R.id.small_driver_card);
-                        driverColor.setBackground(AppCompatResources.getDrawable(this, Constants.TEAM_GRADIENT_COLOR.get(driver.getTeam_id())));
+                        try {
+                            driverColor.setBackground(AppCompatResources.getDrawable(this, Constants.TEAM_GRADIENT_COLOR.get(driver.getTeam_id())));
+                        } catch (Exception e) {
+                            Log.e(TAG, "Driver has no team", e);
+                        }
 
                         driverCard.setOnClickListener(v -> {
                             Intent intent = new Intent(DriversStandingActivity.this, DriverBioActivity.class);

@@ -21,8 +21,31 @@ public class ConstructorViewModel extends ViewModel {
         this.constructorRepository = constructorRepository;
     }
 
+    /**
+     * Gets constructor data as LiveData, converting the CompletableFuture result to LiveData
+     * @param teamId The ID of the constructor/team to fetch
+     * @return MutableLiveData that will be updated with the constructor result
+     */
     public MutableLiveData<Result> getSelectedConstructorLiveData(String teamId) {
-        return constructorRepository.getConstructor(teamId);
+        MutableLiveData<Result> constructorLiveData = new MutableLiveData<>();
+
+        // Set initial loading state
+        //constructorLiveData.setValue(new Result.Loading());
+
+        // Call the repository to get the CompletableFuture
+        constructorRepository.getConstructor(teamId)
+                .whenComplete((result, throwable) -> {
+                    if (throwable != null) {
+                        // Handle any exceptions from the future
+                        constructorLiveData.postValue(new Result.Error("Error fetching constructor: " +
+                                throwable.getMessage()));
+                    } else {
+                        // Post the result to the LiveData
+                        constructorLiveData.postValue(result);
+                    }
+                });
+
+        return constructorLiveData;
     }
 
 
