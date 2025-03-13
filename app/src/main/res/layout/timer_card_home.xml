@@ -70,7 +70,7 @@
                     android:layout_width="55dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
-                    app:srcCompat="@drawable/qatar_flag">
+                    app:srcCompat="">
 
                 </ImageView>
 

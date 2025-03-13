@@ -166,7 +166,7 @@
                         android:layout_height="250dp"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
-                        android:src="@drawable/tsunoda_pic"
+                        android:src=""
                         android:scaleType="centerCrop">
 
                     </ImageView>

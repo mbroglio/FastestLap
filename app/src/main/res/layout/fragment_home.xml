@@ -698,7 +698,7 @@
                             android:layout_height="40dp"
                             android:layout_marginEnd="@dimen/medium_margin"
                             android:layout_marginBottom="5dp"
-                            app:srcCompat="@drawable/italy_flag">
+                            app:srcCompat="">
 
                         </ImageView>
 
