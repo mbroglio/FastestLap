@@ -172,7 +172,8 @@ public class DriversStandingActivity extends AppCompatActivity {
                         try {
                             driverColor.setBackground(AppCompatResources.getDrawable(this, Constants.TEAM_GRADIENT_COLOR.get(driver.getTeam_id())));
                         } catch (Exception e) {
-                            Log.e(TAG, "Driver has no team", e);
+                            Log.i(TAG, "Driver has no team");
+                            driverColor.setBackground(AppCompatResources.getDrawable(this, R.color.white));
                         }
 
                         driverCard.setOnClickListener(v -> {

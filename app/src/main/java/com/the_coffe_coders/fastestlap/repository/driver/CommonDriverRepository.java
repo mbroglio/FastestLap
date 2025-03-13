@@ -2,6 +2,8 @@ package com.the_coffe_coders.fastestlap.repository.driver;
 
 import android.util.Log;
 
+import androidx.lifecycle.MediatorLiveData;
+
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 
@@ -14,6 +16,7 @@ public class CommonDriverRepository {
     private static final String TAG = "CommonDriverRepository";
     private final JolpicaDriverRepository jolpicaDriverRepository;
     private final FirebaseDriverRepository firebaseDriverRepository;
+    private MediatorLiveData<Result> allDriverMediatorLiveData;
 
     // Cache for ongoing requests to avoid duplicate requests
     private final ConcurrentHashMap<String, CompletableFuture<Result>> pendingRequests = new ConcurrentHashMap<>();
@@ -26,7 +29,7 @@ public class CommonDriverRepository {
         firebaseDriverRepository = new FirebaseDriverRepository();
     }
 
-    public CompletableFuture<Result> getDriver(String driverId) {
+    /*public CompletableFuture<Result> getDriver(String driverId) {
         final String requestKey = "driver_" + driverId;
 
         // Check if a request is already in progress
@@ -93,6 +96,23 @@ public class CommonDriverRepository {
                 });
 
         return future;
+    }*/
+
+    public CompletableFuture<Result> getDriver(String driverId) {
+        return firebaseDriverRepository.getDriver(driverId)
+                .thenApply(firebaseResult -> {
+                    if (firebaseResult instanceof Result.DriverSuccess) {
+                        // If Firebase succeeds, merge the data
+                        Driver firebaseDriver = ((Result.DriverSuccess) firebaseResult).getData();
+                        Log.i(TAG, "Successfully got driver from Firebase: " + firebaseDriver);
+
+                        return new Result.DriverSuccess(firebaseDriver);
+                    } else {
+                        // If Firebase fails, use Jolpica data only
+                        Log.i(TAG, "Failed to get driver from Firebase, using Jolpica data only");
+                        return null;
+                    }
+                });
     }
 
     /**
