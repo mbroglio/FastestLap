@@ -709,8 +709,8 @@ public class HomeFragment extends Fragment {
             teamRank.setClickable(false);
         }
 
-        RelativeLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
-        constructorCard.setBackgroundColor(Color.parseColor("#F4F2F3"));
+        FrameLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
+        //constructorCard.setBackgroundColor(Color.parseColor("#F4F2F3"));
 
         constructorCard.setOnClickListener(v -> {
             Intent intent = new Intent(getActivity(), ConstructorBioActivity.class);

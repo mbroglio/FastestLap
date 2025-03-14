@@ -173,7 +173,8 @@ public class DriversStandingActivity extends AppCompatActivity {
                             driverColor.setBackground(AppCompatResources.getDrawable(this, Constants.TEAM_GRADIENT_COLOR.get(driver.getTeam_id())));
                         } catch (Exception e) {
                             Log.i(TAG, "Driver has no team");
-                            driverColor.setBackground(AppCompatResources.getDrawable(this, R.color.white));
+                            driverColor.setBackground(AppCompatResources.getDrawable(this, R.color.timer_gray));
+                            Glide.with(this).load(R.drawable.f1_car_icon_filled).into(teamLogoImageView);
                         }
 
                         driverCard.setOnClickListener(v -> {

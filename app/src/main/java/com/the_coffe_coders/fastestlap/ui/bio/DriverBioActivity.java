@@ -119,9 +119,7 @@ public class DriverBioActivity extends AppCompatActivity {
         User currentUser = userViewModel.getLoggedUser();
 
         SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
-        sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
-                Constants.SHARED_PREFERENCES_FAVORITE_DRIVER,
-                driverId);
+        sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER, driverId);
 
         userViewModel.saveUserDriverPreferences(driverId, currentUser.getIdToken());
 
@@ -175,23 +173,33 @@ public class DriverBioActivity extends AppCompatActivity {
         TextView toolbarTitle = findViewById(R.id.topAppBarTitle);
         toolbarTitle.setText(fullName.toUpperCase());
 
-        toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
-        appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
+        try {
+            toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
+            appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
 
-        //setDriverRankingButton(driverId);
-
-        teamLogoCard.setOnClickListener(v -> {
-            Intent intent = new Intent(DriverBioActivity.this, ConstructorBioActivity.class);
-            intent.putExtra("TEAM_ID", driver.getTeam_id());
-            startActivity(intent);
-        });
+            teamLogoCard.setOnClickListener(v -> {
+                Intent intent = new Intent(DriverBioActivity.this, ConstructorBioActivity.class);
+                intent.putExtra("TEAM_ID", driver.getTeam_id());
+                startActivity(intent);
+            });
+        } catch (Exception e) {
+            toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
+            appBarLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
+        }
     }
 
     private void setDriverData(Driver driver, Nation nation, Constructor team) {
-        teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
-        driverNumberCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
+        try {
+            teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
+            driverNumberCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
 
-        Glide.with(this).load(team.getTeam_logo_url()).into(teamLogoImage);
+            Glide.with(this).load(team.getTeam_logo_url()).into(teamLogoImage);
+        } catch (Exception e) {
+            teamLogoCard.setStrokeColor(ContextCompat.getColor(this, R.color.timer_gray));
+            driverNumberCard.setStrokeColor(ContextCompat.getColor(this, R.color.timer_gray));
+
+            Glide.with(this).load(R.drawable.f1_car_icon_filled).into(teamLogoImage);
+        }
 
         ImageView driverFlag = findViewById(R.id.driver_flag);
         Glide.with(this).load(nation.getNation_flag_url()).into(driverFlag);
