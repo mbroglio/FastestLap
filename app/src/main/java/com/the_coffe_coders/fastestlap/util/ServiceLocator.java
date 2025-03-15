@@ -172,6 +172,16 @@ public class ServiceLocator {
             }
 
             @Override
+            public Call<ResponseBody> getDrivers() {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+
+                return retrofit.create(ErgastAPIService.class).getDrivers();
+            }
+
+            @Override
             public Call<ResponseBody> getConstructor(String constructorId) {
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(CURRENT_YEAR_BASE_URL)

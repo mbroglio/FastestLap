@@ -36,6 +36,9 @@ public interface ErgastAPIService {
     @GET("drivers/{driverId}")
     Call<ResponseBody> getDriver(@Path("driverId") String driverId);
 
+    @GET("drivers")
+    Call<ResponseBody> getDrivers();
+
     @GET("constructors/{constructorId}")
     Call<ResponseBody> getConstructor(@Path("constructorId") String constructorId);
 }

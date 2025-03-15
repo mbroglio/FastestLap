@@ -27,6 +27,13 @@ public class DriverStandingsElement {
     private String wins;
     private List<Constructor> constructors;
 
+    public DriverStandingsElement(Driver driver) {
+        position = "0";
+        positionText = "0";
+        points = "0";
+        this.driver = driver;
+    }
+
 
     public Driver getDriver() {
         return driver;

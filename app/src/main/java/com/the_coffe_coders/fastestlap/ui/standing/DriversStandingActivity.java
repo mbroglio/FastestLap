@@ -29,6 +29,7 @@ import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
+import com.the_coffe_coders.fastestlap.repository.driver.JolpicaDriverRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
@@ -41,7 +42,9 @@ import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 public class DriversStandingActivity extends AppCompatActivity {
 
@@ -92,15 +95,19 @@ public class DriversStandingActivity extends AppCompatActivity {
 
                 if (driverList.isEmpty()) {
                     Log.i(TAG, "DRIVER STANDINGS EMPTY");
-                    List<Driver> drivers = fetchDriversList();
-
-                    for (Driver driver : drivers) {
-                        View driverCard = generateDriverCard(driver, driverId);
-                        driverStanding.addView(driverCard);
-                        View space = new View(DriversStandingActivity.this);
-                        space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
-                        driverStanding.addView(space);
-                    }
+                    MutableLiveData<Result> drivers = fetchDriversList();
+                    drivers.observe(this, driverResult -> {
+                        if (driverResult.isSuccess()) {
+                            List<Driver> driverList2 = ((Result.DriversSuccess) driverResult).getData();
+                            for (Driver driver : driverList2) {
+                                View driverCard = generateDriverCard(driver, driverId);
+                                driverStanding.addView(driverCard);
+                                View space = new View(DriversStandingActivity.this);
+                                space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
+                                driverStanding.addView(space);
+                            }
+                        }
+                    });
                 } else {
                     Log.i(TAG, "DRIVER STANDINGS NOT EMPTY");
                     for (DriverStandingsElement driver : driverList) {
@@ -121,8 +128,11 @@ public class DriversStandingActivity extends AppCompatActivity {
     }
 
 
-    private List<Driver> fetchDriversList() {
-        return null;
+    private MutableLiveData<Result> fetchDriversList() {
+        MutableLiveData<Result> drivers = new MutableLiveData<>();
+        JolpicaDriverRepository driverRepository = new JolpicaDriverRepository();
+        driverRepository.getDrivers().thenAccept(drivers::postValue);
+        return drivers;
     }
 
     private View generateDriverCard(Driver driver, String driverId) {

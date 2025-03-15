@@ -188,4 +188,16 @@ public abstract class Result {
             return race;
         }
     }
+
+    public static class DriversSuccess extends Result {
+        private final List<Driver> drivers;
+
+        public DriversSuccess(List<Driver> drivers) {
+            this.drivers = drivers;
+        }
+
+        public List<Driver> getData() {
+            return drivers;
+        }
+    }
 }
