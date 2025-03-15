@@ -73,8 +73,7 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
         final int TOTAL_RACES = 24;
 
         for (int i = 1; i <= TOTAL_RACES; i++) {
-            final int raceNumber = i;
-            fetchRaceResult(raceNumber, 0, successCount, failureCount, TOTAL_RACES);
+            fetchRaceResult(i, 0, successCount, failureCount, TOTAL_RACES);
         }
     }
 

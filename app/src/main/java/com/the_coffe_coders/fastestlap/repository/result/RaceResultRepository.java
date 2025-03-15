@@ -27,12 +27,11 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
     public static boolean isOutdateRaceResults = true;
     private final MutableLiveData<Result> raceResultMutableLiveData;
     private final MutableLiveData<Result> allRaceResultMutableLiveData;
-
     private final MutableLiveData<Result> lastRaceResultsMutableLiveData;
     private final MutableLiveData<Result> singleRaceMutableLiveData;
     private final BaseRaceResultRemoteDataSource raceResultRemoteDataSource;
     private final BaseRaceResultLocalDataSource raceResultLocalDataSource;
-    private List<Race> raceList = new ArrayList<>();
+    private List<Race> raceList;
 
 
     public RaceResultRepository(BaseRaceResultRemoteDataSource raceResultRemoteDataSource, BaseRaceResultLocalDataSource raceResultLocalDataSource) {
@@ -50,9 +49,9 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
         raceList.add(race);
         if (raceList.size() == 24) {
             allRaceResultMutableLiveData.postValue(new Result.RaceSuccess(raceList));
-            Log.i(TAG, "posting value!!!");
-            List<RaceResult> raceResult = new ArrayList<>();
+            Log.i(TAG, "posting value!!! + " + raceList.size());
             raceResultLocalDataSource.insertRaceList(raceList);
+            raceResultMutableLiveData.postValue(new Result.RaceSuccess(raceList));
         }
         //Log.i(TAG, race.toString());
     }
@@ -145,9 +144,7 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
 
     @Override
     public void onSuccessFromLocal(List<RaceResult> raceResultList) {
-        Log.i(TAG, "onSuccessFromLocal");
-        raceResultMutableLiveData.postValue(new Result.RacesResultSuccess(raceResultList));
-        Log.i(TAG, raceResultMutableLiveData.toString());
+
     }
 
     @Override
