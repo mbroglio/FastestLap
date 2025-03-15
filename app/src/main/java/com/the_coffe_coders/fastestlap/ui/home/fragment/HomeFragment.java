@@ -1,7 +1,6 @@
 package com.the_coffe_coders.fastestlap.ui.home.fragment;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -51,41 +50,28 @@ import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
-import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
-import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModelFactory;
-import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
-import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 
-import org.threeten.bp.LocalDate;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
 import java.util.List;
 
-/**
- * TODO:
- *  - Implement fetchLastRace
- *  - Implement fetchNextRace
- *  - Fix setNextSessionCard to check if underway for live icon
- *  - Fix setFavouriteConstructorCard
- *  - Implement firebase to get favourite driver and constructor after user login
- */
-
 public class HomeFragment extends Fragment {
-    private final String TAG = HomeFragment.class.getSimpleName();
-    private final SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
-    LoadingScreen loadingScreen;
+    private static final String TAG = HomeFragment.class.getSimpleName();
+    private SharedPreferencesUtils sharedPreferencesUtils;
+    private LoadingScreen loadingScreen;
     private HomeViewModel homeViewModel;
     private ConstructorViewModel constructorViewModel;
-
+    private DriverViewModel driverViewModel;
+    private TrackViewModel trackViewModel;
+    private NationViewModel nationViewModel;
 
     public HomeFragment() {
-
         // Required empty public constructor
     }
 
@@ -96,628 +82,623 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-
-        homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getDriverStandingsRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false))).get(HomeViewModel.class);
-
-        // Show loading screen initially
-        loadingScreen = new LoadingScreen(view, getContext());
-        loadingScreen.showLoadingScreen();
-
-        constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(ServiceLocator.getInstance().getCommonConstructorRepository())).get(ConstructorViewModel.class);
-
-        setLastRaceCard(view);
-        setNextSessionCard(view);
-        setFavouriteDriverCard(view);
-
+        initializeViewModels();
+        setupLoadingScreen(view);
+        setupUI(view);
+        observeLoadingAndErrors();
         return view;
     }
 
+    private void initializeViewModels() {
+        homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(
+                ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false),
+                ServiceLocator.getInstance().getRaceResultRepository(getActivity().getApplication(), false),
+                ServiceLocator.getInstance().getDriverStandingsRepository(getActivity().getApplication(), false),
+                ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false)
+        )).get(HomeViewModel.class);
+
+        constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(
+                ServiceLocator.getInstance().getCommonConstructorRepository())).get(ConstructorViewModel.class);
+
+        driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(
+                ServiceLocator.getInstance().getCommonDriverRepository())).get(DriverViewModel.class);
+
+        trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(
+                ServiceLocator.getInstance().getTrackRepository())).get(TrackViewModel.class);
+
+        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(
+                ServiceLocator.getInstance().getFirebaseNationRepository())).get(NationViewModel.class);
+    }
+
+    private void setupLoadingScreen(View view) {
+        loadingScreen = new LoadingScreen(view, getContext());
+        loadingScreen.showLoadingScreen();
+    }
+
+    private void setupUI(View view) {
+        setLastRaceCard(view);
+        setNextSessionCard(view);
+        setFavouriteDriverCard(view);
+        setFavouriteConstructorCard(view);
+    }
+
+    private void observeLoadingAndErrors() {
+        homeViewModel.isLoading().observe(getViewLifecycleOwner(), isLoading -> {
+            if (isLoading != null && !isLoading) {
+                loadingScreen.hideLoadingScreen();
+            }
+        });
+
+        homeViewModel.getErrorMessage().observe(getViewLifecycleOwner(), error -> {
+            if (error != null) {
+                Log.e(TAG, "Error from ViewModel: " + error);
+                // Optionally show a toast or UI feedback to the user
+            }
+        });
+    }
+
     private void setLastRaceCard(View view) {
-        MutableLiveData<Result> lastRace = ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false).fetchLastRace(0);
+        MutableLiveData<Result> lastRace = homeViewModel.getLastRace(0L);
         lastRace.observe(getViewLifecycleOwner(), result -> {
-            if (result.isSuccess()) {
-                WeeklyRace raceResult = ((Result.NextRaceSuccess) result).getData(); // TODO: fix index requirement
-                Log.i(TAG, "LAST RACE CARD RESULT: " + raceResult);
-                try {
+            try {
+                if (result.isSuccess()) {
+                    WeeklyRace raceResult = ((Result.NextRaceSuccess) result).getData();
+                    Log.i(TAG, "Last Race: " + raceResult);
                     showPodium(view, raceResult);
-                } catch (Exception e) {
-                    loadPendingResultsLayout(view);
+                } else {
+                    throw new Exception("Failed to fetch last race: " + result.getError());
                 }
-            } else {
-                Log.i(TAG, "LAST RACE ERROR");
+            } catch (Exception e) {
+                Log.e(TAG, "Error in setLastRaceCard: " + e.getMessage());
                 loadPendingResultsLayout(view);
             }
         });
     }
 
-    private void loadPendingResultsLayout(View view) {
-        Log.i(TAG, "Results not available");
-        View pendingResults = view.findViewById(R.id.pending_last_race_results);
-        View results = view.findViewById(R.id.last_race_results);
-
-        pendingResults.setVisibility(View.VISIBLE);
-        results.setVisibility(View.GONE);
+    private void showPodium(View view, WeeklyRace race) {
+        try {
+            if (race.getFinalRace().getResults().isEmpty()) {
+                throw new Exception("No results available for last race");
+            }
+            String circuitId = race.getTrack().getTrackId();
+            MutableLiveData<Result> trackData = trackViewModel.getTrack(circuitId);
+            trackData.observe(getViewLifecycleOwner(), trackResult -> {
+                try {
+                    if (trackResult.isSuccess()) {
+                        Track track = ((Result.TrackSuccess) trackResult).getData();
+                        updateLastRaceUI(view, race, track);
+                    } else {
+                        throw new Exception("Failed to fetch track data: " + trackResult.getError());
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error loading track: " + e.getMessage());
+                    loadPendingResultsLayout(view);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error in showPodium: " + e.getMessage());
+            loadPendingResultsLayout(view);
+        }
     }
 
-    private void showPodium(View view, WeeklyRace race) throws Exception {
-        if (race.getFinalRace().getResults().isEmpty()) {
-            throw new Exception("Results not available");
-        }
-        String circuitId = race.getTrack().getTrackId();
+    private void updateLastRaceUI(View view, WeeklyRace race, Track track) {
+        try {
+            TextView raceName = view.findViewById(R.id.last_race_name);
+            raceName.setText(race.getRaceName());
 
-        TrackViewModel trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(ServiceLocator.getInstance().getTrackRepository())).get(TrackViewModel.class);
-        MutableLiveData<Result> trackData = trackViewModel.getTrack(circuitId);
+            ImageView trackOutline = view.findViewById(R.id.last_race_track_outline);
+            Glide.with(this).load(track.getTrack_minimal_layout_url()).into(trackOutline);
 
-        trackData.observe(getViewLifecycleOwner(), result -> {
-            if (result.isSuccess()) {
-                Track track = ((Result.TrackSuccess) result).getData();
+            LocalDateTime dateTime = race.getDateTime();
+            TextView raceDate = view.findViewById(R.id.last_race_date);
+            raceDate.setText(String.valueOf(dateTime.getDayOfMonth()));
 
-                TextView raceName = view.findViewById(R.id.last_race_name);
-                raceName.setText(race.getRaceName());
+            TextView raceMonth = view.findViewById(R.id.last_race_month);
+            raceMonth.setText(dateTime.getMonth().toString().substring(0, 3).toUpperCase());
 
-                ImageView trackOutline = view.findViewById(R.id.last_race_track_outline);
-                Glide.with(getActivity()).load(track.getTrack_minimal_layout_url()).into(trackOutline);
+            TextView roundNumber = view.findViewById(R.id.last_race_round);
+            roundNumber.setText("Round " + race.getRound());
 
-                TextView raceDate = view.findViewById(R.id.last_race_date);
-                LocalDate date = race.getDateTime().toLocalDate();
-                raceDate.setText(String.valueOf(date.getDayOfMonth()));
-
-                // Get the first three characters of the month in capital letters
-                TextView raceMonth = view.findViewById(R.id.last_race_month);
-                String month = date.getMonth().toString().substring(0, 3).toUpperCase();
-                raceMonth.setText(month);
-
-                TextView roundNumber = view.findViewById(R.id.last_race_round);
-                String round = "Round " + race.getRound();
-                roundNumber.setText(round);
-
-                MutableLiveData<Result> mutableLiveData = ServiceLocator.getInstance().getRaceResultRepository(getActivity().getApplication(), false).fetchRaceResult(Integer.parseInt(race.getRound()), 0L);
-                mutableLiveData.observe(getViewLifecycleOwner(), result1 -> {
-                    if (result1.isSuccess()) {
-                        List<RaceResult> raceResults = ((Result.RacesResultSuccess) result1).getData();
+            MutableLiveData<Result> raceResultData = ServiceLocator.getInstance()
+                    .getRaceResultRepository(getActivity().getApplication(), false)
+                    .fetchRaceResult(Integer.parseInt(race.getRound()), 0L);
+            raceResultData.observe(getViewLifecycleOwner(), result -> {
+                try {
+                    if (result.isSuccess()) {
+                        List<RaceResult> raceResults = ((Result.RacesResultSuccess) result).getData();
                         setDriverNames(view, raceResults);
+                    } else {
+                        throw new Exception("Failed to fetch race results: " + result.getError());
                     }
-                });
+                } catch (Exception e) {
+                    Log.e(TAG, "Error setting driver names: " + e.getMessage());
+                }
+            });
 
-                MaterialCardView resultCard = view.findViewById(R.id.past_event_result);
-                resultCard.setOnClickListener(v -> {
-                    Intent intent = new Intent(getActivity(), EventActivity.class);
-                    intent.putExtra("CIRCUIT_ID", race.getTrack().getTrackId());
-                    startActivity(intent);
-                });
-            }
-        });
+            MaterialCardView resultCard = view.findViewById(R.id.past_event_result);
+            resultCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), EventActivity.class)
+                    .putExtra("CIRCUIT_ID", race.getTrack().getTrackId())));
+        } catch (Exception e) {
+            Log.e(TAG, "Error updating last race UI: " + e.getMessage());
+            loadPendingResultsLayout(view);
+        }
     }
 
     private void setDriverNames(View view, List<RaceResult> raceResults) {
-        for (int i = 0; i < 3; i++) {
-            TextView driver = view.findViewById(Constants.LAST_RACE_DRIVER_NAME.get(i));
-            driver.setText(raceResults.get(i).getDriver().getFullName());
+        try {
+            for (int i = 0; i < Math.min(3, raceResults.size()); i++) {
+                TextView driver = view.findViewById(Constants.LAST_RACE_DRIVER_NAME.get(i));
+                driver.setText(raceResults.get(i).getDriver().getFullName());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error setting driver names: " + e.getMessage());
         }
+    }
+
+    private void loadPendingResultsLayout(View view) {
+        view.findViewById(R.id.pending_last_race_results).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.last_race_results).setVisibility(View.GONE);
     }
 
     private void setNextSessionCard(View view) {
         MutableLiveData<Result> nextRaceLiveData = homeViewModel.getNextRaceLiveData(0L);
-
         nextRaceLiveData.observe(getViewLifecycleOwner(), result -> {
-            if (result.isSuccess()) {
-                WeeklyRace nextRace = ((Result.NextRaceSuccess) result).getData();
-                Log.i(TAG, nextRace.toString());
-                try {
+            try {
+                if (result.isSuccess()) {
+                    WeeklyRace nextRace = ((Result.NextRaceSuccess) result).getData();
                     processNextRace(view, nextRace);
-                } catch (Exception e) {
-                    Log.i(TAG, "NEXT RACE ERROR");
-                    setSeasonEnded(view);
+                } else {
+                    throw new Exception("Failed to fetch next race: " + result.getError());
                 }
-
-            } else {
-                Log.i(TAG, "NEXT RACE ERROR");
+            } catch (Exception e) {
+                Log.e(TAG, "Error in setNextSessionCard: " + e.getMessage());
+                setSeasonEnded(view);
             }
         });
 
-        // CHECK IF CORRECT
         ImageView iconImageView = view.findViewById(R.id.live_icon);
         Animation pulseAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.pulse_static);
         iconImageView.startAnimation(pulseAnimation);
     }
 
-    private void processNextRace(View view, WeeklyRace nextRace) throws Exception {
-        if (nextRace == null)
-            throw new Exception("Next race not found");
-        TrackViewModel trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(ServiceLocator.getInstance().getTrackRepository())).get(TrackViewModel.class);
-        MutableLiveData<Result> trackData = trackViewModel.getTrack(nextRace.getTrack().getTrackId());
-
-        trackData.observe(getViewLifecycleOwner(), result -> {
-            if (result.isSuccess()) {
-                Track track = ((Result.TrackSuccess) result).getData();
-                nextRace.setTrack(track);
-
-                NationViewModel nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(ServiceLocator.getInstance().getFirebaseNationRepository())).get(NationViewModel.class);
-                MutableLiveData<Result> nationData = nationViewModel.getNation(track.getCountry());
-
-                nationData.observe(getViewLifecycleOwner(), nationResult -> {
-                    if (nationResult.isSuccess()) {
-                        Nation nation = ((Result.NationSuccess) nationResult).getData();
-                        try {
-                            setNextRaceCard(view, nextRace, nation);
-                        } catch (Exception e) {
-                            setSeasonEnded(view);
-                        }
+    private void processNextRace(View view, WeeklyRace nextRace) {
+        try {
+            if (nextRace == null) throw new Exception("Next race is null");
+            MutableLiveData<Result> trackData = trackViewModel.getTrack(nextRace.getTrack().getTrackId());
+            trackData.observe(getViewLifecycleOwner(), trackResult -> {
+                try {
+                    if (trackResult.isSuccess()) {
+                        Track track = ((Result.TrackSuccess) trackResult).getData();
+                        nextRace.setTrack(track);
+                        fetchNationForNextRace(view, nextRace, track);
+                    } else {
+                        throw new Exception("Failed to fetch track data: " + trackResult.getError());
                     }
-                });
+                } catch (Exception e) {
+                    Log.e(TAG, "Error processing track: " + e.getMessage());
+                    setSeasonEnded(view);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error in processNextRace: " + e.getMessage());
+            setSeasonEnded(view);
+        }
+    }
+
+    private void fetchNationForNextRace(View view, WeeklyRace nextRace, Track track) {
+        MutableLiveData<Result> nationData = nationViewModel.getNation(track.getCountry());
+        nationData.observe(getViewLifecycleOwner(), nationResult -> {
+            try {
+                if (nationResult.isSuccess()) {
+                    Nation nation = ((Result.NationSuccess) nationResult).getData();
+                    setNextRaceCard(view, nextRace, nation);
+                } else {
+                    throw new Exception("Failed to fetch nation data: " + nationResult.getError());
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error fetching nation: " + e.getMessage());
+                setSeasonEnded(view);
             }
         });
     }
 
-    private void setNextRaceCard(View view, WeeklyRace nextRace, Nation nation) throws Exception {
-        Log.i(TAG, "NEXT RACE:" + nextRace.toString());
-        TextView nextRaceName = view.findViewById(R.id.home_next_gp_name);
-        nextRaceName.setText(nextRace.getRaceName());
+    private void setNextRaceCard(View view, WeeklyRace nextRace, Nation nation) {
+        try {
+            TextView nextRaceName = view.findViewById(R.id.home_next_gp_name);
+            nextRaceName.setText(nextRace.getRaceName());
 
-        ImageView nextRaceFlag = view.findViewById(R.id.home_next_gp_flag);
-        Glide.with(this).load(nation.getNation_flag_url()).into(nextRaceFlag);
+            ImageView nextRaceFlag = view.findViewById(R.id.home_next_gp_flag);
+            Glide.with(this).load(nation.getNation_flag_url()).into(nextRaceFlag);
 
-        if (!nextRace.getSeason().equals(ServiceLocator.getCurrentYear())) {
-            throw new Exception("Season mismatch");
+            if (!nextRace.getSeason().equals(ServiceLocator.getCurrentYear())) {
+                throw new Exception("Season mismatch");
+            }
+
+            List<Session> sessions = nextRace.getSessions();
+            Session nextEvent = nextRace.findNextEvent(sessions);
+            if (nextEvent != null) {
+                startCountdown(view, nextEvent.getStartDateTime());
+                updateSessionType(view, nextEvent);
+            } else {
+                throw new Exception("No upcoming session found");
+            }
+
+            FrameLayout nextSessionCard = view.findViewById(R.id.timer_card_countdown);
+            nextSessionCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), EventActivity.class)
+                    .putExtra("CIRCUIT_ID", nextRace.getTrack().getTrackId())));
+        } catch (Exception e) {
+            Log.e(TAG, "Error in setNextRaceCard: " + e.getMessage());
+            setSeasonEnded(view);
         }
-        List<Session> sessions = nextRace.getSessions();
-        Session nextEvent = nextRace.findNextEvent(sessions);
-        if (nextEvent != null) {
-            LocalDateTime eventDateTime = nextEvent.getStartDateTime();
-            startCountdown(view, eventDateTime);
-        }
+    }
 
+    private void updateSessionType(View view, Session nextEvent) {
         TextView sessionType = view.findViewById(R.id.next_session_type);
-        String sessionId = "";
-        if (nextEvent.getClass().getSimpleName().equals("Practice")) {
-            Practice practice = (Practice) nextEvent;
-            sessionId = "Practice" + practice.getNumber();
-        } else {
-            sessionId = nextEvent.getClass().getSimpleName();
-        }
-        sessionType.setText(Constants.SESSION_NAMES.get(sessionId));
-
-        FrameLayout nextSessionCard = view.findViewById(R.id.timer_card_countdown);
-        nextSessionCard.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), EventActivity.class);
-            intent.putExtra("CIRCUIT_ID", nextRace.getTrack().getTrackId());
-            startActivity(intent);
-        });
-    }
-
-    private void setSeasonEnded(View view) {
-        View lastRace = view.findViewById(R.id.last_race_results);
-        View timerCard = view.findViewById(R.id.timer);
-        View seasonEndedCard = view.findViewById(R.id.season_ended);
-        View seasonResults = view.findViewById(R.id.season_results);
-        View pendingResults = view.findViewById(R.id.pending_last_race_results);
-
-        timerCard.setVisibility(View.GONE);
-        lastRace.setVisibility(View.GONE);
-        seasonEndedCard.setVisibility(View.VISIBLE);
-        seasonResults.setVisibility(View.VISIBLE);
-        pendingResults.setVisibility(View.GONE);
-
-        buildFinalDriversStanding(seasonResults);
-        buildFinalTeamsStanding(seasonResults);
-    }
-
-    private void buildFinalDriversStanding(View seasonEndedCard) {
-        DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverStandingsRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
-        MutableLiveData<Result> driverStandingsLiveData = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
-
-        driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
-            if (result.isSuccess()) {
-                DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
-                List<DriverStandingsElement> driversList = driverStandings.getDriverStandingsElements();
-
-                for (int i = 0; i < 3; i++) {
-                    DriverStandingsElement driver = driversList.get(i);
-
-                    setStandingFields(seasonEndedCard, driver.getDriver().getDriverId(), i);
-                }
-            } else {
-                Log.i(TAG, "DRIVER STANDINGS ERROR");
-                loadingScreen.hideLoadingScreen();
-            }
-        });
-    }
-
-    private void setStandingFields(View seasonEndedCard, String driverId, int i) {
-        DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(ServiceLocator.getInstance().getCommonDriverRepository())).get(DriverViewModel.class);
-        MutableLiveData<Result> driverData = driverViewModel.getDriver(driverId);
-
-        driverData.observe(getViewLifecycleOwner(), result -> {
-            if (result.isSuccess()) {
-                Driver driver = ((Result.DriverSuccess) result).getData();
-
-                TextView driverName = seasonEndedCard.findViewById(Constants.HOME_SEASON_DRIVER_STANDINGS_NAME_FIELD.get(i));
-                driverName.setText(driver.getFullName());
-
-                View driverColor = seasonEndedCard.findViewById(Constants.HOME_SEASON_DRIVER_STANDINGS_COLOR_FIELD.get(i));
-                driverColor.setBackgroundResource(Constants.TEAM_COLOR.get(driver.getTeam_id()));
-            }
-        });
-    }
-
-    private void buildFinalTeamsStanding(View seasonEndedCard) {
-        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
-        MutableLiveData<Result> data = (MutableLiveData<Result>) constructorStandingsViewModel.getConstructorStandings();
-        constructorStandingsViewModel.fetchConstructorStandings(0L);
-        data.observe(getViewLifecycleOwner(), result -> {
-            if (result.isSuccess()) {
-                ConstructorStandings constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
-                List<ConstructorStandingsElement> constructorsList = constructorStandings.getConstructorStandings();
-
-                for (int i = 0; i < 3; i++) {
-                    ConstructorStandingsElement constructor = constructorsList.get(i);
-
-                    TextView constructorName = seasonEndedCard.findViewById(Constants.HOME_SEASON_TEAM_STANDINGS_NAME_FIELD.get(i));
-                    constructorName.setText(constructor.getConstructor().getName());
-
-                    View constructorColor = seasonEndedCard.findViewById(Constants.HOME_SEASON_TEAM_STANDINGS_COLOR_FIELD.get(i));
-                    Integer teamColor = Constants.TEAM_COLOR.get(constructor.getConstructor().getConstructorId());
-                    constructorColor.setBackgroundResource(teamColor);
-                }
-            } else {
-                Log.i(TAG, "CONSTRUCTOR STANDINGS ERROR");
-                loadingScreen.hideLoadingScreen();
-            }
-        });
+        String sessionId = nextEvent.getClass().getSimpleName().equals("Practice")
+                ? "Practice" + ((Practice) nextEvent).getNumber()
+                : nextEvent.getClass().getSimpleName();
+        sessionType.setText(Constants.SESSION_NAMES.getOrDefault(sessionId, "Unknown"));
     }
 
     private void startCountdown(View view, LocalDateTime eventDate) {
         LinearLayout liveIconLayout = view.findViewById(R.id.timer_live_layout);
         liveIconLayout.setVisibility(View.GONE);
         long millisUntilStart = ZonedDateTime.of(eventDate, ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis();
+        if (millisUntilStart <= 0) {
+            liveIconLayout.setVisibility(View.VISIBLE);
+            return;
+        }
+
         new CountDownTimer(millisUntilStart, 1000) {
-            final TextView days_counter = view.findViewById(R.id.next_days_counter);
-            final TextView hours_counter = view.findViewById(R.id.next_hours_counter);
-            final TextView minutes_counter = view.findViewById(R.id.next_minutes_counter);
-            final TextView seconds_counter = view.findViewById(R.id.next_seconds_counter);
+            final TextView days = view.findViewById(R.id.next_days_counter);
+            final TextView hours = view.findViewById(R.id.next_hours_counter);
+            final TextView minutes = view.findViewById(R.id.next_minutes_counter);
+            final TextView seconds = view.findViewById(R.id.next_seconds_counter);
 
+            @Override
             public void onTick(long millisUntilFinished) {
-                long days = millisUntilFinished / 86400000;
-                long hours = (millisUntilFinished % 86400000) / 3600000;
-                long minutes = ((millisUntilFinished % 86400000) % 3600000) / 60000;
-                long seconds = (((millisUntilFinished % 86400000) % 3600000) % 60000) / 1000;
-
-                days_counter.setText(String.valueOf(days));
-                hours_counter.setText(String.valueOf(hours));
-                minutes_counter.setText(String.valueOf(minutes));
-                seconds_counter.setText(String.valueOf(seconds));
+                days.setText(String.valueOf(millisUntilFinished / 86400000));
+                hours.setText(String.valueOf((millisUntilFinished % 86400000) / 3600000));
+                minutes.setText(String.valueOf(((millisUntilFinished % 86400000) % 3600000) / 60000));
+                seconds.setText(String.valueOf((((millisUntilFinished % 86400000) % 3600000) % 60000) / 1000));
             }
 
+            @Override
             public void onFinish() {
-                days_counter.setText("0");
-                hours_counter.setText("0");
-                minutes_counter.setText("0");
-                seconds_counter.setText("0");
+                days.setText("0");
+                hours.setText("0");
+                minutes.setText("0");
+                seconds.setText("0");
+                liveIconLayout.setVisibility(View.VISIBLE);
             }
         }.start();
     }
 
+    private void setSeasonEnded(View view) {
+        view.findViewById(R.id.last_race_results).setVisibility(View.GONE);
+        view.findViewById(R.id.timer).setVisibility(View.GONE);
+        view.findViewById(R.id.season_ended).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.season_results).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.pending_last_race_results).setVisibility(View.GONE);
 
-    private String getFavoriteDriverId() {
-        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
-        String favoriteDriver = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
-        Log.i(TAG, "Favorite Driver: " + favoriteDriver);
-        return favoriteDriver;
+        buildFinalDriversStanding(view.findViewById(R.id.season_results));
+        buildFinalTeamsStanding(view.findViewById(R.id.season_results));
     }
 
-    private String getFavoriteTeamId() {
-        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
-        String favoriteTeam = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
-        Log.i(TAG, "Favorite Team: " + favoriteTeam);
-        return favoriteTeam;
-    }
-
-    private void setFavouriteDriverCard(View view) {
-
-        DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverStandingsRepository(getActivity().getApplication(), false))).get(DriverStandingsViewModel.class);
-        MutableLiveData<Result> driverStandingsLiveData = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
-        try {
-            driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
+    private void buildFinalDriversStanding(View seasonEndedCard) {
+        MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData(0L);
+        driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
+            try {
                 if (result.isSuccess()) {
                     DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
                     List<DriverStandingsElement> driversList = driverStandings.getDriverStandingsElements();
-                    DriverStandingsElement favouriteDriver = driverStandingsViewModel.getDriverStandingsElement(driversList, getFavoriteDriverId());
-                    if (favouriteDriver == null) {
-                        Log.i(TAG, "Favorite Driver is null");
-                        showSelectFavouriteDriver(view);
-                    } else {
-                        DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(ServiceLocator.getInstance().getCommonDriverRepository())).get(DriverViewModel.class);
-                        MutableLiveData<Result> driverData = driverViewModel.getDriver(getFavoriteDriverId());
-                        driverData.observe(getViewLifecycleOwner(), driverResult -> {
-                            if (driverResult.isSuccess()) {
-                                Driver driver = ((Result.DriverSuccess) driverResult).getData();
-                                favouriteDriver.setDriver(driver);
-                                buildDriverCard(view, favouriteDriver);
-                            }
-                        });
+                    for (int i = 0; i < Math.min(3, driversList.size()); i++) {
+                        setStandingFields(seasonEndedCard, driversList.get(i).getDriver().getDriverId(), i);
                     }
                 } else {
-                    Log.i(TAG, "DRIVER STANDINGS ERROR");
-                    buildDriverCard(view, getFavoriteDriverId());
-                    loadingScreen.hideLoadingScreen();
+                    throw new Exception("Failed to fetch driver standings: " + result.getError());
                 }
+            } catch (Exception e) {
+                Log.e(TAG, "Error in buildFinalDriversStanding: " + e.getMessage());
+            }
+        });
+    }
 
-                setFavouriteConstructorCard(view);
-            });
+    private void setStandingFields(View seasonEndedCard, String driverId, int position) {
+        MutableLiveData<Result> driverData = driverViewModel.getDriver(driverId);
+        driverData.observe(getViewLifecycleOwner(), result -> {
+            try {
+                if (result.isSuccess()) {
+                    Driver driver = ((Result.DriverSuccess) result).getData();
+                    TextView driverName = seasonEndedCard.findViewById(Constants.HOME_SEASON_DRIVER_STANDINGS_NAME_FIELD.get(position));
+                    driverName.setText(driver.getFullName());
+
+                    View driverColor = seasonEndedCard.findViewById(Constants.HOME_SEASON_DRIVER_STANDINGS_COLOR_FIELD.get(position));
+                    driverColor.setBackgroundResource(Constants.TEAM_COLOR.getOrDefault(driver.getTeam_id(), R.color.timer_gray));
+                } else {
+                    throw new Exception("Failed to fetch driver data: " + result.getError());
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error in setStandingFields: " + e.getMessage());
+            }
+        });
+    }
+
+    private void buildFinalTeamsStanding(View seasonEndedCard) {
+        MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData(0L);
+        constructorStandingsData.observe(getViewLifecycleOwner(), result -> {
+            try {
+                if (result.isSuccess()) {
+                    ConstructorStandings standings = ((Result.ConstructorStandingsSuccess) result).getData();
+                    List<ConstructorStandingsElement> constructorsList = standings.getConstructorStandings();
+                    for (int i = 0; i < Math.min(3, constructorsList.size()); i++) {
+                        ConstructorStandingsElement constructor = constructorsList.get(i);
+                        TextView constructorName = seasonEndedCard.findViewById(Constants.HOME_SEASON_TEAM_STANDINGS_NAME_FIELD.get(i));
+                        constructorName.setText(constructor.getConstructor().getName());
+
+                        View constructorColor = seasonEndedCard.findViewById(Constants.HOME_SEASON_TEAM_STANDINGS_COLOR_FIELD.get(i));
+                        constructorColor.setBackgroundResource(Constants.TEAM_COLOR.getOrDefault(constructor.getConstructor().getConstructorId(), R.color.timer_gray));
+                    }
+                } else {
+                    throw new Exception("Failed to fetch constructor standings: " + result.getError());
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error in buildFinalTeamsStanding: " + e.getMessage());
+            }
+        });
+    }
+
+    private void setFavouriteDriverCard(View view) {
+        String favoriteDriverId = getFavoriteDriverId();
+        if (favoriteDriverId == null || favoriteDriverId.isEmpty()) {
+            showSelectFavouriteDriver(view);
+            return;
+        }
+
+        MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData(0L);
+        driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
+            try {
+                if (result.isSuccess()) {
+                    DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
+                    DriverStandingsElement favouriteDriver = homeViewModel.getDriverStandingsElement(
+                            driverStandings.getDriverStandingsElements(), favoriteDriverId);
+                    if (favouriteDriver == null) {
+                        showSelectFavouriteDriver(view);
+                    } else {
+                        fetchDriverDataForCard(view, favoriteDriverId, favouriteDriver);
+                    }
+                } else {
+                    throw new Exception("Failed to fetch driver standings: " + result.getError());
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error in setFavouriteDriverCard: " + e.getMessage());
+                showDriverNotFound(view);
+            }
+        });
+    }
+
+    private void fetchDriverDataForCard(View view, String driverId, DriverStandingsElement favouriteDriver) {
+        MutableLiveData<Result> driverData = driverViewModel.getDriver(driverId);
+        driverData.observe(getViewLifecycleOwner(), driverResult -> {
+            try {
+                if (driverResult.isSuccess()) {
+                    Driver driver = ((Result.DriverSuccess) driverResult).getData();
+                    favouriteDriver.setDriver(driver);
+                    fetchNationForDriver(view, favouriteDriver);
+                } else {
+                    throw new Exception("Failed to fetch driver data: " + driverResult.getError());
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error fetching driver data: " + e.getMessage());
+                showDriverNotFound(view);
+            }
+        });
+    }
+
+    private void fetchNationForDriver(View view, DriverStandingsElement favouriteDriver) {
+        MutableLiveData<Result> nationData = nationViewModel.getNation(favouriteDriver.getDriver().getNationality());
+        nationData.observe(getViewLifecycleOwner(), nationResult -> {
+            try {
+                if (nationResult.isSuccess()) {
+                    Nation nation = ((Result.NationSuccess) nationResult).getData();
+                    buildDriverCard(view, favouriteDriver, nation);
+                } else {
+                    throw new Exception("Failed to fetch nation data: " + nationResult.getError());
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error fetching nation for driver: " + e.getMessage());
+                showDriverNotFound(view);
+            }
+        });
+    }
+
+    private void buildDriverCard(View view, DriverStandingsElement standingElement, Nation nation) {
+        try {
+            Driver driver = standingElement.getDriver();
+            TextView driverName = view.findViewById(R.id.favourite_driver_name);
+            driverName.setText(driver.getGivenName() + " " + driver.getFamilyName());
+
+            ImageView driverFlag = view.findViewById(R.id.favourite_driver_flag);
+            Glide.with(this).load(nation.getNation_flag_url()).into(driverFlag);
+
+            TextView nationality = view.findViewById(R.id.favourite_driver_nationality);
+            nationality.setText(nation.getAbbreviation());
+
+            ImageView driverImage = view.findViewById(R.id.favourite_driver_pic);
+            Glide.with(this).load(driver.getDriver_pic_url()).into(driverImage);
+
+            if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
+                TextView driverPosition = view.findViewById(R.id.favourite_driver_position);
+                driverPosition.setText(standingElement.getPosition());
+
+                TextView driverPoints = view.findViewById(R.id.favourite_driver_points);
+                driverPoints.setText(standingElement.getPoints());
+
+                MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
+                driverRank.setOnClickListener(v -> startActivity(new Intent(getActivity(), DriversStandingActivity.class)
+                        .putExtra("DRIVER_ID", driver.getDriverId())));
+            } else {
+                MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
+                driverRank.setClickable(false);
+            }
+
+            driverImage.setOnClickListener(v -> startActivity(new Intent(getActivity(), DriverBioActivity.class)
+                    .putExtra("DRIVER_ID", driver.getDriverId())));
         } catch (Exception e) {
-            Log.i(TAG, "Driver not found");
+            Log.e(TAG, "Error building driver card: " + e.getMessage());
             showDriverNotFound(view);
         }
     }
 
-    private void showSelectFavouriteDriver(View view) {
-        View favDriver = view.findViewById(R.id.favorite_driver);
-        View selectFavDriver = view.findViewById(R.id.pending_favorite_driver);
-        View missingFavDriver = view.findViewById(R.id.missing_favorite_driver);
-
-        selectFavDriver.setVisibility(View.VISIBLE);
-        favDriver.setVisibility(View.GONE);
-        missingFavDriver.setVisibility(View.GONE);
-
-        selectFavDriver.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), DriversStandingActivity.class);
-            startActivity(intent);
-        });
-
-        loadingScreen.hideLoadingScreen();
-    }
-
-    private void showDriverNotFound(View view) {
-        View favDriver = view.findViewById(R.id.favorite_driver);
-        View selectFavDriver = view.findViewById(R.id.pending_favorite_driver);
-        View missingFavDriver = view.findViewById(R.id.missing_favorite_driver);
-
-        missingFavDriver.setVisibility(View.VISIBLE);
-        selectFavDriver.setVisibility(View.GONE);
-        favDriver.setVisibility(View.GONE);
-
-        missingFavDriver.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), DriversStandingActivity.class);
-            startActivity(intent);
-        });
-
-        loadingScreen.hideLoadingScreen();
-    }
-
-    private void buildDriverCard(View view, String favoriteDriverId) {
-        DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(ServiceLocator.getInstance().getCommonDriverRepository())).get(DriverViewModel.class);
-        MutableLiveData<Result> driverData = driverViewModel.getDriver(favoriteDriverId);
-
-        driverData.observe(getViewLifecycleOwner(), result -> {
-            if (result.isSuccess()) {
-                Driver driver = ((Result.DriverSuccess) result).getData();
-                DriverStandingsElement standingElement = new DriverStandingsElement();
-                standingElement.setDriver(driver);
-                buildDriverCard(view, standingElement);
-            } else {
-                Log.i(TAG, "DRIVER ERROR");
-                loadingScreen.hideLoadingScreen();
-            }
-        });
-    }
-
-    private void buildDriverCard(View view, DriverStandingsElement standingElement) {
-        Driver driver = standingElement.getDriver();
-        TextView driverName = view.findViewById(R.id.favourite_driver_name);
-        driverName.setText(driver.getGivenName() + " " + driver.getFamilyName());
-
-        String driverNationality = driver.getNationality();
-        Log.i(TAG, "DRIVER NATIONALITY: " + driverNationality);
-        NationViewModel nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(ServiceLocator.getInstance().getFirebaseNationRepository())).get(NationViewModel.class);
-        MutableLiveData<Result> nationData = nationViewModel.getNation(driverNationality);
-        nationData.observe(getViewLifecycleOwner(), nationResult -> {
-            if (nationResult.isSuccess()) {
-                Nation nation = ((Result.NationSuccess) nationResult).getData();
-                Log.i(TAG, "NATION: " + nation);
-                try {
-                    buildDriverCard(view, standingElement, nation);
-                } catch (Exception e) {
-                    //throw new RuntimeException(e);
-                    Log.i(TAG, "DRIVER CARD BUILD ERROR");
-                }
-
-            }
-        });
-    }
-
-    private void buildDriverCard(View view, DriverStandingsElement standingElement, Nation nation) throws Exception {
-        Driver driver = standingElement.getDriver();
-
-        ImageView driverFlag = view.findViewById(R.id.favourite_driver_flag);
-        Glide.with(this).load(nation.getNation_flag_url()).into(driverFlag);
-
-        TextView nationality = view.findViewById(R.id.favourite_driver_nationality);
-        nationality.setText(nation.getAbbreviation());
-
-        ImageView driverImage = view.findViewById(R.id.favourite_driver_pic);
-        Glide.with(this).load(driver.getDriver_pic_url()).into(driverImage);
-
-        if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
-            TextView driverPosition = view.findViewById(R.id.favourite_driver_position);
-            driverPosition.setText(standingElement.getPosition());
-
-            TextView driverPoints = view.findViewById(R.id.favourite_driver_points);
-            driverPoints.setText(standingElement.getPoints());
-
-            MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
-            driverRank.setOnClickListener(v -> {
-                Intent intent = new Intent(getActivity(), DriversStandingActivity.class);
-                intent.putExtra("DRIVER_ID", standingElement.getDriver().getDriverId());
-                startActivity(intent);
-            });
-        } else {
-            Log.i(TAG, "Driver not found in standings");
-            MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
-            driverRank.setClickable(false);
+    private void setFavouriteConstructorCard(View view) {
+        String favoriteTeamId = getFavoriteTeamId();
+        if (favoriteTeamId == null || favoriteTeamId.isEmpty()) {
+            showSelectFavouriteConstructor(view);
+            return;
         }
 
-
-        //set favourite driver card color
-        RelativeLayout driverCard = view.findViewById(R.id.favourite_driver_layout);
-        //driverCard.setBackgroundColor(Color.WHITE);
-
-        driverImage.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), DriverBioActivity.class);
-            intent.putExtra("DRIVER_ID", standingElement.getDriver().getDriverId());
-            startActivity(intent);
+        MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData(0L);
+        constructorStandingsData.observe(getViewLifecycleOwner(), result -> {
+            try {
+                if (result.isSuccess()) {
+                    ConstructorStandings standings = ((Result.ConstructorStandingsSuccess) result).getData();
+                    ConstructorStandingsElement favouriteConstructor = homeViewModel.getConstructorStandingsElement(
+                            standings.getConstructorStandings(), favoriteTeamId);
+                    if (favouriteConstructor == null) {
+                        showSelectFavouriteConstructor(view);
+                    } else {
+                        fetchConstructorDataForCard(view, favoriteTeamId, favouriteConstructor);
+                    }
+                } else {
+                    throw new Exception("Failed to fetch constructor standings: " + result.getError());
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error in setFavouriteConstructorCard: " + e.getMessage());
+                showConstructorNotFound(view);
+            }
         });
     }
 
-    private void setFavouriteConstructorCard(View view) {
-
-        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false))).get(ConstructorStandingsViewModel.class);
-        MutableLiveData<Result> data = (MutableLiveData<Result>) constructorStandingsViewModel.getConstructorStandings();
-        constructorStandingsViewModel.fetchConstructorStandings(0); // TODO get last update from shared preferences
-
-        try {
-            data.observe(getViewLifecycleOwner(), result -> {
-                if (result.isSuccess()) {
-                    ConstructorStandings constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
-                    List<ConstructorStandingsElement> constructorsList = constructorStandings.getConstructorStandings();
-                    ConstructorStandingsElement favouriteConstructor = constructorStandingsViewModel.getConstructorStandingsElement(constructorsList, getFavoriteTeamId());
-
-                    if (favouriteConstructor == null) {
-                        Log.i(TAG, "Favorite Constructor is null");
-                        showSelectFavouriteConstructor(view);
-                    } else {
-                        MutableLiveData<Result> constructorData = constructorViewModel.getSelectedConstructorLiveData(getFavoriteTeamId());
-                        constructorData.observe(getViewLifecycleOwner(), constructorResult -> {
-                            if (constructorResult.isSuccess()) {
-                                Constructor constructor = ((Result.ConstructorSuccess) constructorResult).getData();
-                                favouriteConstructor.setConstructor(constructor);
-                                buildConstructorCard(view, favouriteConstructor);
-                            }
-                        });
-                    }
+    private void fetchConstructorDataForCard(View view, String teamId, ConstructorStandingsElement favouriteConstructor) {
+        MutableLiveData<Result> constructorData = constructorViewModel.getSelectedConstructorLiveData(teamId);
+        constructorData.observe(getViewLifecycleOwner(), constructorResult -> {
+            try {
+                if (constructorResult.isSuccess()) {
+                    Constructor constructor = ((Result.ConstructorSuccess) constructorResult).getData();
+                    favouriteConstructor.setConstructor(constructor);
+                    fetchNationForConstructor(view, favouriteConstructor);
                 } else {
-                    Log.i(TAG, "CONSTRUCTOR STANDINGS ERROR");
-                    buildConstructorCard(view, getFavoriteTeamId());
-                    loadingScreen.hideLoadingScreen();
+                    throw new Exception("Failed to fetch constructor data: " + constructorResult.getError());
                 }
-            });
+            } catch (Exception e) {
+                Log.e(TAG, "Error fetching constructor data: " + e.getMessage());
+                showConstructorNotFound(view);
+            }
+        });
+    }
+
+    private void fetchNationForConstructor(View view, ConstructorStandingsElement favouriteConstructor) {
+        MutableLiveData<Result> nationData = nationViewModel.getNation(favouriteConstructor.getConstructor().getNationality());
+        nationData.observe(getViewLifecycleOwner(), nationResult -> {
+            try {
+                if (nationResult.isSuccess()) {
+                    Nation nation = ((Result.NationSuccess) nationResult).getData();
+                    buildConstructorCard(view, favouriteConstructor, nation);
+                } else {
+                    throw new Exception("Failed to fetch nation data: " + nationResult.getError());
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error fetching nation for constructor: " + e.getMessage());
+                showConstructorNotFound(view);
+            }
+        });
+    }
+
+    private void buildConstructorCard(View view, ConstructorStandingsElement standingElement, Nation nation) {
+        try {
+            Constructor constructor = standingElement.getConstructor();
+            TextView constructorName = view.findViewById(R.id.favourite_constructor_name);
+            constructorName.setText(constructor.getName());
+
+            ImageView constructorCar = view.findViewById(R.id.favourite_constructor_car);
+            Glide.with(this).load(constructor.getCar_pic_url()).into(constructorCar);
+
+            ImageView constructorFlag = view.findViewById(R.id.favourite_constructor_flag);
+            Glide.with(this).load(nation.getNation_flag_url()).into(constructorFlag);
+
+            TextView constructorNationality = view.findViewById(R.id.favourite_constructor_nationality);
+            constructorNationality.setText(nation.getAbbreviation());
+
+            if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
+                TextView constructorPosition = view.findViewById(R.id.favourite_constructor_position);
+                constructorPosition.setText(standingElement.getPosition());
+
+                TextView constructorPoints = view.findViewById(R.id.favourite_constructor_points);
+                constructorPoints.setText(standingElement.getPoints());
+
+                MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
+                teamRank.setOnClickListener(v -> startActivity(new Intent(getActivity(), ConstructorsStandingActivity.class)
+                        .putExtra("TEAM_ID", constructor.getConstructorId())));
+            } else {
+                MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
+                teamRank.setClickable(false);
+            }
+
+            FrameLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
+            constructorCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), ConstructorBioActivity.class)
+                    .putExtra("TEAM_ID", constructor.getConstructorId())));
         } catch (Exception e) {
-            Log.i(TAG, "Constructor not found");
+            Log.e(TAG, "Error building constructor card: " + e.getMessage());
             showConstructorNotFound(view);
         }
     }
 
+    private void showSelectFavouriteDriver(View view) {
+        updateVisibility(view, R.id.pending_favorite_driver, R.id.favorite_driver, R.id.missing_favorite_driver);
+        view.findViewById(R.id.pending_favorite_driver).setOnClickListener(v ->
+                startActivity(new Intent(getActivity(), DriversStandingActivity.class)));
+    }
+
+    private void showDriverNotFound(View view) {
+        updateVisibility(view, R.id.missing_favorite_driver, R.id.favorite_driver, R.id.pending_favorite_driver);
+        view.findViewById(R.id.missing_favorite_driver).setOnClickListener(v ->
+                startActivity(new Intent(getActivity(), DriversStandingActivity.class)));
+    }
+
     private void showSelectFavouriteConstructor(View view) {
-        View favConstructor = view.findViewById(R.id.favorite_constructor);
-        View selectFavConstructor = view.findViewById(R.id.pending_favorite_constructor);
-        View missingFavConstructor = view.findViewById(R.id.missing_favorite_constructor);
-
-        selectFavConstructor.setVisibility(View.VISIBLE);
-        favConstructor.setVisibility(View.GONE);
-        missingFavConstructor.setVisibility(View.GONE);
-
-        selectFavConstructor.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), ConstructorsStandingActivity.class);
-            startActivity(intent);
-        });
-
-        loadingScreen.hideLoadingScreen();
+        updateVisibility(view, R.id.pending_favorite_constructor, R.id.favorite_constructor, R.id.missing_favorite_constructor);
+        view.findViewById(R.id.pending_favorite_constructor).setOnClickListener(v ->
+                startActivity(new Intent(getActivity(), ConstructorsStandingActivity.class)));
     }
 
     private void showConstructorNotFound(View view) {
-        View favConstructor = view.findViewById(R.id.favorite_constructor);
-        View selectFavConstructor = view.findViewById(R.id.pending_favorite_constructor);
-        View missingFavConstructor = view.findViewById(R.id.missing_favorite_constructor);
-
-        missingFavConstructor.setVisibility(View.VISIBLE);
-        selectFavConstructor.setVisibility(View.GONE);
-        favConstructor.setVisibility(View.GONE);
-
-        missingFavConstructor.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), ConstructorsStandingActivity.class);
-            startActivity(intent);
-        });
-
-        loadingScreen.hideLoadingScreen();
+        updateVisibility(view, R.id.missing_favorite_constructor, R.id.favorite_constructor, R.id.pending_favorite_constructor);
+        view.findViewById(R.id.missing_favorite_constructor).setOnClickListener(v ->
+                startActivity(new Intent(getActivity(), ConstructorsStandingActivity.class)));
     }
 
-    private void buildConstructorCard(View view, String favoriteTeamId) {
-        MutableLiveData<Result> constructorLiveData = constructorViewModel.getSelectedConstructorLiveData(favoriteTeamId);
-        constructorLiveData.observe(getViewLifecycleOwner(), result -> {
-            if (result.isSuccess()) {
-                Constructor constructor = ((Result.ConstructorSuccess) result).getData();
-                ConstructorStandingsElement standingElement = new ConstructorStandingsElement();
-                standingElement.setConstructor(constructor);
-                buildConstructorCard(view, standingElement);
-            } else {
-                Log.i(TAG, "CONSTRUCTOR ERROR");
-                loadingScreen.hideLoadingScreen();
-            }
-        });
-    }
-
-    private void buildConstructorCard(View view, ConstructorStandingsElement standingElement) {
-        Constructor constructor = standingElement.getConstructor();
-        TextView constructorName = view.findViewById(R.id.favourite_constructor_name);
-        constructorName.setText(constructor.getName());
-
-        ImageView constructorCar = view.findViewById(R.id.favourite_constructor_car);
-        Glide.with(this).load(constructor.getCar_pic_url()).into(constructorCar);
-
-        NationViewModel nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(ServiceLocator.getInstance().getFirebaseNationRepository())).get(NationViewModel.class);
-        String nationality = standingElement.getConstructor().getNationality();
-        MutableLiveData<Result> nationData = nationViewModel.getNation(nationality);
-        nationData.observe(getViewLifecycleOwner(), teamNationResult -> {
-            if (teamNationResult.isSuccess()) {
-                Nation nation = ((Result.NationSuccess) teamNationResult).getData();
-                try {
-                    buildConstructorCard(view, standingElement, nation);
-                } catch (Exception e) {
-                    Log.i(TAG, "CONSTRUCTOR CARD BUILD ERROR");
-                    loadingScreen.hideLoadingScreen();
-                }
-            }
-        });
-    }
-
-    private void buildConstructorCard(View view, ConstructorStandingsElement standingElement, Nation nation) throws Exception {
-        ImageView constructorFlag = view.findViewById(R.id.favourite_constructor_flag);
-        Glide.with(this).load(nation.getNation_flag_url()).into(constructorFlag);
-
-        TextView constructorNationality = view.findViewById(R.id.favourite_constructor_nationality);
-        constructorNationality.setText(nation.getAbbreviation());
-        if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
-            TextView constructorPosition = view.findViewById(R.id.favourite_constructor_position);
-            constructorPosition.setText(standingElement.getPosition());
-
-            TextView constructorPoints = view.findViewById(R.id.favourite_constructor_points);
-            constructorPoints.setText(standingElement.getPoints());
-
-            MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
-            teamRank.setOnClickListener(v -> {
-                Intent intent = new Intent(getActivity(), ConstructorsStandingActivity.class);
-                intent.putExtra("TEAM_ID", standingElement.getConstructor().getConstructorId());
-                startActivity(intent);
-            });
-        } else {
-            Log.i(TAG, "Constructor not found in standings");
-            MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
-            teamRank.setClickable(false);
+    private void updateVisibility(View view, int visibleId, int... goneIds) {
+        view.findViewById(visibleId).setVisibility(View.VISIBLE);
+        for (int id : goneIds) {
+            view.findViewById(id).setVisibility(View.GONE);
         }
+    }
 
-        FrameLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
-        //constructorCard.setBackgroundColor(Color.parseColor("#F4F2F3"));
+    private String getFavoriteDriverId() {
+        String driverId = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
+        Log.i(TAG, "Favorite Driver ID: " + driverId);
+        return driverId;
+    }
 
-        constructorCard.setOnClickListener(v -> {
-            Intent intent = new Intent(getActivity(), ConstructorBioActivity.class);
-            intent.putExtra("TEAM_ID", standingElement.getConstructor().getConstructorId());
-            startActivity(intent);
-        });
-
-        loadingScreen.hideLoadingScreen();
+    private String getFavoriteTeamId() {
+        String teamId = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
+        Log.i(TAG, "Favorite Team ID: " + teamId);
+        return teamId;
     }
 }
