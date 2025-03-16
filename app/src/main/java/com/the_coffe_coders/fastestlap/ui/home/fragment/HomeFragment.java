@@ -12,7 +12,6 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -96,24 +95,15 @@ public class HomeFragment extends Fragment {
     }
 
     private void initializeViewModels() {
-        homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(
-                ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false),
-                ServiceLocator.getInstance().getRaceResultRepository(getActivity().getApplication(), false),
-                ServiceLocator.getInstance().getDriverStandingsRepository(getActivity().getApplication(), false),
-                ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false)
-        )).get(HomeViewModel.class);
+        homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getDriverStandingsRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false))).get(HomeViewModel.class);
 
-        constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(
-                ServiceLocator.getInstance().getCommonConstructorRepository())).get(ConstructorViewModel.class);
+        constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(ServiceLocator.getInstance().getCommonConstructorRepository())).get(ConstructorViewModel.class);
 
-        driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(
-                ServiceLocator.getInstance().getCommonDriverRepository())).get(DriverViewModel.class);
+        driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(ServiceLocator.getInstance().getCommonDriverRepository())).get(DriverViewModel.class);
 
-        trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(
-                ServiceLocator.getInstance().getTrackRepository())).get(TrackViewModel.class);
+        trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(ServiceLocator.getInstance().getTrackRepository())).get(TrackViewModel.class);
 
-        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(
-                ServiceLocator.getInstance().getFirebaseNationRepository())).get(NationViewModel.class);
+        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(ServiceLocator.getInstance().getFirebaseNationRepository())).get(NationViewModel.class);
     }
 
     private void setupLoadingScreen(View view) {
@@ -138,7 +128,6 @@ public class HomeFragment extends Fragment {
         homeViewModel.getErrorMessage().observe(getViewLifecycleOwner(), error -> {
             if (error != null) {
                 Log.e(TAG, "Error from ViewModel: " + error);
-                // Optionally show a toast or UI feedback to the user
             }
         });
     }
@@ -205,9 +194,7 @@ public class HomeFragment extends Fragment {
             TextView roundNumber = view.findViewById(R.id.last_race_round);
             roundNumber.setText("Round " + race.getRound());
 
-            MutableLiveData<Result> raceResultData = ServiceLocator.getInstance()
-                    .getRaceResultRepository(getActivity().getApplication(), false)
-                    .fetchRaceResult(Integer.parseInt(race.getRound()), 0L);
+            MutableLiveData<Result> raceResultData = ServiceLocator.getInstance().getRaceResultRepository(getActivity().getApplication(), false).fetchRaceResult(Integer.parseInt(race.getRound()), 0L);
             raceResultData.observe(getViewLifecycleOwner(), result -> {
                 try {
                     if (result.isSuccess()) {
@@ -222,8 +209,7 @@ public class HomeFragment extends Fragment {
             });
 
             MaterialCardView resultCard = view.findViewById(R.id.past_event_result);
-            resultCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), EventActivity.class)
-                    .putExtra("CIRCUIT_ID", race.getTrack().getTrackId())));
+            resultCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), EventActivity.class).putExtra("CIRCUIT_ID", race.getTrack().getTrackId())));
         } catch (Exception e) {
             Log.e(TAG, "Error updating last race UI: " + e.getMessage());
             loadPendingResultsLayout(view);
@@ -248,19 +234,24 @@ public class HomeFragment extends Fragment {
 
     private void setNextSessionCard(View view) {
         MutableLiveData<Result> nextRaceLiveData = homeViewModel.getNextRaceLiveData(0L);
-        nextRaceLiveData.observe(getViewLifecycleOwner(), result -> {
-            try {
-                if (result.isSuccess()) {
-                    WeeklyRace nextRace = ((Result.NextRaceSuccess) result).getData();
-                    processNextRace(view, nextRace);
-                } else {
-                    throw new Exception("Failed to fetch next race: " + result.getError());
+        try {
+            nextRaceLiveData.observe(getViewLifecycleOwner(), result -> {
+                try {
+                    if (result.isSuccess()) {
+                        WeeklyRace nextRace = ((Result.NextRaceSuccess) result).getData();
+                        processNextRace(view, nextRace);
+                    } else {
+                        throw new Exception("Failed to fetch next race: " + result.getError());
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error in setNextSessionCard: " + e.getMessage());
+                    setSeasonEnded(view);
                 }
-            } catch (Exception e) {
-                Log.e(TAG, "Error in setNextSessionCard: " + e.getMessage());
-                setSeasonEnded(view);
-            }
-        });
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error in setNextSessionCard: " + e.getMessage());
+            setSeasonEnded(view);
+        }
 
         ImageView iconImageView = view.findViewById(R.id.live_icon);
         Animation pulseAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.pulse_static);
@@ -330,8 +321,7 @@ public class HomeFragment extends Fragment {
             }
 
             FrameLayout nextSessionCard = view.findViewById(R.id.timer_card_countdown);
-            nextSessionCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), EventActivity.class)
-                    .putExtra("CIRCUIT_ID", nextRace.getTrack().getTrackId())));
+            nextSessionCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), EventActivity.class).putExtra("CIRCUIT_ID", nextRace.getTrack().getTrackId())));
         } catch (Exception e) {
             Log.e(TAG, "Error in setNextRaceCard: " + e.getMessage());
             setSeasonEnded(view);
@@ -340,9 +330,7 @@ public class HomeFragment extends Fragment {
 
     private void updateSessionType(View view, Session nextEvent) {
         TextView sessionType = view.findViewById(R.id.next_session_type);
-        String sessionId = nextEvent.getClass().getSimpleName().equals("Practice")
-                ? "Practice" + ((Practice) nextEvent).getNumber()
-                : nextEvent.getClass().getSimpleName();
+        String sessionId = nextEvent.getClass().getSimpleName().equals("Practice") ? "Practice" + ((Practice) nextEvent).getNumber() : nextEvent.getClass().getSimpleName();
         sessionType.setText(Constants.SESSION_NAMES.getOrDefault(sessionId, "Unknown"));
     }
 
@@ -466,8 +454,7 @@ public class HomeFragment extends Fragment {
             try {
                 if (result.isSuccess()) {
                     DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
-                    DriverStandingsElement favouriteDriver = homeViewModel.getDriverStandingsElement(
-                            driverStandings.getDriverStandingsElements(), favoriteDriverId);
+                    DriverStandingsElement favouriteDriver = homeViewModel.getDriverStandingsElement(driverStandings.getDriverStandingsElements(), favoriteDriverId);
                     if (favouriteDriver == null) {
                         showSelectFavouriteDriver(view);
                     } else {
@@ -541,15 +528,13 @@ public class HomeFragment extends Fragment {
                 driverPoints.setText(standingElement.getPoints());
 
                 MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
-                driverRank.setOnClickListener(v -> startActivity(new Intent(getActivity(), DriversStandingActivity.class)
-                        .putExtra("DRIVER_ID", driver.getDriverId())));
+                driverRank.setOnClickListener(v -> startActivity(new Intent(getActivity(), DriversStandingActivity.class).putExtra("DRIVER_ID", driver.getDriverId())));
             } else {
                 MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
                 driverRank.setClickable(false);
             }
 
-            driverImage.setOnClickListener(v -> startActivity(new Intent(getActivity(), DriverBioActivity.class)
-                    .putExtra("DRIVER_ID", driver.getDriverId())));
+            driverImage.setOnClickListener(v -> startActivity(new Intent(getActivity(), DriverBioActivity.class).putExtra("DRIVER_ID", driver.getDriverId())));
         } catch (Exception e) {
             Log.e(TAG, "Error building driver card: " + e.getMessage());
             showDriverNotFound(view);
@@ -568,8 +553,7 @@ public class HomeFragment extends Fragment {
             try {
                 if (result.isSuccess()) {
                     ConstructorStandings standings = ((Result.ConstructorStandingsSuccess) result).getData();
-                    ConstructorStandingsElement favouriteConstructor = homeViewModel.getConstructorStandingsElement(
-                            standings.getConstructorStandings(), favoriteTeamId);
+                    ConstructorStandingsElement favouriteConstructor = homeViewModel.getConstructorStandingsElement(standings.getConstructorStandings(), favoriteTeamId);
                     if (favouriteConstructor == null) {
                         showSelectFavouriteConstructor(view);
                     } else {
@@ -643,16 +627,14 @@ public class HomeFragment extends Fragment {
                 constructorPoints.setText(standingElement.getPoints());
 
                 MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
-                teamRank.setOnClickListener(v -> startActivity(new Intent(getActivity(), ConstructorsStandingActivity.class)
-                        .putExtra("TEAM_ID", constructor.getConstructorId())));
+                teamRank.setOnClickListener(v -> startActivity(new Intent(getActivity(), ConstructorsStandingActivity.class).putExtra("TEAM_ID", constructor.getConstructorId())));
             } else {
                 MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
                 teamRank.setClickable(false);
             }
 
             FrameLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
-            constructorCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), ConstructorBioActivity.class)
-                    .putExtra("TEAM_ID", constructor.getConstructorId())));
+            constructorCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), ConstructorBioActivity.class).putExtra("TEAM_ID", constructor.getConstructorId())));
         } catch (Exception e) {
             Log.e(TAG, "Error building constructor card: " + e.getMessage());
             showConstructorNotFound(view);
@@ -661,26 +643,22 @@ public class HomeFragment extends Fragment {
 
     private void showSelectFavouriteDriver(View view) {
         updateVisibility(view, R.id.pending_favorite_driver, R.id.favorite_driver, R.id.missing_favorite_driver);
-        view.findViewById(R.id.pending_favorite_driver).setOnClickListener(v ->
-                startActivity(new Intent(getActivity(), DriversStandingActivity.class)));
+        view.findViewById(R.id.pending_favorite_driver).setOnClickListener(v -> startActivity(new Intent(getActivity(), DriversStandingActivity.class)));
     }
 
     private void showDriverNotFound(View view) {
         updateVisibility(view, R.id.missing_favorite_driver, R.id.favorite_driver, R.id.pending_favorite_driver);
-        view.findViewById(R.id.missing_favorite_driver).setOnClickListener(v ->
-                startActivity(new Intent(getActivity(), DriversStandingActivity.class)));
+        view.findViewById(R.id.missing_favorite_driver).setOnClickListener(v -> startActivity(new Intent(getActivity(), DriversStandingActivity.class)));
     }
 
     private void showSelectFavouriteConstructor(View view) {
         updateVisibility(view, R.id.pending_favorite_constructor, R.id.favorite_constructor, R.id.missing_favorite_constructor);
-        view.findViewById(R.id.pending_favorite_constructor).setOnClickListener(v ->
-                startActivity(new Intent(getActivity(), ConstructorsStandingActivity.class)));
+        view.findViewById(R.id.pending_favorite_constructor).setOnClickListener(v -> startActivity(new Intent(getActivity(), ConstructorsStandingActivity.class)));
     }
 
     private void showConstructorNotFound(View view) {
         updateVisibility(view, R.id.missing_favorite_constructor, R.id.favorite_constructor, R.id.pending_favorite_constructor);
-        view.findViewById(R.id.missing_favorite_constructor).setOnClickListener(v ->
-                startActivity(new Intent(getActivity(), ConstructorsStandingActivity.class)));
+        view.findViewById(R.id.missing_favorite_constructor).setOnClickListener(v -> startActivity(new Intent(getActivity(), ConstructorsStandingActivity.class)));
     }
 
     private void updateVisibility(View view, int visibleId, int... goneIds) {
