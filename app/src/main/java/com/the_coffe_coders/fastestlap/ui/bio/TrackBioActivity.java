@@ -108,8 +108,7 @@ public class TrackBioActivity extends AppCompatActivity {
         Glide.with(this).load(nation.getNation_flag_url()).into(countryFlag);
 
         TextView circuitName = findViewById(R.id.circuit_name_value);
-        //circuitName.setText(circuit.getCircuitName());
-        circuitName.setText("NA"); // TODO: Change this
+        circuitName.setText(track.getTrackName());
 
         TextView numberOfLaps = findViewById(R.id.number_of_laps_value);
         numberOfLaps.setText(track.getLaps());
