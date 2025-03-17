@@ -47,7 +47,12 @@ public class IntroScreenActivity extends AppCompatActivity {
 
         String season_year = getIntent().getStringExtra("season_year");
         Log.d("LaunchFlag", "Valore ricevuto: " + season_year);
-        ServiceLocator.setCurrentYearBaseUrl(season_year);
+        if (season_year != null) {
+            ServiceLocator.setCurrentYearBaseUrl(season_year);
+        }else {
+            Log.d("LaunchFlag", "Using default year (current)");
+        }
+
 
         userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(ServiceLocator.getInstance().getUserRepository((Application) getApplicationContext()))).get(UserViewModel.class);
 
