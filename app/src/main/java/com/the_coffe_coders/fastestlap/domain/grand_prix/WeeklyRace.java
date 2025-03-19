@@ -6,6 +6,7 @@ import androidx.room.PrimaryKey;
 import org.threeten.bp.LocalDateTime;
 
 import java.util.List;
+import java.util.Objects;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -80,6 +81,18 @@ public abstract class WeeklyRace {
         }
 
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        WeeklyRace that = (WeeklyRace) o;
+        return Objects.equals(round, that.round);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uid, round);
     }
 
     public boolean isWeekFinished() {

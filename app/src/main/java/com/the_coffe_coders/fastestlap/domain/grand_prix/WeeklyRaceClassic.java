@@ -13,7 +13,7 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@EqualsAndHashCode(callSuper = true)
+//@EqualsAndHashCode(callSuper = true)
 @ToString
 @NoArgsConstructor
 @Entity(tableName = "WeeklyRaceClassic")
