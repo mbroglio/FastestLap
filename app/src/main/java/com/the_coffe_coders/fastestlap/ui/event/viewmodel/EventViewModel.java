@@ -9,6 +9,7 @@ import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /*
@@ -66,14 +67,13 @@ public class EventViewModel extends ViewModel {
 
     public List<WeeklyRace> extractUpcomingRaces(List<WeeklyRace> races) {
         List<WeeklyRace> upcomingRaces = new ArrayList<>();
-
         for (WeeklyRace weeklyRace : races) {
             // A Race is considered upcoming if it is yet to finish
             if (!weeklyRace.isWeekFinished()) {
                 upcomingRaces.add(weeklyRace);
             }
         }
-
+        upcomingRaces.sort(Comparator.comparingInt(race -> Integer.parseInt(race.getRound())));
         return upcomingRaces;
     }
 
