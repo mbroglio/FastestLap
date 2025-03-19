@@ -23,11 +23,9 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
     public static boolean isOutdateRace = true;
     private final MutableLiveData<Result> weeklyRaceMutableLiveData;
     private final BaseWeeklyRaceRemoteDataSource raceRemoteDataSource;
-
     private final MutableLiveData<Result> nextRaceMutableLiveData;
     private final MutableLiveData<Result> lastRaceMutableLiveData;
     private final BaseWeeklyRaceLocalDataSource raceLocalDataSource;
-    private final IRaceResultRepository raceResultRepository;
 
     public RaceRepository(BaseWeeklyRaceRemoteDataSource raceRemoteDataSource, BaseWeeklyRaceLocalDataSource raceLocalDataSource, RaceResultRepository raceResultRepository) {
         this.weeklyRaceMutableLiveData = new MutableLiveData<>();
@@ -36,7 +34,7 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
         this.raceLocalDataSource = raceLocalDataSource;
         this.raceRemoteDataSource.setRaceCallback(this);
         this.raceLocalDataSource.setRaceCallback(this);
-        this.raceResultRepository = raceResultRepository;
+
         this.nextRaceMutableLiveData = new MutableLiveData<>();
     }
 
@@ -45,7 +43,6 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
 
         if (isOutdateRace) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
             //TODO fetch from remote
-
             raceRemoteDataSource.getWeeklyRaces();
             isOutdateRace = false;
         } else {
