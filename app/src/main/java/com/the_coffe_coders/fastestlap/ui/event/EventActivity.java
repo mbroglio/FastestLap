@@ -33,6 +33,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Practice;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
@@ -304,9 +305,11 @@ public class EventActivity extends AppCompatActivity {
     private void processRaceResults(WeeklyRace weeklyRace) {
         Log.i(TAG, "Processing race results" + " " + weeklyRace.getRound());
         MutableLiveData<Result> resultMutableLiveData = eventViewModel.getRaceResults(0L, weeklyRace.getRound());
-        Log.i(TAG, resultMutableLiveData.toString());
+
         resultMutableLiveData.observe(this, result -> {
-            List<RaceResult> podium = ((Result.RacesResultSuccess) result).getData();
+            Race race = ((Result.LastRaceResultsSuccess) result).getData();
+            List<RaceResult> podium = race.getRaceResults();
+            Log.i(TAG, "Podium size" + podium.size());
             if (podium == null) {
                 showPendingResults();
             } else {

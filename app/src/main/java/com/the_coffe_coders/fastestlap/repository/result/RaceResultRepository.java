@@ -71,7 +71,7 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
         if (isOutdateRaceResult.get(round) == null) {
             isOutdateRaceResult.put(round, true);
         }
-        if (isOutdateRaceResult.get(round)) {
+        if (true) {
             //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
             //TODO fetch from remote
             Log.i(TAG, "Remote fetchRaceResults");
@@ -80,10 +80,11 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
 
         } else {
             Log.i(TAG, "fetchRaceResults from local");
-            raceResultLocalDataSource.getAllRaceResult();
+            //raceResultLocalDataSource.getAllRaceResult();
+
         }
 
-        return raceResultMutableLiveData;
+        return lastRaceResultsMutableLiveData;
     }
 
     public MutableLiveData<Result> fetchAllRaceResults(long lastUpdate, int numberOfRaces) {
