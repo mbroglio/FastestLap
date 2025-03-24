@@ -7,7 +7,7 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 public interface IRaceResultRepository {
     MutableLiveData<Result> fetchRaceResult(int round, long lastUpdate);
 
-    MutableLiveData<Result> fetchAllRaceResults(long lastUpdate);
+    MutableLiveData<Result> fetchAllRaceResults(long lastUpdate, int numberOfRaces);
 
     MutableLiveData<Result> fetchLastRaceResults(long lastUpdate);
 }
