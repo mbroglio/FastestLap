@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -20,6 +21,7 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
@@ -66,24 +68,33 @@ public class PastEventsActivity extends AppCompatActivity {
     private void processEvents() {
         Log.i("PastEvent", "Process Event");
         EventViewModel eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false))).get(EventViewModel.class);
-        MutableLiveData<Result> data = eventViewModel.getAllResults();
-        data.observe(this, result -> {
+        LiveData<Result> dataEvent = eventViewModel.getEventsLiveData(0L);
+        dataEvent.observe(this, resultEvent -> {
             Log.i("PastEvent", "observed");
-            if (result.isSuccess()) {
-                List<Race> races = ((Result.RaceSuccess) result).getData();
-                races.sort(Comparator.comparingInt(Race::getRoundAsInt));
-                Collections.reverse(races);
+            if (resultEvent.isSuccess()) {
+                List<WeeklyRace> eventRaces = ((Result.WeeklyRaceSuccess) resultEvent).getData();
+                int totalRaces = eventViewModel.extractPastRaces(eventRaces).size();
+                MutableLiveData<Result> data = eventViewModel.getAllResults(totalRaces);
+                data.observe(this, result -> {
+                    Log.i("PastEvent", "observed");
+                    if (result.isSuccess()) {
+                        List<Race> races = ((Result.RaceSuccess) result).getData();
+                        races.sort(Comparator.comparingInt(Race::getRoundAsInt));
+                        Collections.reverse(races);
 
-                //List<WeeklyRace> pastRaces = eventViewModel.extractPastRaces(races);
-                for (Race race : races) {
-                    createEventCard(race);
-                }
-                
-                loadingScreen.hideLoadingScreen();
-            } else {
-                loadingScreen.hideLoadingScreen();
+                        //List<WeeklyRace> pastRaces = eventViewModel.extractPastRaces(races);
+                        for (Race race : races) {
+                            createEventCard(race);
+                        }
+
+                        loadingScreen.hideLoadingScreen();
+                    } else {
+                        loadingScreen.hideLoadingScreen();
+                    }
+                });
             }
         });
+
     }
 
     private void createEventCard(Race race) {
