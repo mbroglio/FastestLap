@@ -283,32 +283,35 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
         //set stroke of tableHeader
         tableLayout.addView(tableHeader);
-        for (ConstructorHistory history : constructor.getTeam_history()) {
-            View tableRow = inflater.inflate(R.layout.constructor_bio_table_row, tableLayout, false);
-            tableRow.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
-            // Customize the row if needed
-            TextView seasonYear, teamPosition, teamPoints, teamWins, teamPodiums;
-            seasonYear = tableRow.findViewById(R.id.season_year);
-            seasonYear.setText(history.getYear());
 
-            teamPosition = tableRow.findViewById(R.id.team_position);
-            teamPosition.setText(history.getPosition());
+        if (constructor.getTeam_history() != null) {
+            for (ConstructorHistory history : constructor.getTeam_history()) {
+                View tableRow = inflater.inflate(R.layout.constructor_bio_table_row, tableLayout, false);
+                tableRow.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
+                // Customize the row if needed
+                TextView seasonYear, teamPosition, teamPoints, teamWins, teamPodiums;
+                seasonYear = tableRow.findViewById(R.id.season_year);
+                seasonYear.setText(history.getYear());
 
-            teamPoints = tableRow.findViewById(R.id.team_points);
-            teamPoints.setText(history.getPoints());
+                teamPosition = tableRow.findViewById(R.id.team_position);
+                teamPosition.setText(history.getPosition());
 
-            teamWins = tableRow.findViewById(R.id.team_wins);
-            teamWins.setText(history.getWins());
+                teamPoints = tableRow.findViewById(R.id.team_points);
+                teamPoints.setText(history.getPoints());
 
-            teamPodiums = tableRow.findViewById(R.id.team_podiums);
-            teamPodiums.setText(history.getPodiums());
+                teamWins = tableRow.findViewById(R.id.team_wins);
+                teamWins.setText(history.getWins());
 
-            // Set bottom margin to 5dp
-            TableLayout.LayoutParams tableParams = (TableLayout.LayoutParams) tableRow.getLayoutParams();
-            tableParams.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
-            tableRow.setLayoutParams(tableParams);
+                teamPodiums = tableRow.findViewById(R.id.team_podiums);
+                teamPodiums.setText(history.getPodiums());
 
-            tableLayout.addView(tableRow);
+                // Set bottom margin to 5dp
+                TableLayout.LayoutParams tableParams = (TableLayout.LayoutParams) tableRow.getLayoutParams();
+                tableParams.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
+                tableRow.setLayoutParams(tableParams);
+
+                tableLayout.addView(tableRow);
+            }
         }
     }
 

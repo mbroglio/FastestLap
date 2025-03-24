@@ -39,8 +39,8 @@ public class DriverStandingsElement {
             this.driver = driver;
             return;
         }
-        String driverId = this.driver.getDriverId();
 
+        String driverId = this.driver.getDriverId();
         this.driver = driver;
         this.driver.setDriverId(driverId);
     }

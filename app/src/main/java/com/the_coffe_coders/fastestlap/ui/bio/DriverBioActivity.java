@@ -110,25 +110,15 @@ public class DriverBioActivity extends AppCompatActivity {
 
     private void toggleFavoriteDriver(String driverId, MenuItem menuItem) {
         SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
-        String currentFavoriteDriverId = sharedPreferencesUtils.readStringData(
-                Constants.SHARED_PREFERENCES_FILENAME,
-                Constants.SHARED_PREFERENCES_FAVORITE_DRIVER
-        );
+        String currentFavoriteDriverId = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
 
         IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
-        UserViewModel userViewModel = new ViewModelProvider(
-                getViewModelStore(),
-                new UserViewModelFactory(userRepository)
-        ).get(UserViewModel.class);
+        UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
         User currentUser = userViewModel.getLoggedUser();
 
         if (currentFavoriteDriverId.equals(driverId)) {
             // Remove as favorite
-            sharedPreferencesUtils.writeStringData(
-                    Constants.SHARED_PREFERENCES_FILENAME,
-                    Constants.SHARED_PREFERENCES_FAVORITE_DRIVER,
-                    ""
-            );
+            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER, "");
             menuItem.setIcon(R.drawable.baseline_star_border_24);
 
             // Update user preferences in backend
@@ -137,11 +127,7 @@ public class DriverBioActivity extends AppCompatActivity {
             Log.i(TAG, "Removed favorite driver: " + driverId);
         } else {
             // Set as favorite
-            sharedPreferencesUtils.writeStringData(
-                    Constants.SHARED_PREFERENCES_FILENAME,
-                    Constants.SHARED_PREFERENCES_FAVORITE_DRIVER,
-                    driverId
-            );
+            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER, driverId);
             menuItem.setIcon(R.drawable.star_fav);
 
             // Update user preferences in backend
@@ -153,10 +139,7 @@ public class DriverBioActivity extends AppCompatActivity {
 
     private void updateFavoriteIcon(String driverId) {
         SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
-        String favoriteDriverId = sharedPreferencesUtils.readStringData(
-                Constants.SHARED_PREFERENCES_FILENAME,
-                Constants.SHARED_PREFERENCES_FAVORITE_DRIVER
-        );
+        String favoriteDriverId = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
 
         Menu menu = toolbar.getMenu();
         MenuItem favoriteItem = menu.findItem(R.id.favourite_icon_outline);
@@ -292,33 +275,35 @@ public class DriverBioActivity extends AppCompatActivity {
 
         tableLayout.addView(tableHeader);
 
-        for (DriverHistory history : driver.getDriver_history()) {
-            View tableRow = inflater.inflate(R.layout.driver_bio_table_row, tableLayout, false);
-            tableRow.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
+        if (driver.getDriver_history() != null) {
+            for (DriverHistory history : driver.getDriver_history()) {
+                View tableRow = inflater.inflate(R.layout.driver_bio_table_row, tableLayout, false);
+                tableRow.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
 
-            TextView seasonYear = tableRow.findViewById(R.id.season_year);
-            seasonYear.setText(history.getYear());
+                TextView seasonYear = tableRow.findViewById(R.id.season_year);
+                seasonYear.setText(history.getYear());
 
-            TextView teamNameText = tableRow.findViewById(R.id.team_name);
-            teamNameText.setText(history.getTeam());
+                TextView teamNameText = tableRow.findViewById(R.id.team_name);
+                teamNameText.setText(history.getTeam());
 
-            TextView driverPosition = tableRow.findViewById(R.id.driver_position);
-            driverPosition.setText(history.getPosition());
+                TextView driverPosition = tableRow.findViewById(R.id.driver_position);
+                driverPosition.setText(history.getPosition());
 
-            TextView driverPoints = tableRow.findViewById(R.id.driver_points);
-            driverPoints.setText(history.getPoints());
+                TextView driverPoints = tableRow.findViewById(R.id.driver_points);
+                driverPoints.setText(history.getPoints());
 
-            TextView driverWins = tableRow.findViewById(R.id.driver_wins);
-            driverWins.setText(history.getWins());
+                TextView driverWins = tableRow.findViewById(R.id.driver_wins);
+                driverWins.setText(history.getWins());
 
-            TextView driverPodiums = tableRow.findViewById(R.id.driver_podiums);
-            driverPodiums.setText(history.getPodiums());
+                TextView driverPodiums = tableRow.findViewById(R.id.driver_podiums);
+                driverPodiums.setText(history.getPodiums());
 
-            TableLayout.LayoutParams tableParams = (TableLayout.LayoutParams) tableRow.getLayoutParams();
-            tableParams.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
-            tableRow.setLayoutParams(tableParams);
+                TableLayout.LayoutParams tableParams = (TableLayout.LayoutParams) tableRow.getLayoutParams();
+                tableParams.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
+                tableRow.setLayoutParams(tableParams);
 
-            tableLayout.addView(tableRow);
+                tableLayout.addView(tableRow);
+            }
         }
         loadingScreen.hideLoadingScreen();
     }
