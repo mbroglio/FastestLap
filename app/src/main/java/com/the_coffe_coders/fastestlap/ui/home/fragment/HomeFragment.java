@@ -152,9 +152,6 @@ public class HomeFragment extends Fragment {
 
     private void showPodium(View view, WeeklyRace race) {
         try {
-            if (race.getFinalRace().getResults().isEmpty()) {
-                throw new Exception("No results available for last race");
-            }
             String circuitId = race.getTrack().getTrackId();
             MutableLiveData<Result> trackData = trackViewModel.getTrack(circuitId);
             trackData.observe(getViewLifecycleOwner(), trackResult -> {
@@ -198,7 +195,7 @@ public class HomeFragment extends Fragment {
             raceResultData.observe(getViewLifecycleOwner(), result -> {
                 try {
                     if (result.isSuccess()) {
-                        List<RaceResult> raceResults = ((Result.RacesResultSuccess) result).getData();
+                        List<RaceResult> raceResults = ((Result.LastRaceResultsSuccess) result).getData().getResults();
                         setDriverNames(view, raceResults);
                     } else {
                         throw new Exception("Failed to fetch race results: " + result.getError());

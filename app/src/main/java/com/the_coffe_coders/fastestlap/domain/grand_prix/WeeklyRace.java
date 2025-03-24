@@ -99,4 +99,15 @@ public abstract class WeeklyRace {
         LocalDateTime now = LocalDateTime.now();
         return now.isAfter(this.getFinalRace().getEndDateTime());
     }
+
+    public void setTrack(Track track) {
+        if(this.track == null) {
+            this.track = track;
+            return;
+        }
+
+        String trackId = this.track.getTrackId();
+        this.track = track;
+        this.track.setTrackId(trackId);
+    }
 }
