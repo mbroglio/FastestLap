@@ -1,16 +1,15 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
 import androidx.room.Entity;
-import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import org.threeten.bp.LocalDateTime;
 
 import java.util.List;
-import lombok.AllArgsConstructor;
+import java.util.Objects;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -82,6 +81,18 @@ public abstract class WeeklyRace {
         }
 
         return false;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        WeeklyRace that = (WeeklyRace) o;
+        return Objects.equals(round, that.round);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uid, round);
     }
 
     public boolean isWeekFinished() {

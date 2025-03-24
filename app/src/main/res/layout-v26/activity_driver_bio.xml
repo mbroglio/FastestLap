@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
             app:menu="@menu/bio_menu"
-            app:navigationIcon="@drawable/arrow_back_ios_style" >
+            app:navigationIcon="@drawable/arrow_back_ios_style">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -47,7 +47,7 @@
         </com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
-    
+
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline_top"
         android:layout_width="wrap_content"
@@ -166,7 +166,6 @@
                         android:layout_height="250dp"
                         android:layout_marginStart="10dp"
                         android:layout_marginEnd="10dp"
-                        android:src="@drawable/tsunoda_pic"
                         android:scaleType="centerCrop">
 
                     </ImageView>
@@ -188,11 +187,11 @@
                             android:layout_margin="5dp">
 
                         </ImageView>
-                        
+
                     </com.google.android.material.card.MaterialCardView>
-                    
+
                 </LinearLayout>
-                
+
                 <LinearLayout
                     android:id="@+id/driver_stats"
                     android:layout_width="match_parent"
@@ -228,7 +227,7 @@
                             android:textSize="@dimen/body_text_size" />
 
                     </LinearLayout>
-                    
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

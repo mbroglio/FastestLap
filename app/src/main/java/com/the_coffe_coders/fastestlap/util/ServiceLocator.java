@@ -4,11 +4,11 @@ import android.app.Application;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
-import com.the_coffe_coders.fastestlap.repository.standings.ConstructorStandingsStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.driver.CommonDriverRepository;
-import com.the_coffe_coders.fastestlap.repository.standings.DriverStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.nation.FirebaseNationRepository;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
+import com.the_coffe_coders.fastestlap.repository.standings.ConstructorStandingsStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.standings.DriverStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.track.TrackRepository;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.repository.user.UserRepository;
@@ -16,8 +16,8 @@ import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorStandingsLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorStandingsRemoteDataSource;
-import com.the_coffe_coders.fastestlap.source.constructor.ConstructorStandingsStandingsLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.constructor.ConstructorStandingsRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.constructor.ConstructorStandingsStandingsLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.BaseDriverStandingsLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.BaseDriverStandingsRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.DriverStandingsLocalDataSource;
@@ -45,8 +45,8 @@ public class ServiceLocator {
 
     public static final String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
     public static ServiceLocator instance;
-    public static String currentYear = "2024";
-    public static String CURRENT_YEAR_BASE_URL = BASE_URL + "2024/";
+    public static String currentYear = "current";
+    public static String CURRENT_YEAR_BASE_URL = BASE_URL + "current/";
 
     public static synchronized ServiceLocator getInstance() {
         if (instance == null) {
@@ -169,6 +169,16 @@ public class ServiceLocator {
                         .build();
 
                 return retrofit.create(ErgastAPIService.class).getDriver(driverId);
+            }
+
+            @Override
+            public Call<ResponseBody> getDrivers() {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+
+                return retrofit.create(ErgastAPIService.class).getDrivers();
             }
 
             @Override

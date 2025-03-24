@@ -35,27 +35,25 @@ public class DriverStandingsViewModel extends ViewModel {
     private void fetchDriverStandings(long lastUpdate) {
         //isLoadingLiveData.setValue(true);
         errorMessageLiveData.setValue(null);
-        driverRepository.fetchDriversStandings(lastUpdateTimestamp)
-                .thenAccept(result -> {
-                    isLoadingLiveData.postValue(false);
-                    if (result instanceof Result.Error) {
-                        //errorMessageLiveData.postValue(((Result.Error) result).getError());
-                    } else if (result instanceof Result.DriverStandingsSuccess) {
-                        lastUpdateTimestamp = System.currentTimeMillis();
-                    }
-                    driverStandings.postValue(result);
-                })
-                .exceptionally(throwable -> {
-                    //isLoadingLiveData.postValue(false);
-                    errorMessageLiveData.postValue("Si è verificato un errore: " + throwable.getMessage());
-                    return null;
-                });
+        driverRepository.fetchDriversStandings(lastUpdateTimestamp).thenAccept(result -> {
+            isLoadingLiveData.postValue(false);
+            if (result instanceof Result.Error) {
+                //errorMessageLiveData.postValue(((Result.Error) result).getError());
+            } else if (result instanceof Result.DriverStandingsSuccess) {
+                lastUpdateTimestamp = System.currentTimeMillis();
+            }
+            driverStandings.postValue(result);
+        }).exceptionally(throwable -> {
+            //isLoadingLiveData.postValue(false);
+            errorMessageLiveData.postValue("Si è verificato un errore: " + throwable.getMessage());
+            return null;
+        });
     }
 
     public DriverStandingsElement getDriverStandingsElement(List<DriverStandingsElement> driversList, String driverID) {
         for (DriverStandingsElement driver : driversList) {
-            if (driver.getDriver().getDriverId().equals(driverID)) {
-                return driver;
+            if (driver.getDriver().getDriverId() != null) {
+                if (driver.getDriver().getDriverId().equals(driverID)) return driver;
             }
         }
         return null;

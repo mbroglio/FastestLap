@@ -1,4 +1,5 @@
 package com.the_coffe_coders.fastestlap.domain.driver;
+
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
@@ -8,6 +9,7 @@ import org.threeten.bp.Period;
 import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -58,5 +60,9 @@ public class Driver {
 
     public String getDriverAgeAsString() {
         return String.valueOf(getDriverAge());
+    }
+
+    public String getFullName() {
+        return givenName + " " + familyName;
     }
 }

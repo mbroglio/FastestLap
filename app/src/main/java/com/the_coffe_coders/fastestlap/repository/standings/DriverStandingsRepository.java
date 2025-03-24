@@ -6,19 +6,20 @@ import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.mapper.DriverStandingsMapper;
 import com.the_coffe_coders.fastestlap.source.driver.BaseDriverStandingsLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.BaseDriverStandingsRemoteDataSource;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class DriverStandingsRepository implements IDriverStandingsRepository, DriverStandingsResponseCallback {
-    private static final String TAG = "DriverStandingsRepository";
     public static final long FRESH_TIMEOUT = 60000; // 1 minuto
-
+    private static final String TAG = "DriverStandingsRepository";
     private final BaseDriverStandingsRemoteDataSource driverRemoteDataSource;
     private final BaseDriverStandingsLocalDataSource driverLocalDataSource;
 
@@ -138,8 +139,10 @@ public class DriverStandingsRepository implements IDriverStandingsRepository, Dr
             Log.i(TAG, "DRIVER API RESPONSE EMPTY");
             CompletableFuture<Result> future = currentDriverStandingsFuture.get();
 
-            // Prova a recuperare dati locali come fallback
-            fallbackToLocalSource();
+            if (future != null && !future.isDone()) {
+                future.complete(new Result.DriverStandingsSuccess(new DriverStandings(new ArrayList<>())));
+            }
+
             return;
         }
 

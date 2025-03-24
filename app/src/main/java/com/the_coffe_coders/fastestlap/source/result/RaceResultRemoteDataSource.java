@@ -66,15 +66,13 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
     }
 
     @Override
-    public void getAllRaceResults() {
+    public void getAllRaceResults(int numberOfRaces) {
         AtomicInteger successCount = new AtomicInteger(0);
         AtomicInteger failureCount = new AtomicInteger(0);
         AtomicInteger retryCount = new AtomicInteger(0);
-        final int TOTAL_RACES = 24;
 
-        for (int i = 1; i <= TOTAL_RACES; i++) {
-            final int raceNumber = i;
-            fetchRaceResult(raceNumber, 0, successCount, failureCount, TOTAL_RACES);
+        for (int i = 1; i <= numberOfRaces; i++) {
+            fetchRaceResult(i, 0, successCount, failureCount, numberOfRaces);
         }
     }
 

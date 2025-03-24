@@ -7,9 +7,9 @@ import androidx.lifecycle.ViewModel;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
+import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.standings.ConstructorStandingsStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.standings.DriverStandingsRepository;
-import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
 
@@ -21,21 +21,18 @@ public class HomeViewModel extends ViewModel {
     // Driver related fields
     private final DriverStandingsRepository driverRepository;
     private final MutableLiveData<Result> driverStandings;
-    private long driverLastUpdateTimestamp = 0;
-
     // Constructor related fields
     private final ConstructorStandingsStandingsRepository constructorRepository;
     private final MutableLiveData<Result> constructorStandings;
-    private long constructorLastUpdateTimestamp = 0;
-
     // Race related fields
     private final RaceRepository raceRepository;
     private final RaceResultRepository raceResultRepository;
-    private MutableLiveData<Result> nextRace;
-
     // Common UI state fields
     private final MutableLiveData<String> errorMessageLiveData;
     private final MutableLiveData<Boolean> isLoadingLiveData;
+    private long driverLastUpdateTimestamp = 0;
+    private long constructorLastUpdateTimestamp = 0;
+    private MutableLiveData<Result> nextRace;
 
     public HomeViewModel(RaceRepository raceRepository,
                          RaceResultRepository raceResultRepository,
@@ -82,7 +79,7 @@ public class HomeViewModel extends ViewModel {
                 .thenAccept(result -> {
                     isLoadingLiveData.postValue(false);
                     if (result instanceof Result.Error) {
-                        errorMessageLiveData.postValue(((Result.Error) result).getError());
+                        errorMessageLiveData.postValue(result.getError());
                     } else if (result instanceof Result.DriverStandingsSuccess) {
                         driverLastUpdateTimestamp = System.currentTimeMillis();
                     }
@@ -103,7 +100,7 @@ public class HomeViewModel extends ViewModel {
                 .thenAccept(result -> {
                     isLoadingLiveData.postValue(false);
                     if (result instanceof Result.Error) {
-                        errorMessageLiveData.postValue(((Result.Error) result).getError());
+                        errorMessageLiveData.postValue(result.getError());
                     } else if (result instanceof Result.ConstructorStandingsSuccess) {
                         constructorLastUpdateTimestamp = System.currentTimeMillis();
                     }

@@ -78,7 +78,8 @@ public class RaceResultLocalDataSource extends BaseRaceResultLocalDataSource {
     public synchronized void insertRaceList(List<Race> raceList) {
         Log.i(TAG, "insertRaceList");
         // Create a new ArrayList to avoid concurrent modification
-        final List<Race> racesToInsert = new ArrayList<>(raceList);
+        final List<Race> racesToInsert = new ArrayList<>();
+        racesToInsert.addAll(raceList);
         AppRoomDatabase.databaseWriteExecutor.execute(
                 raceDao::deleteAll
         );
@@ -95,12 +96,6 @@ public class RaceResultLocalDataSource extends BaseRaceResultLocalDataSource {
                         Constants.SHARED_PREFERENCES_LAST_UPDATE,
                         String.valueOf(System.currentTimeMillis())
                 );
-
-                new Handler(Looper.getMainLooper()).post(() -> {
-                    raceResultCallback.onSuccessFromLocalRaceList(raceList);
-                });
-
-                //raceResultCallback.onSuccessFromLocalRaceList(racesToInsert);
             } catch (Exception e) {
                 Log.e(TAG, "Error inserting races: " + e.getMessage());
                 // Consider adding error callback here

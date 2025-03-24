@@ -44,11 +44,6 @@ import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
-/*
- * TODO:
- *  - manage nullPointerExceptions
- */
-
 public class ConstructorBioActivity extends AppCompatActivity {
 
     private static final String TAG = "ConstructorBioActivity";
@@ -90,30 +85,44 @@ public class ConstructorBioActivity extends AppCompatActivity {
         constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
         nationViewModel = new ViewModelProvider(this, new NationViewModelFactory()).get(NationViewModel.class);
 
-        createConstructorBioPage(teamId);
-
+        // Set up the favorite icon click listener
         Menu menu = toolbar.getMenu();
-        MenuItem item = menu.findItem(R.id.favourite_icon_outline);
-        item.setOnMenuItemClickListener(v -> {
-            updateFavouriteConstructor(teamId);
-            item.setIcon(R.drawable.star_fav);
-            return false;
+        MenuItem favoriteItem = menu.findItem(R.id.favourite_icon_outline);
+        favoriteItem.setOnMenuItemClickListener(v -> {
+            toggleFavoriteConstructor(teamId, favoriteItem);
+            return true;
         });
+
+        createConstructorBioPage(teamId);
     }
 
-    private void updateFavouriteConstructor(String teamId) {
+    private void toggleFavoriteConstructor(String teamId, MenuItem menuItem) {
+        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
+        String currentFavoriteTeamId = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
+
         IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
         UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
         User currentUser = userViewModel.getLoggedUser();
 
-        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
-        sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
-                Constants.SHARED_PREFERENCES_FAVORITE_TEAM,
-                teamId);
+        if (currentFavoriteTeamId.equals(teamId)) {
+            // Remove as favorite
+            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM, "");
+            menuItem.setIcon(R.drawable.baseline_star_border_24);
 
-        userViewModel.saveUserConstructorPreferences(teamId, currentUser.getIdToken());
+            // Update user preferences in backend (if needed)
+            userViewModel.saveUserConstructorPreferences("", currentUser.getIdToken());
 
-        Log.i(TAG, "Favourite constructor updated: " + teamId);
+            Log.i(TAG, "Removed favorite constructor: " + teamId);
+        } else {
+            // Set as favorite
+            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM, teamId);
+            menuItem.setIcon(R.drawable.star_fav);
+
+            // Update user preferences in backend
+            userViewModel.saveUserConstructorPreferences(teamId, currentUser.getIdToken());
+
+            Log.i(TAG, "Set favorite constructor to: " + teamId);
+        }
     }
 
     private void createConstructorBioPage(String teamId) {
@@ -136,9 +145,26 @@ public class ConstructorBioActivity extends AppCompatActivity {
                 driverCard = findViewById(R.id.driver_2_card);
                 driverCard.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
 
+                // Check if this constructor is the favorite and update the icon
+                updateFavoriteIcon(teamId);
+
                 getDriverData(constructor.getDriverOneId(), constructor);
             }
         });
+    }
+
+    private void updateFavoriteIcon(String teamId) {
+        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
+        String favoriteTeamId = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
+
+        Menu menu = toolbar.getMenu();
+        MenuItem favoriteItem = menu.findItem(R.id.favourite_icon_outline);
+
+        if (favoriteTeamId.equals(teamId)) {
+            favoriteItem.setIcon(R.drawable.star_fav);
+        } else {
+            favoriteItem.setIcon(R.drawable.baseline_star_border_24);
+        }
     }
 
     public void getDriverData(String driverId, Constructor team) {
@@ -241,7 +267,6 @@ public class ConstructorBioActivity extends AppCompatActivity {
         podiums.setText(team.getPodiums());
 
         createHistoryTable();
-
     }
 
     private void createHistoryTable() {

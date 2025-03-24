@@ -104,8 +104,7 @@
                             android:layout_marginStart="7dp"
                             android:layout_marginTop="3dp"
                             android:layout_marginEnd="3dp"
-                            android:layout_marginBottom="5dp"
-                            app:srcCompat="@drawable/united_states_flag">
+                            android:layout_marginBottom="5dp">
 
                         </ImageView>
 
@@ -232,8 +231,7 @@
                                 android:id="@+id/track_outline_image"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:layout_margin="5dp"
-                                app:srcCompat="@drawable/f1_2024_lve_outline">
+                                android:layout_margin="5dp">
 
                             </ImageView>
 

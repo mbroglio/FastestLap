@@ -8,6 +8,8 @@ import lombok.Setter;
 @Setter
 public abstract class BaseConstructorStandingsLocalDataSource {
     protected ConstructorStandingsResponseCallback constructorCallback;
+
     public abstract void insertConstructorsStandings(ConstructorStandings constructorStandings);
+
     public abstract void getConstructorStandings();
 }

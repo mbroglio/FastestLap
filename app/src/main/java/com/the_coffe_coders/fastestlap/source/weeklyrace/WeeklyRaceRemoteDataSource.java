@@ -48,7 +48,7 @@ public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource {
                     JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
                     JSONParserUtils jsonParserUtils = new JSONParserUtils();
                     RaceAPIResponse raceAPIsponse = jsonParserUtils.parseRace(mrdata);
-
+                    //Log.i(TAG, "MRData" + mrdata);
                     raceCallback.onSuccessFromRemote(raceAPIsponse, OperationType.FETCH_WEEKLY_RACES);
                 } else {
                     raceCallback.onFailureFromRemote(new Exception());

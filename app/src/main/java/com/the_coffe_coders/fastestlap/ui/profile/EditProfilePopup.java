@@ -39,7 +39,7 @@ public class EditProfilePopup {
     ImageView editProfileName;
     ImageView confirmEditProfileName;
     ImageView revertEditProfileName;
-    int[] profileImages = {R.drawable.boy_icon, R.drawable.girl_icon, R.drawable.anonymous_user_icon};
+    int[] profileImages = {R.drawable.anonymous_user_icon};
     private int provisionalProfileImage;
     private boolean isUsernameModified = false;
     private boolean isProfileImageModified = false;

@@ -15,9 +15,8 @@ import java.util.concurrent.atomic.AtomicReference;
 
 public class ConstructorStandingsStandingsRepository implements IConstructorStandingsRepository, ConstructorStandingsResponseCallback {
 
-    private static final String TAG = "ConstructorStandingsRepository";
     public static final long FRESH_TIMEOUT = 60000; // 1 minuto
-
+    private static final String TAG = "ConstructorStandingsRepository";
     private final BaseConstructorStandingsRemoteDataSource constructorRemoteDataSource;
     private final BaseConstructorStandingsLocalDataSource constructorLocalDataSource;
 

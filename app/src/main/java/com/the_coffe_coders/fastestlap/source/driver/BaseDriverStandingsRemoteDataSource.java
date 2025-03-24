@@ -7,5 +7,6 @@ import lombok.Setter;
 @Setter
 public abstract class BaseDriverStandingsRemoteDataSource {
     protected DriverStandingsResponseCallback driverCallback;
+
     public abstract void getDriversStandings();
 }

@@ -10,14 +10,20 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
@@ -30,7 +36,6 @@ import org.threeten.bp.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 public class PastEventsActivity extends AppCompatActivity {
 
@@ -63,23 +68,33 @@ public class PastEventsActivity extends AppCompatActivity {
     private void processEvents() {
         Log.i("PastEvent", "Process Event");
         EventViewModel eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false))).get(EventViewModel.class);
-        MutableLiveData<Result> data = eventViewModel.getAllResults();
-        data.observe(this, result -> {
+        LiveData<Result> dataEvent = eventViewModel.getEventsLiveData(0L);
+        dataEvent.observe(this, resultEvent -> {
             Log.i("PastEvent", "observed");
-            if (result.isSuccess()) {
-                List<Race> races = ((Result.RaceSuccess) result).getData();
-                races.sort(Comparator.comparingInt(Race::getRoundAsInt));
-                Collections.reverse(races);
+            if (resultEvent.isSuccess()) {
+                List<WeeklyRace> eventRaces = ((Result.WeeklyRaceSuccess) resultEvent).getData();
+                int totalRaces = eventViewModel.extractPastRaces(eventRaces).size();
+                MutableLiveData<Result> data = eventViewModel.getAllResults(totalRaces);
+                data.observe(this, result -> {
+                    Log.i("PastEvent", "observed");
+                    if (result.isSuccess()) {
+                        List<Race> races = ((Result.RaceSuccess) result).getData();
+                        races.sort(Comparator.comparingInt(Race::getRoundAsInt));
+                        Collections.reverse(races);
 
-                //List<WeeklyRace> pastRaces = eventViewModel.extractPastRaces(races);
-                for (Race race : races) {
-                    createEventCard(race);
-                }
-                loadingScreen.hideLoadingScreen();
-            } else {
-                loadingScreen.hideLoadingScreen();
+                        //List<WeeklyRace> pastRaces = eventViewModel.extractPastRaces(races);
+                        for (Race race : races) {
+                            createEventCard(race);
+                        }
+
+                        loadingScreen.hideLoadingScreen();
+                    } else {
+                        loadingScreen.hideLoadingScreen();
+                    }
+                });
             }
         });
+
     }
 
     private void createEventCard(Race race) {
@@ -94,34 +109,42 @@ public class PastEventsActivity extends AppCompatActivity {
     private View generateEventCard(Race weeklyRace) {
         View eventCard = getLayoutInflater().inflate(R.layout.past_event_card, null);
 
-        LocalDateTime raceDateTime = weeklyRace.getStartDateTime();
+        TrackViewModel trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(ServiceLocator.getInstance().getTrackRepository())).get(TrackViewModel.class);
+        MutableLiveData<Result> trackData = trackViewModel.getTrack(weeklyRace.getTrack().getTrackId());
 
-        TextView day = eventCard.findViewById(R.id.past_date);
-        String dayString = raceDateTime.getDayOfMonth() + "";
-        day.setText(dayString);
+        trackData.observe(this, result -> {
+            if (result.isSuccess()) {
+                Track track = ((Result.TrackSuccess) result).getData();
 
-        TextView month = eventCard.findViewById(R.id.past_month);
-        String monthString = raceDateTime.getMonth().toString().substring(0, 3); //Ex: JAN, FEB, etc
-        month.setText(monthString);
+                LocalDateTime raceDateTime = weeklyRace.getStartDateTime();
 
-        ImageView trackOutline = eventCard.findViewById(R.id.past_track_outline);
-        Integer track = Constants.EVENT_CIRCUIT.get(weeklyRace.getTrack().getTrackId());
-        trackOutline.setImageResource(Objects.requireNonNullElseGet(track, () -> R.string.unknown));
+                TextView day = eventCard.findViewById(R.id.past_date);
+                String dayString = raceDateTime.getDayOfMonth() + "";
+                day.setText(dayString);
 
-        TextView round = eventCard.findViewById(R.id.past_round_number);
-        String roundString = "ROUND " + weeklyRace.getRound();
-        round.setText(roundString);
+                TextView month = eventCard.findViewById(R.id.past_month);
+                String monthString = raceDateTime.getMonth().toString().substring(0, 3); //Ex: JAN, FEB, etc
+                month.setText(monthString);
 
-        TextView gpName = eventCard.findViewById(R.id.past_gp_name);
-        gpName.setText(weeklyRace.getRaceName());
+                ImageView trackOutline = eventCard.findViewById(R.id.past_track_outline);
+                Glide.with(this).load(track.getTrack_minimal_layout_url()).into(trackOutline);
 
-        generatePodium(eventCard, weeklyRace);
+                TextView round = eventCard.findViewById(R.id.past_round_number);
+                String roundString = "ROUND " + weeklyRace.getRound();
+                round.setText(roundString);
 
-        Log.i("PastEvent", "gpName: " + weeklyRace.getRaceName());
-        eventCard.setOnClickListener(v -> {
-            Intent intent = new Intent(PastEventsActivity.this, EventActivity.class);
-            intent.putExtra("CIRCUIT_ID", weeklyRace.getTrack().getTrackId());
-            startActivity(intent);
+                TextView gpName = eventCard.findViewById(R.id.past_gp_name);
+                gpName.setText(weeklyRace.getRaceName());
+
+                generatePodium(eventCard, weeklyRace);
+
+                Log.i("PastEvent", "gpName: " + weeklyRace.getRaceName());
+                eventCard.setOnClickListener(v -> {
+                    Intent intent = new Intent(PastEventsActivity.this, EventActivity.class);
+                    intent.putExtra("CIRCUIT_ID", weeklyRace.getTrack().getTrackId());
+                    startActivity(intent);
+                });
+            }
         });
 
         return eventCard;
@@ -134,8 +157,7 @@ public class PastEventsActivity extends AppCompatActivity {
             for (int i = 0; i < 3; i++) {
                 RaceResult raceResult = weeklyRace.getResults().get(i);
                 TextView driverName = eventCard.findViewById(Constants.PAST_RACE_DRIVER_NAME.get(i));
-                Integer driverFullName = Constants.DRIVER_FULLNAME.get(raceResult.getDriver().getDriverId());
-                driverName.setText(Objects.requireNonNullElseGet(driverFullName, () -> R.string.unknown));
+                driverName.setText(raceResult.getDriver().getFullName());
             }
         }
     }

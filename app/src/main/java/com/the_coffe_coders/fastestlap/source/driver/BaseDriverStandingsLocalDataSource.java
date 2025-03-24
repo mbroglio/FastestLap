@@ -8,6 +8,8 @@ import lombok.Setter;
 @Setter
 public abstract class BaseDriverStandingsLocalDataSource {
     protected DriverStandingsResponseCallback driverCallback;
+
     public abstract void getDriversStandings();
+
     public abstract void insertDriversStandings(DriverStandings driverStandings);
 }

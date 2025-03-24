@@ -44,12 +44,6 @@ import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
-
-/*
- * TODO:
- * - Implement firebase to get the data from the remote database
- */
-
 public class DriverBioActivity extends AppCompatActivity {
 
     private final String TAG = "DriverBioActivity";
@@ -102,30 +96,76 @@ public class DriverBioActivity extends AppCompatActivity {
         driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory()).get(DriverViewModel.class);
         constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
         nationViewModel = new ViewModelProvider(this, new NationViewModelFactory()).get(NationViewModel.class);
-        createDriverBioPage(driverId);
 
+        // Set up the favorite icon click listener
         Menu menu = toolbar.getMenu();
-        MenuItem item = menu.findItem(R.id.favourite_icon_outline);
-        item.setOnMenuItemClickListener(v -> {
-            updateFavouriteDriver(driverId);
-            item.setIcon(R.drawable.star_fav);
-            return false;
+        MenuItem favoriteItem = menu.findItem(R.id.favourite_icon_outline);
+        favoriteItem.setOnMenuItemClickListener(v -> {
+            toggleFavoriteDriver(driverId, favoriteItem);
+            return true;
         });
+
+        createDriverBioPage(driverId);
     }
 
-    private void updateFavouriteDriver(String driverId) {
+    private void toggleFavoriteDriver(String driverId, MenuItem menuItem) {
+        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
+        String currentFavoriteDriverId = sharedPreferencesUtils.readStringData(
+                Constants.SHARED_PREFERENCES_FILENAME,
+                Constants.SHARED_PREFERENCES_FAVORITE_DRIVER
+        );
+
         IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
-        UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+        UserViewModel userViewModel = new ViewModelProvider(
+                getViewModelStore(),
+                new UserViewModelFactory(userRepository)
+        ).get(UserViewModel.class);
         User currentUser = userViewModel.getLoggedUser();
 
+        if (currentFavoriteDriverId.equals(driverId)) {
+            // Remove as favorite
+            sharedPreferencesUtils.writeStringData(
+                    Constants.SHARED_PREFERENCES_FILENAME,
+                    Constants.SHARED_PREFERENCES_FAVORITE_DRIVER,
+                    ""
+            );
+            menuItem.setIcon(R.drawable.baseline_star_border_24);
+
+            // Update user preferences in backend
+            userViewModel.saveUserDriverPreferences("", currentUser.getIdToken());
+
+            Log.i(TAG, "Removed favorite driver: " + driverId);
+        } else {
+            // Set as favorite
+            sharedPreferencesUtils.writeStringData(
+                    Constants.SHARED_PREFERENCES_FILENAME,
+                    Constants.SHARED_PREFERENCES_FAVORITE_DRIVER,
+                    driverId
+            );
+            menuItem.setIcon(R.drawable.star_fav);
+
+            // Update user preferences in backend
+            userViewModel.saveUserDriverPreferences(driverId, currentUser.getIdToken());
+
+            Log.i(TAG, "Set favorite driver to: " + driverId);
+        }
+    }
+
+    private void updateFavoriteIcon(String driverId) {
         SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
-        sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
-                Constants.SHARED_PREFERENCES_FAVORITE_DRIVER,
-                driverId);
+        String favoriteDriverId = sharedPreferencesUtils.readStringData(
+                Constants.SHARED_PREFERENCES_FILENAME,
+                Constants.SHARED_PREFERENCES_FAVORITE_DRIVER
+        );
 
-        userViewModel.saveUserDriverPreferences(driverId, currentUser.getIdToken());
+        Menu menu = toolbar.getMenu();
+        MenuItem favoriteItem = menu.findItem(R.id.favourite_icon_outline);
 
-        Log.i(TAG, "Favourite driver updated: " + driverId);
+        if (favoriteDriverId.equals(driverId)) {
+            favoriteItem.setIcon(R.drawable.star_fav);
+        } else {
+            favoriteItem.setIcon(R.drawable.baseline_star_border_24);
+        }
     }
 
     public void createDriverBioPage(String driverId) {
@@ -135,6 +175,8 @@ public class DriverBioActivity extends AppCompatActivity {
             if (result.isSuccess()) {
                 driver = ((Result.DriverSuccess) result).getData();
                 Log.i(TAG, "DRIVER SUCCESS");
+                // Update the favorite icon when driver data is loaded
+                updateFavoriteIcon(driverId);
                 getTeamInfo(driver.getTeam_id());
             } else {
                 Log.i(TAG, "DRIVER ERROR");
@@ -175,23 +217,33 @@ public class DriverBioActivity extends AppCompatActivity {
         TextView toolbarTitle = findViewById(R.id.topAppBarTitle);
         toolbarTitle.setText(fullName.toUpperCase());
 
-        toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
-        appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
+        try {
+            toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
+            appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
 
-        //setDriverRankingButton(driverId);
-
-        teamLogoCard.setOnClickListener(v -> {
-            Intent intent = new Intent(DriverBioActivity.this, ConstructorBioActivity.class);
-            intent.putExtra("TEAM_ID", driver.getTeam_id());
-            startActivity(intent);
-        });
+            teamLogoCard.setOnClickListener(v -> {
+                Intent intent = new Intent(DriverBioActivity.this, ConstructorBioActivity.class);
+                intent.putExtra("TEAM_ID", driver.getTeam_id());
+                startActivity(intent);
+            });
+        } catch (Exception e) {
+            toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
+            appBarLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
+        }
     }
 
     private void setDriverData(Driver driver, Nation nation, Constructor team) {
-        teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
-        driverNumberCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
+        try {
+            teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
+            driverNumberCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
 
-        Glide.with(this).load(team.getTeam_logo_url()).into(teamLogoImage);
+            Glide.with(this).load(team.getTeam_logo_url()).into(teamLogoImage);
+        } catch (Exception e) {
+            teamLogoCard.setStrokeColor(ContextCompat.getColor(this, R.color.timer_gray));
+            driverNumberCard.setStrokeColor(ContextCompat.getColor(this, R.color.timer_gray));
+
+            Glide.with(this).load(R.drawable.f1_car_icon_filled).into(teamLogoImage);
+        }
 
         ImageView driverFlag = findViewById(R.id.driver_flag);
         Glide.with(this).load(nation.getNation_flag_url()).into(driverFlag);
@@ -238,37 +290,33 @@ public class DriverBioActivity extends AppCompatActivity {
         tableHeader.setLayoutParams(paramsHeader);
         tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray_dark));
 
-        //set stroke of tableHeader
         tableLayout.addView(tableHeader);
 
         for (DriverHistory history : driver.getDriver_history()) {
             View tableRow = inflater.inflate(R.layout.driver_bio_table_row, tableLayout, false);
             tableRow.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
-            // Customize the row if needed
-            TextView seasonYear, teamNameText, driverPosition, driverPoints, driverWins, driverPodiums;
-            seasonYear = tableRow.findViewById(R.id.season_year);
+
+            TextView seasonYear = tableRow.findViewById(R.id.season_year);
             seasonYear.setText(history.getYear());
 
-            teamNameText = tableRow.findViewById(R.id.team_name);
+            TextView teamNameText = tableRow.findViewById(R.id.team_name);
             teamNameText.setText(history.getTeam());
 
-            driverPosition = tableRow.findViewById(R.id.driver_position);
+            TextView driverPosition = tableRow.findViewById(R.id.driver_position);
             driverPosition.setText(history.getPosition());
 
-            driverPoints = tableRow.findViewById(R.id.driver_points);
+            TextView driverPoints = tableRow.findViewById(R.id.driver_points);
             driverPoints.setText(history.getPoints());
 
-            driverWins = tableRow.findViewById(R.id.driver_wins);
+            TextView driverWins = tableRow.findViewById(R.id.driver_wins);
             driverWins.setText(history.getWins());
 
-            driverPodiums = tableRow.findViewById(R.id.driver_podiums);
+            TextView driverPodiums = tableRow.findViewById(R.id.driver_podiums);
             driverPodiums.setText(history.getPodiums());
 
-            // Set bottom margin to 5dp
             TableLayout.LayoutParams tableParams = (TableLayout.LayoutParams) tableRow.getLayoutParams();
             tableParams.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
             tableRow.setLayoutParams(tableParams);
-
 
             tableLayout.addView(tableRow);
         }
