@@ -51,6 +51,7 @@ public class IntroScreenActivity extends AppCompatActivity {
             ServiceLocator.setCurrentYearBaseUrl(season_year);
         }else {
             Log.d("LaunchFlag", "Using default year (current)");
+            ServiceLocator.setCurrentYearBaseUrl("2025");
         }
 
 

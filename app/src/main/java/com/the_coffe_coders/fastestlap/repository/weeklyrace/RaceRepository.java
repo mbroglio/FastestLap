@@ -41,10 +41,10 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
     @Override
     public MutableLiveData<Result> fetchWeeklyRaces(long lastUpdate) {
 
-        if (isOutdateRace) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
+        if (true) { //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
             //TODO fetch from remote
             raceRemoteDataSource.getWeeklyRaces();
-            isOutdateRace = false;
+            //isOutdateRace = false;
         } else {
             Log.i(TAG, "fetchWeeklyRaces from local");
             raceLocalDataSource.getWeeklyRaces();
@@ -106,8 +106,10 @@ public class RaceRepository implements IRaceRepository, RaceResponseCallback {
         for (RaceDTO raceDTO : raceDTOS) {
             weeklyRaceList.add(WeeklyRaceMapper.toWeeklyRace(raceDTO));
         }
+        Result.WeeklyRaceSuccess result = new Result.WeeklyRaceSuccess(weeklyRaceList);
+        weeklyRaceMutableLiveData.postValue(result);
         //Collections.reverse(weeklyRaceList);
-        raceLocalDataSource.insertWeeklyRaceList(weeklyRaceList);
+        //raceLocalDataSource.insertWeeklyRaceList(weeklyRaceList);
     }
 
     void handleNextRaceSuccess(RaceAPIResponse weeklyRaceAPIResponse) {
