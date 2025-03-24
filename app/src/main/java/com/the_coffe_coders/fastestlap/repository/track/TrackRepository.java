@@ -9,15 +9,15 @@ public class TrackRepository implements ITrackRepository {
 
     FirebaseTrackRepository firebaseTrackRepository;
 
-    MutableLiveData<Result> trackLiveData;
+
 
     public TrackRepository() {
-        trackLiveData = new MutableLiveData<>();
         firebaseTrackRepository = new FirebaseTrackRepository();
     }
 
     @Override
     public MutableLiveData<Result> getTrack(String trackId) {
+        MutableLiveData<Result> trackLiveData = new MutableLiveData<>();
         firebaseTrackRepository.getTrack(trackId, new FirebaseTrackRepository.TrackCallback() {
             @Override
             public void onSuccess(Track track) {
