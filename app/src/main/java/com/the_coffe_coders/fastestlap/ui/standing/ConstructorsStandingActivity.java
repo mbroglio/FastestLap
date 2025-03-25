@@ -91,7 +91,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                         space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
                         teamStanding.addView(space);
                     }
-                    loadingScreen.hideLoadingScreen();
+
                 }
             } else if (result instanceof Result.Error) {
                 Result.Error error = (Result.Error) result;
@@ -158,6 +158,9 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
                                 // Set the team position
                                 TextView teamPositionTextView = teamCard.findViewById(R.id.team_position);
+                                if(standingElement.getPosition() == null){
+                                    teamPositionTextView.setText(R.string.last_constructor_position);
+                                }
                                 teamPositionTextView.setText(standingElement.getPosition());
 
                                 // Set the team points
@@ -174,6 +177,8 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                                     intent.putExtra("TEAM_ID", teamId);
                                     startActivity(intent);
                                 });
+
+                                loadingScreen.hideLoadingScreen();
                             }
                         });
                     }

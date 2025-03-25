@@ -42,4 +42,6 @@
     <string name="profile_upper_case">PROFILE</string>
     <string name="sign_out_upper_case">SIGN OUT</string>
     <string name="results_not_available">Results not available</string>
+    <string name="last_driver_position">20</string>
+    <string name="last_constructor_position">10</string>
 </resources>

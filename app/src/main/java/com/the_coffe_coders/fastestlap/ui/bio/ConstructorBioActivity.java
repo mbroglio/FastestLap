@@ -130,9 +130,13 @@ public class ConstructorBioActivity extends AppCompatActivity {
         data.observe(this, result -> {
             if (result.isSuccess()) {
                 constructor = ((Result.ConstructorSuccess) result).getData();
-                String teamName = constructor.getName();
+                Log.i(TAG, "Constructor: " + constructor);
 
-                toolbar.setTitle(teamName.toUpperCase());
+                String teamName = constructor.getName().toUpperCase();
+
+                TextView title = findViewById(R.id.topAppBarTitle);
+                title.setText(teamName);
+
                 toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
                 appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
 

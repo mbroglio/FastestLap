@@ -86,8 +86,6 @@ public class PastEventsActivity extends AppCompatActivity {
                         for (Race race : races) {
                             createEventCard(race);
                         }
-
-                        loadingScreen.hideLoadingScreen();
                     } else {
                         loadingScreen.hideLoadingScreen();
                     }
@@ -144,7 +142,9 @@ public class PastEventsActivity extends AppCompatActivity {
                     intent.putExtra("CIRCUIT_ID", weeklyRace.getTrack().getTrackId());
                     startActivity(intent);
                 });
+
             }
+            loadingScreen.hideLoadingScreen();
         });
 
         return eventCard;
