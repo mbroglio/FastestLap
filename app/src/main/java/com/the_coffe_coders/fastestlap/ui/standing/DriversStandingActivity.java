@@ -1,5 +1,6 @@
 package com.the_coffe_coders.fastestlap.ui.standing;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -124,7 +125,6 @@ public class DriversStandingActivity extends AppCompatActivity {
             }
         });
 
-        loadingScreen.hideLoadingScreen();
     }
 
 
@@ -143,6 +143,7 @@ public class DriversStandingActivity extends AppCompatActivity {
         return generateDriverCard(driverStandingsElement, driverId);
     }
 
+    @SuppressLint("SetTextI18n")
     private View generateDriverCard(DriverStandingsElement standingElement, String driverIdToHighlight) {
         DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(ServiceLocator.getInstance().getCommonDriverRepository())).get(DriverViewModel.class);
         MutableLiveData<Result> driverLiveData = driverViewModel.getDriver(standingElement.getDriver().getDriverId());
@@ -159,7 +160,11 @@ public class DriversStandingActivity extends AppCompatActivity {
                 driverName.setText(driver.getFullName());
 
                 TextView driverPosition = driverCard.findViewById(R.id.driver_position);
-                driverPosition.setText(standingElement.getPosition());
+                if(standingElement.getPosition() == null || standingElement.getPosition().equals("-")){
+                    driverPosition.setText(R.string.last_driver_position);
+                }else{
+                    driverPosition.setText(standingElement.getPosition());
+                }
 
                 TextView driverPoints = driverCard.findViewById(R.id.driver_points);
                 driverPoints.setText(standingElement.getPoints());
@@ -176,7 +181,11 @@ public class DriversStandingActivity extends AppCompatActivity {
                         Constructor constructor = ((Result.ConstructorSuccess) constructorResult).getData();
 
                         ImageView teamLogoImageView = driverCard.findViewById(R.id.team_logo);
-                        Glide.with(this).load(constructor.getTeam_logo_url()).into(teamLogoImageView);
+                        if(constructor.getTeam_logo_minimal_url() != null){
+                            Glide.with(this).load(constructor.getTeam_logo_minimal_url()).into(teamLogoImageView);
+                        }else{
+                            Glide.with(this).load(constructor.getTeam_logo_url()).into(teamLogoImageView);
+                        }
 
                         RelativeLayout driverColor = driverCard.findViewById(R.id.small_driver_card);
                         try {
@@ -193,6 +202,8 @@ public class DriversStandingActivity extends AppCompatActivity {
                             intent.putExtra("CALLER", DriversStandingActivity.class.getName());
                             startActivity(intent);
                         });
+
+                        loadingScreen.hideLoadingScreen();
                     }
                 });
             }

@@ -29,19 +29,28 @@
 
         </TextView>
 
-        <TextView
-            android:id="@+id/home_next_gp_name"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
             android:layout_toEndOf="@+id/text_1"
-            android:autoSizeMaxTextSize="16sp"
-            android:autoSizeMinTextSize="8sp"
-            android:autoSizeTextType="uniform"
-            android:fontFamily="@font/orbitron_bold"
-            android:textColor="@color/black">
+            android:layout_marginStart="24dp">
 
-        </TextView>
+            <TextView
+                android:id="@+id/home_next_gp_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:autoSizeMaxTextSize="16sp"
+                android:autoSizeMinTextSize="8sp"
+                android:autoSizeTextType="uniform"
+                android:fontFamily="@font/orbitron_bold"
+                android:textColor="@color/black">
+
+            </TextView>
+
+        </RelativeLayout>
+
+
 
     </RelativeLayout>
 
@@ -83,7 +92,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="15dp"
                 android:fontFamily="@font/orbitron_regular"
                 android:text="@string/days_upper_case"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
@@ -96,7 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="15dp"
                 android:fontFamily="@font/orbitron_regular"
                 android:text="@string/hours_upper_case"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
@@ -109,7 +118,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="15dp"
                 android:fontFamily="@font/orbitron_regular"
                 android:text="@string/minutes_upper_case"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small"
@@ -135,7 +144,7 @@
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="15dp"
                 android:gravity="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                 android:textColor="@color/black"
@@ -148,7 +157,7 @@
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="15dp"
                 android:gravity="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                 android:textColor="@color/black"
@@ -161,7 +170,7 @@
                 android:layout_width="40dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="15dp"
                 android:gravity="center"
                 android:textAppearance="@style/TextAppearance.AppCompat.Display1"
                 android:textColor="@color/black"

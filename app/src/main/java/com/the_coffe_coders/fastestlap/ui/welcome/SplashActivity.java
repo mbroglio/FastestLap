@@ -26,10 +26,10 @@ import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import org.apache.commons.logging.LogFactory;
 
-public class IntroScreenActivity extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity {
 
     private static final String TAG = "IntroScreenActivity";
-    private static final org.apache.commons.logging.Log log = LogFactory.getLog(IntroScreenActivity.class);
+    private static final org.apache.commons.logging.Log log = LogFactory.getLog(SplashActivity.class);
     private final Handler handler = new Handler();
     private TextView appName;
     private TextView appCredits;
@@ -99,7 +99,7 @@ public class IntroScreenActivity extends AppCompatActivity {
                     progressIndicator.setVisibility(View.VISIBLE);
 
                     handler.postDelayed(() -> {
-                        startActivity(new Intent(IntroScreenActivity.this, WelcomeActivity.class));
+                        startActivity(new Intent(SplashActivity.this, WelcomeActivity.class));
                         finish();
                     }, 5000); // 5 seconds delay
                 }, (long) creditsText.length() * delay);
@@ -146,7 +146,7 @@ public class IntroScreenActivity extends AppCompatActivity {
                     boolean isEnabled = task.getResult();
                     Log.d(TAG, "Auto login is enabled: " + isEnabled);
                     if (isEnabled) {
-                        startActivity(new Intent(IntroScreenActivity.this, HomePageActivity.class));
+                        startActivity(new Intent(SplashActivity.this, HomePageActivity.class));
                     } else {
                         hideIntroScreen();
                         new Handler().postDelayed(this::showIntroScreen, 500);

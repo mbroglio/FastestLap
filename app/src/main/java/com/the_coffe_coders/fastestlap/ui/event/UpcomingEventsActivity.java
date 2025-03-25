@@ -76,7 +76,6 @@ public class UpcomingEventsActivity extends AppCompatActivity {
                 for (WeeklyRace race : upcomingRaces) {
                     createEventCard(race);
                 }
-                loadingScreen.hideLoadingScreen();
             }
         });
     }
@@ -137,6 +136,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
                     startActivity(intent);
                 });
             }
+            loadingScreen.hideLoadingScreen();
         });
 
         return eventCard;

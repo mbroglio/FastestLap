@@ -116,7 +116,6 @@ public class EventActivity extends AppCompatActivity {
 
                 buildEventCard(weeklyRace, toolbar);
             }
-            loadingScreen.hideLoadingScreen(); //The delay may be removed
         });
     }
 
@@ -142,7 +141,7 @@ public class EventActivity extends AppCompatActivity {
                         nation = ((Result.NationSuccess) result1).getData();
                         Log.i(TAG, "Nation: " + nation.toString());
 
-                        buildEventCard(weeklyRace, track, nation);
+                        setEventImage(weeklyRace, track, nation);
                     }
                 });
             }
@@ -167,7 +166,7 @@ public class EventActivity extends AppCompatActivity {
         TextView name = findViewById(R.id.gp_name);
         name.setText(track.getGp_long_name());
 
-        setEventImage(track.getTrack_pic_url());
+        //setEventImage(track.getTrack_pic_url());
 
         TextView eventDate = findViewById(R.id.event_date);
         eventDate.setText(weeklyRace.getDateInterval());
@@ -176,7 +175,7 @@ public class EventActivity extends AppCompatActivity {
         trackLayout.setOnClickListener(v -> {
             Intent intent = new Intent(EventActivity.this, TrackBioActivity.class);
             intent.putExtra("CIRCUIT_ID", trackId);
-            intent.putExtra("GRAND_PRIX_NAME", track.getTrackName());
+            intent.putExtra("GRAND_PRIX_NAME", weeklyRace.getRaceName().toUpperCase());
             startActivity(intent);
         });
 
@@ -194,7 +193,9 @@ public class EventActivity extends AppCompatActivity {
         createWeekSchedule(sessions);
     }
 
-    private void setEventImage(String imageUrl) {
+    private void setEventImage(WeeklyRace weeklyRace, Track track, Nation nation) {
+
+        String imageUrl = track.getTrack_pic_url();
         LinearLayout eventCard = findViewById(R.id.event_card);
 
         // Use Glide to load the image from URL
@@ -230,6 +231,7 @@ public class EventActivity extends AppCompatActivity {
                     @Override
                     public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                         eventCard.setBackground(resource);
+                        buildEventCard(weeklyRace, track, nation);
                     }
 
                     @Override
@@ -240,6 +242,7 @@ public class EventActivity extends AppCompatActivity {
                             defaultImage.setAlpha(76);
                         }
                         eventCard.setBackground(defaultImage);
+                        buildEventCard(weeklyRace, track, nation);
                     }
                 });
     }
@@ -381,6 +384,8 @@ public class EventActivity extends AppCompatActivity {
             currentSession.setFocusable(true);
             currentSession.setOnClickListener(view -> Log.i(TAG, "session clicked"));
         }
+
+        loadingScreen.hideLoadingScreen();
     }
 
     @Override

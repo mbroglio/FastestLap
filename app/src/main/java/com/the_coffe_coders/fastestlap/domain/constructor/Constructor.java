@@ -32,6 +32,7 @@ public class Constructor {
     private String power_unit;
     private List<ConstructorHistory> team_history;
     private String team_logo_url;
+    private String team_logo_minimal_url;
     private String team_principal;
     private String wins;
     private String world_championships;

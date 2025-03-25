@@ -218,6 +218,9 @@ public class DriverBioActivity extends AppCompatActivity {
     private void setDriverData(Driver driver, Nation nation, Constructor team) {
         try {
             teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
+            if(team.getConstructorId().equals("rb")){
+                teamLogoCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white));
+            }
             driverNumberCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
 
             Glide.with(this).load(team.getTeam_logo_url()).into(teamLogoImage);

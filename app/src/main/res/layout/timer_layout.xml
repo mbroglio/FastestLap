@@ -19,7 +19,8 @@
     <GridLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
         android:layout_marginTop="10dp"
         android:columnCount="4"
         android:rowCount="2">
@@ -64,7 +65,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="20dp"
             android:fontFamily="@font/orbitron_regular"
             android:text="SEC"
             android:textColor="@color/black"
@@ -119,7 +119,6 @@
             android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="20dp"
             android:gravity="center"
             android:text="00"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1"

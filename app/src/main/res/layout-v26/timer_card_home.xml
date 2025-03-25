@@ -2,31 +2,21 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
-    <com.google.android.material.card.MaterialCardView
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"
-        app:strokeColor="@color/black"
-        app:strokeWidth="3dp">
+        android:layout_height="match_parent">
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+        <include
+            android:id="@+id/timer"
+            layout="@layout/home_timer_layout_next_session"
+            android:visibility="visible" />
 
-            <include
-                android:id="@+id/timer"
-                layout="@layout/home_timer_layout_next_session"
-                android:visibility="visible" />
-
-            <include
-                android:id="@+id/season_ended"
-                layout="@layout/home_timer_layout_season_end"
-                android:visibility="gone" />
-        </FrameLayout>
-
-    </com.google.android.material.card.MaterialCardView>
+        <include
+            android:id="@+id/season_ended"
+            layout="@layout/home_timer_layout_season_end"
+            android:visibility="gone" />
+    </FrameLayout>
 
 </LinearLayout>
