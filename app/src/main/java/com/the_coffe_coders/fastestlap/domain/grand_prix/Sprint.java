@@ -5,8 +5,4 @@ public class Sprint extends Session {
         super(date, time);
         setEndDateTime();
     }
-
-    public Sprint() {
-
-    }
 }

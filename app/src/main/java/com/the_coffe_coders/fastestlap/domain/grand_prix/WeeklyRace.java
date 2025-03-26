@@ -15,7 +15,6 @@ import lombok.ToString;
 
 @Getter
 @Setter
-@EqualsAndHashCode
 @ToString
 @Entity(tableName = "WeeklyRace")
 public abstract class WeeklyRace {

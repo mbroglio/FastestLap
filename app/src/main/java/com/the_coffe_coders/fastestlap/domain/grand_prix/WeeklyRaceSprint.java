@@ -7,6 +7,13 @@ import androidx.room.Ignore;
 import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Setter
+@Getter
+@ToString
 @Entity(tableName = "WeeklyRaceSprint")
 public class WeeklyRaceSprint extends WeeklyRace {
     private SprintQualifying sprintQualifying;
@@ -17,26 +24,7 @@ public class WeeklyRaceSprint extends WeeklyRace {
         this.sprintQualifying = sprintQualifying;
         this.sprint = sprint;
     }
-
-    public WeeklyRaceSprint() {
-
-    }
-
-    public SprintQualifying getSprintQualifying() {
-        return sprintQualifying;
-    }
-
-    public void setSprintQualifying(SprintQualifying sprintQualifying) {
-        this.sprintQualifying = sprintQualifying;
-    }
-
-    public Sprint getSprint() {
-        return sprint;
-    }
-
-    public void setSprint(Sprint sprint) {
-        this.sprint = sprint;
-    }
+    public WeeklyRaceSprint() {}
 
     public List<Session> getSessions() {
         List<Session> sessions = new ArrayList<>();
@@ -50,11 +38,5 @@ public class WeeklyRaceSprint extends WeeklyRace {
         setSessions(sessions);
 
         return sessions;
-    }
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "WeeklyRaceSprint{" + "sprintQualifying=" + sprintQualifying + ", sprint=" + sprint + '}';
     }
 }

@@ -29,11 +29,7 @@ public abstract class Result {
         }
         return null;
     }
-
-    /**
-     * Class that represents a successful action during the interaction
-     * with a Web Service or a local database.
-     */
+    
     public static final class DriverSuccess extends Result {
         private final Driver driver;
 

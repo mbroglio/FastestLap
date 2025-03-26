@@ -37,7 +37,6 @@ public abstract class Session {
         }
         ZonedDateTime zonedDateTime = ZonedDateTime.parse(date + "T" + time + "[UTC]");
         ZoneId localZone = ZoneId.systemDefault();
-        // Convertire al fuso orario locale
         ZonedDateTime localZonedDateTime = zonedDateTime.withZoneSameInstant(localZone);
         this.startDateTime = localZonedDateTime.toLocalDateTime();
     }
