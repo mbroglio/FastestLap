@@ -71,7 +71,6 @@ public abstract class Result {
     }
 
     public static final class ConstructorSuccess extends Result {
-        // private final ConstructorAPIResponse constructorAPIResponse;
         private final Constructor constructor;
 
         public ConstructorSuccess(Constructor constructor) {
