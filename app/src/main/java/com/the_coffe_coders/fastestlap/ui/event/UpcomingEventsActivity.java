@@ -32,9 +32,6 @@ import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import java.util.List;
 
-// TODO:
-//  Check if it works with 2025 data
-
 public class UpcomingEventsActivity extends AppCompatActivity {
 
     private static final String TAG = "UpcomingEventsActivity";

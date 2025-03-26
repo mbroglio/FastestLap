@@ -304,7 +304,7 @@ public class HomeFragment extends Fragment {
             ImageView nextRaceFlag = view.findViewById(R.id.home_next_gp_flag);
             Glide.with(this).load(nation.getNation_flag_url()).into(nextRaceFlag);
 
-            if (!nextRace.getSeason().equals(ServiceLocator.getCurrentYear())) {
+            if (!nextRace.getSeason().equals(ServiceLocator.currentYear)) {
                 throw new Exception("Season mismatch");
             }
 
