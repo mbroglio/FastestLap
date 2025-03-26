@@ -24,4 +24,11 @@ public class RaceTableDTO {
         this.races = races;
         this.round = round;
     }
+
+    public RaceDTO getRace() {
+        if (races == null || races.isEmpty()) {
+            return null;
+        }else
+            return races.get(0);
+    }
 }

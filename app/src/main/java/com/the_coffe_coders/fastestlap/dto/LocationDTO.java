@@ -20,4 +20,6 @@ public class LocationDTO {
         this.locality = locality;
         this.country = country;
     }
+
+
 }

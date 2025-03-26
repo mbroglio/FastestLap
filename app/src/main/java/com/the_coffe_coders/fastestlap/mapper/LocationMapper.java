@@ -7,7 +7,7 @@ public class LocationMapper {
     public static Location toLocation(LocationDTO locationDTO) {
         Location location = new Location();
         location.setLat(locationDTO.getLat());
-        location.set_long(locationDTO.getLong());
+        location.set_long(locationDTO.get_long());
         location.setLocality(locationDTO.getLocality());
         location.setCountry(locationDTO.getCountry());
         return location;

@@ -134,7 +134,7 @@ public class DriverStandingsRepository implements IDriverStandingsRepository, Dr
 
         if (driverAPIResponse == null ||
                 driverAPIResponse.getStandingsTable() == null ||
-                driverAPIResponse.getStandingsTable().getStandingsLists().isEmpty()) {
+                driverAPIResponse.getStandingsTable().getDriverStandingsDTOS().isEmpty()) {
 
             Log.i(TAG, "DRIVER API RESPONSE EMPTY");
             CompletableFuture<Result> future = currentDriverStandingsFuture.get();
@@ -148,7 +148,7 @@ public class DriverStandingsRepository implements IDriverStandingsRepository, Dr
 
         try {
             DriverStandings driverStandings = DriverStandingsMapper.toDriverStandings(
-                    driverAPIResponse.getStandingsTable().getStandingsLists().get(0));
+                    driverAPIResponse.getStandingsTable().getDriverStandingsDTOS().get(0));
 
             Log.i(TAG, "DRIVER STANDINGS MAPPED: " + driverStandings);
 

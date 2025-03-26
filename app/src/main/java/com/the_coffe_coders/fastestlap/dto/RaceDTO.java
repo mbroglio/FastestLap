@@ -51,4 +51,6 @@ public class RaceDTO {
         this.sprint = sprint;
         this.results = resultDTO;
     }
+
+
 }
