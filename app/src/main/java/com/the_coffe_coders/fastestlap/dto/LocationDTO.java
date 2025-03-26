@@ -10,7 +10,6 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public class LocationDTO {
-
     private String lat;
     private String _long;
     private String locality;

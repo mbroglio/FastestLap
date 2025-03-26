@@ -7,12 +7,13 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.AllArgsConstructor;
 
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
 public class DriverStandingsElementDTO {
-
     private String position;
     private String positionText;
     private String points;
@@ -21,13 +22,4 @@ public class DriverStandingsElementDTO {
     private DriverDTO driver;
     @SerializedName("Constructors")
     private List<ConstructorDTO> constructors;
-
-    public DriverStandingsElementDTO(String position, String positionText, String points, String wins, DriverDTO driver, List<ConstructorDTO> constructors) {
-        this.position = position;
-        this.positionText = positionText;
-        this.points = points;
-        this.wins = wins;
-        this.driver = driver;
-        this.constructors = constructors;
-    }
 }

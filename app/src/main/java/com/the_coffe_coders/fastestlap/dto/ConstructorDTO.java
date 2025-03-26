@@ -10,7 +10,6 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public class ConstructorDTO {
-
     private String constructorId;
     private String url;
     private String name;

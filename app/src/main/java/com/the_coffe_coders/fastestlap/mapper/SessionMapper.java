@@ -1,7 +1,4 @@
 package com.the_coffe_coders.fastestlap.mapper;
-
-import android.util.Log;
-
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Practice;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Qualifying;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
@@ -18,7 +15,6 @@ public class SessionMapper {
         if (practiceDTO != null) {
             return new Practice(practiceDTO.getDate(), practiceDTO.getTime(), number);
         } else {
-            Log.i("SESSION MAPPER", "PRACTICE DTO IS NULL" + practiceDTO);
             return new Practice();
         }
 

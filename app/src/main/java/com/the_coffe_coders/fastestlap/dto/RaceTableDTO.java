@@ -3,6 +3,8 @@ package com.the_coffe_coders.fastestlap.dto;
 
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -10,6 +12,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
 public class RaceTableDTO {
     private String season;
     private String round;
@@ -17,13 +20,6 @@ public class RaceTableDTO {
     private CircuitDTO circuit;
     @SerializedName("Races")
     private List<RaceDTO> races;
-
-    public RaceTableDTO(String season, String round, CircuitDTO circuit, List<RaceDTO> races) {
-        this.season = season;
-        //this.circuit = circuit;
-        this.races = races;
-        this.round = round;
-    }
 
     public RaceDTO getRace() {
         if (races == null || races.isEmpty()) {

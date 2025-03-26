@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,6 +12,7 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
 public class RaceDTO {
     @SerializedName("Results")
     List<ResultDTO> results;
@@ -34,23 +36,4 @@ public class RaceDTO {
     private SprintQualifyingDTO sprintQualifying;
     @SerializedName("Sprint")
     private SprintDTO sprint;
-
-    public RaceDTO(String season, String round, String url, String raceName, CircuitDTO circuit, String date, String time, PracticeDTO firstPractice, PracticeDTO secondPractice, PracticeDTO thirdPractice, QualifyingDTO qualifying, SprintQualifyingDTO sprintQualifying, SprintDTO sprint, List<ResultDTO> resultDTO) {
-        this.season = season;
-        this.round = round;
-        this.url = url;
-        this.raceName = raceName;
-        this.circuit = circuit;
-        this.date = date;
-        this.time = time;
-        this.firstPractice = firstPractice;
-        this.secondPractice = secondPractice;
-        this.thirdPractice = thirdPractice;
-        this.qualifying = qualifying;
-        this.sprintQualifying = sprintQualifying;
-        this.sprint = sprint;
-        this.results = resultDTO;
-    }
-
-
 }

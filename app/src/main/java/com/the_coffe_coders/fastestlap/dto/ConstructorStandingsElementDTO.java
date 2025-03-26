@@ -12,7 +12,6 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public class ConstructorStandingsElementDTO {
-
     private String position;
     private String positionText;
     private String points;

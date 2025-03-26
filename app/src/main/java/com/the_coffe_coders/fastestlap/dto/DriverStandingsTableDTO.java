@@ -4,6 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -11,15 +12,10 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
+@AllArgsConstructor
 public class DriverStandingsTableDTO {
     private String season;
     private String round;
     @SerializedName("StandingsLists")
     private List<DriverStandingsDTO> driverStandingsDTOS;
-
-    public DriverStandingsTableDTO(String season, String round, List<DriverStandingsDTO> driverStandingsDTOS) {
-        this.season = season;
-        this.round = round;
-        this.driverStandingsDTOS = driverStandingsDTOS;
-    }
 }
