@@ -3,7 +3,6 @@ package com.the_coffe_coders.fastestlap.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-//TODO Questa implementazione e quella di world news bisogna modificarla eventualmente con quello che dobbiamo fare noi
 public class SharedPreferencesUtils {
 
     private final Context context;

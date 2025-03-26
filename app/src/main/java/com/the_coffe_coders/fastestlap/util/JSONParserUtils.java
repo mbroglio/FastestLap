@@ -12,12 +12,6 @@ import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.api.RaceResultsAPIResponse;
 
 public class JSONParserUtils {
-    Context context;
-
-    public JSONParserUtils(Context context) {
-        this.context = context;
-    }
-
     public JSONParserUtils() {
     }
 
@@ -44,10 +38,4 @@ public class JSONParserUtils {
     public ConstructorAPIResponse parseConstructor(JsonObject mrdata) {
         return new Gson().fromJson(mrdata, ConstructorAPIResponse.class);
     }
-
-
-
-    /*public CircuitAPIResponse parseCircuit(JsonObject jsonObject) {
-        return new Gson().fromJson(jsonObject, CircuitAPIResponse.class);
-    }*/
 }

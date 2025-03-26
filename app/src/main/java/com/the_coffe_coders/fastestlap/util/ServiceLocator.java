@@ -33,6 +33,7 @@ import com.the_coffe_coders.fastestlap.source.weeklyrace.BaseWeeklyRaceRemoteDat
 import com.the_coffe_coders.fastestlap.source.weeklyrace.WeeklyRaceLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.weeklyrace.WeeklyRaceRemoteDataSource;
 
+import lombok.Getter;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -45,6 +46,7 @@ public class ServiceLocator {
 
     public static final String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
     public static ServiceLocator instance;
+    @Getter
     public static String currentYear = "current";
     public static String CURRENT_YEAR_BASE_URL = BASE_URL + "current/";
 
@@ -58,10 +60,6 @@ public class ServiceLocator {
     public static void setCurrentYearBaseUrl(String seasonYear) {
         currentYear = seasonYear;
         CURRENT_YEAR_BASE_URL = BASE_URL + seasonYear + "/";
-    }
-
-    public static String getCurrentYear() {
-        return currentYear;
     }
 
     public ErgastAPIService getConcreteErgastAPIService() {
@@ -201,17 +199,8 @@ public class ServiceLocator {
         BaseDriverStandingsRemoteDataSource driverRemoteDataSource;
         BaseDriverStandingsLocalDataSource driverLocalDataSource;
         SharedPreferencesUtils sharedPreferencesUtil = new SharedPreferencesUtils(application);
-
-        if (false) {//TODO change in debugMode
-            /*JSONParserUtils jsonParserUtil = new JSONParserUtils(application);
-            newsRemoteDataSource =
-                    new DriverMockDataSource(jsonParserUtil);*/
-        } else {
-            driverRemoteDataSource = new DriverStandingsRemoteDataSource();
-        }
-
+        driverRemoteDataSource = new DriverStandingsRemoteDataSource();
         driverLocalDataSource = new DriverStandingsLocalDataSource(getRoomDatabase(application), sharedPreferencesUtil);
-
         return new DriverStandingsRepository(driverRemoteDataSource, driverLocalDataSource);
     }
 
@@ -219,17 +208,8 @@ public class ServiceLocator {
         BaseConstructorStandingsRemoteDataSource constructorRemoteDataSource;
         BaseConstructorStandingsLocalDataSource constructorLocalDataSource;
         SharedPreferencesUtils sharedPreferencesUtil = new SharedPreferencesUtils(application);
-
-        if (false) {//TODO change in debugMode
-            /*JSONParserUtils jsonParserUtil = new JSONParserUtils(application);
-            newsRemoteDataSource =
-                    new DriverMockDataSource(jsonParserUtil);*/
-        } else {
-            constructorRemoteDataSource = new ConstructorStandingsRemoteDataSource("");
-        }
-
+        constructorRemoteDataSource = new ConstructorStandingsRemoteDataSource("");
         constructorLocalDataSource = new ConstructorStandingsStandingsLocalDataSource(getRoomDatabase(application), sharedPreferencesUtil);
-
         return new ConstructorStandingsStandingsRepository(constructorRemoteDataSource, constructorLocalDataSource);
     }
 
@@ -265,9 +245,6 @@ public class ServiceLocator {
 
         BaseUserDataRemoteDataSource userDataRemoteDataSource =
                 new UserFirebaseDataSource(sharedPreferencesUtil);
-
-        /*BaseArticleLocalDataSource newsLocalDataSource =
-                new ArticleLocalDataSource(getNewsDao(application), sharedPreferencesUtil);*/
 
         return new UserRepository(userRemoteAuthenticationDataSource,
                 userDataRemoteDataSource);
