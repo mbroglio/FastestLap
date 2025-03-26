@@ -1,5 +1,12 @@
 package com.the_coffe_coders.fastestlap.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
 public class SprintDTO {
 
     private String date;
@@ -10,19 +17,4 @@ public class SprintDTO {
         this.time = time;
     }
 
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
 }

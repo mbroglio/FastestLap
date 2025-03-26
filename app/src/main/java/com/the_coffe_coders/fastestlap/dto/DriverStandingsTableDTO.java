@@ -4,6 +4,13 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
 public class DriverStandingsTableDTO {
     private String season;
     private String round;
@@ -14,38 +21,5 @@ public class DriverStandingsTableDTO {
         this.season = season;
         this.round = round;
         this.driverStandingsDTOS = driverStandingsDTOS;
-    }
-
-    public String getSeason() {
-        return season;
-    }
-
-    public void setSeason(String season) {
-        this.season = season;
-    }
-
-    public String getRound() {
-        return round;
-    }
-
-    public void setRound(String round) {
-        this.round = round;
-    }
-
-    public List<DriverStandingsDTO> getStandingsLists() {
-        return driverStandingsDTOS;
-    }
-
-    public void setStandingsLists(List<DriverStandingsDTO> driverStandingsDTOS) {
-        this.driverStandingsDTOS = driverStandingsDTOS;
-    }
-
-    @Override
-    public String toString() {
-        return "StandingsTable{" +
-                "season='" + season + '\'' +
-                ", round='" + round + '\'' +
-                ", StandingsLists=" + driverStandingsDTOS +
-                '}';
     }
 }
