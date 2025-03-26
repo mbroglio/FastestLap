@@ -22,10 +22,8 @@ public class DriverStandingsRepository implements IDriverStandingsRepository, Dr
     private final BaseDriverStandingsRemoteDataSource driverRemoteDataSource;
     private final BaseDriverStandingsLocalDataSource driverLocalDataSource;
 
-    // Cache per le richieste in corso per evitare richieste duplicate
     private final ConcurrentHashMap<String, CompletableFuture<Result>> pendingRequests = new ConcurrentHashMap<>();
 
-    // Riferimento all'ultima richiesta di standings
     private final AtomicReference<CompletableFuture<Result>> currentDriverStandingsFuture = new AtomicReference<>();
 
     public DriverStandingsRepository(BaseDriverStandingsRemoteDataSource driverRemoteDataSource, BaseDriverStandingsLocalDataSource driverLocalDataSource) {

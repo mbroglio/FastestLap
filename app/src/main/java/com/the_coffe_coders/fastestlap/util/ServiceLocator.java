@@ -45,8 +45,8 @@ public class ServiceLocator {
 
     public static final String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
     public static ServiceLocator instance;
-    public static String currentYear = "current";
-    public static String CURRENT_YEAR_BASE_URL = BASE_URL + "current/";
+    public static String currentYear = "2025";
+    public static String CURRENT_YEAR_BASE_URL = BASE_URL + "${currentYear}";
 
     public static synchronized ServiceLocator getInstance() {
         if (instance == null) {
@@ -156,10 +156,6 @@ public class ServiceLocator {
                 return retrofit.create(ErgastAPIService.class).getNextRace();
             }
 
-            @Override
-            public Call<ResponseBody> getCircuits() {
-                return null;
-            }
 
             @Override
             public Call<ResponseBody> getDriver(String driverId) {

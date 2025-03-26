@@ -30,8 +30,7 @@ public interface ErgastAPIService {
     @GET("next")
     Call<ResponseBody> getNextRace();
 
-    @GET("circuits.json")
-    Call<ResponseBody> getCircuits();
+
 
     @GET("drivers/{driverId}")
     Call<ResponseBody> getDriver(@Path("driverId") String driverId);
