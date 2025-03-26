@@ -6,7 +6,6 @@ import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.mapper.DriverStandingsMapper;
 import com.the_coffe_coders.fastestlap.source.driver.BaseDriverStandingsLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.BaseDriverStandingsRemoteDataSource;
@@ -40,20 +39,17 @@ public class DriverStandingsRepository implements IDriverStandingsRepository, Dr
     public CompletableFuture<Result> fetchDriversStandings(long lastUpdate) {
         final String requestKey = "driverStandings";
 
-        // Controlla se esiste già una richiesta in corso
         CompletableFuture<Result> existingRequest = pendingRequests.get(requestKey);
         if (existingRequest != null && !existingRequest.isDone()) {
             Log.d(TAG, "Returning existing request for driver standings");
             return existingRequest;
         }
 
-        // Crea un nuovo CompletableFuture per questa richiesta
         CompletableFuture<Result> future = new CompletableFuture<>();
         pendingRequests.put(requestKey, future);
         currentDriverStandingsFuture.set(future);
 
-        // Imposta un timeout per il CompletableFuture
-        setupFutureTimeout(future, 30000); // 30 secondi di timeout
+        setupFutureTimeout(future); // 30 secondi di timeout
 
         long currentTime = System.currentTimeMillis();
         boolean shouldFetchFromRemote = currentTime - lastUpdate > FRESH_TIMEOUT;
@@ -84,15 +80,12 @@ public class DriverStandingsRepository implements IDriverStandingsRepository, Dr
         return future;
     }
 
-    /**
-     * Imposta un timeout per un CompletableFuture se non viene completato entro il tempo specificato
-     */
-    private void setupFutureTimeout(CompletableFuture<Result> future, long timeoutMs) {
+    private void setupFutureTimeout(CompletableFuture<Result> future) {
         Thread timeoutThread = new Thread(() -> {
             try {
-                Thread.sleep(timeoutMs);
+                Thread.sleep(30000);
                 if (!future.isDone()) {
-                    Log.w(TAG, "Request timed out after " + timeoutMs + "ms");
+                    Log.w(TAG, "Request timed out after " + (long) 30000 + "ms");
                     future.complete(new Result.Error("Request timed out"));
                 }
             } catch (InterruptedException e) {
@@ -151,11 +144,7 @@ public class DriverStandingsRepository implements IDriverStandingsRepository, Dr
                     driverAPIResponse.getStandingsTable().getDriverStandingsDTOS().get(0));
 
             Log.i(TAG, "DRIVER STANDINGS MAPPED: " + driverStandings);
-
-            // Salva nel database locale in modo asincrono
             driverLocalDataSource.insertDriversStandings(driverStandings);
-
-            // Il callback onSuccessFromLocal verrà chiamato dopo l'inserimento nel DB
         } catch (Exception e) {
             Log.e(TAG, "Error mapping or saving driver standings", e);
             CompletableFuture<Result> future = currentDriverStandingsFuture.get();
