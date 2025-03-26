@@ -3,6 +3,13 @@ package com.the_coffe_coders.fastestlap.api;
 import com.google.gson.annotations.SerializedName;
 import com.the_coffe_coders.fastestlap.dto.DriverTableDTO;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@ToString(callSuper = true)
+@Getter
+@Setter
 public class DriversAPIResponse extends APIResponse {
     @SerializedName("DriverTable")
     private DriverTableDTO driverTableDTO;
@@ -16,12 +23,4 @@ public class DriversAPIResponse extends APIResponse {
         return driverTableDTO;
     }
 
-    public void setStandingsTable(DriverTableDTO driverTableDTO) {
-        this.driverTableDTO = driverTableDTO;
-    }
-
-    @Override
-    public String toString() {
-        return "DriversAPIResponse{" + super.toString() + "DriverTable=" + driverTableDTO + "}";
-    }
 }

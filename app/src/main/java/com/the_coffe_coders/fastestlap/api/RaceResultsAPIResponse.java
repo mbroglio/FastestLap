@@ -7,6 +7,13 @@ import com.the_coffe_coders.fastestlap.dto.ResultDTO;
 
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@ToString(callSuper = true)
+@Getter
+@Setter
 public class RaceResultsAPIResponse extends APIResponse {
     private RaceTableDTO RaceTable;
 
@@ -15,24 +22,11 @@ public class RaceResultsAPIResponse extends APIResponse {
         this.RaceTable = RaceTable;
     }
 
-    public RaceTableDTO getRaceTable() {
-        return RaceTable;
-    }
-
-    public void setRaceTable(RaceTableDTO RaceTable) {
-        this.RaceTable = RaceTable;
-    }
 
     public RaceDTO getFinalRace() {
         return RaceTable.getRace();
     }
 
-    @Override
-    public String toString() {
-        return "RaceResultsAPIResponse{" +
-                "RaceTable=" + RaceTable +
-                '}';
-    }
 
     public List<ResultDTO> getRaceResults() {
         return RaceTable.getRace().getResults();

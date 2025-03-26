@@ -3,6 +3,13 @@ package com.the_coffe_coders.fastestlap.api;
 import com.google.gson.annotations.SerializedName;
 import com.the_coffe_coders.fastestlap.dto.RaceTableDTO;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@ToString(callSuper = true)
+@Getter
+@Setter
 public class RaceAPIResponse extends APIResponse {
 
     @SerializedName("RaceTable")
@@ -17,7 +24,4 @@ public class RaceAPIResponse extends APIResponse {
         return RaceTableDTO;
     }
 
-    public void setRaceTable(RaceTableDTO raceTableDTO) {
-        this.RaceTableDTO = raceTableDTO;
-    }
 }

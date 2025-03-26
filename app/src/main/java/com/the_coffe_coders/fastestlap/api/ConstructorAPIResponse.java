@@ -3,6 +3,13 @@ package com.the_coffe_coders.fastestlap.api;
 import com.google.gson.annotations.SerializedName;
 import com.the_coffe_coders.fastestlap.dto.ConstructorTableDTO;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@ToString(callSuper = true)
+@Getter
+@Setter
 public class ConstructorAPIResponse extends APIResponse {
     @SerializedName("ConstructorTable")
     private ConstructorTableDTO constructorTableDTO;
@@ -16,12 +23,4 @@ public class ConstructorAPIResponse extends APIResponse {
         return constructorTableDTO;
     }
 
-    public void setConstructorTableDTO(ConstructorTableDTO constructorTableDTO) {
-        this.constructorTableDTO = constructorTableDTO;
-    }
-
-    @Override
-    public String toString() {
-        return "ConstructorAPIResponse{" + super.toString() + "ConstructorTable=" + constructorTableDTO + "}";
-    }
 }
