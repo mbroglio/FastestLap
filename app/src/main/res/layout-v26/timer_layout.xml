@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="15dp"
             android:fontFamily="@font/orbitron_regular"
             android:text="@string/days_upper_case"
             android:textColor="@color/black"
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="15dp"
             android:fontFamily="@font/orbitron_regular"
             android:text="@string/hours_upper_case"
             android:textColor="@color/black"
@@ -53,7 +53,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="15dp"
             android:fontFamily="@font/orbitron_regular"
             android:text="@string/minutes_upper_case"
             android:textColor="@color/black"
@@ -74,12 +74,16 @@
 
         <TextView
             android:id="@+id/next_days_counter"
-            android:layout_width="40dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="15dp"
             android:gravity="center"
             android:text="@string/base_countdown"
+            android:autoSizeMaxTextSize="@dimen/timer_text_size"
+            android:autoSizeMinTextSize="12sp"
+            android:autoSizeTextType="uniform"
+            android:textSize="@dimen/timer_text_size"
             android:textColor="@color/black"
             android:textStyle="bold">
 
@@ -90,12 +94,15 @@
             android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="15dp"
             android:gravity="center"
             android:text="@string/base_countdown"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
             android:textColor="@color/black"
-            android:textStyle="bold">
+            android:textStyle="bold"
+            android:textSize="@dimen/timer_text_size"
+            android:autoSizeMaxTextSize="@dimen/timer_text_size"
+            android:autoSizeMinTextSize="12sp"
+            android:autoSizeTextType="uniform">
 
         </TextView>
 
@@ -104,10 +111,13 @@
             android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="15dp"
             android:gravity="center"
             android:text="@string/base_countdown"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:autoSizeMaxTextSize="@dimen/timer_text_size"
+            android:autoSizeMinTextSize="12sp"
+            android:autoSizeTextType="uniform"
+            android:textSize="@dimen/timer_text_size"
             android:textColor="@color/black"
             android:textStyle="bold">
 
@@ -120,7 +130,10 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:text="@string/base_countdown"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+            android:autoSizeMaxTextSize="@dimen/timer_text_size"
+            android:autoSizeMinTextSize="12sp"
+            android:autoSizeTextType="uniform"
+            android:textSize="@dimen/timer_text_size"
             android:textColor="@color/black"
             android:textStyle="bold">
 

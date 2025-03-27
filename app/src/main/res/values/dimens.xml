@@ -10,6 +10,7 @@
     <dimen name="half_screen_width">50%</dimen>
     <dimen name="medium_margin">16dp</dimen>
     <dimen name="icon_size">24dp</dimen>
+    <dimen name="timer_text_size">32sp</dimen>
     <!-- 40dp -->
 
     <dimen name="page_title_text_size">20sp</dimen>
