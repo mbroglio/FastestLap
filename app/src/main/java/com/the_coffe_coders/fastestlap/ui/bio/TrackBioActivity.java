@@ -110,6 +110,9 @@ public class TrackBioActivity extends AppCompatActivity {
         TextView circuitName = findViewById(R.id.circuit_name_value);
         circuitName.setText(track.getTrackName());
 
+        TextView firstEntry = findViewById(R.id.circuit_first_entry_value);
+        firstEntry.setText(track.getFirst_entry());
+
         TextView numberOfLaps = findViewById(R.id.number_of_laps_value);
         numberOfLaps.setText(track.getLaps());
 

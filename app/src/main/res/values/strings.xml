@@ -44,4 +44,13 @@
     <string name="results_not_available">Results not available</string>
     <string name="last_driver_position">20</string>
     <string name="last_constructor_position">10</string>
+    <string name="weekend_schedule_upper_case">WEEKEND SCHEDULE</string>
+    <string name="number_of_laps">Number of Laps:</string>
+    <string name="first_entry">First Entry:</string>
+    <string name="track_name">Track Name:</string>
+    <string name="race_distance">Race Distance:</string>
+    <string name="track_length">Track Length:</string>
+    <string name="km">km</string>
+    <string name="fastest_lap">Fastest Lap:</string>
+    <string name="track_history_upper_case">TRACK HISTORY:</string>
 </resources>

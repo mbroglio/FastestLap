@@ -35,4 +35,5 @@ public class Track {
     private String laps;
     private String length;
     private String race_distance;
+    private String first_entry;
 }
