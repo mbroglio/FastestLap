@@ -53,4 +53,5 @@
     <string name="km">km</string>
     <string name="fastest_lap">Fastest Lap:</string>
     <string name="track_history_upper_case">TRACK HISTORY:</string>
+    <string name="loading_upper_case">LOADING%1$s</string>
 </resources>
