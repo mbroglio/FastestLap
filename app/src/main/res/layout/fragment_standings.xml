@@ -57,7 +57,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
-                        app:srcCompat="@drawable/driver_card_red" />
+                        app:srcCompat="@drawable/driver_card" />
 
                 </LinearLayout>
 
@@ -93,7 +93,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
-                        app:srcCompat="@drawable/constructor_card_red" />
+                        app:srcCompat="@drawable/constructors_image" />
 
                 </LinearLayout>
 
