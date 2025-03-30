@@ -36,6 +36,9 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModelFactory;
+import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
+import com.the_coffe_coders.fastestlap.ui.home.fragment.RacingFragment;
+import com.the_coffe_coders.fastestlap.ui.home.fragment.StandingsFragment;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
@@ -80,8 +83,11 @@ public class DriversStandingActivity extends AppCompatActivity {
             return insets;
         });
 
-        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
-
+        toolbar.setNavigationOnClickListener(v -> {
+            Intent intent = new Intent(DriversStandingActivity.this, HomePageActivity.class);
+            intent.putExtra("CALLER", "DriversStandingActivity");
+            startActivity(intent);
+        });
 
         LinearLayout driverStanding = findViewById(R.id.driver_standing);
 

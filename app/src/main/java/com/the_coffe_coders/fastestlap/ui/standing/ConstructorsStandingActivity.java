@@ -29,6 +29,9 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModelFactory;
+import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
+import com.the_coffe_coders.fastestlap.ui.home.fragment.RacingFragment;
+import com.the_coffe_coders.fastestlap.ui.home.fragment.StandingsFragment;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
@@ -67,7 +70,11 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         LinearLayout teamStandingLayout = findViewById(R.id.team_standing_layout);
         UIUtils.applyWindowInsets(teamStandingLayout);
 
-        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+        toolbar.setNavigationOnClickListener(v -> {
+            Intent intent = new Intent(ConstructorsStandingActivity.this, HomePageActivity.class);
+            intent.putExtra("CALLER", "ConstructorsStandingActivity");
+            startActivity(intent);
+        });
 
         LinearLayout teamStanding = findViewById(R.id.team_standing);
 
@@ -158,7 +165,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
                                 // Set the team position
                                 TextView teamPositionTextView = teamCard.findViewById(R.id.team_position);
-                                if(standingElement.getPosition() == null){
+                                if (standingElement.getPosition() == null) {
                                     teamPositionTextView.setText(R.string.last_constructor_position);
                                 }
                                 teamPositionTextView.setText(standingElement.getPosition());
