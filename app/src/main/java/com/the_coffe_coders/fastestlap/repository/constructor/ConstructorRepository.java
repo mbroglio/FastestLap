@@ -54,15 +54,8 @@ public class ConstructorRepository {
                 public void onConstructorLoaded(Constructor constructor) {
                     if (constructor != null) {
                         constructor.setConstructorId(constructorId);
-                        if (constructorCache.containsKey(constructorId)) {
-
-                            lastUpdateTimestamps.put(constructorId, System.currentTimeMillis());
-                            Objects.requireNonNull(constructorCache.get(constructorId)).postValue(new Result.ConstructorSuccess(constructor));
-                        } else {
-
-                            constructorCache.put(constructorId, new MutableLiveData<>(new Result.ConstructorSuccess(constructor)));
-                            lastUpdateTimestamps.put(constructorId, System.currentTimeMillis());
-                        }
+                        lastUpdateTimestamps.put(constructorId, System.currentTimeMillis());
+                        Objects.requireNonNull(constructorCache.get(constructorId)).postValue(new Result.ConstructorSuccess(constructor));
                     } else {
                         Log.e(TAG, "Constructor not found: " + constructorId);
                         //fetch constructor from jolpica

@@ -1,27 +1,35 @@
-package com.the_coffe_coders.fastestlap.repository.track;
+package com.the_coffe_coders.fastestlap.source.track;
 
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_CIRCUITS_COLLECTION;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
 
 import androidx.annotation.NonNull;
-import androidx.lifecycle.MutableLiveData;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
+import com.the_coffe_coders.fastestlap.repository.track.TrackCallback;
 
-public class FirebaseTrackRepository {
+public class FirebaseTrackDataSource implements TrackDataSource {
     private final FirebaseDatabase database;
+    private static FirebaseTrackDataSource instance;
 
-    public FirebaseTrackRepository() {
+    public static synchronized FirebaseTrackDataSource getInstance() {
+        if (instance == null) {
+            instance = new FirebaseTrackDataSource();
+        }
+        return instance;
+    }
+
+    public FirebaseTrackDataSource() {
         this.database = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
     }
 
-    public MutableLiveData<Result> getTrack(String trackId, TrackCallback callback) {
+    @Override
+    public void getTrack(String trackId, TrackCallback callback) {
         DatabaseReference databaseReference = database.getReference(FIREBASE_CIRCUITS_COLLECTION).child(trackId);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -39,16 +47,9 @@ public class FirebaseTrackRepository {
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {
+            public void onCancelled(@NonNull DatabaseError error) {
                 callback.onFailure(error.toException());
             }
         });
-        return null;
-    }
-
-    public interface TrackCallback {
-        void onSuccess(Track track);
-
-        void onFailure(Exception exception);
     }
 }

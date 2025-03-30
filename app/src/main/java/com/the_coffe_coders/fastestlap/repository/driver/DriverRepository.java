@@ -60,18 +60,18 @@ public class DriverRepository {
                 if(driver!=null) {
                     if(driverCache.containsKey(driverId)) {
                         Objects.requireNonNull(driverCache.get(driverId)).postValue(new Result.DriverSuccess(driver));
-                        lastUpdateTimestamps.put(driverId, System.currentTimeMillis());
                     }else {
                         Log.e(TAG, "Driver not found in cache: " + driverId);
                         driverCache.put(driverId, new MutableLiveData<>(new Result.DriverSuccess(driver)));
                     }
+                    lastUpdateTimestamps.put(driverId, System.currentTimeMillis());
                 }
             }
 
             @Override
             public void onError(Exception e) {
                 Log.e(TAG, "Error loading driver from Jolpica: " + e.getMessage());
-                driverCache.get(driverId).postValue(new Result.Error("Error loading driver from Jolpica: " + e.getMessage()));
+                Objects.requireNonNull(driverCache.get(driverId)).postValue(new Result.Error("Error loading driver from Jolpica: " + e.getMessage()));
             }
         });
     }
@@ -82,23 +82,13 @@ public class DriverRepository {
             firebaseDriverDataSource.getDriver(driverId, new DriverCallback() {
                 @Override
                 public void onDriverLoaded(Driver driver) {
-
                     if(driver!=null) {
                         driver.setDriverId(driverId);
-                        if(driverCache.containsKey(driverId)) {
-                            Log.d(TAG, "Driver found in cache: " + driverId);
-                            lastUpdateTimestamps.put(driverId, System.currentTimeMillis());
-                            Objects.requireNonNull(driverCache.get(driverId)).postValue(new Result.DriverSuccess(driver));
-                        }else {
-                            Log.e(TAG, "Driver not found in cache: " + driverId);
-                            driverCache.put(driverId, new MutableLiveData<>(new Result.DriverSuccess(driver)));
-                            lastUpdateTimestamps.put(driverId, System.currentTimeMillis());
-                        }
+                        lastUpdateTimestamps.put(driverId, System.currentTimeMillis());
+                        Objects.requireNonNull(driverCache.get(driverId)).postValue(new Result.DriverSuccess(driver));
                     }else {
                         Log.e(TAG, "Driver not found: " + driverId);
-                        //fetch driver from jolpica
                     }
-
                 }
 
                 @Override

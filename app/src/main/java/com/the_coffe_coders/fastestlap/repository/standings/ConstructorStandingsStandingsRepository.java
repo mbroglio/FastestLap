@@ -20,10 +20,8 @@ public class ConstructorStandingsStandingsRepository implements IConstructorStan
     private final BaseConstructorStandingsRemoteDataSource constructorRemoteDataSource;
     private final BaseConstructorStandingsLocalDataSource constructorLocalDataSource;
 
-    // Cache per le richieste in corso per evitare richieste duplicate
     private final ConcurrentHashMap<String, CompletableFuture<Result>> pendingRequests = new ConcurrentHashMap<>();
 
-    // Riferimento all'ultima richiesta di standings
     private final AtomicReference<CompletableFuture<Result>> currentConstructorStandingsFuture = new AtomicReference<>();
 
     public ConstructorStandingsStandingsRepository(BaseConstructorStandingsRemoteDataSource constructorRemoteDataSource, BaseConstructorStandingsLocalDataSource constructorLocalDataSource) {
