@@ -215,13 +215,23 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
                             userViewModel.getUserPreferences(userViewModel.getLoggedUser().getIdToken());
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            Intent intent = new Intent(WelcomeActivity.this, ProfileActivity.class);
-                            intent.putExtra("from_login", true);
+
+                            Intent intent = new Intent(WelcomeActivity.this, HomePageActivity.class);
                             startActivity(intent);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             // ... (handle sign-in failure)
+                            if (task.getException() != null) {
+                                String errorMessage = getErrorMessage(task.getException().getMessage());
+                                Snackbar.make(findViewById(android.R.id.content),
+                                        errorMessage,
+                                        Snackbar.LENGTH_SHORT).show();
+                            } else {
+                                Snackbar.make(findViewById(android.R.id.content),
+                                        UNEXPECTED_ERROR,
+                                        Snackbar.LENGTH_SHORT).show();
+                            }
                         }
                     }
                 });
