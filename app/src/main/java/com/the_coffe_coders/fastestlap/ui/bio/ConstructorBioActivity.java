@@ -145,7 +145,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
                 if(teamId.equals("rb")){
                     teamLogoCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white));
-                };
+                }
 
                 MaterialCardView driverCard = findViewById(R.id.driver_1_card);
                 driverCard.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
