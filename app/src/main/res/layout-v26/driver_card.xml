@@ -62,9 +62,12 @@
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:layout_marginStart="5dp"
-            android:autoSizeMaxTextSize="25sp"
-            android:autoSizeMinTextSize="12sp"
+            android:layout_marginEnd="8dp"
+            android:layout_toStartOf="@id/driver_points"
+            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
             android:autoSizeTextType="uniform"
+            android:maxLines="1"
             android:layout_toEndOf="@id/team_logo"
             android:fontFamily="@font/orbitron_bold"
             android:textColor="@color/black"
@@ -85,12 +88,9 @@
             android:textColor="@color/black"
             android:textSize="@dimen/page_title_text_size">
 
-
         </TextView>
 
-
     </RelativeLayout>
-
 
 </com.google.android.material.card.MaterialCardView>
 
