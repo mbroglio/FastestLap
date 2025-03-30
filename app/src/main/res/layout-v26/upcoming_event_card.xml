@@ -43,6 +43,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
                 android:layout_gravity="center">
 
                 <TextView
@@ -108,7 +109,6 @@
                     android:layout_height="24dp"
                     android:layout_alignBottom="@id/upcoming_month"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="5dp"
                     app:srcCompat="@drawable/play_icon_white">
 
                 </ImageView>
