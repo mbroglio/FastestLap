@@ -93,6 +93,9 @@ public class DriverBioActivity extends AppCompatActivity {
         driverNumberCard = findViewById(R.id.driver_number_card);
         driverNumberImage = findViewById(R.id.driver_number_image);
 
+        //driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory()).get(DriverViewModel.class);
+        // get driver viewmodel without initializing it again
+
         driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory()).get(DriverViewModel.class);
         constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
         nationViewModel = new ViewModelProvider(this, new NationViewModelFactory()).get(NationViewModel.class);
@@ -168,7 +171,7 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     public void getTeamInfo(String teamId) {
-        MutableLiveData<Result> constructorMutableLiveData = constructorViewModel.getSelectedConstructorLiveData(teamId);
+        MutableLiveData<Result> constructorMutableLiveData = constructorViewModel.getSelectedConstructor(teamId);
 
         constructorMutableLiveData.observe(this, result -> {
             if (result.isSuccess()) {

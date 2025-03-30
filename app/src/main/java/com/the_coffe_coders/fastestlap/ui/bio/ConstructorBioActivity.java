@@ -126,7 +126,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     private void createConstructorBioPage(String teamId) {
-        MutableLiveData<Result> data = constructorViewModel.getSelectedConstructorLiveData(teamId);
+        MutableLiveData<Result> data = constructorViewModel.getSelectedConstructor(teamId);
         data.observe(this, result -> {
             if (result.isSuccess()) {
                 constructor = ((Result.ConstructorSuccess) result).getData();

@@ -109,9 +109,9 @@ public class HomeFragment extends Fragment {
     private void initializeViewModels() {
         homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getDriverStandingsRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false))).get(HomeViewModel.class);
 
-        constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(ServiceLocator.getInstance().getCommonConstructorRepository())).get(ConstructorViewModel.class);
+        constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
 
-        driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(ServiceLocator.getInstance().getCommonDriverRepository())).get(DriverViewModel.class);
+        driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory()).get(DriverViewModel.class);
 
         trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(ServiceLocator.getInstance().getTrackRepository())).get(TrackViewModel.class);
 
@@ -579,7 +579,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchConstructorDataForCard(View view, String teamId, ConstructorStandingsElement favouriteConstructor) {
-        MutableLiveData<Result> constructorData = constructorViewModel.getSelectedConstructorLiveData(teamId);
+        MutableLiveData<Result> constructorData = constructorViewModel.getSelectedConstructor(teamId);
         constructorData.observe(getViewLifecycleOwner(), constructorResult -> {
             try {
                 if (constructorResult.isSuccess()) {

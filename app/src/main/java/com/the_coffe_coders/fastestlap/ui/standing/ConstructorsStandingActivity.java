@@ -118,8 +118,8 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
     private View generateTeamCard(ConstructorStandingsElement standingElement, String constructorIdToHighlight) {
         String teamId = standingElement.getConstructor().getConstructorId();
-        ConstructorViewModel constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(ServiceLocator.getInstance().getCommonConstructorRepository())).get(ConstructorViewModel.class);
-        MutableLiveData<Result> liveData = constructorViewModel.getSelectedConstructorLiveData(teamId);
+        ConstructorViewModel constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
+        MutableLiveData<Result> liveData = constructorViewModel.getSelectedConstructor(teamId);
 
         View teamCard = getLayoutInflater().inflate(R.layout.team_card, null);
         liveData.observe(this, result -> {
@@ -139,7 +139,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                 ImageView teamCarImageView = teamCard.findViewById(R.id.car_image);
                 Glide.with(this).load(constructor.getCar_pic_url()).into(teamCarImageView);
 
-                DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(ServiceLocator.getInstance().getCommonDriverRepository())).get(DriverViewModel.class);
+                DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory()).get(DriverViewModel.class);
                 MutableLiveData<Result> driverOneLiveData = driverViewModel.getDriver(constructor.getDriverOneId());
                 MutableLiveData<Result> driverTwoLiveData = driverViewModel.getDriver(constructor.getDriverTwoId());
 

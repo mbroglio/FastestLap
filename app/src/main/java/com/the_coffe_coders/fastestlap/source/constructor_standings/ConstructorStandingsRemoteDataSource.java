@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.source.constructor;
+package com.the_coffe_coders.fastestlap.source.constructor_standings;
 
 
 import static android.content.ContentValues.TAG;

@@ -4,19 +4,19 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.the_coffe_coders.fastestlap.repository.driver.CommonDriverRepository;
+import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 public class DriverViewModelFactory implements ViewModelProvider.Factory {
 
-    private final CommonDriverRepository driverRepository;
+    private final DriverRepository driverRepository;
 
-    public DriverViewModelFactory(CommonDriverRepository driverRepository) {
+    public DriverViewModelFactory(DriverRepository driverRepository) {
         this.driverRepository = driverRepository;
     }
 
     public DriverViewModelFactory() {
-        this.driverRepository = ServiceLocator.getInstance().getCommonDriverRepository();
+        this.driverRepository = DriverRepository.getInstance();
     }
 
     @NonNull

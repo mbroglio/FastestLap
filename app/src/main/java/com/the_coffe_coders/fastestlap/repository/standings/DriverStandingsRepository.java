@@ -7,8 +7,8 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.mapper.DriverStandingsMapper;
-import com.the_coffe_coders.fastestlap.source.driver.BaseDriverStandingsLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.driver.BaseDriverStandingsRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.driver_standings.BaseDriverStandingsLocalDataSource;
+import com.the_coffe_coders.fastestlap.source.driver_standings.BaseDriverStandingsRemoteDataSource;
 
 import java.util.ArrayList;
 import java.util.List;

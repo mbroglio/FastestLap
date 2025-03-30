@@ -4,18 +4,18 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.the_coffe_coders.fastestlap.repository.nation.FirebaseNationRepository;
+import com.the_coffe_coders.fastestlap.repository.nation.NationRepository;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 public class NationViewModelFactory implements ViewModelProvider.Factory {
-    private final FirebaseNationRepository nationRepository;
+    private final NationRepository nationRepository;
 
-    public NationViewModelFactory(FirebaseNationRepository nationRepository) {
+    public NationViewModelFactory(NationRepository nationRepository) {
         this.nationRepository = nationRepository;
     }
 
     public NationViewModelFactory() {
-        this.nationRepository = ServiceLocator.getInstance().getFirebaseNationRepository();
+        this.nationRepository = NationRepository.getInstance();
     }
 
     @NonNull

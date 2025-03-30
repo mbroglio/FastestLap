@@ -143,7 +143,7 @@ public class DriversStandingActivity extends AppCompatActivity {
 
     @SuppressLint("SetTextI18n")
     private View generateDriverCard(DriverStandingsElement standingElement, String driverIdToHighlight) {
-        DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(ServiceLocator.getInstance().getCommonDriverRepository())).get(DriverViewModel.class);
+        DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory()).get(DriverViewModel.class);
         MutableLiveData<Result> driverLiveData = driverViewModel.getDriver(standingElement.getDriver().getDriverId());
 
         View driverCard = getLayoutInflater().inflate(R.layout.driver_card, null);
@@ -172,8 +172,8 @@ public class DriversStandingActivity extends AppCompatActivity {
                     UIUtils.animateCardBackgroundColor(this, driverCardView, R.color.yellow, Color.TRANSPARENT, 1000, 10);
                 }
 
-                ConstructorViewModel constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(ServiceLocator.getInstance().getCommonConstructorRepository())).get(ConstructorViewModel.class);
-                MutableLiveData<Result> constructorLiveData = constructorViewModel.getSelectedConstructorLiveData(driver.getTeam_id());
+                ConstructorViewModel constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
+                MutableLiveData<Result> constructorLiveData = constructorViewModel.getSelectedConstructor(driver.getTeam_id());
                 constructorLiveData.observe(this, constructorResult -> {
                     if (constructorResult.isSuccess()) {
                         Constructor constructor = ((Result.ConstructorSuccess) constructorResult).getData();

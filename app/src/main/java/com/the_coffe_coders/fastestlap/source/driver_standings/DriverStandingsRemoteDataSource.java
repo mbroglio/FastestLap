@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.source.driver;
+package com.the_coffe_coders.fastestlap.source.driver_standings;
 
 import static com.the_coffe_coders.fastestlap.util.Constants.RETROFIT_ERROR;
 

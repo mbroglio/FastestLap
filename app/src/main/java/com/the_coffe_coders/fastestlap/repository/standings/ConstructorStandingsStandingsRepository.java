@@ -6,8 +6,8 @@ import com.the_coffe_coders.fastestlap.api.ConstructorStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.mapper.ConstructorStandingsMapper;
-import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorStandingsLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorStandingsRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.constructor_standings.BaseConstructorStandingsLocalDataSource;
+import com.the_coffe_coders.fastestlap.source.constructor_standings.BaseConstructorStandingsRemoteDataSource;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
