@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
-import com.the_coffe_coders.fastestlap.repository.standings.DriverStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.standings.driver.DriverStandingsRepository;
 
 import java.util.List;
 

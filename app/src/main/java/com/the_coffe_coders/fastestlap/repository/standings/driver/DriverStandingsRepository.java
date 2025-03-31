@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.repository.standings;
+package com.the_coffe_coders.fastestlap.repository.standings.driver;
 
 import android.util.Log;
 
@@ -29,7 +29,6 @@ public class DriverStandingsRepository implements IDriverStandingsRepository, Dr
     public DriverStandingsRepository(BaseDriverStandingsRemoteDataSource driverRemoteDataSource, BaseDriverStandingsLocalDataSource driverLocalDataSource) {
         this.driverRemoteDataSource = driverRemoteDataSource;
         this.driverLocalDataSource = driverLocalDataSource;
-        this.driverRemoteDataSource.setDriverCallback(this);
         this.driverLocalDataSource.setDriverCallback(this);
     }
 
@@ -56,7 +55,7 @@ public class DriverStandingsRepository implements IDriverStandingsRepository, Dr
             Log.i(TAG, "FETCHING FROM REMOTE SOURCE");
             // Tentativo di recupero remoto
             try {
-                driverRemoteDataSource.getDriversStandings();
+                //driverRemoteDataSource.getDriversStandings();
             } catch (Exception e) {
                 Log.e(TAG, "Exception during remote fetch", e);
                 // In caso di errore immediato, prova con la fonte locale

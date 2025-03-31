@@ -8,9 +8,11 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
-import com.the_coffe_coders.fastestlap.repository.standings.ConstructorStandingsStandingsRepository;
-import com.the_coffe_coders.fastestlap.repository.standings.DriverStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.standings.constructor.ConstructorStandingsStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.standings.driver.DriverStandingRepository;
+import com.the_coffe_coders.fastestlap.repository.standings.driver.DriverStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
+import com.the_coffe_coders.fastestlap.source.driver_standings.DriverStandingsRemoteDataSource;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
 
 import java.util.List;
@@ -70,28 +72,6 @@ public class HomeViewModel extends ViewModel {
         return errorMessageLiveData;
     }
 
-    // Method to fetch driver standings data
-    private void fetchDriverStandings(long lastUpdate) {
-        isLoadingLiveData.setValue(true);
-        errorMessageLiveData.setValue(null);
-
-        driverRepository.fetchDriversStandings(lastUpdate)
-                .thenAccept(result -> {
-                    isLoadingLiveData.postValue(false);
-                    if (result instanceof Result.Error) {
-                        errorMessageLiveData.postValue(result.getError());
-                    } else if (result instanceof Result.DriverStandingsSuccess) {
-                        driverLastUpdateTimestamp = System.currentTimeMillis();
-                    }
-                    driverStandings.postValue(result);
-                })
-                .exceptionally(throwable -> {
-                    isLoadingLiveData.postValue(false);
-                    errorMessageLiveData.postValue("An error occurred: " + throwable.getMessage());
-                    return null;
-                });
-    }
-
     // Method to fetch constructor standings data with similar approach to drivers
     private void fetchConstructorStandings(long lastUpdate) {
         isLoadingLiveData.setValue(true);
@@ -117,9 +97,8 @@ public class HomeViewModel extends ViewModel {
         this.nextRace = raceRepository.fetchNextRace(lastUpdate);
     }
 
-    public MutableLiveData<Result> getDriverStandingsLiveData(long lastUpdate) {
-        fetchDriverStandings(lastUpdate);
-        return driverStandings;
+    public MutableLiveData<Result> getDriverStandingsLiveData() {
+        return DriverStandingRepository.getInstance(new DriverStandingsRemoteDataSource()).fetchDriverStanding();
     }
 
     public MutableLiveData<Result> getConstructorStandingsLiveData(long lastUpdate) {

@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.repository.standings;
+package com.the_coffe_coders.fastestlap.repository.standings.constructor;
 
 import android.util.Log;
 

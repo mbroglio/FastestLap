@@ -389,7 +389,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildFinalDriversStanding(View seasonEndedCard) {
-        MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData(0L);
+        MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData();
         driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
             try {
                 if (result.isSuccess()) {
@@ -458,7 +458,7 @@ public class HomeFragment extends Fragment {
             return;
         }
 
-        MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData(0L);
+        MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData();
         driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
             try {
                 if (result.isSuccess()) {

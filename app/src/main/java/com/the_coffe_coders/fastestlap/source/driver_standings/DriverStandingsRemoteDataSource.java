@@ -9,6 +9,9 @@ import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
+import com.the_coffe_coders.fastestlap.mapper.DriverStandingsMapper;
+import com.the_coffe_coders.fastestlap.repository.standings.driver.DriverStandingCallback;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
@@ -30,75 +33,58 @@ public class DriverStandingsRemoteDataSource extends BaseDriverStandingsRemoteDa
     }
 
     @Override
-    public void getDriversStandings() {
+    public void getDriversStandings(DriverStandingCallback driverCallback) {
         Log.d(TAG, "Fetching driver standings from remote API");
         Call<ResponseBody> responseCall = ergastAPIService.getDriverStandings();
 
         responseCall.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                processDriversResponse(response);
+                ResponseBody body = response.body();
+                if (body == null) {
+                    Log.e(TAG, "API returned empty body");
+                    driverCallback.onFailure(new Exception("Empty response body"));
+                    return;
+                }
+
+                try {
+                    String responseString = body.string();
+                    JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
+
+                    if (jsonResponse == null) {
+                        Log.e(TAG, "Failed to parse JSON response");
+                        driverCallback.onFailure(new Exception("Invalid JSON response"));
+                        return;
+                    }
+
+                    JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
+                    if (mrdata == null) {
+                        Log.e(TAG, "MRData not found in response");
+                        driverCallback.onFailure(new Exception("MRData not found in response"));
+                        return;
+                    }
+
+                    JSONParserUtils jsonParserUtils = new JSONParserUtils();
+                    DriverStandingsAPIResponse driverStandingsAPIResponse = jsonParserUtils.parseDriverStandings(mrdata);
+
+                    Log.d(TAG, "Successfully parsed driver standings: " + driverStandingsAPIResponse);
+                    driverCallback.onSuccess(DriverStandingsMapper.toDriverStandings(driverStandingsAPIResponse.getStandingsTable().getDriverStandingsDTOS().get(0)));
+                } catch (IOException e) {
+                    Log.e(TAG, "IOException while reading response", e);
+                    driverCallback.onFailure(new Exception("Failed to read response: " + e.getMessage(), e));
+                } catch (Exception e) {
+                    Log.e(TAG, "Exception while processing response", e);
+                    driverCallback.onFailure(new Exception("Failed to process response: " + e.getMessage(), e));
+                }
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable throwable) {
                 Log.e(TAG, "Failed to fetch driver standings", throwable);
                 if (driverCallback != null) {
-                    driverCallback.onFailureFromRemote(new Exception(RETROFIT_ERROR, throwable));
+                    driverCallback.onFailure(new Exception(RETROFIT_ERROR, throwable));
                 }
             }
         });
-    }
-
-    private void processDriversResponse(Response<ResponseBody> response) {
-        if (driverCallback == null) {
-            Log.e(TAG, "Driver callback is null, cannot process response");
-            return;
-        }
-
-        if (!response.isSuccessful()) {
-            Log.e(TAG, "API call failed with code: " + response.code());
-            driverCallback.onFailureFromRemote(
-                    new Exception("API call failed with code: " + response.code())
-            );
-            return;
-        }
-
-        ResponseBody body = response.body();
-        if (body == null) {
-            Log.e(TAG, "API returned empty body");
-            driverCallback.onFailureFromRemote(new Exception("Empty response body"));
-            return;
-        }
-
-        try {
-            String responseString = body.string();
-            JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
-
-            if (jsonResponse == null) {
-                Log.e(TAG, "Failed to parse JSON response");
-                driverCallback.onFailureFromRemote(new Exception("Invalid JSON response"));
-                return;
-            }
-
-            JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
-            if (mrdata == null) {
-                Log.e(TAG, "MRData not found in response");
-                driverCallback.onFailureFromRemote(new Exception("MRData not found in response"));
-                return;
-            }
-
-            JSONParserUtils jsonParserUtils = new JSONParserUtils();
-            DriverStandingsAPIResponse driverStandingsAPIResponse = jsonParserUtils.parseDriverStandings(mrdata);
-
-            Log.d(TAG, "Successfully parsed driver standings: " + driverStandingsAPIResponse);
-            driverCallback.onSuccessFromRemote(driverStandingsAPIResponse, System.currentTimeMillis());
-        } catch (IOException e) {
-            Log.e(TAG, "IOException while reading response", e);
-            driverCallback.onFailureFromRemote(new Exception("Failed to read response: " + e.getMessage(), e));
-        } catch (Exception e) {
-            Log.e(TAG, "Exception while processing response", e);
-            driverCallback.onFailureFromRemote(new Exception("Failed to process response: " + e.getMessage(), e));
-        }
     }
 }
