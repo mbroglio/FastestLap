@@ -83,8 +83,8 @@ public class DriversStandingActivity extends AppCompatActivity {
 
         LinearLayout driverStanding = findViewById(R.id.driver_standing);
 
-        driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(ServiceLocator.getInstance().getDriverStandingsRepository(getApplication(), false))).get(DriverStandingsViewModel.class);
-        MutableLiveData<Result> livedata = driverStandingsViewModel.getDriverStandingsLiveData(0);//TODO get last update from shared preferences
+        driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory()).get(DriverStandingsViewModel.class);
+        MutableLiveData<Result> livedata = driverStandingsViewModel.getDriverStandingsLiveData();//TODO get last update from shared preferences
 
         livedata.observe(this, result -> {
             if (result.isSuccess()) {
