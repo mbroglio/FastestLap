@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.source.driver_standings;
+package com.the_coffe_coders.fastestlap.source.standing.driver;
 
 import android.util.Log;
 
@@ -28,34 +28,24 @@ public class DriverStandingsLocalDataSource extends BaseDriverStandingsLocalData
         databaseExecutor.execute(() -> {
             try {
                 DriverStandings standings = driverStandingsDAO.getDriverStandings();
-                if (driverCallback != null) {
+                if (true) {//callback != null
                     if (standings != null) {
                         Log.d(TAG, "Retrieved driver standings from local DB");
-                        driverCallback.onSuccessFromLocal(standings);
+                        //success
                     } else {
                         Log.w(TAG, "No driver standings found in local DB");
-                        driverCallback.onFailureFromLocal(new Exception("No driver standings found in database"));
+                        //failure
                     }
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error getting driver standings", e);
-                if (driverCallback != null) {
-                    driverCallback.onFailureFromLocal(e);
-                }
+                //failure
             }
         });
     }
 
     @Override
     public void insertDriversStandings(DriverStandings driverStandings) {
-        if (driverStandings == null) {
-            Log.w(TAG, "Attempted to insert null driver standings");
-            if (driverCallback != null) {
-                driverCallback.onFailureFromLocal(new IllegalArgumentException("Driver standings is null"));
-            }
-            return;
-        }
-
         databaseExecutor.execute(() -> {
             try {
                 Log.d(TAG, "Inserting driver standings into local DB");
@@ -66,14 +56,10 @@ public class DriverStandingsLocalDataSource extends BaseDriverStandingsLocalData
                         String.valueOf(System.currentTimeMillis())
                 );
 
-                if (driverCallback != null) {
-                    driverCallback.onSuccessFromLocal(driverStandings);
-                }
+                //success from local
             } catch (Exception e) {
                 Log.e(TAG, "Error inserting driver standings", e);
-                if (driverCallback != null) {
-                    driverCallback.onFailureFromLocal(e);
-                }
+                //failure from local
             }
         });
     }

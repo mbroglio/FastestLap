@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.repository.standings.driver;
+package com.the_coffe_coders.fastestlap.repository.standing.driver;
 
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 

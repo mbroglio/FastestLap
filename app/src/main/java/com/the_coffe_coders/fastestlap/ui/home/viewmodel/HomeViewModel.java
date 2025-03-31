@@ -8,11 +8,10 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
-import com.the_coffe_coders.fastestlap.repository.standings.constructor.ConstructorStandingsStandingsRepository;
-import com.the_coffe_coders.fastestlap.repository.standings.driver.DriverStandingRepository;
-import com.the_coffe_coders.fastestlap.repository.standings.driver.DriverStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.standing.constructor.ConstructorStandingsStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.standing.driver.DriverStandingRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
-import com.the_coffe_coders.fastestlap.source.driver_standings.DriverStandingsRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.standing.driver.DriverStandingsRemoteDataSource;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
 
 import java.util.List;
@@ -21,7 +20,6 @@ public class HomeViewModel extends ViewModel {
     private static final String TAG = EventViewModel.class.getSimpleName();
 
     // Driver related fields
-    private final DriverStandingsRepository driverRepository;
     private final MutableLiveData<Result> driverStandings;
     // Constructor related fields
     private final ConstructorStandingsStandingsRepository constructorRepository;
@@ -38,11 +36,10 @@ public class HomeViewModel extends ViewModel {
 
     public HomeViewModel(RaceRepository raceRepository,
                          RaceResultRepository raceResultRepository,
-                         DriverStandingsRepository driverRepository,
+
                          ConstructorStandingsStandingsRepository constructorRepository) {
         this.raceRepository = raceRepository;
         this.raceResultRepository = raceResultRepository;
-        this.driverRepository = driverRepository;
         this.constructorRepository = constructorRepository;
 
         // Initialize LiveData objects

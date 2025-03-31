@@ -5,23 +5,19 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
-import com.the_coffe_coders.fastestlap.repository.standings.constructor.ConstructorStandingsStandingsRepository;
-import com.the_coffe_coders.fastestlap.repository.standings.driver.DriverStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.standing.constructor.ConstructorStandingsStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 
 public class HomeViewModelFactory implements ViewModelProvider.Factory {
     private final RaceRepository raceRepository;
     private final RaceResultRepository raceResultRepository;
-    private final DriverStandingsRepository driverRepository;
     private final ConstructorStandingsStandingsRepository constructorRepository;
 
     public HomeViewModelFactory(RaceRepository raceRepository,
                                 RaceResultRepository raceResultRepository,
-                                DriverStandingsRepository driverRepository,
                                 ConstructorStandingsStandingsRepository constructorRepository) {
         this.raceRepository = raceRepository;
         this.raceResultRepository = raceResultRepository;
-        this.driverRepository = driverRepository;
         this.constructorRepository = constructorRepository;
     }
 
@@ -29,7 +25,7 @@ public class HomeViewModelFactory implements ViewModelProvider.Factory {
     @SuppressWarnings("unchecked")
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(HomeViewModel.class)) {
-            return (T) new HomeViewModel(raceRepository, raceResultRepository, driverRepository, constructorRepository);
+            return (T) new HomeViewModel(raceRepository, raceResultRepository, constructorRepository);
         }
         throw new IllegalArgumentException("Unknown ViewModel class");
     }

@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.repository.standings.driver;
+package com.the_coffe_coders.fastestlap.repository.standing.driver;
 
 import android.util.Log;
 
@@ -6,8 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
-import com.the_coffe_coders.fastestlap.source.driver_standings.BaseDriverStandingsLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.driver_standings.BaseDriverStandingsRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.standing.driver.BaseDriverStandingsRemoteDataSource;
 
 public class DriverStandingRepository {
     private final BaseDriverStandingsRemoteDataSource remoteDataSource;

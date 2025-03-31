@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.source.constructor_standings;
+package com.the_coffe_coders.fastestlap.source.standing.constructor;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.database.ConstructorStandingsDAO;

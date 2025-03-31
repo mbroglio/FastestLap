@@ -1,7 +1,7 @@
-package com.the_coffe_coders.fastestlap.source.constructor_standings;
+package com.the_coffe_coders.fastestlap.source.standing.constructor;
 
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
-import com.the_coffe_coders.fastestlap.repository.standings.constructor.ConstructorStandingsResponseCallback;
+import com.the_coffe_coders.fastestlap.repository.standing.constructor.ConstructorStandingsResponseCallback;
 
 import lombok.Setter;
 

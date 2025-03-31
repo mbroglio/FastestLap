@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.repository.standings.constructor;
+package com.the_coffe_coders.fastestlap.repository.standing.constructor;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
 

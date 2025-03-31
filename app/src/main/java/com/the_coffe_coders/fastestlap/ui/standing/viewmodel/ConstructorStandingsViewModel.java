@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
-import com.the_coffe_coders.fastestlap.repository.standings.constructor.ConstructorStandingsStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.standing.constructor.ConstructorStandingsStandingsRepository;
 
 import java.util.List;
 

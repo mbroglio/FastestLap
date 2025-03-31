@@ -107,7 +107,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void initializeViewModels() {
-        homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getDriverStandingsRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false))).get(HomeViewModel.class);
+        homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false))).get(HomeViewModel.class);
 
         constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
 

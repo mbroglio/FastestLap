@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.source.driver_standings;
+package com.the_coffe_coders.fastestlap.source.standing.driver;
 
 import static com.the_coffe_coders.fastestlap.util.Constants.RETROFIT_ERROR;
 
@@ -9,9 +9,8 @@ import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.mapper.DriverStandingsMapper;
-import com.the_coffe_coders.fastestlap.repository.standings.driver.DriverStandingCallback;
+import com.the_coffe_coders.fastestlap.repository.standing.driver.DriverStandingCallback;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;

@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.the_coffe_coders.fastestlap.repository.standings.constructor.ConstructorStandingsStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.standing.constructor.ConstructorStandingsStandingsRepository;
 
 public class ConstructorStandingsViewModelFactory implements ViewModelProvider.Factory {
     private final ConstructorStandingsStandingsRepository constructorRepository;

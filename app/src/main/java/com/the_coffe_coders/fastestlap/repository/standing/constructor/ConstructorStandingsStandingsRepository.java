@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.repository.standings.constructor;
+package com.the_coffe_coders.fastestlap.repository.standing.constructor;
 
 import android.util.Log;
 
@@ -6,8 +6,8 @@ import com.the_coffe_coders.fastestlap.api.ConstructorStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.mapper.ConstructorStandingsMapper;
-import com.the_coffe_coders.fastestlap.source.constructor_standings.BaseConstructorStandingsLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.constructor_standings.BaseConstructorStandingsRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.standing.constructor.BaseConstructorStandingsLocalDataSource;
+import com.the_coffe_coders.fastestlap.source.standing.constructor.BaseConstructorStandingsRemoteDataSource;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;

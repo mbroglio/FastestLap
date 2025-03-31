@@ -5,21 +5,16 @@ import android.app.Application;
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.repository.nation.NationRepository;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
-import com.the_coffe_coders.fastestlap.repository.standings.constructor.ConstructorStandingsStandingsRepository;
-import com.the_coffe_coders.fastestlap.repository.standings.driver.DriverStandingsRepository;
+import com.the_coffe_coders.fastestlap.repository.standing.constructor.ConstructorStandingsStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.track.TrackRepository;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.repository.user.UserRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
-import com.the_coffe_coders.fastestlap.source.constructor_standings.BaseConstructorStandingsLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.constructor_standings.BaseConstructorStandingsRemoteDataSource;
-import com.the_coffe_coders.fastestlap.source.constructor_standings.ConstructorStandingsRemoteDataSource;
-import com.the_coffe_coders.fastestlap.source.constructor_standings.ConstructorStandingsStandingsLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.driver_standings.BaseDriverStandingsLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.driver_standings.BaseDriverStandingsRemoteDataSource;
-import com.the_coffe_coders.fastestlap.source.driver_standings.DriverStandingsLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.driver_standings.DriverStandingsRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.standing.constructor.BaseConstructorStandingsLocalDataSource;
+import com.the_coffe_coders.fastestlap.source.standing.constructor.BaseConstructorStandingsRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.standing.constructor.ConstructorStandingsRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.standing.constructor.ConstructorStandingsStandingsLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.result.RaceResultLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.result.RaceResultRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.user.BaseUserAuthenticationRemoteDataSource;
@@ -185,15 +180,6 @@ public class ServiceLocator {
 
     public AppRoomDatabase getRoomDatabase(Application application) {
         return AppRoomDatabase.getDatabase(application);
-    }
-
-    public DriverStandingsRepository getDriverStandingsRepository(Application application, boolean debugMode) {
-        BaseDriverStandingsRemoteDataSource driverRemoteDataSource;
-        BaseDriverStandingsLocalDataSource driverLocalDataSource;
-        SharedPreferencesUtils sharedPreferencesUtil = new SharedPreferencesUtils(application);
-        driverRemoteDataSource = new DriverStandingsRemoteDataSource();
-        driverLocalDataSource = new DriverStandingsLocalDataSource(getRoomDatabase(application), sharedPreferencesUtil);
-        return new DriverStandingsRepository(driverRemoteDataSource, driverLocalDataSource);
     }
 
     public ConstructorStandingsStandingsRepository getConstructorStandingsRepository(Application application, boolean debugMode) {

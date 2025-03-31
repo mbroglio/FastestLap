@@ -4,9 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.the_coffe_coders.fastestlap.repository.standings.driver.DriverStandingRepository;
-import com.the_coffe_coders.fastestlap.repository.standings.driver.DriverStandingsRepository;
-import com.the_coffe_coders.fastestlap.source.driver_standings.DriverStandingsRemoteDataSource;
+import com.the_coffe_coders.fastestlap.repository.standing.driver.DriverStandingRepository;
+import com.the_coffe_coders.fastestlap.source.standing.driver.DriverStandingsRemoteDataSource;
 
 public class DriverStandingsViewModelFactory implements ViewModelProvider.Factory {
     private final DriverStandingRepository driverRepository;
