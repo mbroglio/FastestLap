@@ -40,7 +40,7 @@ public class DriverRepository {
         firebaseDriverDataSource = FirebaseDriverDataSource.getInstance();
     }
 
-    public MutableLiveData<Result> getDriver(String driverId) {
+    public synchronized MutableLiveData<Result> getDriver(String driverId) {
         Log.d(TAG, "Fetching driver with ID: " + driverId);
         if(!driverCache.containsKey(driverId) || !lastUpdateTimestamps.containsKey(driverId) || lastUpdateTimestamps.get(driverId) == null) {
             driverCache.put(driverId, new MutableLiveData<>());

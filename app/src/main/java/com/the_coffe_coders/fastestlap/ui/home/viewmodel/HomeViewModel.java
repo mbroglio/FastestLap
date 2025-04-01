@@ -8,9 +8,9 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
+import com.the_coffe_coders.fastestlap.repository.result.ResultRepository;
 import com.the_coffe_coders.fastestlap.repository.standing.constructor.ConstructorStandingRepository;
 import com.the_coffe_coders.fastestlap.repository.standing.driver.DriverStandingRepository;
-import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.WeeklyRaceRepository;
 import com.the_coffe_coders.fastestlap.source.standing.driver.DriverStandingsRemoteDataSource;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
@@ -23,7 +23,7 @@ public class HomeViewModel extends ViewModel {
     private final MutableLiveData<String> errorMessageLiveData;
     private final MutableLiveData<Boolean> isLoadingLiveData;
 
-    public HomeViewModel(RaceRepository raceRepository, RaceResultRepository raceResultRepository) {
+    public HomeViewModel() {
         errorMessageLiveData = new MutableLiveData<>();
         isLoadingLiveData = new MutableLiveData<>();
     }
@@ -37,6 +37,10 @@ public class HomeViewModel extends ViewModel {
 
     public LiveData<Result> getConstructorStandings() {
         return ConstructorStandingRepository.getInstance().fetchConstructorStanding();
+    }
+
+    public MutableLiveData<Result> getRaceResults(String round) {
+        return ResultRepository.getInstance().fetchResults(round);
     }
 
     public LiveData<Boolean> isLoading() {

@@ -10,8 +10,6 @@ public interface RaceResultResponseCallback {
 
     void onSuccessFromRemote(RaceResultsAPIResponse raceResultsAPIResponse);
 
-    void onSuccessFromRemote(RaceResultsAPIResponse raceResultsAPIResponse, int type);
-
     void onFailureFromRemote(Exception exception);
 
     void onSuccessFromLocal(RaceResult raceResult);

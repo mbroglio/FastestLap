@@ -35,7 +35,7 @@ public class ConstructorRepository {
         jolpicaConstructorDataSource = JolpicaConstructorDataSource.getInstance();
     }
 
-    public MutableLiveData<Result> getConstructor(String constructorId) {
+    public synchronized MutableLiveData<Result> getConstructor(String constructorId) {
         if (!constructorCache.containsKey(constructorId) || !lastUpdateTimestamps.containsKey(constructorId) || lastUpdateTimestamps.get(constructorId) == null) {
             constructorCache.put(constructorId, new MutableLiveData<>());
             loadConstructor(constructorId);
