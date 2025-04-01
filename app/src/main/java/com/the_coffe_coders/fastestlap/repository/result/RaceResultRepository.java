@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RaceResultRepository implements IRaceResultRepository, RaceResultResponseCallback {
+public class RaceResultRepository implements RaceResultResponseCallback {
 
     private static final String TAG = "RaceResultRepository";
 
@@ -60,7 +60,6 @@ public class RaceResultRepository implements IRaceResultRepository, RaceResultRe
         return lastRaceResultsMutableLiveData;
     }
 
-    @Override
     public MutableLiveData<Result> fetchRaceResult(int round, long lastUpdate) {
         Log.i(TAG, "fetchRaceResults");
         if (isOutdateRaceResult.get(round) == null) {
