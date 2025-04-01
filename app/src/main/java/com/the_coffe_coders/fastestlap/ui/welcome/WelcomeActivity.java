@@ -160,6 +160,7 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
                                         // Sign in success, update UI with the signed-in user's information
                                         Log.d(TAG, "signInWithEmail:success");
                                         Intent intent = new Intent(WelcomeActivity.this, HomePageActivity.class);
+                                        intent.putExtra("CALLER", "WelcomeActivity");
                                         startActivity(intent);
 
                                     } else {

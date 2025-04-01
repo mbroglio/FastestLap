@@ -121,7 +121,7 @@ public class DriverBioActivity extends AppCompatActivity {
 
         if (currentFavoriteDriverId.equals(driverId)) {
             // Remove as favorite
-            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER, "");
+            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER, "null");
             menuItem.setIcon(R.drawable.baseline_star_border_24);
 
             // Update user preferences in backend

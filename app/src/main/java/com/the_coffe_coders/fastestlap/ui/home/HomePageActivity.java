@@ -62,6 +62,9 @@ public class HomePageActivity extends AppCompatActivity {
                 bottomNavigationView.post(() -> {
                     bottomNavigationView.setSelectedItemId(R.id.standingsFragment);
                 });
+            } else if (caller != null && caller.equals("WelcomeActivity")) {
+                Intent home = new Intent(HomePageActivity.this, HomePageActivity.class);
+                startActivity(home);
             }
         }
     }
