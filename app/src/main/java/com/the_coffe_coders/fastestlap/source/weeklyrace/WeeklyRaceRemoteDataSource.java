@@ -9,7 +9,10 @@ import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
+import com.the_coffe_coders.fastestlap.mapper.WeeklyRaceMapper;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.OperationType;
+import com.the_coffe_coders.fastestlap.repository.weeklyrace.SingleWeeklyRaceCallback;
+import com.the_coffe_coders.fastestlap.repository.weeklyrace.WeeklyRacesCallback;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
@@ -26,7 +29,7 @@ public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource {
     private static final String TAG = "WeeklyRaceRemoteDataSource";
     private final ErgastAPIService ergastAPIService;
 
-    public WeeklyRaceRemoteDataSource(String apiKey) {
+    public WeeklyRaceRemoteDataSource() {
         this.ergastAPIService = ServiceLocator.getInstance().getConcreteErgastAPIService();
     }
 
@@ -63,6 +66,11 @@ public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource {
     }
 
     @Override
+    public void getWeeklyRaces(WeeklyRacesCallback weeklyRacesCallback) {
+
+    }
+
+    @Override
     public void getNextRace() {
         Call<ResponseBody> responseCall = ergastAPIService.getNextRace();
 
@@ -93,8 +101,39 @@ public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource {
                 raceCallback.onFailureFromRemote(new Exception(RETROFIT_ERROR));
             }
         });
+    }
 
+    @Override
+    public void getNextRace(SingleWeeklyRaceCallback weeklyRaceCallback) {
+        Call<ResponseBody> responseCall = ergastAPIService.getNextRace();
 
+        responseCall.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String responseString = null;
+                    try {
+                        responseString = response.body().string();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
+                    JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
+
+                    JSONParserUtils jsonParserUtils = new JSONParserUtils();
+                    RaceAPIResponse raceAPIResponse = jsonParserUtils.parseRace(mrdata);
+                    Log.i(TAG, "FETCH NEXT RACE ==> " + raceAPIResponse.getRaceTable().getRace());
+                    weeklyRaceCallback.onSuccess(WeeklyRaceMapper.toWeeklyRace(raceAPIResponse.getRaceTable().getRaces().get(0)));
+                } else {
+                    weeklyRaceCallback.onFailure(new Exception());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                raceCallback.onFailureFromRemote(new Exception(RETROFIT_ERROR));
+            }
+        });
     }
 
     @Override
@@ -129,5 +168,38 @@ public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource {
             }
         });
 
+    }
+
+    @Override
+    public void getLastRace(SingleWeeklyRaceCallback weeklyRaceCallback) {
+        Call<ResponseBody> responseCall = ergastAPIService.getLastRace();
+
+        responseCall.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    String responseString = null;
+                    try {
+                        responseString = response.body().string();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                    JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
+                    JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
+
+                    JSONParserUtils jsonParserUtils = new JSONParserUtils();
+                    RaceAPIResponse raceAPIResponse = jsonParserUtils.parseRace(mrdata);
+                    System.out.println("LAST RACE RESULTS" + mrdata);
+                    weeklyRaceCallback.onSuccess(WeeklyRaceMapper.toWeeklyRace(raceAPIResponse.getRaceTable().getRaces().get(0)));
+                } else {
+                    weeklyRaceCallback.onFailure(new Exception());
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                weeklyRaceCallback.onFailure(new Exception(RETROFIT_ERROR));
+            }
+        });
     }
 }

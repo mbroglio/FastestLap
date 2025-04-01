@@ -5,7 +5,6 @@ import android.app.Application;
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.repository.nation.NationRepository;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
-import com.the_coffe_coders.fastestlap.repository.standing.constructor.ConstructorStandingsStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.track.TrackRepository;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.repository.user.UserRepository;
@@ -182,22 +181,13 @@ public class ServiceLocator {
         return AppRoomDatabase.getDatabase(application);
     }
 
-    public ConstructorStandingsStandingsRepository getConstructorStandingsRepository(Application application, boolean debugMode) {
-        BaseConstructorStandingsRemoteDataSource constructorRemoteDataSource;
-        BaseConstructorStandingsLocalDataSource constructorLocalDataSource;
-        SharedPreferencesUtils sharedPreferencesUtil = new SharedPreferencesUtils(application);
-        constructorRemoteDataSource = new ConstructorStandingsRemoteDataSource("");
-        constructorLocalDataSource = new ConstructorStandingsStandingsLocalDataSource(getRoomDatabase(application), sharedPreferencesUtil);
-        return new ConstructorStandingsStandingsRepository(constructorRemoteDataSource, constructorLocalDataSource);
-    }
-
     public NationRepository getFirebaseNationRepository() {
         return new NationRepository();
     }
 
     public RaceRepository getRaceRepository(Application application, boolean b) {
         BaseWeeklyRaceLocalDataSource weeklyRaceLocalDataSource = new WeeklyRaceLocalDataSource(getRoomDatabase(application), new SharedPreferencesUtils(application));
-        BaseWeeklyRaceRemoteDataSource weeklyRaceRemoteDataSource = new WeeklyRaceRemoteDataSource("");
+        BaseWeeklyRaceRemoteDataSource weeklyRaceRemoteDataSource = new WeeklyRaceRemoteDataSource();
         return new RaceRepository(weeklyRaceRemoteDataSource, weeklyRaceLocalDataSource, getRaceResultRepository(application, b));
     }
 

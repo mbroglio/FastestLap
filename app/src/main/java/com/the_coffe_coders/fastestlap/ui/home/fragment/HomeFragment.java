@@ -107,7 +107,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void initializeViewModels() {
-        homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getConstructorStandingsRepository(getActivity().getApplication(), false))).get(HomeViewModel.class);
+        homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getActivity().getApplication(), false))).get(HomeViewModel.class);
 
         constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
 
@@ -131,7 +131,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void observeLoadingAndErrors() {
-        homeViewModel.isLoading().observe(getViewLifecycleOwner(), isLoading -> {
+
+        /*homeViewModel.isLoading().observe(getViewLifecycleOwner(), isLoading -> {
             if (isLoading != null && !isLoading) {
                 loadingScreen.hideLoadingScreen();
             }
@@ -141,11 +142,11 @@ public class HomeFragment extends Fragment {
             if (error != null) {
                 Log.e(TAG, "Error from ViewModel: " + error);
             }
-        });
+        });*/
     }
 
     private void setLastRaceCard(View view) {
-        MutableLiveData<Result> lastRace = homeViewModel.getLastRace(0L);
+        MutableLiveData<Result> lastRace = homeViewModel.getLastRace();
         lastRace.observe(getViewLifecycleOwner(), result -> {
             try {
                 if (result.isSuccess()) {
@@ -209,6 +210,7 @@ public class HomeFragment extends Fragment {
                     if (result.isSuccess()) {
                         List<RaceResult> raceResults = ((Result.LastRaceResultsSuccess) result).getData().getResults();
                         setDriverNames(view, raceResults);
+                        loadingScreen.hideLoadingScreen();
                     } else {
                         throw new Exception("Failed to fetch race results: " + result.getError());
                     }
@@ -242,7 +244,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void setNextSessionCard(View view) {
-        MutableLiveData<Result> nextRaceLiveData = homeViewModel.getNextRaceLiveData(0L);
+        MutableLiveData<Result> nextRaceLiveData = homeViewModel.getNextRaceLiveData();
         try {
             nextRaceLiveData.observe(getViewLifecycleOwner(), result -> {
                 try {
@@ -428,7 +430,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildFinalTeamsStanding(View seasonEndedCard) {
-        MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData(0L);
+        MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData();
         constructorStandingsData.observe(getViewLifecycleOwner(), result -> {
             try {
                 if (result.isSuccess()) {
@@ -557,7 +559,7 @@ public class HomeFragment extends Fragment {
             return;
         }
 
-        MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData(0L);
+        MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData();
         constructorStandingsData.observe(getViewLifecycleOwner(), result -> {
             try {
                 if (result.isSuccess()) {

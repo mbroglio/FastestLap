@@ -17,7 +17,7 @@ public class ConstructorStandingsStandingsLocalDataSource extends BaseConstructo
 
     @Override
     public void getConstructorStandings() {
-        constructorCallback.onSuccessFromLocal(constructorStandingsDAO.getConstructorStandings());
+        //constructorCallback.onSuccessFromLocal(constructorStandingsDAO.getConstructorStandings());
     }
 
     @Override
@@ -28,7 +28,7 @@ public class ConstructorStandingsStandingsLocalDataSource extends BaseConstructo
                 sharedPreferencesUtil.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
                         Constants.SHARED_PREFERENCES_LAST_UPDATE, String.valueOf(System.currentTimeMillis()));
 
-                constructorCallback.onSuccessFromLocal(constructorStandings);
+                //constructorCallback.onSuccessFromLocal(constructorStandings);
             }
         });
     }

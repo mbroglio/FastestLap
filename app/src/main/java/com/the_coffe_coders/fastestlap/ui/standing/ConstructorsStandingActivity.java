@@ -78,9 +78,8 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
         LinearLayout teamStanding = findViewById(R.id.team_standing);
 
-        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorStandingsRepository(getApplication(), false))).get(ConstructorStandingsViewModel.class);
+        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory()).get(ConstructorStandingsViewModel.class);
         MutableLiveData<Result> liveData = (MutableLiveData<Result>) constructorStandingsViewModel.getConstructorStandings();
-        constructorStandingsViewModel.fetchConstructorStandings(0);
         Log.i(TAG, "Constructor Standings: " + liveData);
         liveData.observe(this, result -> {
             if (result.isSuccess()) {
@@ -106,14 +105,6 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                 loadingScreen.hideLoadingScreen();
             }
         });
-    }
-
-    private View generateTeamCard(Constructor constructor, String constructorId) {
-        ConstructorStandingsElement constructorStandingsElement = new ConstructorStandingsElement();
-        constructorStandingsElement.setConstructor(constructor);
-        constructorStandingsElement.setPoints("0");
-
-        return generateTeamCard(constructorStandingsElement, constructorId);
     }
 
     private View generateTeamCard(ConstructorStandingsElement standingElement, String constructorIdToHighlight) {

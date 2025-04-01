@@ -58,7 +58,6 @@ public class ConstructorRepository {
                         Objects.requireNonNull(constructorCache.get(constructorId)).postValue(new Result.ConstructorSuccess(constructor));
                     } else {
                         Log.e(TAG, "Constructor not found: " + constructorId);
-                        //fetch constructor from jolpica
                     }
                 }
 

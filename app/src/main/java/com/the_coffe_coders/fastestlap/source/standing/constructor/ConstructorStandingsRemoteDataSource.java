@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.api.ConstructorStandingsAPIResponse;
+import com.the_coffe_coders.fastestlap.mapper.ConstructorStandingsMapper;
+import com.the_coffe_coders.fastestlap.repository.standing.constructor.ConstructorStandingCallback;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
@@ -26,12 +28,12 @@ public class ConstructorStandingsRemoteDataSource extends BaseConstructorStandin
 
     private final ErgastAPIService ergastAPIService;
 
-    public ConstructorStandingsRemoteDataSource(String apiKey) {
+    public ConstructorStandingsRemoteDataSource() {
         this.ergastAPIService = ServiceLocator.getInstance().getConcreteErgastAPIService();
     }
 
     @Override
-    public void getConstructorStandings() {
+    public void getConstructorStandings(ConstructorStandingCallback constructorCallback) {
         Log.i(TAG, "getConstructor: ");
         Call<ResponseBody> newsResponseCall = ergastAPIService.getConstructorStandings();
         newsResponseCall.enqueue(new Callback<>() {
@@ -49,17 +51,14 @@ public class ConstructorStandingsRemoteDataSource extends BaseConstructorStandin
 
                     JSONParserUtils jsonParserUtils = new JSONParserUtils();
                     ConstructorStandingsAPIResponse constructorStandingsAPIResponse = jsonParserUtils.parseConstructorStandings(mrdata);
-                    System.out.println("CALLBACK");
-                    constructorCallback.onSuccessFromRemote(constructorStandingsAPIResponse, System.currentTimeMillis());
+                    constructorCallback.onConstructorLoaded(ConstructorStandingsMapper.toConstructorStandings(constructorStandingsAPIResponse.getStandingsTable().getStandingsLists().get(0)));
                 } else {
-                    constructorCallback.onFailureFromRemote(new Exception());
+                    constructorCallback.onFailure(new Exception());
                 }
-
-
             }
 
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                constructorCallback.onFailureFromRemote(new Exception(RETROFIT_ERROR));
+                constructorCallback.onFailure(new Exception(RETROFIT_ERROR));
             }
         });
     }
