@@ -19,7 +19,7 @@ public class WeeklyRaceRepository {
     private final MutableLiveData<Result> weeklyRacesMutableLiveData;
     private Long weeklyRacesTime;
 
-    private BaseWeeklyRaceRemoteDataSource weeklyRaceRemoteDataSource;
+    private final BaseWeeklyRaceRemoteDataSource weeklyRaceRemoteDataSource;
 
     private final long FRESH_TIMEOUT = 60000;
 
@@ -40,7 +40,7 @@ public class WeeklyRaceRepository {
         return instance;
     }
 
-    public MutableLiveData<Result> fetchNextWeeklyRace() {
+    public synchronized MutableLiveData<Result> fetchNextWeeklyRace() {
         if(System.currentTimeMillis() - FRESH_TIMEOUT > nextRaceTime) {
             loadNextRace();
         }
@@ -67,7 +67,7 @@ public class WeeklyRaceRepository {
         }
     }
 
-    public MutableLiveData<Result> fetchLastWeeklyRace() {
+    public synchronized MutableLiveData<Result> fetchLastWeeklyRace() {
         if(System.currentTimeMillis() - FRESH_TIMEOUT > lastRaceTime) {
             loadLastRace();
         }
@@ -89,7 +89,7 @@ public class WeeklyRaceRepository {
         });
     }
 
-    public MutableLiveData<Result> fetchWeeklyRaces() {
+    public synchronized MutableLiveData<Result> fetchWeeklyRaces() {
         if(System.currentTimeMillis() - FRESH_TIMEOUT > weeklyRacesTime) {
             loadWeeklyRaces();
         }
@@ -101,11 +101,13 @@ public class WeeklyRaceRepository {
 
             @Override
             public void onSuccess(List<WeeklyRace> weeklyRaces) {
+                weeklyRacesTime = System.currentTimeMillis();
+                weeklyRacesMutableLiveData.postValue(new Result.WeeklyRaceSuccess(weeklyRaces));
             }
 
             @Override
             public void onFailure(Exception exception) {
-
+                weeklyRacesMutableLiveData.postValue(new Result.Error(exception.getMessage()));
             }
         });
     }

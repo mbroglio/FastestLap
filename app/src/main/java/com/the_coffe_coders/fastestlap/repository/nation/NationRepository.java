@@ -38,7 +38,7 @@ public class NationRepository {
         lastUpdateTimestamps = new HashMap<>();
     }
 
-    public MutableLiveData<Result> getNation(String nationId) {
+    public synchronized MutableLiveData<Result> getNation(String nationId) {
         Log.i(TAG, "Fetching nation with ID: " + nationId);
         if (!nationCache.containsKey(nationId) || !lastUpdateTimestamps.containsKey(nationId) || lastUpdateTimestamps.get(nationId) == null) {
             Log.i(TAG, "Nation not found in cache: " + nationId);

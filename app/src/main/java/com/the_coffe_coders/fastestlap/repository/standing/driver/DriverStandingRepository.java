@@ -30,7 +30,7 @@ public class DriverStandingRepository {
         return instance;
     }
 
-    public MutableLiveData<Result> fetchDriverStanding() {
+    public synchronized MutableLiveData<Result> fetchDriverStanding() {
         long FRESH_TIMEOUT = 60000;
         if (lastUpdate == null || System.currentTimeMillis() - lastUpdate > FRESH_TIMEOUT) {
             Log.i("DriverStandingRepository", "Fetching driver standing from remote");

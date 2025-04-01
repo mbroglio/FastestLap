@@ -8,6 +8,8 @@ import com.the_coffe_coders.fastestlap.database.WeeklyRaceSprintDAO;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRaceClassic;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRaceSprint;
+import com.the_coffe_coders.fastestlap.repository.weeklyrace.SingleWeeklyRaceCallback;
+import com.the_coffe_coders.fastestlap.repository.weeklyrace.WeeklyRacesCallback;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 
@@ -27,13 +29,28 @@ public class WeeklyRaceLocalDataSource extends BaseWeeklyRaceLocalDataSource {
     }
 
     @Override
-    public void getWeeklyRaces() {
+    public void getWeeklyRaces(WeeklyRacesCallback raceCallback) {
         Log.i(TAG, "getWeeklyRaces from local");
         List<WeeklyRace> weeklyRaceList = new ArrayList<>();
         weeklyRaceList.addAll(weeklyRaceClassicDao.getAllRaces());
         weeklyRaceList.addAll(weeklyRaceSprintDao.getAllRaces());
 
-        raceCallback.onSuccessFromLocal(weeklyRaceList);
+        raceCallback.onSuccess(weeklyRaceList);
+    }
+
+    @Override
+    public void getNextRace(SingleWeeklyRaceCallback weeklyRaceCallback) {
+
+    }
+
+    @Override
+    public void getLastRace(SingleWeeklyRaceCallback weeklyRaceCallback) {
+
+    }
+
+    @Override
+    public void getWeeklyRaces() {
+
     }
 
     @Override
@@ -50,7 +67,6 @@ public class WeeklyRaceLocalDataSource extends BaseWeeklyRaceLocalDataSource {
             });
             sharedPreferencesUtil.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
                     Constants.SHARED_PREFERENCES_LAST_UPDATE, String.valueOf(System.currentTimeMillis()));
-            raceCallback.onSuccessFromLocal(weeklyRaceList);
         });
     }
 

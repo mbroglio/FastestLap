@@ -8,12 +8,7 @@ import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.track.TrackRepository;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.repository.user.UserRepository;
-import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
-import com.the_coffe_coders.fastestlap.source.standing.constructor.BaseConstructorStandingsLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.standing.constructor.BaseConstructorStandingsRemoteDataSource;
-import com.the_coffe_coders.fastestlap.source.standing.constructor.ConstructorStandingsRemoteDataSource;
-import com.the_coffe_coders.fastestlap.source.standing.constructor.ConstructorStandingsStandingsLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.result.RaceResultLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.result.RaceResultRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.user.BaseUserAuthenticationRemoteDataSource;
@@ -185,14 +180,8 @@ public class ServiceLocator {
         return new NationRepository();
     }
 
-    public RaceRepository getRaceRepository(Application application, boolean b) {
-        BaseWeeklyRaceLocalDataSource weeklyRaceLocalDataSource = new WeeklyRaceLocalDataSource(getRoomDatabase(application), new SharedPreferencesUtils(application));
-        BaseWeeklyRaceRemoteDataSource weeklyRaceRemoteDataSource = new WeeklyRaceRemoteDataSource();
-        return new RaceRepository(weeklyRaceRemoteDataSource, weeklyRaceLocalDataSource, getRaceResultRepository(application, b));
-    }
-
-    public RaceResultRepository getRaceResultRepository(Application application, boolean b) {
-        RaceResultRemoteDataSource raceResultRemoteDataSource = new RaceResultRemoteDataSource("");
+    public RaceResultRepository getRaceResultRepository(Application application) {
+        RaceResultRemoteDataSource raceResultRemoteDataSource = new RaceResultRemoteDataSource();
         RaceResultLocalDataSource raceResultLocalDataSource = new RaceResultLocalDataSource(getRoomDatabase(application), new SharedPreferencesUtils(application));
         return new RaceResultRepository(raceResultRemoteDataSource, raceResultLocalDataSource);
     }

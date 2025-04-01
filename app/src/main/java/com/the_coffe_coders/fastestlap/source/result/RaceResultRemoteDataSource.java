@@ -28,7 +28,7 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
     private static final int RETRY_DELAY_MS = 2000; // 2 seconds
     private final ErgastAPIService ergastAPIService;
 
-    public RaceResultRemoteDataSource(String apiKey) {
+    public RaceResultRemoteDataSource() {
         this.ergastAPIService = ServiceLocator.getInstance().getConcreteErgastAPIService();
     }
 

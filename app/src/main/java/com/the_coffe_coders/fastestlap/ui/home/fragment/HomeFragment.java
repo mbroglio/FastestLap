@@ -107,7 +107,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void initializeViewModels() {
-        homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getActivity().getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getActivity().getApplication(), false))).get(HomeViewModel.class);
+        homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(getActivity().getApplication())).get(HomeViewModel.class);
 
         constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
 
@@ -204,7 +204,7 @@ public class HomeFragment extends Fragment {
             TextView roundNumber = view.findViewById(R.id.last_race_round);
             roundNumber.setText("Round " + race.getRound());
 
-            MutableLiveData<Result> raceResultData = ServiceLocator.getInstance().getRaceResultRepository(getActivity().getApplication(), false).fetchRaceResult(Integer.parseInt(race.getRound()), 0L);
+            MutableLiveData<Result> raceResultData = ServiceLocator.getInstance().getRaceResultRepository(getActivity().getApplication()).fetchRaceResult(Integer.parseInt(race.getRound()), 0L);
             raceResultData.observe(getViewLifecycleOwner(), result -> {
                 try {
                     if (result.isSuccess()) {

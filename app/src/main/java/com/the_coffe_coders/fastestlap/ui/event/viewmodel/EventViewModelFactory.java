@@ -1,19 +1,19 @@
 package com.the_coffe_coders.fastestlap.ui.event.viewmodel;
 
+import android.app.Application;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
-import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 public class EventViewModelFactory implements ViewModelProvider.Factory {
-    private final RaceRepository raceRepository;
     private final RaceResultRepository raceResultRepository;
 
-    public EventViewModelFactory(RaceRepository raceRepository, RaceResultRepository raceResultRepository) {
-        this.raceRepository = raceRepository;
-        this.raceResultRepository = raceResultRepository;
+    public EventViewModelFactory(Application application) {
+        this.raceResultRepository = ServiceLocator.getInstance().getRaceResultRepository(application);
     }
 
     @NonNull
@@ -22,7 +22,7 @@ public class EventViewModelFactory implements ViewModelProvider.Factory {
         if (modelClass.isAssignableFrom(EventViewModel.class)) {
             // Suppress unchecked cast warning
             @SuppressWarnings("unchecked")
-            T viewModel = (T) new EventViewModel(raceRepository, raceResultRepository);
+            T viewModel = (T) new EventViewModel(raceResultRepository);
             return viewModel;
         } else {
             throw new IllegalArgumentException("Unknown ViewModel class");

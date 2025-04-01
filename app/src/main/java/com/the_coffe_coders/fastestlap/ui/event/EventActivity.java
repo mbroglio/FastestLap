@@ -77,7 +77,7 @@ public class EventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event);
 
 
-        eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false))).get(EventViewModel.class);
+        eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
 
         // Show loading screen initially
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
@@ -100,7 +100,7 @@ public class EventActivity extends AppCompatActivity {
 
     private void processRaceData(MaterialToolbar toolbar) {
         List<WeeklyRace> races = new ArrayList<>();
-        MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getApplication(), false).fetchWeeklyRaces(0);
+        MutableLiveData<Result> data = eventViewModel.getWeeklyRacesLiveData();
         data.observe(this, result -> {
             if (result.isSuccess()) {
                 Log.i("PastEvent", "SUCCESS");
@@ -307,7 +307,7 @@ public class EventActivity extends AppCompatActivity {
 
     private void processRaceResults(WeeklyRace weeklyRace) {
         Log.i(TAG, "Processing race results" + " " + weeklyRace.getRound());
-        MutableLiveData<Result> resultMutableLiveData = eventViewModel.getRaceResults(0L, weeklyRace.getRound());
+        MutableLiveData<Result> resultMutableLiveData = eventViewModel.getRaceResults(weeklyRace.getRound());
 
         resultMutableLiveData.observe(this, result -> {
             Race race = ((Result.LastRaceResultsSuccess) result).getData();

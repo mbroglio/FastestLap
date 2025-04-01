@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
-import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
+import com.the_coffe_coders.fastestlap.repository.weeklyrace.WeeklyRaceRepository;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -20,30 +20,14 @@ import java.util.List;
 public class EventViewModel extends ViewModel {
 
     private static final String TAG = EventViewModel.class.getSimpleName();
-    private final RaceRepository raceRepository;
     private final RaceResultRepository raceResultRepository;
 
     private MutableLiveData<Result> eventLiveData;
     private MutableLiveData<Result> pastEventLiveData;
     private MutableLiveData<Result> upcomingEventLiveData;
 
-    public EventViewModel(RaceRepository raceRepository, RaceResultRepository raceResultRepository) {
-        this.raceRepository = raceRepository;
+    public EventViewModel(RaceResultRepository raceResultRepository) {
         this.raceResultRepository = raceResultRepository;
-    }
-
-    public MutableLiveData<Result> getEventLiveData() {
-        if (eventLiveData == null) {
-            eventLiveData = new MutableLiveData<>();
-        }
-        return eventLiveData;
-    }
-
-    public MutableLiveData<Result> getEventsLiveData(long lastUpdate) {
-        if (eventLiveData == null) {
-            eventLiveData = raceRepository.fetchWeeklyRaces(lastUpdate);
-        }
-        return eventLiveData;
     }
 
     public MutableLiveData<Result> getAllResults(int numberOfRaces) {
@@ -51,18 +35,13 @@ public class EventViewModel extends ViewModel {
     }
 
 
-    public MutableLiveData<Result> getRaceResults(long lastUpdate, String raceId) {
+    public MutableLiveData<Result> getRaceResults(String raceId) {
         System.out.println(raceId);
         return raceResultRepository.fetchRaceResult(Integer.parseInt(raceId), 0L);
     }
 
-    public MutableLiveData<Result> getPastEventLiveData(long lastUpdate) {
-        return raceRepository.fetchWeeklyRaces(0);
-    }
-
-    public MutableLiveData<Result> getUpcomingEventLiveData(long lastUpdate) {
-        return raceRepository.fetchWeeklyRaces(0);
-
+    public MutableLiveData<Result> getWeeklyRacesLiveData() {
+        return WeeklyRaceRepository.getInstance().fetchWeeklyRaces();
     }
 
     public List<WeeklyRace> extractUpcomingRaces(List<WeeklyRace> races) {

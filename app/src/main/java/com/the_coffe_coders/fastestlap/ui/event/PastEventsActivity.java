@@ -48,7 +48,7 @@ public class PastEventsActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_past_events);
 
-        eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false))).get(EventViewModel.class);
+        eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
 
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
         loadingScreen.showLoadingScreen();
@@ -67,8 +67,8 @@ public class PastEventsActivity extends AppCompatActivity {
 
     private void processEvents() {
         Log.i("PastEvent", "Process Event");
-        EventViewModel eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false))).get(EventViewModel.class);
-        LiveData<Result> dataEvent = eventViewModel.getEventsLiveData(0L);
+        EventViewModel eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
+        LiveData<Result> dataEvent = eventViewModel.getWeeklyRacesLiveData();
         dataEvent.observe(this, resultEvent -> {
             Log.i("PastEvent", "observed");
             if (resultEvent.isSuccess()) {

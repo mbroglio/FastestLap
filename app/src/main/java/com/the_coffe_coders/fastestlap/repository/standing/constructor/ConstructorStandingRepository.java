@@ -32,7 +32,7 @@ public class ConstructorStandingRepository {
         return instance;
     }
 
-    public MutableLiveData<Result> fetchConstructorStanding() {
+    public synchronized MutableLiveData<Result> fetchConstructorStanding() {
         if (System.currentTimeMillis() - lastUpdate > FRESH_TIMEOUT) {
             loadConstructorStanding();
         }

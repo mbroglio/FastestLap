@@ -10,7 +10,6 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.standing.constructor.ConstructorStandingRepository;
 import com.the_coffe_coders.fastestlap.repository.standing.driver.DriverStandingRepository;
-import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.WeeklyRaceRepository;
 import com.the_coffe_coders.fastestlap.source.standing.driver.DriverStandingsRemoteDataSource;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
@@ -23,7 +22,7 @@ public class HomeViewModel extends ViewModel {
     private final MutableLiveData<String> errorMessageLiveData;
     private final MutableLiveData<Boolean> isLoadingLiveData;
 
-    public HomeViewModel(RaceRepository raceRepository, RaceResultRepository raceResultRepository) {
+    public HomeViewModel() {
         errorMessageLiveData = new MutableLiveData<>();
         isLoadingLiveData = new MutableLiveData<>();
     }

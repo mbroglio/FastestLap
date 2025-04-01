@@ -33,7 +33,7 @@ public class TrackRepository {
         this.lastFetchTime = new HashMap<>();
     }
     
-    public MutableLiveData<Result> getTrack(String trackId) {
+    public synchronized MutableLiveData<Result> getTrack(String trackId) {
         Log.d(TAG, "Fetching track with ID: " + trackId);
         if(!trackCache.containsKey(trackId) || !lastFetchTime.containsKey(trackId) || lastFetchTime.get(trackId) == null) {
             trackCache.put(trackId, new MutableLiveData<>());
