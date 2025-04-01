@@ -54,24 +54,6 @@ public class RaceResultRepository implements RaceResultResponseCallback {
         //Log.i(TAG, race.toString());
     }
 
-    public MutableLiveData<Result> fetchRaceResult(int round, long lastUpdate) {
-        Log.i(TAG, "fetchRaceResults");
-        if (true) {
-            //TODO change in currentTime - lastUpdate > FRESH_TIMEOUT)
-            //TODO fetch from remote
-            Log.i(TAG, "Remote fetchRaceResults");
-            raceResultRemoteDataSource.getRaceResults(round);
-            isOutdateRaceResult.put(round, false);
-
-        } else {
-            Log.i(TAG, "fetchRaceResults from local");
-            //raceResultLocalDataSource.getAllRaceResult();
-
-        }
-
-        return singleRaceResultsMutableLiveData;
-    }
-
     public MutableLiveData<Result> fetchAllRaceResults(long lastUpdate, int numberOfRaces) {
         Log.i(TAG, "fetchAllRaceResults");
         raceList = new ArrayList<>();
@@ -82,34 +64,12 @@ public class RaceResultRepository implements RaceResultResponseCallback {
     }
 
     @Override
-    public void onSuccessFromRemote(RaceResultsAPIResponse raceResultsAPIResponse, int type) {
-        //Log.i(TAG, "onSuccessFromRemote");
-        //Log.i(TAG, raceResultsAPIResponse.toString());
-
-        System.out.println(type);
-        if (type == 0) {
-            Race race = RaceMapper.toRace(raceResultsAPIResponse.getFinalRace());
-            singleRaceResultsMutableLiveData.postValue(new Result.LastRaceResultsSuccess(race));
-        } else if (type == 1) {
-            if (raceResultsAPIResponse.getFinalRace() == null) {
-
-                allRaceResultMutableLiveData.postValue(new Result.Error("No data available"));
-                return;
-            }
-            addRaces(RaceMapper.toRace(raceResultsAPIResponse.getFinalRace()));
-        } else {
-            List<RaceResult> raceResult = new ArrayList<>();
-            for (ResultDTO resultDTO : raceResultsAPIResponse.getRaceResults()) {
-                raceResult.add(SessionMapper.toResult(resultDTO));
-            }
-            raceResultLocalDataSource.insertRaceResultList(raceResult);
-            //raceResultMutableLiveData.postValue(new Result.RaceResultSuccess(raceResult));
-        }
-    }
-
-    @Override
     public void onSuccessFromRemote(RaceResultsAPIResponse raceResultsAPIResponse) {
-
+        if (raceResultsAPIResponse.getFinalRace() == null) {
+            allRaceResultMutableLiveData.postValue(new Result.Error("No data available"));
+            return;
+        }
+        addRaces(RaceMapper.toRace(raceResultsAPIResponse.getFinalRace()));
     }
 
     @Override

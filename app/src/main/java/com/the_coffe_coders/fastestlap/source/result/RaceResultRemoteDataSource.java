@@ -10,6 +10,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.the_coffe_coders.fastestlap.api.RaceResultsAPIResponse;
+import com.the_coffe_coders.fastestlap.mapper.RaceMapper;
+import com.the_coffe_coders.fastestlap.repository.result.RaceResultCallback;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
@@ -33,9 +35,8 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
     }
 
     @Override
-    public void getRaceResults(int round) {
+    public void getRaceResults(int round, RaceResultCallback resultCallback) {
         Call<ResponseBody> responseCall = ergastAPIService.getRaceResults(round);
-        Log.i(TAG, "getRaceResults from remote");
         responseCall.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
@@ -51,9 +52,9 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
                     JSONParserUtils jsonParserUtils = new JSONParserUtils();
                     RaceResultsAPIResponse raceResultsAPIResponse = jsonParserUtils.parseRaceResults(mrdata);
 
-                    raceResultCallback.onSuccessFromRemote(raceResultsAPIResponse, 0);
+                    resultCallback.onSuccess(RaceMapper.toRace(raceResultsAPIResponse.getFinalRace()));
                 } else {
-                    raceResultCallback.onFailureFromRemote(new Exception());
+                    resultCallback.onFailure(new Exception());
                 }
             }
 
@@ -62,10 +63,9 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
                 raceResultCallback.onFailureFromRemote(new Exception(RETROFIT_ERROR));
             }
         });
-
     }
 
-    @Override
+    @Override //TODO CHANGE getAllRaceResults(numberOfRaces + Callback)
     public void getAllRaceResults(int numberOfRaces) {
         AtomicInteger successCount = new AtomicInteger(0);
         AtomicInteger failureCount = new AtomicInteger(0);
@@ -74,38 +74,6 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
         for (int i = 1; i <= numberOfRaces; i++) {
             fetchRaceResult(i, 0, successCount, failureCount, numberOfRaces);
         }
-    }
-
-    @Override
-    public void getLastRaceResults() {
-        Call<ResponseBody> responseCall = ergastAPIService.getLastRaceResults();
-        responseCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call,
-                                   @NonNull Response<ResponseBody> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    String responseString = null;
-                    try {
-                        responseString = response.body().string();
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                    JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
-                    JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
-                    JSONParserUtils jsonParserUtils = new JSONParserUtils();
-                    RaceResultsAPIResponse raceResultsAPIResponse = jsonParserUtils.parseRaceResults(mrdata);
-                    Log.i(TAG, "LAST RACE RESULTS !!!!" + raceResultsAPIResponse.toString());
-                    raceResultCallback.onSuccessFromRemote(raceResultsAPIResponse, 0);
-                } else {
-                    raceResultCallback.onFailureFromRemote(new Exception());
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-
-            }
-        });
     }
 
     private void fetchRaceResult(int raceNumber, int currentRetry,
@@ -174,7 +142,7 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
                     jsonParserUtils.parseRaceResults(mrdata);
 
             Log.d(TAG, "Successfully processed race " + raceNumber);
-            raceResultCallback.onSuccessFromRemote(raceResultsAPIResponse, 1);
+            raceResultCallback.onSuccessFromRemote(raceResultsAPIResponse);
         } catch (JsonParseException e) {
             handleFailure(raceNumber,
                     new Exception("JSON parsing failed: " + e.getMessage()));

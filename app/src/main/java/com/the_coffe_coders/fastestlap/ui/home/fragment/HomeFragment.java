@@ -35,6 +35,7 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
+import com.the_coffe_coders.fastestlap.repository.result.ResultRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
@@ -204,7 +205,7 @@ public class HomeFragment extends Fragment {
             TextView roundNumber = view.findViewById(R.id.last_race_round);
             roundNumber.setText("Round " + race.getRound());
 
-            MutableLiveData<Result> raceResultData = ServiceLocator.getInstance().getRaceResultRepository(getActivity().getApplication()).fetchRaceResult(Integer.parseInt(race.getRound()), 0L);
+            MutableLiveData<Result> raceResultData = homeViewModel.getRaceResults(race.getRound());
             raceResultData.observe(getViewLifecycleOwner(), result -> {
                 try {
                     if (result.isSuccess()) {
