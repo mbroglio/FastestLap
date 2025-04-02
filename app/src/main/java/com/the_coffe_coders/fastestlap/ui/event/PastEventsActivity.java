@@ -101,6 +101,10 @@ public class PastEventsActivity extends AppCompatActivity {
                         for (Race race : races) {
                             createEventCard(pastEvents, race);
                         }
+
+                        View space = new View(PastEventsActivity.this);
+                        space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, Constants.SPACER_HEIGHT));
+                        pastEvents.addView(space);
                     } else {
                         loadingScreen.hideLoadingScreen();
                     }

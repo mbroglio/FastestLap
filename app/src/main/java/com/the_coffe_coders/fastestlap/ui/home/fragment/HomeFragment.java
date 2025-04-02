@@ -18,6 +18,7 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.card.MaterialCardView;
@@ -99,15 +100,21 @@ public class HomeFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        setupFragment(view);
+
+        return view;
+    }
+
+    private void setupFragment(View view) {
         initializeViewModels();
         setupLoadingScreen(view);
         setupUI(view);
         observeLoadingAndErrors();
-        return view;
     }
 
     private void initializeViewModels() {
-        homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(getActivity().getApplication())).get(HomeViewModel.class);
+        homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(requireActivity().getApplication())).get(HomeViewModel.class);
 
         constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
 
@@ -124,10 +131,19 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupUI(View view) {
+        setRefreshLayout(view);
         setLastRaceCard(view);
         setNextSessionCard(view);
         setFavouriteDriverCard(view);
         setFavouriteConstructorCard(view);
+    }
+
+    private void setRefreshLayout(View view) {
+        SwipeRefreshLayout homeSwipeRefreshLayout = view.findViewById(R.id.home_refresh_layout);
+        homeSwipeRefreshLayout.setOnRefreshListener(() -> {
+            setupFragment(view);
+            homeSwipeRefreshLayout.setRefreshing(false);
+        });
     }
 
     private void observeLoadingAndErrors() {

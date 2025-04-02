@@ -83,7 +83,6 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.9" />
 
-
     <ScrollView
         android:id="@+id/event_scroll_view"
         android:layout_width="match_parent"

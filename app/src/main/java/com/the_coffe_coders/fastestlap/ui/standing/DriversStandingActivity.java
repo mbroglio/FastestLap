@@ -128,6 +128,9 @@ public class DriversStandingActivity extends AppCompatActivity {
                                 space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
                                 driverStanding.addView(space);
                             }
+                            View space = new View(DriversStandingActivity.this);
+                            space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
+                            driverStanding.addView(space);
                         }
                     });
                 } else {
@@ -139,6 +142,9 @@ public class DriversStandingActivity extends AppCompatActivity {
                         space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
                         driverStanding.addView(space);
                     }
+                    View space = new View(DriversStandingActivity.this);
+                    space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
+                    driverStanding.addView(space);
                 }
             } else {
                 Log.i(TAG, "DRIVER STANDINGS ERROR");

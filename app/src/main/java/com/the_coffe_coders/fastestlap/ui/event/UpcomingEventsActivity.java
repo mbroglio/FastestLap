@@ -91,6 +91,10 @@ public class UpcomingEventsActivity extends AppCompatActivity {
                 for (WeeklyRace race : upcomingRaces) {
                     createEventCard(upcomingEvents, race);
                 }
+
+                View space = new View(UpcomingEventsActivity.this);
+                space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, Constants.SPACER_HEIGHT));
+                upcomingEvents.addView(space);
             }
         });
     }

@@ -115,10 +115,12 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                         View teamCard = generateTeamCard(constructor, constructorId);
                         teamStanding.addView(teamCard);
                         View space = new View(ConstructorsStandingActivity.this);
-                        space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
+                        space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, Constants.SPACER_HEIGHT));
                         teamStanding.addView(space);
                     }
-
+                    View space = new View(ConstructorsStandingActivity.this);
+                    space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, Constants.SPACER_HEIGHT));
+                    teamStanding.addView(space);
                 }
             } else if (result instanceof Result.Error) {
                 Result.Error error = (Result.Error) result;
