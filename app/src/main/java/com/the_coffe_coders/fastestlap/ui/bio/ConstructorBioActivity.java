@@ -106,7 +106,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
         if (currentFavoriteTeamId.equals(teamId)) {
             // Remove as favorite
-            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM, "");
+            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM, "null");
             menuItem.setIcon(R.drawable.baseline_star_border_24);
 
             // Update user preferences in backend (if needed)
