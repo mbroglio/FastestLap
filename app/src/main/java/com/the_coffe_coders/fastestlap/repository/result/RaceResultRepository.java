@@ -27,7 +27,6 @@ public class RaceResultRepository implements RaceResultResponseCallback {
     //Make a Map of race results for each round
     public static boolean isOutdateRaceResults = true;
     private final MutableLiveData<Result> allRaceResultMutableLiveData;
-    private final MutableLiveData<Result> singleRaceResultsMutableLiveData;
     private final BaseRaceResultRemoteDataSource raceResultRemoteDataSource;
     private final BaseRaceResultLocalDataSource raceResultLocalDataSource;
     private List<Race> raceList;
@@ -37,7 +36,6 @@ public class RaceResultRepository implements RaceResultResponseCallback {
 
     public RaceResultRepository(BaseRaceResultRemoteDataSource raceResultRemoteDataSource, BaseRaceResultLocalDataSource raceResultLocalDataSource) {
         this.allRaceResultMutableLiveData = new MutableLiveData<>();
-        this.singleRaceResultsMutableLiveData = new MutableLiveData<>();
         this.raceResultRemoteDataSource = raceResultRemoteDataSource;
         this.raceResultLocalDataSource = raceResultLocalDataSource;
         this.raceResultRemoteDataSource.setRaceResultCallback(this);
