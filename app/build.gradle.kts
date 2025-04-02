@@ -60,6 +60,7 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.lifecycle.livedata)
+    implementation(libs.swiperefreshlayout)
     compileOnly(libs.lombok.v11830)
     annotationProcessor(libs.lombok.v11830)
     testCompileOnly (libs.lombok.v11830)

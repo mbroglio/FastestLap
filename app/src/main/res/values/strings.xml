@@ -56,4 +56,5 @@
     <string name="loading_upper_case">LOADING%1$s</string>
     <string name="base_countdown">00</string>
     <string name="next_session">Next Session in:</string>
+    <string name="live_upper_case">LIVE</string>
 </resources>

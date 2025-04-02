@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -48,6 +49,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
     LoadingScreen loadingScreen;
     private TextView teamPointsTextView;
     private ConstructorStandings constructorStandings;
+    private String constructorId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,20 +57,23 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_constructors_standing);
 
+        constructorId = getIntent().getStringExtra("TEAM_ID");
+        Log.i(TAG, "Constructor ID: " + constructorId);
+
+        start();
+
+
+    }
+
+    private void start() {
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
 
         // Show loading screen initially
         loadingScreen.showLoadingScreen();
 
-        String constructorId = getIntent().getStringExtra("TEAM_ID");
-        Log.i(TAG, "Constructor ID: " + constructorId);
-
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
         UIUtils.applyWindowInsets(toolbar);
-
-        LinearLayout teamStandingLayout = findViewById(R.id.team_standing_layout);
-        UIUtils.applyWindowInsets(teamStandingLayout);
 
         toolbar.setNavigationOnClickListener(v -> {
             Intent intent = new Intent(ConstructorsStandingActivity.this, HomePageActivity.class);
@@ -76,6 +81,18 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        SwipeRefreshLayout teamStandingLayout = findViewById(R.id.team_standing_layout);
+        UIUtils.applyWindowInsets(teamStandingLayout);
+
+        teamStandingLayout.setOnRefreshListener(() -> {
+            start();
+            teamStandingLayout.setRefreshing(false);
+        });
+
+        setupPage();
+    }
+
+    private void setupPage() {
         LinearLayout teamStanding = findViewById(R.id.team_standing);
 
         ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory()).get(ConstructorStandingsViewModel.class);

@@ -20,6 +20,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -60,16 +61,25 @@ public class DriversStandingActivity extends AppCompatActivity {
 
     private DriverStandingsViewModel driverStandingsViewModel;
 
+    private String driverId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_drivers_standing);
 
+        driverId = getIntent().getStringExtra("DRIVER_ID");
+
+        start();
+
+    }
+
+    private void start() {
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
 
         loadingScreen.showLoadingScreen();
-        String driverId = getIntent().getStringExtra("DRIVER_ID");
+
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
@@ -81,6 +91,18 @@ public class DriversStandingActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        SwipeRefreshLayout driverStandingLayout = findViewById(R.id.driver_standing_layout);
+        UIUtils.applyWindowInsets(driverStandingLayout);
+
+        driverStandingLayout.setOnRefreshListener(() -> {
+            start();
+            driverStandingLayout.setRefreshing(false);
+        });
+
+        setupPage();
+    }
+
+    private void setupPage() {
         LinearLayout driverStanding = findViewById(R.id.driver_standing);
 
         driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory()).get(DriverStandingsViewModel.class);
@@ -132,7 +154,6 @@ public class DriversStandingActivity extends AppCompatActivity {
                 loadingScreen.hideLoadingScreen();
             }
         });
-
     }
 
 
