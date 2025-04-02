@@ -26,8 +26,6 @@ import retrofit2.Response;
 
 public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
     private static final String TAG = "RaceResultRemoteDataSource";
-    private static final int MAX_RETRIES = 3;
-    private static final int RETRY_DELAY_MS = 2000; // 2 seconds
     private final ErgastAPIService ergastAPIService;
 
     public RaceResultRemoteDataSource() {
@@ -65,6 +63,7 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
         });
     }
 
+    // TODO REMOVE
     @Override //TODO CHANGE getAllRaceResults(numberOfRaces + Callback)
     public void getAllRaceResults(int numberOfRaces) {
         AtomicInteger successCount = new AtomicInteger(0);
@@ -113,6 +112,9 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
             }
         });
     }
+
+    private static final int MAX_RETRIES = 3;
+    private static final int RETRY_DELAY_MS = 2000; // 2 seconds
 
     private void handleRetryOrFailure(int raceNumber, int currentRetry, Exception error,
                                       AtomicInteger successCount, AtomicInteger failureCount,

@@ -150,6 +150,9 @@ public class HomeFragment extends Fragment {
         MutableLiveData<Result> lastRace = homeViewModel.getLastRace();
         lastRace.observe(getViewLifecycleOwner(), result -> {
             try {
+                if(result instanceof Result.Loading) {
+                    return;
+                }
                 if (result.isSuccess()) {
                     WeeklyRace raceResult = ((Result.NextRaceSuccess) result).getData();
                     Log.i(TAG, "Last Race: " + raceResult);
@@ -170,6 +173,9 @@ public class HomeFragment extends Fragment {
             MutableLiveData<Result> trackData = trackViewModel.getTrack(circuitId);
             trackData.observe(getViewLifecycleOwner(), trackResult -> {
                 try {
+                    if(trackResult instanceof Result.Loading) {
+                        return;
+                    }
                     if (trackResult.isSuccess()) {
                         Track track = ((Result.TrackSuccess) trackResult).getData();
                         updateLastRaceUI(view, race, track);
@@ -208,6 +214,9 @@ public class HomeFragment extends Fragment {
             MutableLiveData<Result> raceResultData = homeViewModel.getRaceResults(race.getRound());
             raceResultData.observe(getViewLifecycleOwner(), result -> {
                 try {
+                    if(result instanceof Result.Loading) {
+                        return;
+                    }
                     if (result.isSuccess()) {
                         List<RaceResult> raceResults = ((Result.LastRaceResultsSuccess) result).getData().getResults();
                         setDriverNames(view, raceResults);
@@ -227,6 +236,7 @@ public class HomeFragment extends Fragment {
             loadPendingResultsLayout(view);
         }
     }
+
 
     private void setDriverNames(View view, List<RaceResult> raceResults) {
         try {
@@ -248,7 +258,11 @@ public class HomeFragment extends Fragment {
         MutableLiveData<Result> nextRaceLiveData = homeViewModel.getNextRaceLiveData();
         try {
             nextRaceLiveData.observe(getViewLifecycleOwner(), result -> {
+
                 try {
+                    if(result instanceof Result.Loading) {
+                        return;
+                    }
                     if (result.isSuccess()) {
                         WeeklyRace nextRace = ((Result.NextRaceSuccess) result).getData();
                         processNextRace(view, nextRace);
@@ -276,6 +290,9 @@ public class HomeFragment extends Fragment {
             MutableLiveData<Result> trackData = trackViewModel.getTrack(nextRace.getTrack().getTrackId());
             trackData.observe(getViewLifecycleOwner(), trackResult -> {
                 try {
+                    if(trackResult instanceof Result.Loading) {
+                        return;
+                    }
                     if (trackResult.isSuccess()) {
                         Track track = ((Result.TrackSuccess) trackResult).getData();
                         nextRace.setTrack(track);
@@ -298,6 +315,9 @@ public class HomeFragment extends Fragment {
         MutableLiveData<Result> nationData = nationViewModel.getNation(track.getCountry());
         nationData.observe(getViewLifecycleOwner(), nationResult -> {
             try {
+                if(nationResult instanceof Result.Loading) {
+                    return;
+                }
                 if (nationResult.isSuccess()) {
                     Nation nation = ((Result.NationSuccess) nationResult).getData();
                     setNextRaceCard(view, nextRace, nation);
@@ -395,6 +415,9 @@ public class HomeFragment extends Fragment {
         MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData();
         driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
             try {
+                if(result instanceof Result.Loading) {
+                    return;
+                }
                 if (result.isSuccess()) {
                     DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
                     List<DriverStandingsElement> driversList = driverStandings.getDriverStandingsElements();
@@ -414,6 +437,9 @@ public class HomeFragment extends Fragment {
         MutableLiveData<Result> driverData = driverViewModel.getDriver(driverId);
         driverData.observe(getViewLifecycleOwner(), result -> {
             try {
+                if(result instanceof Result.Loading) {
+                    return;
+                }
                 if (result.isSuccess()) {
                     Driver driver = ((Result.DriverSuccess) result).getData();
                     TextView driverName = seasonEndedCard.findViewById(Constants.HOME_SEASON_DRIVER_STANDINGS_NAME_FIELD.get(position));
@@ -434,6 +460,9 @@ public class HomeFragment extends Fragment {
         MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData();
         constructorStandingsData.observe(getViewLifecycleOwner(), result -> {
             try {
+                if(result instanceof Result.Loading) {
+                    return;
+                }
                 if (result.isSuccess()) {
                     ConstructorStandings standings = ((Result.ConstructorStandingsSuccess) result).getData();
                     List<ConstructorStandingsElement> constructorsList = standings.getConstructorStandings();
@@ -464,6 +493,9 @@ public class HomeFragment extends Fragment {
         MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData();
         driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
             try {
+                if(result instanceof Result.Loading) {
+                    return;
+                }
                 if (result.isSuccess()) {
                     DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
                     DriverStandingsElement favouriteDriver = homeViewModel.getDriverStandingsElement(driverStandings.getDriverStandingsElements(), favoriteDriverId);
@@ -486,6 +518,9 @@ public class HomeFragment extends Fragment {
         MutableLiveData<Result> driverData = driverViewModel.getDriver(driverId);
         driverData.observe(getViewLifecycleOwner(), driverResult -> {
             try {
+                if(driverResult instanceof Result.Loading) {
+                    return;
+                }
                 if (driverResult.isSuccess()) {
                     Driver driver = ((Result.DriverSuccess) driverResult).getData();
                     favouriteDriver.setDriver(driver);
@@ -504,6 +539,9 @@ public class HomeFragment extends Fragment {
         MutableLiveData<Result> nationData = nationViewModel.getNation(favouriteDriver.getDriver().getNationality());
         nationData.observe(getViewLifecycleOwner(), nationResult -> {
             try {
+                if(nationResult instanceof Result.Loading) {
+                    return;
+                }
                 if (nationResult.isSuccess()) {
                     Nation nation = ((Result.NationSuccess) nationResult).getData();
                     buildDriverCard(view, favouriteDriver, nation);
@@ -563,6 +601,9 @@ public class HomeFragment extends Fragment {
         MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData();
         constructorStandingsData.observe(getViewLifecycleOwner(), result -> {
             try {
+                if(result instanceof Result.Loading) {
+                    return;
+                }
                 if (result.isSuccess()) {
                     ConstructorStandings standings = ((Result.ConstructorStandingsSuccess) result).getData();
                     ConstructorStandingsElement favouriteConstructor = homeViewModel.getConstructorStandingsElement(standings.getConstructorStandings(), favoriteTeamId);
@@ -585,6 +626,9 @@ public class HomeFragment extends Fragment {
         MutableLiveData<Result> constructorData = constructorViewModel.getSelectedConstructor(teamId);
         constructorData.observe(getViewLifecycleOwner(), constructorResult -> {
             try {
+                if(constructorResult instanceof Result.Loading) {
+                    return;
+                }
                 if (constructorResult.isSuccess()) {
                     Constructor constructor = ((Result.ConstructorSuccess) constructorResult).getData();
                     favouriteConstructor.setConstructor(constructor);
@@ -602,7 +646,11 @@ public class HomeFragment extends Fragment {
     private void fetchNationForConstructor(View view, ConstructorStandingsElement favouriteConstructor) {
         MutableLiveData<Result> nationData = nationViewModel.getNation(favouriteConstructor.getConstructor().getNationality());
         nationData.observe(getViewLifecycleOwner(), nationResult -> {
+
             try {
+                if(nationResult instanceof Result.Loading) {
+                    return;
+                }
                 if (nationResult.isSuccess()) {
                     Nation nation = ((Result.NationSuccess) nationResult).getData();
                     buildConstructorCard(view, favouriteConstructor, nation);

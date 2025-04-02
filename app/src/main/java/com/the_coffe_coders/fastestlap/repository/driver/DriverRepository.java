@@ -34,7 +34,7 @@ public class DriverRepository {
         return instance;
     }
 
-    public DriverRepository() {
+    private DriverRepository() {
         driverCache = new HashMap<>();
         lastUpdateTimestamps = new HashMap<>();
         firebaseDriverDataSource = FirebaseDriverDataSource.getInstance();
@@ -59,7 +59,7 @@ public class DriverRepository {
             public void onDriverLoaded(Driver driver) {
                 if(driver!=null) {
                     if(driverCache.containsKey(driverId)) {
-                        Objects.requireNonNull(driverCache.get(driverId)).postValue(new Result.DriverSuccess(driver));
+                        Objects.requireNonNull(driverCache.get(driverId)).setValue(new Result.DriverSuccess(driver));
                     }else {
                         Log.e(TAG, "Driver not found in cache: " + driverId);
                         driverCache.put(driverId, new MutableLiveData<>(new Result.DriverSuccess(driver)));

@@ -42,6 +42,7 @@ public class WeeklyRaceRepository {
 
     public synchronized MutableLiveData<Result> fetchNextWeeklyRace() {
         if(System.currentTimeMillis() - FRESH_TIMEOUT > nextRaceTime) {
+            nextRaceMutableLiveData.postValue(new Result.Loading("Loading next race"));
             loadNextRace();
         }
         return nextRaceMutableLiveData;
@@ -69,6 +70,7 @@ public class WeeklyRaceRepository {
 
     public synchronized MutableLiveData<Result> fetchLastWeeklyRace() {
         if(System.currentTimeMillis() - FRESH_TIMEOUT > lastRaceTime) {
+            lastRaceMutableLiveData.postValue(new Result.Loading("Loading last race"));
             loadLastRace();
         }
         return lastRaceMutableLiveData;
@@ -91,6 +93,7 @@ public class WeeklyRaceRepository {
 
     public synchronized MutableLiveData<Result> fetchWeeklyRaces() {
         if(System.currentTimeMillis() - FRESH_TIMEOUT > weeklyRacesTime) {
+            weeklyRacesMutableLiveData.postValue(new Result.Loading("Loading weekly races"));
             loadWeeklyRaces();
         }
         return weeklyRacesMutableLiveData;

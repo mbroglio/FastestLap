@@ -82,7 +82,14 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         MutableLiveData<Result> liveData = (MutableLiveData<Result>) constructorStandingsViewModel.getConstructorStandings();
         Log.i(TAG, "Constructor Standings: " + liveData);
         liveData.observe(this, result -> {
+            if(result instanceof Result.Loading) {
+                // Gestisci lo stato di caricamento, ad esempio mostrando un indicatore di caricamento
+                Log.i(TAG, "Constructor Standings LOADING");
+                // Qui potresti voler mostrare una UI di caricamento
+                return;
+            }
             if (result.isSuccess()) {
+                teamStanding.removeAllViews();
                 constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
                 List<ConstructorStandingsElement> constructorList = constructorStandings.getConstructorStandings();
 

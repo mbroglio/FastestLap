@@ -6,8 +6,6 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
-import com.the_coffe_coders.fastestlap.repository.standing.driver.DriverStandingCallback;
 import com.the_coffe_coders.fastestlap.source.standing.constructor.BaseConstructorStandingsRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.standing.constructor.ConstructorStandingsRemoteDataSource;
 
@@ -15,9 +13,9 @@ public class ConstructorStandingRepository {
     private static ConstructorStandingRepository instance;
     private final MutableLiveData<Result> constructorStandingResult;
 
-    private BaseConstructorStandingsRemoteDataSource remoteDataSource;
+    private final BaseConstructorStandingsRemoteDataSource remoteDataSource;
     private Long lastUpdate;
-    private long FRESH_TIMEOUT = 60000;
+    private final long FRESH_TIMEOUT = 60000;
 
     private ConstructorStandingRepository() {
         constructorStandingResult = new MutableLiveData<>();
@@ -34,6 +32,7 @@ public class ConstructorStandingRepository {
 
     public synchronized MutableLiveData<Result> fetchConstructorStanding() {
         if (System.currentTimeMillis() - lastUpdate > FRESH_TIMEOUT) {
+            constructorStandingResult.postValue(new Result.Loading("Fetching constructor standing from remote"));
             loadConstructorStanding();
         }
         return constructorStandingResult;

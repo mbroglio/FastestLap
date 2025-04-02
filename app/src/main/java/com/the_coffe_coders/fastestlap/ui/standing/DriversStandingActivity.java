@@ -87,8 +87,15 @@ public class DriversStandingActivity extends AppCompatActivity {
         MutableLiveData<Result> livedata = driverStandingsViewModel.getDriverStandingsLiveData();//TODO get last update from shared preferences
 
         livedata.observe(this, result -> {
+            if(result instanceof Result.Loading) {
+                // Gestisci lo stato di caricamento, ad esempio mostrando un indicatore di caricamento
+                Log.i(TAG, "DRIVER STANDINGS LOADING");
+                // Qui potresti voler mostrare una UI di caricamento
+                return;
+            }
             if (result.isSuccess()) {
                 Log.i(TAG, "DRIVER STANDINGS SUCCESS");
+                driverStanding.removeAllViews();
                 driverStandings = ((Result.DriverStandingsSuccess) result).getData();
                 List<DriverStandingsElement> driverList = driverStandings.getDriverStandingsElements();
 
@@ -96,6 +103,9 @@ public class DriversStandingActivity extends AppCompatActivity {
                     Log.i(TAG, "DRIVER STANDINGS EMPTY");
                     MutableLiveData<Result> drivers = fetchDriversList();
                     drivers.observe(this, driverResult -> {
+                        if(driverResult instanceof Result.Loading) {
+                            return;
+                        }
                         if (driverResult.isSuccess()) {
                             List<Driver> driverList2 = ((Result.DriversSuccess) driverResult).getData();
                             for (Driver driver : driverList2) {

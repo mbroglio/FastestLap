@@ -38,6 +38,8 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     private final boolean raceToProcess = true;
     LoadingScreen loadingScreen;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,10 +66,14 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         EventViewModel eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
         MutableLiveData<Result> data = eventViewModel.getWeeklyRacesLiveData();
         data.observe(this, result -> {
+            if(result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 List<WeeklyRace> races = ((Result.WeeklyRaceSuccess) result).getData();
                 Log.i("UpcomingEvents", "SUCCESS");
-
+                LinearLayout upcomingEvents = findViewById(R.id.upcoming_events_list);
+                upcomingEvents.removeAllViews();
                 List<WeeklyRace> upcomingRaces = eventViewModel.extractUpcomingRaces(races);
                 Log.i("UpcomingEvents", "upcomingRaces: " + upcomingRaces.size());
                 for (WeeklyRace race : upcomingRaces) {
@@ -104,6 +110,9 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
         View finalEventCard = eventCard;
         trackData.observe(this, result -> {
+            if (result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 Track track = ((Result.TrackSuccess) result).getData();
 

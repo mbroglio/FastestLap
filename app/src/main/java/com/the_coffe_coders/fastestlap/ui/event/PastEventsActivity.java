@@ -62,6 +62,7 @@ public class PastEventsActivity extends AppCompatActivity {
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         Log.i("PastEvent", "onCreate");
+
         processEvents();
     }
 
@@ -71,6 +72,9 @@ public class PastEventsActivity extends AppCompatActivity {
         LiveData<Result> dataEvent = eventViewModel.getWeeklyRacesLiveData();
         dataEvent.observe(this, resultEvent -> {
             Log.i("PastEvent", "observed");
+            if (resultEvent instanceof Result.Loading) {
+                return;
+            }
             if (resultEvent.isSuccess()) {
                 List<WeeklyRace> eventRaces = ((Result.WeeklyRaceSuccess) resultEvent).getData();
                 int totalRaces = eventViewModel.extractPastRaces(eventRaces).size();
@@ -111,6 +115,9 @@ public class PastEventsActivity extends AppCompatActivity {
         MutableLiveData<Result> trackData = trackViewModel.getTrack(weeklyRace.getTrack().getTrackId());
 
         trackData.observe(this, result -> {
+            if (result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 Track track = ((Result.TrackSuccess) result).getData();
 

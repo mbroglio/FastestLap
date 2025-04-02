@@ -34,8 +34,10 @@ public class DriverStandingRepository {
         long FRESH_TIMEOUT = 60000;
         if (lastUpdate == null || System.currentTimeMillis() - lastUpdate > FRESH_TIMEOUT) {
             Log.i("DriverStandingRepository", "Fetching driver standing from remote");
+            driverStandingResult.postValue(new Result.Loading("Fetching driver standing from remote"));
             loadDriverStanding();
         }
+
         return driverStandingResult;
     }
 
@@ -46,7 +48,7 @@ public class DriverStandingRepository {
                 public void onSuccess(DriverStandings driverStanding) {
                     Log.i("DriverStandingRepository", "Driver standing fetched from remote" + driverStanding);
                     lastUpdate = System.currentTimeMillis();
-                    driverStandingResult.postValue(new Result.DriverStandingsSuccess(driverStanding));
+                    driverStandingResult.setValue(new Result.DriverStandingsSuccess(driverStanding));
                 }
                 @Override
                 public void onFailure(Exception exception) {
