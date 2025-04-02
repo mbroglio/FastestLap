@@ -213,24 +213,18 @@
 
                     <FrameLayout
                         android:id="@+id/event_card_container"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.65">
+                        android:layout_weight="0.35">
 
                         <include
                             android:id="@+id/timer_card_countdown"
                             layout="@layout/timer_layout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
                             android:visibility="visible" />
 
                         <include
                             android:id="@+id/timer_card_results"
                             layout="@layout/results_layout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
                             android:visibility="gone" />
 
                         <include
@@ -249,9 +243,7 @@
                             android:layout_gravity="center"
                             android:visibility="gone" />
 
-
                     </FrameLayout>
-
 
                     <LinearLayout
                         android:layout_width="2dp"
@@ -264,9 +256,9 @@
 
                     <LinearLayout
                         android:id="@+id/track_outline_layout"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight="0.35"
+                        android:layout_weight="0.65"
                         android:clickable="true"
                         android:focusable="true">
 

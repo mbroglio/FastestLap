@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/countdown"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_gravity="center"
     android:orientation="vertical">
 
     <TextView
@@ -16,130 +17,17 @@
 
     </TextView>
 
-    <GridLayout
-        android:layout_width="wrap_content"
+    <FrameLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
         android:layout_marginTop="10dp"
-        android:columnCount="4"
-        android:rowCount="2">
+        android:layout_marginEnd="5dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="15dp"
-            android:fontFamily="@font/orbitron_regular"
-            android:text="@string/days_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+        <include
+            android:id="@+id/timer"
+            layout="@layout/timer" />
 
-        </TextView>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="15dp"
-            android:fontFamily="@font/orbitron_regular"
-            android:text="@string/hours_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
-
-        </TextView>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="15dp"
-            android:fontFamily="@font/orbitron_regular"
-            android:text="@string/minutes_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
-
-        </TextView>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:fontFamily="@font/orbitron_regular"
-            android:text="@string/seconds_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
-
-        </TextView>
-
-        <TextView
-            android:id="@+id/next_days_counter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="15dp"
-            android:gravity="center"
-            android:text="@string/base_countdown"
-            android:autoSizeMaxTextSize="@dimen/timer_text_size"
-            android:autoSizeMinTextSize="12sp"
-            android:autoSizeTextType="uniform"
-            android:textSize="@dimen/timer_text_size"
-            android:textColor="@color/black"
-            android:textStyle="bold">
-
-        </TextView>
-
-        <TextView
-            android:id="@+id/next_hours_counter"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="15dp"
-            android:gravity="center"
-            android:text="@string/base_countdown"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:textSize="@dimen/timer_text_size"
-            android:autoSizeMaxTextSize="@dimen/timer_text_size"
-            android:autoSizeMinTextSize="12sp"
-            android:autoSizeTextType="uniform">
-
-        </TextView>
-
-        <TextView
-            android:id="@+id/next_minutes_counter"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginEnd="15dp"
-            android:gravity="center"
-            android:text="@string/base_countdown"
-            android:autoSizeMaxTextSize="@dimen/timer_text_size"
-            android:autoSizeMinTextSize="12sp"
-            android:autoSizeTextType="uniform"
-            android:textSize="@dimen/timer_text_size"
-            android:textColor="@color/black"
-            android:textStyle="bold">
-
-        </TextView>
-
-        <TextView
-            android:id="@+id/next_seconds_counter"
-            android:layout_width="40dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:text="@string/base_countdown"
-            android:autoSizeMaxTextSize="@dimen/timer_text_size"
-            android:autoSizeMinTextSize="12sp"
-            android:autoSizeTextType="uniform"
-            android:textSize="@dimen/timer_text_size"
-            android:textColor="@color/black"
-            android:textStyle="bold">
-
-        </TextView>
-
-    </GridLayout>
-
+    </FrameLayout>
 
 </LinearLayout>
