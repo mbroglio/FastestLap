@@ -58,7 +58,7 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                raceResultCallback.onFailureFromRemote(new Exception(RETROFIT_ERROR));
+                resultCallback.onFailure(new Exception(RETROFIT_ERROR));
             }
         });
     }

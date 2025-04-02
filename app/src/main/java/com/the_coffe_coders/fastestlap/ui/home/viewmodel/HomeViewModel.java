@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
-import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.result.ResultRepository;
 import com.the_coffe_coders.fastestlap.repository.standing.constructor.ConstructorStandingRepository;
 import com.the_coffe_coders.fastestlap.repository.standing.driver.DriverStandingRepository;

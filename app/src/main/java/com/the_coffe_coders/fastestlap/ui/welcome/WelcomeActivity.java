@@ -42,7 +42,6 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
-import com.the_coffe_coders.fastestlap.ui.profile.ProfileActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.fragment.ForgotPasswordFragment;
 import com.the_coffe_coders.fastestlap.ui.welcome.fragment.SignUpFragment;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;

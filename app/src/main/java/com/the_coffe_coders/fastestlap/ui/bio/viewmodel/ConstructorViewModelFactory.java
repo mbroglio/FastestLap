@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 public class ConstructorViewModelFactory implements ViewModelProvider.Factory {
     private final ConstructorRepository constructorRepository;

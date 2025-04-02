@@ -15,10 +15,6 @@ import com.the_coffe_coders.fastestlap.source.user.BaseUserAuthenticationRemoteD
 import com.the_coffe_coders.fastestlap.source.user.BaseUserDataRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.user.UserAuthenticationFirebaseDataSource;
 import com.the_coffe_coders.fastestlap.source.user.UserFirebaseDataSource;
-import com.the_coffe_coders.fastestlap.source.weeklyrace.BaseWeeklyRaceLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.weeklyrace.BaseWeeklyRaceRemoteDataSource;
-import com.the_coffe_coders.fastestlap.source.weeklyrace.WeeklyRaceLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.weeklyrace.WeeklyRaceRemoteDataSource;
 
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;

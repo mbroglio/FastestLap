@@ -15,7 +15,6 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
@@ -31,16 +30,14 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFact
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
-import com.the_coffe_coders.fastestlap.ui.home.fragment.RacingFragment;
-import com.the_coffe_coders.fastestlap.ui.home.fragment.StandingsFragment;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ConstructorsStandingActivity extends AppCompatActivity {
 
@@ -146,7 +143,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                 standingElement.setConstructor(constructor);
 
                 LinearLayout teamColor = teamCard.findViewById(R.id.team_card);
-                teamColor.setBackground(AppCompatResources.getDrawable(this, Constants.TEAM_GRADIENT_COLOR.get(teamId)));
+                teamColor.setBackground(AppCompatResources.getDrawable(this, Objects.requireNonNull(Constants.TEAM_GRADIENT_COLOR.get(teamId))));
 
                 TextView teamNameTextView = teamCard.findViewById(R.id.team_name);
                 teamNameTextView.setText(constructor.getName());

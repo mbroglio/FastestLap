@@ -1,7 +1,5 @@
 package com.the_coffe_coders.fastestlap.api;
 
-import androidx.annotation.NonNull;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
