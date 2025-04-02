@@ -158,6 +158,9 @@ public class DriversStandingActivity extends AppCompatActivity {
 
         View driverCard = getLayoutInflater().inflate(R.layout.driver_card, null);
         driverLiveData.observe(this, result -> {
+            if(result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 Driver driver = ((Result.DriverSuccess) result).getData();
 
@@ -185,6 +188,9 @@ public class DriversStandingActivity extends AppCompatActivity {
                 ConstructorViewModel constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
                 MutableLiveData<Result> constructorLiveData = constructorViewModel.getSelectedConstructor(driver.getTeam_id());
                 constructorLiveData.observe(this, constructorResult -> {
+                    if(constructorResult instanceof Result.Loading) {
+                        return;
+                    }
                     if (constructorResult.isSuccess()) {
                         Constructor constructor = ((Result.ConstructorSuccess) constructorResult).getData();
 

@@ -42,6 +42,7 @@ public class ResultRepository {
     }
 
     public void loadResults(String round) {
+        resultsCache.get(round).postValue(new Result.Loading("Fetching results from remote"));
         raceResultRemoteDataSource.getRaceResults(Integer.parseInt(round), new RaceResultCallback() {
             @Override
             public void onSuccess(Race race) {

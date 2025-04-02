@@ -77,7 +77,7 @@ public class DriverRepository {
     }
 
     private void loadDriver(String driverId) {
-
+        driverCache.get(driverId).postValue(new Result.Loading("Fetching driver from remote"));
         try {
             firebaseDriverDataSource.getDriver(driverId, new DriverCallback() {
                 @Override

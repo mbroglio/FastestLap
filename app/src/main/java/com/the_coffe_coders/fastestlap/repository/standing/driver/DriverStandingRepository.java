@@ -42,6 +42,7 @@ public class DriverStandingRepository {
     }
 
     private void loadDriverStanding() {
+        driverStandingResult.postValue(new Result.Loading("Fetching driver standing from remote"));
         try {
             remoteDataSource.getDriversStandings(new DriverStandingCallback(){
                 @Override

@@ -32,13 +32,13 @@ public class ConstructorStandingRepository {
 
     public synchronized MutableLiveData<Result> fetchConstructorStanding() {
         if (System.currentTimeMillis() - lastUpdate > FRESH_TIMEOUT) {
-            constructorStandingResult.postValue(new Result.Loading("Fetching constructor standing from remote"));
             loadConstructorStanding();
         }
         return constructorStandingResult;
     }
 
     public void loadConstructorStanding() {
+        constructorStandingResult.postValue(new Result.Loading("Fetching constructor standing from remote"));
         try {
             remoteDataSource.getConstructorStandings(new ConstructorStandingCallback(){
                 @Override

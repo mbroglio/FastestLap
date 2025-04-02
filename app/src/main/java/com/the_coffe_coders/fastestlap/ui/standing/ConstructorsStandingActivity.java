@@ -121,6 +121,9 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
         View teamCard = getLayoutInflater().inflate(R.layout.team_card, null);
         liveData.observe(this, result -> {
+            if(result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 Constructor constructor = ((Result.ConstructorSuccess) result).getData();
                 standingElement.setConstructor(constructor);
@@ -142,6 +145,9 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                 MutableLiveData<Result> driverTwoLiveData = driverViewModel.getDriver(constructor.getDriverTwoId());
 
                 driverOneLiveData.observe(this, driverResult -> {
+                    if (driverResult instanceof Result.Loading) {
+                        return;
+                    }
                     if (driverResult.isSuccess()) {
                         Driver driverOne = ((Result.DriverSuccess) driverResult).getData();
 
@@ -152,6 +158,9 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                         Glide.with(this).load(driverOne.getDriver_pic_url()).into(driverOneImageView);
 
                         driverTwoLiveData.observe(this, driverResult2 -> {
+                            if (driverResult2 instanceof Result.Loading) {
+                                return;
+                            }
                             if (driverResult2.isSuccess()) {
                                 Driver driverTwo = ((Result.DriverSuccess) driverResult2).getData();
 

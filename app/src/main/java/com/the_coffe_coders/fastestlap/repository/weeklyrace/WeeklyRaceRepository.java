@@ -49,6 +49,7 @@ public class WeeklyRaceRepository {
     }
 
     private void loadNextRace() {
+        nextRaceMutableLiveData.postValue(new Result.Loading("Loading next race"));
         try {
             weeklyRaceRemoteDataSource.getNextRace(new SingleWeeklyRaceCallback() {
 
@@ -69,6 +70,7 @@ public class WeeklyRaceRepository {
     }
 
     public synchronized MutableLiveData<Result> fetchLastWeeklyRace() {
+
         if(System.currentTimeMillis() - FRESH_TIMEOUT > lastRaceTime) {
             lastRaceMutableLiveData.postValue(new Result.Loading("Loading last race"));
             loadLastRace();
@@ -77,6 +79,7 @@ public class WeeklyRaceRepository {
     }
 
     private void loadLastRace() {
+        lastRaceMutableLiveData.postValue(new Result.Loading("Loading last race"));
         weeklyRaceRemoteDataSource.getLastRace(new SingleWeeklyRaceCallback() {
             @Override
             public void onSuccess(WeeklyRace weeklyRace) {
@@ -92,6 +95,7 @@ public class WeeklyRaceRepository {
     }
 
     public synchronized MutableLiveData<Result> fetchWeeklyRaces() {
+
         if(System.currentTimeMillis() - FRESH_TIMEOUT > weeklyRacesTime) {
             weeklyRacesMutableLiveData.postValue(new Result.Loading("Loading weekly races"));
             loadWeeklyRaces();
@@ -100,6 +104,7 @@ public class WeeklyRaceRepository {
     }
 
     private void loadWeeklyRaces() {
+        weeklyRacesMutableLiveData.postValue(new Result.Loading("Loading weekly races"));
         weeklyRaceRemoteDataSource.getWeeklyRaces(new WeeklyRacesCallback() {
 
             @Override

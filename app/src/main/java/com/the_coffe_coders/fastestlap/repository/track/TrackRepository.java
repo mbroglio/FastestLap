@@ -47,6 +47,7 @@ public class TrackRepository {
     }
     
     public void loadTrack(String trackId) {
+        trackCache.get(trackId).postValue(new Result.Loading("Fetching track from remote"));
         firebaseTrackDataSource.getTrack(trackId, new TrackCallback() {
             @Override
             public void onSuccess(Track track) {

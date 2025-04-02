@@ -48,6 +48,7 @@ public class ConstructorRepository {
     }
 
     private void loadConstructor(String constructorId) {
+        constructorCache.get(constructorId).postValue(new Result.Loading("Fetching constructor from remote"));
         try {
             firebaseConstructorDataSource.getConstructor(constructorId, new ConstructorCallback() {
                 @Override

@@ -128,6 +128,9 @@ public class ConstructorBioActivity extends AppCompatActivity {
     private void createConstructorBioPage(String teamId) {
         MutableLiveData<Result> data = constructorViewModel.getSelectedConstructor(teamId);
         data.observe(this, result -> {
+            if(result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 constructor = ((Result.ConstructorSuccess) result).getData();
                 Log.i(TAG, "Constructor: " + constructor);
@@ -180,6 +183,9 @@ public class ConstructorBioActivity extends AppCompatActivity {
         MutableLiveData<Result> data = driverViewModel.getDriver(driverId);
 
         data.observe(this, result -> {
+            if (result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 if (driverId.equals(team.getDriverOneId())) {
                     driverOne = ((Result.DriverSuccess) result).getData();
@@ -213,6 +219,9 @@ public class ConstructorBioActivity extends AppCompatActivity {
         MutableLiveData<Result> data = nationViewModel.getNation(nationId);
 
         data.observe(this, result -> {
+            if (result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 nation = ((Result.NationSuccess) result).getData();
                 setTeamData(constructor, nation, driverOne, driverTwo);

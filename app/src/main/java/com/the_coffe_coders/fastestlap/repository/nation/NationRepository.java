@@ -54,6 +54,7 @@ public class NationRepository {
     }
 
     public void loadNation(String nationId) {
+        nationCache.get(nationId).postValue(new Result.Loading("Fetching nation from remote"));
         DatabaseReference nationReference = firebaseDatabase.getReference(FIREBASE_NATIONS_COLLECTION).child(nationId);
         nationReference.get().addOnCompleteListener(nationTask -> {
             if (nationTask.isSuccessful()) {

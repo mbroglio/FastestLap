@@ -158,6 +158,9 @@ public class DriverBioActivity extends AppCompatActivity {
         MutableLiveData<Result> driverMutableLiveData = driverViewModel.getDriver(driverId);
 
         driverMutableLiveData.observe(this, result -> {
+            if(result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 driver = ((Result.DriverSuccess) result).getData();
                 Log.i(TAG, "DRIVER SUCCESS");
@@ -174,6 +177,9 @@ public class DriverBioActivity extends AppCompatActivity {
         MutableLiveData<Result> constructorMutableLiveData = constructorViewModel.getSelectedConstructor(teamId);
 
         constructorMutableLiveData.observe(this, result -> {
+            if(result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 team = ((Result.ConstructorSuccess) result).getData();
                 Log.i(TAG, "GET CONSTRUCTOR FROM COMMON REPO: " + team.toString());
@@ -188,6 +194,9 @@ public class DriverBioActivity extends AppCompatActivity {
         MutableLiveData<Result> nationMutableLiveData = nationViewModel.getNation(nationId);
 
         nationMutableLiveData.observe(this, result -> {
+            if(result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 nation = ((Result.NationSuccess) result).getData();
                 Log.i(TAG, "GET NATION FROM FIREBASE REPO: " + nation);
