@@ -35,7 +35,7 @@ public class RaceResultLocalDataSource extends BaseRaceResultLocalDataSource {
             Log.i(TAG, "getAllRaceResult: " + raceResult);
         }
         System.out.println("size: " + raceResultsList.size());
-        raceResultCallback.onSuccessFromLocal(raceResultsList);
+        //raceResultCallback.onSuccessFromLocal(raceResultsList);
     }
 
     @Override
@@ -46,14 +46,14 @@ public class RaceResultLocalDataSource extends BaseRaceResultLocalDataSource {
             Log.i(TAG, "getAllRaceResult: " + raceResult);
         }
         System.out.println("size: " + raceList.size());
-        raceResultCallback.onSuccessFromLocalRaceList(raceList);
+        //raceResultCallback.onSuccessFromLocalRaceList(raceList);
     }
 
 
     public void getRaceResultById(int id) {
         Log.i(TAG, "getRaceResultById from local");
         RaceResult raceResult = raceResultDao.getRaceResultById(id);
-        raceResultCallback.onSuccessFromLocal(raceResult);
+        //raceResultCallback.onSuccessFromLocal(raceResult);
     }
 /*
     @Override
@@ -112,7 +112,7 @@ public class RaceResultLocalDataSource extends BaseRaceResultLocalDataSource {
             sharedPreferencesUtil.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
                     Constants.SHARED_PREFERENCES_LAST_UPDATE, String.valueOf(System.currentTimeMillis()));
 
-            raceResultCallback.onSuccessFromLocal(raceResultList);
+            //raceResultCallback.onSuccessFromLocal(raceResultList);
         });
     }
 }

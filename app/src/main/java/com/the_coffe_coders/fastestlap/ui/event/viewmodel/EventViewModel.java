@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
-import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.result.ResultRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.WeeklyRaceRepository;
 
@@ -21,14 +20,12 @@ import java.util.List;
 public class EventViewModel extends ViewModel {
 
     private static final String TAG = EventViewModel.class.getSimpleName();
-    private final RaceResultRepository raceResultRepository;
 
-    public EventViewModel(RaceResultRepository raceResultRepository) {
-        this.raceResultRepository = raceResultRepository;
+    public EventViewModel() {
     }
 
     public MutableLiveData<Result> getAllResults(int numberOfRaces) {
-        return raceResultRepository.fetchAllRaceResults(0, numberOfRaces);
+        return ResultRepository.getInstance().fetchAllRaceResults(numberOfRaces);
     }
 
     public MutableLiveData<Result> getRaceResults(String raceId) {

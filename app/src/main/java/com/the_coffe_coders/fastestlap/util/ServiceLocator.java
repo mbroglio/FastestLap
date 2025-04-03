@@ -4,7 +4,6 @@ import android.app.Application;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.repository.nation.NationRepository;
-import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
 import com.the_coffe_coders.fastestlap.repository.track.TrackRepository;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.repository.user.UserRepository;
@@ -174,12 +173,6 @@ public class ServiceLocator {
 
     public NationRepository getFirebaseNationRepository() {
         return new NationRepository();
-    }
-
-    public RaceResultRepository getRaceResultRepository(Application application) {
-        RaceResultRemoteDataSource raceResultRemoteDataSource = new RaceResultRemoteDataSource();
-        RaceResultLocalDataSource raceResultLocalDataSource = new RaceResultLocalDataSource(getRoomDatabase(application), new SharedPreferencesUtils(application));
-        return new RaceResultRepository(raceResultRemoteDataSource, raceResultLocalDataSource);
     }
 
     public IUserRepository getUserRepository(Application application) {

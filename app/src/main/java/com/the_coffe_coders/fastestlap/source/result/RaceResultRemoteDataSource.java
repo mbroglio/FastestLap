@@ -63,21 +63,9 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
         });
     }
 
-    // TODO REMOVE
-    @Override //TODO CHANGE getAllRaceResults(numberOfRaces + Callback)
-    public void getAllRaceResults(int numberOfRaces) {
-        AtomicInteger successCount = new AtomicInteger(0);
-        AtomicInteger failureCount = new AtomicInteger(0);
-        AtomicInteger retryCount = new AtomicInteger(0);
-
-        for (int i = 1; i <= numberOfRaces; i++) {
-            fetchRaceResult(i, 0, successCount, failureCount, numberOfRaces);
-        }
-    }
-
-    private void fetchRaceResult(int raceNumber, int currentRetry,
+    public void fetchRaceResult(int raceNumber, int currentRetry,
                                  AtomicInteger successCount, AtomicInteger failureCount,
-                                 int totalRaces) {
+                                 int totalRaces, RaceResultCallback callback) {
         Call<ResponseBody> responseCall = ergastAPIService.getRaceResults(raceNumber);
         Log.i(TAG, String.format("Fetching results for race %d (attempt %d)",
                 raceNumber, currentRetry + 1));
@@ -89,18 +77,18 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
                 try {
                     if (response.isSuccessful() && response.body() != null) {
                         String responseString = response.body().string();
-                        processRaceResult(responseString, raceNumber);
+                        processRaceResult(responseString, raceNumber, callback);
 
                         int completed = successCount.incrementAndGet();
                         checkAllRequestsCompleted(completed, failureCount.get(), totalRaces);
                     } else {
                         handleRetryOrFailure(raceNumber, currentRetry,
                                 new Exception("API returned " + response.code()),
-                                successCount, failureCount, totalRaces);
+                                successCount, failureCount, totalRaces, callback);
                     }
                 } catch (IOException e) {
                     handleRetryOrFailure(raceNumber, currentRetry, e,
-                            successCount, failureCount, totalRaces);
+                            successCount, failureCount, totalRaces, callback);
                 }
             }
 
@@ -108,7 +96,7 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                 handleRetryOrFailure(raceNumber, currentRetry,
                         new Exception(RETROFIT_ERROR + ": " + t.getMessage()),
-                        successCount, failureCount, totalRaces);
+                        successCount, failureCount, totalRaces, callback);
             }
         });
     }
@@ -118,7 +106,7 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
 
     private void handleRetryOrFailure(int raceNumber, int currentRetry, Exception error,
                                       AtomicInteger successCount, AtomicInteger failureCount,
-                                      int totalRaces) {
+                                      int totalRaces, RaceResultCallback raceResultCallback) {
         if (currentRetry < MAX_RETRIES) {
             Log.w(TAG, String.format("Retrying race %d after failure (attempt %d/%d): %s",
                     raceNumber, currentRetry + 1, MAX_RETRIES, error.getMessage()));
@@ -126,16 +114,16 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
             // Delay before retry using Handler
             new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
                 fetchRaceResult(raceNumber, currentRetry + 1,
-                        successCount, failureCount, totalRaces);
+                        successCount, failureCount, totalRaces, raceResultCallback);
             }, RETRY_DELAY_MS);
         } else {
-            handleFailure(raceNumber, error);
+            handleFailure(raceNumber, error, raceResultCallback);
             checkAllRequestsCompleted(successCount.get(),
                     failureCount.incrementAndGet(), totalRaces);
         }
     }
 
-    private void processRaceResult(String responseString, int raceNumber) {
+    private void processRaceResult(String responseString, int raceNumber, RaceResultCallback callback) {
         try {
             JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
             JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
@@ -144,17 +132,17 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
                     jsonParserUtils.parseRaceResults(mrdata);
 
             Log.d(TAG, "Successfully processed race " + raceNumber);
-            raceResultCallback.onSuccessFromRemote(raceResultsAPIResponse);
+            callback.onSuccess(RaceMapper.toRace(raceResultsAPIResponse.getFinalRace()));
         } catch (JsonParseException e) {
             handleFailure(raceNumber,
-                    new Exception("JSON parsing failed: " + e.getMessage()));
+                    new Exception("JSON parsing failed: " + e.getMessage()), callback);
         }
     }
 
-    private void handleFailure(int raceNumber, Exception e) {
+    private void handleFailure(int raceNumber, Exception e, RaceResultCallback callback) {
         Log.e(TAG, "Failed to fetch/process race " + raceNumber + ": " +
                 e.getMessage());
-        raceResultCallback.onFailureFromRemote(e);
+        callback.onFailure(e);
     }
 
     private void checkAllRequestsCompleted(int successCount, int failureCount,
