@@ -63,12 +63,6 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
         });
     }
 
-    @Override
-    public void getAllRaceResults(int numberOfRaces, RaceResultCallback callback) {
-
-    }
-
-
     public void fetchRaceResult(int raceNumber, int currentRetry,
                                  AtomicInteger successCount, AtomicInteger failureCount,
                                  int totalRaces, RaceResultCallback callback) {
@@ -123,7 +117,7 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
                         successCount, failureCount, totalRaces, raceResultCallback);
             }, RETRY_DELAY_MS);
         } else {
-            handleFailure(raceNumber, error);
+            handleFailure(raceNumber, error, raceResultCallback);
             checkAllRequestsCompleted(successCount.get(),
                     failureCount.incrementAndGet(), totalRaces);
         }
@@ -141,14 +135,14 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
             callback.onSuccess(RaceMapper.toRace(raceResultsAPIResponse.getFinalRace()));
         } catch (JsonParseException e) {
             handleFailure(raceNumber,
-                    new Exception("JSON parsing failed: " + e.getMessage()));
+                    new Exception("JSON parsing failed: " + e.getMessage()), callback);
         }
     }
 
-    private void handleFailure(int raceNumber, Exception e) {
+    private void handleFailure(int raceNumber, Exception e, RaceResultCallback callback) {
         Log.e(TAG, "Failed to fetch/process race " + raceNumber + ": " +
                 e.getMessage());
-        raceResultCallback.onFailureFromRemote(e);
+        callback.onFailure(e);
     }
 
     private void checkAllRequestsCompleted(int successCount, int failureCount,
