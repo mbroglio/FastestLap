@@ -28,7 +28,7 @@ public class EventViewModel extends ViewModel {
     }
 
     public MutableLiveData<Result> getAllResults(int numberOfRaces) {
-        return raceResultRepository.fetchAllRaceResults(0, numberOfRaces);
+        return ResultRepository.getInstance().fetchAllRaceResults(numberOfRaces);
     }
 
     public MutableLiveData<Result> getRaceResults(String raceId) {

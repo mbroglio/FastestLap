@@ -63,18 +63,13 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
         });
     }
 
-    // TODO REMOVE
     @Override
     public void getAllRaceResults(int numberOfRaces, RaceResultCallback callback) {
-        AtomicInteger successCount = new AtomicInteger(0);
-        AtomicInteger failureCount = new AtomicInteger(0);
 
-        for (int i = 1; i <= numberOfRaces; i++) {
-            fetchRaceResult(i, 0, successCount, failureCount, numberOfRaces, callback);
-        }
     }
 
-    private void fetchRaceResult(int raceNumber, int currentRetry,
+
+    public void fetchRaceResult(int raceNumber, int currentRetry,
                                  AtomicInteger successCount, AtomicInteger failureCount,
                                  int totalRaces, RaceResultCallback callback) {
         Call<ResponseBody> responseCall = ergastAPIService.getRaceResults(raceNumber);

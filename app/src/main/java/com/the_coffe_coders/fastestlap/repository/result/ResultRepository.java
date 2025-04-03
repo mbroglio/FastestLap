@@ -14,6 +14,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ResultRepository {
     private final Map<String, MutableLiveData<Result>> resultsCache;
@@ -70,10 +71,18 @@ public class ResultRepository {
         });
     }
 
+    public void getAllRaceResults(int numberOfRaces, RaceResultCallback callback) {
+        AtomicInteger successCount = new AtomicInteger(0);
+        AtomicInteger failureCount = new AtomicInteger(0);
+
+        for (int i = 1; i <= numberOfRaces; i++) {
+            raceResultRemoteDataSource.fetchRaceResult(i, 0, successCount, failureCount, numberOfRaces, callback);
+        }
+    }
+
     public MutableLiveData<Result> fetchAllRaceResults(int numberOfRaces) {
         raceList = new ArrayList<>();
-
-        raceResultRemoteDataSource.getAllRaceResults(numberOfRaces, new RaceResultCallback() {
+        getAllRaceResults(numberOfRaces, new RaceResultCallback() {
             @Override
             public void onSuccess(Race race) {
                 addRaces(race, numberOfRaces);
@@ -84,12 +93,12 @@ public class ResultRepository {
                 allResults.postValue(new Result.Error(exception.getMessage()));
             }
         });
-
         return allResults;
     }
 
     private synchronized void addRaces(Race race, int numberOfRaces) {
         raceList.add(race);
+        Log.i(TAG, race.toString());
         if (raceList.size() == numberOfRaces) {
             allResults.setValue(new Result.RaceSuccess(raceList));
             Log.i(TAG, "posting value!!! + " + raceList.size());
