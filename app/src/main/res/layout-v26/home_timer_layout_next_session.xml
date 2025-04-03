@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/timer"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/timer_gray"
     android:orientation="vertical">
 
@@ -50,26 +50,34 @@
 
         </RelativeLayout>
 
-
-
     </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/timer_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/next_grand_prix"
         android:layout_centerInParent="true"
         android:layout_marginTop="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
         android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/home_next_gp_flag"
-            android:layout_width="55dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="0.7">
 
-        </ImageView>
+            <ImageView
+                android:id="@+id/home_next_gp_flag"
+                android:layout_width="55dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center">
+
+            </ImageView>
+
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="2dp"
@@ -80,117 +88,18 @@
 
         </LinearLayout>
 
-        <GridLayout
-            android:layout_width="wrap_content"
+        <FrameLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginBottom="3dp"
-            android:columnCount="4"
-            android:rowCount="2">
+            android:layout_weight="0.3"
+            android:layout_marginStart="@dimen/medium_margin">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginEnd="15dp"
-                android:fontFamily="@font/orbitron_regular"
-                android:text="@string/days_upper_case"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/black"
-                android:textSize="11sp">
+            <include
+                android:id="@+id/timer_frame"
+                layout="@layout/timer" />
 
-            </TextView>
+        </FrameLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginEnd="15dp"
-                android:fontFamily="@font/orbitron_regular"
-                android:text="@string/hours_upper_case"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/black"
-                android:textSize="11sp">
-
-            </TextView>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginEnd="15dp"
-                android:fontFamily="@font/orbitron_regular"
-                android:text="@string/minutes_upper_case"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/black"
-                android:textSize="11sp">
-
-            </TextView>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:fontFamily="@font/orbitron_regular"
-                android:text="@string/seconds_upper_case"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                android:textColor="@color/black"
-                android:textSize="11sp">
-
-            </TextView>
-
-            <TextView
-                android:id="@+id/next_days_counter"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginEnd="15dp"
-                android:gravity="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                android:textColor="@color/black"
-                android:textStyle="bold">
-
-            </TextView>
-
-            <TextView
-                android:id="@+id/next_hours_counter"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginEnd="15dp"
-                android:gravity="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                android:textColor="@color/black"
-                android:textStyle="bold">
-
-            </TextView>
-
-            <TextView
-                android:id="@+id/next_minutes_counter"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginEnd="15dp"
-                android:gravity="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                android:textColor="@color/black"
-                android:textStyle="bold">
-
-            </TextView>
-
-            <TextView
-                android:id="@+id/next_seconds_counter"
-                android:layout_width="40dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:textAppearance="@style/TextAppearance.AppCompat.Display1"
-                android:textColor="@color/black"
-                android:textStyle="bold">
-
-            </TextView>
-
-        </GridLayout>
     </LinearLayout>
 
     <TextView
@@ -198,6 +107,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/timer_layout"
+        android:layout_marginTop="5dp"
         android:layout_centerInParent="true"
         android:layout_marginBottom="5dp"
         android:fontFamily="@font/orbitron_bold"
@@ -212,9 +122,9 @@
         android:id="@+id/timer_live_layout"
         android:layout_width="wrap_content"
         android:layout_height="15dp"
+        android:layout_marginTop="5dp"
         android:layout_below="@id/timer_layout"
         android:layout_alignParentEnd="true"
-        android:layout_marginStart="20dp"
         android:visibility="visible">
 
         <TextView
@@ -222,7 +132,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/orbitron_bold"
-            android:text="LIVE"
+            android:text="@string/live_upper_case"
             android:textColor="@color/black"
             android:textSize="@dimen/body_text_size">
 

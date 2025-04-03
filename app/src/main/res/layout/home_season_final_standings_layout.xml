@@ -86,7 +86,7 @@
                         android:layout_width="5dp"
                         android:layout_height="match_parent"
                         android:layout_marginStart="5dp"
-                        android:background="@color/ferrari_f1">
+                        android:background="@color/white">
 
                     </View>
 
@@ -126,7 +126,7 @@
                         android:layout_width="5dp"
                         android:layout_height="match_parent"
                         android:layout_marginStart="5dp"
-                        android:background="@color/mclaren_f1">
+                        android:background="@color/white">
 
                     </View>
 
@@ -166,7 +166,7 @@
                         android:layout_width="5dp"
                         android:layout_height="match_parent"
                         android:layout_marginStart="5dp"
-                        android:background="@color/mercedes_f1">
+                        android:background="@color/white">
 
                     </View>
 
@@ -238,7 +238,7 @@
                         android:layout_width="5dp"
                         android:layout_height="match_parent"
                         android:layout_marginStart="5dp"
-                        android:background="@color/ferrari_f1">
+                        android:background="@color/white">
 
                     </View>
 
@@ -278,7 +278,7 @@
                         android:layout_width="5dp"
                         android:layout_height="match_parent"
                         android:layout_marginStart="5dp"
-                        android:background="@color/mclaren_f1">
+                        android:background="@color/white">
 
                     </View>
 
@@ -318,7 +318,7 @@
                         android:layout_width="5dp"
                         android:layout_height="match_parent"
                         android:layout_marginStart="5dp"
-                        android:background="@color/mercedes_f1">
+                        android:background="@color/white">
 
                     </View>
 

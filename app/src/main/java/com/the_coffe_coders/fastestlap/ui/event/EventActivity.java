@@ -77,7 +77,7 @@ public class EventActivity extends AppCompatActivity {
         setContentView(R.layout.activity_event);
 
 
-        eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false))).get(EventViewModel.class);
+        eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
 
         // Show loading screen initially
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
@@ -100,8 +100,11 @@ public class EventActivity extends AppCompatActivity {
 
     private void processRaceData(MaterialToolbar toolbar) {
         List<WeeklyRace> races = new ArrayList<>();
-        MutableLiveData<Result> data = ServiceLocator.getInstance().getRaceRepository(getApplication(), false).fetchWeeklyRaces(0);
+        MutableLiveData<Result> data = eventViewModel.getWeeklyRacesLiveData();
         data.observe(this, result -> {
+            if(result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 Log.i("PastEvent", "SUCCESS");
                 races.addAll(((Result.WeeklyRaceSuccess) result).getData());
@@ -129,6 +132,9 @@ public class EventActivity extends AppCompatActivity {
         MutableLiveData<Result> trackData = trackViewModel.getTrack(trackId);
 
         trackData.observe(this, result -> {
+            if(result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 track = ((Result.TrackSuccess) result).getData();
                 Log.i(TAG, "Track: " + track.toString());
@@ -137,6 +143,9 @@ public class EventActivity extends AppCompatActivity {
                 MutableLiveData<Result> nationData = nationViewModel.getNation(track.getCountry());
 
                 nationData.observe(this, result1 -> {
+                    if(result1 instanceof Result.Loading) {
+                        return;
+                    }
                     if (result1.isSuccess()) {
                         nation = ((Result.NationSuccess) result1).getData();
                         Log.i(TAG, "Nation: " + nation.toString());
@@ -307,9 +316,12 @@ public class EventActivity extends AppCompatActivity {
 
     private void processRaceResults(WeeklyRace weeklyRace) {
         Log.i(TAG, "Processing race results" + " " + weeklyRace.getRound());
-        MutableLiveData<Result> resultMutableLiveData = eventViewModel.getRaceResults(0L, weeklyRace.getRound());
+        MutableLiveData<Result> resultMutableLiveData = eventViewModel.getRaceResults(weeklyRace.getRound());
 
         resultMutableLiveData.observe(this, result -> {
+            if(result instanceof Result.Loading) {
+                return;
+            }
             Race race = ((Result.LastRaceResultsSuccess) result).getData();
             List<RaceResult> podium = race.getRaceResults();
             Log.i(TAG, "Podium size" + podium.size());

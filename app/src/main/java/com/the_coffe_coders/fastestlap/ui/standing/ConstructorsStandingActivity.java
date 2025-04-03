@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
-
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
@@ -29,14 +29,15 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModelFactory;
+import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ConstructorsStandingActivity extends AppCompatActivity {
 
@@ -45,6 +46,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
     LoadingScreen loadingScreen;
     private TextView teamPointsTextView;
     private ConstructorStandings constructorStandings;
+    private String constructorId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,31 +54,56 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_constructors_standing);
 
+        constructorId = getIntent().getStringExtra("TEAM_ID");
+        Log.i(TAG, "Constructor ID: " + constructorId);
+
+        start();
+
+
+    }
+
+    private void start() {
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
 
         // Show loading screen initially
         loadingScreen.showLoadingScreen();
 
-        String constructorId = getIntent().getStringExtra("TEAM_ID");
-        Log.i(TAG, "Constructor ID: " + constructorId);
-
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
         UIUtils.applyWindowInsets(toolbar);
 
-        LinearLayout teamStandingLayout = findViewById(R.id.team_standing_layout);
+        toolbar.setNavigationOnClickListener(v -> {
+            Intent intent = new Intent(ConstructorsStandingActivity.this, HomePageActivity.class);
+            intent.putExtra("CALLER", "ConstructorsStandingActivity");
+            startActivity(intent);
+        });
+
+        SwipeRefreshLayout teamStandingLayout = findViewById(R.id.team_standing_layout);
         UIUtils.applyWindowInsets(teamStandingLayout);
 
-        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+        teamStandingLayout.setOnRefreshListener(() -> {
+            start();
+            teamStandingLayout.setRefreshing(false);
+        });
 
+        setupPage();
+    }
+
+    private void setupPage() {
         LinearLayout teamStanding = findViewById(R.id.team_standing);
 
-        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(ServiceLocator.getInstance().getConstructorStandingsRepository(getApplication(), false))).get(ConstructorStandingsViewModel.class);
+        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory()).get(ConstructorStandingsViewModel.class);
         MutableLiveData<Result> liveData = (MutableLiveData<Result>) constructorStandingsViewModel.getConstructorStandings();
-        constructorStandingsViewModel.fetchConstructorStandings(0);
         Log.i(TAG, "Constructor Standings: " + liveData);
         liveData.observe(this, result -> {
+            if(result instanceof Result.Loading) {
+                // Gestisci lo stato di caricamento, ad esempio mostrando un indicatore di caricamento
+                Log.i(TAG, "Constructor Standings LOADING");
+                // Qui potresti voler mostrare una UI di caricamento
+                return;
+            }
             if (result.isSuccess()) {
+                teamStanding.removeAllViews();
                 constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
                 List<ConstructorStandingsElement> constructorList = constructorStandings.getConstructorStandings();
 
@@ -88,10 +115,12 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                         View teamCard = generateTeamCard(constructor, constructorId);
                         teamStanding.addView(teamCard);
                         View space = new View(ConstructorsStandingActivity.this);
-                        space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
+                        space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, Constants.SPACER_HEIGHT));
                         teamStanding.addView(space);
                     }
-
+                    View space = new View(ConstructorsStandingActivity.this);
+                    space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, Constants.SPACER_HEIGHT));
+                    teamStanding.addView(space);
                 }
             } else if (result instanceof Result.Error) {
                 Result.Error error = (Result.Error) result;
@@ -101,27 +130,22 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         });
     }
 
-    private View generateTeamCard(Constructor constructor, String constructorId) {
-        ConstructorStandingsElement constructorStandingsElement = new ConstructorStandingsElement();
-        constructorStandingsElement.setConstructor(constructor);
-        constructorStandingsElement.setPoints("0");
-
-        return generateTeamCard(constructorStandingsElement, constructorId);
-    }
-
     private View generateTeamCard(ConstructorStandingsElement standingElement, String constructorIdToHighlight) {
         String teamId = standingElement.getConstructor().getConstructorId();
-        ConstructorViewModel constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(ServiceLocator.getInstance().getCommonConstructorRepository())).get(ConstructorViewModel.class);
-        MutableLiveData<Result> liveData = constructorViewModel.getSelectedConstructorLiveData(teamId);
+        ConstructorViewModel constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
+        MutableLiveData<Result> liveData = constructorViewModel.getSelectedConstructor(teamId);
 
         View teamCard = getLayoutInflater().inflate(R.layout.team_card, null);
         liveData.observe(this, result -> {
+            if(result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 Constructor constructor = ((Result.ConstructorSuccess) result).getData();
                 standingElement.setConstructor(constructor);
 
                 LinearLayout teamColor = teamCard.findViewById(R.id.team_card);
-                teamColor.setBackground(AppCompatResources.getDrawable(this, Constants.TEAM_GRADIENT_COLOR.get(teamId)));
+                teamColor.setBackground(AppCompatResources.getDrawable(this, Objects.requireNonNull(Constants.TEAM_GRADIENT_COLOR.get(teamId))));
 
                 TextView teamNameTextView = teamCard.findViewById(R.id.team_name);
                 teamNameTextView.setText(constructor.getName());
@@ -132,11 +156,14 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                 ImageView teamCarImageView = teamCard.findViewById(R.id.car_image);
                 Glide.with(this).load(constructor.getCar_pic_url()).into(teamCarImageView);
 
-                DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(ServiceLocator.getInstance().getCommonDriverRepository())).get(DriverViewModel.class);
+                DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory()).get(DriverViewModel.class);
                 MutableLiveData<Result> driverOneLiveData = driverViewModel.getDriver(constructor.getDriverOneId());
                 MutableLiveData<Result> driverTwoLiveData = driverViewModel.getDriver(constructor.getDriverTwoId());
 
                 driverOneLiveData.observe(this, driverResult -> {
+                    if (driverResult instanceof Result.Loading) {
+                        return;
+                    }
                     if (driverResult.isSuccess()) {
                         Driver driverOne = ((Result.DriverSuccess) driverResult).getData();
 
@@ -147,6 +174,9 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                         Glide.with(this).load(driverOne.getDriver_pic_url()).into(driverOneImageView);
 
                         driverTwoLiveData.observe(this, driverResult2 -> {
+                            if (driverResult2 instanceof Result.Loading) {
+                                return;
+                            }
                             if (driverResult2.isSuccess()) {
                                 Driver driverTwo = ((Result.DriverSuccess) driverResult2).getData();
 
@@ -158,7 +188,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
                                 // Set the team position
                                 TextView teamPositionTextView = teamCard.findViewById(R.id.team_position);
-                                if(standingElement.getPosition() == null){
+                                if (standingElement.getPosition() == null) {
                                     teamPositionTextView.setText(R.string.last_constructor_position);
                                 }
                                 teamPositionTextView.setText(standingElement.getPosition());

@@ -195,4 +195,14 @@ public abstract class Result {
             return drivers;
         }
     }
+
+    @Getter
+    public static class Loading extends Result {
+        private final String message;
+
+        public Loading(String message) {
+            this.message = message;
+        }
+
+    }
 }

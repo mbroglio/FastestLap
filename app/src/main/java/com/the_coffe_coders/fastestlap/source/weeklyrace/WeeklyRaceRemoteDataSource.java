@@ -9,12 +9,18 @@ import androidx.annotation.NonNull;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
-import com.the_coffe_coders.fastestlap.repository.weeklyrace.OperationType;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.dto.RaceDTO;
+import com.the_coffe_coders.fastestlap.mapper.WeeklyRaceMapper;
+import com.the_coffe_coders.fastestlap.repository.weeklyrace.SingleWeeklyRaceCallback;
+import com.the_coffe_coders.fastestlap.repository.weeklyrace.WeeklyRacesCallback;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -26,12 +32,12 @@ public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource {
     private static final String TAG = "WeeklyRaceRemoteDataSource";
     private final ErgastAPIService ergastAPIService;
 
-    public WeeklyRaceRemoteDataSource(String apiKey) {
+    public WeeklyRaceRemoteDataSource() {
         this.ergastAPIService = ServiceLocator.getInstance().getConcreteErgastAPIService();
     }
 
     @Override
-    public void getWeeklyRaces() {
+    public void getWeeklyRaces(WeeklyRacesCallback weeklyRacesCallback) {
         Call<ResponseBody> responseCall = ergastAPIService.getRaces();
         Log.i(TAG, "getWeeklyRaces from remote");
         responseCall.enqueue(new Callback<>() {
@@ -48,22 +54,31 @@ public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource {
                     JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
                     JSONParserUtils jsonParserUtils = new JSONParserUtils();
                     RaceAPIResponse raceAPIsponse = jsonParserUtils.parseRace(mrdata);
-                    //Log.i(TAG, "MRData" + mrdata);
-                    raceCallback.onSuccessFromRemote(raceAPIsponse, OperationType.FETCH_WEEKLY_RACES);
+                    weeklyRacesCallback.onSuccess(unpackWeeklyRaceList(raceAPIsponse));
                 } else {
-                    raceCallback.onFailureFromRemote(new Exception());
+                    weeklyRacesCallback.onFailure(new Exception());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                raceCallback.onFailureFromRemote(new Exception(RETROFIT_ERROR));
+                weeklyRacesCallback.onFailure(new Exception(RETROFIT_ERROR));
             }
         });
     }
 
+    List<WeeklyRace> unpackWeeklyRaceList(RaceAPIResponse weeklyRaceAPIResponse) {
+        List<RaceDTO> raceDTOS = weeklyRaceAPIResponse.getRaceTable().getRaces();
+        List<WeeklyRace> weeklyRaceList = new ArrayList<>();
+        for (RaceDTO raceDTO : raceDTOS) {
+            weeklyRaceList.add(WeeklyRaceMapper.toWeeklyRace(raceDTO));
+        }
+
+        return weeklyRaceList;
+    }
+
     @Override
-    public void getNextRace() {
+    public void getNextRace(SingleWeeklyRaceCallback weeklyRaceCallback) {
         Call<ResponseBody> responseCall = ergastAPIService.getNextRace();
 
         responseCall.enqueue(new Callback<>() {
@@ -82,23 +97,21 @@ public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource {
                     JSONParserUtils jsonParserUtils = new JSONParserUtils();
                     RaceAPIResponse raceAPIResponse = jsonParserUtils.parseRace(mrdata);
                     Log.i(TAG, "FETCH NEXT RACE ==> " + raceAPIResponse.getRaceTable().getRace());
-                    raceCallback.onSuccessFromRemote(raceAPIResponse, OperationType.FETCH_NEXT_RACE);
+                    weeklyRaceCallback.onSuccess(WeeklyRaceMapper.toWeeklyRace(raceAPIResponse.getRaceTable().getRaces().get(0)));
                 } else {
-                    raceCallback.onFailureFromRemote(new Exception());
+                    weeklyRaceCallback.onFailure(new Exception());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                raceCallback.onFailureFromRemote(new Exception(RETROFIT_ERROR));
+                weeklyRaceCallback.onFailure(new Exception(RETROFIT_ERROR));
             }
         });
-
-
     }
 
     @Override
-    public void getLastRace() {
+    public void getLastRace(SingleWeeklyRaceCallback weeklyRaceCallback) {
         Call<ResponseBody> responseCall = ergastAPIService.getLastRace();
 
         responseCall.enqueue(new Callback<>() {
@@ -117,17 +130,16 @@ public class WeeklyRaceRemoteDataSource extends BaseWeeklyRaceRemoteDataSource {
                     JSONParserUtils jsonParserUtils = new JSONParserUtils();
                     RaceAPIResponse raceAPIResponse = jsonParserUtils.parseRace(mrdata);
                     System.out.println("LAST RACE RESULTS" + mrdata);
-                    raceCallback.onSuccessFromRemote(raceAPIResponse, OperationType.FETCH_LAST_RACE);
+                    weeklyRaceCallback.onSuccess(WeeklyRaceMapper.toWeeklyRace(raceAPIResponse.getRaceTable().getRaces().get(0)));
                 } else {
-                    raceCallback.onFailureFromRemote(new Exception());
+                    weeklyRaceCallback.onFailure(new Exception());
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                raceCallback.onFailureFromRemote(new Exception(RETROFIT_ERROR));
+                weeklyRaceCallback.onFailure(new Exception(RETROFIT_ERROR));
             }
         });
-
     }
 }

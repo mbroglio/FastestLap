@@ -14,6 +14,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -38,52 +39,72 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     private final boolean raceToProcess = true;
     LoadingScreen loadingScreen;
 
+    EventViewModel eventViewModel;
+    TrackViewModel trackViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_upcoming_events);
 
+        start();
+
+    }
+
+    private void start(){
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
+
         loadingScreen.showLoadingScreen();
 
-        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
+        trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(ServiceLocator.getInstance().getTrackRepository())).get(TrackViewModel.class);
 
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        UIUtils.applyWindowInsets(toolbar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        UIUtils.applyWindowInsets(toolbar);
-
-        LinearLayout upcomingEventsLayout = findViewById(R.id.upcoming_events_layout);
+        SwipeRefreshLayout upcomingEventsLayout = findViewById(R.id.upcoming_events_layout);
         UIUtils.applyWindowInsets(upcomingEventsLayout);
+        upcomingEventsLayout.setOnRefreshListener(() ->{
+            start();
+            upcomingEventsLayout.setRefreshing(false);
+        });
 
         processEvents();
     }
 
     private void processEvents() {
         Log.i("UpcomingEvents", "Process Event");
-        EventViewModel eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false))).get(EventViewModel.class);
-        MutableLiveData<Result> data = eventViewModel.getUpcomingEventLiveData(0L);
+        MutableLiveData<Result> data = eventViewModel.getWeeklyRacesLiveData();
         data.observe(this, result -> {
+            if(result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 List<WeeklyRace> races = ((Result.WeeklyRaceSuccess) result).getData();
                 Log.i("UpcomingEvents", "SUCCESS");
-
+                LinearLayout upcomingEvents = findViewById(R.id.upcoming_events_list);
+                upcomingEvents.removeAllViews();
                 List<WeeklyRace> upcomingRaces = eventViewModel.extractUpcomingRaces(races);
                 Log.i("UpcomingEvents", "upcomingRaces: " + upcomingRaces.size());
                 for (WeeklyRace race : upcomingRaces) {
-                    createEventCard(race);
+                    createEventCard(upcomingEvents, race);
                 }
+
+                View space = new View(UpcomingEventsActivity.this);
+                space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, Constants.SPACER_HEIGHT));
+                upcomingEvents.addView(space);
             }
         });
     }
 
-    private void createEventCard(WeeklyRace weeklyRace) {
-        LinearLayout upcomingEvents = findViewById(R.id.upcoming_events_list);
-        upcomingEvents.addView(generateEventCard(weeklyRace));
+    private void createEventCard(LinearLayout eventsListLayout, WeeklyRace weeklyRace) {
+        eventsListLayout.addView(generateEventCard(weeklyRace));
 
         View space = new View(UpcomingEventsActivity.this);
         space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, Constants.SPACER_HEIGHT));
-        upcomingEvents.addView(space);
+        eventsListLayout.addView(space);
     }
 
     private View generateEventCard(WeeklyRace weeklyRace) {
@@ -99,11 +120,13 @@ public class UpcomingEventsActivity extends AppCompatActivity {
             eventCard = getLayoutInflater().inflate(R.layout.upcoming_event_card, null);
         }
 
-        TrackViewModel trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(ServiceLocator.getInstance().getTrackRepository())).get(TrackViewModel.class);
         MutableLiveData<Result> trackData = trackViewModel.getTrack(weeklyRace.getTrack().getTrackId());
 
         View finalEventCard = eventCard;
         trackData.observe(this, result -> {
+            if (result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 Track track = ((Result.TrackSuccess) result).getData();
 

@@ -14,41 +14,21 @@ public class LoadingScreen {
 
     private final Handler handler;
     private final View loadingScreen;
-
+    private final Context context;
     private final TextView loadingText;
 
     private int dotCount = 0;
     private boolean addingDots = true;
-    private final Runnable dotRunnable = new Runnable() {
-        @Override
-        public void run() {
-            if (addingDots) {
-                dotCount++;
-                if (dotCount == 4) {
-                    addingDots = false;
-                }
-            } else {
-                dotCount--;
-                if (dotCount == 0) {
-                    addingDots = true;
-                }
-            }
-            StringBuilder dots = new StringBuilder();
-            for (int i = 0; i < dotCount; i++) {
-                dots.append(".");
-            }
-            loadingText.setText("LOADING" + dots);
-            handler.postDelayed(this, 500);
-        }
-    };
+    private Runnable dotRunnable;
 
     public LoadingScreen(View view, Context context) {
         this.handler = new Handler();
         //loading screen logic
         this.loadingScreen = view.findViewById(R.id.loading_screen);
+        this.context = context;
+
         loadingText = view.findViewById(R.id.loading_text);
         ImageView loadingWheel = view.findViewById(R.id.loading_wheel);
-
         // Start the rotation animation
         Animation rotateAnimation = AnimationUtils.loadAnimation(context, R.anim.rotate);
         loadingWheel.startAnimation(rotateAnimation);
@@ -56,6 +36,28 @@ public class LoadingScreen {
 
     public void showLoadingScreen() {
         loadingScreen.setVisibility(View.VISIBLE);
+        dotRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (addingDots) {
+                    dotCount++;
+                    if (dotCount == 4) {
+                        addingDots = false;
+                    }
+                } else {
+                    dotCount--;
+                    if (dotCount == 0) {
+                        addingDots = true;
+                    }
+                }
+                StringBuilder dots = new StringBuilder();
+                for (int i = 0; i < dotCount; i++) {
+                    dots.append(".");
+                }
+                loadingText.setText(context.getString(R.string.loading_upper_case, dots));
+                handler.postDelayed(this, 500);
+            }
+        };
         handler.post(dotRunnable);
     }
 

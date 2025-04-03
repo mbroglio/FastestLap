@@ -30,20 +30,14 @@ public class StandingsFragment extends Fragment {
         MaterialCardView driverCardView = view.findViewById(R.id.drivers_card);
         MaterialCardView teamCardView = view.findViewById(R.id.constructors_card);
 
-        driverCardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), DriversStandingActivity.class);
-                startActivity(intent);
-            }
+        driverCardView.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), DriversStandingActivity.class);
+            startActivity(intent);
         });
 
-        teamCardView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), ConstructorsStandingActivity.class);
-                startActivity(intent);
-            }
+        teamCardView.setOnClickListener(v -> {
+            Intent intent = new Intent(getContext(), ConstructorsStandingActivity.class);
+            startActivity(intent);
         });
 
         return view;

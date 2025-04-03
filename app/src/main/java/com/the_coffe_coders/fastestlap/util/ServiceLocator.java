@@ -3,37 +3,19 @@ package com.the_coffe_coders.fastestlap.util;
 import android.app.Application;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
-import com.the_coffe_coders.fastestlap.repository.constructor.CommonConstructorRepository;
-import com.the_coffe_coders.fastestlap.repository.driver.CommonDriverRepository;
-import com.the_coffe_coders.fastestlap.repository.nation.FirebaseNationRepository;
+import com.the_coffe_coders.fastestlap.repository.nation.NationRepository;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultRepository;
-import com.the_coffe_coders.fastestlap.repository.standings.ConstructorStandingsStandingsRepository;
-import com.the_coffe_coders.fastestlap.repository.standings.DriverStandingsRepository;
 import com.the_coffe_coders.fastestlap.repository.track.TrackRepository;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.repository.user.UserRepository;
-import com.the_coffe_coders.fastestlap.repository.weeklyrace.RaceRepository;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
-import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorStandingsLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.constructor.BaseConstructorStandingsRemoteDataSource;
-import com.the_coffe_coders.fastestlap.source.constructor.ConstructorStandingsRemoteDataSource;
-import com.the_coffe_coders.fastestlap.source.constructor.ConstructorStandingsStandingsLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.driver.BaseDriverStandingsLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.driver.BaseDriverStandingsRemoteDataSource;
-import com.the_coffe_coders.fastestlap.source.driver.DriverStandingsLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.driver.DriverStandingsRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.result.RaceResultLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.result.RaceResultRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.user.BaseUserAuthenticationRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.user.BaseUserDataRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.user.UserAuthenticationFirebaseDataSource;
 import com.the_coffe_coders.fastestlap.source.user.UserFirebaseDataSource;
-import com.the_coffe_coders.fastestlap.source.weeklyrace.BaseWeeklyRaceLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.weeklyrace.BaseWeeklyRaceRemoteDataSource;
-import com.the_coffe_coders.fastestlap.source.weeklyrace.WeeklyRaceLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.weeklyrace.WeeklyRaceRemoteDataSource;
 
-import lombok.Getter;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -190,44 +172,12 @@ public class ServiceLocator {
         return AppRoomDatabase.getDatabase(application);
     }
 
-    public DriverStandingsRepository getDriverStandingsRepository(Application application, boolean debugMode) {
-        BaseDriverStandingsRemoteDataSource driverRemoteDataSource;
-        BaseDriverStandingsLocalDataSource driverLocalDataSource;
-        SharedPreferencesUtils sharedPreferencesUtil = new SharedPreferencesUtils(application);
-        driverRemoteDataSource = new DriverStandingsRemoteDataSource();
-        driverLocalDataSource = new DriverStandingsLocalDataSource(getRoomDatabase(application), sharedPreferencesUtil);
-        return new DriverStandingsRepository(driverRemoteDataSource, driverLocalDataSource);
+    public NationRepository getFirebaseNationRepository() {
+        return new NationRepository();
     }
 
-    public ConstructorStandingsStandingsRepository getConstructorStandingsRepository(Application application, boolean debugMode) {
-        BaseConstructorStandingsRemoteDataSource constructorRemoteDataSource;
-        BaseConstructorStandingsLocalDataSource constructorLocalDataSource;
-        SharedPreferencesUtils sharedPreferencesUtil = new SharedPreferencesUtils(application);
-        constructorRemoteDataSource = new ConstructorStandingsRemoteDataSource("");
-        constructorLocalDataSource = new ConstructorStandingsStandingsLocalDataSource(getRoomDatabase(application), sharedPreferencesUtil);
-        return new ConstructorStandingsStandingsRepository(constructorRemoteDataSource, constructorLocalDataSource);
-    }
-
-    public CommonDriverRepository getCommonDriverRepository() {
-        return new CommonDriverRepository();
-    }
-
-    public CommonConstructorRepository getCommonConstructorRepository() {
-        return new CommonConstructorRepository();
-    }
-
-    public FirebaseNationRepository getFirebaseNationRepository() {
-        return new FirebaseNationRepository();
-    }
-
-    public RaceRepository getRaceRepository(Application application, boolean b) {
-        BaseWeeklyRaceLocalDataSource weeklyRaceLocalDataSource = new WeeklyRaceLocalDataSource(getRoomDatabase(application), new SharedPreferencesUtils(application));
-        BaseWeeklyRaceRemoteDataSource weeklyRaceRemoteDataSource = new WeeklyRaceRemoteDataSource("");
-        return new RaceRepository(weeklyRaceRemoteDataSource, weeklyRaceLocalDataSource, getRaceResultRepository(application, b));
-    }
-
-    public RaceResultRepository getRaceResultRepository(Application application, boolean b) {
-        RaceResultRemoteDataSource raceResultRemoteDataSource = new RaceResultRemoteDataSource("");
+    public RaceResultRepository getRaceResultRepository(Application application) {
+        RaceResultRemoteDataSource raceResultRemoteDataSource = new RaceResultRemoteDataSource();
         RaceResultLocalDataSource raceResultLocalDataSource = new RaceResultLocalDataSource(getRoomDatabase(application), new SharedPreferencesUtils(application));
         return new RaceResultRepository(raceResultRemoteDataSource, raceResultLocalDataSource);
     }

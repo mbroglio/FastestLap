@@ -1,5 +1,3 @@
-import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
-
 plugins {
     alias(libs.plugins.android.application)
     id("io.freefair.lombok") version "8.11"
@@ -60,6 +58,7 @@ dependencies {
     implementation(libs.play.services.auth)
     implementation(libs.firebase.firestore)
     implementation(libs.lifecycle.livedata)
+    implementation(libs.swiperefreshlayout)
     compileOnly(libs.lombok.v11830)
     annotationProcessor(libs.lombok.v11830)
     testCompileOnly (libs.lombok.v11830)

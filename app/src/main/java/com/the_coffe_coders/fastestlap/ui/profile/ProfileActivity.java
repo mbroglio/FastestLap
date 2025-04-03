@@ -3,7 +3,6 @@ package com.the_coffe_coders.fastestlap.ui.profile;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -29,22 +28,15 @@ import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 public class ProfileActivity extends AppCompatActivity {
     private static final String TAG = "ProfileActivity";
-    private final boolean isEmailModified = false;
-    SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
+    SharedPreferencesUtils sharedPreferencesUtils;
     User currentUser;
-    private GestureDetector tapDetector;
-    private String originalEmail;
-    private TextInputEditText emailText;
     private CheckBox autoLoginCheckBox;
     private Button saveButton;
     private Button dismissButton;
-    private Button signOutButton;
-    private String autoLoginKey;
     private boolean isCheckBoxChanged = false;
-
+    private boolean initialAutoLoginState = false;
     private boolean isFromLogin;
 
-    private IUserRepository userRepository;
     private UserViewModel userViewModel;
 
     @Override
@@ -54,7 +46,6 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-
         UIUtils.applyWindowInsets(toolbar);
 
         ScrollView scrollView = findViewById(R.id.profile_layout);
@@ -62,7 +53,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         isFromLogin = getIntent().getBooleanExtra("from_login", false);
         Log.i(TAG, "from login: " + isFromLogin);
-
 
         if (isFromLogin) {
             toolbar.setNavigationOnClickListener(v -> {
@@ -73,100 +63,137 @@ public class ProfileActivity extends AppCompatActivity {
             toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         }
 
-
-        userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
+        // Initialize repositories and view models
+        IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
         userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+        sharedPreferencesUtils = new SharedPreferencesUtils(this);
 
+        // Get current user
         currentUser = userViewModel.getLoggedUser();
 
+        // Initialize UI elements
         autoLoginCheckBox = findViewById(R.id.remember_me_checkbox);
         saveButton = findViewById(R.id.save_button);
         dismissButton = findViewById(R.id.dismiss_button);
-        signOutButton = findViewById(R.id.sign_out_button);
+        Button signOutButton = findViewById(R.id.sign_out_button);
+        TextInputEditText emailText = findViewById(R.id.email_text);
 
-        setAutoLoginCheckBox();
-        boolean autoLogin = autoLoginCheckBox.isChecked();
-        Log.i(TAG, "Auto Login status: " + autoLogin);
+        // Set email from current user
+        if (currentUser != null && currentUser.getEmail() != null) {
+            emailText.setText(currentUser.getEmail());
+        }
 
+        // Fetch and set the auto-login preference
+        fetchAutoLoginPreference();
+
+        // Set the checkbox listener
         autoLoginCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Log.i(TAG, "Auto Login status on click: " + autoLoginCheckBox.isChecked());
-            if (autoLoginCheckBox.isChecked() != autoLogin) {
-                isCheckBoxChanged = true;
-                checkForChanges();
-            } else {
-                isCheckBoxChanged = false;
-                checkForChanges();
-            }
+            Log.i(TAG, "Auto Login status changed to: " + isChecked);
+            isCheckBoxChanged = isChecked != initialAutoLoginState;
+            checkForChanges();
         });
 
-        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
-        sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_AUTO_LOGIN);
-
-        emailText = findViewById(R.id.email_text);
-        emailText.setText(userViewModel.getLoggedUser().getEmail());
-
-        originalEmail = emailText.getText().toString();
-
         dismissButton.setOnClickListener(v -> {
+            // Reset checkbox to original state
+            autoLoginCheckBox.setChecked(initialAutoLoginState);
+            isCheckBoxChanged = false;
             checkForChanges();
+
+            if (isFromLogin) {
+                Intent intent = new Intent(ProfileActivity.this, HomePageActivity.class);
+                startActivity(intent);
+            } else {
+                getOnBackPressedDispatcher().onBackPressed();
+            }
         });
 
         signOutButton.setOnClickListener(v -> {
             userViewModel.logout();
             Intent intent = new Intent(ProfileActivity.this, WelcomeActivity.class);
             startActivity(intent);
+            finish();
         });
+
+        // Hide action buttons initially
+        saveButton.setVisibility(View.INVISIBLE);
+        dismissButton.setVisibility(View.INVISIBLE);
+    }
+
+    /**
+     * Fetches the auto-login preference from both SharedPreferences and Firebase
+     */
+    private void fetchAutoLoginPreference() {
+        // First check local SharedPreferences
+        String localAutoLogin = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_AUTO_LOGIN);
+
+        Log.i(TAG, "Local SharedPreferences Auto Login: " + localAutoLogin);
+
+        // Set initial value from local preference if available
+        if (localAutoLogin != null && !localAutoLogin.isEmpty()) {
+            initialAutoLoginState = Boolean.parseBoolean(localAutoLogin);
+            autoLoginCheckBox.setChecked(initialAutoLoginState);
+        }
+
+        // Then check Firebase for the most up-to-date preference
+        if (currentUser != null && currentUser.getIdToken() != null) {
+            // Using the Task-based method from the ViewModel
+            userViewModel.isAutoLoginEnabled(currentUser.getIdToken()).addOnSuccessListener(isEnabled -> {
+                Log.i(TAG, "Firebase Auto Login Preference: " + isEnabled);
+
+                // Update the checkbox and state if remote value is different
+                if (isEnabled != autoLoginCheckBox.isChecked()) {
+                    initialAutoLoginState = isEnabled;
+                    autoLoginCheckBox.setChecked(isEnabled);
+
+                    // Also update local preferences to stay in sync
+                    sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_AUTO_LOGIN, String.valueOf(isEnabled));
+                }
+                isCheckBoxChanged = false;
+                checkForChanges();
+            }).addOnFailureListener(e -> Log.e(TAG, "Failed to fetch auto login preference from Firebase", e));
+        }
     }
 
     private void checkForChanges() {
-        boolean hasChanges = isEmailModified || isCheckBoxChanged;
+        boolean hasChanges = isCheckBoxChanged;
 
         saveButton.setVisibility(hasChanges ? View.VISIBLE : View.INVISIBLE);
         saveButton.setEnabled(hasChanges);
         dismissButton.setVisibility(hasChanges ? View.VISIBLE : View.INVISIBLE);
         dismissButton.setEnabled(hasChanges);
 
-        saveButton.setOnClickListener(v -> {
-            updatePreferences();
-        });
+        saveButton.setOnClickListener(v -> updatePreferences());
     }
 
     private void updatePreferences() {
-        saveSharedPreferences(sharedPreferencesUtils, currentUser);
+        boolean autoLoginValue = autoLoginCheckBox.isChecked();
+        Log.i(TAG, "Saving auto login preference: " + autoLoginValue);
 
-        Intent intent = new Intent(ProfileActivity.this, HomePageActivity.class);
-        startActivity(intent);
-    }
+        // Update local preferences
+        sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_AUTO_LOGIN, String.valueOf(autoLoginValue));
 
-    private void saveSharedPreferences(SharedPreferencesUtils sharedPreferencesUtils, User user) {
-        Log.i(TAG, "Saving user preferences");
+        // Update remote preferences if user is logged in
+        if (currentUser != null && currentUser.getIdToken() != null) {
+            userViewModel.saveUserAutoLoginPreferences(String.valueOf(autoLoginValue), currentUser.getIdToken());
+        }
 
-        if (isCheckBoxChanged) {
-            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
-                    Constants.SHARED_PREFERENCES_AUTO_LOGIN,
-                    String.valueOf(autoLoginCheckBox.isChecked()));
+        // Reset change flag
+        initialAutoLoginState = autoLoginValue;
+        isCheckBoxChanged = false;
+
+        // Return to previous screen
+        if (isFromLogin) {
+            Intent intent = new Intent(ProfileActivity.this, HomePageActivity.class);
+            startActivity(intent);
         } else {
-            autoLoginKey = getAutoLoginValue();
+            getOnBackPressedDispatcher().onBackPressed();
         }
-
-        userViewModel.saveUserAutoLoginPreferences(String.valueOf(autoLoginCheckBox.isChecked()), user.getIdToken());
-    }
-
-    private void setAutoLoginCheckBox() {
-        String autoLogin = getAutoLoginValue();
-        if (autoLogin != null) {
-            autoLoginCheckBox.setChecked(Boolean.parseBoolean(autoLogin));
-        }
-    }
-
-    private String getAutoLoginValue() {
-        String autoLogin = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_AUTO_LOGIN);
-        Log.i(TAG, "Auto Login: " + autoLogin);
-        return autoLogin;
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        // Refresh preferences when activity resumes
+        fetchAutoLoginPreference();
     }
 }

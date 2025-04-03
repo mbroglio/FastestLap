@@ -94,7 +94,7 @@
 
                 <TextView
                     android:id="@+id/past_gp_name"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/past_round_number"
                     android:layout_centerInParent="true"
@@ -119,6 +119,8 @@
                     android:layout_centerInParent="true"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="8dp"
+                    android:layout_marginEnd="5dp"
+                    android:layout_toStartOf="@id/past_event_card_arrow"
                     android:orientation="vertical"
                     android:visibility="visible">
 
@@ -143,7 +145,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="8dp"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_regular"
+                            android:maxLines="1"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size">
@@ -174,7 +180,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="8dp"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_regular"
+                            android:maxLines="1"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size">
@@ -205,7 +215,11 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="8dp"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_regular"
+                            android:maxLines="1"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size">
@@ -231,7 +245,7 @@
                 </TextView>
 
                 <ImageView
-                    android:id="@+id/paste_event_card_arrow"
+                    android:id="@+id/past_event_card_arrow"
                     android:layout_width="@dimen/icon_size"
                     android:layout_height="@dimen/icon_size"
                     android:layout_alignParentEnd="true"

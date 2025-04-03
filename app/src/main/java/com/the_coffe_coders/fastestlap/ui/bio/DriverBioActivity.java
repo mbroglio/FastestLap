@@ -93,6 +93,9 @@ public class DriverBioActivity extends AppCompatActivity {
         driverNumberCard = findViewById(R.id.driver_number_card);
         driverNumberImage = findViewById(R.id.driver_number_image);
 
+        //driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory()).get(DriverViewModel.class);
+        // get driver viewmodel without initializing it again
+
         driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory()).get(DriverViewModel.class);
         constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
         nationViewModel = new ViewModelProvider(this, new NationViewModelFactory()).get(NationViewModel.class);
@@ -118,7 +121,7 @@ public class DriverBioActivity extends AppCompatActivity {
 
         if (currentFavoriteDriverId.equals(driverId)) {
             // Remove as favorite
-            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER, "");
+            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER, "null");
             menuItem.setIcon(R.drawable.baseline_star_border_24);
 
             // Update user preferences in backend
@@ -155,6 +158,9 @@ public class DriverBioActivity extends AppCompatActivity {
         MutableLiveData<Result> driverMutableLiveData = driverViewModel.getDriver(driverId);
 
         driverMutableLiveData.observe(this, result -> {
+            if(result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 driver = ((Result.DriverSuccess) result).getData();
                 Log.i(TAG, "DRIVER SUCCESS");
@@ -168,9 +174,12 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     public void getTeamInfo(String teamId) {
-        MutableLiveData<Result> constructorMutableLiveData = constructorViewModel.getSelectedConstructorLiveData(teamId);
+        MutableLiveData<Result> constructorMutableLiveData = constructorViewModel.getSelectedConstructor(teamId);
 
         constructorMutableLiveData.observe(this, result -> {
+            if(result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 team = ((Result.ConstructorSuccess) result).getData();
                 Log.i(TAG, "GET CONSTRUCTOR FROM COMMON REPO: " + team.toString());
@@ -185,6 +194,9 @@ public class DriverBioActivity extends AppCompatActivity {
         MutableLiveData<Result> nationMutableLiveData = nationViewModel.getNation(nationId);
 
         nationMutableLiveData.observe(this, result -> {
+            if(result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 nation = ((Result.NationSuccess) result).getData();
                 Log.i(TAG, "GET NATION FROM FIREBASE REPO: " + nation);

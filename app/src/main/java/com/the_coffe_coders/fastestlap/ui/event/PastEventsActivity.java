@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -41,6 +42,7 @@ public class PastEventsActivity extends AppCompatActivity {
 
     LoadingScreen loadingScreen;
     EventViewModel eventViewModel;
+    TrackViewModel trackViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,29 +50,40 @@ public class PastEventsActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_past_events);
 
-        eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false))).get(EventViewModel.class);
+        start();
 
+    }
+
+    private void start(){
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
+
         loadingScreen.showLoadingScreen();
 
+        eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
+        trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(ServiceLocator.getInstance().getTrackRepository())).get(TrackViewModel.class);
+
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-
         UIUtils.applyWindowInsets(toolbar);
-
-        LinearLayout pastEventsLayout = findViewById(R.id.past_events_layout);
-        UIUtils.applyWindowInsets(pastEventsLayout);
-
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
-        Log.i("PastEvent", "onCreate");
+
+        SwipeRefreshLayout pastEventsLayout = findViewById(R.id.past_events_layout);
+        UIUtils.applyWindowInsets(pastEventsLayout);
+        pastEventsLayout.setOnRefreshListener(() ->{
+            start();
+            pastEventsLayout.setRefreshing(false);
+        });
+
         processEvents();
     }
 
     private void processEvents() {
         Log.i("PastEvent", "Process Event");
-        EventViewModel eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(ServiceLocator.getInstance().getRaceRepository(getApplication(), false), ServiceLocator.getInstance().getRaceResultRepository(getApplication(), false))).get(EventViewModel.class);
-        LiveData<Result> dataEvent = eventViewModel.getEventsLiveData(0L);
+        LiveData<Result> dataEvent = eventViewModel.getWeeklyRacesLiveData();
         dataEvent.observe(this, resultEvent -> {
             Log.i("PastEvent", "observed");
+            if (resultEvent instanceof Result.Loading) {
+                return;
+            }
             if (resultEvent.isSuccess()) {
                 List<WeeklyRace> eventRaces = ((Result.WeeklyRaceSuccess) resultEvent).getData();
                 int totalRaces = eventViewModel.extractPastRaces(eventRaces).size();
@@ -82,10 +95,16 @@ public class PastEventsActivity extends AppCompatActivity {
                         races.sort(Comparator.comparingInt(Race::getRoundAsInt));
                         Collections.reverse(races);
 
+                        LinearLayout pastEvents = findViewById(R.id.past_events_list);
+                        pastEvents.removeAllViews();
                         //List<WeeklyRace> pastRaces = eventViewModel.extractPastRaces(races);
                         for (Race race : races) {
-                            createEventCard(race);
+                            createEventCard(pastEvents, race);
                         }
+
+                        View space = new View(PastEventsActivity.this);
+                        space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, Constants.SPACER_HEIGHT));
+                        pastEvents.addView(space);
                     } else {
                         loadingScreen.hideLoadingScreen();
                     }
@@ -95,22 +114,24 @@ public class PastEventsActivity extends AppCompatActivity {
 
     }
 
-    private void createEventCard(Race race) {
-        LinearLayout pastEvents = findViewById(R.id.past_events_list);
-        pastEvents.addView(generateEventCard(race));
+    private void createEventCard(LinearLayout eventsListLayout, Race race) {
+
+        eventsListLayout.addView(generateEventCard(race));
 
         View space = new View(PastEventsActivity.this);
         space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
-        pastEvents.addView(space);
+        eventsListLayout.addView(space);
     }
 
     private View generateEventCard(Race weeklyRace) {
         View eventCard = getLayoutInflater().inflate(R.layout.past_event_card, null);
 
-        TrackViewModel trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(ServiceLocator.getInstance().getTrackRepository())).get(TrackViewModel.class);
         MutableLiveData<Result> trackData = trackViewModel.getTrack(weeklyRace.getTrack().getTrackId());
 
         trackData.observe(this, result -> {
+            if (result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 Track track = ((Result.TrackSuccess) result).getData();
 

@@ -54,6 +54,19 @@ public class HomePageActivity extends AppCompatActivity {
 
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
+        Intent intent = getIntent();
+        if (intent != null && intent.hasExtra("CALLER")) {
+            String caller = intent.getStringExtra("CALLER");
+            if (caller != null && (caller.equals("ConstructorsStandingActivity") || caller.equals("DriversStandingActivity"))) {
+                bottomNavigationView.post(() -> {
+                    bottomNavigationView.setSelectedItemId(R.id.standingsFragment);
+                });
+            } else if (caller != null && caller.equals("WelcomeActivity")) {
+                Intent home = new Intent(HomePageActivity.this, HomePageActivity.class);
+                startActivity(home);
+            }
+        }
     }
 
     @Override

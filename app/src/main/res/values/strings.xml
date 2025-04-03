@@ -44,4 +44,27 @@
     <string name="results_not_available">Results not available</string>
     <string name="last_driver_position">20</string>
     <string name="last_constructor_position">10</string>
+    <string name="weekend_schedule_upper_case">WEEKEND SCHEDULE</string>
+    <string name="number_of_laps">Number of Laps:</string>
+    <string name="first_entry">First Entry:</string>
+    <string name="track_name">Track Name:</string>
+    <string name="race_distance">Race Distance:</string>
+    <string name="track_length">Track Length:</string>
+    <string name="km">km</string>
+    <string name="fastest_lap">Fastest Lap:</string>
+    <string name="track_history_upper_case">TRACK HISTORY:</string>
+    <string name="loading_upper_case">LOADING%1$s</string>
+    <string name="base_countdown">00</string>
+    <string name="next_session">Next Session in:</string>
+    <string name="live_upper_case">LIVE</string>
+    <string name="full_name">Full Name:</string>
+    <string name="base">Base:</string>
+    <string name="team_principal">Team Principal:</string>
+    <string name="chassis">Chassis:</string>
+    <string name="power_unit">Power Unit:</string>
+    <string name="world_championships">World Championships:</string>
+    <string name="wins">Wins:</string>
+    <string name="podiums">Podiums:</string>
+    <string name="team_history_upper_case">TEAM HISTORY</string>
+    <string name="team_info_upper_case">TEAM INFO</string>
 </resources>

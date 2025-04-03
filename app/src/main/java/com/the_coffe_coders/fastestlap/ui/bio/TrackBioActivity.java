@@ -80,12 +80,18 @@ public class TrackBioActivity extends AppCompatActivity {
 
         try {
             trackLiveData.observe(this, trackResult -> {
+                if (trackResult instanceof Result.Loading) {
+                    return;
+                }
                 if (trackResult.isSuccess()) {
                     track = ((Result.TrackSuccess) trackResult).getData();
                     Log.i("TrackBioActivity", "Circuit from DB: " + track);
 
                     MutableLiveData<Result> nationLiveData = nationViewModel.getNation(track.getCountry());
                     nationLiveData.observe(this, nationResult -> {
+                        if (nationResult instanceof Result.Loading) {
+                            return;
+                        }
                         if (nationResult.isSuccess()) {
                             nation = ((Result.NationSuccess) nationResult).getData();
                             setCircuitData(track, nation);
@@ -109,6 +115,9 @@ public class TrackBioActivity extends AppCompatActivity {
 
         TextView circuitName = findViewById(R.id.circuit_name_value);
         circuitName.setText(track.getTrackName());
+
+        TextView firstEntry = findViewById(R.id.circuit_first_entry_value);
+        firstEntry.setText(track.getFirst_entry());
 
         TextView numberOfLaps = findViewById(R.id.number_of_laps_value);
         numberOfLaps.setText(track.getLaps());

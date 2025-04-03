@@ -106,7 +106,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
         if (currentFavoriteTeamId.equals(teamId)) {
             // Remove as favorite
-            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM, "");
+            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM, "null");
             menuItem.setIcon(R.drawable.baseline_star_border_24);
 
             // Update user preferences in backend (if needed)
@@ -126,8 +126,11 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     private void createConstructorBioPage(String teamId) {
-        MutableLiveData<Result> data = constructorViewModel.getSelectedConstructorLiveData(teamId);
+        MutableLiveData<Result> data = constructorViewModel.getSelectedConstructor(teamId);
         data.observe(this, result -> {
+            if(result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 constructor = ((Result.ConstructorSuccess) result).getData();
                 Log.i(TAG, "Constructor: " + constructor);
@@ -142,6 +145,10 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
                 MaterialCardView teamLogoCard = findViewById(R.id.team_logo_card);
                 teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+
+                if(teamId.equals("rb")){
+                    teamLogoCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white));
+                }
 
                 MaterialCardView driverCard = findViewById(R.id.driver_1_card);
                 driverCard.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
@@ -176,6 +183,9 @@ public class ConstructorBioActivity extends AppCompatActivity {
         MutableLiveData<Result> data = driverViewModel.getDriver(driverId);
 
         data.observe(this, result -> {
+            if (result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 if (driverId.equals(team.getDriverOneId())) {
                     driverOne = ((Result.DriverSuccess) result).getData();
@@ -209,6 +219,9 @@ public class ConstructorBioActivity extends AppCompatActivity {
         MutableLiveData<Result> data = nationViewModel.getNation(nationId);
 
         data.observe(this, result -> {
+            if (result instanceof Result.Loading) {
+                return;
+            }
             if (result.isSuccess()) {
                 nation = ((Result.NationSuccess) result).getData();
                 setTeamData(constructor, nation, driverOne, driverTwo);

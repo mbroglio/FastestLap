@@ -1,7 +1,5 @@
 package com.the_coffe_coders.fastestlap.util;
 
-import android.content.Context;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.api.ConstructorAPIResponse;
