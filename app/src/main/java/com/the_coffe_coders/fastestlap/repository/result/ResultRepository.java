@@ -1,5 +1,7 @@
 package com.the_coffe_coders.fastestlap.repository.result;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
@@ -7,13 +9,21 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.source.result.BaseRaceResultRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.result.RaceResultRemoteDataSource;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 public class ResultRepository {
     private final Map<String, MutableLiveData<Result>> resultsCache;
     private final Map<String, Long> resultsTime;
+
+    private final String TAG = "ResultRepository";
+
+    private final MutableLiveData<Result> allResults;
+    private long lastTimeAllResults;
+    private List<Race> raceList;
 
     BaseRaceResultRemoteDataSource raceResultRemoteDataSource;
 
@@ -22,6 +32,7 @@ public class ResultRepository {
     private ResultRepository() {
         resultsCache = new HashMap<>();
         resultsTime = new HashMap<>();
+        allResults = new MutableLiveData<>();
         raceResultRemoteDataSource = new RaceResultRemoteDataSource();
     }
 
@@ -42,7 +53,7 @@ public class ResultRepository {
     }
 
     public void loadResults(String round) {
-        resultsCache.get(round).postValue(new Result.Loading("Fetching results from remote"));
+        Objects.requireNonNull(resultsCache.get(round)).postValue(new Result.Loading("Fetching results from remote"));
         raceResultRemoteDataSource.getRaceResults(Integer.parseInt(round), new RaceResultCallback() {
             @Override
             public void onSuccess(Race race) {
@@ -57,5 +68,31 @@ public class ResultRepository {
                 Objects.requireNonNull(resultsCache.get(round)).postValue(new Result.Error(exception.getMessage()));
             }
         });
+    }
+
+    public MutableLiveData<Result> fetchAllRaceResults(int numberOfRaces) {
+        raceList = new ArrayList<>();
+
+        raceResultRemoteDataSource.getAllRaceResults(numberOfRaces, new RaceResultCallback() {
+            @Override
+            public void onSuccess(Race race) {
+                addRaces(race, numberOfRaces);
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                allResults.postValue(new Result.Error(exception.getMessage()));
+            }
+        });
+
+        return allResults;
+    }
+
+    private synchronized void addRaces(Race race, int numberOfRaces) {
+        raceList.add(race);
+        if (raceList.size() == numberOfRaces) {
+            allResults.setValue(new Result.RaceSuccess(raceList));
+            Log.i(TAG, "posting value!!! + " + raceList.size());
+        }
     }
 }

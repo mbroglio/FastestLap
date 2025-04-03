@@ -54,7 +54,7 @@ public class RaceResultRepository implements RaceResultResponseCallback {
         Log.i(TAG, "fetchAllRaceResults");
         raceList = new ArrayList<>();
         this.numberOfRaces = numberOfRaces;
-        raceResultRemoteDataSource.getAllRaceResults(numberOfRaces);
+        //raceResultRemoteDataSource.getAllRaceResults(numberOfRaces);
         isOutdateRaceResults = false;
         return allRaceResultMutableLiveData;
     }
