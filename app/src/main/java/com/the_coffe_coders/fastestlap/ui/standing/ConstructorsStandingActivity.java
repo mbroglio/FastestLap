@@ -156,7 +156,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                 ImageView teamCarImageView = teamCard.findViewById(R.id.car_image);
                 Glide.with(this).load(constructor.getCar_pic_url()).into(teamCarImageView);
 
-                DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory()).get(DriverViewModel.class);
+                DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(getApplication())).get(DriverViewModel.class);
                 MutableLiveData<Result> driverOneLiveData = driverViewModel.getDriver(constructor.getDriverOneId());
                 MutableLiveData<Result> driverTwoLiveData = driverViewModel.getDriver(constructor.getDriverTwoId());
 
