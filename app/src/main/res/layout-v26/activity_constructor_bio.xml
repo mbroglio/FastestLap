@@ -172,7 +172,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/orbitron_bold"
-                    android:text="DRIVERS"
+                    android:text="@string/drivers_upper_case"
                     android:textColor="@color/white"
                     android:textSize="@dimen/layout_title_1_text_size">
 
@@ -276,7 +276,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
                     android:fontFamily="@font/orbitron_bold"
-                    android:text="TEAM INFO"
+                    android:text="@string/team_info_upper_case"
                     android:textColor="@color/white"
                     android:textSize="@dimen/layout_title_1_text_size">
 
@@ -302,7 +302,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:fontFamily="@font/orbitron_bold"
-                            android:text="Full Name:"
+                            android:text="@string/full_name"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -336,7 +336,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:fontFamily="@font/orbitron_bold"
-                            android:text="Base:"
+                            android:text="@string/base"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -370,7 +370,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:fontFamily="@font/orbitron_bold"
-                            android:text="Team Principal:"
+                            android:text="@string/team_principal"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -404,7 +404,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:fontFamily="@font/orbitron_bold"
-                            android:text="Chassis:"
+                            android:text="@string/chassis"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -437,7 +437,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:fontFamily="@font/orbitron_bold"
-                            android:text="Power Unit:"
+                            android:text="@string/power_unit"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -471,7 +471,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:fontFamily="@font/orbitron_bold"
-                            android:text="First Entry:"
+                            android:text="@string/first_entry"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -504,7 +504,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:fontFamily="@font/orbitron_bold"
-                            android:text="World Championships:"
+                            android:text="@string/world_championships"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -537,7 +537,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:fontFamily="@font/orbitron_bold"
-                            android:text="Wins:"
+                            android:text="@string/wins"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -570,7 +570,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:fontFamily="@font/orbitron_bold"
-                            android:text="Podiums:"
+                            android:text="@string/podiums"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -606,7 +606,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/orbitron_bold"
-                        android:text="TEAM HISTORY:"
+                        android:text="@string/team_history_upper_case"
                         android:textColor="@color/white"
                         android:textSize="@dimen/layout_title_1_text_size" />
 

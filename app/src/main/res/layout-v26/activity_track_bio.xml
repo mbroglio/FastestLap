@@ -151,7 +151,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="20dp"
                         android:layout_marginEnd="2dp"
-                        android:gravity="center"
+                        android:gravity="start"
                         android:layout_toStartOf="@id/country_flag"
                         android:layout_toEndOf="@id/circuit_name_text"
                         android:fontFamily="@font/orbitron_regular"

@@ -27,7 +27,8 @@
             android:autoSizeMinTextSize="9sp"
             android:autoSizeTextType="uniform"
             android:fontFamily="@font/orbitron_bold"
-            android:text="-!-"
+            android:maxLines="1"
+            android:text="@string/not_found"
             android:textColor="@color/white"
             android:textSize="20sp">
 
@@ -131,16 +132,18 @@
 
         <LinearLayout
             android:id="@+id/race_podium"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/last_race_round"
-            android:layout_marginStart="40dp"
+            android:layout_marginStart="20dp"
             android:layout_marginTop="7dp"
+            android:layout_marginEnd="20dp"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:orientation="horizontal">
 
                 <TextView
@@ -159,7 +162,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
+                    android:autoSizeMaxTextSize="@dimen/body_text_size"
+                    android:autoSizeMinTextSize="9sp"
+                    android:autoSizeTextType="uniform"
                     android:fontFamily="@font/orbitron_regular"
+                    android:maxLines="1"
                     android:text="@string/not_found"
                     android:textColor="@color/white"
                     android:textSize="@dimen/body_text_size">
@@ -171,6 +178,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
@@ -190,7 +198,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
+                    android:autoSizeMaxTextSize="@dimen/body_text_size"
+                    android:autoSizeMinTextSize="9sp"
+                    android:autoSizeTextType="uniform"
                     android:fontFamily="@font/orbitron_regular"
+                    android:maxLines="1"
                     android:text="@string/not_found"
                     android:textColor="@color/white"
                     android:textSize="@dimen/body_text_size">
@@ -202,6 +214,7 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
@@ -221,7 +234,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
+                    android:autoSizeMaxTextSize="@dimen/body_text_size"
+                    android:autoSizeMinTextSize="9sp"
+                    android:autoSizeTextType="uniform"
                     android:fontFamily="@font/orbitron_regular"
+                    android:maxLines="1"
                     android:text="@string/not_found"
                     android:textColor="@color/white"
                     android:textSize="@dimen/body_text_size">

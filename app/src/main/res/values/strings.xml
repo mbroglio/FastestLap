@@ -57,4 +57,14 @@
     <string name="base_countdown">00</string>
     <string name="next_session">Next Session in:</string>
     <string name="live_upper_case">LIVE</string>
+    <string name="full_name">Full Name:</string>
+    <string name="base">Base:</string>
+    <string name="team_principal">Team Principal:</string>
+    <string name="chassis">Chassis:</string>
+    <string name="power_unit">Power Unit:</string>
+    <string name="world_championships">World Championships:</string>
+    <string name="wins">Wins:</string>
+    <string name="podiums">Podiums:</string>
+    <string name="team_history_upper_case">TEAM HISTORY</string>
+    <string name="team_info_upper_case">TEAM INFO</string>
 </resources>
