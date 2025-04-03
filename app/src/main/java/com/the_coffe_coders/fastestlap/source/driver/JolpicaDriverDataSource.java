@@ -22,9 +22,4 @@ public class JolpicaDriverDataSource implements DriverDataSource {
     public void getDriver(String driverId, DriverCallback callback) {
 
     }
-
-    @Override
-    public void getDrivers(Callback callback) {
-
-    }
 }

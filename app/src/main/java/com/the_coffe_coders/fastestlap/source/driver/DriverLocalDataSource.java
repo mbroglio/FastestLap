@@ -1,34 +1,30 @@
 package com.the_coffe_coders.fastestlap.source.driver;
 
+import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
+import com.the_coffe_coders.fastestlap.database.DriverDAO;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.repository.driver.DriverCallback;
 
-import okhttp3.Callback;
-
 public class DriverLocalDataSource implements DriverDataSource {
     private static DriverLocalDataSource instance;
+    private final DriverDAO driverDAO;
     private static final String TAG = "DriverLocalDataSource";
-    private DriverLocalDataSource() {
-        // Empty constructor
+    private DriverLocalDataSource(AppRoomDatabase appRoomDatabase) {
+        this.driverDAO = appRoomDatabase.driverDAO();
     }
-    public static synchronized DriverLocalDataSource getInstance() {
+    public static synchronized DriverLocalDataSource getInstance(AppRoomDatabase appRoomDatabase) {
         if (instance == null) {
-            instance = new DriverLocalDataSource();
+            instance = new DriverLocalDataSource(appRoomDatabase);
         }
         return instance;
     }
 
     @Override
     public void getDriver(String driverId, DriverCallback callback) {
-
-    }
-
-    @Override
-    public void getDrivers(Callback callback) {
-
+        callback.onDriverLoaded(driverDAO.getById(driverId));
     }
 
     public void insertDriver(Driver driver) {
-
+        driverDAO.insertDriver(driver);
     }
 }

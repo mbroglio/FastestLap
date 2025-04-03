@@ -6,5 +6,4 @@ import okhttp3.Callback;
 
 public interface DriverDataSource {
     void getDriver(String driverId, DriverCallback callback);
-    void getDrivers(Callback callback);
 }
