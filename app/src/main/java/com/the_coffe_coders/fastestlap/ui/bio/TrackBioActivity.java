@@ -110,9 +110,6 @@ public class TrackBioActivity extends AppCompatActivity {
 
 
     private void setCircuitData(Track track, Nation nation) {
-        Glide.with(this).load(track.getTrack_full_layout_url()).into(circuitImage);
-        Glide.with(this).load(nation.getNation_flag_url()).into(countryFlag);
-
         TextView circuitName = findViewById(R.id.circuit_name_value);
         circuitName.setText(track.getTrackName());
 
@@ -137,7 +134,12 @@ public class TrackBioActivity extends AppCompatActivity {
 
         TextView fastestLapDriverName = findViewById(R.id.fastest_lap_driver);
         fastestLapDriverName.setText(fastestLapDriver);
-        createHistoryTable();
+
+        UIUtils.loadSequenceOfImagesWithGlide(this,
+                new String[]{track.getTrack_full_layout_url(),nation.getNation_flag_url()},
+                new ImageView[]{circuitImage, countryFlag},
+                this::createHistoryTable);
+
     }
 
     private void createHistoryTable() {

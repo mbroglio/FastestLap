@@ -55,6 +55,7 @@ import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
+import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
@@ -214,42 +215,47 @@ public class HomeFragment extends Fragment {
             raceName.setText(race.getRaceName());
 
             ImageView trackOutline = view.findViewById(R.id.last_race_track_outline);
-            Glide.with(this).load(track.getTrack_minimal_layout_url()).into(trackOutline);
 
-            LocalDateTime dateTime = race.getDateTime();
-            TextView raceDate = view.findViewById(R.id.last_race_date);
-            raceDate.setText(String.valueOf(dateTime.getDayOfMonth()));
+            UIUtils.loadImageWithGlide(requireContext(), track.getTrack_minimal_layout_url(), trackOutline, () ->
+                    updateLastRaceUIFinalStep(race, view));
 
-            TextView raceMonth = view.findViewById(R.id.last_race_month);
-            raceMonth.setText(dateTime.getMonth().toString().substring(0, 3).toUpperCase());
-
-            TextView roundNumber = view.findViewById(R.id.last_race_round);
-            roundNumber.setText("Round " + race.getRound());
-
-            MutableLiveData<Result> raceResultData = homeViewModel.getRaceResults(race.getRound());
-            raceResultData.observe(getViewLifecycleOwner(), result -> {
-                try {
-                    if(result instanceof Result.Loading) {
-                        return;
-                    }
-                    if (result.isSuccess()) {
-                        List<RaceResult> raceResults = ((Result.LastRaceResultsSuccess) result).getData().getResults();
-                        setDriverNames(view, raceResults);
-                        loadingScreen.hideLoadingScreen();
-                    } else {
-                        throw new Exception("Failed to fetch race results: " + result.getError());
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, "Error setting driver names: " + e.getMessage());
-                }
-            });
-
-            MaterialCardView resultCard = view.findViewById(R.id.past_event_result);
-            resultCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), EventActivity.class).putExtra("CIRCUIT_ID", race.getTrack().getTrackId())));
         } catch (Exception e) {
             Log.e(TAG, "Error updating last race UI: " + e.getMessage());
             loadPendingResultsLayout(view);
         }
+    }
+
+    private void updateLastRaceUIFinalStep(WeeklyRace race, View view) {
+        LocalDateTime dateTime = race.getDateTime();
+        TextView raceDate = view.findViewById(R.id.last_race_date);
+        raceDate.setText(String.valueOf(dateTime.getDayOfMonth()));
+
+        TextView raceMonth = view.findViewById(R.id.last_race_month);
+        raceMonth.setText(dateTime.getMonth().toString().substring(0, 3).toUpperCase());
+
+        TextView roundNumber = view.findViewById(R.id.last_race_round);
+        roundNumber.setText(requireContext().getString(R.string.round, race.getRound()));
+
+        MutableLiveData<Result> raceResultData = homeViewModel.getRaceResults(race.getRound());
+        raceResultData.observe(getViewLifecycleOwner(), result -> {
+            try {
+                if(result instanceof Result.Loading) {
+                    return;
+                }
+                if (result.isSuccess()) {
+                    List<RaceResult> raceResults = ((Result.LastRaceResultsSuccess) result).getData().getResults();
+                    setDriverNames(view, raceResults);
+                    loadingScreen.hideLoadingScreen();
+                } else {
+                    throw new Exception("Failed to fetch race results: " + result.getError());
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error setting driver names: " + e.getMessage());
+            }
+        });
+
+        MaterialCardView resultCard = view.findViewById(R.id.past_event_result);
+        resultCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), EventActivity.class).putExtra("CIRCUIT_ID", race.getTrack().getTrackId())));
     }
 
 
@@ -352,27 +358,39 @@ public class HomeFragment extends Fragment {
             nextRaceName.setText(nextRace.getRaceName());
 
             ImageView nextRaceFlag = view.findViewById(R.id.home_next_gp_flag);
-            Glide.with(this).load(nation.getNation_flag_url()).into(nextRaceFlag);
 
-            if (!nextRace.getSeason().equals(ServiceLocator.currentYear)) {
-                throw new Exception("Season mismatch");
-            }
+            UIUtils.loadImageWithGlide(requireContext(), nation.getNation_flag_url(), nextRaceFlag, () ->
+            {
+                try {
+                    setNextRaceCardFinalStep(nextRace, view);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
 
-            List<Session> sessions = nextRace.getSessions();
-            Session nextEvent = nextRace.findNextEvent(sessions);
-            if (nextEvent != null) {
-                startCountdown(view, nextEvent.getStartDateTime());
-                updateSessionType(view, nextEvent);
-            } else {
-                throw new Exception("No upcoming session found");
-            }
-
-            FrameLayout nextSessionCard = view.findViewById(R.id.timer_card_countdown);
-            nextSessionCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), EventActivity.class).putExtra("CIRCUIT_ID", nextRace.getTrack().getTrackId())));
-        } catch (Exception e) {
+            } catch (Exception e) {
             Log.e(TAG, "Error in setNextRaceCard: " + e.getMessage());
             setSeasonEnded(view);
         }
+    }
+
+    private void setNextRaceCardFinalStep(WeeklyRace nextRace, View view) throws Exception {
+        if (!nextRace.getSeason().equals(ServiceLocator.currentYear)) {
+            throw new Exception("Season mismatch");
+        }
+
+        List<Session> sessions = nextRace.getSessions();
+        Session nextEvent = nextRace.findNextEvent(sessions);
+        if (nextEvent != null) {
+            startCountdown(view, nextEvent.getStartDateTime());
+            updateSessionType(view, nextEvent);
+        } else {
+            throw new Exception("No upcoming session found");
+        }
+
+        FrameLayout nextSessionCard = view.findViewById(R.id.timer_card_countdown);
+        nextSessionCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), EventActivity.class).putExtra("CIRCUIT_ID", nextRace.getTrack().getTrackId())));
+
     }
 
     private void updateSessionType(View view, Session nextEvent) {
@@ -574,35 +592,39 @@ public class HomeFragment extends Fragment {
         try {
             Driver driver = standingElement.getDriver();
             TextView driverName = view.findViewById(R.id.favourite_driver_name);
-            driverName.setText(driver.getGivenName() + " " + driver.getFamilyName());
-
-            ImageView driverFlag = view.findViewById(R.id.favourite_driver_flag);
-            Glide.with(this).load(nation.getNation_flag_url()).into(driverFlag);
+            String driverNameText = driver.getGivenName() + " " + driver.getFamilyName();
+            driverName.setText(driverNameText);
 
             TextView nationality = view.findViewById(R.id.favourite_driver_nationality);
             nationality.setText(nation.getAbbreviation());
 
+            ImageView driverFlag = view.findViewById(R.id.favourite_driver_flag);
             ImageView driverImage = view.findViewById(R.id.favourite_driver_pic);
-            Glide.with(this).load(driver.getDriver_pic_url()).into(driverImage);
-
-            if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
-                TextView driverPosition = view.findViewById(R.id.favourite_driver_position);
-                driverPosition.setText(standingElement.getPosition());
-
-                TextView driverPoints = view.findViewById(R.id.favourite_driver_points);
-                driverPoints.setText(standingElement.getPoints());
-
-                MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
-                driverRank.setOnClickListener(v -> startActivity(new Intent(getActivity(), DriversStandingActivity.class).putExtra("DRIVER_ID", driver.getDriverId())));
-            } else {
-                MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
-                driverRank.setClickable(false);
-            }
-
             driverImage.setOnClickListener(v -> startActivity(new Intent(getActivity(), DriverBioActivity.class).putExtra("DRIVER_ID", driver.getDriverId())));
+
+            UIUtils.loadSequenceOfImagesWithGlide(requireContext(),
+                    new String[]{nation.getNation_flag_url(), driver.getDriver_pic_url()},
+                    new ImageView[]{driverFlag, driverImage},
+                    () -> buildDriverCardFinalStep(standingElement, view, driver));
         } catch (Exception e) {
             Log.e(TAG, "Error building driver card: " + e.getMessage());
             showDriverNotFound(view);
+        }
+    }
+
+    private void buildDriverCardFinalStep(DriverStandingsElement standingElement, View view, Driver driver) {
+        if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
+            TextView driverPosition = view.findViewById(R.id.favourite_driver_position);
+            driverPosition.setText(standingElement.getPosition());
+
+            TextView driverPoints = view.findViewById(R.id.favourite_driver_points);
+            driverPoints.setText(standingElement.getPoints());
+
+            MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
+            driverRank.setOnClickListener(v -> startActivity(new Intent(getActivity(), DriversStandingActivity.class).putExtra("DRIVER_ID", driver.getDriverId())));
+        } else {
+            MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
+            driverRank.setClickable(false);
         }
     }
 
@@ -686,33 +708,37 @@ public class HomeFragment extends Fragment {
             constructorName.setText(constructor.getName());
 
             ImageView constructorCar = view.findViewById(R.id.favourite_constructor_car);
-            Glide.with(this).load(constructor.getCar_pic_url()).into(constructorCar);
-
             ImageView constructorFlag = view.findViewById(R.id.favourite_constructor_flag);
-            Glide.with(this).load(nation.getNation_flag_url()).into(constructorFlag);
 
             TextView constructorNationality = view.findViewById(R.id.favourite_constructor_nationality);
             constructorNationality.setText(nation.getAbbreviation());
 
-            if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
-                TextView constructorPosition = view.findViewById(R.id.favourite_constructor_position);
-                constructorPosition.setText(standingElement.getPosition());
-
-                TextView constructorPoints = view.findViewById(R.id.favourite_constructor_points);
-                constructorPoints.setText(standingElement.getPoints());
-
-                MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
-                teamRank.setOnClickListener(v -> startActivity(new Intent(getActivity(), ConstructorsStandingActivity.class).putExtra("TEAM_ID", constructor.getConstructorId())));
-            } else {
-                MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
-                teamRank.setClickable(false);
-            }
-
             FrameLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
             constructorCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), ConstructorBioActivity.class).putExtra("TEAM_ID", constructor.getConstructorId())));
+
+            UIUtils.loadSequenceOfImagesWithGlide(requireContext(),
+                    new String[]{nation.getNation_flag_url(), constructor.getCar_pic_url()},
+                    new ImageView[]{constructorFlag, constructorCar},
+                    () -> buildConstructorCardFinalStep(standingElement, view, constructor));
         } catch (Exception e) {
             Log.e(TAG, "Error building constructor card: " + e.getMessage());
             showConstructorNotFound(view);
+        }
+    }
+
+    private void buildConstructorCardFinalStep(ConstructorStandingsElement standingElement, View view, Constructor constructor) {
+        if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
+            TextView constructorPosition = view.findViewById(R.id.favourite_constructor_position);
+            constructorPosition.setText(standingElement.getPosition());
+
+            TextView constructorPoints = view.findViewById(R.id.favourite_constructor_points);
+            constructorPoints.setText(standingElement.getPoints());
+
+            MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
+            teamRank.setOnClickListener(v -> startActivity(new Intent(getActivity(), ConstructorsStandingActivity.class).putExtra("TEAM_ID", constructor.getConstructorId())));
+        } else {
+            MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
+            teamRank.setClickable(false);
         }
     }
 

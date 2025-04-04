@@ -234,26 +234,21 @@ public class ConstructorBioActivity extends AppCompatActivity {
     private void setTeamData(Constructor team, Nation nation, Driver driverOne, Driver driverTwo) {
         Log.i("ConstructorBioActivity", "Setting team data");
 
-        ImageView teamLogoImage = findViewById(R.id.team_logo_image);
-        Glide.with(this).load(team.getTeam_logo_url()).into(teamLogoImage);
+        UIUtils.loadSequenceOfImagesWithGlide(this,
+                new String[]{team.getTeam_logo_url(), nation.getNation_flag_url(), team.getCar_pic_url(), driverOne.getDriver_pic_url(), driverTwo.getDriver_pic_url()},
+                new ImageView[]{findViewById(R.id.team_logo_image), findViewById(R.id.team_flag), findViewById(R.id.team_car_image), findViewById(R.id.driver_1_image), findViewById(R.id.driver_2_image)},
+                () -> setTeamDataFinalStep(team));
 
-        ImageView teamFlag = findViewById(R.id.team_flag);
-        Glide.with(this).load(nation.getNation_flag_url()).into(teamFlag);
+    }
 
-        ImageView teamCarImage = findViewById(R.id.team_car_image);
-        Glide.with(this).load(team.getCar_pic_url()).into(teamCarImage);
-
-        ImageView driverOneImage = findViewById(R.id.driver_1_image);
-        Glide.with(this).load(driverOne.getDriver_pic_url()).into(driverOneImage);
-
-        ImageView driverTwoImage = findViewById(R.id.driver_2_image);
-        Glide.with(this).load(driverTwo.getDriver_pic_url()).into(driverTwoImage);
-
+    private void setTeamDataFinalStep(Constructor team) {
         TextView driverOneName = findViewById(R.id.driver_1_name);
-        driverOneName.setText(driverOne.getGivenName() + " " + driverOne.getFamilyName());
+        String driverOneNameText = driverOne.getGivenName() + " " + driverOne.getFamilyName();
+        driverOneName.setText(driverOneNameText);
 
         TextView driverTwoName = findViewById(R.id.driver_2_name);
-        driverTwoName.setText(driverTwo.getGivenName() + " " + driverTwo.getFamilyName());
+        String driverTwoNameText = driverTwo.getGivenName() + " " + driverTwo.getFamilyName();
+        driverTwoName.setText(driverTwoNameText);
 
         //Team Data
         TextView teamFullName = findViewById(R.id.team_full_name_value);

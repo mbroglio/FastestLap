@@ -79,6 +79,20 @@ public class UIUtils {
         loadImage(context, url, imageView, onSuccess, 0);
     }
 
+    public static void loadSequenceOfImagesWithGlide(Context context, String[] urls, ImageView[] imageViews, Runnable onSuccess) {
+        if (urls.length != imageViews.length) {
+            throw new IllegalArgumentException("The length of urls and imageViews must be the same");
+        }
+
+        for (int i = 0; i < urls.length; i++) {
+            if (i == urls.length - 1) {
+                loadImage(context, urls[i], imageViews[i], onSuccess, 0);
+            } else {
+                loadImage(context, urls[i], imageViews[i], null, 0);
+            }
+        }
+    }
+
     private static void loadImage(Context context, String url, ImageView imageView, Runnable onSuccess, int retryCount) {
         Glide.with(context)
                 .load(url)
@@ -88,7 +102,10 @@ public class UIUtils {
                     public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                         Log.i("Glide", "Image loaded successfully: ");
                         imageView.setImageDrawable(resource);
-                        onSuccess.run();
+                        if(onSuccess != null){
+                            onSuccess.run();
+                        }
+
                     }
 
                     @Override

@@ -67,4 +67,5 @@
     <string name="podiums">Podiums:</string>
     <string name="team_history_upper_case">TEAM HISTORY</string>
     <string name="team_info_upper_case">TEAM INFO</string>
+    <string name="round">Round: %1$s</string>
 </resources>

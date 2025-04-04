@@ -96,7 +96,9 @@ public class UpcomingEventsActivity extends AppCompatActivity {
                 space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, Constants.SPACER_HEIGHT));
                 upcomingEvents.addView(space);
             }
+
         });
+
     }
 
     private void createEventCard(LinearLayout eventsListLayout, WeeklyRace weeklyRace) {
@@ -131,35 +133,42 @@ public class UpcomingEventsActivity extends AppCompatActivity {
                 Track track = ((Result.TrackSuccess) result).getData();
 
                 ImageView trackOutline = finalEventCard.findViewById(R.id.upcoming_track_outline);
-                Glide.with(this).load(track.getTrack_minimal_layout_url()).into(trackOutline);
 
-                TextView roundNumber = finalEventCard.findViewById(R.id.upcoming_round_number);
-                String round = "ROUND " + weeklyRace.getRound();
-                roundNumber.setText(round);
+                UIUtils.loadImageWithGlide(this, track.getTrack_minimal_layout_url(), trackOutline, () ->
+                        generateEventCardFinalStep(finalEventCard, weeklyRace, track));
 
-                TextView gpName = finalEventCard.findViewById(R.id.upcoming_gp_name);
-                gpName.setText(weeklyRace.getRaceName());
-
-                TextView gpDate = finalEventCard.findViewById(R.id.upcoming_date);
-                String fp1Day = String.valueOf(weeklyRace.getFirstPractice().getStartDateTime().getDayOfMonth());
-                String raceDay = String.valueOf(weeklyRace.getDateTime().getDayOfMonth());
-                String date = fp1Day + " - " + raceDay;
-                gpDate.setText(date);
-
-                TextView gpMonth = finalEventCard.findViewById(R.id.upcoming_month);
-                String fp1Month = weeklyRace.getDateTime().getMonth().toString().substring(0, 3);
-                gpMonth.setText(fp1Month);
-
-                finalEventCard.setOnClickListener(v -> {
-                    Intent intent = new Intent(UpcomingEventsActivity.this, EventActivity.class);
-                    intent.putExtra("CIRCUIT_ID", weeklyRace.getTrack().getTrackId());
-                    startActivity(intent);
-                });
             }
-            loadingScreen.hideLoadingScreen();
+
         });
 
         return eventCard;
+    }
+
+    private void generateEventCardFinalStep(View finalEventCard, WeeklyRace weeklyRace, Track track) {
+        TextView roundNumber = finalEventCard.findViewById(R.id.upcoming_round_number);
+        String round = "ROUND " + weeklyRace.getRound();
+        roundNumber.setText(round);
+
+        TextView gpName = finalEventCard.findViewById(R.id.upcoming_gp_name);
+        gpName.setText(weeklyRace.getRaceName());
+
+        TextView gpDate = finalEventCard.findViewById(R.id.upcoming_date);
+        String fp1Day = String.valueOf(weeklyRace.getFirstPractice().getStartDateTime().getDayOfMonth());
+        String raceDay = String.valueOf(weeklyRace.getDateTime().getDayOfMonth());
+        String date = fp1Day + " - " + raceDay;
+        gpDate.setText(date);
+
+        TextView gpMonth = finalEventCard.findViewById(R.id.upcoming_month);
+        String fp1Month = weeklyRace.getDateTime().getMonth().toString().substring(0, 3);
+        gpMonth.setText(fp1Month);
+
+        finalEventCard.setOnClickListener(v -> {
+            Intent intent = new Intent(UpcomingEventsActivity.this, EventActivity.class);
+            intent.putExtra("CIRCUIT_ID", weeklyRace.getTrack().getTrackId());
+            startActivity(intent);
+        });
+
+        loadingScreen.hideLoadingScreen();
     }
 
     @Override

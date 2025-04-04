@@ -1,61 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/intro_screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black">
+    android:background="@color/screen_background_color">
 
-    <ImageView
-        android:id="@+id/app_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="120dp"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="300dp"
-        app:srcCompat="@drawable/iconfl">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black">
 
-    </ImageView>
+        <ImageView
+            android:id="@+id/app_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="120dp"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="300dp"
+            app:srcCompat="@drawable/iconfl">
 
-    <TextView
-        android:id="@+id/app_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/app_logo"
-        android:layout_centerInParent="true"
-        android:fontFamily="@font/orbitron_bold"
-        android:text="@string/app_name"
-        android:textColor="@color/white"
-        android:textSize="35sp"
-        android:visibility="invisible">
+        </ImageView>
 
-    </TextView>
+        <TextView
+            android:id="@+id/app_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/app_logo"
+            android:layout_centerInParent="true"
+            android:fontFamily="@font/orbitron_bold"
+            android:text="@string/app_name"
+            android:textColor="@color/white"
+            android:textSize="35sp"
+            android:visibility="invisible">
 
-    <TextView
-        android:id="@+id/app_credits"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/app_name"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="200dp"
-        android:fontFamily="@font/orbitron_bold"
-        android:gravity="center"
-        android:lineSpacingExtra="10dp"
-        android:text="@string/by_the_coffee_coders"
-        android:textColor="@color/white"
-        android:textSize="@dimen/page_title_text_size"
-        android:visibility="invisible">
+        </TextView>
 
-    </TextView>
+        <TextView
+            android:id="@+id/app_credits"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/app_name"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="150dp"
+            android:fontFamily="@font/orbitron_bold"
+            android:gravity="center"
+            android:lineSpacingExtra="10dp"
+            android:text="@string/by_the_coffee_coders"
+            android:textColor="@color/white"
+            android:textSize="@dimen/page_title_text_size"
+            android:visibility="invisible">
 
-    <com.google.android.material.progressindicator.CircularProgressIndicator
-        android:id="@+id/progress_indicator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/app_credits"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="50dp"
-        android:indeterminate="true"
-        android:visibility="invisible"
-        app:indicatorColor="@color/ferrari_f1" />
+        </TextView>
 
-</RelativeLayout>
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/progress_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:layout_marginBottom="30dp"
+            android:indeterminate="true"
+            android:visibility="invisible"
+            app:indicatorColor="@color/ferrari_f1" />
+
+    </RelativeLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

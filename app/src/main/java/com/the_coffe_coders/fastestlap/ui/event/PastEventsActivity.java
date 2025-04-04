@@ -146,29 +146,33 @@ public class PastEventsActivity extends AppCompatActivity {
                 month.setText(monthString);
 
                 ImageView trackOutline = eventCard.findViewById(R.id.past_track_outline);
-                Glide.with(this).load(track.getTrack_minimal_layout_url()).into(trackOutline);
 
-                TextView round = eventCard.findViewById(R.id.past_round_number);
-                String roundString = "ROUND " + weeklyRace.getRound();
-                round.setText(roundString);
-
-                TextView gpName = eventCard.findViewById(R.id.past_gp_name);
-                gpName.setText(weeklyRace.getRaceName());
-
-                generatePodium(eventCard, weeklyRace);
-
-                Log.i("PastEvent", "gpName: " + weeklyRace.getRaceName());
-                eventCard.setOnClickListener(v -> {
-                    Intent intent = new Intent(PastEventsActivity.this, EventActivity.class);
-                    intent.putExtra("CIRCUIT_ID", weeklyRace.getTrack().getTrackId());
-                    startActivity(intent);
-                });
+                UIUtils.loadImageWithGlide(this, track.getTrack_minimal_layout_url(), trackOutline, () ->
+                        generateEventCardFinalStep(eventCard, weeklyRace, track));
 
             }
-            loadingScreen.hideLoadingScreen();
+
         });
 
         return eventCard;
+    }
+
+    private void generateEventCardFinalStep(View eventCard, Race weeklyRace, Track track) {
+        TextView round = eventCard.findViewById(R.id.past_round_number);
+        String roundString = "ROUND " + weeklyRace.getRound();
+        round.setText(roundString);
+
+        TextView gpName = eventCard.findViewById(R.id.past_gp_name);
+        gpName.setText(weeklyRace.getRaceName());
+
+        generatePodium(eventCard, weeklyRace);
+
+        Log.i("PastEvent", "gpName: " + weeklyRace.getRaceName());
+        eventCard.setOnClickListener(v -> {
+            Intent intent = new Intent(PastEventsActivity.this, EventActivity.class);
+            intent.putExtra("CIRCUIT_ID", weeklyRace.getTrack().getTrackId());
+            startActivity(intent);
+        });
     }
 
     private void generatePodium(View eventCard, Race weeklyRace) {
@@ -181,6 +185,7 @@ public class PastEventsActivity extends AppCompatActivity {
                 driverName.setText(raceResult.getDriver().getFullName());
             }
         }
+        loadingScreen.hideLoadingScreen();
     }
 
     private void setPendingPodium(View eventCard) {

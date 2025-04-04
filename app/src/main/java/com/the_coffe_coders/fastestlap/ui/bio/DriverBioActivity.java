@@ -240,15 +240,19 @@ public class DriverBioActivity extends AppCompatActivity {
             teamLogoCard.setStrokeColor(ContextCompat.getColor(this, R.color.timer_gray));
             driverNumberCard.setStrokeColor(ContextCompat.getColor(this, R.color.timer_gray));
 
-            Glide.with(this).load(R.drawable.f1_car_icon_filled).into(teamLogoImage);
+            teamLogoImage.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.f1_car_icon_filled));
         }
 
-        ImageView driverFlag = findViewById(R.id.driver_flag);
-        Glide.with(this).load(nation.getNation_flag_url()).into(driverFlag);
+        UIUtils.loadSequenceOfImagesWithGlide(this,
+                new String[]{nation.getNation_flag_url(), driver.getDriver_pic_url(), driver.getRacing_number_pic_url()},
+                new ImageView[]{findViewById(R.id.driver_flag), findViewById(R.id.driver_bio_pic), driverNumberImage},
+                () -> {
+                    setDriverDataFinalStep(driver);
+                    Log.i(TAG, "All images loaded successfully");
+                });
+    }
 
-        ImageView driverPic = findViewById(R.id.driver_bio_pic);
-        Glide.with(this).load(driver.getDriver_pic_url()).into(driverPic);
-
+    private void setDriverDataFinalStep(Driver driver) {
         TextView birthplace = findViewById(R.id.driver_birthplace);
         birthplace.setText(driver.getBirth_place());
 
@@ -272,8 +276,6 @@ public class DriverBioActivity extends AppCompatActivity {
 
         TextView firstEntry = findViewById(R.id.driver_first_entry);
         firstEntry.setText(driver.getFirst_entry());
-
-        Glide.with(this).load(driver.getRacing_number_pic_url()).into(driverNumberImage);
 
         createHistoryTable();
     }

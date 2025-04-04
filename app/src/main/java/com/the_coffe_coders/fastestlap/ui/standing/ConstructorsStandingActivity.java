@@ -150,73 +150,84 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                 TextView teamNameTextView = teamCard.findViewById(R.id.team_name);
                 teamNameTextView.setText(constructor.getName());
 
-                ImageView teamLogoImageView = teamCard.findViewById(R.id.team_logo);
-                Glide.with(this).load(constructor.getTeam_logo_url()).into(teamLogoImageView);
-
-                ImageView teamCarImageView = teamCard.findViewById(R.id.car_image);
-                Glide.with(this).load(constructor.getCar_pic_url()).into(teamCarImageView);
-
-                DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(getApplication())).get(DriverViewModel.class);
-                MutableLiveData<Result> driverOneLiveData = driverViewModel.getDriver(constructor.getDriverOneId());
-                MutableLiveData<Result> driverTwoLiveData = driverViewModel.getDriver(constructor.getDriverTwoId());
-
-                driverOneLiveData.observe(this, driverResult -> {
-                    if (driverResult instanceof Result.Loading) {
-                        return;
-                    }
-                    if (driverResult.isSuccess()) {
-                        Driver driverOne = ((Result.DriverSuccess) driverResult).getData();
-
-                        TextView driverOneNameTextView = teamCard.findViewById(R.id.driver_1_name);
-                        driverOneNameTextView.setText(driverOne.getFullName());
-
-                        ImageView driverOneImageView = teamCard.findViewById(R.id.driver_1_pic);
-                        Glide.with(this).load(driverOne.getDriver_pic_url()).into(driverOneImageView);
-
-                        driverTwoLiveData.observe(this, driverResult2 -> {
-                            if (driverResult2 instanceof Result.Loading) {
-                                return;
-                            }
-                            if (driverResult2.isSuccess()) {
-                                Driver driverTwo = ((Result.DriverSuccess) driverResult2).getData();
-
-                                TextView driverTwoNameTextView = teamCard.findViewById(R.id.driver_2_name);
-                                driverTwoNameTextView.setText(driverTwo.getFullName());
-
-                                ImageView driverTwoImageView = teamCard.findViewById(R.id.driver_2_pic);
-                                Glide.with(this).load(driverTwo.getDriver_pic_url()).into(driverTwoImageView);
-
-                                // Set the team position
-                                TextView teamPositionTextView = teamCard.findViewById(R.id.team_position);
-                                if (standingElement.getPosition() == null) {
-                                    teamPositionTextView.setText(R.string.last_constructor_position);
-                                }
-                                teamPositionTextView.setText(standingElement.getPosition());
-
-                                // Set the team points
-                                TextView teamPointsTextView = teamCard.findViewById(R.id.team_points);
-                                teamPointsTextView.setText(standingElement.getPoints());
-
-                                if (teamId.equals(constructorIdToHighlight)) {
-                                    MaterialCardView teamCardView = teamCard.findViewById(R.id.team_card_view);
-                                    UIUtils.animateCardBackgroundColor(this, teamCardView, R.color.yellow, Color.TRANSPARENT, 1000, 10);
-                                }
-
-                                teamCard.setOnClickListener(v -> {
-                                    Intent intent = new Intent(ConstructorsStandingActivity.this, ConstructorBioActivity.class);
-                                    intent.putExtra("TEAM_ID", teamId);
-                                    startActivity(intent);
-                                });
-
-                                loadingScreen.hideLoadingScreen();
-                            }
-                        });
-                    }
-                });
+                UIUtils.loadSequenceOfImagesWithGlide(this,
+                        new String[]{constructor.getCar_pic_url(), constructor.getTeam_logo_url()},
+                        new ImageView[]{teamCard.findViewById(R.id.car_image), teamCard.findViewById(R.id.team_logo)},
+                        () -> generateTeamCardStepTwo(constructor, standingElement, teamCard, constructorIdToHighlight, teamId));
             }
         });
 
         return teamCard;
+    }
+
+    private void generateTeamCardStepTwo(Constructor constructor, ConstructorStandingsElement standingElement, View teamCard, String constructorIdToHighlight, String teamId) {
+        DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(getApplication())).get(DriverViewModel.class);
+        MutableLiveData<Result> driverOneLiveData = driverViewModel.getDriver(constructor.getDriverOneId());
+        MutableLiveData<Result> driverTwoLiveData = driverViewModel.getDriver(constructor.getDriverTwoId());
+
+        driverOneLiveData.observe(this, driverResult -> {
+            if (driverResult instanceof Result.Loading) {
+                return;
+            }
+            if (driverResult.isSuccess()) {
+                Driver driverOne = ((Result.DriverSuccess) driverResult).getData();
+
+                TextView driverOneNameTextView = teamCard.findViewById(R.id.driver_1_name);
+                driverOneNameTextView.setText(driverOne.getFullName());
+
+                ImageView driverOneImageView = teamCard.findViewById(R.id.driver_1_pic);
+
+                UIUtils.loadImageWithGlide(this, driverOne.getDriver_pic_url(), driverOneImageView, () ->
+                        generateTeamCardStepThree(driverTwoLiveData, teamCard, constructorIdToHighlight, teamId, standingElement));
+            }
+        });
+    }
+
+    private void generateTeamCardStepThree(MutableLiveData<Result> driverTwoLiveData, View teamCard, String constructorIdToHighlight, String teamId, ConstructorStandingsElement standingElement) {
+        driverTwoLiveData.observe(this, driverResult2 -> {
+            if (driverResult2 instanceof Result.Loading) {
+                return;
+            }
+            if (driverResult2.isSuccess()) {
+                Driver driverTwo = ((Result.DriverSuccess) driverResult2).getData();
+
+                TextView driverTwoNameTextView = teamCard.findViewById(R.id.driver_2_name);
+                driverTwoNameTextView.setText(driverTwo.getFullName());
+
+                ImageView driverTwoImageView = teamCard.findViewById(R.id.driver_2_pic);
+
+                UIUtils.loadImageWithGlide(this, driverTwo.getDriver_pic_url(), driverTwoImageView, () ->
+                        generateTeamCardFinalStep(teamCard, constructorIdToHighlight, teamId, standingElement));
+                    // Load the image into the ImageView
+            }
+        });
+    }
+
+    private void generateTeamCardFinalStep(View teamCard, String constructorIdToHighlight, String teamId, ConstructorStandingsElement standingElement) {
+
+        // Set the team position
+        TextView teamPositionTextView = teamCard.findViewById(R.id.team_position);
+        if (standingElement.getPosition() == null) {
+            teamPositionTextView.setText(R.string.last_constructor_position);
+        }
+        teamPositionTextView.setText(standingElement.getPosition());
+
+        // Set the team points
+        TextView teamPointsTextView = teamCard.findViewById(R.id.team_points);
+        teamPointsTextView.setText(standingElement.getPoints());
+
+        if (teamId.equals(constructorIdToHighlight)) {
+            MaterialCardView teamCardView = teamCard.findViewById(R.id.team_card_view);
+            UIUtils.animateCardBackgroundColor(this, teamCardView, R.color.yellow, Color.TRANSPARENT, 1000, 10);
+        }
+
+        teamCard.setOnClickListener(v -> {
+            Intent intent = new Intent(ConstructorsStandingActivity.this, ConstructorBioActivity.class);
+            intent.putExtra("TEAM_ID", teamId);
+            startActivity(intent);
+        });
+
+        loadingScreen.hideLoadingScreen();
     }
 
     @Override

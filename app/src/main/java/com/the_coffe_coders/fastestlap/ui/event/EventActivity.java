@@ -158,12 +158,6 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void buildEventCard(WeeklyRace weeklyRace, Track track, Nation nation) {
-        ImageView countryFlag = findViewById(R.id.country_flag);
-        Glide.with(this).load(nation.getNation_flag_url()).into(countryFlag);
-
-        ImageView trackMap = findViewById(R.id.track_outline_image);
-        Glide.with(this).load(track.getTrack_minimal_layout_url()).into(trackMap);
-
         TextView roundNumber = findViewById(R.id.round_number);
         String round = "Round " + weeklyRace.getRound();
         roundNumber.setText(round);
@@ -174,8 +168,6 @@ public class EventActivity extends AppCompatActivity {
 
         TextView name = findViewById(R.id.gp_name);
         name.setText(track.getGp_long_name());
-
-        //setEventImage(track.getTrack_pic_url());
 
         TextView eventDate = findViewById(R.id.event_date);
         eventDate.setText(weeklyRace.getDateInterval());
@@ -188,6 +180,13 @@ public class EventActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        UIUtils.loadSequenceOfImagesWithGlide(this,
+                new String[]{nation.getNation_flag_url(), track.getTrack_minimal_layout_url()},
+                new ImageView[]{findViewById(R.id.country_flag), findViewById(R.id.track_outline_image)},
+                () -> buildEventCardFinalStep(weeklyRace));
+    }
+
+    private void buildEventCardFinalStep(WeeklyRace weeklyRace) {
         List<Session> sessions = weeklyRace.getSessions();
         Session nextEvent = weeklyRace.findNextEvent(sessions);
         boolean underway = weeklyRace.isUnderway(false) && !weeklyRace.isWeekFinished();
