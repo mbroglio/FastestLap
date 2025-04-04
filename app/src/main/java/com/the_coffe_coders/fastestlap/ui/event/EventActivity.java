@@ -158,6 +158,22 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void buildEventCard(WeeklyRace weeklyRace, Track track, Nation nation) {
+
+        UIUtils.multipleSetTextViewText(
+                new String[]{"Round " + weeklyRace.getRound(),
+                        weeklyRace.getSeason(),
+                        track.getGp_long_name(),
+                        weeklyRace.getDateInterval()},
+
+                new TextView[]{
+                        findViewById(R.id.round_number),
+                        findViewById(R.id.event_year),
+                        findViewById(R.id.gp_name),
+                        findViewById(R.id.event_date),
+                }
+        );
+
+        /*
         TextView roundNumber = findViewById(R.id.round_number);
         String round = "Round " + weeklyRace.getRound();
         roundNumber.setText(round);
@@ -171,6 +187,8 @@ public class EventActivity extends AppCompatActivity {
 
         TextView eventDate = findViewById(R.id.event_date);
         eventDate.setText(weeklyRace.getDateInterval());
+
+         */
 
         LinearLayout trackLayout = findViewById(R.id.track_outline_layout);
         trackLayout.setOnClickListener(v -> {
@@ -216,7 +234,7 @@ public class EventActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
+                    protected Bitmap transform(@NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight) {
                         // Make the bitmap 30% transparent (76/255 ≈ 0.3)
                         return setAlpha(toTransform, 76);
                     }
@@ -323,7 +341,6 @@ public class EventActivity extends AppCompatActivity {
             }
             Race race = ((Result.LastRaceResultsSuccess) result).getData();
             List<RaceResult> podium = race.getRaceResults();
-            Log.i(TAG, "Podium size" + podium.size());
             if (podium == null) {
                 showPendingResults();
             } else {
@@ -332,9 +349,8 @@ public class EventActivity extends AppCompatActivity {
                     String driverId = podium.get(i).getDriver().getDriverId();
                     String teamId = podium.get(i).getConstructor().getConstructorId();
 
-                    TextView driverName = findViewById(Constants.PODIUM_DRIVER_NAME.get(i));
-                    driverName.setText(podium.get(i).getDriver().getFullName());
-
+                    UIUtils.singleSetTextViewText(podium.get(i).getDriver().getFullName(),
+                            findViewById(Constants.PODIUM_DRIVER_NAME.get(i)));
 
                     LinearLayout teamColor = findViewById(Constants.PODIUM_TEAM_COLOR.get(i));
                     Integer teamColorObj = Constants.TEAM_COLOR.get(teamId);
@@ -365,15 +381,32 @@ public class EventActivity extends AppCompatActivity {
                 sessionId = practice.getPractice();
             }
 
+            UIUtils.multipleSetTextViewText(
+                    new String[]{Constants.SESSION_NAMES.get(sessionId),
+                            Constants.SESSION_DAY.get(sessionId)},
+
+                    new TextView[]{
+                            findViewById(Constants.SESSION_NAME_FIELD.get(sessionId)),
+                            findViewById(Constants.SESSION_DAY_FIELD.get(sessionId))});
+
+
+            /*
             TextView sessionName = findViewById(Constants.SESSION_NAME_FIELD.get(sessionId));
             sessionName.setText(Constants.SESSION_NAMES.get(sessionId));
 
             TextView sessionDay = findViewById(Constants.SESSION_DAY_FIELD.get(sessionId));
             sessionDay.setText(Constants.SESSION_DAY.get(sessionId));
+             */
 
-            TextView sessionTime = findViewById(Constants.SESSION_TIME_FIELD.get(sessionId));
-            if (sessionId.equals("Race")) sessionTime.setText(session.getStartingTime());
-            else sessionTime.setText(session.getTime());
+            if(sessionId.equals("Race")){
+                UIUtils.singleSetTextViewText(
+                        session.getStartingTime(),
+                        findViewById(Constants.SESSION_TIME_FIELD.get(sessionId)));
+            }else{
+                UIUtils.singleSetTextViewText(
+                        session.getTime(),
+                        findViewById(Constants.SESSION_TIME_FIELD.get(sessionId)));
+            }
 
             setChequeredFlag(session);
         }

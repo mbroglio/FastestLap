@@ -58,7 +58,6 @@ public class DriverBioActivity extends AppCompatActivity {
     private MaterialToolbar toolbar;
     private AppBarLayout appBarLayout;
     private ImageView driverNumberImage;
-    private ScrollView scrollView;
 
     private DriverViewModel driverViewModel;
     private NationViewModel nationViewModel;
@@ -84,7 +83,7 @@ public class DriverBioActivity extends AppCompatActivity {
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        scrollView = findViewById(R.id.driver_bio_scroll);
+        ScrollView scrollView = findViewById(R.id.driver_bio_scroll);
         UIUtils.applyWindowInsets(scrollView);
 
         teamLogoCard = findViewById(R.id.team_logo_card);
@@ -207,10 +206,9 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     public void setToolbar() {
-        String fullName = driver.getGivenName() + " " + driver.getFamilyName();
 
-        TextView toolbarTitle = findViewById(R.id.topAppBarTitle);
-        toolbarTitle.setText(fullName.toUpperCase());
+        UIUtils.singleSetTextViewText((driver.getGivenName() + " " + driver.getFamilyName()).toUpperCase(),
+                findViewById(R.id.topAppBarTitle));
 
         try {
             toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
@@ -253,6 +251,30 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     private void setDriverDataFinalStep(Driver driver) {
+
+        UIUtils.multipleSetTextViewText(
+                new String[]{driver.getBirth_place(),
+                driver.getDateOfBirth(),
+                        driver.getDriverAgeAsString(),
+                        driver.getWeight(),
+                        driver.getHeight(),
+                        driver.getBest_result(),
+                        driver.getChampionships(),
+                        driver.getFirst_entry()},
+
+                new TextView[]{findViewById(R.id.driver_birthplace),
+                        findViewById(R.id.driver_birthdate),
+                        findViewById(R.id.driver_age),
+                        findViewById(R.id.driver_weight),
+                        findViewById(R.id.driver_height),
+                        findViewById(R.id.driver_best_result),
+                        findViewById(R.id.driver_championships),
+                        findViewById(R.id.driver_first_entry)
+                }
+        );
+
+
+        /*
         TextView birthplace = findViewById(R.id.driver_birthplace);
         birthplace.setText(driver.getBirth_place());
 
@@ -277,11 +299,14 @@ public class DriverBioActivity extends AppCompatActivity {
         TextView firstEntry = findViewById(R.id.driver_first_entry);
         firstEntry.setText(driver.getFirst_entry());
 
+         */
+
         createHistoryTable();
     }
 
     private void createHistoryTable() {
         TableLayout tableLayout = findViewById(R.id.history_table);
+        tableLayout.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
 
         View tableHeader = inflater.inflate(R.layout.driver_bio_table_header, tableLayout, false);
@@ -297,6 +322,25 @@ public class DriverBioActivity extends AppCompatActivity {
                 View tableRow = inflater.inflate(R.layout.driver_bio_table_row, tableLayout, false);
                 tableRow.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
 
+                UIUtils.multipleSetTextViewText(
+                        new String[]{
+                                history.getYear(),
+                                history.getTeam(),
+                                history.getPosition(),
+                                history.getPoints(),
+                                history.getWins(),
+                                history.getPodiums()},
+
+                        new TextView[]{
+                                tableRow.findViewById(R.id.season_year),
+                                tableRow.findViewById(R.id.team_name),
+                                tableRow.findViewById(R.id.driver_position),
+                                tableRow.findViewById(R.id.driver_points),
+                                tableRow.findViewById(R.id.driver_wins),
+                                tableRow.findViewById(R.id.driver_podiums)}
+                );
+
+                /*
                 TextView seasonYear = tableRow.findViewById(R.id.season_year);
                 seasonYear.setText(history.getYear());
 
@@ -314,6 +358,8 @@ public class DriverBioActivity extends AppCompatActivity {
 
                 TextView driverPodiums = tableRow.findViewById(R.id.driver_podiums);
                 driverPodiums.setText(history.getPodiums());
+
+                 */
 
                 TableLayout.LayoutParams tableParams = (TableLayout.LayoutParams) tableRow.getLayoutParams();
                 tableParams.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);

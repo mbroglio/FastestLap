@@ -155,6 +155,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                         new ImageView[]{teamCard.findViewById(R.id.car_image), teamCard.findViewById(R.id.team_logo)},
                         () -> generateTeamCardStepTwo(constructor, standingElement, teamCard, constructorIdToHighlight, teamId));
             }
+
         });
 
         return teamCard;

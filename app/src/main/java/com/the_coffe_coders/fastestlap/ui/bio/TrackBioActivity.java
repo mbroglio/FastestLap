@@ -64,11 +64,8 @@ public class TrackBioActivity extends AppCompatActivity {
         String trackId = getIntent().getStringExtra("CIRCUIT_ID");
         Log.i("TrackBioActivity", "CIRCUIT_ID: " + trackId);
 
-        String grandPrixName = getIntent().getStringExtra("GRAND_PRIX_NAME");
-        Log.i("TrackBioActivity", "GRAND_PRIX_NAME: " + grandPrixName);
-
-        TextView title = findViewById(R.id.topAppBarTitle);
-        title.setText(grandPrixName);
+        UIUtils.singleSetTextViewText(getIntent().getStringExtra("GRAND_PRIX_NAME"),
+                findViewById(R.id.topAppBarTitle));
 
         circuitImage = findViewById(R.id.track_image);
         countryFlag = findViewById(R.id.country_flag);
@@ -108,8 +105,26 @@ public class TrackBioActivity extends AppCompatActivity {
         }
     }
 
-
     private void setCircuitData(Track track, Nation nation) {
+
+        UIUtils.multipleSetTextViewText(
+                new String[]{track.getTrackName(),
+                track.getFirst_entry(),
+                        track.getLaps(),
+                        track.getLength(),
+                        track.getRace_distance(),
+                        track.getLap_record().split(" ")[0],
+                        track.getLap_record().substring(track.getLap_record().split(" ")[0].length() + 1)},
+
+                new TextView[]{findViewById(R.id.circuit_name_value),
+                        findViewById(R.id.circuit_first_entry_value),
+                        findViewById(R.id.number_of_laps_value),
+                        findViewById(R.id.circuit_length_value),
+                        findViewById(R.id.race_distance_value),
+                        findViewById(R.id.fastest_lap_value),
+                        findViewById(R.id.fastest_lap_driver)});
+
+        /*
         TextView circuitName = findViewById(R.id.circuit_name_value);
         circuitName.setText(track.getTrackName());
 
@@ -135,6 +150,8 @@ public class TrackBioActivity extends AppCompatActivity {
         TextView fastestLapDriverName = findViewById(R.id.fastest_lap_driver);
         fastestLapDriverName.setText(fastestLapDriver);
 
+         */
+
         UIUtils.loadSequenceOfImagesWithGlide(this,
                 new String[]{track.getTrack_full_layout_url(),nation.getNation_flag_url()},
                 new ImageView[]{circuitImage, countryFlag},
@@ -144,6 +161,7 @@ public class TrackBioActivity extends AppCompatActivity {
 
     private void createHistoryTable() {
         TableLayout tableLayout = findViewById(R.id.history_table);
+        tableLayout.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
 
         View tableHeader = inflater.inflate(R.layout.track_bio_table_header, tableLayout, false);
@@ -153,6 +171,27 @@ public class TrackBioActivity extends AppCompatActivity {
         for (TrackHistory history : track.getTrack_history()) {
             View tableRow = inflater.inflate(R.layout.track_bio_table_row, tableLayout, false);
 
+            UIUtils.multipleSetTextViewText(
+                    new String[]{
+                            history.getYear(),
+                            history.getPodium().get(0),
+                            history.getPodium().get(1),
+                            history.getPodium().get(2),
+                            history.getTeam().get(0),
+                            history.getTeam().get(1),
+                            history.getTeam().get(2)},
+
+                    new TextView[]{
+                            tableRow.findViewById(R.id.season_year),
+                            tableRow.findViewById(R.id.first_driver),
+                            tableRow.findViewById(R.id.second_driver),
+                            tableRow.findViewById(R.id.third_driver),
+                            tableRow.findViewById(R.id.first_driver_team),
+                            tableRow.findViewById(R.id.second_driver_team),
+                            tableRow.findViewById(R.id.third_driver_team)});
+
+
+            /*
             TextView year = tableRow.findViewById(R.id.season_year);
             year.setText(history.getYear());
 
@@ -173,6 +212,8 @@ public class TrackBioActivity extends AppCompatActivity {
 
             TextView thirdTeam = tableRow.findViewById(R.id.third_driver_team);
             thirdTeam.setText(history.getTeam().get(2));
+
+             */
 
             tableLayout.addView(tableRow);
         }

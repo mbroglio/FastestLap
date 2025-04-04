@@ -61,8 +61,6 @@ public class DriversStandingActivity extends AppCompatActivity {
 
     private LoadingScreen loadingScreen;
 
-    private DriverStandingsViewModel driverStandingsViewModel;
-
     private String driverId;
 
     @Override
@@ -107,7 +105,7 @@ public class DriversStandingActivity extends AppCompatActivity {
     private void setupPage() {
         LinearLayout driverStanding = findViewById(R.id.driver_standing);
 
-        driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory()).get(DriverStandingsViewModel.class);
+        DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory()).get(DriverStandingsViewModel.class);
         MutableLiveData<Result> livedata = driverStandingsViewModel.getDriverStandingsLiveData();//TODO get last update from shared preferences
 
         livedata.observe(this, result -> {

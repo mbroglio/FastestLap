@@ -16,6 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -123,6 +124,24 @@ public class UIUtils {
                         }
                     }
                 });
+    }
+
+    public static void singleSetTextViewText(String text, TextView textView) {
+        setTextViewText(text, textView);
+    }
+
+    public static void multipleSetTextViewText(String[] texts, TextView[] textViews) {
+        if(texts.length != textViews.length) {
+            throw new IllegalArgumentException("The length of texts and textViews must be the same");
+        }
+
+        for (int i = 0; i < texts.length; i++) {
+            setTextViewText(texts[i], textViews[i]);
+        }
+    }
+
+    private static void setTextViewText(String text, TextView textView) {
+        textView.setText(text);
     }
 
     public static void animateCardBackgroundColor(Context context, MaterialCardView cardView, int startColorResId, int endColor, int duration, int repeatCount) {

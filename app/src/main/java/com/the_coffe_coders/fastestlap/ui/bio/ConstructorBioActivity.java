@@ -135,10 +135,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
                 constructor = ((Result.ConstructorSuccess) result).getData();
                 Log.i(TAG, "Constructor: " + constructor);
 
-                String teamName = constructor.getName().toUpperCase();
-
-                TextView title = findViewById(R.id.topAppBarTitle);
-                title.setText(teamName);
+                UIUtils.singleSetTextViewText(constructor.getName().toUpperCase(), findViewById(R.id.topAppBarTitle));
 
                 toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
                 appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
@@ -242,12 +239,42 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     private void setTeamDataFinalStep(Constructor team) {
+
+        UIUtils.multipleSetTextViewText(
+                new String[]{driverOne.getGivenName() + " " + driverOne.getFamilyName(),
+                        driverTwo.getGivenName() + " " + driverTwo.getFamilyName(),
+                        team.getFull_name(),
+                        team.getHq(),
+                        team.getTeam_principal(),
+                        team.getChassis(),
+                        team.getPower_unit(),
+                        team.getFirst_entry(),
+                        team.getWorld_championships(),
+                        team.getWins(),
+                        team.getPodiums()},
+
+                new TextView[]{findViewById(R.id.driver_1_name),
+                        findViewById(R.id.driver_2_name),
+                        findViewById(R.id.team_full_name_value),
+                        findViewById(R.id.team_base_value),
+                        findViewById(R.id.team_principal_value),
+                        findViewById(R.id.team_chassis_value),
+                        findViewById(R.id.team_power_unit_value),
+                        findViewById(R.id.team_first_entry_value),
+                        findViewById(R.id.team_championships_value),
+                        findViewById(R.id.team_wins_value),
+                        findViewById(R.id.team_podiums_value)});
+
+
+
+
+        /*
         TextView driverOneName = findViewById(R.id.driver_1_name);
-        String driverOneNameText = driverOne.getGivenName() + " " + driverOne.getFamilyName();
+
         driverOneName.setText(driverOneNameText);
 
         TextView driverTwoName = findViewById(R.id.driver_2_name);
-        String driverTwoNameText = driverTwo.getGivenName() + " " + driverTwo.getFamilyName();
+
         driverTwoName.setText(driverTwoNameText);
 
         //Team Data
@@ -278,6 +305,8 @@ public class ConstructorBioActivity extends AppCompatActivity {
         TextView podiums = findViewById(R.id.team_podiums_value);
         podiums.setText(team.getPodiums());
 
+         */
+
         createHistoryTable();
     }
 
@@ -300,7 +329,24 @@ public class ConstructorBioActivity extends AppCompatActivity {
             for (ConstructorHistory history : constructor.getTeam_history()) {
                 View tableRow = inflater.inflate(R.layout.constructor_bio_table_row, tableLayout, false);
                 tableRow.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
+
+                UIUtils.multipleSetTextViewText(
+                        new String[]{history.getYear(),
+                                history.getPosition(),
+                                history.getPoints(),
+                                history.getWins(),
+                                history.getPodiums()},
+
+                        new TextView[]{tableRow.findViewById(R.id.season_year),
+                                tableRow.findViewById(R.id.team_position),
+                                tableRow.findViewById(R.id.team_points),
+                                tableRow.findViewById(R.id.team_wins),
+                                tableRow.findViewById(R.id.team_podiums)}
+                );
+
+
                 // Customize the row if needed
+                /*
                 TextView seasonYear, teamPosition, teamPoints, teamWins, teamPodiums;
                 seasonYear = tableRow.findViewById(R.id.season_year);
                 seasonYear.setText(history.getYear());
@@ -316,6 +362,8 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
                 teamPodiums = tableRow.findViewById(R.id.team_podiums);
                 teamPodiums.setText(history.getPodiums());
+
+                 */
 
                 // Set bottom margin to 5dp
                 TableLayout.LayoutParams tableParams = (TableLayout.LayoutParams) tableRow.getLayoutParams();
