@@ -190,7 +190,7 @@ public class EventActivity extends AppCompatActivity {
 
         List<Session> sessions = weeklyRace.getSessions();
         Session nextEvent = weeklyRace.findNextEvent(sessions);
-        boolean underway = weeklyRace.isUnderway() && !weeklyRace.isWeekFinished();
+        boolean underway = weeklyRace.isUnderway(false) && !weeklyRace.isWeekFinished();
         //setLiveSession();
         if (nextEvent != null && !underway) {
             LocalDateTime eventDateTime = nextEvent.getStartDateTime();

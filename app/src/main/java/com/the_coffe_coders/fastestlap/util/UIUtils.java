@@ -7,17 +7,28 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 
@@ -64,20 +75,37 @@ public class UIUtils {
         });
     }
 
-    public static GestureDetector createTapDetector(Activity activity) {
-        return new GestureDetector(activity, new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onSingleTapUp(@NonNull MotionEvent e) {
-                boolean visible = (activity.getWindow().getDecorView().getSystemUiVisibility() & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0;
-                if (visible) {
-                    UIUtils.hideSystemUI(activity);
-                } else {
-                    UIUtils.showSystemUI(activity);
-                }
-                UIUtils.hideSystemUI(activity);
-                return true;
-            }
-        });
+    public static void loadImageWithGlide(Context context, String url, ImageView imageView, Runnable onSuccess) {
+        loadImage(context, url, imageView, onSuccess, 0);
+    }
+
+    private static void loadImage(Context context, String url, ImageView imageView, Runnable onSuccess, int retryCount) {
+        Glide.with(context)
+                .load(url)
+                .into(new CustomTarget<Drawable>() {
+
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                        Log.i("Glide", "Image loaded successfully: ");
+                        imageView.setImageDrawable(resource);
+                        onSuccess.run();
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                        // Handle the case when the load is cleared
+                        Log.i("Glide", "Image load cleared: " + url);
+                    }
+
+                    @Override
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                        Log.e("Glide", "Image loading failed: " + url);
+                        if (retryCount < Constants.MAX_RETRY_COUNT) {
+                            Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
+                            new Handler(Looper.getMainLooper()).post(() -> loadImage(context, url, imageView,  onSuccess, retryCount + 1));
+                        }
+                    }
+                });
     }
 
     public static void animateCardBackgroundColor(Context context, MaterialCardView cardView, int startColorResId, int endColor, int duration, int repeatCount) {

@@ -110,7 +110,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     private View generateEventCard(WeeklyRace weeklyRace) {
         View eventCard = null;
 
-        if (weeklyRace.isUnderway()) {
+        if (weeklyRace.isUnderway(true)) {
             eventCard = getLayoutInflater().inflate(R.layout.upcoming_event_live_card, null);
 
             ImageView liveIcon = eventCard.findViewById(R.id.upcoming_event_icon);

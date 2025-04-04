@@ -1,5 +1,7 @@
 package com.the_coffe_coders.fastestlap.domain.grand_prix;
 
+import android.util.Log;
+
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
@@ -71,14 +73,23 @@ public abstract class WeeklyRace {
         return nextSession;
     }
 
-    public boolean isUnderway() {
+    public boolean isUnderway(boolean forEventsList) {
+        int finishedSessions = 0;
         for (Session session : this.getSessions()) {
             if (session.getSessionStatus().equals(SessionStatus.IN_PROGRESS)) {
                 return true;
             }
+            if(forEventsList){
+                if (session.getSessionStatus().equals(SessionStatus.FINISHED)) {
+                    finishedSessions++;
+                }
+            }
         }
-
-        return false;
+        if(forEventsList){
+            return finishedSessions > 0 && finishedSessions < 5;
+        }else{
+            return false;
+        }
     }
 
     @Override
