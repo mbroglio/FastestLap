@@ -21,9 +21,13 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_weight="1"
+            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
+            android:autoSizeTextType="uniform"
             android:fontFamily="@font/orbitron_bold"
+            android:maxLines="1"
             android:gravity="center"
-            android:text="YEAR"
+            android:text="@string/year_upper_case"
             android:textColor="@color/black"
             android:textSize="@dimen/layout_subtitle_text_size" />
 
@@ -35,7 +39,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="POS"
+            android:text="@string/pos_upper_case"
             android:textColor="@color/black"
             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -49,7 +53,7 @@
             android:layout_weight="0.8"
             android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="TEAM"
+            android:text="@string/team_upper_case"
             android:textColor="@color/black"
             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -63,7 +67,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="PTS"
+            android:text="@string/pts_upper_case"
             android:textColor="@color/black"
             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -77,7 +81,7 @@
             android:layout_weight="1.05"
             android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="W"
+            android:text="@string/w_upper_case"
             android:textColor="@color/black"
             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -92,7 +96,7 @@
             android:layout_weight="1"
             android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="POD"
+            android:text="@string/pod_upper_case"
             android:textColor="@color/black"
             android:textSize="@dimen/layout_subtitle_text_size">
 

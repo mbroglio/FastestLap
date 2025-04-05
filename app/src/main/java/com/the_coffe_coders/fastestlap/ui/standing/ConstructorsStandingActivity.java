@@ -12,6 +12,7 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -147,8 +148,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                 LinearLayout teamColor = teamCard.findViewById(R.id.team_card);
                 teamColor.setBackground(AppCompatResources.getDrawable(this, Objects.requireNonNull(Constants.TEAM_GRADIENT_COLOR.get(teamId))));
 
-                TextView teamNameTextView = teamCard.findViewById(R.id.team_name);
-                teamNameTextView.setText(constructor.getName());
+                UIUtils.singleSetTextViewText(constructor.getName(), teamCard.findViewById(R.id.team_name));
 
                 UIUtils.loadSequenceOfImagesWithGlide(this,
                         new String[]{constructor.getCar_pic_url(), constructor.getTeam_logo_url()},
@@ -173,8 +173,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
             if (driverResult.isSuccess()) {
                 Driver driverOne = ((Result.DriverSuccess) driverResult).getData();
 
-                TextView driverOneNameTextView = teamCard.findViewById(R.id.driver_1_name);
-                driverOneNameTextView.setText(driverOne.getFullName());
+                UIUtils.singleSetTextViewText(driverOne.getFullName(), teamCard.findViewById(R.id.driver_1_name));
 
                 ImageView driverOneImageView = teamCard.findViewById(R.id.driver_1_pic);
 
@@ -192,8 +191,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
             if (driverResult2.isSuccess()) {
                 Driver driverTwo = ((Result.DriverSuccess) driverResult2).getData();
 
-                TextView driverTwoNameTextView = teamCard.findViewById(R.id.driver_2_name);
-                driverTwoNameTextView.setText(driverTwo.getFullName());
+                UIUtils.singleSetTextViewText(driverTwo.getFullName(), teamCard.findViewById(R.id.driver_2_name));
 
                 ImageView driverTwoImageView = teamCard.findViewById(R.id.driver_2_pic);
 
@@ -206,20 +204,15 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
     private void generateTeamCardFinalStep(View teamCard, String constructorIdToHighlight, String teamId, ConstructorStandingsElement standingElement) {
 
-        // Set the team position
-        TextView teamPositionTextView = teamCard.findViewById(R.id.team_position);
-        if (standingElement.getPosition() == null) {
-            teamPositionTextView.setText(R.string.last_constructor_position);
-        }
-        teamPositionTextView.setText(standingElement.getPosition());
+        UIUtils.setTextViewTextWithCondition(standingElement.getPosition() == null,
+                ContextCompat.getString(this, R.string.last_constructor_position), //if true
+                standingElement.getPosition(), //if false
+                teamCard.findViewById(R.id.team_position));
 
-        // Set the team points
-        TextView teamPointsTextView = teamCard.findViewById(R.id.team_points);
-        teamPointsTextView.setText(standingElement.getPoints());
+        UIUtils.singleSetTextViewText(standingElement.getPoints(), teamCard.findViewById(R.id.team_points));
 
         if (teamId.equals(constructorIdToHighlight)) {
-            MaterialCardView teamCardView = teamCard.findViewById(R.id.team_card_view);
-            UIUtils.animateCardBackgroundColor(this, teamCardView, R.color.yellow, Color.TRANSPARENT, 1000, 10);
+            UIUtils.animateCardBackgroundColor(this, teamCard.findViewById(R.id.team_card_view), R.color.yellow, Color.TRANSPARENT, 1000, 10);
         }
 
         teamCard.setOnClickListener(v -> {

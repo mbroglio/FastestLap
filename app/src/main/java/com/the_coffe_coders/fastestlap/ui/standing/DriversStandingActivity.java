@@ -20,6 +20,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -79,7 +80,6 @@ public class DriversStandingActivity extends AppCompatActivity {
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
 
         loadingScreen.showLoadingScreen();
-
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
@@ -202,22 +202,20 @@ public class DriversStandingActivity extends AppCompatActivity {
     }
 
     private void generateDriverCardStepTwo(View driverCard, Driver driver, DriverStandingsElement standingElement, String driverIdToHighlight) {
-        TextView driverName = driverCard.findViewById(R.id.driver_name);
-        driverName.setText(driver.getFullName());
 
-        TextView driverPosition = driverCard.findViewById(R.id.driver_position);
-        if(standingElement.getPosition() == null || standingElement.getPosition().equals("-")){
-            driverPosition.setText(R.string.last_driver_position);
-        }else{
-            driverPosition.setText(standingElement.getPosition());
-        }
+        UIUtils.multipleSetTextViewText(
+                new String[]{driver.getFullName(), standingElement.getPoints()},
 
-        TextView driverPoints = driverCard.findViewById(R.id.driver_points);
-        driverPoints.setText(standingElement.getPoints());
+                new TextView[]{driverCard.findViewById(R.id.driver_name),
+                        driverCard.findViewById(R.id.driver_points)});
+
+        UIUtils.setTextViewTextWithCondition(standingElement.getPosition() == null || standingElement.getPosition().equals("-"),
+                ContextCompat.getString(this, R.string.last_driver_position), //if true
+                standingElement.getPosition(), //if false
+                driverCard.findViewById(R.id.driver_position));
 
         if (standingElement.getDriver().getDriverId().equals(driverIdToHighlight)) {
-            MaterialCardView driverCardView = driverCard.findViewById(R.id.driver_card_view);
-            UIUtils.animateCardBackgroundColor(this, driverCardView, R.color.yellow, Color.TRANSPARENT, 1000, 10);
+            UIUtils.animateCardBackgroundColor(this, driverCard.findViewById(R.id.driver_card_view), R.color.yellow, Color.TRANSPARENT, 1000, 10);
         }
 
         ConstructorViewModel constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);

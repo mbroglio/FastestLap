@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
@@ -137,18 +138,16 @@ public class PastEventsActivity extends AppCompatActivity {
 
                 LocalDateTime raceDateTime = weeklyRace.getStartDateTime();
 
-                TextView day = eventCard.findViewById(R.id.past_date);
-                String dayString = raceDateTime.getDayOfMonth() + "";
-                day.setText(dayString);
+                UIUtils.multipleSetTextViewText(
+                        new String[]{raceDateTime.getDayOfMonth() + "", raceDateTime.getMonth().toString().substring(0, 3)},
 
-                TextView month = eventCard.findViewById(R.id.past_month);
-                String monthString = raceDateTime.getMonth().toString().substring(0, 3); //Ex: JAN, FEB, etc
-                month.setText(monthString);
+                        new TextView[]{eventCard.findViewById(R.id.past_date),eventCard.findViewById(R.id.past_month)}
+                );
 
                 ImageView trackOutline = eventCard.findViewById(R.id.past_track_outline);
 
                 UIUtils.loadImageWithGlide(this, track.getTrack_minimal_layout_url(), trackOutline, () ->
-                        generateEventCardFinalStep(eventCard, weeklyRace, track));
+                        generateEventCardFinalStep(eventCard, weeklyRace));
 
             }
 
@@ -157,13 +156,12 @@ public class PastEventsActivity extends AppCompatActivity {
         return eventCard;
     }
 
-    private void generateEventCardFinalStep(View eventCard, Race weeklyRace, Track track) {
-        TextView round = eventCard.findViewById(R.id.past_round_number);
-        String roundString = "ROUND " + weeklyRace.getRound();
-        round.setText(roundString);
+    private void generateEventCardFinalStep(View eventCard, Race weeklyRace) {
 
-        TextView gpName = eventCard.findViewById(R.id.past_gp_name);
-        gpName.setText(weeklyRace.getRaceName());
+        UIUtils.multipleSetTextViewText(
+                new String[]{this.getString(R.string.round_upper_case_plus_value, weeklyRace.getRound()), weeklyRace.getTrack().getCountry()},
+
+                new TextView[]{eventCard.findViewById(R.id.past_round_number), eventCard.findViewById(R.id.past_gp_name)});
 
         generatePodium(eventCard, weeklyRace);
 
@@ -181,8 +179,9 @@ public class PastEventsActivity extends AppCompatActivity {
         } else {
             for (int i = 0; i < 3; i++) {
                 RaceResult raceResult = weeklyRace.getResults().get(i);
-                TextView driverName = eventCard.findViewById(Constants.PAST_RACE_DRIVER_NAME.get(i));
-                driverName.setText(raceResult.getDriver().getFullName());
+
+                UIUtils.singleSetTextViewText(raceResult.getDriver().getFullName(), eventCard.findViewById(Constants.PAST_RACE_DRIVER_NAME.get(i)));
+
             }
         }
         loadingScreen.hideLoadingScreen();

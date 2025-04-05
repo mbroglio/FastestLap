@@ -166,7 +166,7 @@ public class HomeFragment extends Fragment {
         MutableLiveData<Result> lastRace = homeViewModel.getLastRace();
         lastRace.observe(getViewLifecycleOwner(), result -> {
             try {
-                if(result instanceof Result.Loading) {
+                if (result instanceof Result.Loading) {
                     return;
                 }
                 if (result.isSuccess()) {
@@ -189,7 +189,7 @@ public class HomeFragment extends Fragment {
             MutableLiveData<Result> trackData = trackViewModel.getTrack(circuitId);
             trackData.observe(getViewLifecycleOwner(), trackResult -> {
                 try {
-                    if(trackResult instanceof Result.Loading) {
+                    if (trackResult instanceof Result.Loading) {
                         return;
                     }
                     if (trackResult.isSuccess()) {
@@ -211,12 +211,10 @@ public class HomeFragment extends Fragment {
 
     private void updateLastRaceUI(View view, WeeklyRace race, Track track) {
         try {
-            TextView raceName = view.findViewById(R.id.last_race_name);
-            raceName.setText(race.getRaceName());
 
-            ImageView trackOutline = view.findViewById(R.id.last_race_track_outline);
+            UIUtils.singleSetTextViewText(race.getRaceName(), view.findViewById(R.id.last_race_name));
 
-            UIUtils.loadImageWithGlide(requireContext(), track.getTrack_minimal_layout_url(), trackOutline, () ->
+            UIUtils.loadImageWithGlide(requireContext(), track.getTrack_minimal_layout_url(), view.findViewById(R.id.last_race_track_outline), () ->
                     updateLastRaceUIFinalStep(race, view));
 
         } catch (Exception e) {
@@ -227,19 +225,23 @@ public class HomeFragment extends Fragment {
 
     private void updateLastRaceUIFinalStep(WeeklyRace race, View view) {
         LocalDateTime dateTime = race.getDateTime();
-        TextView raceDate = view.findViewById(R.id.last_race_date);
-        raceDate.setText(String.valueOf(dateTime.getDayOfMonth()));
 
-        TextView raceMonth = view.findViewById(R.id.last_race_month);
-        raceMonth.setText(dateTime.getMonth().toString().substring(0, 3).toUpperCase());
+        UIUtils.multipleSetTextViewText(
+                new String[]{String.valueOf(dateTime.getDayOfMonth()),
+                        dateTime.getMonth().toString().substring(0, 3).toUpperCase(),
+                        requireContext().getString(R.string.round, race.getRound())
+                },
+                new TextView[]{view.findViewById(R.id.last_race_date),
+                        view.findViewById(R.id.last_race_month),
+                        view.findViewById(R.id.last_race_round)
+                }
+        );
 
-        TextView roundNumber = view.findViewById(R.id.last_race_round);
-        roundNumber.setText(requireContext().getString(R.string.round, race.getRound()));
 
         MutableLiveData<Result> raceResultData = homeViewModel.getRaceResults(race.getRound());
         raceResultData.observe(getViewLifecycleOwner(), result -> {
             try {
-                if(result instanceof Result.Loading) {
+                if (result instanceof Result.Loading) {
                     return;
                 }
                 if (result.isSuccess()) {
@@ -262,8 +264,9 @@ public class HomeFragment extends Fragment {
     private void setDriverNames(View view, List<RaceResult> raceResults) {
         try {
             for (int i = 0; i < Math.min(3, raceResults.size()); i++) {
-                TextView driver = view.findViewById(Constants.LAST_RACE_DRIVER_NAME.get(i));
-                driver.setText(raceResults.get(i).getDriver().getFullName());
+
+                UIUtils.singleSetTextViewText(raceResults.get(i).getDriver().getFullName(), view.findViewById(Constants.LAST_RACE_DRIVER_NAME.get(i)));
+
             }
         } catch (Exception e) {
             Log.e(TAG, "Error setting driver names: " + e.getMessage());
@@ -281,7 +284,7 @@ public class HomeFragment extends Fragment {
             nextRaceLiveData.observe(getViewLifecycleOwner(), result -> {
 
                 try {
-                    if(result instanceof Result.Loading) {
+                    if (result instanceof Result.Loading) {
                         return;
                     }
                     if (result.isSuccess()) {
@@ -311,7 +314,7 @@ public class HomeFragment extends Fragment {
             MutableLiveData<Result> trackData = trackViewModel.getTrack(nextRace.getTrack().getTrackId());
             trackData.observe(getViewLifecycleOwner(), trackResult -> {
                 try {
-                    if(trackResult instanceof Result.Loading) {
+                    if (trackResult instanceof Result.Loading) {
                         return;
                     }
                     if (trackResult.isSuccess()) {
@@ -336,7 +339,7 @@ public class HomeFragment extends Fragment {
         MutableLiveData<Result> nationData = nationViewModel.getNation(track.getCountry());
         nationData.observe(getViewLifecycleOwner(), nationResult -> {
             try {
-                if(nationResult instanceof Result.Loading) {
+                if (nationResult instanceof Result.Loading) {
                     return;
                 }
                 if (nationResult.isSuccess()) {
@@ -354,21 +357,19 @@ public class HomeFragment extends Fragment {
 
     private void setNextRaceCard(View view, WeeklyRace nextRace, Nation nation) {
         try {
-            TextView nextRaceName = view.findViewById(R.id.home_next_gp_name);
-            nextRaceName.setText(nextRace.getRaceName());
 
-            ImageView nextRaceFlag = view.findViewById(R.id.home_next_gp_flag);
+            UIUtils.singleSetTextViewText(nextRace.getRaceName(), view.findViewById(R.id.home_next_gp_name));
 
-            UIUtils.loadImageWithGlide(requireContext(), nation.getNation_flag_url(), nextRaceFlag, () ->
-            {
-                try {
-                    setNextRaceCardFinalStep(nextRace, view);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            });
+            UIUtils.loadImageWithGlide(requireContext(), nation.getNation_flag_url(), view.findViewById(R.id.home_next_gp_flag),
+                    () -> {
+                        try {
+                            setNextRaceCardFinalStep(nextRace, view);
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    });
 
-            } catch (Exception e) {
+        } catch (Exception e) {
             Log.e(TAG, "Error in setNextRaceCard: " + e.getMessage());
             setSeasonEnded(view);
         }
@@ -394,9 +395,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void updateSessionType(View view, Session nextEvent) {
-        TextView sessionType = view.findViewById(R.id.next_session_type);
         String sessionId = nextEvent.getClass().getSimpleName().equals("Practice") ? "Practice" + ((Practice) nextEvent).getNumber() : nextEvent.getClass().getSimpleName();
-        sessionType.setText(Constants.SESSION_NAMES.getOrDefault(sessionId, "Unknown"));
+        UIUtils.singleSetTextViewText(Constants.SESSION_NAMES.getOrDefault(sessionId, "Unknown"),view.findViewById(R.id.next_session_type));
     }
 
     private void startCountdown(View view, LocalDateTime eventDate) {
@@ -416,18 +416,24 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onTick(long millisUntilFinished) {
-                days.setText(String.valueOf(millisUntilFinished / 86400000));
-                hours.setText(String.valueOf((millisUntilFinished % 86400000) / 3600000));
-                minutes.setText(String.valueOf(((millisUntilFinished % 86400000) % 3600000) / 60000));
-                seconds.setText(String.valueOf((((millisUntilFinished % 86400000) % 3600000) % 60000) / 1000));
+                UIUtils.multipleSetTextViewText(
+                        new String[]{String.valueOf(millisUntilFinished / 86400000),
+                                String.valueOf((millisUntilFinished % 86400000) / 3600000),
+                                String.valueOf(((millisUntilFinished % 86400000) % 3600000) / 60000),
+                                String.valueOf((((millisUntilFinished % 86400000) % 3600000) % 60000) / 1000)},
+
+                        new TextView[]{days, hours, minutes, seconds}
+                );
             }
 
             @Override
             public void onFinish() {
-                days.setText("0");
-                hours.setText("0");
-                minutes.setText("0");
-                seconds.setText("0");
+                UIUtils.multipleSetTextViewText(
+                        new String[]{"0", "0", "0", "0"},
+
+                        new TextView[]{days, hours, minutes, seconds}
+                );
+
                 liveIconLayout.setVisibility(View.VISIBLE);
             }
         }.start();
@@ -448,7 +454,7 @@ public class HomeFragment extends Fragment {
         MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData();
         driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
             try {
-                if(result instanceof Result.Loading) {
+                if (result instanceof Result.Loading) {
                     return;
                 }
                 if (result.isSuccess()) {
@@ -470,13 +476,13 @@ public class HomeFragment extends Fragment {
         MutableLiveData<Result> driverData = driverViewModel.getDriver(driverId);
         driverData.observe(getViewLifecycleOwner(), result -> {
             try {
-                if(result instanceof Result.Loading) {
+                if (result instanceof Result.Loading) {
                     return;
                 }
                 if (result.isSuccess()) {
                     Driver driver = ((Result.DriverSuccess) result).getData();
-                    TextView driverName = seasonEndedCard.findViewById(Constants.HOME_SEASON_DRIVER_STANDINGS_NAME_FIELD.get(position));
-                    driverName.setText(driver.getFullName());
+
+                    UIUtils.singleSetTextViewText(driver.getFullName(), seasonEndedCard.findViewById(Constants.HOME_SEASON_DRIVER_STANDINGS_NAME_FIELD.get(position)));
 
                     View driverColor = seasonEndedCard.findViewById(Constants.HOME_SEASON_DRIVER_STANDINGS_COLOR_FIELD.get(position));
                     driverColor.setBackgroundResource(Constants.TEAM_COLOR.getOrDefault(driver.getTeam_id(), R.color.timer_gray));
@@ -493,7 +499,7 @@ public class HomeFragment extends Fragment {
         MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData();
         constructorStandingsData.observe(getViewLifecycleOwner(), result -> {
             try {
-                if(result instanceof Result.Loading) {
+                if (result instanceof Result.Loading) {
                     return;
                 }
                 if (result.isSuccess()) {
@@ -501,8 +507,8 @@ public class HomeFragment extends Fragment {
                     List<ConstructorStandingsElement> constructorsList = standings.getConstructorStandings();
                     for (int i = 0; i < Math.min(3, constructorsList.size()); i++) {
                         ConstructorStandingsElement constructor = constructorsList.get(i);
-                        TextView constructorName = seasonEndedCard.findViewById(Constants.HOME_SEASON_TEAM_STANDINGS_NAME_FIELD.get(i));
-                        constructorName.setText(constructor.getConstructor().getName());
+
+                        UIUtils.singleSetTextViewText(constructor.getConstructor().getName(), seasonEndedCard.findViewById(Constants.HOME_SEASON_TEAM_STANDINGS_NAME_FIELD.get(i)));
 
                         View constructorColor = seasonEndedCard.findViewById(Constants.HOME_SEASON_TEAM_STANDINGS_COLOR_FIELD.get(i));
                         constructorColor.setBackgroundResource(Constants.TEAM_COLOR.getOrDefault(constructor.getConstructor().getConstructorId(), R.color.timer_gray));
@@ -526,7 +532,7 @@ public class HomeFragment extends Fragment {
         MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData();
         driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
             try {
-                if(result instanceof Result.Loading) {
+                if (result instanceof Result.Loading) {
                     return;
                 }
                 if (result.isSuccess()) {
@@ -551,7 +557,7 @@ public class HomeFragment extends Fragment {
         MutableLiveData<Result> driverData = driverViewModel.getDriver(driverId);
         driverData.observe(getViewLifecycleOwner(), driverResult -> {
             try {
-                if(driverResult instanceof Result.Loading) {
+                if (driverResult instanceof Result.Loading) {
                     return;
                 }
                 if (driverResult.isSuccess()) {
@@ -572,7 +578,7 @@ public class HomeFragment extends Fragment {
         MutableLiveData<Result> nationData = nationViewModel.getNation(favouriteDriver.getDriver().getNationality());
         nationData.observe(getViewLifecycleOwner(), nationResult -> {
             try {
-                if(nationResult instanceof Result.Loading) {
+                if (nationResult instanceof Result.Loading) {
                     return;
                 }
                 if (nationResult.isSuccess()) {
@@ -591,12 +597,11 @@ public class HomeFragment extends Fragment {
     private void buildDriverCard(View view, DriverStandingsElement standingElement, Nation nation) {
         try {
             Driver driver = standingElement.getDriver();
-            TextView driverName = view.findViewById(R.id.favourite_driver_name);
-            String driverNameText = driver.getGivenName() + " " + driver.getFamilyName();
-            driverName.setText(driverNameText);
 
-            TextView nationality = view.findViewById(R.id.favourite_driver_nationality);
-            nationality.setText(nation.getAbbreviation());
+            UIUtils.multipleSetTextViewText(
+                    new String[]{driver.getGivenName() + " " + driver.getFamilyName(), nation.getAbbreviation()},
+
+                    new TextView[]{view.findViewById(R.id.favourite_driver_name), view.findViewById(R.id.favourite_driver_nationality)});
 
             ImageView driverFlag = view.findViewById(R.id.favourite_driver_flag);
             ImageView driverImage = view.findViewById(R.id.favourite_driver_pic);
@@ -606,6 +611,7 @@ public class HomeFragment extends Fragment {
                     new String[]{nation.getNation_flag_url(), driver.getDriver_pic_url()},
                     new ImageView[]{driverFlag, driverImage},
                     () -> buildDriverCardFinalStep(standingElement, view, driver));
+
         } catch (Exception e) {
             Log.e(TAG, "Error building driver card: " + e.getMessage());
             showDriverNotFound(view);
@@ -614,11 +620,11 @@ public class HomeFragment extends Fragment {
 
     private void buildDriverCardFinalStep(DriverStandingsElement standingElement, View view, Driver driver) {
         if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
-            TextView driverPosition = view.findViewById(R.id.favourite_driver_position);
-            driverPosition.setText(standingElement.getPosition());
 
-            TextView driverPoints = view.findViewById(R.id.favourite_driver_points);
-            driverPoints.setText(standingElement.getPoints());
+            UIUtils.multipleSetTextViewText(
+                    new String[]{standingElement.getPosition(), standingElement.getPoints()},
+
+                    new TextView[]{view.findViewById(R.id.favourite_driver_position), view.findViewById(R.id.favourite_driver_points)});
 
             MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
             driverRank.setOnClickListener(v -> startActivity(new Intent(getActivity(), DriversStandingActivity.class).putExtra("DRIVER_ID", driver.getDriverId())));
@@ -638,7 +644,7 @@ public class HomeFragment extends Fragment {
         MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData();
         constructorStandingsData.observe(getViewLifecycleOwner(), result -> {
             try {
-                if(result instanceof Result.Loading) {
+                if (result instanceof Result.Loading) {
                     return;
                 }
                 if (result.isSuccess()) {
@@ -663,7 +669,7 @@ public class HomeFragment extends Fragment {
         MutableLiveData<Result> constructorData = constructorViewModel.getSelectedConstructor(teamId);
         constructorData.observe(getViewLifecycleOwner(), constructorResult -> {
             try {
-                if(constructorResult instanceof Result.Loading) {
+                if (constructorResult instanceof Result.Loading) {
                     return;
                 }
                 if (constructorResult.isSuccess()) {
@@ -685,7 +691,7 @@ public class HomeFragment extends Fragment {
         nationData.observe(getViewLifecycleOwner(), nationResult -> {
 
             try {
-                if(nationResult instanceof Result.Loading) {
+                if (nationResult instanceof Result.Loading) {
                     return;
                 }
                 if (nationResult.isSuccess()) {
@@ -704,22 +710,25 @@ public class HomeFragment extends Fragment {
     private void buildConstructorCard(View view, ConstructorStandingsElement standingElement, Nation nation) {
         try {
             Constructor constructor = standingElement.getConstructor();
-            TextView constructorName = view.findViewById(R.id.favourite_constructor_name);
-            constructorName.setText(constructor.getName());
+
+            UIUtils.multipleSetTextViewText(
+                    new String[]{constructor.getName(), nation.getAbbreviation()},
+
+                    new TextView[]{view.findViewById(R.id.favourite_constructor_name), view.findViewById(R.id.favourite_constructor_nationality)});
 
             ImageView constructorCar = view.findViewById(R.id.favourite_constructor_car);
             ImageView constructorFlag = view.findViewById(R.id.favourite_constructor_flag);
-
-            TextView constructorNationality = view.findViewById(R.id.favourite_constructor_nationality);
-            constructorNationality.setText(nation.getAbbreviation());
 
             FrameLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
             constructorCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), ConstructorBioActivity.class).putExtra("TEAM_ID", constructor.getConstructorId())));
 
             UIUtils.loadSequenceOfImagesWithGlide(requireContext(),
                     new String[]{nation.getNation_flag_url(), constructor.getCar_pic_url()},
+
                     new ImageView[]{constructorFlag, constructorCar},
+
                     () -> buildConstructorCardFinalStep(standingElement, view, constructor));
+
         } catch (Exception e) {
             Log.e(TAG, "Error building constructor card: " + e.getMessage());
             showConstructorNotFound(view);
@@ -728,11 +737,11 @@ public class HomeFragment extends Fragment {
 
     private void buildConstructorCardFinalStep(ConstructorStandingsElement standingElement, View view, Constructor constructor) {
         if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
-            TextView constructorPosition = view.findViewById(R.id.favourite_constructor_position);
-            constructorPosition.setText(standingElement.getPosition());
 
-            TextView constructorPoints = view.findViewById(R.id.favourite_constructor_points);
-            constructorPoints.setText(standingElement.getPoints());
+            UIUtils.multipleSetTextViewText(
+                    new String[]{standingElement.getPosition(), standingElement.getPoints()},
+
+                    new TextView[]{view.findViewById(R.id.favourite_constructor_position), view.findViewById(R.id.favourite_constructor_points)});
 
             MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
             teamRank.setOnClickListener(v -> startActivity(new Intent(getActivity(), ConstructorsStandingActivity.class).putExtra("TEAM_ID", constructor.getConstructorId())));

@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
@@ -58,6 +59,7 @@ public class DriverBioActivity extends AppCompatActivity {
     private MaterialToolbar toolbar;
     private AppBarLayout appBarLayout;
     private ImageView driverNumberImage;
+    private String driverId;
 
     private DriverViewModel driverViewModel;
     private NationViewModel nationViewModel;
@@ -67,24 +69,37 @@ public class DriverBioActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-
         setContentView(R.layout.activity_driver_bio);
 
+        start();
+    }
+
+    private void start(){
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
         loadingScreen.showLoadingScreen();
 
-        String driverId = getIntent().getStringExtra("DRIVER_ID");
-        Log.i("DriverBioActivity", "Driver ID: " + driverId);
-
         toolbar = findViewById(R.id.topAppBar);
-        appBarLayout = findViewById(R.id.top_bar_layout);
-
         UIUtils.applyWindowInsets(toolbar);
-
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        ScrollView scrollView = findViewById(R.id.driver_bio_scroll);
-        UIUtils.applyWindowInsets(scrollView);
+        Menu menu = toolbar.getMenu();
+        MenuItem favoriteItem = menu.findItem(R.id.favourite_icon_outline);
+        favoriteItem.setOnMenuItemClickListener(v -> {
+            toggleFavoriteDriver(driverId, favoriteItem);
+            return true;
+        });
+
+        appBarLayout = findViewById(R.id.top_bar_layout);
+
+        SwipeRefreshLayout driverBioLayout = findViewById(R.id.driver_bio_layout);
+        UIUtils.applyWindowInsets(driverBioLayout);
+        driverBioLayout.setOnRefreshListener(() -> {
+            start();
+            driverBioLayout.setRefreshing(false);
+        });
+
+        driverId = getIntent().getStringExtra("DRIVER_ID");
+        Log.i("DriverBioActivity", "Driver ID: " + driverId);
 
         teamLogoCard = findViewById(R.id.team_logo_card);
         teamLogoImage = findViewById(R.id.team_logo_image);
@@ -92,20 +107,13 @@ public class DriverBioActivity extends AppCompatActivity {
         driverNumberCard = findViewById(R.id.driver_number_card);
         driverNumberImage = findViewById(R.id.driver_number_image);
 
-        //driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory()).get(DriverViewModel.class);
-        // get driver viewmodel without initializing it again
+        initializeViewModels();
+    }
 
+    private void initializeViewModels() {
         driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(getApplication())).get(DriverViewModel.class);
         constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
         nationViewModel = new ViewModelProvider(this, new NationViewModelFactory()).get(NationViewModel.class);
-
-        // Set up the favorite icon click listener
-        Menu menu = toolbar.getMenu();
-        MenuItem favoriteItem = menu.findItem(R.id.favourite_icon_outline);
-        favoriteItem.setOnMenuItemClickListener(v -> {
-            toggleFavoriteDriver(driverId, favoriteItem);
-            return true;
-        });
 
         createDriverBioPage(driverId);
     }
@@ -243,11 +251,10 @@ public class DriverBioActivity extends AppCompatActivity {
 
         UIUtils.loadSequenceOfImagesWithGlide(this,
                 new String[]{nation.getNation_flag_url(), driver.getDriver_pic_url(), driver.getRacing_number_pic_url()},
+
                 new ImageView[]{findViewById(R.id.driver_flag), findViewById(R.id.driver_bio_pic), driverNumberImage},
-                () -> {
-                    setDriverDataFinalStep(driver);
-                    Log.i(TAG, "All images loaded successfully");
-                });
+
+                () -> setDriverDataFinalStep(driver));
     }
 
     private void setDriverDataFinalStep(Driver driver) {
@@ -272,34 +279,6 @@ public class DriverBioActivity extends AppCompatActivity {
                         findViewById(R.id.driver_first_entry)
                 }
         );
-
-
-        /*
-        TextView birthplace = findViewById(R.id.driver_birthplace);
-        birthplace.setText(driver.getBirth_place());
-
-        TextView birthdate = findViewById(R.id.driver_birthdate);
-        birthdate.setText(driver.getDateOfBirth());
-
-        TextView age = findViewById(R.id.driver_age);
-        age.setText(driver.getDriverAgeAsString());
-
-        TextView weight = findViewById(R.id.driver_weight);
-        weight.setText(driver.getWeight());
-
-        TextView height = findViewById(R.id.driver_height);
-        height.setText(driver.getHeight());
-
-        TextView bestResult = findViewById(R.id.driver_best_result);
-        bestResult.setText(driver.getBest_result());
-
-        TextView championships = findViewById(R.id.driver_championships);
-        championships.setText(driver.getChampionships());
-
-        TextView firstEntry = findViewById(R.id.driver_first_entry);
-        firstEntry.setText(driver.getFirst_entry());
-
-         */
 
         createHistoryTable();
     }
@@ -339,27 +318,6 @@ public class DriverBioActivity extends AppCompatActivity {
                                 tableRow.findViewById(R.id.driver_wins),
                                 tableRow.findViewById(R.id.driver_podiums)}
                 );
-
-                /*
-                TextView seasonYear = tableRow.findViewById(R.id.season_year);
-                seasonYear.setText(history.getYear());
-
-                TextView teamNameText = tableRow.findViewById(R.id.team_name);
-                teamNameText.setText(history.getTeam());
-
-                TextView driverPosition = tableRow.findViewById(R.id.driver_position);
-                driverPosition.setText(history.getPosition());
-
-                TextView driverPoints = tableRow.findViewById(R.id.driver_points);
-                driverPoints.setText(history.getPoints());
-
-                TextView driverWins = tableRow.findViewById(R.id.driver_wins);
-                driverWins.setText(history.getWins());
-
-                TextView driverPodiums = tableRow.findViewById(R.id.driver_podiums);
-                driverPodiums.setText(history.getPodiums());
-
-                 */
 
                 TableLayout.LayoutParams tableParams = (TableLayout.LayoutParams) tableRow.getLayoutParams();
                 tableParams.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);

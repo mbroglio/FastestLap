@@ -347,7 +347,6 @@
                             android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size"
-                            android:textStyle="bold"
                             tools:ignore="RtlSymmetry" />
 
                         <TextView
@@ -429,7 +428,6 @@
                             android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size"
-                            android:textStyle="bold"
                             tools:ignore="RtlSymmetry" />
 
                         <TextView
@@ -511,7 +509,6 @@
                             android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size"
-                            android:textStyle="bold"
                             tools:ignore="RtlSymmetry" />
 
                         <TextView
@@ -593,7 +590,6 @@
                             android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size"
-                            android:textStyle="bold"
                             tools:ignore="RtlSymmetry" />
 
                         <TextView
@@ -675,7 +671,6 @@
                             android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size"
-                            android:textStyle="bold"
                             tools:ignore="RtlSymmetry" />
 
                         <TextView
