@@ -76,4 +76,5 @@
     <string name="team_upper_case">TEAM</string>
     <string name="w_upper_case">W</string>
     <string name="round_upper_case_plus_value">ROUND %1$s</string>
+    <string name="updating_upper_case_with_dots">UPDATING…</string>
 </resources>

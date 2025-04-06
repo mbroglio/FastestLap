@@ -386,7 +386,7 @@ public class HomeFragment extends Fragment {
             startCountdown(view, nextEvent.getStartDateTime());
             updateSessionType(view, nextEvent);
         } else {
-            throw new Exception("No upcoming session found");
+            setUpdating(view);
         }
 
         FrameLayout nextSessionCard = view.findViewById(R.id.timer_card_countdown);
@@ -448,6 +448,11 @@ public class HomeFragment extends Fragment {
 
         buildFinalDriversStanding(view.findViewById(R.id.season_results));
         buildFinalTeamsStanding(view.findViewById(R.id.season_results));
+    }
+
+    private void setUpdating(View view){
+        view.findViewById(R.id.timer_card_countdown).setVisibility(View.GONE);
+        view.findViewById(R.id.timer_updating).setVisibility(View.VISIBLE);
     }
 
     private void buildFinalDriversStanding(View seasonEndedCard) {
