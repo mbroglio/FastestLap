@@ -76,29 +76,33 @@ public class EventActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_event);
 
+        start();
+    }
 
-        eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
-
-        // Show loading screen initially
-        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
+    private void start(){
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, null);
         loadingScreen.showLoadingScreen();
-        Log.i(TAG, "Loading screen shown");
-
-        trackId = getIntent().getStringExtra("CIRCUIT_ID");
-        Log.i(TAG, "Circuit ID: " + trackId);
+        loadingScreen.updateProgress(0);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         UIUtils.applyWindowInsets(toolbar);
 
         ScrollView eventScrollLayout = findViewById(R.id.event_scroll_view);
         UIUtils.applyWindowInsets(eventScrollLayout);
 
+        trackId = getIntent().getStringExtra("CIRCUIT_ID");
+        Log.i(TAG, "Circuit ID: " + trackId);
 
-        processRaceData(toolbar);
+        initializeViewModels();
     }
 
-    private void processRaceData(MaterialToolbar toolbar) {
+    private void initializeViewModels() {
+        eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
+        processRaceData();
+    }
+
+    private void processRaceData() {
         List<WeeklyRace> races = new ArrayList<>();
         MutableLiveData<Result> data = eventViewModel.getWeeklyRacesLiveData();
         data.observe(this, result -> {
@@ -117,14 +121,17 @@ public class EventActivity extends AppCompatActivity {
                     }
                 }
 
-                buildEventCard(weeklyRace, toolbar);
+                assert weeklyRace != null;
+                buildEventCard(weeklyRace);
             }
         });
     }
 
-    private void buildEventCard(WeeklyRace weeklyRace, MaterialToolbar toolbar) {
+    private void buildEventCard(WeeklyRace weeklyRace) {
+
+        loadingScreen.postLoadingStatus(this.getString(R.string.initializing));
+
         String grandPrixName = weeklyRace.getRaceName().toUpperCase();
-        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         TextView title = findViewById(R.id.topAppBarTitle);
         title.setText(grandPrixName);
 
@@ -157,7 +164,20 @@ public class EventActivity extends AppCompatActivity {
         });
     }
 
-    private void buildEventCard(WeeklyRace weeklyRace, Track track, Nation nation) {
+    private void setEventImage(WeeklyRace weeklyRace, Track track, Nation nation) {
+
+        loadingScreen.postLoadingStatus(this.getString(R.string.setting_event_info));
+        loadingScreen.updateProgress(33);
+
+        String imageUrl = track.getTrack_pic_url();
+        LinearLayout eventCard = findViewById(R.id.event_card);
+
+        UIUtils.loadImageInEventCardWithAlpha(this, imageUrl, eventCard,
+                () ->  buildEventCardStepTwo(weeklyRace, track, nation),
+                76);
+    }
+
+    private void buildEventCardStepTwo(WeeklyRace weeklyRace, Track track, Nation nation) {
 
         UIUtils.multipleSetTextViewText(
                 new String[]{"Round " + weeklyRace.getRound(),
@@ -204,15 +224,7 @@ public class EventActivity extends AppCompatActivity {
         createWeekSchedule(sessions);
     }
 
-    private void setEventImage(WeeklyRace weeklyRace, Track track, Nation nation) {
 
-        String imageUrl = track.getTrack_pic_url();
-        LinearLayout eventCard = findViewById(R.id.event_card);
-
-        UIUtils.loadImageInEventCardWithAlpha(this, imageUrl, eventCard,
-                () ->  buildEventCard(weeklyRace, track, nation),
-                76);
-    }
 
     private void setLiveSession() {
         View liveSession = findViewById(R.id.event_live_card);
@@ -228,6 +240,10 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void startCountdown(LocalDateTime eventDate) {
+
+        loadingScreen.postLoadingStatus(this.getString(R.string.setting_up_countdown));
+        loadingScreen.updateProgress(66);
+
         long millisUntilStart = ZonedDateTime.of(eventDate, ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis();
         new CountDownTimer(millisUntilStart, 1000) {
             final TextView days_counter = findViewById(R.id.next_days_counter);
@@ -257,6 +273,10 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void showResults(WeeklyRace weeklyRace) {
+
+        loadingScreen.postLoadingStatus(this.getString(R.string.fetching_race_result, ""));
+        loadingScreen.updateProgress(66);
+
         View countdownView = findViewById(R.id.timer_card_countdown);
         View resultsView = findViewById(R.id.timer_card_results);
         View raceCancelledView = findViewById(R.id.timer_card_race_cancelled);
@@ -301,6 +321,10 @@ public class EventActivity extends AppCompatActivity {
 
     private void showPendingResults() {
         Log.i(TAG, "No results found");
+
+        loadingScreen.postLoadingStatus(this.getString(R.string.fetching_race_result, this.getString(R.string.not_found_text)));
+        loadingScreen.updateProgress(66);
+
         View pendingResultsView = findViewById(R.id.timer_card_pending_results);
         View countdownView = findViewById(R.id.timer_card_countdown);
         View resultsView = findViewById(R.id.timer_card_results);
@@ -311,6 +335,10 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void createWeekSchedule(List<Session> sessions) {
+
+        loadingScreen.postLoadingStatus(this.getString(R.string.setting_event_schedule));
+        loadingScreen.updateProgress(100);
+
         String sessionId;
 
         for (Session session : sessions) {
@@ -335,6 +363,7 @@ public class EventActivity extends AppCompatActivity {
 
             setChequeredFlag(session);
         }
+        loadingScreen.hideLoadingScreen();
     }
 
     private void setChequeredFlag(Session session) {
@@ -354,7 +383,7 @@ public class EventActivity extends AppCompatActivity {
             currentSession.setOnClickListener(view -> Log.i(TAG, "session clicked"));
         }
 
-        loadingScreen.hideLoadingScreen();
+
     }
 
     @Override
