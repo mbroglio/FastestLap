@@ -67,4 +67,14 @@
     <string name="podiums">Podiums:</string>
     <string name="team_history_upper_case">TEAM HISTORY</string>
     <string name="team_info_upper_case">TEAM INFO</string>
+    <string name="round">Round: %1$s</string>
+    <string name="year_upper_case">YEAR</string>
+    <string name="pos_upper_case">POS</string>
+    <string name="pts_upper_case">PTS</string>
+    <string name="wins_upper_case">WINS</string>
+    <string name="pod_upper_case">POD</string>
+    <string name="team_upper_case">TEAM</string>
+    <string name="w_upper_case">W</string>
+    <string name="round_upper_case_plus_value">ROUND %1$s</string>
+    <string name="updating_upper_case_with_dots">UPDATING…</string>
 </resources>

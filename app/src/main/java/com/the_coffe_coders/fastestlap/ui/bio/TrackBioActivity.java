@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -36,46 +37,55 @@ public class TrackBioActivity extends AppCompatActivity {
     private Nation nation;
     private ImageView circuitImage;
     private ImageView countryFlag;
-    private ScrollView scrollView;
+    private String trackId;
 
     private TrackViewModel trackViewModel;
-
     private NationViewModel nationViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-
         setContentView(R.layout.activity_track_bio);
 
+        start();
+    }
+
+    private void start(){
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
         loadingScreen.showLoadingScreen();
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-
         UIUtils.applyWindowInsets(toolbar);
-
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        scrollView = findViewById(R.id.track_bio_scroll);
-        UIUtils.applyWindowInsets(scrollView);
+        SwipeRefreshLayout trackBioLayout = findViewById(R.id.track_bio_layout);
+        UIUtils.applyWindowInsets(trackBioLayout);
+        trackBioLayout.setOnRefreshListener(() -> {
+            start();
+            trackBioLayout.setRefreshing(false);
+        });
 
-        String trackId = getIntent().getStringExtra("CIRCUIT_ID");
+        trackId = getIntent().getStringExtra("CIRCUIT_ID");
         Log.i("TrackBioActivity", "CIRCUIT_ID: " + trackId);
 
-        String grandPrixName = getIntent().getStringExtra("GRAND_PRIX_NAME");
-        Log.i("TrackBioActivity", "GRAND_PRIX_NAME: " + grandPrixName);
-
-        TextView title = findViewById(R.id.topAppBarTitle);
-        title.setText(grandPrixName);
+        UIUtils.singleSetTextViewText(getIntent().getStringExtra("GRAND_PRIX_NAME"),
+                findViewById(R.id.topAppBarTitle));
 
         circuitImage = findViewById(R.id.track_image);
         countryFlag = findViewById(R.id.country_flag);
 
+        initializeViewModels();
+    }
+
+    private void initializeViewModels(){
         trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory()).get(TrackViewModel.class);
         nationViewModel = new ViewModelProvider(this, new NationViewModelFactory()).get(NationViewModel.class);
 
+        fetchTrack();
+    }
+
+    private void fetchTrack() {
         MutableLiveData<Result> trackLiveData = trackViewModel.getTrack(trackId);
 
         try {
@@ -108,40 +118,35 @@ public class TrackBioActivity extends AppCompatActivity {
         }
     }
 
-
     private void setCircuitData(Track track, Nation nation) {
-        Glide.with(this).load(track.getTrack_full_layout_url()).into(circuitImage);
-        Glide.with(this).load(nation.getNation_flag_url()).into(countryFlag);
 
-        TextView circuitName = findViewById(R.id.circuit_name_value);
-        circuitName.setText(track.getTrackName());
+        UIUtils.multipleSetTextViewText(
+                new String[]{track.getTrackName(),
+                track.getFirst_entry(),
+                        track.getLaps(),
+                        track.getLength(),
+                        track.getRace_distance(),
+                        track.getLap_record().split(" ")[0],
+                        track.getLap_record().substring(track.getLap_record().split(" ")[0].length() + 1)},
 
-        TextView firstEntry = findViewById(R.id.circuit_first_entry_value);
-        firstEntry.setText(track.getFirst_entry());
+                new TextView[]{findViewById(R.id.circuit_name_value),
+                        findViewById(R.id.circuit_first_entry_value),
+                        findViewById(R.id.number_of_laps_value),
+                        findViewById(R.id.circuit_length_value),
+                        findViewById(R.id.race_distance_value),
+                        findViewById(R.id.fastest_lap_value),
+                        findViewById(R.id.fastest_lap_driver)});
 
-        TextView numberOfLaps = findViewById(R.id.number_of_laps_value);
-        numberOfLaps.setText(track.getLaps());
+        UIUtils.loadSequenceOfImagesWithGlide(this,
+                new String[]{track.getTrack_full_layout_url(),nation.getNation_flag_url()},
+                new ImageView[]{circuitImage, countryFlag},
+                this::createHistoryTable);
 
-        TextView circuitLength = findViewById(R.id.circuit_length_value);
-        circuitLength.setText(track.getLength());
-
-        TextView raceDistance = findViewById(R.id.race_distance_value);
-        raceDistance.setText(track.getRace_distance());
-
-        String fastestLapValue = track.getLap_record().split(" ")[0];
-
-        String fastestLapDriver = track.getLap_record().substring(fastestLapValue.length() + 1);
-
-        TextView fastestLap = findViewById(R.id.fastest_lap_value);
-        fastestLap.setText(fastestLapValue);
-
-        TextView fastestLapDriverName = findViewById(R.id.fastest_lap_driver);
-        fastestLapDriverName.setText(fastestLapDriver);
-        createHistoryTable();
     }
 
     private void createHistoryTable() {
         TableLayout tableLayout = findViewById(R.id.history_table);
+        tableLayout.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
 
         View tableHeader = inflater.inflate(R.layout.track_bio_table_header, tableLayout, false);
@@ -151,26 +156,24 @@ public class TrackBioActivity extends AppCompatActivity {
         for (TrackHistory history : track.getTrack_history()) {
             View tableRow = inflater.inflate(R.layout.track_bio_table_row, tableLayout, false);
 
-            TextView year = tableRow.findViewById(R.id.season_year);
-            year.setText(history.getYear());
+            UIUtils.multipleSetTextViewText(
+                    new String[]{
+                            history.getYear(),
+                            history.getPodium().get(0),
+                            history.getPodium().get(1),
+                            history.getPodium().get(2),
+                            history.getTeam().get(0),
+                            history.getTeam().get(1),
+                            history.getTeam().get(2)},
 
-            TextView firstDriver = tableRow.findViewById(R.id.first_driver);
-            firstDriver.setText(history.getPodium().get(0));
-
-            TextView secondDriver = tableRow.findViewById(R.id.second_driver);
-            secondDriver.setText(history.getPodium().get(1));
-
-            TextView thirdDriver = tableRow.findViewById(R.id.third_driver);
-            thirdDriver.setText(history.getPodium().get(2));
-
-            TextView firstTeam = tableRow.findViewById(R.id.first_driver_team);
-            firstTeam.setText(history.getTeam().get(0));
-
-            TextView secondTeam = tableRow.findViewById(R.id.second_driver_team);
-            secondTeam.setText(history.getTeam().get(1));
-
-            TextView thirdTeam = tableRow.findViewById(R.id.third_driver_team);
-            thirdTeam.setText(history.getTeam().get(2));
+                    new TextView[]{
+                            tableRow.findViewById(R.id.season_year),
+                            tableRow.findViewById(R.id.first_driver),
+                            tableRow.findViewById(R.id.second_driver),
+                            tableRow.findViewById(R.id.third_driver),
+                            tableRow.findViewById(R.id.first_driver_team),
+                            tableRow.findViewById(R.id.second_driver_team),
+                            tableRow.findViewById(R.id.third_driver_team)});
 
             tableLayout.addView(tableRow);
         }

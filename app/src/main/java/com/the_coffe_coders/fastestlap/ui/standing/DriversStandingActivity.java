@@ -1,9 +1,13 @@
 package com.the_coffe_coders.fastestlap.ui.standing;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -12,13 +16,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
@@ -40,6 +50,8 @@ import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
+import org.checkerframework.checker.guieffect.qual.UI;
+
 import java.util.List;
 
 public class DriversStandingActivity extends AppCompatActivity {
@@ -49,8 +61,6 @@ public class DriversStandingActivity extends AppCompatActivity {
     private DriverStandings driverStandings;
 
     private LoadingScreen loadingScreen;
-
-    private DriverStandingsViewModel driverStandingsViewModel;
 
     private String driverId;
 
@@ -70,7 +80,6 @@ public class DriversStandingActivity extends AppCompatActivity {
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
 
         loadingScreen.showLoadingScreen();
-
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
@@ -96,7 +105,7 @@ public class DriversStandingActivity extends AppCompatActivity {
     private void setupPage() {
         LinearLayout driverStanding = findViewById(R.id.driver_standing);
 
-        driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory()).get(DriverStandingsViewModel.class);
+        DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory()).get(DriverStandingsViewModel.class);
         MutableLiveData<Result> livedata = driverStandingsViewModel.getDriverStandingsLiveData();//TODO get last update from shared preferences
 
         livedata.observe(this, result -> {
@@ -183,64 +192,65 @@ public class DriversStandingActivity extends AppCompatActivity {
                 Driver driver = ((Result.DriverSuccess) result).getData();
 
                 ImageView driverImageView = driverCard.findViewById(R.id.driver_image);
-                Glide.with(this).load(driver.getDriver_pic_url()).into(driverImageView);
 
-                TextView driverName = driverCard.findViewById(R.id.driver_name);
-                driverName.setText(driver.getFullName());
-
-                TextView driverPosition = driverCard.findViewById(R.id.driver_position);
-                if(standingElement.getPosition() == null || standingElement.getPosition().equals("-")){
-                    driverPosition.setText(R.string.last_driver_position);
-                }else{
-                    driverPosition.setText(standingElement.getPosition());
-                }
-
-                TextView driverPoints = driverCard.findViewById(R.id.driver_points);
-                driverPoints.setText(standingElement.getPoints());
-
-                if (standingElement.getDriver().getDriverId().equals(driverIdToHighlight)) {
-                    MaterialCardView driverCardView = driverCard.findViewById(R.id.driver_card_view);
-                    UIUtils.animateCardBackgroundColor(this, driverCardView, R.color.yellow, Color.TRANSPARENT, 1000, 10);
-                }
-
-                ConstructorViewModel constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
-                MutableLiveData<Result> constructorLiveData = constructorViewModel.getSelectedConstructor(driver.getTeam_id());
-                constructorLiveData.observe(this, constructorResult -> {
-                    if(constructorResult instanceof Result.Loading) {
-                        return;
-                    }
-                    if (constructorResult.isSuccess()) {
-                        Constructor constructor = ((Result.ConstructorSuccess) constructorResult).getData();
-
-                        ImageView teamLogoImageView = driverCard.findViewById(R.id.team_logo);
-                        if(constructor.getTeam_logo_minimal_url() != null){
-                            Glide.with(this).load(constructor.getTeam_logo_minimal_url()).into(teamLogoImageView);
-                        }else{
-                            Glide.with(this).load(constructor.getTeam_logo_url()).into(teamLogoImageView);
-                        }
-
-                        RelativeLayout driverColor = driverCard.findViewById(R.id.small_driver_card);
-                        try {
-                            driverColor.setBackground(AppCompatResources.getDrawable(this, Constants.TEAM_GRADIENT_COLOR.get(driver.getTeam_id())));
-                        } catch (Exception e) {
-                            Log.i(TAG, "Driver has no team");
-                            driverColor.setBackground(AppCompatResources.getDrawable(this, R.color.timer_gray));
-                            Glide.with(this).load(R.drawable.f1_car_icon_filled).into(teamLogoImageView);
-                        }
-
-                        driverCard.setOnClickListener(v -> {
-                            Intent intent = new Intent(DriversStandingActivity.this, DriverBioActivity.class);
-                            intent.putExtra("DRIVER_ID", standingElement.getDriver().getDriverId());
-                            intent.putExtra("CALLER", DriversStandingActivity.class.getName());
-                            startActivity(intent);
-                        });
-
-                        loadingScreen.hideLoadingScreen();
-                    }
-                });
+                UIUtils.loadImageWithGlide(this, driver.getDriver_pic_url(), driverImageView, () ->
+                        generateDriverCardStepTwo(driverCard, driver, standingElement, driverIdToHighlight));
             }
         });
 
         return driverCard;
     }
+
+    private void generateDriverCardStepTwo(View driverCard, Driver driver, DriverStandingsElement standingElement, String driverIdToHighlight) {
+
+        UIUtils.multipleSetTextViewText(
+                new String[]{driver.getFullName(), standingElement.getPoints()},
+
+                new TextView[]{driverCard.findViewById(R.id.driver_name),
+                        driverCard.findViewById(R.id.driver_points)});
+
+        UIUtils.setTextViewTextWithCondition(standingElement.getPosition() == null || standingElement.getPosition().equals("-"),
+                ContextCompat.getString(this, R.string.last_driver_position), //if true
+                standingElement.getPosition(), //if false
+                driverCard.findViewById(R.id.driver_position));
+
+        if (standingElement.getDriver().getDriverId().equals(driverIdToHighlight)) {
+            UIUtils.animateCardBackgroundColor(this, driverCard.findViewById(R.id.driver_card_view), R.color.yellow, Color.TRANSPARENT, 1000, 10);
+        }
+
+        ConstructorViewModel constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
+        RelativeLayout driverColor = driverCard.findViewById(R.id.small_driver_card);
+        ImageView teamLogoImageView = driverCard.findViewById(R.id.team_logo);
+        if(driver.getTeam_id() != null){
+            driverColor.setBackground(AppCompatResources.getDrawable(this, Constants.TEAM_GRADIENT_COLOR.get(driver.getTeam_id())));
+        }else{
+            driverColor.setBackground(AppCompatResources.getDrawable(this, R.color.timer_gray));
+            teamLogoImageView.setImageDrawable(AppCompatResources.getDrawable(this, R.drawable.f1_car_icon_filled));
+        }
+
+        MutableLiveData<Result> constructorLiveData = constructorViewModel.getSelectedConstructor(driver.getTeam_id());
+        constructorLiveData.observe(this, constructorResult -> {
+            if(constructorResult instanceof Result.Loading) {
+                return;
+            }
+            if (constructorResult.isSuccess()) {
+                Constructor constructor = ((Result.ConstructorSuccess) constructorResult).getData();
+
+                UIUtils.loadImageWithGlide(this, constructor.getTeam_logo_minimal_url(), teamLogoImageView, () ->
+                        generateDriverCardFinalStep(driverCard, standingElement));
+            }
+        });
+    }
+
+    private void generateDriverCardFinalStep(View driverCard, DriverStandingsElement standingElement) {
+        driverCard.setOnClickListener(v -> {
+            Intent intent = new Intent(DriversStandingActivity.this, DriverBioActivity.class);
+            intent.putExtra("DRIVER_ID", standingElement.getDriver().getDriverId());
+            intent.putExtra("CALLER", DriversStandingActivity.class.getName());
+            startActivity(intent);
+        });
+
+        loadingScreen.hideLoadingScreen();
+    }
+
 }

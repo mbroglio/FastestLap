@@ -2,6 +2,7 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="?materialCardViewElevatedStyle"
+
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="10dp"
@@ -18,31 +19,33 @@
             android:id="@+id/season_year"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_marginStart="5dp"
             android:layout_weight="1"
-            android:autoSizeMaxTextSize="@dimen/body_text_size"
-            android:autoSizeMinTextSize="9sp"
+            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
             android:autoSizeTextType="uniform"
-            android:fontFamily="@font/orbitron_regular"
-            android:maxLines="1"
+            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="2025"
+            android:maxLines="1"
+            android:text="@string/year_upper_case"
             android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size" />
+            android:textSize="@dimen/layout_subtitle_text_size" />
 
         <TextView
             android:id="@+id/driver_position"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_marginStart="10dp"
             android:layout_weight="1"
-            android:fontFamily="@font/orbitron_regular"
+            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
+            android:autoSizeTextType="uniform"
+            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="23"
+            android:maxLines="1"
+            android:text="@string/pos_upper_case"
             android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size">
+            android:textSize="@dimen/layout_subtitle_text_size">
 
         </TextView>
 
@@ -50,14 +53,17 @@
             android:id="@+id/team_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_marginStart="5dp"
             android:layout_weight="0.8"
-            android:fontFamily="@font/orbitron_regular"
+            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
+            android:autoSizeTextType="uniform"
+            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="Aston\nMartin"
+            android:maxLines="1"
+            android:text="@string/team_upper_case"
             android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size">
+            android:textSize="@dimen/layout_subtitle_text_size">
 
         </TextView>
 
@@ -65,14 +71,17 @@
             android:id="@+id/driver_points"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_marginStart="5dp"
             android:layout_weight="1"
-            android:fontFamily="@font/orbitron_regular"
+            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
+            android:autoSizeTextType="uniform"
+            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="400"
+            android:maxLines="1"
+            android:text="@string/pts_upper_case"
             android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size">
+            android:textSize="@dimen/layout_subtitle_text_size">
 
         </TextView>
 
@@ -80,14 +89,17 @@
             android:id="@+id/driver_wins"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_marginStart="5dp"
             android:layout_weight="1.05"
-            android:fontFamily="@font/orbitron_regular"
+            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
+            android:autoSizeTextType="uniform"
+            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="15"
+            android:maxLines="1"
+            android:text="@string/w_upper_case"
             android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size">
+            android:textSize="@dimen/layout_subtitle_text_size">
 
         </TextView>
 
@@ -95,14 +107,18 @@
             android:id="@+id/driver_podiums"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
             android:layout_weight="1"
-            android:fontFamily="@font/orbitron_regular"
+            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
+            android:autoSizeTextType="uniform"
+            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="20"
+            android:maxLines="1"
+            android:text="@string/pod_upper_case"
             android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size">
+            android:textSize="@dimen/layout_subtitle_text_size">
 
         </TextView>
 

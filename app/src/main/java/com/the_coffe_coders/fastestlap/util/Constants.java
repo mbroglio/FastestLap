@@ -26,6 +26,8 @@ public class Constants {
     public static final String RETROFIT_ERROR = "retrofit_error";
     public static final String API_KEY_ERROR = "api_key_error";
 
+    public static final int MAX_RETRY_COUNT = 4;
+
     public static final Map<String, Integer> TEAM_COLOR = new HashMap<String, Integer>() {{
         put("mercedes", R.color.mercedes_f1);
         put("red_bull", R.color.redbull_f1);

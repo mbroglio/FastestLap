@@ -158,27 +158,20 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void buildEventCard(WeeklyRace weeklyRace, Track track, Nation nation) {
-        ImageView countryFlag = findViewById(R.id.country_flag);
-        Glide.with(this).load(nation.getNation_flag_url()).into(countryFlag);
 
-        ImageView trackMap = findViewById(R.id.track_outline_image);
-        Glide.with(this).load(track.getTrack_minimal_layout_url()).into(trackMap);
+        UIUtils.multipleSetTextViewText(
+                new String[]{"Round " + weeklyRace.getRound(),
+                        weeklyRace.getSeason(),
+                        track.getGp_long_name(),
+                        weeklyRace.getDateInterval()},
 
-        TextView roundNumber = findViewById(R.id.round_number);
-        String round = "Round " + weeklyRace.getRound();
-        roundNumber.setText(round);
-
-        TextView seasonYear = findViewById(R.id.event_year);
-        String year = weeklyRace.getSeason();
-        seasonYear.setText(year);
-
-        TextView name = findViewById(R.id.gp_name);
-        name.setText(track.getGp_long_name());
-
-        //setEventImage(track.getTrack_pic_url());
-
-        TextView eventDate = findViewById(R.id.event_date);
-        eventDate.setText(weeklyRace.getDateInterval());
+                new TextView[]{
+                        findViewById(R.id.round_number),
+                        findViewById(R.id.event_year),
+                        findViewById(R.id.gp_name),
+                        findViewById(R.id.event_date),
+                }
+        );
 
         LinearLayout trackLayout = findViewById(R.id.track_outline_layout);
         trackLayout.setOnClickListener(v -> {
@@ -188,9 +181,18 @@ public class EventActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        UIUtils.loadSequenceOfImagesWithGlide(this,
+                new String[]{nation.getNation_flag_url(), track.getTrack_minimal_layout_url()},
+
+                new ImageView[]{findViewById(R.id.country_flag), findViewById(R.id.track_outline_image)},
+
+                () -> buildEventCardFinalStep(weeklyRace));
+    }
+
+    private void buildEventCardFinalStep(WeeklyRace weeklyRace) {
         List<Session> sessions = weeklyRace.getSessions();
         Session nextEvent = weeklyRace.findNextEvent(sessions);
-        boolean underway = weeklyRace.isUnderway() && !weeklyRace.isWeekFinished();
+        boolean underway = weeklyRace.isUnderway(false) && !weeklyRace.isWeekFinished();
         //setLiveSession();
         if (nextEvent != null && !underway) {
             LocalDateTime eventDateTime = nextEvent.getStartDateTime();
@@ -207,53 +209,9 @@ public class EventActivity extends AppCompatActivity {
         String imageUrl = track.getTrack_pic_url();
         LinearLayout eventCard = findViewById(R.id.event_card);
 
-        // Use Glide to load the image from URL
-        Glide.with(this)
-                .load(imageUrl)
-                .transform(new BitmapTransformation() {
-                    @Override
-                    public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
-
-                    }
-
-                    @Override
-                    protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
-                        // Make the bitmap 30% transparent (76/255 ≈ 0.3)
-                        return setAlpha(toTransform, 76);
-                    }
-
-                    public String getId() {
-                        return "alpha";
-                    }
-
-                    // Helper method to set alpha on bitmap
-                    private Bitmap setAlpha(Bitmap bitmap, int alpha) {
-                        Bitmap mutableBitmap = bitmap.isMutable() ? bitmap : bitmap.copy(Bitmap.Config.ARGB_8888, true);
-                        Canvas canvas = new Canvas(mutableBitmap);
-                        Paint paint = new Paint();
-                        paint.setAlpha(alpha);
-                        canvas.drawRect(0, 0, bitmap.getWidth(), bitmap.getHeight(), paint);
-                        return mutableBitmap;
-                    }
-                })
-                .into(new CustomTarget<Drawable>() {
-                    @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                        eventCard.setBackground(resource);
-                        buildEventCard(weeklyRace, track, nation);
-                    }
-
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-                        // Use default image if loading fails
-                        Drawable defaultImage = ContextCompat.getDrawable(getApplicationContext(), R.drawable.constructors_image);
-                        if (defaultImage != null) {
-                            defaultImage.setAlpha(76);
-                        }
-                        eventCard.setBackground(defaultImage);
-                        buildEventCard(weeklyRace, track, nation);
-                    }
-                });
+        UIUtils.loadImageInEventCardWithAlpha(this, imageUrl, eventCard,
+                () ->  buildEventCard(weeklyRace, track, nation),
+                76);
     }
 
     private void setLiveSession() {
@@ -307,11 +265,9 @@ public class EventActivity extends AppCompatActivity {
         countdownView.setVisibility(View.GONE);
         resultsView.setVisibility(View.VISIBLE);
 
-        processRaceResults(weeklyRace);
+        UIUtils.loadImageWithGlide(this, track.getTrack_minimal_layout_url(),
+                findViewById(R.id.track_outline_image), () -> processRaceResults(weeklyRace));
 
-        // Set podium circuit image
-        ImageView trackOutline = findViewById(R.id.track_outline_image);
-        Glide.with(this).load(track.getTrack_minimal_layout_url()).into(trackOutline);
     }
 
     private void processRaceResults(WeeklyRace weeklyRace) {
@@ -324,7 +280,6 @@ public class EventActivity extends AppCompatActivity {
             }
             Race race = ((Result.LastRaceResultsSuccess) result).getData();
             List<RaceResult> podium = race.getRaceResults();
-            Log.i(TAG, "Podium size" + podium.size());
             if (podium == null) {
                 showPendingResults();
             } else {
@@ -333,9 +288,8 @@ public class EventActivity extends AppCompatActivity {
                     String driverId = podium.get(i).getDriver().getDriverId();
                     String teamId = podium.get(i).getConstructor().getConstructorId();
 
-                    TextView driverName = findViewById(Constants.PODIUM_DRIVER_NAME.get(i));
-                    driverName.setText(podium.get(i).getDriver().getFullName());
-
+                    UIUtils.singleSetTextViewText(podium.get(i).getDriver().getFullName(),
+                            findViewById(Constants.PODIUM_DRIVER_NAME.get(i)));
 
                     LinearLayout teamColor = findViewById(Constants.PODIUM_TEAM_COLOR.get(i));
                     Integer teamColorObj = Constants.TEAM_COLOR.get(teamId);
@@ -366,15 +320,18 @@ public class EventActivity extends AppCompatActivity {
                 sessionId = practice.getPractice();
             }
 
-            TextView sessionName = findViewById(Constants.SESSION_NAME_FIELD.get(sessionId));
-            sessionName.setText(Constants.SESSION_NAMES.get(sessionId));
+            UIUtils.multipleSetTextViewText(
+                    new String[]{Constants.SESSION_NAMES.get(sessionId),
+                            Constants.SESSION_DAY.get(sessionId)},
 
-            TextView sessionDay = findViewById(Constants.SESSION_DAY_FIELD.get(sessionId));
-            sessionDay.setText(Constants.SESSION_DAY.get(sessionId));
+                    new TextView[]{
+                            findViewById(Constants.SESSION_NAME_FIELD.get(sessionId)),
+                            findViewById(Constants.SESSION_DAY_FIELD.get(sessionId))});
 
-            TextView sessionTime = findViewById(Constants.SESSION_TIME_FIELD.get(sessionId));
-            if (sessionId.equals("Race")) sessionTime.setText(session.getStartingTime());
-            else sessionTime.setText(session.getTime());
+            UIUtils.setTextViewTextWithCondition(sessionId.equals("Race"),
+                    session.getStartingTime(), //if true
+                    session.getTime(), //if false
+                    findViewById(Constants.SESSION_TIME_FIELD.get(sessionId)));
 
             setChequeredFlag(session);
         }
