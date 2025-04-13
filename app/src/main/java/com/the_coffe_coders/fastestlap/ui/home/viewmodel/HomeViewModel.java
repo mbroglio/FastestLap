@@ -1,5 +1,7 @@
 package com.the_coffe_coders.fastestlap.ui.home.viewmodel;
 
+import android.app.Application;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -11,8 +13,10 @@ import com.the_coffe_coders.fastestlap.repository.result.ResultRepository;
 import com.the_coffe_coders.fastestlap.repository.standing.constructor.ConstructorStandingRepository;
 import com.the_coffe_coders.fastestlap.repository.standing.driver.DriverStandingRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.WeeklyRaceRepository;
+import com.the_coffe_coders.fastestlap.source.standing.driver.DriverStandingsLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.standing.driver.DriverStandingsRemoteDataSource;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import java.util.List;
 
@@ -50,8 +54,8 @@ public class HomeViewModel extends ViewModel {
         return errorMessageLiveData;
     }
 
-    public MutableLiveData<Result> getDriverStandingsLiveData() {
-        return DriverStandingRepository.getInstance(new DriverStandingsRemoteDataSource()).fetchDriverStanding();
+    public MutableLiveData<Result> getDriverStandingsLiveData(Application application) {
+        return DriverStandingRepository.getInstance(new DriverStandingsRemoteDataSource(), new DriverStandingsLocalDataSource(ServiceLocator.getInstance().getRoomDatabase(application))).fetchDriverStanding();
     }
 
     public MutableLiveData<Result> getConstructorStandingsLiveData() {
