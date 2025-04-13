@@ -1,5 +1,7 @@
 package com.the_coffe_coders.fastestlap.source.driver;
 
+import android.util.Log;
+
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.database.DriverDAO;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
@@ -21,6 +23,7 @@ public class DriverLocalDataSource implements DriverDataSource {
 
     @Override
     public void getDriver(String driverId, DriverCallback callback) {
+        Log.d(TAG, "Fetching driver with ID: " + driverId);
         callback.onDriverLoaded(driverDAO.getById(driverId));
     }
 

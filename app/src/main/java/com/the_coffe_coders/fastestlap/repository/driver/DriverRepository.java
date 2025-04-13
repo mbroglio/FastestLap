@@ -83,7 +83,7 @@ public class DriverRepository {
     }
 
     private void loadDriver(String driverId) {
-        driverCache.get(driverId).postValue(new Result.Loading("Fetching driver from remote"));
+        Objects.requireNonNull(driverCache.get(driverId)).postValue(new Result.Loading("Fetching driver from remote"));
         try {
             firebaseDriverDataSource.getDriver(driverId, new DriverCallback() {
                 @Override
@@ -100,26 +100,8 @@ public class DriverRepository {
 
                 @Override
                 public void onError(Exception e) {
-                    Log.e(TAG, "Error loading driver: " + e.getMessage());
-                    //fetch driver local database
-                    driverLocalDataSource.getDriver(driverId, new DriverCallback(){
-                        @Override
-                        public void onDriverLoaded(Driver driver) {
-                            if(driver!=null) {
-                                driver.setDriverId(driverId);
-                                driverCache.put(driverId, new MutableLiveData<>(new Result.DriverSuccess(driver)));
-                                lastUpdateTimestamps.put(driverId, System.currentTimeMillis());
-                                Objects.requireNonNull(driverCache.get(driverId)).postValue(new Result.DriverSuccess(driver));
-                            }else {
-                                Log.e(TAG, "Driver not found: " + driverId);
-                            }
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            Log.e(TAG, "Error loading driver from local database: " + e.getMessage());
-                        }
-                    });
+                    Log.e(TAG, "Error loading driver from remote: " + e.getMessage());
+                    loadDriverFromLocal(driverId);
                 }
             });
 
@@ -127,5 +109,26 @@ public class DriverRepository {
             Log.e(TAG, "Error loading driver: " + e.getMessage());
             //fetch driver local database
         }
+    }
+
+    public void loadDriverFromLocal(String driverId) {
+        driverLocalDataSource.getDriver(driverId, new DriverCallback(){
+            @Override
+            public void onDriverLoaded(Driver driver) {
+                if(driver!=null) {
+                    driver.setDriverId(driverId);
+                    driverCache.put(driverId, new MutableLiveData<>(new Result.DriverSuccess(driver)));
+                    lastUpdateTimestamps.put(driverId, System.currentTimeMillis());
+                    Objects.requireNonNull(driverCache.get(driverId)).postValue(new Result.DriverSuccess(driver));
+                }else {
+                    Log.e(TAG, "Driver not found: " + driverId);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e(TAG, "Error loading driver from local database: " + e.getMessage());
+            }
+        });
     }
 }
