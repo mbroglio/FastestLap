@@ -9,6 +9,7 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
+import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
@@ -21,7 +22,7 @@ import com.the_coffe_coders.fastestlap.util.Constants;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {DriverStandings.class, Driver.class, ConstructorStandings.class, WeeklyRaceClassic.class, Race.class, WeeklyRaceSprint.class, RaceResult.class}, version = DATABASE_VERSION, exportSchema = false)
+@Database(entities = {DriverStandings.class, Driver.class, Constructor.class, ConstructorStandings.class, WeeklyRaceClassic.class, Race.class, WeeklyRaceSprint.class, RaceResult.class}, version = DATABASE_VERSION, exportSchema = false)
 //TODO set to true (export schema)
 @TypeConverters({DatabaseConverters.class})
 public abstract class AppRoomDatabase extends RoomDatabase {
@@ -45,6 +46,8 @@ public abstract class AppRoomDatabase extends RoomDatabase {
     public abstract DriverStandingsDAO driverStandingsDao();
 
     public abstract DriverDAO driverDAO();
+
+    public abstract ConstructorDAO constructorDAO();
 
     public abstract ConstructorStandingsDAO constructorStandingsDao();
 

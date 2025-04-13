@@ -1,5 +1,9 @@
 package com.the_coffe_coders.fastestlap.domain.constructor;
 
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -15,7 +19,10 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity(tableName = "Constructor")
 public class Constructor {
+    @PrimaryKey(autoGenerate = true)
+    private long uid;
     private String constructorId;
     private String url;
     private String name;
@@ -30,6 +37,7 @@ public class Constructor {
     private String hq;
     private String podiums;
     private String power_unit;
+    @Ignore
     private List<ConstructorHistory> team_history;
     private String team_logo_url;
     private String team_logo_minimal_url;

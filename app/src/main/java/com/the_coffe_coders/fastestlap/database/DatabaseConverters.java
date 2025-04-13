@@ -54,6 +54,17 @@ public class DatabaseConverters {
         return gson.toJson(results);
     }
 
+    @TypeConverter
+    public static String fromConstructorDrivers(List<String> drivers){
+        return gson.toJson(drivers);
+    }
+
+    @TypeConverter
+    public static List<String> toConstructorDrivers(String json){
+        Type listType = new TypeToken<List<String>>() {}.getType();
+        return gson.fromJson(json, listType);
+    }
+
     //Constructor Standings Element List
     @TypeConverter
     public static String fromConstructorStandingsElementList(List<ConstructorStandingsElement> list) {
