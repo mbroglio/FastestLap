@@ -44,55 +44,5 @@ public class NetworkUtils {
         }
     }
 
-    /**
-     * Checks if Wi-Fi is connected
-     *
-     * @param context Application context
-     * @return boolean True if Wi-Fi is connected, false otherwise
-     */
-    public static boolean isWifiConnected(Context context) {
-        if (context == null) return false;
 
-        ConnectivityManager connectivityManager = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        if (connectivityManager == null) return false;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            Network network = connectivityManager.getActiveNetwork();
-            if (network == null) return false;
-
-            NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(network);
-            return capabilities != null && capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI);
-        } else {
-            NetworkInfo networkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-            return networkInfo != null && networkInfo.isConnected();
-        }
-    }
-
-    /**
-     * Checks if Mobile Data is connected
-     *
-     * @param context Application context
-     * @return boolean True if mobile data is connected, false otherwise
-     */
-    public static boolean isMobileDataConnected(Context context) {
-        if (context == null) return false;
-
-        ConnectivityManager connectivityManager = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        if (connectivityManager == null) return false;
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            Network network = connectivityManager.getActiveNetwork();
-            if (network == null) return false;
-
-            NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(network);
-            return capabilities != null && capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR);
-        } else {
-            NetworkInfo networkInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-            return networkInfo != null && networkInfo.isConnected();
-        }
-    }
 }
