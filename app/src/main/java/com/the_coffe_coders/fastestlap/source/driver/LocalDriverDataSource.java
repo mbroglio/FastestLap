@@ -7,16 +7,16 @@ import com.the_coffe_coders.fastestlap.database.DriverDAO;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.repository.driver.DriverCallback;
 
-public class DriverLocalDataSource implements DriverDataSource {
-    private static DriverLocalDataSource instance;
+public class LocalDriverDataSource implements DriverDataSource {
+    private static LocalDriverDataSource instance;
     private final DriverDAO driverDAO;
     private static final String TAG = "DriverLocalDataSource";
-    private DriverLocalDataSource(AppRoomDatabase appRoomDatabase) {
+    private LocalDriverDataSource(AppRoomDatabase appRoomDatabase) {
         this.driverDAO = appRoomDatabase.driverDAO();
     }
-    public static synchronized DriverLocalDataSource getInstance(AppRoomDatabase appRoomDatabase) {
+    public static synchronized LocalDriverDataSource getInstance(AppRoomDatabase appRoomDatabase) {
         if (instance == null) {
-            instance = new DriverLocalDataSource(appRoomDatabase);
+            instance = new LocalDriverDataSource(appRoomDatabase);
         }
         return instance;
     }
