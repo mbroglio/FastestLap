@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.the_coffe_coders.fastestlap.R;
@@ -15,19 +16,27 @@ public class LoadingScreen {
     private final Handler handler;
     private final View loadingScreen;
     private final Context context;
-    private final TextView loadingText;
+    private final TextView loadingText, percentageText, loadingStatusText;
+    private final ProgressBar loadingProgressBar;
+    private final View rootView, fragmentView;
 
     private int dotCount = 0;
     private boolean addingDots = true;
     private Runnable dotRunnable;
 
-    public LoadingScreen(View view, Context context) {
+    public LoadingScreen(View view, Context context, View fragmentView) {
         this.handler = new Handler();
         //loading screen logic
         this.loadingScreen = view.findViewById(R.id.loading_screen);
         this.context = context;
+        this.loadingText = view.findViewById(R.id.loading_text);
+        this.percentageText = view.findViewById(R.id.loading_percentage_text);
+        this.loadingProgressBar = view.findViewById(R.id.loading_progress_bar);
+        this.loadingStatusText = view.findViewById(R.id.loading_status_text);
 
-        loadingText = view.findViewById(R.id.loading_text);
+        this.rootView = view;
+        this.fragmentView = fragmentView;
+
         ImageView loadingWheel = view.findViewById(R.id.loading_wheel);
         // Start the rotation animation
         Animation rotateAnimation = AnimationUtils.loadAnimation(context, R.anim.rotate);
@@ -35,6 +44,12 @@ public class LoadingScreen {
     }
 
     public void showLoadingScreen() {
+        if (fragmentView != null) {
+            fragmentView.setVisibility(View.GONE);
+        } else {
+            rootView.setVisibility(View.GONE);
+        }
+
         loadingScreen.setVisibility(View.VISIBLE);
         dotRunnable = new Runnable() {
             @Override
@@ -61,12 +76,34 @@ public class LoadingScreen {
         handler.post(dotRunnable);
     }
 
+    public void postLoadingStatus(String status) {
+        loadingStatusText.setText(status);
+    }
+
+
+    public void updateProgress(int progress) {
+        loadingProgressBar.setProgress(progress);
+        String progressString = Integer.toString(progress);
+        percentageText.setText(context.getString(R.string.progress, progressString));
+    }
+
+    public void hideLoadingScreenWithCondition(boolean condition) {
+        if (condition) {
+            handler.postDelayed(this::hide, 1000);
+        }
+    }
+
     public void hideLoadingScreen() {
         handler.postDelayed(this::hide, 1000);
     }
 
-    public void hide() {
+    private void hide() {
         loadingScreen.setVisibility(View.GONE);
+        if (fragmentView != null) {
+            fragmentView.setVisibility(View.VISIBLE);
+        }else{
+            rootView.setVisibility(View.VISIBLE);
+        }
         handler.removeCallbacks(dotRunnable);
     }
 }
