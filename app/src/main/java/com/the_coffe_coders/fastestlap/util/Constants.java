@@ -27,6 +27,7 @@ public class Constants {
     public static final String API_KEY_ERROR = "api_key_error";
 
     public static final int MAX_RETRY_COUNT = 4;
+    public static final int LOADING_SLEEP_TIMER_DURATION = 20000;
 
     public static final Map<String, Integer> TEAM_COLOR = new HashMap<String, Integer>() {{
         put("mercedes", R.color.mercedes_f1);

@@ -156,10 +156,26 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
                 UIUtils.singleSetTextViewText(constructor.getName(), teamCard.findViewById(R.id.team_name));
 
+
+
+                Glide.with(this)
+                        .load(constructor.getCar_pic_url())
+                        .into((ImageView) teamCard.findViewById(R.id.car_image));
+
+                Glide.with(this)
+                        .load(constructor.getTeam_logo_url())
+                        .into((ImageView) teamCard.findViewById(R.id.team_logo));
+
+                generateTeamCardStepTwo(constructor, standingElement, teamCard, constructorIdToHighlight, teamId, pos, size);
+
+
+
+                /* NOT WORKING: MAKES THE PAGE LAGGY
                 UIUtils.loadSequenceOfImagesWithGlide(this,
                         new String[]{constructor.getCar_pic_url(), constructor.getTeam_logo_url()},
                         new ImageView[]{teamCard.findViewById(R.id.car_image), teamCard.findViewById(R.id.team_logo)},
                         () -> generateTeamCardStepTwo(constructor, standingElement, teamCard, constructorIdToHighlight, teamId, pos, size));
+                 */
             }
 
         });

@@ -24,6 +24,9 @@ public class LoadingScreen {
     private boolean addingDots = true;
     private Runnable dotRunnable;
 
+    private final Handler timerHandler = new Handler();
+    private final Runnable timerRunnable = this::hide;
+
     public LoadingScreen(View view, Context context, View fragmentView) {
         this.handler = new Handler();
         //loading screen logic
@@ -77,11 +80,17 @@ public class LoadingScreen {
     }
 
     public void postLoadingStatus(String status) {
+        resetTimer();
         loadingStatusText.setText(status);
     }
 
+    private void resetTimer() {
+        timerHandler.removeCallbacks(timerRunnable);
+        timerHandler.postDelayed(timerRunnable, Constants.LOADING_SLEEP_TIMER_DURATION);
+    }
 
     public void updateProgress(int progress) {
+        resetTimer();
         loadingProgressBar.setProgress(progress);
         String progressString = Integer.toString(progress);
         percentageText.setText(context.getString(R.string.progress, progressString));
@@ -105,5 +114,6 @@ public class LoadingScreen {
             rootView.setVisibility(View.VISIBLE);
         }
         handler.removeCallbacks(dotRunnable);
+        timerHandler.removeCallbacks(timerRunnable);
     }
 }
