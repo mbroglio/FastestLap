@@ -93,8 +93,8 @@ public class UpcomingEventsActivity extends AppCompatActivity {
                 upcomingEvents.removeAllViews();
                 List<WeeklyRace> upcomingRaces = eventViewModel.extractUpcomingRaces(races);
                 Log.i("UpcomingEvents", "upcomingRaces: " + upcomingRaces.size());
-                for (int i=0; i<races.size(); i++) {
-                    createEventCard(upcomingEvents, races.get(i), i, races.size());
+                for (int i=0; i<upcomingRaces.size(); i++) {
+                    createEventCard(upcomingEvents, upcomingRaces.get(i), i, upcomingRaces.size());
                 }
 
                 View space = new View(UpcomingEventsActivity.this);
