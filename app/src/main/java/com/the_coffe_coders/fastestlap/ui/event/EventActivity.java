@@ -204,10 +204,10 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void openGoogleWeather(String locality) {
-        Intent intent = getPackageManager().getLaunchIntentForPackage("com.weather.Weather");
+        Intent intent = getPackageManager().getLaunchIntentForPackage(Constants.WEATHER_ACCESS_PACKAGE);
         if (intent != null) {
             intent.setAction(Intent.ACTION_SEARCH);
-            intent.putExtra(SearchManager.QUERY, "weather in " + locality);
+            intent.putExtra(SearchManager.QUERY, this.getString(R.string.weather, locality));
             startActivity(intent);
         } else {
             openWeatherInBrowser(locality);
@@ -215,8 +215,7 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void openWeatherInBrowser(String locality) {
-        Log.i(TAG, "Opening weather in browser");
-        String uri = String.format("https://www.google.com/search?q=weather+in+%s", Uri.encode(locality));
+        String uri = String.format(Constants.GOOGLE_WEATHER_ACCESS, Uri.encode(locality));
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
         startActivity(intent);
     }
@@ -235,8 +234,6 @@ public class EventActivity extends AppCompatActivity {
 
         createWeekSchedule(sessions);
     }
-
-
 
     private void setLiveSession() {
         View liveSession = findViewById(R.id.event_live_card);
@@ -394,8 +391,6 @@ public class EventActivity extends AppCompatActivity {
             currentSession.setFocusable(true);
             currentSession.setOnClickListener(view -> Log.i(TAG, "session clicked"));
         }
-
-
     }
 
     @Override
