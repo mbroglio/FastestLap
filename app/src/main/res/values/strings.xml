@@ -110,5 +110,8 @@
     <string name="drivers">(Drivers)</string>
     <string name="constructors">(Constructors)</string>
     <string name="not_found_text">(not found)</string>
+    <string name="location">Location:</string>
+    <string name="open_with_google_maps">See on the map</string>
+    <string name="no_map_app_found">No map app found</string>
 
 </resources>

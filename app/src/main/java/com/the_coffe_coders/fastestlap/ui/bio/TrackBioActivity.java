@@ -1,13 +1,17 @@
 package com.the_coffe_coders.fastestlap.ui.bio;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -128,7 +132,8 @@ public class TrackBioActivity extends AppCompatActivity {
 
         UIUtils.multipleSetTextViewText(
                 new String[]{track.getTrackName(),
-                track.getFirst_entry(),
+                        //track.getLocation().getLocality(),
+                        track.getFirst_entry(),
                         track.getLaps(),
                         track.getLength(),
                         track.getRace_distance(),
@@ -136,12 +141,20 @@ public class TrackBioActivity extends AppCompatActivity {
                         track.getLap_record().substring(track.getLap_record().split(" ")[0].length() + 1)},
 
                 new TextView[]{findViewById(R.id.circuit_name_value),
+                        //findViewById(R.id.circuit_location_value),
                         findViewById(R.id.circuit_first_entry_value),
                         findViewById(R.id.number_of_laps_value),
                         findViewById(R.id.circuit_length_value),
                         findViewById(R.id.race_distance_value),
                         findViewById(R.id.fastest_lap_value),
                         findViewById(R.id.fastest_lap_driver)});
+
+        /*
+        Button goToMapButton = findViewById(R.id.goToMapButton);
+        goToMapButton.setOnClickListener(v -> {
+            openLocation(track.getLocation().getLat(), track.getLocation().get_long());
+        });
+         */
 
         UIUtils.loadSequenceOfImagesWithGlide(this,
                 new String[]{track.getTrack_full_layout_url(),nation.getNation_flag_url()},
@@ -189,6 +202,17 @@ public class TrackBioActivity extends AppCompatActivity {
         }
 
         loadingScreen.hideLoadingScreen();
+    }
+
+    private void openLocation(String latitude, String longitude) {
+        String uri = String.format("geo:%s,%s", latitude, longitude);
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, R.string.no_map_app_found, Toast.LENGTH_SHORT).show();
+            Log.e("TrackBioActivity", "No map app found to open location");
+        }
     }
 
     @Override

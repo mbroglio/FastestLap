@@ -1,5 +1,7 @@
 package com.the_coffe_coders.fastestlap.util;
 
+import static androidx.core.content.ContextCompat.startActivity;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
@@ -7,10 +9,12 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -39,6 +43,8 @@ import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Location;
+import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
 
 import java.security.MessageDigest;
 
@@ -246,6 +252,7 @@ public class UIUtils {
         });
         colorAnimator.start();
     }
+
     // SYSTEM_UI_FLAG_FULLSCREEN // Hide the status bar
     // SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN // Let the layout expand into status bar
     // SYSTEM_UI_FLAG_LAYOUT_STABLE // avoid abrupt layout changes during toggling of status and navigation bars
