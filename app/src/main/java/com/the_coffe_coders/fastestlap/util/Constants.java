@@ -28,6 +28,7 @@ public class Constants {
 
     public static final int MAX_RETRY_COUNT = 4;
     public static final int LOADING_SLEEP_TIMER_DURATION = 20000;
+    public static final String GOOGLE_MAPS_ACCESS = "https://www.google.com/maps/@%s,%s,15z/data=!3m1!1e3";
 
     public static final Map<String, Integer> TEAM_COLOR = new HashMap<String, Integer>() {{
         put("mercedes", R.color.mercedes_f1);

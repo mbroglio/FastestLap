@@ -6,8 +6,8 @@ import com.the_coffe_coders.fastestlap.dto.LocationDTO;
 public class LocationMapper {
     public static Location toLocation(LocationDTO locationDTO) {
         Location location = new Location();
-        location.setLat(locationDTO.getLat());
-        location.set_long(locationDTO.get_long());
+        location.setLatitude(locationDTO.getLat());
+        location.setLongitude(locationDTO.get_long());
         location.setLocality(locationDTO.getLocality());
         location.setCountry(locationDTO.getCountry());
         return location;

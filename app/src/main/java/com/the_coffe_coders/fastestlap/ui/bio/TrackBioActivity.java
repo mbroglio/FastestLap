@@ -31,6 +31,7 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
+import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
@@ -132,7 +133,7 @@ public class TrackBioActivity extends AppCompatActivity {
 
         UIUtils.multipleSetTextViewText(
                 new String[]{track.getTrackName(),
-                        //track.getLocation().getLocality(),
+                        track.getLocation().getLocality(),
                         track.getFirst_entry(),
                         track.getLaps(),
                         track.getLength(),
@@ -141,7 +142,7 @@ public class TrackBioActivity extends AppCompatActivity {
                         track.getLap_record().substring(track.getLap_record().split(" ")[0].length() + 1)},
 
                 new TextView[]{findViewById(R.id.circuit_name_value),
-                        //findViewById(R.id.circuit_location_value),
+                        findViewById(R.id.circuit_location_value),
                         findViewById(R.id.circuit_first_entry_value),
                         findViewById(R.id.number_of_laps_value),
                         findViewById(R.id.circuit_length_value),
@@ -149,12 +150,9 @@ public class TrackBioActivity extends AppCompatActivity {
                         findViewById(R.id.fastest_lap_value),
                         findViewById(R.id.fastest_lap_driver)});
 
-        /*
+
         Button goToMapButton = findViewById(R.id.goToMapButton);
-        goToMapButton.setOnClickListener(v -> {
-            openLocation(track.getLocation().getLat(), track.getLocation().get_long());
-        });
-         */
+        goToMapButton.setOnClickListener(v -> openLocation(track.getLocation().getLatitude(), track.getLocation().getLongitude()));
 
         UIUtils.loadSequenceOfImagesWithGlide(this,
                 new String[]{track.getTrack_full_layout_url(),nation.getNation_flag_url()},
@@ -205,7 +203,7 @@ public class TrackBioActivity extends AppCompatActivity {
     }
 
     private void openLocation(String latitude, String longitude) {
-        String uri = String.format("geo:%s,%s", latitude, longitude);
+        String uri = String.format(Constants.GOOGLE_MAPS_ACCESS, latitude, longitude);
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
         if (intent.resolveActivity(getPackageManager()) != null) {
             startActivity(intent);
