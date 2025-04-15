@@ -1,34 +1,26 @@
 package com.the_coffe_coders.fastestlap.ui.event;
 
+import android.app.SearchManager;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
-import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
@@ -55,7 +47,6 @@ import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -201,12 +192,33 @@ public class EventActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
+        Button openForecastButton = findViewById(R.id.goToForecastButton);
+        openForecastButton.setOnClickListener(v -> openGoogleWeather(track.getLocation().getLocality()));
+
         UIUtils.loadSequenceOfImagesWithGlide(this,
                 new String[]{nation.getNation_flag_url(), track.getTrack_minimal_layout_url()},
 
                 new ImageView[]{findViewById(R.id.country_flag), findViewById(R.id.track_outline_image)},
 
                 () -> buildEventCardFinalStep(weeklyRace));
+    }
+
+    private void openGoogleWeather(String locality) {
+        Intent intent = getPackageManager().getLaunchIntentForPackage("com.weather.Weather");
+        if (intent != null) {
+            intent.setAction(Intent.ACTION_SEARCH);
+            intent.putExtra(SearchManager.QUERY, "weather in " + locality);
+            startActivity(intent);
+        } else {
+            openWeatherInBrowser(locality);
+        }
+    }
+
+    private void openWeatherInBrowser(String locality) {
+        Log.i(TAG, "Opening weather in browser");
+        String uri = String.format("https://www.google.com/search?q=weather+in+%s", Uri.encode(locality));
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        startActivity(intent);
     }
 
     private void buildEventCardFinalStep(WeeklyRace weeklyRace) {

@@ -113,5 +113,6 @@
     <string name="location">Location:</string>
     <string name="open_with_google_maps">See on the map</string>
     <string name="no_map_app_found">No map app found</string>
+    <string name="weather_forecast">Weather forecast</string>
 
 </resources>
