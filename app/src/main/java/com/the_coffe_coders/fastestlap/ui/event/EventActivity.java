@@ -171,7 +171,8 @@ public class EventActivity extends AppCompatActivity {
     private void buildEventCardStepTwo(WeeklyRace weeklyRace, Track track, Nation nation) {
 
         UIUtils.multipleSetTextViewText(
-                new String[]{"Round " + weeklyRace.getRound(),
+                new String[]{
+                        "Round " + weeklyRace.getRound(),
                         weeklyRace.getSeason(),
                         track.getGp_long_name(),
                         weeklyRace.getDateInterval()},
@@ -193,7 +194,8 @@ public class EventActivity extends AppCompatActivity {
         });
 
         Button openForecastButton = findViewById(R.id.goToForecastButton);
-        openForecastButton.setOnClickListener(v -> openGoogleWeather(track.getLocation().getLocality()));
+        openForecastButton.setOnClickListener(v ->
+                UIUtils.openGoogleWeather(this, track.getLocation().getLocality()));
 
         UIUtils.loadSequenceOfImagesWithGlide(this,
                 new String[]{nation.getNation_flag_url(), track.getTrack_minimal_layout_url()},
@@ -201,23 +203,6 @@ public class EventActivity extends AppCompatActivity {
                 new ImageView[]{findViewById(R.id.country_flag), findViewById(R.id.track_outline_image)},
 
                 () -> buildEventCardFinalStep(weeklyRace));
-    }
-
-    private void openGoogleWeather(String locality) {
-        Intent intent = getPackageManager().getLaunchIntentForPackage(Constants.WEATHER_ACCESS_PACKAGE);
-        if (intent != null) {
-            intent.setAction(Intent.ACTION_SEARCH);
-            intent.putExtra(SearchManager.QUERY, this.getString(R.string.weather, locality));
-            startActivity(intent);
-        } else {
-            openWeatherInBrowser(locality);
-        }
-    }
-
-    private void openWeatherInBrowser(String locality) {
-        String uri = String.format(Constants.GOOGLE_WEATHER_ACCESS, Uri.encode(locality));
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-        startActivity(intent);
     }
 
     private void buildEventCardFinalStep(WeeklyRace weeklyRace) {
@@ -358,7 +343,8 @@ public class EventActivity extends AppCompatActivity {
             }
 
             UIUtils.multipleSetTextViewText(
-                    new String[]{Constants.SESSION_NAMES.get(sessionId),
+                    new String[]{
+                            Constants.SESSION_NAMES.get(sessionId),
                             Constants.SESSION_DAY.get(sessionId)},
 
                     new TextView[]{

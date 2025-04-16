@@ -1,13 +1,12 @@
 package com.the_coffe_coders.fastestlap.util;
 
-import static androidx.core.content.ContextCompat.startActivity;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,13 +17,12 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -38,13 +36,9 @@ import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 import com.bumptech.glide.request.target.CustomTarget;
 import com.bumptech.glide.request.transition.Transition;
-import com.google.android.gms.tasks.Task;
-import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Location;
-import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
 
 import java.security.MessageDigest;
 
@@ -208,8 +202,6 @@ public class UIUtils {
                 });
     }
 
-
-
     public static void singleSetTextViewText(String text, TextView textView) {
         setTextViewText(text, textView);
     }
@@ -251,6 +243,38 @@ public class UIUtils {
             }
         });
         colorAnimator.start();
+    }
+
+    public static void openLocation(Context context, String latitude, String longitude) {
+        String uri = String.format(Constants.GOOGLE_MAPS_ACCESS, latitude, longitude);
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(intent);
+        } else {
+            Toast.makeText(context, R.string.no_map_app_found, Toast.LENGTH_SHORT).show();
+            Log.e("UIUtils", "No map app found to open location");
+        }
+    }
+
+    public static void openGoogleWeather(Context context, String locality) {
+        Intent intent = context.getPackageManager().getLaunchIntentForPackage(Constants.WEATHER_ACCESS_PACKAGE);
+        if (intent != null) {
+            intent.setAction(Intent.ACTION_SEARCH);
+            intent.putExtra(SearchManager.QUERY, context.getString(R.string.weather, locality));
+            context.startActivity(intent);
+        } else {
+            openWeatherInBrowser(context, locality);
+        }
+    }
+
+    private static void openWeatherInBrowser(Context context, String locality) {
+        String uri = String.format(Constants.GOOGLE_WEATHER_ACCESS, Uri.encode(locality));
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+        if (intent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(intent);
+        } else {
+            Toast.makeText(context, context.getString(R.string.no_browser_found), Toast.LENGTH_SHORT).show();
+        }
     }
 
     // SYSTEM_UI_FLAG_FULLSCREEN // Hide the status bar

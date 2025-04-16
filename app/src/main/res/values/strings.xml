@@ -115,5 +115,6 @@
     <string name="no_map_app_found">No map app found</string>
     <string name="weather_forecast">Weather forecast</string>
     <string name="weather">weather in %1$s</string>
+    <string name="no_browser_found">No browser found</string>
 
 </resources>

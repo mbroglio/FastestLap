@@ -132,7 +132,8 @@ public class TrackBioActivity extends AppCompatActivity {
         loadingScreen.updateProgress(50);
 
         UIUtils.multipleSetTextViewText(
-                new String[]{track.getTrackName(),
+                new String[]{
+                        track.getTrackName(),
                         track.getLocation().getLocality(),
                         track.getFirst_entry(),
                         track.getLaps(),
@@ -141,7 +142,8 @@ public class TrackBioActivity extends AppCompatActivity {
                         track.getLap_record().split(" ")[0],
                         track.getLap_record().substring(track.getLap_record().split(" ")[0].length() + 1)},
 
-                new TextView[]{findViewById(R.id.circuit_name_value),
+                new TextView[]{
+                        findViewById(R.id.circuit_name_value),
                         findViewById(R.id.circuit_location_value),
                         findViewById(R.id.circuit_first_entry_value),
                         findViewById(R.id.number_of_laps_value),
@@ -150,15 +152,14 @@ public class TrackBioActivity extends AppCompatActivity {
                         findViewById(R.id.fastest_lap_value),
                         findViewById(R.id.fastest_lap_driver)});
 
-
         Button goToMapButton = findViewById(R.id.goToMapButton);
-        goToMapButton.setOnClickListener(v -> openLocation(track.getLocation().getLatitude(), track.getLocation().getLongitude()));
+        goToMapButton.setOnClickListener(v ->
+                UIUtils.openLocation(this, track.getLocation().getLatitude(), track.getLocation().getLongitude()));
 
         UIUtils.loadSequenceOfImagesWithGlide(this,
                 new String[]{track.getTrack_full_layout_url(),nation.getNation_flag_url()},
                 new ImageView[]{circuitImage, countryFlag},
                 this::createHistoryTable);
-
     }
 
     private void createHistoryTable() {
@@ -200,17 +201,6 @@ public class TrackBioActivity extends AppCompatActivity {
         }
 
         loadingScreen.hideLoadingScreen();
-    }
-
-    private void openLocation(String latitude, String longitude) {
-        String uri = String.format(Constants.GOOGLE_MAPS_ACCESS, latitude, longitude);
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-        if (intent.resolveActivity(getPackageManager()) != null) {
-            startActivity(intent);
-        } else {
-            Toast.makeText(this, R.string.no_map_app_found, Toast.LENGTH_SHORT).show();
-            Log.e("TrackBioActivity", "No map app found to open location");
-        }
     }
 
     @Override
