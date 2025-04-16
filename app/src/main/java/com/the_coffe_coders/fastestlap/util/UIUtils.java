@@ -270,11 +270,7 @@ public class UIUtils {
     private static void openWeatherInBrowser(Context context, String locality) {
         String uri = String.format(Constants.GOOGLE_WEATHER_ACCESS, Uri.encode(locality));
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-        if (intent.resolveActivity(context.getPackageManager()) != null) {
-            context.startActivity(intent);
-        } else {
-            Toast.makeText(context, context.getString(R.string.no_browser_found), Toast.LENGTH_SHORT).show();
-        }
+        context.startActivity(intent);
     }
 
     // SYSTEM_UI_FLAG_FULLSCREEN // Hide the status bar
