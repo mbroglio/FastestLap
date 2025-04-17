@@ -95,10 +95,12 @@ public class UIUtils {
         }
 
         for (int i = 0; i < urls.length; i++) {
+            int nextIndex = i + 1;
             if (i == urls.length - 1) {
                 loadImage(context, urls[i], imageViews[i], onSuccess, 0);
             } else {
-                loadImage(context, urls[i], imageViews[i], null, 0);
+                loadImage(context, urls[i], imageViews[i], () ->
+                        loadImage(context, urls[nextIndex], imageViews[nextIndex], onSuccess, 0), 0);
             }
         }
     }

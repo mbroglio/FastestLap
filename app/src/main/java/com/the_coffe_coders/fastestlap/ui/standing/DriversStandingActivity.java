@@ -79,6 +79,8 @@ public class DriversStandingActivity extends AppCompatActivity {
     }
 
     private void start() {
+        Log.i(TAG, "STARTING DRIVER STANDINGS ACTIVITY");
+
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, null);
 
         loadingScreen.showLoadingScreen();
@@ -99,6 +101,7 @@ public class DriversStandingActivity extends AppCompatActivity {
         driverStandingLayout.setOnRefreshListener(() -> {
             start();
             driverStandingLayout.setRefreshing(false);
+            counter = 0;
         });
 
         setupPage();
@@ -259,6 +262,8 @@ public class DriversStandingActivity extends AppCompatActivity {
         loadingScreen.postLoadingStatus(this.getString(R.string.generating_driver_card, Integer.toString(pos + 1), Integer.toString(size)));
         loadingScreen.updateProgress((pos + 1) * 100 / size);
         counter++;
+
+        Log.i(TAG, "Counter: " + counter);
 
         loadingScreen.hideLoadingScreenWithCondition(counter == size - 1);
     }

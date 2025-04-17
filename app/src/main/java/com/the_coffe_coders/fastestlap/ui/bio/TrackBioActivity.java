@@ -199,11 +199,16 @@ public class TrackBioActivity extends AppCompatActivity {
                             tableRow.findViewById(R.id.third_driver_team)});
 
             ImageView raceHighlights = tableRow.findViewById(R.id.race_highlights_button);
-            raceHighlights.setOnClickListener(v -> {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(history.getRaceHighlightsUrl()));
-                startActivity(intent);
-            });
-
+            if(history.getRaceHighlightsUrl() != null){
+                raceHighlights.setVisibility(View.VISIBLE);
+                raceHighlights.setOnClickListener(v -> {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(history.getRaceHighlightsUrl()));
+                    startActivity(intent);
+                });
+            } else {
+                raceHighlights.setVisibility(View.GONE);
+            }
+            
             tableLayout.addView(tableRow);
         }
 
