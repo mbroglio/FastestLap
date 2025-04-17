@@ -19,4 +19,5 @@ public class TrackHistory {
     private List<String> podium;
     private List<String> team;
     private String year;
+    private String raceHighlightsUrl;
 }

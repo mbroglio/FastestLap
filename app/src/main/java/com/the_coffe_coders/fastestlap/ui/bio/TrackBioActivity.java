@@ -176,6 +176,7 @@ public class TrackBioActivity extends AppCompatActivity {
         tableLayout.addView(tableHeader);
 
         for (TrackHistory history : track.getTrack_history()) {
+            Log.i("TrackBioActivity", "History: " + history);
             View tableRow = inflater.inflate(R.layout.track_bio_table_row, tableLayout, false);
 
             UIUtils.multipleSetTextViewText(
@@ -196,6 +197,12 @@ public class TrackBioActivity extends AppCompatActivity {
                             tableRow.findViewById(R.id.first_driver_team),
                             tableRow.findViewById(R.id.second_driver_team),
                             tableRow.findViewById(R.id.third_driver_team)});
+
+            ImageView raceHighlights = tableRow.findViewById(R.id.race_highlights_button);
+            raceHighlights.setOnClickListener(v -> {
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(history.getRaceHighlightsUrl()));
+                startActivity(intent);
+            });
 
             tableLayout.addView(tableRow);
         }
