@@ -45,6 +45,7 @@ public class PastEventsActivity extends AppCompatActivity {
     EventViewModel eventViewModel;
     TrackViewModel trackViewModel;
 
+    private SwipeRefreshLayout pastEventsLayout;
     private int counter = 0;
 
     @Override
@@ -58,7 +59,8 @@ public class PastEventsActivity extends AppCompatActivity {
     }
 
     private void start(){
-        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, null);
+        pastEventsLayout = findViewById(R.id.past_events_layout);
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, pastEventsLayout, null);
 
         loadingScreen.showLoadingScreen();
 
@@ -69,9 +71,9 @@ public class PastEventsActivity extends AppCompatActivity {
         UIUtils.applyWindowInsets(toolbar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        SwipeRefreshLayout pastEventsLayout = findViewById(R.id.past_events_layout);
         UIUtils.applyWindowInsets(pastEventsLayout);
         pastEventsLayout.setOnRefreshListener(() ->{
+            counter = 0;
             start();
             pastEventsLayout.setRefreshing(false);
         });

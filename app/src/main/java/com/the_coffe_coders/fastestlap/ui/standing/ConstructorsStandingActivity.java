@@ -45,7 +45,8 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
     private static final String TAG = "TeamCardActivity";
     private final boolean constructorToProcess = true;
     LoadingScreen loadingScreen;
-    private TextView teamPointsTextView;
+
+    private SwipeRefreshLayout teamStandingLayout;
     private ConstructorStandings constructorStandings;
     private String constructorId;
     private int counter = 0;
@@ -65,9 +66,9 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
     }
 
     private void start() {
-        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, null);
+        teamStandingLayout = findViewById(R.id.team_standing_layout);
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, teamStandingLayout, null);
 
-        // Show loading screen initially
         loadingScreen.showLoadingScreen();
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
@@ -80,10 +81,10 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        SwipeRefreshLayout teamStandingLayout = findViewById(R.id.team_standing_layout);
         UIUtils.applyWindowInsets(teamStandingLayout);
 
         teamStandingLayout.setOnRefreshListener(() -> {
+            counter = 0;
             start();
             teamStandingLayout.setRefreshing(false);
         });

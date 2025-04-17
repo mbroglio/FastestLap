@@ -18,7 +18,7 @@ public class LoadingScreen {
     private final Context context;
     private final TextView loadingText, percentageText, loadingStatusText;
     private final ProgressBar loadingProgressBar;
-    private final View rootView, fragmentView;
+    private final View activityView, fragmentView;
 
     private int dotCount = 0;
     private boolean addingDots = true;
@@ -27,7 +27,7 @@ public class LoadingScreen {
     private final Handler timerHandler = new Handler();
     private final Runnable timerRunnable = this::hide;
 
-    public LoadingScreen(View view, Context context, View fragmentView) {
+    public LoadingScreen(View view, Context context, View activityView, View fragmentView) {
         this.handler = new Handler();
         //loading screen logic
         this.loadingScreen = view.findViewById(R.id.loading_screen);
@@ -37,11 +37,10 @@ public class LoadingScreen {
         this.loadingProgressBar = view.findViewById(R.id.loading_progress_bar);
         this.loadingStatusText = view.findViewById(R.id.loading_status_text);
 
-        this.rootView = view;
+        this.activityView = activityView;
         this.fragmentView = fragmentView;
 
         ImageView loadingWheel = view.findViewById(R.id.loading_wheel);
-        // Start the rotation animation
         Animation rotateAnimation = AnimationUtils.loadAnimation(context, R.anim.rotate);
         loadingWheel.startAnimation(rotateAnimation);
     }
@@ -50,7 +49,7 @@ public class LoadingScreen {
         if (fragmentView != null) {
             fragmentView.setVisibility(View.GONE);
         } else {
-            rootView.setVisibility(View.GONE);
+            activityView.setVisibility(View.GONE);
         }
 
         loadingScreen.setVisibility(View.VISIBLE);
@@ -111,7 +110,7 @@ public class LoadingScreen {
         if (fragmentView != null) {
             fragmentView.setVisibility(View.VISIBLE);
         }else{
-            rootView.setVisibility(View.VISIBLE);
+            activityView.setVisibility(View.VISIBLE);
         }
         handler.removeCallbacks(dotRunnable);
         timerHandler.removeCallbacks(timerRunnable);

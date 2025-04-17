@@ -39,6 +39,8 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     private final boolean raceToProcess = true;
     LoadingScreen loadingScreen;
 
+    private SwipeRefreshLayout upcomingEventsLayout;
+
     EventViewModel eventViewModel;
     TrackViewModel trackViewModel;
 
@@ -55,7 +57,8 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     }
 
     private void start(){
-        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, null);
+        upcomingEventsLayout = findViewById(R.id.upcoming_events_layout);
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, upcomingEventsLayout, null);
 
         loadingScreen.showLoadingScreen();
 
@@ -66,9 +69,9 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         UIUtils.applyWindowInsets(toolbar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        SwipeRefreshLayout upcomingEventsLayout = findViewById(R.id.upcoming_events_layout);
         UIUtils.applyWindowInsets(upcomingEventsLayout);
         upcomingEventsLayout.setOnRefreshListener(() ->{
+            counter = 0;
             start();
             upcomingEventsLayout.setRefreshing(false);
         });

@@ -20,6 +20,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
@@ -59,6 +60,7 @@ public class EventActivity extends AppCompatActivity {
     private String trackId;
     private Track track;
     private Nation nation;
+    private SwipeRefreshLayout eventLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,7 +73,8 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void start(){
-        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, null);
+        eventLayout = findViewById(R.id.event_layout);
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, eventLayout, null);
         loadingScreen.showLoadingScreen();
         loadingScreen.updateProgress(0);
 
@@ -79,8 +82,11 @@ public class EventActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         UIUtils.applyWindowInsets(toolbar);
 
-        ScrollView eventScrollLayout = findViewById(R.id.event_scroll_view);
-        UIUtils.applyWindowInsets(eventScrollLayout);
+        UIUtils.applyWindowInsets(eventLayout);
+        eventLayout.setOnRefreshListener(() ->{
+            start();
+            eventLayout.setRefreshing(false);
+        });
 
         trackId = getIntent().getStringExtra("CIRCUIT_ID");
         Log.i(TAG, "Circuit ID: " + trackId);
@@ -329,6 +335,7 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void createWeekSchedule(List<Session> sessions) {
+        View eventSchedule = findViewById(R.id.event_schedule_table);
 
         loadingScreen.postLoadingStatus(this.getString(R.string.setting_event_schedule));
         loadingScreen.updateProgress(100);
@@ -348,20 +355,20 @@ public class EventActivity extends AppCompatActivity {
                             Constants.SESSION_DAY.get(sessionId)},
 
                     new TextView[]{
-                            findViewById(Constants.SESSION_NAME_FIELD.get(sessionId)),
-                            findViewById(Constants.SESSION_DAY_FIELD.get(sessionId))});
+                            eventSchedule.findViewById(Constants.SESSION_NAME_FIELD.get(sessionId)),
+                            eventSchedule.findViewById(Constants.SESSION_DAY_FIELD.get(sessionId))});
 
             UIUtils.setTextViewTextWithCondition(sessionId.equals("Race"),
                     session.getStartingTime(), //if true
                     session.getTime(), //if false
-                    findViewById(Constants.SESSION_TIME_FIELD.get(sessionId)));
+                    eventSchedule.findViewById(Constants.SESSION_TIME_FIELD.get(sessionId)));
 
-            setChequeredFlag(session);
+            setChequeredFlag(eventSchedule, session);
         }
         loadingScreen.hideLoadingScreen();
     }
 
-    private void setChequeredFlag(Session session) {
+    private void setChequeredFlag(View view, Session session) {
         String sessionId = session.getClass().getSimpleName();
         if (sessionId.equals("Practice")) {
             Practice practice = (Practice) session;
@@ -369,13 +376,13 @@ public class EventActivity extends AppCompatActivity {
         }
 
         if (session.isFinished()) {
-            ImageView flag = findViewById(Constants.SESSION_FLAG_FIELD.get(sessionId));
+            ImageView flag = view.findViewById(Constants.SESSION_FLAG_FIELD.get(sessionId));
             flag.setVisibility(View.VISIBLE);
 
-            LinearLayout currentSession = findViewById(Constants.SESSION_ROW.get(sessionId));
+            LinearLayout currentSession = view.findViewById(Constants.SESSION_ROW.get(sessionId));
             currentSession.setClickable(true);
             currentSession.setFocusable(true);
-            currentSession.setOnClickListener(view -> Log.i(TAG, "session clicked"));
+            currentSession.setOnClickListener(v -> Log.i(TAG, "session clicked"));
         }
     }
 

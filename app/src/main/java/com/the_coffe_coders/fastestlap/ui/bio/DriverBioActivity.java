@@ -60,6 +60,7 @@ public class DriverBioActivity extends AppCompatActivity {
     private AppBarLayout appBarLayout;
     private ImageView driverNumberImage;
     private String driverId;
+    private SwipeRefreshLayout driverBioLayout;
 
     private DriverViewModel driverViewModel;
     private NationViewModel nationViewModel;
@@ -75,7 +76,8 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     private void start(){
-        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, null);
+        driverBioLayout = findViewById(R.id.driver_bio_layout);
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, driverBioLayout, null);
         loadingScreen.showLoadingScreen();
         loadingScreen.updateProgress(0);
 
@@ -92,7 +94,6 @@ public class DriverBioActivity extends AppCompatActivity {
 
         appBarLayout = findViewById(R.id.top_bar_layout);
 
-        SwipeRefreshLayout driverBioLayout = findViewById(R.id.driver_bio_layout);
         UIUtils.applyWindowInsets(driverBioLayout);
         driverBioLayout.setOnRefreshListener(() -> {
             start();

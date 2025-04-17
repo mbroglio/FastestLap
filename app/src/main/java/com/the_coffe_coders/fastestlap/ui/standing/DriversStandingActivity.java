@@ -57,13 +57,11 @@ import java.util.List;
 public class DriversStandingActivity extends AppCompatActivity {
 
     private static final String TAG = "DriverCardActivity";
-
     private DriverStandings driverStandings;
-
     private LoadingScreen loadingScreen;
 
+    private SwipeRefreshLayout driverStandingLayout;
     private String driverId;
-
     private int counter = 0;
 
     @Override
@@ -73,6 +71,9 @@ public class DriversStandingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_drivers_standing);
 
         driverId = getIntent().getStringExtra("DRIVER_ID");
+        driverStandingLayout = findViewById(R.id.driver_standing_layout);
+
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, driverStandingLayout,null);
 
         start();
 
@@ -80,8 +81,6 @@ public class DriversStandingActivity extends AppCompatActivity {
 
     private void start() {
         Log.i(TAG, "STARTING DRIVER STANDINGS ACTIVITY");
-
-        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, null);
 
         loadingScreen.showLoadingScreen();
 
@@ -95,13 +94,12 @@ public class DriversStandingActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        SwipeRefreshLayout driverStandingLayout = findViewById(R.id.driver_standing_layout);
         UIUtils.applyWindowInsets(driverStandingLayout);
 
         driverStandingLayout.setOnRefreshListener(() -> {
+            counter = 0;
             start();
             driverStandingLayout.setRefreshing(false);
-            counter = 0;
         });
 
         setupPage();

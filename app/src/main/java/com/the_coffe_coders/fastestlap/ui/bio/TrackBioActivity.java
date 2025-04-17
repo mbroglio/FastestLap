@@ -43,6 +43,7 @@ public class TrackBioActivity extends AppCompatActivity {
     private ImageView circuitImage;
     private ImageView countryFlag;
     private String trackId;
+    private SwipeRefreshLayout trackBioLayout;
 
     private TrackViewModel trackViewModel;
     private NationViewModel nationViewModel;
@@ -57,7 +58,8 @@ public class TrackBioActivity extends AppCompatActivity {
     }
 
     private void start(){
-        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, null);
+        trackBioLayout = findViewById(R.id.track_bio_layout);
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, trackBioLayout, null);
         loadingScreen.showLoadingScreen();
         loadingScreen.updateProgress(0);
 
@@ -65,7 +67,6 @@ public class TrackBioActivity extends AppCompatActivity {
         UIUtils.applyWindowInsets(toolbar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        SwipeRefreshLayout trackBioLayout = findViewById(R.id.track_bio_layout);
         UIUtils.applyWindowInsets(trackBioLayout);
         trackBioLayout.setOnRefreshListener(() -> {
             start();

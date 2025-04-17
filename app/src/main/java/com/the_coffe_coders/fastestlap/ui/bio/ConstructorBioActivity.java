@@ -55,6 +55,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
     private NationViewModel nationViewModel;
     private ConstructorViewModel constructorViewModel;
 
+    private SwipeRefreshLayout constructorBioLayout;
     private String teamId;
     private Constructor constructor;
     private Nation nation;
@@ -71,7 +72,9 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     private void start(){
-        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, null);
+        constructorBioLayout = findViewById(R.id.constructor_bio_layout);
+
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, constructorBioLayout, null);
         loadingScreen.showLoadingScreen();
         loadingScreen.updateProgress(0);
 
@@ -88,7 +91,6 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
         appBarLayout = findViewById(R.id.top_bar_layout);
 
-        SwipeRefreshLayout constructorBioLayout = findViewById(R.id.constructor_bio_layout);
         UIUtils.applyWindowInsets(constructorBioLayout);
         constructorBioLayout.setOnRefreshListener(() -> {
             start();
