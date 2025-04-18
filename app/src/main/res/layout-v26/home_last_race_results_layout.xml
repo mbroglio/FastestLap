@@ -49,6 +49,7 @@
             android:id="@+id/last_race_track_outline"
             android:layout_width="120dp"
             android:layout_height="100dp"
+            android:importantForAccessibility="no"
             android:layout_centerHorizontal="true">
 
         </ImageView>
@@ -61,7 +62,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
             android:fontFamily="@font/orbitron_regular"
-            android:text="-!-"
+            android:text="@string/not_found"
             android:textColor="@color/white"
             android:textSize="@dimen/body_text_size">
 
@@ -74,7 +75,7 @@
             android:layout_below="@id/last_race_date"
             android:layout_centerHorizontal="true"
             android:fontFamily="@font/orbitron_bold"
-            android:text="-!-"
+            android:text="@string/not_found"
             android:textColor="@color/white"
             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -95,7 +96,6 @@
 
         </LinearLayout>
 
-
     </RelativeLayout>
 
     <TextView
@@ -104,9 +104,16 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
+        android:layout_toEndOf="@id/last_race_name_layout"
+        android:autoSizeMaxTextSize="@dimen/body_text_size"
+        android:autoSizeMinTextSize="9sp"
+        android:autoSizeTextType="uniform"
         android:fontFamily="@font/orbitron_bold"
+        android:gravity="end"
+        android:maxLines="1"
         android:text="@string/last_race_upper_case"
         android:textColor="@color/white"
         android:textSize="@dimen/body_text_size" />
@@ -141,9 +148,9 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <TextView
@@ -176,9 +183,9 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:gravity="center"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
@@ -212,9 +219,9 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:gravity="center"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
@@ -274,6 +281,10 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/medium_margin"
+                    android:autoSizeMaxTextSize="@dimen/body_text_size"
+                    android:autoSizeMinTextSize="9sp"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
                     android:fontFamily="@font/orbitron_bold"
                     android:text="@string/raceResult"
                     android:textColor="@color/black"
@@ -287,6 +298,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="16dp"
+                    android:importantForAccessibility="no"
                     android:layout_toEndOf="@id/raceResult"
                     app:srcCompat="@drawable/checkered_flag">
 

@@ -13,7 +13,8 @@
         android:id="@+id/driver_history_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        tools:ignore="UselessParent">
 
         <TextView
             android:layout_width="match_parent"
@@ -26,7 +27,6 @@
             android:fontFamily="@font/orbitron_bold"
             android:maxLines="1"
             android:gravity="center"
-
             android:text="@string/year_upper_case"
             android:textColor="@color/black"
             android:textSize="@dimen/layout_subtitle_text_size">

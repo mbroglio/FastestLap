@@ -18,6 +18,7 @@
             android:id="@+id/app_logo"
             android:layout_width="wrap_content"
             android:layout_height="120dp"
+            android:importantForAccessibility="no"
             app:srcCompat="@drawable/iconfl">
 
         </ImageView>

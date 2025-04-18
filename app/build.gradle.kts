@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.the_coffe_coders.fastestlap"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.the_coffe_coders.fastestlap"

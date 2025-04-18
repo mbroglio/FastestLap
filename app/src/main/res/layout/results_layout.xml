@@ -15,7 +15,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:fontFamily="@font/orbitron_bold"
-        android:text="RACE RESULT:"
+        android:text="@string/race_result_upper_case"
         android:textColor="@color/black"
         android:textSize="@dimen/layout_title_2_text_size">
 
@@ -164,11 +164,11 @@
             android:layout_height="70dp"
             android:layout_centerInParent="true"
             android:layout_marginEnd="15dp"
+            android:importantForAccessibility="no"
             app:srcCompat="@drawable/checkered_flag">
 
         </ImageView>
 
     </RelativeLayout>
-
 
 </RelativeLayout>

@@ -24,8 +24,8 @@
             android:autoSizeMinTextSize="9sp"
             android:autoSizeTextType="uniform"
             android:fontFamily="@font/orbitron_regular"
-            android:maxLines="1"
             android:gravity="center"
+            android:maxLines="1"
             android:text="@string/not_found"
             android:textColor="@color/black"
             android:textSize="@dimen/body_text_size">
@@ -41,8 +41,8 @@
             android:autoSizeMinTextSize="9sp"
             android:autoSizeTextType="uniform"
             android:fontFamily="@font/orbitron_regular"
-            android:maxLines="1"
             android:gravity="center"
+            android:maxLines="1"
             android:text="@string/not_found"
             android:textColor="@color/black"
             android:textSize="@dimen/body_text_size">
@@ -59,8 +59,8 @@
             android:autoSizeMinTextSize="9sp"
             android:autoSizeTextType="uniform"
             android:fontFamily="@font/orbitron_regular"
-            android:maxLines="1"
             android:gravity="center"
+            android:maxLines="1"
             android:text="@string/not_found"
             android:textColor="@color/black"
             android:textSize="@dimen/body_text_size">
@@ -77,8 +77,8 @@
             android:autoSizeMinTextSize="9sp"
             android:autoSizeTextType="uniform"
             android:fontFamily="@font/orbitron_regular"
-            android:maxLines="1"
             android:gravity="center"
+            android:maxLines="1"
             android:text="@string/not_found"
             android:textColor="@color/black"
             android:textSize="@dimen/body_text_size">
@@ -96,8 +96,8 @@
             android:autoSizeMinTextSize="9sp"
             android:autoSizeTextType="uniform"
             android:fontFamily="@font/orbitron_regular"
-            android:maxLines="1"
             android:gravity="center"
+            android:maxLines="1"
             android:text="@string/not_found"
             android:textColor="@color/black"
             android:textSize="@dimen/body_text_size">

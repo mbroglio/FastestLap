@@ -24,8 +24,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:fontFamily="@font/orbitron_bold"
-                android:text="LIVE SESSION"
-                android:textColor="@color/screen_background_color"
+                android:text="@string/live_session_upper_case"
+                android:textColor="@color/black"
                 android:textSize="@dimen/layout_subtitle_text_size"
                 android:textStyle="bold">
 
@@ -41,11 +41,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
+                    android:importantForAccessibility="no"
                     app:srcCompat="@drawable/dot_inside_a_circle_black">
 
                 </ImageView>
-            </RelativeLayout>
 
+            </RelativeLayout>
 
         </LinearLayout>
 

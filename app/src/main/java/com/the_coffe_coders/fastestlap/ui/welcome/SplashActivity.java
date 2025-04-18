@@ -89,7 +89,7 @@ public class SplashActivity extends AppCompatActivity {
             appName.setVisibility(View.VISIBLE);
             handler.postDelayed(() -> {
 
-                String creditsText = getString(R.string.by_the_coffee_coders);
+                String creditsText = getString(R.string.app_credits);
                 int delay = 100;
                 for (int i = 0; i < creditsText.length(); i++) {
                     final int index = i;
