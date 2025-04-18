@@ -29,6 +29,8 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
+import java.util.List;
+
 public class TrackBioActivity extends AppCompatActivity {
 
     LoadingScreen loadingScreen;
@@ -128,9 +130,9 @@ public class TrackBioActivity extends AppCompatActivity {
         TextView raceDistance = findViewById(R.id.race_distance_value);
         raceDistance.setText(track.getRace_distance());
 
-        String fastestLapValue = track.getLap_record().split(" ")[0];
-
-        String fastestLapDriver = track.getLap_record().substring(fastestLapValue.length() + 1);
+    private void createHistoryTable() {
+        loadingScreen.postLoadingStatus(this.getString(R.string.setting_track_history));
+        loadingScreen.updateProgress(100);
 
         TextView fastestLap = findViewById(R.id.fastest_lap_value);
         fastestLap.setText(fastestLapValue);
@@ -148,7 +150,10 @@ public class TrackBioActivity extends AppCompatActivity {
         tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray_dark));
         tableLayout.addView(tableHeader);
 
-        for (TrackHistory history : track.getTrack_history()) {
+        List<TrackHistory> trackHistoryList = track.getTrack_history();
+        for (int i = trackHistoryList.size() - 1; i >= 0; i--) {
+            TrackHistory history = trackHistoryList.get(i);
+            Log.i("TrackBioActivity", "History: " + history);
             View tableRow = inflater.inflate(R.layout.track_bio_table_row, tableLayout, false);
 
             TextView year = tableRow.findViewById(R.id.season_year);

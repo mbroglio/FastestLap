@@ -44,6 +44,8 @@ import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
+import java.util.List;
+
 public class ConstructorBioActivity extends AppCompatActivity {
 
     private static final String TAG = "ConstructorBioActivity";
@@ -301,8 +303,10 @@ public class ConstructorBioActivity extends AppCompatActivity {
         //set stroke of tableHeader
         tableLayout.addView(tableHeader);
 
-        if (constructor.getTeam_history() != null) {
-            for (ConstructorHistory history : constructor.getTeam_history()) {
+        List<ConstructorHistory> constructorHistoryList = constructor.getTeam_history();
+        if (constructorHistoryList != null) {
+            for (int i = constructorHistoryList.size() - 1; i >= 0; i--) {
+                ConstructorHistory history = constructorHistoryList.get(i);
                 View tableRow = inflater.inflate(R.layout.constructor_bio_table_row, tableLayout, false);
                 tableRow.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
                 // Customize the row if needed

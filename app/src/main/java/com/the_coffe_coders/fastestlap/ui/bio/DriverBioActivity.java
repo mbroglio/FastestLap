@@ -44,6 +44,8 @@ import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
+import java.util.List;
+
 public class DriverBioActivity extends AppCompatActivity {
 
     private final String TAG = "DriverBioActivity";
@@ -290,8 +292,10 @@ public class DriverBioActivity extends AppCompatActivity {
 
         tableLayout.addView(tableHeader);
 
-        if (driver.getDriver_history() != null) {
-            for (DriverHistory history : driver.getDriver_history()) {
+        List<DriverHistory> driverHistoryList = driver.getDriver_history();
+        if (driverHistoryList != null) {
+            for (int i = driverHistoryList.size() - 1; i >= 0; i--) {
+                DriverHistory history = driverHistoryList.get(i);
                 View tableRow = inflater.inflate(R.layout.driver_bio_table_row, tableLayout, false);
                 tableRow.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
 
