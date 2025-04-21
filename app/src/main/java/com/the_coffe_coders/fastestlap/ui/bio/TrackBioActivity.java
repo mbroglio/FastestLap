@@ -8,10 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,7 +18,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
@@ -31,9 +28,10 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
-import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
+
+import java.util.List;
 
 public class TrackBioActivity extends AppCompatActivity {
 
@@ -164,7 +162,6 @@ public class TrackBioActivity extends AppCompatActivity {
     }
 
     private void createHistoryTable() {
-
         loadingScreen.postLoadingStatus(this.getString(R.string.setting_track_history));
         loadingScreen.updateProgress(100);
 
@@ -176,8 +173,9 @@ public class TrackBioActivity extends AppCompatActivity {
         tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray_dark));
         tableLayout.addView(tableHeader);
 
-        for (TrackHistory history : track.getTrack_history()) {
-            Log.i("TrackBioActivity", "History: " + history);
+        List<TrackHistory> trackHistoryList = track.getTrack_history();
+        for (int i = trackHistoryList.size() - 1; i >= 0; i--) {
+            TrackHistory history = trackHistoryList.get(i);
             View tableRow = inflater.inflate(R.layout.track_bio_table_row, tableLayout, false);
 
             UIUtils.multipleSetTextViewText(
@@ -209,8 +207,9 @@ public class TrackBioActivity extends AppCompatActivity {
             } else {
                 raceHighlights.setVisibility(View.GONE);
             }
-            
+
             tableLayout.addView(tableRow);
+
         }
 
         loadingScreen.hideLoadingScreen();

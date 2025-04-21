@@ -1,8 +1,6 @@
 package com.the_coffe_coders.fastestlap.ui.event;
 
-import android.app.SearchManager;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
@@ -12,11 +10,11 @@ import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
@@ -349,14 +347,13 @@ public class EventActivity extends AppCompatActivity {
                 sessionId = practice.getPractice();
             }
 
-            UIUtils.multipleSetTextViewText(
-                    new String[]{
-                            Constants.SESSION_NAMES.get(sessionId),
-                            Constants.SESSION_DAY.get(sessionId)},
-
-                    new TextView[]{
-                            eventSchedule.findViewById(Constants.SESSION_NAME_FIELD.get(sessionId)),
-                            eventSchedule.findViewById(Constants.SESSION_DAY_FIELD.get(sessionId))});
+            if(AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("en-GB")){
+                setSchedule(Constants.SESSION_NAMES_ENG.get(sessionId),
+                        Constants.SESSION_DAY_ENG.get(sessionId), eventSchedule, sessionId);
+            }else if(AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("it-IT")){
+                setSchedule(Constants.SESSION_NAMES_ITA.get(sessionId),
+                        Constants.SESSION_DAY_ITA.get(sessionId), eventSchedule, sessionId);
+            }
 
             UIUtils.setTextViewTextWithCondition(sessionId.equals("Race"),
                     session.getStartingTime(), //if true
@@ -366,6 +363,14 @@ public class EventActivity extends AppCompatActivity {
             setChequeredFlag(eventSchedule, session);
         }
         loadingScreen.hideLoadingScreen();
+    }
+
+    private void setSchedule(String sessionName, String sessionDay, View eventSchedule, String sessionId) {
+        UIUtils.multipleSetTextViewText(
+                new String[]{sessionName, sessionDay},
+                new TextView[]{
+                        eventSchedule.findViewById(Constants.SESSION_NAME_FIELD.get(sessionId)),
+                        eventSchedule.findViewById(Constants.SESSION_DAY_FIELD.get(sessionId))});
     }
 
     private void setChequeredFlag(View view, Session session) {

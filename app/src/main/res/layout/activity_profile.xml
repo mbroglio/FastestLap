@@ -73,6 +73,7 @@
             </LinearLayout>
 
             <RelativeLayout
+                android:id="@+id/user_access_options_layout"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:layout_marginStart="@dimen/medium_margin"
@@ -107,6 +108,65 @@
                 </Button>
 
             </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/language_choice_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/medium_margin">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/italy_flag"
+                    android:layout_gravity="center">
+
+                </ImageView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:layout_marginStart="5dp"
+                    android:text="@string/italian_language_abbr_upper_case"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/layout_subtitle_text_size">
+
+                </TextView>
+
+                <com.google.android.material.materialswitch.MaterialSwitch
+                    android:id="@+id/language_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:checked="false" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:layout_marginEnd="5dp"
+                    android:text="@string/english_language_abbr_upper_case"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/layout_subtitle_text_size">
+
+                </TextView>
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/united_kingdom_flag"
+                    android:layout_gravity="center"
+                    android:importantForAccessibility="no">
+
+                </ImageView>
+
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

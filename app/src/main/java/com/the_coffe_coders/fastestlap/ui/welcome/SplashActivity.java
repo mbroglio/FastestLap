@@ -16,13 +16,16 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.os.LocaleListCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
+import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
@@ -47,6 +50,10 @@ public class SplashActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_splash_screen);
 
+        start();
+    }
+
+    private void start(){
         ConstraintLayout introScreen = findViewById(R.id.intro_screen);
         UIUtils.applyWindowInsets(introScreen);
 
@@ -72,9 +79,19 @@ public class SplashActivity extends AppCompatActivity {
         appCredits.setVisibility(View.INVISIBLE);
         progressIndicator.setVisibility(View.INVISIBLE);
 
+        setAppLocale();
+
+    }
+
+    private void setAppLocale() {
+        if(AppCompatDelegate.getApplicationLocales().get(0) == null){
+            LocaleListCompat appLocale = LocaleListCompat.forLanguageTags(Constants.DEFAULT_LANGUAGE);
+            AppCompatDelegate.setApplicationLocales(appLocale);
+        }
+
+        AppCompatDelegate.setApplicationLocales(AppCompatDelegate.getApplicationLocales());
+
         setupIntro();
-
-
     }
 
     private void showIntroScreen() {

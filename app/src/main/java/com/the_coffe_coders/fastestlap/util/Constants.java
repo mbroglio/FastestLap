@@ -26,6 +26,7 @@ public class Constants {
     public static final String RETROFIT_ERROR = "retrofit_error";
     public static final String API_KEY_ERROR = "api_key_error";
 
+    public static final String DEFAULT_LANGUAGE = "en_GB";
     public static final int MAX_RETRY_COUNT = 4;
     public static final int LOADING_SLEEP_TIMER_DURATION = 10000;
     public static final String GOOGLE_MAPS_ACCESS = "https://www.google.com/maps/@%s,%s,15z/data=!3m1!1e3";
@@ -68,7 +69,7 @@ public class Constants {
             "Race"
     };
 
-    public static final Map<String, String> SESSION_NAMES = Map.of(
+    public static final Map<String, String> SESSION_NAMES_ENG = Map.of(
             "Practice1", "Practice 1",
             "Practice2", "Practice 2",
             "Practice3", "Practice 3",
@@ -76,6 +77,16 @@ public class Constants {
             "SprintQualifying", "Sprint Qualifying",
             "Sprint", "Sprint",
             "Race", "Race"
+    );
+
+    public static final Map<String, String> SESSION_NAMES_ITA = Map.of(
+            "Practice1", "Prova Libera 1",
+            "Practice2", "Prova Libera 2",
+            "Practice3", "Prova Libera 3",
+            "Qualifying", "Qualifica",
+            "SprintQualifying", "Qualifica Sprint",
+            "Sprint", "Sprint",
+            "Race", "Gara"
     );
 
     public static final Map<String, Integer> SESSION_DURATION = Map.of(
@@ -117,7 +128,7 @@ public class Constants {
     );
 
 
-    public static final Map<String, String> SESSION_DAY = Map.of(
+    public static final Map<String, String> SESSION_DAY_ENG = Map.of(
             "Practice1", "Friday",
             "Practice2", "Friday",
             "Practice3", "Saturday",
@@ -125,6 +136,16 @@ public class Constants {
             "Sprint", "Saturday",
             "Qualifying", "Saturday",
             "Race", "Sunday"
+    );
+
+    public static final Map<String, String> SESSION_DAY_ITA = Map.of(
+            "Practice1", "Venerdì",
+            "Practice2", "Venerdì",
+            "Practice3", "Sabato",
+            "SprintQualifying", "Venerdì",
+            "Sprint", "Sabato",
+            "Qualifying", "Sabato",
+            "Race", "Domenica"
     );
 
     public static final Map<String, Integer> SESSION_DAY_FIELD = Map.of(

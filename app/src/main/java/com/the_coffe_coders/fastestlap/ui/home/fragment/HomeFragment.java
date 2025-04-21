@@ -420,7 +420,7 @@ public class HomeFragment extends Fragment {
 
     private void updateSessionType(View view, Session nextEvent) {
         String sessionId = nextEvent.getClass().getSimpleName().equals("Practice") ? "Practice" + ((Practice) nextEvent).getNumber() : nextEvent.getClass().getSimpleName();
-        UIUtils.singleSetTextViewText(Constants.SESSION_NAMES.getOrDefault(sessionId, "Unknown"),view.findViewById(R.id.next_session_type));
+        UIUtils.singleSetTextViewText(Constants.SESSION_NAMES_ENG.getOrDefault(sessionId, "Unknown"),view.findViewById(R.id.next_session_type));
     }
 
     private void startCountdown(View view, LocalDateTime eventDate) {

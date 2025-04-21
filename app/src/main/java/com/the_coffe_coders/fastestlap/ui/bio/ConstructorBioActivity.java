@@ -28,6 +28,7 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorHistory;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
+import com.the_coffe_coders.fastestlap.domain.driver.DriverHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
@@ -44,6 +45,8 @@ import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
+
+import java.util.List;
 
 public class ConstructorBioActivity extends AppCompatActivity {
 
@@ -308,16 +311,18 @@ public class ConstructorBioActivity extends AppCompatActivity {
         tableLayout.addView(tableHeader);
 
         if (constructor.getTeam_history() != null) {
-            for (ConstructorHistory history : constructor.getTeam_history()) {
+            List<ConstructorHistory> constructorHistoryList = constructor.getTeam_history();
+            for (int i = constructorHistoryList.size() - 1; i >= 0; i--) {
+                ConstructorHistory constructorHistory = constructorHistoryList.get(i);
                 View tableRow = inflater.inflate(R.layout.constructor_bio_table_row, tableLayout, false);
                 tableRow.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
 
                 UIUtils.multipleSetTextViewText(
-                        new String[]{history.getYear(),
-                                history.getPosition(),
-                                history.getPoints(),
-                                history.getWins(),
-                                history.getPodiums()},
+                        new String[]{constructorHistory.getYear(),
+                                constructorHistory.getPosition(),
+                                constructorHistory.getPoints(),
+                                constructorHistory.getWins(),
+                                constructorHistory.getPodiums()},
 
                         new TextView[]{tableRow.findViewById(R.id.season_year),
                                 tableRow.findViewById(R.id.team_position),
@@ -326,7 +331,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
                                 tableRow.findViewById(R.id.team_podiums)}
                 );
 
-                // Set bottom margin to 5dp
+
                 TableLayout.LayoutParams tableParams = (TableLayout.LayoutParams) tableRow.getLayoutParams();
                 tableParams.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
                 tableRow.setLayoutParams(tableParams);
