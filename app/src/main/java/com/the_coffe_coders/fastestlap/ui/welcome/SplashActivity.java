@@ -84,9 +84,11 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void setAppLocale() {
+        Log.i(TAG, "Setting app locale" + AppCompatDelegate.getApplicationLocales().get(0));
         if(AppCompatDelegate.getApplicationLocales().get(0) == null){
             LocaleListCompat appLocale = LocaleListCompat.forLanguageTags(Constants.DEFAULT_LANGUAGE);
             AppCompatDelegate.setApplicationLocales(appLocale);
+            Log.i(TAG, "Setting app locale to default: " + AppCompatDelegate.getApplicationLocales());
         }
 
         AppCompatDelegate.setApplicationLocales(AppCompatDelegate.getApplicationLocales());

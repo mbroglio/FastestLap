@@ -122,9 +122,7 @@ public class ProfileActivity extends AppCompatActivity {
         MaterialSwitch languageSwitch = findViewById(R.id.language_switch);
         LocaleListCompat appLocales = AppCompatDelegate.getApplicationLocales();
         String currentLanguage = appLocales.toLanguageTags();
-        if(currentLanguage.equals("en-GB")){
-            languageSwitch.setChecked(true);
-        }
+        languageSwitch.setChecked(currentLanguage.equals("en-GB"));
 
         languageSwitch.setOnCheckedChangeListener(((buttonView, isChecked) -> {
             if(languageSwitch.isChecked()){

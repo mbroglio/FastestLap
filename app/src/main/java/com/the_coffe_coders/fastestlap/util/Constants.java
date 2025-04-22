@@ -26,7 +26,7 @@ public class Constants {
     public static final String RETROFIT_ERROR = "retrofit_error";
     public static final String API_KEY_ERROR = "api_key_error";
 
-    public static final String DEFAULT_LANGUAGE = "en_GB";
+    public static final String DEFAULT_LANGUAGE = "en-GB";
     public static final int MAX_RETRY_COUNT = 4;
     public static final int LOADING_SLEEP_TIMER_DURATION = 10000;
     public static final String GOOGLE_MAPS_ACCESS = "https://www.google.com/maps/@%s,%s,15z/data=!3m1!1e3";
