@@ -41,7 +41,8 @@
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:layout_toEndOf="@id/driver_position">
+            android:layout_toEndOf="@id/driver_position"
+            android:importantForAccessibility="no">
 
         </ImageView>
 
@@ -51,7 +52,8 @@
             android:layout_height="30dp"
             android:layout_centerInParent="true"
             android:layout_marginStart="5dp"
-            android:layout_toEndOf="@id/driver_image">
+            android:layout_toEndOf="@id/driver_image"
+            android:importantForAccessibility="no">
 
         </ImageView>
 
@@ -64,12 +66,12 @@
             android:layout_marginStart="5dp"
             android:layout_marginEnd="8dp"
             android:layout_toStartOf="@id/driver_points"
+            android:layout_toEndOf="@id/team_logo"
             android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
             android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
             android:autoSizeTextType="uniform"
-            android:maxLines="1"
-            android:layout_toEndOf="@id/team_logo"
             android:fontFamily="@font/orbitron_bold"
+            android:maxLines="1"
             android:textColor="@color/black"
             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -81,7 +83,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
-            android:layout_marginEnd="5dp"
+            android:layout_marginEnd="10dp"
             android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
             android:text="@string/not_found"

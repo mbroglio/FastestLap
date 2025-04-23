@@ -347,13 +347,10 @@ public class EventActivity extends AppCompatActivity {
                 sessionId = practice.getPractice();
             }
 
-            if(AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("en-GB")){
-                setSchedule(Constants.SESSION_NAMES_ENG.get(sessionId),
-                        Constants.SESSION_DAY_ENG.get(sessionId), eventSchedule, sessionId);
-            }else if(AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("it-IT")){
-                setSchedule(Constants.SESSION_NAMES_ITA.get(sessionId),
-                        Constants.SESSION_DAY_ITA.get(sessionId), eventSchedule, sessionId);
-            }
+            UIUtils.translateSchedule(this,
+                    eventSchedule.findViewById(Constants.SESSION_NAME_FIELD.get(sessionId)),
+                    eventSchedule.findViewById(Constants.SESSION_DAY_FIELD.get(sessionId)),
+                    sessionId);
 
             UIUtils.setTextViewTextWithCondition(sessionId.equals("Race"),
                     session.getStartingTime(), //if true

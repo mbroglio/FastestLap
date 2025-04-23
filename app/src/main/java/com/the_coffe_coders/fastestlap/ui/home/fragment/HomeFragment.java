@@ -237,15 +237,17 @@ public class HomeFragment extends Fragment {
 
         UIUtils.multipleSetTextViewText(
                 new String[]{String.valueOf(dateTime.getDayOfMonth()),
-                        dateTime.getMonth().toString().substring(0, 3).toUpperCase(),
+                        //dateTime.getMonth().toString().substring(0, 3).toUpperCase(),
                         requireContext().getString(R.string.round, race.getRound())
                 },
                 new TextView[]{view.findViewById(R.id.last_race_date),
-                        view.findViewById(R.id.last_race_month),
+                        //view.findViewById(R.id.last_race_month),
                         view.findViewById(R.id.last_race_round)
                 }
         );
 
+        UIUtils.translateMonth(dateTime.getMonth().toString().substring(0, 3).toUpperCase(),
+                view.findViewById(R.id.last_race_month));
 
         MutableLiveData<Result> raceResultData = homeViewModel.getRaceResults(race.getRound());
         raceResultData.observe(getViewLifecycleOwner(), result -> {
@@ -420,7 +422,9 @@ public class HomeFragment extends Fragment {
 
     private void updateSessionType(View view, Session nextEvent) {
         String sessionId = nextEvent.getClass().getSimpleName().equals("Practice") ? "Practice" + ((Practice) nextEvent).getNumber() : nextEvent.getClass().getSimpleName();
-        UIUtils.singleSetTextViewText(Constants.SESSION_NAMES_ENG.getOrDefault(sessionId, "Unknown"),view.findViewById(R.id.next_session_type));
+        TextView sessionTypeView = view.findViewById(R.id.next_session_type);
+
+        UIUtils.translateSessionType(requireContext(), sessionTypeView, sessionId);
     }
 
     private void startCountdown(View view, LocalDateTime eventDate) {

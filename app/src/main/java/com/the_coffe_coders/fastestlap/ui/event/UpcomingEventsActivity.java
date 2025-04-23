@@ -16,7 +16,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
@@ -157,16 +156,19 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     private void generateEventCardFinalStep(View finalEventCard, WeeklyRace weeklyRace, int i, int totalRaces) {
 
         UIUtils.multipleSetTextViewText(
-                new String[]{this.getString(R.string.round_upper_case_plus_value, weeklyRace.getRound()),
+                new String[]{
+                        this.getString(R.string.round_upper_case_plus_value, weeklyRace.getRound()),
                         weeklyRace.getRaceName(),
-                        weeklyRace.getFirstPractice().getStartDateTime().getDayOfMonth() + " - " + weeklyRace.getDateTime().getDayOfMonth(),
-                        weeklyRace.getDateTime().getMonth().toString().substring(0, 3)},
+                        weeklyRace.getFirstPractice().getStartDateTime().getDayOfMonth() + " - " + weeklyRace.getDateTime().getDayOfMonth()},
 
-                new TextView[]{finalEventCard.findViewById(R.id.upcoming_round_number),
+                new TextView[]{
+                        finalEventCard.findViewById(R.id.upcoming_round_number),
                         finalEventCard.findViewById(R.id.upcoming_gp_name),
-                        finalEventCard.findViewById(R.id.upcoming_date),
-                        finalEventCard.findViewById(R.id.upcoming_month)}
+                        finalEventCard.findViewById(R.id.upcoming_date)}
         );
+
+        UIUtils.translateMonth(weeklyRace.getDateTime().getMonth().toString().substring(0, 3).toUpperCase(),
+                finalEventCard.findViewById(R.id.upcoming_month));
 
         finalEventCard.setOnClickListener(v -> {
             Intent intent = new Intent(UpcomingEventsActivity.this, EventActivity.class);

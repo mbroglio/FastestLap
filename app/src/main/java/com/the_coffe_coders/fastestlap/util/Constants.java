@@ -167,6 +167,21 @@ public class Constants {
             "Race", R.id.session_5_time
     );
 
+    public static final Map<String, String> MONTH_ABBR_ENG_TO_ITA = new HashMap<String, String>() {{
+        put("JAN", "GEN");
+        put("FEB", "FEB");
+        put("MAR", "MAR");
+        put("APR", "APR");
+        put("MAY", "MAG");
+        put("JUN", "GIU");
+        put("JUL", "LUG");
+        put("AUG", "AGO");
+        put("SEP", "SET");
+        put("OCT", "OTT");
+        put("NOV", "NOV");
+        put("DEC", "DIC");
+    }};
+
     public static final List<Integer> PODIUM_DRIVER_NAME = List.of(
             R.id.first_name,
             R.id.second_name,

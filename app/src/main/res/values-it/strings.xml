@@ -1,16 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="unknown">Sconosciuto</string>
     <string name="raceResult">RISULTATO</string>
     <string name="rank">Posizione:</string>
     <string name="next_event">Prossimo Evento:</string>
     <string name="racing_menu">Gare</string>
     <string name="standings_menu">Classifiche</string>
+    <string name="standings_upper_case">CLASSIFICHE</string>
     <string name="season_ended_upper_case">STAGIONE CONCLUSA</string>
     <string name="pending_results_upper_case">IN ATTESA DEI RISULTATI</string>
+    <string name="past_upper_case">PASSATE</string>
     <string name="save_upper_case">SALVA</string>
     <string name="profile_upper_case">PROFILO</string>
     <string name="loading_upper_case">CARICAMENTO%1$s</string>
-    <string name="updating_upper_case_with_dots">IN AGGIORNAMENTO...</string>
+    <string name="updating_upper_case_with_dots">IN AGGIORNAMENTO…</string>
     <string name="generating_event_card">Genero card dell\'evento %1$s/%2$s</string>
     <string name="fetching_last_race">Recupero gara passata %1$s</string>
     <string name="fetching_next_race">Recupero prossima gara %1$s</string>
@@ -20,7 +23,7 @@
     <string name="weekend_schedule_upper_case">PROGRAMMA DEL WEEKEND:</string>
     <string name="next_session">Prossima Sessione in:</string>
     <string name="race_result_upper_case">RISULTATO GARA:</string>
-    <string name="pending_results">In attesa dei risultati...</string>
+    <string name="pending_results">In attesa dei risultati…</string>
     <string name="race_cancelled_upper_case">GARA CANCELLATA</string>
     <string name="days_upper_case">GIORNI</string>
     <string name="team_upper_case">SCUDERIA</string>
@@ -30,4 +33,7 @@
     <string name="drivers_title_page_upper_case">PILOTI</string>
     <string name="hours_upper_case">ORE</string>
     <string name="year_upper_case">ANNO</string>
+    <string name="last_race_upper_case">GARA\nPASSATA</string>
+    <string name="racing_upper_case">GARE</string>
+    <string name="upcoming_upper_case">PROSSIME</string>
 </resources>

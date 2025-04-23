@@ -1,5 +1,6 @@
 package com.the_coffe_coders.fastestlap.ui.welcome;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -16,25 +17,20 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.os.LocaleListCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
-import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
-import org.apache.commons.logging.LogFactory;
-
+@SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
 
     private static final String TAG = "IntroScreenActivity";
-    private static final org.apache.commons.logging.Log log = LogFactory.getLog(SplashActivity.class);
     private final Handler handler = new Handler();
     private TextView appName;
     private TextView appCredits;
@@ -79,20 +75,7 @@ public class SplashActivity extends AppCompatActivity {
         appCredits.setVisibility(View.INVISIBLE);
         progressIndicator.setVisibility(View.INVISIBLE);
 
-        setAppLocale();
-
-    }
-
-    private void setAppLocale() {
-        Log.i(TAG, "Setting app locale" + AppCompatDelegate.getApplicationLocales().get(0));
-        if(AppCompatDelegate.getApplicationLocales().get(0) == null){
-            LocaleListCompat appLocale = LocaleListCompat.forLanguageTags(Constants.DEFAULT_LANGUAGE);
-            AppCompatDelegate.setApplicationLocales(appLocale);
-            Log.i(TAG, "Setting app locale to default: " + AppCompatDelegate.getApplicationLocales());
-        }
-
-        AppCompatDelegate.setApplicationLocales(AppCompatDelegate.getApplicationLocales());
-
+        UIUtils.setAppLocale();
         setupIntro();
     }
 

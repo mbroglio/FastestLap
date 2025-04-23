@@ -5,6 +5,7 @@
 
 
     <string name="not_found" translatable="false">-!-</string>
+    <string name="unknown">Unknown</string>
 
     <string name="raceResult">RESULT</string>
     <string name="rank">Rank:</string>
@@ -20,10 +21,12 @@
     <string name="racing_menu">Racing</string>
     <string name="home_menu" translatable="false">Home</string>
     <string name="standings_menu">Standings</string>
-
+    <string name="racing_upper_case">RACING</string>
+    <string name="standings_upper_case">STANDINGS</string>
     <string name="season_ended_upper_case">SEASON ENDED</string>
-
     <string name="pending_results_upper_case">PENDING RESULTS</string>
+    <string name="upcoming_upper_case">UPCOMING</string>
+    <string name="past_upper_case">PAST</string>
 
 
 
@@ -42,7 +45,7 @@
     <string name="live_upper_case" translatable="false">LIVE</string>
 
 
-    <string name="round" translatable="false">Round: %1$s</string>
+    <string name="round" translatable="false">Round %1$s</string>
     <string name="round_upper_case_plus_value" translatable="false">ROUND %1$s</string>
     <string name="updating_upper_case_with_dots">UPDATING…</string>
 
@@ -89,8 +92,8 @@
     <!-- TIMER STRINGS -->
     <string name="days_upper_case">DAYS</string>
     <string name="hours_upper_case">HRS</string>
-    <string name="minutes_upper_case" translatable="false">MINS</string>
-    <string name="seconds_upper_case" translatable="false">SECS</string>
+    <string name="minutes_upper_case" translatable="false">MIN</string>
+    <string name="seconds_upper_case" translatable="false">SEC</string>
     <string name="base_countdown" translatable="false">00</string>
 
     <!-- DRIVER BIO STRINGS -->
@@ -162,7 +165,7 @@
 
     <!-- HOME PAGE STRINGS -->
     <!-- last race -->
-    <string name="last_race_upper_case">LAST RACE</string>
+    <string name="last_race_upper_case">LAST\nRACE</string>
     <!-- season final results -->
     <string name="season_final_results">SEASON FINAL RESULTS</string>
     <string name="constructors_upper_case">CONSTRUCTORS</string>

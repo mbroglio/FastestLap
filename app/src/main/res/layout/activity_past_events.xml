@@ -21,7 +21,7 @@
             android:layout_height="@dimen/top_bar_height"
             android:background="@color/ferrari_secondary"
             app:navigationIcon="@drawable/arrow_back_ios_style"
-            app:title="PAST"
+            app:title="@string/past_upper_case"
             app:titleCentered="true"
             app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp" />
     </com.google.android.material.appbar.AppBarLayout>

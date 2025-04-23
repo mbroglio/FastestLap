@@ -26,8 +26,10 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
+import androidx.core.os.LocaleListCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
@@ -275,9 +277,48 @@ public class UIUtils {
         context.startActivity(intent);
     }
 
-    // SYSTEM_UI_FLAG_FULLSCREEN // Hide the status bar
-    // SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN // Let the layout expand into status bar
-    // SYSTEM_UI_FLAG_LAYOUT_STABLE // avoid abrupt layout changes during toggling of status and navigation bars
-    // SYSTEM_UI_FLAG_HIDE_NAVIGATION // Hide the navigation bar
-    // SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION; // Let the layout expand into navigation bar
+    public static void translateSchedule(Context context, TextView sessionTypeTextView, TextView sessionDayTextView, String sessionId) {
+        translateSessionType(context, sessionTypeTextView, sessionId);
+        translateSessionDay(context, sessionDayTextView, sessionId);
+    }
+
+    public static void translateSessionType(Context context, TextView sessionTypeTextView, String sessionId) {
+        if(AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("en-GB")){
+            UIUtils.singleSetTextViewText(Constants.SESSION_NAMES_ENG.getOrDefault(sessionId, context.getString(R.string.unknown)),sessionTypeTextView);
+
+        }else if(AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("it-IT")){
+            UIUtils.singleSetTextViewText(Constants.SESSION_NAMES_ITA.getOrDefault(sessionId, context.getString(R.string.unknown)),sessionTypeTextView);
+        }
+    }
+
+    public static void translateSessionDay(Context context, TextView sessionDayTextView, String sessionId) {
+        if(AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("en-GB")){
+            UIUtils.singleSetTextViewText(Constants.SESSION_DAY_ENG.getOrDefault(sessionId, context.getString(R.string.unknown)),sessionDayTextView);
+
+        }else if(AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("it-IT")){
+            UIUtils.singleSetTextViewText(Constants.SESSION_DAY_ITA.getOrDefault(sessionId, context.getString(R.string.unknown)),sessionDayTextView);
+        }
+    }
+
+    public static void translateMonth(String abbr, TextView textView) {
+        setTextViewTextWithCondition(AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("it-IT"),
+                Constants.MONTH_ABBR_ENG_TO_ITA.get(abbr),
+                abbr,
+                textView);
+    }
+
+    public static void setAppLocale(){
+        if(AppCompatDelegate.getApplicationLocales().get(0) == null){
+            LocaleListCompat appLocale = LocaleListCompat.forLanguageTags(Constants.DEFAULT_LANGUAGE);
+            AppCompatDelegate.setApplicationLocales(appLocale);
+        }
+
+        AppCompatDelegate.setApplicationLocales(AppCompatDelegate.getApplicationLocales());
+    }
+
+    // SYSTEM_UI_FLAG_FULLSCREEN: Hide the status bar
+    // SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN: Let the layout expand into status bar
+    // SYSTEM_UI_FLAG_LAYOUT_STABLE: avoid abrupt layout changes during toggling of status and navigation bars
+    // SYSTEM_UI_FLAG_HIDE_NAVIGATION: Hide the navigation bar
+    // SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION: Let the layout expand into navigation bar
 }

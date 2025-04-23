@@ -8,10 +8,16 @@
 
     <TextView
         android:id="@+id/favourite_constructor_name"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_toStartOf="@id/favourite_constructor_star"
+        android:layout_marginEnd="10dp"
         android:layout_alignParentStart="true"
         android:layout_marginStart="@dimen/medium_margin"
+        android:autoSizeMaxTextSize="@dimen/layout_title_1_text_size"
+        android:autoSizeMinTextSize="10sp"
+        android:autoSizeTextType="uniform"
+        android:maxLines="1"
         android:layout_marginTop="5dp"
         android:fontFamily="@font/orbitron_bold"
         android:text="@string/not_found"
@@ -24,6 +30,7 @@
         android:id="@+id/favourite_constructor_car"
         android:layout_width="match_parent"
         android:layout_height="80dp"
+        android:importantForAccessibility="no"
         android:layout_below="@id/favourite_constructor_name"
         android:layout_marginStart="@dimen/medium_margin"
         android:layout_marginTop="5dp"
@@ -89,9 +96,12 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/constructor_rank_layout"
+                android:gravity="center"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
                 android:layout_centerInParent="true"
                 android:orientation="horizontal">
 
@@ -101,6 +111,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:fontFamily="@font/orbitron_bold"
+                    android:autoSizeMaxTextSize="@dimen/body_text_size"
+                    android:autoSizeMinTextSize="9sp"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
                     android:text="@string/not_found"
                     android:textColor="@color/black"
                     android:textSize="@dimen/body_text_size">
@@ -114,6 +128,10 @@
                     android:layout_marginEnd="5dp"
                     android:fontFamily="@font/orbitron_bold"
                     android:text="@string/separator_high_dash"
+                    android:autoSizeMaxTextSize="@dimen/body_text_size"
+                    android:autoSizeMinTextSize="9sp"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
                     android:textColor="@color/black"
                     android:textSize="@dimen/body_text_size">
 
@@ -126,6 +144,10 @@
                     android:fontFamily="@font/orbitron_bold"
                     android:gravity="center"
                     android:text="@string/not_found"
+                    android:autoSizeMaxTextSize="@dimen/body_text_size"
+                    android:autoSizeMinTextSize="9sp"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
                     android:textColor="@color/black"
                     android:textSize="@dimen/body_text_size">
 
@@ -137,6 +159,10 @@
                     android:layout_marginStart="3dp"
                     android:fontFamily="@font/orbitron_regular"
                     android:text="@string/points_upper_case"
+                    android:autoSizeMaxTextSize="@dimen/text_minor_importance_size"
+                    android:autoSizeMinTextSize="7sp"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
                     android:textColor="@color/black"
                     android:textSize="@dimen/text_minor_importance_size">
 
@@ -162,6 +188,7 @@
             android:id="@+id/favourite_constructor_flag"
             android:layout_width="50dp"
             android:layout_height="45dp"
+            android:importantForAccessibility="no"
             android:layout_alignParentStart="true"
             android:layout_centerHorizontal="true">
 
@@ -184,10 +211,12 @@
     </RelativeLayout>
 
     <ImageView
+        android:id="@+id/favourite_constructor_star"
         android:layout_width="@dimen/icon_size"
         android:layout_height="@dimen/icon_size"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:importantForAccessibility="no"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         app:srcCompat="@drawable/star_fav">

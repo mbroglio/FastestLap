@@ -1,6 +1,7 @@
 package com.the_coffe_coders.fastestlap.util;
 
 import android.content.Context;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.view.View;
 import android.view.animation.Animation;
@@ -29,14 +30,12 @@ public class LoadingScreen {
 
     public LoadingScreen(View view, Context context, View activityView, View fragmentView) {
         this.handler = new Handler();
-        //loading screen logic
         this.loadingScreen = view.findViewById(R.id.loading_screen);
         this.context = context;
         this.loadingText = view.findViewById(R.id.loading_text);
         this.percentageText = view.findViewById(R.id.loading_percentage_text);
         this.loadingProgressBar = view.findViewById(R.id.loading_progress_bar);
         this.loadingStatusText = view.findViewById(R.id.loading_status_text);
-
         this.activityView = activityView;
         this.fragmentView = fragmentView;
 
@@ -85,7 +84,26 @@ public class LoadingScreen {
 
     private void resetTimer() {
         timerHandler.removeCallbacks(timerRunnable);
-        timerHandler.postDelayed(timerRunnable, Constants.LOADING_SLEEP_TIMER_DURATION);
+        new CountDownTimer(Constants.LOADING_SLEEP_TIMER_DURATION, 1000) {
+            final TextView seconds = loadingScreen.findViewById(R.id.countdown_text);
+
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+                UIUtils.singleSetTextViewText(
+                        String.valueOf((((millisUntilFinished % 86400000) % 3600000) % 60000) / 1000),
+                        seconds);
+            }
+
+            @Override
+            public void onFinish() {
+                UIUtils.singleSetTextViewText(
+                        context.getString(R.string.base_countdown),
+                        seconds);
+
+                timerRunnable.run();
+            }
+        }.start();
     }
 
     public void updateProgress(int progress) {
