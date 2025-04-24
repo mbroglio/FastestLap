@@ -32,7 +32,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:autoSizeMaxTextSize="25sp"
-                    android:autoSizeMinTextSize="12sp"
+                    android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                     android:autoSizeTextType="uniform"
                     android:fontFamily="@font/orbitron_bold"
                     android:gravity="center"
@@ -100,7 +100,8 @@
                                 android:id="@+id/team_logo_image"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_margin="5dp">
+                                android:layout_margin="5dp"
+                                android:importantForAccessibility="no">
 
                             </ImageView>
 
@@ -121,7 +122,8 @@
                             android:layout_alignParentTop="true"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentBottom="true"
-                            android:layout_margin="16dp">
+                            android:layout_margin="16dp"
+                            android:importantForAccessibility="no">
 
                         </ImageView>
 
@@ -151,6 +153,7 @@
                             android:layout_height="250dp"
                             android:layout_marginStart="10dp"
                             android:layout_marginEnd="10dp"
+                            android:importantForAccessibility="no"
                             android:scaleType="centerCrop">
 
                         </ImageView>
@@ -169,7 +172,8 @@
                                 android:id="@+id/driver_number_image"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_margin="5dp">
+                                android:layout_margin="5dp"
+                                android:importantForAccessibility="no">
 
                             </ImageView>
 
@@ -185,100 +189,116 @@
                         android:orientation="vertical">
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
+                            android:layout_marginEnd="5dp"
+                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_bold"
+                            android:gravity="start"
+                            android:maxLines="1"
                             android:text="@string/place_of_birth"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size" />
 
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/driver_birthplace"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="10dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/driver_birthplace"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="start"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="2dp"
-                                android:fontFamily="@font/orbitron_regular"
-                                android:text="@string/not_found"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/body_text_size" />
-
-                        </LinearLayout>
+                            android:layout_gravity="start"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginEnd="5dp"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:gravity="start"
+                            android:maxLines="1"
+                            android:text="@string/not_found"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/body_text_size" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="10dp"
+                            android:layout_marginEnd="5dp"
+                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_bold"
+                            android:gravity="start"
+                            android:maxLines="1"
                             android:text="@string/date_of_birth"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size" />
 
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/driver_birthdate"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="10dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/driver_birthdate"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="start"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="2dp"
-                                android:fontFamily="@font/orbitron_regular"
-                                android:text="@string/not_found"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/body_text_size" />
-
-                        </LinearLayout>
+                            android:layout_gravity="start"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginEnd="5dp"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:maxLines="1"
+                            android:text="@string/not_found"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/body_text_size" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="10dp"
+                            android:layout_marginEnd="5dp"
+                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_bold"
+                            android:gravity="start"
+                            android:maxLines="1"
                             android:text="@string/age"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size" />
 
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/driver_age"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="10dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/driver_age"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="start"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="2dp"
-                                android:fontFamily="@font/orbitron_regular"
-                                android:text="@string/not_found"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/body_text_size" />
-
-                        </LinearLayout>
+                            android:layout_gravity="start"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginEnd="5dp"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:maxLines="1"
+                            android:text="@string/not_found"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/body_text_size" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="10dp"
+                            android:layout_marginEnd="5dp"
+                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_bold"
+                            android:gravity="start"
+                            android:maxLines="1"
                             android:text="@string/weight_height"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size" />
@@ -286,7 +306,8 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="10dp"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginEnd="5dp"
                             android:orientation="horizontal">
 
                             <TextView
@@ -294,9 +315,12 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="start"
-                                android:layout_marginStart="20dp"
                                 android:layout_marginTop="2dp"
+                                android:autoSizeMaxTextSize="@dimen/body_text_size"
+                                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                                android:autoSizeTextType="uniform"
                                 android:fontFamily="@font/orbitron_regular"
+                                android:maxLines="1"
                                 android:text="@string/not_found"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/body_text_size" />
@@ -306,7 +330,11 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_marginStart="3dp"
+                                android:autoSizeMaxTextSize="@dimen/text_minor_importance_size"
+                                android:autoSizeMinTextSize="@dimen/min_text_resize_2"
+                                android:autoSizeTextType="uniform"
                                 android:fontFamily="@font/orbitron_regular"
+                                android:maxLines="1"
                                 android:text="@string/kg"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/text_minor_importance_size">
@@ -319,7 +347,11 @@
                                 android:layout_gravity="center"
                                 android:layout_marginStart="10dp"
                                 android:layout_marginEnd="10dp"
+                                android:autoSizeMaxTextSize="@dimen/body_text_size"
+                                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                                android:autoSizeTextType="uniform"
                                 android:fontFamily="@font/orbitron_regular"
+                                android:maxLines="1"
                                 android:text="@string/separator_high_dash"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/body_text_size" />
@@ -330,7 +362,11 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="start"
                                 android:layout_marginTop="2dp"
+                                android:autoSizeMaxTextSize="@dimen/body_text_size"
+                                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                                android:autoSizeTextType="uniform"
                                 android:fontFamily="@font/orbitron_regular"
+                                android:maxLines="1"
                                 android:text="@string/not_found"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/body_text_size" />
@@ -340,7 +376,11 @@
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_marginStart="3dp"
+                                android:autoSizeMaxTextSize="@dimen/text_minor_importance_size"
+                                android:autoSizeMinTextSize="@dimen/min_text_resize_2"
+                                android:autoSizeTextType="uniform"
                                 android:fontFamily="@font/orbitron_regular"
+                                android:maxLines="1"
                                 android:text="@string/m"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/text_minor_importance_size">
@@ -350,129 +390,136 @@
                         </LinearLayout>
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="10dp"
+                            android:layout_marginEnd="5dp"
+                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_bold"
+                            android:gravity="start"
+                            android:maxLines="1"
                             android:text="@string/best_result"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size" />
 
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/driver_best_result"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="10dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/driver_best_result"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="start"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="2dp"
-                                android:fontFamily="@font/orbitron_regular"
-                                android:text="@string/not_found"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/body_text_size" />
-
-                        </LinearLayout>
+                            android:layout_gravity="start"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginEnd="5dp"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:maxLines="1"
+                            android:text="@string/not_found"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/body_text_size" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="10dp"
+                            android:layout_marginEnd="5dp"
+                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_bold"
+                            android:gravity="start"
+                            android:maxLines="1"
                             android:text="@string/podiums"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size" />
 
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/driver_podiums"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="10dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/driver_podiums"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="start"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="2dp"
-                                android:fontFamily="@font/orbitron_regular"
-                                android:text="@string/not_found"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/body_text_size" />
-
-                        </LinearLayout>
+                            android:layout_gravity="start"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginEnd="5dp"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:maxLines="1"
+                            android:text="@string/not_found"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/body_text_size" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="10dp"
+                            android:layout_marginEnd="5dp"
+                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_bold"
+                            android:gravity="start"
+                            android:maxLines="1"
                             android:text="@string/championships"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size" />
 
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/driver_championships"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="10dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/driver_championships"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="start"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="2dp"
-                                android:fontFamily="@font/orbitron_regular"
-                                android:text="@string/not_found"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/body_text_size" />
-
-                        </LinearLayout>
+                            android:layout_gravity="start"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginEnd="5dp"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:maxLines="1"
+                            android:text="@string/not_found"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/body_text_size" />
 
                         <TextView
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="10dp"
+                            android:layout_marginEnd="5dp"
+                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_bold"
+                            android:gravity="start"
+                            android:maxLines="1"
                             android:text="@string/first_entry"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size" />
 
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/driver_first_entry"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="10dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/driver_first_entry"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="start"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginTop="2dp"
-                                android:fontFamily="@font/orbitron_regular"
-                                android:text="@string/not_found"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/body_text_size" />
-
-                        </LinearLayout>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_gravity="bottom" />
+                            android:layout_gravity="start"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginTop="2dp"
+                            android:layout_marginEnd="5dp"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:maxLines="1"
+                            android:text="@string/not_found"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/body_text_size" />
 
                     </LinearLayout>
 

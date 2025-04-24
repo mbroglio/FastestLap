@@ -14,13 +14,13 @@
         android:background="@drawable/bottom_right_left_stroke">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="5dp"
             android:autoSizeMaxTextSize="@dimen/layout_title_1_text_size"
-            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
+            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
             android:autoSizeTextType="uniform"
             android:fontFamily="@font/orbitron_bold"
             android:maxLines="1"
@@ -48,14 +48,17 @@
 
             <TextView
                 android:id="@+id/drivers_title"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerInParent="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
                 android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
+                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                 android:autoSizeTextType="uniform"
                 android:fontFamily="@font/orbitron_bold"
+                android:gravity="center"
                 android:maxLines="1"
                 android:text="@string/drivers_title_page_upper_case"
                 android:textColor="@color/white"
@@ -103,11 +106,11 @@
 
                     <TextView
                         android:id="@+id/first_driver"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:autoSizeMaxTextSize="@dimen/body_text_size"
-                        android:autoSizeMinTextSize="9sp"
+                        android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                         android:autoSizeTextType="uniform"
                         android:fontFamily="@font/orbitron_regular"
                         android:maxLines="1"
@@ -148,11 +151,11 @@
 
                     <TextView
                         android:id="@+id/second_driver"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:autoSizeMaxTextSize="@dimen/body_text_size"
-                        android:autoSizeMinTextSize="9sp"
+                        android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                         android:autoSizeTextType="uniform"
                         android:fontFamily="@font/orbitron_regular"
                         android:maxLines="1"
@@ -193,11 +196,11 @@
 
                     <TextView
                         android:id="@+id/third_driver"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:autoSizeMaxTextSize="@dimen/body_text_size"
-                        android:autoSizeMinTextSize="9sp"
+                        android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                         android:autoSizeTextType="uniform"
                         android:fontFamily="@font/orbitron_regular"
                         android:maxLines="1"
@@ -221,14 +224,17 @@
 
             <TextView
                 android:id="@+id/constructors_title"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerInParent="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
                 android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
+                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                 android:autoSizeTextType="uniform"
                 android:fontFamily="@font/orbitron_bold"
+                android:gravity="center"
                 android:maxLines="1"
                 android:text="@string/constructors_upper_case"
                 android:textColor="@color/white"
@@ -276,11 +282,11 @@
 
                     <TextView
                         android:id="@+id/first_team"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:autoSizeMaxTextSize="@dimen/body_text_size"
-                        android:autoSizeMinTextSize="9sp"
+                        android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                         android:autoSizeTextType="uniform"
                         android:fontFamily="@font/orbitron_regular"
                         android:maxLines="1"
@@ -321,11 +327,11 @@
 
                     <TextView
                         android:id="@+id/second_team"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:autoSizeMaxTextSize="@dimen/body_text_size"
-                        android:autoSizeMinTextSize="9sp"
+                        android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                         android:autoSizeTextType="uniform"
                         android:fontFamily="@font/orbitron_regular"
                         android:maxLines="1"
@@ -366,11 +372,11 @@
 
                     <TextView
                         android:id="@+id/third_team"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:autoSizeMaxTextSize="@dimen/body_text_size"
-                        android:autoSizeMinTextSize="9sp"
+                        android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                         android:autoSizeTextType="uniform"
                         android:fontFamily="@font/orbitron_regular"
                         android:maxLines="1"

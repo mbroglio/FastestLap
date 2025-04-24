@@ -56,7 +56,8 @@
                     android:id="@+id/past_track_outline"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:layout_gravity="center">
+                    android:layout_gravity="center"
+                    android:importantForAccessibility="no">
 
                 </ImageView>
 
@@ -99,7 +100,7 @@
                     android:layout_below="@id/past_round_number"
                     android:layout_centerInParent="true"
                     android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                    android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
+                    android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                     android:autoSizeTextType="uniform"
                     android:fontFamily="@font/orbitron_bold"
                     android:gravity="center"
@@ -119,13 +120,13 @@
                     android:layout_centerInParent="true"
                     android:layout_marginStart="20dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginEnd="5dp"
+                    android:layout_marginEnd="10dp"
                     android:layout_toStartOf="@id/past_event_card_arrow"
                     android:orientation="vertical"
                     android:visibility="visible">
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
@@ -142,11 +143,11 @@
 
                         <TextView
                             android:id="@+id/past_first_driver"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:autoSizeMaxTextSize="@dimen/body_text_size"
-                            android:autoSizeMinTextSize="8dp"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                             android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_regular"
                             android:maxLines="1"
@@ -159,7 +160,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:orientation="horizontal">
@@ -177,11 +178,11 @@
 
                         <TextView
                             android:id="@+id/past_second_driver"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:autoSizeMaxTextSize="@dimen/body_text_size"
-                            android:autoSizeMinTextSize="8dp"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                             android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_regular"
                             android:maxLines="1"
@@ -194,7 +195,7 @@
                     </LinearLayout>
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="10dp"
                         android:orientation="horizontal">
@@ -212,11 +213,11 @@
 
                         <TextView
                             android:id="@+id/past_third_driver"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:autoSizeMaxTextSize="@dimen/body_text_size"
-                            android:autoSizeMinTextSize="8dp"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                             android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_regular"
                             android:maxLines="1"
@@ -252,6 +253,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_marginEnd="5dp"
                     android:layout_marginBottom="5dp"
+                    android:importantForAccessibility="no"
                     android:visibility="visible"
                     app:srcCompat="@drawable/play_icon_white">
 
