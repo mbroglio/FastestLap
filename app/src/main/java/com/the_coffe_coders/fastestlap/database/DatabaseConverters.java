@@ -19,6 +19,7 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Location;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.TrackHistory;
+import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 
 import org.threeten.bp.LocalDateTime;
 
@@ -115,6 +116,19 @@ public class DatabaseConverters {
     @TypeConverter
     public static Track toTrack(String json) {
         Type listType = new TypeToken<Track>() {
+        }.getType();
+        return gson.fromJson(json, listType);
+    }
+
+    //Nation
+    @TypeConverter
+    public static String fromNation(Nation nation) {
+        return gson.toJson(nation);
+    }
+
+    @TypeConverter
+    public static Nation toNation(String json) {
+        Type listType = new TypeToken<Nation>() {
         }.getType();
         return gson.fromJson(json, listType);
     }
