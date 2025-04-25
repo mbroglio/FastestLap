@@ -104,7 +104,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
     private void initializeViewModels() {
         driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(getApplication())).get(DriverViewModel.class);
         constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
-        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory()).get(NationViewModel.class);
+        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(getApplication())).get(NationViewModel.class);
 
         createConstructorBioPage(teamId);
     }

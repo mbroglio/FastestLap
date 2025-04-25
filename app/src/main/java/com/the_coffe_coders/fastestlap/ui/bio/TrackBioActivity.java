@@ -80,7 +80,7 @@ public class TrackBioActivity extends AppCompatActivity {
 
     private void initializeViewModels(){
         trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(getApplication())).get(TrackViewModel.class);
-        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory()).get(NationViewModel.class);
+        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(getApplication())).get(NationViewModel.class);
 
         fetchTrack();
     }

@@ -174,10 +174,6 @@ public class ServiceLocator {
         return AppRoomDatabase.getDatabase(application);
     }
 
-    public NationRepository getFirebaseNationRepository() {
-        return new NationRepository();
-    }
-
     public IUserRepository getUserRepository(Application application) {
         SharedPreferencesUtils sharedPreferencesUtil = new SharedPreferencesUtils(application);
 

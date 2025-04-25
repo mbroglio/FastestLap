@@ -11,7 +11,6 @@ import com.the_coffe_coders.fastestlap.repository.driver.DriverRepository;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 public class DriverViewModelFactory implements ViewModelProvider.Factory {
-
     private final DriverRepository driverRepository;
 
     public DriverViewModelFactory(Application application) {

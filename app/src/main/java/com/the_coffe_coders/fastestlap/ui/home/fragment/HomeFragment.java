@@ -124,7 +124,7 @@ public class HomeFragment extends Fragment {
 
         trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(getActivity().getApplication())).get(TrackViewModel.class);
 
-        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(ServiceLocator.getInstance().getFirebaseNationRepository())).get(NationViewModel.class);
+        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(getActivity().getApplication())).get(NationViewModel.class);
     }
 
     private void setupLoadingScreen(View view) {

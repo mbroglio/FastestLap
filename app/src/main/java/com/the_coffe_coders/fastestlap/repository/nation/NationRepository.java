@@ -1,87 +1,102 @@
 package com.the_coffe_coders.fastestlap.repository.nation;
 
-import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_NATIONS_COLLECTION;
-import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
-
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
+import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
+import com.the_coffe_coders.fastestlap.source.nation.FirebaseNationDataSource;
+import com.the_coffe_coders.fastestlap.source.nation.LocalNationDataSource;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class NationRepository {
-    private static FirebaseDatabase firebaseDatabase;
-    private final String TAG = "NationRepository";
+    private static final String TAG = "NationRepository";
 
-    Map<String, MutableLiveData<Result>> nationCache;
-    Map<String, Long> lastUpdateTimestamps;
+    //Data sources
+    FirebaseNationDataSource firebaseNationDataSource;
+    LocalNationDataSource localNationDataSource;
+    AppRoomDatabase appRoomDatabase;
+
+    //Cache
+    private final Map<String, MutableLiveData<Result>> nationCache;
+    private final Map<String, Long> lastUpdateTimestamps;
 
     public static NationRepository instance;
 
-    public static NationRepository getInstance() {
+    public static NationRepository getInstance(AppRoomDatabase appRoomDatabase) {
         if (instance == null) {
-            instance = new NationRepository();
+            instance = new NationRepository(appRoomDatabase);
         }
         return instance;
     }
 
-    public NationRepository() {
-        firebaseDatabase = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
+    private NationRepository(AppRoomDatabase appRoomDatabase) {
         nationCache = new HashMap<>();
         lastUpdateTimestamps = new HashMap<>();
+        firebaseNationDataSource = FirebaseNationDataSource.getInstance();
+        localNationDataSource = LocalNationDataSource.getInstance(appRoomDatabase);
     }
 
     public synchronized MutableLiveData<Result> getNation(String nationId) {
-        Log.i(TAG, "Fetching nation with ID: " + nationId);
+        Log.d(TAG, "Fetching nation with ID: " + nationId);
         if (!nationCache.containsKey(nationId) || !lastUpdateTimestamps.containsKey(nationId) || lastUpdateTimestamps.get(nationId) == null) {
-            Log.i(TAG, "Nation not found in cache: " + nationId);
             nationCache.put(nationId, new MutableLiveData<>());
             loadNation(nationId);
         } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(nationId) > 60000) {
-            Log.i(TAG, "Nation found in cache but outdated: " + nationId);
             loadNation(nationId);
         } else {
-            Log.i(TAG, "Nation found in cache: " + nationId);
+            Log.d(TAG, "Nation found in cache: " + nationId);
         }
         return nationCache.get(nationId);
     }
 
-    public void loadNation(String nationId) {
+    private void loadNation(String nationId) {
         nationCache.get(nationId).postValue(new Result.Loading("Fetching nation from remote"));
-        DatabaseReference nationReference = firebaseDatabase.getReference(FIREBASE_NATIONS_COLLECTION).child(nationId);
-        nationReference.get().addOnCompleteListener(nationTask -> {
-            if (nationTask.isSuccessful()) {
-                try {
-                    Nation nation = nationTask.getResult().getValue(Nation.class);
+        try {
+            firebaseNationDataSource.getNation(nationId, new NationCallback() {
+                @Override
+                public void onNationLoaded(Nation nation) {
                     if (nation != null) {
                         nation.setNationId(nationId);
-                        if (nationCache.containsKey(nationId)) {
-                            Objects.requireNonNull(nationCache.get(nationId)).postValue(new Result.NationSuccess(nation));
-                            lastUpdateTimestamps.put(nationId, System.currentTimeMillis());
-                        } else {
-                            nationCache.put(nationId, new MutableLiveData<>(new Result.NationSuccess(nation)));
-                            lastUpdateTimestamps.put(nationId, System.currentTimeMillis());
-                        }
+                        localNationDataSource.insertNation(nation);
+                        lastUpdateTimestamps.put(nationId, System.currentTimeMillis());
+                        Objects.requireNonNull(nationCache.get(nationId)).postValue(new Result.NationSuccess(nation));
                     } else {
-                        Objects.requireNonNull(nationCache.get(nationId)).postValue(new Result.Error("Nation not found"));
+                        Log.e(TAG, "Nation not found: " + nationId);
                     }
-                } catch (Exception e) {
-                    Log.e(TAG, "Error deserializing nation data", e);
-                    Objects.requireNonNull(nationCache.get(nationId)).postValue(new Result.Error("Failed to parse nation data: " + e.getMessage()));
                 }
-            } else {
-                Log.e(TAG, "Error fetching nation data", nationTask.getException());
-                Objects.requireNonNull(nationCache.get(nationId)).postValue(new Result.Error("Failed to fetch nation data: " +
-                        (nationTask.getException() != null ? nationTask.getException().getMessage() : "Unknown error")));
-            }
-        });
-    }
 
+                @Override
+                public void onError(Exception e) {
+                    Log.e(TAG, "Error loading nation: " + e.getMessage());
+                    //fetch nation from local database
+                    localNationDataSource.getNation(nationId, new NationCallback() {
+                        @Override
+                        public void onNationLoaded(Nation nation) {
+                            if (nation != null) {
+                                nation.setNationId(nationId);
+                                nationCache.put(nationId, new MutableLiveData<>(new Result.NationSuccess(nation)));
+                                lastUpdateTimestamps.put(nationId, System.currentTimeMillis());
+                                Objects.requireNonNull(nationCache.get(nationId)).postValue(new Result.NationSuccess(nation));
+                            } else {
+                                Log.e(TAG, "Nation not found: " + nationId);
+                            }
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Log.e(TAG, "Error loading nation from local database: " + e.getMessage());
+                        }
+                    });
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error loading nation: " + e.getMessage());
+        }
+    }
 }

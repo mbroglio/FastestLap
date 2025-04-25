@@ -139,7 +139,7 @@ public class EventActivity extends AppCompatActivity {
                 track = ((Result.TrackSuccess) result).getData();
                 Log.i(TAG, "Track: " + track.toString());
 
-                NationViewModel nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(ServiceLocator.getInstance().getFirebaseNationRepository())).get(NationViewModel.class);
+                NationViewModel nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(getApplication())).get(NationViewModel.class);
                 MutableLiveData<Result> nationData = nationViewModel.getNation(track.getCountry());
 
                 nationData.observe(this, result1 -> {

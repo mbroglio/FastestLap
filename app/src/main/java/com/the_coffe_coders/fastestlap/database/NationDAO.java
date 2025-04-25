@@ -25,6 +25,7 @@ public interface NationDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertNation(Nation nation);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     List<Long> insertNationList(List<Nation> newsList);
 }
