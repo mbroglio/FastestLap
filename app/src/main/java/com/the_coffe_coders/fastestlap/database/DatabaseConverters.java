@@ -17,6 +17,8 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.Sprint;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.SprintQualifying;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Location;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.TrackHistory;
 
 import org.threeten.bp.LocalDateTime;
 
@@ -117,6 +119,28 @@ public class DatabaseConverters {
         return gson.fromJson(json, listType);
     }
 
+    //Location
+    @TypeConverter
+    public static String fromLocation(Location location) {
+        return gson.toJson(location);
+    }
+
+    @TypeConverter
+    public static Location toLocation(String json) {
+        return gson.fromJson(json, Location.class);
+    }
+
+    //TrackHistory List
+    @TypeConverter
+    public static String fromTrackHistoryList(List<TrackHistory> trackHistoryList) {
+        return gson.toJson(trackHistoryList);
+    }
+
+    @TypeConverter
+    public static List<TrackHistory> toTrackHistoryList(String json) {
+        Type listType = new TypeToken<List<TrackHistory>>() {}.getType();
+        return gson.fromJson(json, listType);
+    }
 
     //Contructor List
     @TypeConverter

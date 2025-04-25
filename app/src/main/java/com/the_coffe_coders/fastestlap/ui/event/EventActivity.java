@@ -128,7 +128,7 @@ public class EventActivity extends AppCompatActivity {
         TextView title = findViewById(R.id.topAppBarTitle);
         title.setText(grandPrixName);
 
-        TrackViewModel trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(ServiceLocator.getInstance().getTrackRepository())).get(TrackViewModel.class);
+        TrackViewModel trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(getApplication())).get(TrackViewModel.class);
         MutableLiveData<Result> trackData = trackViewModel.getTrack(trackId);
 
         trackData.observe(this, result -> {

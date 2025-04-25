@@ -4,65 +4,98 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.source.track.FirebaseTrackDataSource;
+import com.the_coffe_coders.fastestlap.source.track.LocalTrackDataSource;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 public class TrackRepository {
-    private final FirebaseTrackDataSource firebaseTrackDataSource;
-    private static TrackRepository instance;
-    Map<String, MutableLiveData<Result>> trackCache;
-    Map<String, Long> lastFetchTime;
-    
     private static final String TAG = "TrackRepository";
-    
-    public static synchronized TrackRepository getInstance() {
+    private static TrackRepository instance;
+
+    //Cache
+    private final Map<String, MutableLiveData<Result>> trackCache;
+    private final Map<String, Long> lastUpdateTimestamps;
+
+    //Data sources
+    FirebaseTrackDataSource firebaseTrackDataSource;
+    LocalTrackDataSource localTrackDataSource;
+    AppRoomDatabase appRoomDatabase;
+
+    public static synchronized TrackRepository getInstance(AppRoomDatabase appRoomDatabase) {
         if (instance == null) {
-            instance = new TrackRepository();
+            instance = new TrackRepository(appRoomDatabase);
         }
         return instance;
     }
-    
-    public TrackRepository() {
-        this.firebaseTrackDataSource = FirebaseTrackDataSource.getInstance();
-        this.trackCache = new HashMap<>();
-        this.lastFetchTime = new HashMap<>();
+
+    public TrackRepository(AppRoomDatabase appRoomDatabase) {
+        trackCache = new HashMap<>();
+        lastUpdateTimestamps = new HashMap<>();
+        firebaseTrackDataSource = FirebaseTrackDataSource.getInstance();
+        localTrackDataSource = LocalTrackDataSource.getInstance(appRoomDatabase);
     }
-    
+
     public synchronized MutableLiveData<Result> getTrack(String trackId) {
         Log.d(TAG, "Fetching track with ID: " + trackId);
-        if(!trackCache.containsKey(trackId) || !lastFetchTime.containsKey(trackId) || lastFetchTime.get(trackId) == null) {
+        if (!trackCache.containsKey(trackId) || !lastUpdateTimestamps.containsKey(trackId) || lastUpdateTimestamps.get(trackId) == null) {
             trackCache.put(trackId, new MutableLiveData<>());
             loadTrack(trackId);
-        }else if(System.currentTimeMillis() - lastFetchTime.get(trackId) > 60000) {
+        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(trackId) > 60000) {
             loadTrack(trackId);
         } else {
             Log.d(TAG, "Track found in cache: " + trackId);
         }
         return trackCache.get(trackId);
     }
-    
+
     public void loadTrack(String trackId) {
         trackCache.get(trackId).postValue(new Result.Loading("Fetching track from remote"));
-        firebaseTrackDataSource.getTrack(trackId, new TrackCallback() {
-            @Override
-            public void onSuccess(Track track) {
-                Log.d(TAG, "Track loaded: " + track);
-                if(track!=null){
-                    track.setTrackId(trackId);
-                    Objects.requireNonNull(trackCache.get(trackId)).postValue(new Result.TrackSuccess(track));
-                    lastFetchTime.put(trackId, System.currentTimeMillis());
+        try {
+            firebaseTrackDataSource.getTrack(trackId, new TrackCallback() {
+                @Override
+                public void onTrackLoaded(Track track) {
+                    Log.d(TAG, "Track loaded: " + track);
+                    if (track != null) {
+                        track.setTrackId(trackId);
+                        localTrackDataSource.insertTrack(track);
+                        lastUpdateTimestamps.put(trackId, System.currentTimeMillis());
+                        Objects.requireNonNull(trackCache.get(trackId)).postValue(new Result.TrackSuccess(track));
+                    } else {
+                        Log.e(TAG, "Track not found in cache: " + trackId);
+                    }
                 }
-            }
 
-            @Override
-            public void onFailure(Exception exception) {
-                Log.e(TAG, "Error loading track: " + exception.getMessage());
-            }
-        });
+                @Override
+                public void onError(Exception exception) {
+                    Log.e(TAG, "Error loading track: " + exception.getMessage());
+                    localTrackDataSource.getTrack(trackId, new TrackCallback() {
+                        @Override
+                        public void onTrackLoaded(Track track) {
+                            if (track != null) {
+                                track.setTrackId(trackId);
+                                trackCache.put(trackId, new MutableLiveData<>(new Result.TrackSuccess(track)));
+                                lastUpdateTimestamps.put(trackId, System.currentTimeMillis());
+                                Objects.requireNonNull(trackCache.get(trackId)).postValue(new Result.TrackSuccess(track));
+                            } else {
+                                Log.e(TAG, "Track not found in local cache: " + trackId);
+                            }
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Log.e(TAG, "Error loading track from local cache: " + e.getMessage());
+                        }
+                    });
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error loading track: " + e.getMessage());
+        }
     }
 }

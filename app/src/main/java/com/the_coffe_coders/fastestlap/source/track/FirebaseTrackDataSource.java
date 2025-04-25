@@ -37,18 +37,18 @@ public class FirebaseTrackDataSource implements TrackDataSource {
                 if (snapshot.exists()) {
                     Track track = snapshot.getValue(Track.class);
                     if (track != null) {
-                        callback.onSuccess(track);
+                        callback.onTrackLoaded(track);
                     } else {
-                        callback.onFailure(new NullPointerException("Track data is null"));
+                        callback.onError(new NullPointerException("Track data is null"));
                     }
                 } else {
-                    callback.onFailure(new NullPointerException("No track found"));
+                    callback.onError(new NullPointerException("No track found"));
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                callback.onFailure(error.toException());
+                callback.onError(error.toException());
             }
         });
     }

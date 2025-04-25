@@ -11,7 +11,6 @@ import java.util.List;
 
 @Dao
 public interface TrackDAO {
-
     @Query("SELECT * FROM Track")
     List<Track> getAll();
 

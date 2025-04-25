@@ -190,8 +190,4 @@ public class ServiceLocator {
         return new UserRepository(userRemoteAuthenticationDataSource,
                 userDataRemoteDataSource);
     }
-
-    public TrackRepository getTrackRepository() {
-        return new TrackRepository();
-    }
 }
