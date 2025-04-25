@@ -18,12 +18,13 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRaceClassic;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRaceSprint;
+import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.util.Constants;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {DriverStandings.class, Driver.class, Constructor.class, ConstructorStandings.class, WeeklyRaceClassic.class, Race.class, WeeklyRaceSprint.class, RaceResult.class, Track.class}, version = DATABASE_VERSION, exportSchema = false)
+@Database(entities = {DriverStandings.class, Driver.class, Constructor.class, ConstructorStandings.class, WeeklyRaceClassic.class, Race.class, WeeklyRaceSprint.class, RaceResult.class, Track.class, Nation.class}, version = DATABASE_VERSION, exportSchema = false)
 //TODO set to true (export schema)
 @TypeConverters({DatabaseConverters.class})
 public abstract class AppRoomDatabase extends RoomDatabase {
@@ -51,6 +52,8 @@ public abstract class AppRoomDatabase extends RoomDatabase {
     public abstract ConstructorDAO constructorDAO();
 
     public abstract TrackDAO trackDAO();
+
+    public abstract NationDAO nationDAO();
 
     public abstract ConstructorStandingsDAO constructorStandingsDao();
 
