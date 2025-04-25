@@ -9,7 +9,6 @@ import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 
 import java.util.List;
 
-//TODO REMOVE ?
 @Dao
 public interface ConstructorDAO {
     @Query("SELECT * FROM Constructor")

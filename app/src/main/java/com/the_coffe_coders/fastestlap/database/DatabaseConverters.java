@@ -104,6 +104,20 @@ public class DatabaseConverters {
         return gson.fromJson(json, listType);
     }
 
+    //Track
+    @TypeConverter
+    public static String fromTrack(Track track) {
+        return gson.toJson(track);
+    }
+
+    @TypeConverter
+    public static Track toTrack(String json) {
+        Type listType = new TypeToken<Track>() {
+        }.getType();
+        return gson.fromJson(json, listType);
+    }
+
+
     //Contructor List
     @TypeConverter
     public static String fromConstructorList(List<Constructor> list) {
@@ -115,17 +129,6 @@ public class DatabaseConverters {
         Type listType = new TypeToken<List<Constructor>>() {
         }.getType();
         return gson.fromJson(json, listType);
-    }
-
-    //Circuit
-    @TypeConverter
-    public static String fromCircuit(Track track) {
-        return gson.toJson(track);
-    }
-
-    @TypeConverter
-    public static Track toCircuit(String json) {
-        return gson.fromJson(json, Track.class);
     }
 
     //Practice

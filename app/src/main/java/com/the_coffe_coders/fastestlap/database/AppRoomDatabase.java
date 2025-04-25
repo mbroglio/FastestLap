@@ -49,6 +49,8 @@ public abstract class AppRoomDatabase extends RoomDatabase {
 
     public abstract ConstructorDAO constructorDAO();
 
+    public abstract TrackDAO trackDAO();
+
     public abstract ConstructorStandingsDAO constructorStandingsDao();
 
     public abstract WeeklyRaceClassicDAO weeklyRaceClassicDAO();
