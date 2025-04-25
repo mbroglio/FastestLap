@@ -15,6 +15,7 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRaceClassic;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRaceSprint;
 import com.the_coffe_coders.fastestlap.util.Constants;
@@ -22,7 +23,7 @@ import com.the_coffe_coders.fastestlap.util.Constants;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {DriverStandings.class, Driver.class, Constructor.class, ConstructorStandings.class, WeeklyRaceClassic.class, Race.class, WeeklyRaceSprint.class, RaceResult.class}, version = DATABASE_VERSION, exportSchema = false)
+@Database(entities = {DriverStandings.class, Driver.class, Constructor.class, ConstructorStandings.class, WeeklyRaceClassic.class, Race.class, WeeklyRaceSprint.class, RaceResult.class, Track.class}, version = DATABASE_VERSION, exportSchema = false)
 //TODO set to true (export schema)
 @TypeConverters({DatabaseConverters.class})
 public abstract class AppRoomDatabase extends RoomDatabase {

@@ -18,7 +18,7 @@ public interface TrackDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<Track> articles);
 
-    @Query("SELECT * FROM Constructor WHERE trackId LIKE :id")
+    @Query("SELECT * FROM Track WHERE trackId LIKE :id")
     Track getById(String id);
 
     @Query("DELETE from Track")
