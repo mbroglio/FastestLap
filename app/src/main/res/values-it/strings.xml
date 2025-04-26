@@ -26,6 +26,7 @@
     <string name="pending_results">In attesa dei risultati…</string>
     <string name="race_cancelled_upper_case">GARA CANCELLATA</string>
     <string name="days_upper_case">GIORNI</string>
+    <string name="wins_abbr_upper_case">V</string>
     <string name="team_upper_case">SCUDERIA</string>
     <string name="drivers_upper_case">PILOTI:</string>
     <string name="wins_upper_case">VITTORIE</string>
@@ -36,4 +37,6 @@
     <string name="last_race_upper_case">GARA\nPASSATA</string>
     <string name="racing_upper_case">GARE</string>
     <string name="upcoming_upper_case">PROSSIME</string>
+    <string name="pts_upper_case">PUNTI</string>
+    <string name="pod_upper_case">PODI</string>
 </resources>
