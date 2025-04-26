@@ -28,6 +28,7 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverHistory;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.TrackHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
@@ -62,6 +63,7 @@ public class DriverBioActivity extends AppCompatActivity {
     private AppBarLayout appBarLayout;
     private ImageView driverNumberImage;
     private String driverId;
+    private SwipeRefreshLayout driverBioLayout;
 
     private DriverViewModel driverViewModel;
     private NationViewModel nationViewModel;
@@ -77,8 +79,10 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     private void start(){
-        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
+        driverBioLayout = findViewById(R.id.driver_bio_layout);
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, driverBioLayout, null);
         loadingScreen.showLoadingScreen();
+        loadingScreen.updateProgress(0);
 
         toolbar = findViewById(R.id.topAppBar);
         UIUtils.applyWindowInsets(toolbar);
@@ -93,7 +97,6 @@ public class DriverBioActivity extends AppCompatActivity {
 
         appBarLayout = findViewById(R.id.top_bar_layout);
 
-        SwipeRefreshLayout driverBioLayout = findViewById(R.id.driver_bio_layout);
         UIUtils.applyWindowInsets(driverBioLayout);
         driverBioLayout.setOnRefreshListener(() -> {
             start();
@@ -115,7 +118,7 @@ public class DriverBioActivity extends AppCompatActivity {
     private void initializeViewModels() {
         driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(getApplication())).get(DriverViewModel.class);
         constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
-        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(getApplication())).get(NationViewModel.class);
+        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory()).get(NationViewModel.class);
 
         createDriverBioPage(driverId);
     }
@@ -164,8 +167,10 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     public void createDriverBioPage(String driverId) {
-        MutableLiveData<Result> driverMutableLiveData = driverViewModel.getDriver(driverId);
 
+        loadingScreen.postLoadingStatus(this.getString(R.string.initializing));
+
+        MutableLiveData<Result> driverMutableLiveData = driverViewModel.getDriver(driverId);
         driverMutableLiveData.observe(this, result -> {
             if(result instanceof Result.Loading) {
                 return;
@@ -173,6 +178,8 @@ public class DriverBioActivity extends AppCompatActivity {
             if (result.isSuccess()) {
                 driver = ((Result.DriverSuccess) result).getData();
                 Log.i(TAG, "DRIVER SUCCESS");
+                Log.i(TAG, "DRIVER: " + driver.toString());
+
                 // Update the favorite icon when driver data is loaded
                 updateFavoriteIcon(driverId);
                 getTeamInfo(driver.getTeam_id());
@@ -183,6 +190,9 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     public void getTeamInfo(String teamId) {
+        loadingScreen.postLoadingStatus(this.getString(R.string.fetching_driver_info));
+        loadingScreen.updateProgress(50);
+
         MutableLiveData<Result> constructorMutableLiveData = constructorViewModel.getSelectedConstructor(teamId);
 
         constructorMutableLiveData.observe(this, result -> {
@@ -268,6 +278,7 @@ public class DriverBioActivity extends AppCompatActivity {
                         driver.getWeight(),
                         driver.getHeight(),
                         driver.getBest_result(),
+                        driver.getPodiums(),
                         driver.getChampionships(),
                         driver.getFirst_entry()},
 
@@ -277,6 +288,7 @@ public class DriverBioActivity extends AppCompatActivity {
                         findViewById(R.id.driver_weight),
                         findViewById(R.id.driver_height),
                         findViewById(R.id.driver_best_result),
+                        findViewById(R.id.driver_podiums),
                         findViewById(R.id.driver_championships),
                         findViewById(R.id.driver_first_entry)
                 }
@@ -286,6 +298,10 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     private void createHistoryTable() {
+
+        loadingScreen.postLoadingStatus(this.getString(R.string.setting_driver_history));
+        loadingScreen.updateProgress(100);
+
         TableLayout tableLayout = findViewById(R.id.history_table);
         tableLayout.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -298,21 +314,21 @@ public class DriverBioActivity extends AppCompatActivity {
 
         tableLayout.addView(tableHeader);
 
-        List<DriverHistory> driverHistoryList = driver.getDriver_history();
-        if (driverHistoryList != null) {
+        if (driver.getDriver_history() != null) {
+            List<DriverHistory> driverHistoryList = driver.getDriver_history();
             for (int i = driverHistoryList.size() - 1; i >= 0; i--) {
-                DriverHistory history = driverHistoryList.get(i);
+                DriverHistory driverHistory = driverHistoryList.get(i);
                 View tableRow = inflater.inflate(R.layout.driver_bio_table_row, tableLayout, false);
                 tableRow.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
 
                 UIUtils.multipleSetTextViewText(
                         new String[]{
-                                history.getYear(),
-                                history.getTeam(),
-                                history.getPosition(),
-                                history.getPoints(),
-                                history.getWins(),
-                                history.getPodiums()},
+                                driverHistory.getYear(),
+                                driverHistory.getTeam(),
+                                driverHistory.getPosition(),
+                                driverHistory.getPoints(),
+                                driverHistory.getWins(),
+                                driverHistory.getPodiums()},
 
                         new TextView[]{
                                 tableRow.findViewById(R.id.season_year),

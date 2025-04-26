@@ -28,6 +28,7 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorHistory;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
+import com.the_coffe_coders.fastestlap.domain.driver.DriverHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
@@ -57,6 +58,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
     private NationViewModel nationViewModel;
     private ConstructorViewModel constructorViewModel;
 
+    private SwipeRefreshLayout constructorBioLayout;
     private String teamId;
     private Constructor constructor;
     private Nation nation;
@@ -73,8 +75,11 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     private void start(){
-        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
+        constructorBioLayout = findViewById(R.id.constructor_bio_layout);
+
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, constructorBioLayout, null);
         loadingScreen.showLoadingScreen();
+        loadingScreen.updateProgress(0);
 
         toolbar = findViewById(R.id.topAppBar);
         UIUtils.applyWindowInsets(toolbar);
@@ -89,7 +94,6 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
         appBarLayout = findViewById(R.id.top_bar_layout);
 
-        SwipeRefreshLayout constructorBioLayout = findViewById(R.id.constructor_bio_layout);
         UIUtils.applyWindowInsets(constructorBioLayout);
         constructorBioLayout.setOnRefreshListener(() -> {
             start();
@@ -106,7 +110,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
     private void initializeViewModels() {
         driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(getApplication())).get(DriverViewModel.class);
         constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
-        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(getApplication())).get(NationViewModel.class);
+        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory()).get(NationViewModel.class);
 
         createConstructorBioPage(teamId);
     }
@@ -141,6 +145,9 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     private void createConstructorBioPage(String teamId) {
+
+        loadingScreen.postLoadingStatus(this.getString(R.string.initializing));
+
         MutableLiveData<Result> data = constructorViewModel.getSelectedConstructor(teamId);
         data.observe(this, result -> {
             if(result instanceof Result.Loading) {
@@ -244,7 +251,8 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     private void setTeamData(Constructor team, Nation nation, Driver driverOne, Driver driverTwo) {
-        Log.i("ConstructorBioActivity", "Setting team data");
+        loadingScreen.postLoadingStatus(this.getString(R.string.fetching_constructor_info));
+        loadingScreen.updateProgress(50);
 
         UIUtils.loadSequenceOfImagesWithGlide(this,
                 new String[]{team.getTeam_logo_url(), nation.getNation_flag_url(), team.getCar_pic_url(), driverOne.getDriver_pic_url(), driverTwo.getDriver_pic_url()},
@@ -285,6 +293,10 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
     private void createHistoryTable() {
         Log.i("ConstructorBioActivity", "Creating history table");
+
+        loadingScreen.postLoadingStatus(this.getString(R.string.setting_constructor_history));
+        loadingScreen.updateProgress(100);
+
         TableLayout tableLayout = findViewById(R.id.history_table);
         tableLayout.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -298,19 +310,19 @@ public class ConstructorBioActivity extends AppCompatActivity {
         //set stroke of tableHeader
         tableLayout.addView(tableHeader);
 
-        List<ConstructorHistory> constructorHistoryList = constructor.getTeam_history();
-        if (constructorHistoryList != null) {
+        if (constructor.getTeam_history() != null) {
+            List<ConstructorHistory> constructorHistoryList = constructor.getTeam_history();
             for (int i = constructorHistoryList.size() - 1; i >= 0; i--) {
-                ConstructorHistory history = constructorHistoryList.get(i);
+                ConstructorHistory constructorHistory = constructorHistoryList.get(i);
                 View tableRow = inflater.inflate(R.layout.constructor_bio_table_row, tableLayout, false);
                 tableRow.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
 
                 UIUtils.multipleSetTextViewText(
-                        new String[]{history.getYear(),
-                                history.getPosition(),
-                                history.getPoints(),
-                                history.getWins(),
-                                history.getPodiums()},
+                        new String[]{constructorHistory.getYear(),
+                                constructorHistory.getPosition(),
+                                constructorHistory.getPoints(),
+                                constructorHistory.getWins(),
+                                constructorHistory.getPodiums()},
 
                         new TextView[]{tableRow.findViewById(R.id.season_year),
                                 tableRow.findViewById(R.id.team_position),
@@ -319,7 +331,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
                                 tableRow.findViewById(R.id.team_podiums)}
                 );
 
-                // Set bottom margin to 5dp
+
                 TableLayout.LayoutParams tableParams = (TableLayout.LayoutParams) tableRow.getLayoutParams();
                 tableParams.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
                 tableRow.setLayoutParams(tableParams);

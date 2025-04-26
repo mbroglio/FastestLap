@@ -34,7 +34,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:autoSizeMaxTextSize="25sp"
-                    android:autoSizeMinTextSize="12sp"
+                    android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                     android:autoSizeTextType="uniform"
                     android:fontFamily="@font/orbitron_bold"
                     android:gravity="center"
@@ -117,7 +117,9 @@
                                 android:id="@+id/track_image"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_margin="3dp">
+                                android:layout_margin="3dp"
+                                android:importantForAccessibility="no"
+                                android:scaleType="fitCenter">
 
                             </ImageView>
 
@@ -173,7 +175,8 @@
                             android:layout_width="70dp"
                             android:layout_height="45dp"
                             android:layout_alignParentTop="true"
-                            android:layout_alignParentEnd="true">
+                            android:layout_alignParentEnd="true"
+                            android:importantForAccessibility="no">
 
                         </ImageView>
 
@@ -182,6 +185,47 @@
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/track_location_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerInParent="true"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:text="@string/location"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/layout_subtitle_text_size">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/circuit_location_value"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginEnd="2dp"
+                            android:layout_toEndOf="@id/track_location_text"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:gravity="start"
+                            android:maxLines="1"
+                            android:text="@string/not_found"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/body_text_size">
+
+                        </TextView>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
                         android:orientation="horizontal">
 
                         <TextView
@@ -199,12 +243,18 @@
 
                         <TextView
                             android:id="@+id/circuit_first_entry_value"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:layout_marginStart="20dp"
+                            android:layout_marginEnd="2dp"
                             android:layout_toEndOf="@id/track_first_entry_text"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_regular"
+                            android:gravity="start"
+                            android:maxLines="1"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size">
@@ -212,7 +262,6 @@
                         </TextView>
 
                     </RelativeLayout>
-
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -235,12 +284,18 @@
 
                         <TextView
                             android:id="@+id/number_of_laps_value"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:layout_marginStart="20dp"
+                            android:layout_marginEnd="2dp"
                             android:layout_toEndOf="@id/number_of_laps_text"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_regular"
+                            android:gravity="start"
+                            android:maxLines="1"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size">
@@ -271,9 +326,16 @@
                             android:id="@+id/circuit_length_value"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
                             android:layout_marginStart="20dp"
+                            android:layout_marginEnd="2dp"
                             android:layout_toEndOf="@id/circuit_length_text"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_regular"
+                            android:gravity="start"
+                            android:maxLines="1"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size">
@@ -394,12 +456,30 @@
 
                 </LinearLayout>
 
+                <Button
+                    android:id="@+id/goToMapButton"
+                    style="@style/Widget.Material3.Button.ElevatedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="50dp"
+                    android:layout_marginBottom="24dp"
+                    android:backgroundTint="@color/white"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:text="@string/open_with_google_maps"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/layout_subtitle_text_size"
+                    app:icon="@drawable/world_icon"
+                    app:iconGravity="textStart"
+                    app:iconTint="@null" />
+
                 <LinearLayout
                     android:id="@+id/track_history"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:layout_marginTop="10dp"
                     android:layout_marginEnd="5dp"
                     android:layout_marginBottom="5dp"
                     android:orientation="vertical">

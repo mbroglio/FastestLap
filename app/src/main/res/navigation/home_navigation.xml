@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/racingFragment"
         android:name="com.the_coffe_coders.fastestlap.ui.home.fragment.RacingFragment"
-        android:label="RACING"
+        android:label="@string/racing_upper_case"
         tools:layout="@layout/fragment_racing" />
 
     <fragment
@@ -21,7 +21,7 @@
     <fragment
         android:id="@+id/standingsFragment"
         android:name="com.the_coffe_coders.fastestlap.ui.home.fragment.StandingsFragment"
-        android:label="STANDINGS"
+        android:label="@string/standings_upper_case"
         tools:layout="@layout/fragment_standings" />
 
 </navigation>

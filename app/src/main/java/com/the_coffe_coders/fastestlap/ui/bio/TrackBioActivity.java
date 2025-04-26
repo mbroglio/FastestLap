@@ -1,11 +1,13 @@
 package com.the_coffe_coders.fastestlap.ui.bio;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -16,7 +18,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
@@ -40,6 +41,7 @@ public class TrackBioActivity extends AppCompatActivity {
     private ImageView circuitImage;
     private ImageView countryFlag;
     private String trackId;
+    private SwipeRefreshLayout trackBioLayout;
 
     private TrackViewModel trackViewModel;
     private NationViewModel nationViewModel;
@@ -54,14 +56,15 @@ public class TrackBioActivity extends AppCompatActivity {
     }
 
     private void start(){
-        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
+        trackBioLayout = findViewById(R.id.track_bio_layout);
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, trackBioLayout, null);
         loadingScreen.showLoadingScreen();
+        loadingScreen.updateProgress(0);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         UIUtils.applyWindowInsets(toolbar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        SwipeRefreshLayout trackBioLayout = findViewById(R.id.track_bio_layout);
         UIUtils.applyWindowInsets(trackBioLayout);
         trackBioLayout.setOnRefreshListener(() -> {
             start();
@@ -81,15 +84,17 @@ public class TrackBioActivity extends AppCompatActivity {
     }
 
     private void initializeViewModels(){
-        trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(getApplication())).get(TrackViewModel.class);
-        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(getApplication())).get(NationViewModel.class);
+        trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory()).get(TrackViewModel.class);
+        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory()).get(NationViewModel.class);
 
         fetchTrack();
     }
 
     private void fetchTrack() {
-        MutableLiveData<Result> trackLiveData = trackViewModel.getTrack(trackId);
 
+        loadingScreen.postLoadingStatus(this.getString(R.string.initializing));
+
+        MutableLiveData<Result> trackLiveData = trackViewModel.getTrack(trackId);
         try {
             trackLiveData.observe(this, trackResult -> {
                 if (trackResult instanceof Result.Loading) {
@@ -122,16 +127,23 @@ public class TrackBioActivity extends AppCompatActivity {
 
     private void setCircuitData(Track track, Nation nation) {
 
+        loadingScreen.postLoadingStatus(this.getString(R.string.fetching_track_info));
+        loadingScreen.updateProgress(50);
+
         UIUtils.multipleSetTextViewText(
-                new String[]{track.getTrackName(),
-                track.getFirst_entry(),
+                new String[]{
+                        track.getTrackName(),
+                        track.getLocation().getLocality(),
+                        track.getFirst_entry(),
                         track.getLaps(),
                         track.getLength(),
                         track.getRace_distance(),
                         track.getLap_record().split(" ")[0],
                         track.getLap_record().substring(track.getLap_record().split(" ")[0].length() + 1)},
 
-                new TextView[]{findViewById(R.id.circuit_name_value),
+                new TextView[]{
+                        findViewById(R.id.circuit_name_value),
+                        findViewById(R.id.circuit_location_value),
                         findViewById(R.id.circuit_first_entry_value),
                         findViewById(R.id.number_of_laps_value),
                         findViewById(R.id.circuit_length_value),
@@ -139,14 +151,20 @@ public class TrackBioActivity extends AppCompatActivity {
                         findViewById(R.id.fastest_lap_value),
                         findViewById(R.id.fastest_lap_driver)});
 
+        Button goToMapButton = findViewById(R.id.goToMapButton);
+        goToMapButton.setOnClickListener(v ->
+                UIUtils.openLocation(this, track.getLocation().getLatitude(), track.getLocation().getLongitude()));
+
         UIUtils.loadSequenceOfImagesWithGlide(this,
                 new String[]{track.getTrack_full_layout_url(),nation.getNation_flag_url()},
                 new ImageView[]{circuitImage, countryFlag},
                 this::createHistoryTable);
-
     }
 
     private void createHistoryTable() {
+        loadingScreen.postLoadingStatus(this.getString(R.string.setting_track_history));
+        loadingScreen.updateProgress(100);
+
         TableLayout tableLayout = findViewById(R.id.history_table);
         tableLayout.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
@@ -158,7 +176,6 @@ public class TrackBioActivity extends AppCompatActivity {
         List<TrackHistory> trackHistoryList = track.getTrack_history();
         for (int i = trackHistoryList.size() - 1; i >= 0; i--) {
             TrackHistory history = trackHistoryList.get(i);
-            Log.i("TrackBioActivity", "History: " + history);
             View tableRow = inflater.inflate(R.layout.track_bio_table_row, tableLayout, false);
 
             UIUtils.multipleSetTextViewText(
@@ -180,7 +197,19 @@ public class TrackBioActivity extends AppCompatActivity {
                             tableRow.findViewById(R.id.second_driver_team),
                             tableRow.findViewById(R.id.third_driver_team)});
 
+            ImageView raceHighlights = tableRow.findViewById(R.id.race_highlights_button);
+            if(history.getRaceHighlightsUrl() != null){
+                raceHighlights.setVisibility(View.VISIBLE);
+                raceHighlights.setOnClickListener(v -> {
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(history.getRaceHighlightsUrl()));
+                    startActivity(intent);
+                });
+            } else {
+                raceHighlights.setVisibility(View.GONE);
+            }
+
             tableLayout.addView(tableRow);
+
         }
 
         loadingScreen.hideLoadingScreen();

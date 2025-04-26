@@ -16,7 +16,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
@@ -39,8 +38,12 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     private final boolean raceToProcess = true;
     LoadingScreen loadingScreen;
 
+    private SwipeRefreshLayout upcomingEventsLayout;
+
     EventViewModel eventViewModel;
     TrackViewModel trackViewModel;
+
+    private int counter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +56,8 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     }
 
     private void start(){
-        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
+        upcomingEventsLayout = findViewById(R.id.upcoming_events_layout);
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, upcomingEventsLayout, null);
 
         loadingScreen.showLoadingScreen();
 
@@ -64,9 +68,9 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         UIUtils.applyWindowInsets(toolbar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        SwipeRefreshLayout upcomingEventsLayout = findViewById(R.id.upcoming_events_layout);
         UIUtils.applyWindowInsets(upcomingEventsLayout);
         upcomingEventsLayout.setOnRefreshListener(() ->{
+            counter = 0;
             start();
             upcomingEventsLayout.setRefreshing(false);
         });
@@ -76,6 +80,9 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
     private void processEvents() {
         Log.i("UpcomingEvents", "Process Event");
+
+        loadingScreen.postLoadingStatus(this.getString(R.string.initializing));
+
         MutableLiveData<Result> data = eventViewModel.getWeeklyRacesLiveData();
         data.observe(this, result -> {
             if(result instanceof Result.Loading) {
@@ -88,28 +95,31 @@ public class UpcomingEventsActivity extends AppCompatActivity {
                 upcomingEvents.removeAllViews();
                 List<WeeklyRace> upcomingRaces = eventViewModel.extractUpcomingRaces(races);
                 Log.i("UpcomingEvents", "upcomingRaces: " + upcomingRaces.size());
-                for (WeeklyRace race : upcomingRaces) {
-                    createEventCard(upcomingEvents, race);
+                for (int i=0; i<upcomingRaces.size(); i++) {
+                    createEventCard(upcomingEvents, upcomingRaces.get(i), i, upcomingRaces.size());
                 }
 
                 View space = new View(UpcomingEventsActivity.this);
                 space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, Constants.SPACER_HEIGHT));
                 upcomingEvents.addView(space);
+            }else{
+                loadingScreen.hideLoadingScreen();
             }
 
         });
 
     }
 
-    private void createEventCard(LinearLayout eventsListLayout, WeeklyRace weeklyRace) {
-        eventsListLayout.addView(generateEventCard(weeklyRace));
+    private void createEventCard(LinearLayout eventsListLayout, WeeklyRace weeklyRace, int i, int totalRaces) {
+
+        eventsListLayout.addView(generateEventCard(weeklyRace, i, totalRaces));
 
         View space = new View(UpcomingEventsActivity.this);
         space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, Constants.SPACER_HEIGHT));
         eventsListLayout.addView(space);
     }
 
-    private View generateEventCard(WeeklyRace weeklyRace) {
+    private View generateEventCard(WeeklyRace weeklyRace, int i, int totalRaces) {
         View eventCard;
 
         if (weeklyRace.isUnderway(true)) {
@@ -135,7 +145,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
                 ImageView trackOutline = finalEventCard.findViewById(R.id.upcoming_track_outline);
 
                 UIUtils.loadImageWithGlide(this, track.getTrack_minimal_layout_url(), trackOutline,
-                        () -> generateEventCardFinalStep(finalEventCard, weeklyRace));
+                        () -> generateEventCardFinalStep(finalEventCard, weeklyRace, i, totalRaces));
             }
 
         });
@@ -143,27 +153,33 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         return eventCard;
     }
 
-    private void generateEventCardFinalStep(View finalEventCard, WeeklyRace weeklyRace) {
+    private void generateEventCardFinalStep(View finalEventCard, WeeklyRace weeklyRace, int i, int totalRaces) {
 
         UIUtils.multipleSetTextViewText(
-                new String[]{this.getString(R.string.round_upper_case_plus_value, weeklyRace.getRound()),
+                new String[]{
+                        this.getString(R.string.round_upper_case_plus_value, weeklyRace.getRound()),
                         weeklyRace.getRaceName(),
-                        weeklyRace.getFirstPractice().getStartDateTime().getDayOfMonth() + " - " + weeklyRace.getDateTime().getDayOfMonth(),
-                        weeklyRace.getDateTime().getMonth().toString().substring(0, 3)},
+                        weeklyRace.getFirstPractice().getStartDateTime().getDayOfMonth() + " - " + weeklyRace.getDateTime().getDayOfMonth()},
 
-                new TextView[]{finalEventCard.findViewById(R.id.upcoming_round_number),
+                new TextView[]{
+                        finalEventCard.findViewById(R.id.upcoming_round_number),
                         finalEventCard.findViewById(R.id.upcoming_gp_name),
-                        finalEventCard.findViewById(R.id.upcoming_date),
-                        finalEventCard.findViewById(R.id.upcoming_month)}
+                        finalEventCard.findViewById(R.id.upcoming_date)}
         );
+
+        UIUtils.translateMonth(weeklyRace.getDateTime().getMonth().toString().substring(0, 3).toUpperCase(),
+                finalEventCard.findViewById(R.id.upcoming_month));
 
         finalEventCard.setOnClickListener(v -> {
             Intent intent = new Intent(UpcomingEventsActivity.this, EventActivity.class);
             intent.putExtra("CIRCUIT_ID", weeklyRace.getTrack().getTrackId());
             startActivity(intent);
         });
+        loadingScreen.postLoadingStatus(this.getString(R.string.generating_event_card, Integer.toString(i + 1), Integer.toString(totalRaces)));
+        loadingScreen.updateProgress((i + 1) * 100 / totalRaces);
+        counter++;
 
-        loadingScreen.hideLoadingScreen();
+        loadingScreen.hideLoadingScreenWithCondition(counter == totalRaces - 1);
     }
 
     @Override

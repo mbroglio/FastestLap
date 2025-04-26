@@ -45,7 +45,7 @@
             android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
             android:lineSpacingExtra="10dp"
-            android:text="@string/by_the_coffee_coders"
+            android:text="@string/app_credits"
             android:textColor="@color/white"
             android:textSize="@dimen/page_title_text_size"
             android:visibility="invisible">

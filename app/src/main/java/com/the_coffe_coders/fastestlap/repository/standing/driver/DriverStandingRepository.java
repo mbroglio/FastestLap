@@ -6,10 +6,15 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
+import com.the_coffe_coders.fastestlap.source.standing.driver.BaseDriverStandingsLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.standing.driver.BaseDriverStandingsRemoteDataSource;
 
 public class DriverStandingRepository {
     private final BaseDriverStandingsRemoteDataSource remoteDataSource;
+    private final BaseDriverStandingsLocalDataSource localDataSource;
+    private static final String TAG = "DriverStandingRepository";
+
+
 
     private static DriverStandingRepository instance;
 
@@ -17,15 +22,16 @@ public class DriverStandingRepository {
 
     private Long lastUpdate;
 
-    private DriverStandingRepository(BaseDriverStandingsRemoteDataSource remoteDataSource) {
+    private DriverStandingRepository(BaseDriverStandingsRemoteDataSource remoteDataSource, BaseDriverStandingsLocalDataSource localDataSource) {
         this.remoteDataSource = remoteDataSource;
+        this.localDataSource = localDataSource;
         this.lastUpdate = null;
         this.driverStandingResult = new MutableLiveData<>();
     }
 
-    public static synchronized DriverStandingRepository getInstance(BaseDriverStandingsRemoteDataSource remoteDataSource) {
+    public static synchronized DriverStandingRepository getInstance(BaseDriverStandingsRemoteDataSource remoteDataSource, BaseDriverStandingsLocalDataSource localDataSource) {
         if (instance == null) {
-            instance = new DriverStandingRepository(remoteDataSource);
+            instance = new DriverStandingRepository(remoteDataSource, localDataSource);
         }
         return instance;
     }
@@ -53,13 +59,29 @@ public class DriverStandingRepository {
                 }
                 @Override
                 public void onFailure(Exception exception) {
-                    driverStandingResult.postValue(new Result.Error(exception.getMessage()));
-                    // fetch local db instead
+                    Log.e("DriverStandingRepository", "Error fetching driver standing from remote", exception);
+                    loadDriverStandingFromLocal();
                 }
             });
 
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void loadDriverStandingFromLocal() {
+        Log.i("DriverStandingRepository", "Fetching driver standing from local");
+
+        localDataSource.getDriversStandings(new DriverStandingCallback(){
+            @Override
+            public void onSuccess(DriverStandings driverStanding) {
+                driverStandingResult.postValue(new Result.DriverStandingsSuccess(driverStanding));
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                driverStandingResult.postValue(new Result.Error(exception.getMessage()));
+            }
+        });
     }
 }

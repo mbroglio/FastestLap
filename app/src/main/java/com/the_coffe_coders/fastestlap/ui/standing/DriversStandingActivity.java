@@ -57,12 +57,12 @@ import java.util.List;
 public class DriversStandingActivity extends AppCompatActivity {
 
     private static final String TAG = "DriverCardActivity";
-
     private DriverStandings driverStandings;
-
     private LoadingScreen loadingScreen;
 
+    private SwipeRefreshLayout driverStandingLayout;
     private String driverId;
+    private int counter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,13 +71,16 @@ public class DriversStandingActivity extends AppCompatActivity {
         setContentView(R.layout.activity_drivers_standing);
 
         driverId = getIntent().getStringExtra("DRIVER_ID");
+        driverStandingLayout = findViewById(R.id.driver_standing_layout);
+
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, driverStandingLayout,null);
 
         start();
 
     }
 
     private void start() {
-        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
+        Log.i(TAG, "STARTING DRIVER STANDINGS ACTIVITY");
 
         loadingScreen.showLoadingScreen();
 
@@ -91,10 +94,10 @@ public class DriversStandingActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        SwipeRefreshLayout driverStandingLayout = findViewById(R.id.driver_standing_layout);
         UIUtils.applyWindowInsets(driverStandingLayout);
 
         driverStandingLayout.setOnRefreshListener(() -> {
+            counter = 0;
             start();
             driverStandingLayout.setRefreshing(false);
         });
@@ -105,7 +108,9 @@ public class DriversStandingActivity extends AppCompatActivity {
     private void setupPage() {
         LinearLayout driverStanding = findViewById(R.id.driver_standing);
 
-        DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory()).get(DriverStandingsViewModel.class);
+        loadingScreen.postLoadingStatus(this.getString(R.string.initializing));
+
+        DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(getApplication())).get(DriverStandingsViewModel.class);
         MutableLiveData<Result> livedata = driverStandingsViewModel.getDriverStandingsLiveData();//TODO get last update from shared preferences
 
         livedata.observe(this, result -> {
@@ -130,9 +135,10 @@ public class DriversStandingActivity extends AppCompatActivity {
                         }
                         if (driverResult.isSuccess()) {
                             List<Driver> driverList2 = ((Result.DriversSuccess) driverResult).getData();
-                            for (Driver driver : driverList2) {
-                                View driverCard = generateDriverCard(driver, driverId);
+                            for (int i=0; i<driverList2.size(); i++) {
+                                View driverCard = generateDriverCard(driverList2.get(i), driverId, i, driverList2.size());
                                 driverStanding.addView(driverCard);
+
                                 View space = new View(DriversStandingActivity.this);
                                 space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
                                 driverStanding.addView(space);
@@ -144,9 +150,10 @@ public class DriversStandingActivity extends AppCompatActivity {
                     });
                 } else {
                     Log.i(TAG, "DRIVER STANDINGS NOT EMPTY");
-                    for (DriverStandingsElement driver : driverList) {
-                        View driverCard = generateDriverCard(driver, driverId);
+                    for (int k=0; k<driverList.size(); k++) {
+                        View driverCard = generateDriverCard(driverList.get(k), driverId, k, driverList.size());
                         driverStanding.addView(driverCard);
+
                         View space = new View(DriversStandingActivity.this);
                         space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
                         driverStanding.addView(space);
@@ -170,16 +177,17 @@ public class DriversStandingActivity extends AppCompatActivity {
         return drivers;
     }
 
-    private View generateDriverCard(Driver driver, String driverId) {
+    private View generateDriverCard(Driver driver, String driverId, int pos, int size) {
+
         DriverStandingsElement driverStandingsElement = new DriverStandingsElement();
         driverStandingsElement.setDriver(driver);
         driverStandingsElement.setPoints("0");
 
-        return generateDriverCard(driverStandingsElement, driverId);
+        return generateDriverCard(driverStandingsElement, driverId, pos, size);
     }
 
-    @SuppressLint("SetTextI18n")
-    private View generateDriverCard(DriverStandingsElement standingElement, String driverIdToHighlight) {
+    private View generateDriverCard(DriverStandingsElement standingElement, String driverIdToHighlight, int pos, int size) {
+
         DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(getApplication())).get(DriverViewModel.class);
         MutableLiveData<Result> driverLiveData = driverViewModel.getDriver(standingElement.getDriver().getDriverId());
 
@@ -194,14 +202,14 @@ public class DriversStandingActivity extends AppCompatActivity {
                 ImageView driverImageView = driverCard.findViewById(R.id.driver_image);
 
                 UIUtils.loadImageWithGlide(this, driver.getDriver_pic_url(), driverImageView, () ->
-                        generateDriverCardStepTwo(driverCard, driver, standingElement, driverIdToHighlight));
+                        generateDriverCardStepTwo(driverCard, driver, standingElement, driverIdToHighlight, pos, size));
             }
         });
 
         return driverCard;
     }
 
-    private void generateDriverCardStepTwo(View driverCard, Driver driver, DriverStandingsElement standingElement, String driverIdToHighlight) {
+    private void generateDriverCardStepTwo(View driverCard, Driver driver, DriverStandingsElement standingElement, String driverIdToHighlight, int pos, int size) {
 
         UIUtils.multipleSetTextViewText(
                 new String[]{driver.getFullName(), standingElement.getPoints()},
@@ -237,20 +245,25 @@ public class DriversStandingActivity extends AppCompatActivity {
                 Constructor constructor = ((Result.ConstructorSuccess) constructorResult).getData();
 
                 UIUtils.loadImageWithGlide(this, constructor.getTeam_logo_minimal_url(), teamLogoImageView, () ->
-                        generateDriverCardFinalStep(driverCard, standingElement));
+                        generateDriverCardFinalStep(driverCard, standingElement, pos, size));
             }
         });
     }
 
-    private void generateDriverCardFinalStep(View driverCard, DriverStandingsElement standingElement) {
+    private void generateDriverCardFinalStep(View driverCard, DriverStandingsElement standingElement, int pos, int size) {
         driverCard.setOnClickListener(v -> {
             Intent intent = new Intent(DriversStandingActivity.this, DriverBioActivity.class);
             intent.putExtra("DRIVER_ID", standingElement.getDriver().getDriverId());
             intent.putExtra("CALLER", DriversStandingActivity.class.getName());
             startActivity(intent);
         });
+        loadingScreen.postLoadingStatus(this.getString(R.string.generating_driver_card, Integer.toString(pos + 1), Integer.toString(size)));
+        loadingScreen.updateProgress((pos + 1) * 100 / size);
+        counter++;
 
-        loadingScreen.hideLoadingScreen();
+        Log.i(TAG, "Counter: " + counter);
+
+        loadingScreen.hideLoadingScreenWithCondition(counter == size - 1);
     }
 
 }

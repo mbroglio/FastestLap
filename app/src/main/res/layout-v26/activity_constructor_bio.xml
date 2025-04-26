@@ -31,7 +31,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:autoSizeMaxTextSize="25sp"
-                    android:autoSizeMinTextSize="12sp"
+                    android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                     android:autoSizeTextType="uniform"
                     android:fontFamily="@font/orbitron_bold"
                     android:gravity="center"
@@ -46,34 +46,6 @@
         </com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="@dimen/top_bar_height" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_end="0dp" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.6" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.6" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/constructor_bio_layout"
@@ -127,7 +99,8 @@
                                 android:id="@+id/team_logo_image"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_margin="5dp">
+                                android:layout_margin="5dp"
+                                android:importantForAccessibility="no">
 
                             </ImageView>
 
@@ -148,7 +121,8 @@
                             android:layout_alignParentTop="true"
                             android:layout_alignParentEnd="true"
                             android:layout_alignParentBottom="true"
-                            android:layout_margin="16dp">
+                            android:layout_margin="16dp"
+                            android:importantForAccessibility="no">
 
                         </ImageView>
 
@@ -162,7 +136,8 @@
                     android:layout_height="100dp"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
-                    android:layout_marginEnd="10dp">
+                    android:layout_marginEnd="10dp"
+                    android:importantForAccessibility="no">
 
                 </ImageView>
 
@@ -213,7 +188,8 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
-                                    android:layout_margin="5dp">
+                                    android:layout_margin="5dp"
+                                    android:importantForAccessibility="no">
 
                                 </ImageView>
 
@@ -221,10 +197,14 @@
 
                             <TextView
                                 android:id="@+id/driver_1_name"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center"
+                                android:gravity="center"
+                                android:autoSizeMaxTextSize="@dimen/body_text_size"
+                                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                                android:autoSizeTextType="uniform"
                                 android:fontFamily="@font/orbitron_regular"
+                                android:maxLines="1"
                                 android:text="@string/not_found"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/body_text_size">
@@ -256,7 +236,8 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:layout_gravity="center"
-                                    android:layout_margin="5dp">
+                                    android:layout_margin="5dp"
+                                    android:importantForAccessibility="no">
 
                                 </ImageView>
 
@@ -264,10 +245,14 @@
 
                             <TextView
                                 android:id="@+id/driver_2_name"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
+                                android:gravity="center"
                                 android:layout_height="wrap_content"
-                                android:layout_gravity="center"
+                                android:autoSizeMaxTextSize="@dimen/body_text_size"
+                                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                                android:autoSizeTextType="uniform"
                                 android:fontFamily="@font/orbitron_regular"
+                                android:maxLines="1"
                                 android:text="@string/not_found"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/body_text_size">
@@ -317,13 +302,18 @@
 
                             <TextView
                                 android:id="@+id/team_full_name_value"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
                                 android:layout_marginStart="20dp"
                                 android:layout_marginEnd="2dp"
                                 android:layout_toEndOf="@id/team_full_name_text"
+                                android:autoSizeMaxTextSize="@dimen/body_text_size"
+                                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                                android:autoSizeTextType="uniform"
                                 android:fontFamily="@font/orbitron_regular"
+                                android:gravity="start"
+                                android:maxLines="1"
                                 android:text="@string/not_found"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/body_text_size">
@@ -352,13 +342,18 @@
 
                             <TextView
                                 android:id="@+id/team_base_value"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
                                 android:layout_marginStart="20dp"
                                 android:layout_marginEnd="2dp"
                                 android:layout_toEndOf="@id/team_base_text"
+                                android:autoSizeMaxTextSize="@dimen/body_text_size"
+                                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                                android:autoSizeTextType="uniform"
                                 android:fontFamily="@font/orbitron_regular"
+                                android:gravity="start"
+                                android:maxLines="1"
                                 android:text="@string/not_found"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/body_text_size">
@@ -387,12 +382,17 @@
 
                             <TextView
                                 android:id="@+id/team_principal_value"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
                                 android:layout_marginStart="20dp"
                                 android:layout_toEndOf="@id/team_principal_text"
+                                android:autoSizeMaxTextSize="@dimen/body_text_size"
+                                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                                android:autoSizeTextType="uniform"
                                 android:fontFamily="@font/orbitron_regular"
+                                android:gravity="start"
+                                android:maxLines="1"
                                 android:text="@string/not_found"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/body_text_size">
@@ -421,12 +421,17 @@
 
                             <TextView
                                 android:id="@+id/team_chassis_value"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
                                 android:layout_marginStart="20dp"
                                 android:layout_toEndOf="@id/team_chassis_text"
+                                android:autoSizeMaxTextSize="@dimen/body_text_size"
+                                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                                android:autoSizeTextType="uniform"
                                 android:fontFamily="@font/orbitron_regular"
+                                android:gravity="start"
+                                android:maxLines="1"
                                 android:text="@string/not_found"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/body_text_size">
@@ -455,12 +460,17 @@
 
                             <TextView
                                 android:id="@+id/team_power_unit_value"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
                                 android:layout_marginStart="20dp"
                                 android:layout_toEndOf="@id/team_power_unit_text"
+                                android:autoSizeMaxTextSize="@dimen/body_text_size"
+                                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                                android:autoSizeTextType="uniform"
                                 android:fontFamily="@font/orbitron_regular"
+                                android:gravity="start"
+                                android:maxLines="1"
                                 android:text="@string/not_found"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/body_text_size">
@@ -489,12 +499,17 @@
 
                             <TextView
                                 android:id="@+id/team_first_entry_value"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
                                 android:layout_marginStart="20dp"
                                 android:layout_toEndOf="@id/team_first_entry_text"
+                                android:autoSizeMaxTextSize="@dimen/body_text_size"
+                                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                                android:autoSizeTextType="uniform"
                                 android:fontFamily="@font/orbitron_regular"
+                                android:gravity="start"
+                                android:maxLines="1"
                                 android:text="@string/not_found"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/body_text_size">
@@ -523,12 +538,17 @@
 
                             <TextView
                                 android:id="@+id/team_championships_value"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
                                 android:layout_marginStart="20dp"
                                 android:layout_toEndOf="@id/team_championships_text"
+                                android:autoSizeMaxTextSize="@dimen/body_text_size"
+                                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                                android:autoSizeTextType="uniform"
                                 android:fontFamily="@font/orbitron_regular"
+                                android:gravity="start"
+                                android:maxLines="1"
                                 android:text="@string/not_found"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/body_text_size">
@@ -557,12 +577,17 @@
 
                             <TextView
                                 android:id="@+id/team_wins_value"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
                                 android:layout_marginStart="20dp"
                                 android:layout_toEndOf="@id/team_wins_text"
+                                android:autoSizeMaxTextSize="@dimen/body_text_size"
+                                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                                android:autoSizeTextType="uniform"
                                 android:fontFamily="@font/orbitron_regular"
+                                android:gravity="start"
+                                android:maxLines="1"
                                 android:text="@string/not_found"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/body_text_size">
@@ -591,12 +616,17 @@
 
                             <TextView
                                 android:id="@+id/team_podiums_value"
-                                android:layout_width="wrap_content"
+                                android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
                                 android:layout_marginStart="20dp"
                                 android:layout_toEndOf="@id/team_podiums_text"
+                                android:autoSizeMaxTextSize="@dimen/body_text_size"
+                                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                                android:autoSizeTextType="uniform"
                                 android:fontFamily="@font/orbitron_regular"
+                                android:gravity="start"
+                                android:maxLines="1"
                                 android:text="@string/not_found"
                                 android:textColor="@color/white"
                                 android:textSize="@dimen/body_text_size">
@@ -604,7 +634,6 @@
                             </TextView>
 
                         </RelativeLayout>
-
 
                     </LinearLayout>
 
@@ -634,7 +663,6 @@
                             android:layout_marginEnd="3dp">
 
                         </TableLayout>
-
 
                     </LinearLayout>
 

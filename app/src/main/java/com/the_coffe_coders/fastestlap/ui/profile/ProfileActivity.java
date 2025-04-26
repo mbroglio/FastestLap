@@ -1,7 +1,5 @@
 package com.the_coffe_coders.fastestlap.ui.profile;
 
-import static com.google.android.material.internal.ContextUtils.getActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,12 +7,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.os.LocaleListCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.materialswitch.MaterialSwitch;
 import com.google.android.material.textfield.TextInputEditText;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.user.User;
@@ -117,9 +119,28 @@ public class ProfileActivity extends AppCompatActivity {
             finish();
         });
 
+        MaterialSwitch languageSwitch = findViewById(R.id.language_switch);
+        LocaleListCompat appLocales = AppCompatDelegate.getApplicationLocales();
+        String currentLanguage = appLocales.toLanguageTags();
+        languageSwitch.setChecked(currentLanguage.equals("en-GB"));
+
+        languageSwitch.setOnCheckedChangeListener(((buttonView, isChecked) -> {
+            if(languageSwitch.isChecked()){
+                setLocale("en-GB");
+            }else{
+                setLocale("it-IT");
+            }
+        }));
+
         // Hide action buttons initially
         saveButton.setVisibility(View.INVISIBLE);
         dismissButton.setVisibility(View.INVISIBLE);
+    }
+
+    private void setLocale(String languageCode) {
+        LocaleListCompat appLocale = LocaleListCompat.forLanguageTags(languageCode);
+        AppCompatDelegate.setApplicationLocales(appLocale);
+        Toast.makeText(this, getString(R.string.language_set, languageCode), Toast.LENGTH_SHORT).show();
     }
 
     /**

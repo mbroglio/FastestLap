@@ -32,7 +32,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:autoSizeMaxTextSize="25sp"
-                    android:autoSizeMinTextSize="12sp"
+                    android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                     android:autoSizeTextType="uniform"
                     android:fontFamily="@font/orbitron_bold"
                     android:gravity="center"
@@ -48,692 +48,259 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_top_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="@dimen/top_bar_height" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_end="0dp" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_left"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.4" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_right"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.63" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_right_2"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.9" />
-
-    <ScrollView
-        android:id="@+id/event_scroll_view"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/event_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/screen_background_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/top_bar_layout">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <LinearLayout
-                android:id="@+id/event_card"
-                android:layout_width="match_parent"
-                android:layout_height="160dp"
-                android:orientation="vertical"
-                android:paddingBottom="5dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/round_number"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
-                        android:layout_weight="1"
-                        android:fontFamily="@font/orbitron_regular"
-                        android:text="@string/not_found"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/body_text_size">
-
-                    </TextView>
-
-                    <LinearLayout
-                        android:layout_width="70dp"
-                        android:layout_height="50dp"
-                        android:background="@drawable/curved_bottom_left">
-
-                        <ImageView
-                            android:id="@+id/country_flag"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_marginStart="7dp"
-                            android:layout_marginTop="3dp"
-                            android:layout_marginEnd="3dp"
-                            android:layout_marginBottom="5dp">
-
-                        </ImageView>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/event_year"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/orbitron_bold"
-                        android:text="@string/not_found"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/layout_subtitle_text_size">
-
-                    </TextView>
-
-                    <TextView
-                        android:id="@+id/gp_name"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/orbitron_bold"
-                        android:text="@string/not_found"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/layout_title_1_text_size">
-
-                    </TextView>
-
-                    <TextView
-                        android:id="@+id/event_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="end"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginEnd="15dp"
-                        android:fontFamily="@font/orbitron_regular"
-                        android:text="@string/not_found"
-                        android:textColor="@color/white">
-
-                    </TextView>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="40dp"
-                android:layout_marginEnd="5dp"
-                android:clickable="true"
-                android:focusable="true"
-                app:cardCornerRadius="10dp"
-                app:cardElevation="5dp"
-                app:strokeColor="@color/timer_gray">
-
-                <LinearLayout
-                    android:id="@+id/countdown_and_track"
-                    android:layout_width="match_parent"
-                    android:layout_height="130dp"
-                    android:background="@color/timer_gray"
-                    android:baselineAligned="false"
-                    android:orientation="horizontal">
-
-                    <FrameLayout
-                        android:id="@+id/event_card_container"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.35">
-
-                        <include
-                            android:id="@+id/timer_card_countdown"
-                            layout="@layout/timer_layout"
-                            android:visibility="visible" />
-
-                        <include
-                            android:id="@+id/timer_card_results"
-                            layout="@layout/results_layout"
-                            android:visibility="gone" />
-
-                        <include
-                            android:id="@+id/timer_card_pending_results"
-                            layout="@layout/pending_results_layout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:visibility="gone" />
-
-                        <include
-                            android:id="@+id/timer_card_race_cancelled"
-                            layout="@layout/race_cancelled_layout"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:visibility="gone" />
-
-                    </FrameLayout>
-
-                    <LinearLayout
-                        android:layout_width="2dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="5dp"
-                        android:background="@color/screen_background_color">
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/track_outline_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.65"
-                        android:clickable="true"
-                        android:focusable="true">
-
-                        <ImageView
-                            android:id="@+id/track_outline_image"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="5dp">
-
-                        </ImageView>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <FrameLayout
-                android:id="@+id/session_status_card_container"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginStart="40dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginEnd="40dp"
-                android:layout_marginBottom="20dp">
-
-                <include
-                    android:id="@+id/event_live_card"
-                    layout="@layout/event_live_session_card"
-                    android:visibility="gone" />
-
-                <include
-                    android:id="@+id/event_not_live_card"
-                    layout="@layout/event_no_live_session_card"
-                    android:visibility="visible" />
-
-            </FrameLayout>
+            android:scrollbars="none">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="5dp"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/text_view"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/orbitron_bold"
-                    android:text="@string/weekend_schedule_upper_case"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/layout_title_1_text_size" />
-
                 <LinearLayout
-                    android:id="@+id/sessions_container"
+                    android:id="@+id/event_card"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:orientation="vertical">
+                    android:layout_height="160dp"
+                    android:orientation="vertical"
+                    android:paddingBottom="5dp">
 
                     <LinearLayout
-                        android:id="@+id/session_1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="10dp"
-                        android:background="@drawable/bottom_right_stroke"
-                        android:clickable="false"
-                        android:focusable="false"
+                        android:layout_marginStart="10dp"
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/session_1_name"
+                            android:id="@+id/round_number"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.4"
-                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_bold"
-                            android:maxLines="1"
-                            android:paddingEnd="5dp"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/layout_subtitle_text_size"
-                            tools:ignore="RtlSymmetry" />
-
-                        <TextView
-                            android:id="@+id/session_1_day"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.23"
-                            android:autoSizeMaxTextSize="@dimen/body_text_size"
-                            android:autoSizeMinTextSize="8dp"
-                            android:autoSizeTextType="uniform"
+                            android:layout_marginTop="15dp"
+                            android:layout_weight="1"
                             android:fontFamily="@font/orbitron_regular"
-                            android:maxLines="1"
-                            android:paddingEnd="5dp"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size"
-                            tools:ignore="RtlSymmetry" />
+                            android:textSize="@dimen/body_text_size">
 
-                        <TextView
-                            android:id="@+id/session_1_time"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.27"
-                            android:autoSizeMaxTextSize="@dimen/body_text_size"
-                            android:autoSizeMinTextSize="8dp"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:gravity="center"
-                            android:maxLines="1"
-                            android:paddingEnd="5dp"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size"
-                            tools:ignore="RtlSymmetry" />
+                        </TextView>
 
                         <LinearLayout
-                            android:id="@+id/session_1_flag_container"
-                            android:layout_width="0dp"
-                            android:layout_height="28dp"
-                            android:layout_weight="0.1"
-                            android:background="@drawable/background_right_rounded"
-                            android:clickable="false"
-                            android:focusable="false">
+                            android:layout_width="70dp"
+                            android:layout_height="50dp"
+                            android:background="@drawable/curved_bottom_left">
 
                             <ImageView
-                                android:id="@+id/session_1_flag"
+                                android:id="@+id/country_flag"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_margin="3dp"
-                                android:visibility="invisible"
-                                app:srcCompat="@drawable/checkered_flag" />
+                                android:layout_marginStart="7dp"
+                                android:layout_marginTop="3dp"
+                                android:layout_marginEnd="3dp"
+                                android:layout_marginBottom="5dp"
+                                android:importantForAccessibility="no">
+
+                            </ImageView>
 
                         </LinearLayout>
 
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/session_2"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="10dp"
-                        android:background="@drawable/bottom_right_stroke"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:orientation="horizontal">
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
 
                         <TextView
-                            android:id="@+id/session_2_name"
-                            android:layout_width="0dp"
+                            android:id="@+id/event_year"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.4"
-                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
-                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_bold"
-                            android:maxLines="1"
-                            android:paddingEnd="5dp"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/layout_subtitle_text_size"
-                            tools:ignore="RtlSymmetry" />
+                            android:textSize="@dimen/layout_subtitle_text_size">
+
+                        </TextView>
 
                         <TextView
-                            android:id="@+id/session_2_day"
-                            android:layout_width="0dp"
+                            android:id="@+id/gp_name"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_weight="0.23"
-                            android:autoSizeMaxTextSize="@dimen/body_text_size"
-                            android:autoSizeMinTextSize="8dp"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:maxLines="1"
-                            android:paddingEnd="5dp"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size"
-                            tools:ignore="RtlSymmetry" />
-
-                        <TextView
-                            android:id="@+id/session_2_time"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.27"
-                            android:autoSizeMaxTextSize="@dimen/body_text_size"
-                            android:autoSizeMinTextSize="8dp"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:gravity="center"
-                            android:maxLines="1"
-                            android:paddingEnd="5dp"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size"
-                            tools:ignore="RtlSymmetry" />
-
-                        <LinearLayout
-                            android:id="@+id/session_2_flag_container"
-                            android:layout_width="0dp"
-                            android:layout_height="28dp"
-                            android:layout_weight="0.1"
-                            android:background="@drawable/background_right_rounded"
-                            android:clickable="false"
-                            android:focusable="false">
-
-                            <ImageView
-                                android:id="@+id/session_2_flag"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_margin="3dp"
-                                android:visibility="invisible"
-                                app:srcCompat="@drawable/checkered_flag" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/session_3"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="10dp"
-                        android:background="@drawable/bottom_right_stroke"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/session_3_name"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.4"
-                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
-                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_bold"
-                            android:maxLines="1"
-                            android:paddingEnd="5dp"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
+                            android:textSize="@dimen/layout_title_1_text_size">
+
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/event_date"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="end"
+                            android:layout_marginTop="15dp"
+                            android:layout_marginEnd="15dp"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
                             android:textSize="@dimen/layout_subtitle_text_size"
-                            tools:ignore="RtlSymmetry" />
+                            android:textColor="@color/white">
 
-                        <TextView
-                            android:id="@+id/session_3_day"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.23"
-                            android:autoSizeMaxTextSize="@dimen/body_text_size"
-                            android:autoSizeMinTextSize="8dp"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:maxLines="1"
-                            android:paddingEnd="5dp"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size"
-                            tools:ignore="RtlSymmetry" />
-
-                        <TextView
-                            android:id="@+id/session_3_time"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.27"
-                            android:autoSizeMaxTextSize="@dimen/body_text_size"
-                            android:autoSizeMinTextSize="8dp"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:gravity="center"
-                            android:maxLines="1"
-                            android:paddingEnd="5dp"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size"
-                            tools:ignore="RtlSymmetry" />
-
-                        <LinearLayout
-                            android:id="@+id/session_3_flag_container"
-                            android:layout_width="0dp"
-                            android:layout_height="28dp"
-                            android:layout_weight="0.1"
-                            android:background="@drawable/background_right_rounded"
-                            android:clickable="false"
-                            android:focusable="false">
-
-                            <ImageView
-                                android:id="@+id/session_3_flag"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_margin="3dp"
-                                android:visibility="invisible"
-                                app:srcCompat="@drawable/checkered_flag" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/session_4"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="10dp"
-                        android:background="@drawable/bottom_right_stroke"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/session_4_name"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.4"
-                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_bold"
-                            android:maxLines="1"
-                            android:paddingEnd="5dp"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/layout_subtitle_text_size"
-                            tools:ignore="RtlSymmetry" />
-
-                        <TextView
-                            android:id="@+id/session_4_day"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.23"
-                            android:autoSizeMaxTextSize="@dimen/body_text_size"
-                            android:autoSizeMinTextSize="8dp"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:maxLines="1"
-                            android:paddingEnd="5dp"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size"
-                            tools:ignore="RtlSymmetry" />
-
-                        <TextView
-                            android:id="@+id/session_4_time"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.27"
-                            android:autoSizeMaxTextSize="@dimen/body_text_size"
-                            android:autoSizeMinTextSize="8dp"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:gravity="center"
-                            android:maxLines="1"
-                            android:paddingEnd="5dp"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size"
-                            tools:ignore="RtlSymmetry" />
-
-                        <LinearLayout
-                            android:id="@+id/session_4_flag_container"
-                            android:layout_width="0dp"
-                            android:layout_height="28dp"
-                            android:layout_weight="0.1"
-                            android:background="@drawable/background_right_rounded"
-                            android:clickable="false"
-                            android:focusable="false">
-
-                            <ImageView
-                                android:id="@+id/session_4_flag"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_margin="3dp"
-                                android:visibility="invisible"
-                                app:srcCompat="@drawable/checkered_flag" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/session_5"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginBottom="10dp"
-                        android:background="@drawable/bottom_right_stroke"
-                        android:clickable="false"
-                        android:focusable="false"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/session_5_name"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.4"
-                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_bold"
-                            android:maxLines="1"
-                            android:paddingEnd="5dp"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/layout_subtitle_text_size"
-                            tools:ignore="RtlSymmetry" />
-
-                        <TextView
-                            android:id="@+id/session_5_day"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.23"
-                            android:autoSizeMaxTextSize="@dimen/body_text_size"
-                            android:autoSizeMinTextSize="8dp"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:maxLines="1"
-                            android:paddingEnd="5dp"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size"
-                            tools:ignore="RtlSymmetry" />
-
-                        <TextView
-                            android:id="@+id/session_5_time"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.27"
-                            android:autoSizeMaxTextSize="@dimen/body_text_size"
-                            android:autoSizeMinTextSize="8dp"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:gravity="center"
-                            android:maxLines="1"
-                            android:paddingEnd="5dp"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size"
-                            tools:ignore="RtlSymmetry" />
-
-                        <LinearLayout
-                            android:id="@+id/session_5_flag_container"
-                            android:layout_width="0dp"
-                            android:layout_height="28dp"
-                            android:layout_weight="0.1"
-                            android:background="@drawable/background_right_rounded"
-                            android:clickable="false"
-                            android:focusable="false">
-
-                            <ImageView
-                                android:id="@+id/session_5_flag"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_margin="3dp"
-                                android:visibility="invisible"
-                                app:srcCompat="@drawable/checkered_flag" />
-
-                        </LinearLayout>
+                        </TextView>
 
                     </LinearLayout>
 
                 </LinearLayout>
 
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginEnd="5dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardCornerRadius="10dp"
+                    app:cardElevation="5dp"
+                    app:strokeColor="@color/timer_gray">
+
+                    <LinearLayout
+                        android:id="@+id/countdown_and_track"
+                        android:layout_width="match_parent"
+                        android:layout_height="130dp"
+                        android:background="@color/timer_gray"
+                        android:baselineAligned="false"
+                        android:orientation="horizontal">
+
+                        <FrameLayout
+                            android:id="@+id/event_card_container"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.35">
+
+                            <include
+                                android:id="@+id/timer_card_countdown"
+                                layout="@layout/timer_layout"
+                                android:visibility="visible" />
+
+                            <include
+                                android:id="@+id/timer_card_results"
+                                layout="@layout/results_layout"
+                                android:visibility="gone" />
+
+                            <include
+                                android:id="@+id/timer_card_pending_results"
+                                layout="@layout/pending_results_layout"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:visibility="gone" />
+
+                            <include
+                                android:id="@+id/timer_card_race_cancelled"
+                                layout="@layout/race_cancelled_layout"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:visibility="gone" />
+
+                        </FrameLayout>
+
+                        <LinearLayout
+                            android:layout_width="2dp"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:background="@color/screen_background_color">
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/track_outline_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="0.65"
+                            android:clickable="true"
+                            android:focusable="true">
+
+                            <ImageView
+                                android:id="@+id/track_outline_image"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_margin="5dp"
+                                android:importantForAccessibility="no">
+
+                            </ImageView>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <FrameLayout
+                    android:id="@+id/session_status_card_container"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:layout_marginStart="40dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginEnd="40dp"
+                    android:layout_marginBottom="20dp">
+
+                    <include
+                        android:id="@+id/event_live_card"
+                        layout="@layout/event_live_session_card"
+                        android:visibility="gone" />
+
+                    <include
+                        android:id="@+id/event_not_live_card"
+                        layout="@layout/event_no_live_session_card"
+                        android:visibility="visible" />
+
+                </FrameLayout>
+
+                <include
+                    android:id="@+id/event_schedule_table"
+                    layout="@layout/event_schedule_table_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="5dp" />
+
+                <Button
+                    android:id="@+id/goToForecastButton"
+                    style="@style/Widget.Material3.Button.ElevatedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="50dp"
+                    android:layout_marginTop="@dimen/medium_margin"
+                    android:layout_marginEnd="50dp"
+                    android:backgroundTint="@color/white"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:text="@string/weather_forecast"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/layout_subtitle_text_size"
+                    app:icon="@drawable/sun_icon"
+                    app:iconGravity="textStart"
+                    app:iconTint="@null" />
+
             </LinearLayout>
 
-        </LinearLayout>
+        </ScrollView>
 
-    </ScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <include
         android:id="@+id/loading_screen"

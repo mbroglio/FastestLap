@@ -8,31 +8,57 @@
     android:orientation="horizontal">
 
     <LinearLayout
-        android:id="@+id/last_race_name_layout"
-        android:layout_width="wrap_content"
+        android:id="@+id/title_layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:background="@drawable/bottom_right_stroke"
-        app:maxWidth="220dp">
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/last_race_name_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:layout_weight="0.2"
+            android:background="@drawable/bottom_right_stroke">
+
+            <TextView
+                android:id="@+id/last_race_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="5dp"
+                android:autoSizeMaxTextSize="@dimen/page_title_text_size"
+                android:autoSizeMinTextSize="9sp"
+                android:autoSizeTextType="uniform"
+                android:fontFamily="@font/orbitron_bold"
+                android:maxLines="1"
+                android:text="@string/not_found"
+                android:textColor="@color/white"
+                android:textSize="20sp">
+
+            </TextView>
+
+        </LinearLayout>
 
         <TextView
-            android:id="@+id/last_race_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="3dp"
-            android:autoSizeMaxTextSize="@dimen/page_title_text_size"
+            android:id="@+id/last_race"
+            android:layout_weight="0.8"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="5dp"
+            android:autoSizeMaxTextSize="@dimen/body_text_size"
             android:autoSizeMinTextSize="9sp"
             android:autoSizeTextType="uniform"
             android:fontFamily="@font/orbitron_bold"
-            android:maxLines="1"
-            android:text="@string/not_found"
+            android:gravity="center"
+            android:maxLines="2"
+            android:text="@string/last_race_upper_case"
             android:textColor="@color/white"
-            android:textSize="20sp">
-
-        </TextView>
+            android:textSize="@dimen/body_text_size" />
 
     </LinearLayout>
 
@@ -40,7 +66,7 @@
         android:id="@+id/track_info"
         android:layout_width="170dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/last_race_name_layout"
+        android:layout_below="@id/title_layout"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:orientation="vertical">
@@ -49,6 +75,7 @@
             android:id="@+id/last_race_track_outline"
             android:layout_width="120dp"
             android:layout_height="100dp"
+            android:importantForAccessibility="no"
             android:layout_centerHorizontal="true">
 
         </ImageView>
@@ -61,7 +88,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
             android:fontFamily="@font/orbitron_regular"
-            android:text="-!-"
+            android:text="@string/not_found"
             android:textColor="@color/white"
             android:textSize="@dimen/body_text_size">
 
@@ -74,7 +101,7 @@
             android:layout_below="@id/last_race_date"
             android:layout_centerHorizontal="true"
             android:fontFamily="@font/orbitron_bold"
-            android:text="-!-"
+            android:text="@string/not_found"
             android:textColor="@color/white"
             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -95,32 +122,19 @@
 
         </LinearLayout>
 
-
     </RelativeLayout>
-
-    <TextView
-        android:id="@+id/last_race"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="5dp"
-        android:fontFamily="@font/orbitron_bold"
-        android:text="@string/last_race_upper_case"
-        android:textColor="@color/white"
-        android:textSize="@dimen/body_text_size" />
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/last_race_name_layout"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_layout"
         android:layout_toEndOf="@id/track_info">
 
         <TextView
             android:id="@+id/last_race_round"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:layout_alignParentTop="true"
             android:layout_centerInParent="true"
             android:fontFamily="@font/orbitron_bold"
@@ -141,9 +155,9 @@
             android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <TextView
@@ -176,9 +190,9 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:gravity="center"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
@@ -212,9 +226,9 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:gravity="center"
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
@@ -274,6 +288,10 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/medium_margin"
+                    android:autoSizeMaxTextSize="@dimen/body_text_size"
+                    android:autoSizeMinTextSize="9sp"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
                     android:fontFamily="@font/orbitron_bold"
                     android:text="@string/raceResult"
                     android:textColor="@color/black"
@@ -287,6 +305,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="16dp"
+                    android:importantForAccessibility="no"
                     android:layout_toEndOf="@id/raceResult"
                     app:srcCompat="@drawable/checkered_flag">
 

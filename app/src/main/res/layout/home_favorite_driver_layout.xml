@@ -99,8 +99,11 @@
 
             <LinearLayout
                 android:id="@+id/driver_rank_layout"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
                 android:layout_alignParentTop="true"
                 android:layout_centerInParent="true"
                 android:orientation="horizontal">
@@ -108,6 +111,7 @@
                 <ImageView
                     android:layout_width="15dp"
                     android:layout_height="match_parent"
+                    android:importantForAccessibility="no"
                     app:srcCompat="@drawable/podium">
 
                 </ImageView>
@@ -117,6 +121,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="3dp"
                     android:fontFamily="@font/orbitron_bold"
+                    android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+                    android:autoSizeMinTextSize="9sp"
+                    android:autoSizeTextType="uniform"
+                    android:maxLines="1"
                     android:text="@string/rank"
                     android:textColor="@color/black"
                     android:textSize="@dimen/layout_subtitle_text_size">

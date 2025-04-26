@@ -1,5 +1,6 @@
 package com.the_coffe_coders.fastestlap.ui.welcome;
 
+import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -26,12 +27,10 @@ import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
-import org.apache.commons.logging.LogFactory;
-
+@SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
 
     private static final String TAG = "IntroScreenActivity";
-    private static final org.apache.commons.logging.Log log = LogFactory.getLog(SplashActivity.class);
     private final Handler handler = new Handler();
     private TextView appName;
     private TextView appCredits;
@@ -47,6 +46,10 @@ public class SplashActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_splash_screen);
 
+        start();
+    }
+
+    private void start(){
         ConstraintLayout introScreen = findViewById(R.id.intro_screen);
         UIUtils.applyWindowInsets(introScreen);
 
@@ -72,9 +75,8 @@ public class SplashActivity extends AppCompatActivity {
         appCredits.setVisibility(View.INVISIBLE);
         progressIndicator.setVisibility(View.INVISIBLE);
 
+        UIUtils.setAppLocale();
         setupIntro();
-
-
     }
 
     private void showIntroScreen() {
@@ -89,7 +91,7 @@ public class SplashActivity extends AppCompatActivity {
             appName.setVisibility(View.VISIBLE);
             handler.postDelayed(() -> {
 
-                String creditsText = getString(R.string.by_the_coffee_coders);
+                String creditsText = getString(R.string.app_credits);
                 int delay = 100;
                 for (int i = 0; i < creditsText.length(); i++) {
                     final int index = i;

@@ -1,34 +1,25 @@
 package com.the_coffe_coders.fastestlap.ui.event;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
-import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
@@ -55,7 +46,6 @@ import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
-import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -68,6 +58,7 @@ public class EventActivity extends AppCompatActivity {
     private String trackId;
     private Track track;
     private Nation nation;
+    private SwipeRefreshLayout eventLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,29 +67,37 @@ public class EventActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_event);
 
+        start();
+    }
 
-        eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
-
-        // Show loading screen initially
-        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
+    private void start(){
+        eventLayout = findViewById(R.id.event_layout);
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, eventLayout, null);
         loadingScreen.showLoadingScreen();
-        Log.i(TAG, "Loading screen shown");
+        loadingScreen.updateProgress(0);
+
+        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+        UIUtils.applyWindowInsets(toolbar);
+
+        UIUtils.applyWindowInsets(eventLayout);
+        eventLayout.setOnRefreshListener(() ->{
+            start();
+            eventLayout.setRefreshing(false);
+        });
 
         trackId = getIntent().getStringExtra("CIRCUIT_ID");
         Log.i(TAG, "Circuit ID: " + trackId);
 
-        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-
-        UIUtils.applyWindowInsets(toolbar);
-
-        ScrollView eventScrollLayout = findViewById(R.id.event_scroll_view);
-        UIUtils.applyWindowInsets(eventScrollLayout);
-
-
-        processRaceData(toolbar);
+        initializeViewModels();
     }
 
-    private void processRaceData(MaterialToolbar toolbar) {
+    private void initializeViewModels() {
+        eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
+        processRaceData();
+    }
+
+    private void processRaceData() {
         List<WeeklyRace> races = new ArrayList<>();
         MutableLiveData<Result> data = eventViewModel.getWeeklyRacesLiveData();
         data.observe(this, result -> {
@@ -117,14 +116,17 @@ public class EventActivity extends AppCompatActivity {
                     }
                 }
 
-                buildEventCard(weeklyRace, toolbar);
+                assert weeklyRace != null;
+                buildEventCard(weeklyRace);
             }
         });
     }
 
-    private void buildEventCard(WeeklyRace weeklyRace, MaterialToolbar toolbar) {
+    private void buildEventCard(WeeklyRace weeklyRace) {
+
+        loadingScreen.postLoadingStatus(this.getString(R.string.initializing));
+
         String grandPrixName = weeklyRace.getRaceName().toUpperCase();
-        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         TextView title = findViewById(R.id.topAppBarTitle);
         title.setText(grandPrixName);
 
@@ -157,10 +159,24 @@ public class EventActivity extends AppCompatActivity {
         });
     }
 
-    private void buildEventCard(WeeklyRace weeklyRace, Track track, Nation nation) {
+    private void setEventImage(WeeklyRace weeklyRace, Track track, Nation nation) {
+
+        loadingScreen.postLoadingStatus(this.getString(R.string.setting_event_info));
+        loadingScreen.updateProgress(33);
+
+        String imageUrl = track.getTrack_pic_url();
+        LinearLayout eventCard = findViewById(R.id.event_card);
+
+        UIUtils.loadImageInEventCardWithAlpha(this, imageUrl, eventCard,
+                () ->  buildEventCardStepTwo(weeklyRace, track, nation),
+                76);
+    }
+
+    private void buildEventCardStepTwo(WeeklyRace weeklyRace, Track track, Nation nation) {
 
         UIUtils.multipleSetTextViewText(
-                new String[]{"Round " + weeklyRace.getRound(),
+                new String[]{
+                        "Round " + weeklyRace.getRound(),
                         weeklyRace.getSeason(),
                         track.getGp_long_name(),
                         weeklyRace.getDateInterval()},
@@ -180,6 +196,10 @@ public class EventActivity extends AppCompatActivity {
             intent.putExtra("GRAND_PRIX_NAME", weeklyRace.getRaceName().toUpperCase());
             startActivity(intent);
         });
+
+        Button openForecastButton = findViewById(R.id.goToForecastButton);
+        openForecastButton.setOnClickListener(v ->
+                UIUtils.openGoogleWeather(this, track.getLocation().getLocality()));
 
         UIUtils.loadSequenceOfImagesWithGlide(this,
                 new String[]{nation.getNation_flag_url(), track.getTrack_minimal_layout_url()},
@@ -204,16 +224,6 @@ public class EventActivity extends AppCompatActivity {
         createWeekSchedule(sessions);
     }
 
-    private void setEventImage(WeeklyRace weeklyRace, Track track, Nation nation) {
-
-        String imageUrl = track.getTrack_pic_url();
-        LinearLayout eventCard = findViewById(R.id.event_card);
-
-        UIUtils.loadImageInEventCardWithAlpha(this, imageUrl, eventCard,
-                () ->  buildEventCard(weeklyRace, track, nation),
-                76);
-    }
-
     private void setLiveSession() {
         View liveSession = findViewById(R.id.event_live_card);
         View noLiveSession = findViewById(R.id.event_not_live_card);
@@ -228,6 +238,10 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void startCountdown(LocalDateTime eventDate) {
+
+        loadingScreen.postLoadingStatus(this.getString(R.string.setting_up_countdown));
+        loadingScreen.updateProgress(66);
+
         long millisUntilStart = ZonedDateTime.of(eventDate, ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis();
         new CountDownTimer(millisUntilStart, 1000) {
             final TextView days_counter = findViewById(R.id.next_days_counter);
@@ -257,6 +271,10 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void showResults(WeeklyRace weeklyRace) {
+
+        loadingScreen.postLoadingStatus(this.getString(R.string.fetching_race_result, ""));
+        loadingScreen.updateProgress(66);
+
         View countdownView = findViewById(R.id.timer_card_countdown);
         View resultsView = findViewById(R.id.timer_card_results);
         View raceCancelledView = findViewById(R.id.timer_card_race_cancelled);
@@ -301,6 +319,10 @@ public class EventActivity extends AppCompatActivity {
 
     private void showPendingResults() {
         Log.i(TAG, "No results found");
+
+        loadingScreen.postLoadingStatus(this.getString(R.string.fetching_race_result, this.getString(R.string.not_found_text)));
+        loadingScreen.updateProgress(66);
+
         View pendingResultsView = findViewById(R.id.timer_card_pending_results);
         View countdownView = findViewById(R.id.timer_card_countdown);
         View resultsView = findViewById(R.id.timer_card_results);
@@ -311,6 +333,11 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void createWeekSchedule(List<Session> sessions) {
+        View eventSchedule = findViewById(R.id.event_schedule_table);
+
+        loadingScreen.postLoadingStatus(this.getString(R.string.setting_event_schedule));
+        loadingScreen.updateProgress(100);
+
         String sessionId;
 
         for (Session session : sessions) {
@@ -320,24 +347,30 @@ public class EventActivity extends AppCompatActivity {
                 sessionId = practice.getPractice();
             }
 
-            UIUtils.multipleSetTextViewText(
-                    new String[]{Constants.SESSION_NAMES.get(sessionId),
-                            Constants.SESSION_DAY.get(sessionId)},
-
-                    new TextView[]{
-                            findViewById(Constants.SESSION_NAME_FIELD.get(sessionId)),
-                            findViewById(Constants.SESSION_DAY_FIELD.get(sessionId))});
+            UIUtils.translateSchedule(this,
+                    eventSchedule.findViewById(Constants.SESSION_NAME_FIELD.get(sessionId)),
+                    eventSchedule.findViewById(Constants.SESSION_DAY_FIELD.get(sessionId)),
+                    sessionId);
 
             UIUtils.setTextViewTextWithCondition(sessionId.equals("Race"),
                     session.getStartingTime(), //if true
                     session.getTime(), //if false
-                    findViewById(Constants.SESSION_TIME_FIELD.get(sessionId)));
+                    eventSchedule.findViewById(Constants.SESSION_TIME_FIELD.get(sessionId)));
 
-            setChequeredFlag(session);
+            setChequeredFlag(eventSchedule, session);
         }
+        loadingScreen.hideLoadingScreen();
     }
 
-    private void setChequeredFlag(Session session) {
+    private void setSchedule(String sessionName, String sessionDay, View eventSchedule, String sessionId) {
+        UIUtils.multipleSetTextViewText(
+                new String[]{sessionName, sessionDay},
+                new TextView[]{
+                        eventSchedule.findViewById(Constants.SESSION_NAME_FIELD.get(sessionId)),
+                        eventSchedule.findViewById(Constants.SESSION_DAY_FIELD.get(sessionId))});
+    }
+
+    private void setChequeredFlag(View view, Session session) {
         String sessionId = session.getClass().getSimpleName();
         if (sessionId.equals("Practice")) {
             Practice practice = (Practice) session;
@@ -345,16 +378,14 @@ public class EventActivity extends AppCompatActivity {
         }
 
         if (session.isFinished()) {
-            ImageView flag = findViewById(Constants.SESSION_FLAG_FIELD.get(sessionId));
+            ImageView flag = view.findViewById(Constants.SESSION_FLAG_FIELD.get(sessionId));
             flag.setVisibility(View.VISIBLE);
 
-            LinearLayout currentSession = findViewById(Constants.SESSION_ROW.get(sessionId));
+            LinearLayout currentSession = view.findViewById(Constants.SESSION_ROW.get(sessionId));
             currentSession.setClickable(true);
             currentSession.setFocusable(true);
-            currentSession.setOnClickListener(view -> Log.i(TAG, "session clicked"));
+            currentSession.setOnClickListener(v -> Log.i(TAG, "session clicked"));
         }
-
-        loadingScreen.hideLoadingScreen();
     }
 
     @Override

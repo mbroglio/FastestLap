@@ -26,7 +26,12 @@ public class Constants {
     public static final String RETROFIT_ERROR = "retrofit_error";
     public static final String API_KEY_ERROR = "api_key_error";
 
+    public static final String DEFAULT_LANGUAGE = "en-GB";
     public static final int MAX_RETRY_COUNT = 4;
+    public static final int LOADING_SLEEP_TIMER_DURATION = 10000;
+    public static final String GOOGLE_MAPS_ACCESS = "https://www.google.com/maps/@%s,%s,15z/data=!3m1!1e3";
+    public static final String WEATHER_ACCESS_PACKAGE = "com.weather.Weather";
+    public static final String GOOGLE_WEATHER_ACCESS = "https://www.google.com/search?q=weather+in+%s";
 
     public static final Map<String, Integer> TEAM_COLOR = new HashMap<String, Integer>() {{
         put("mercedes", R.color.mercedes_f1);
@@ -64,7 +69,7 @@ public class Constants {
             "Race"
     };
 
-    public static final Map<String, String> SESSION_NAMES = Map.of(
+    public static final Map<String, String> SESSION_NAMES_ENG = Map.of(
             "Practice1", "Practice 1",
             "Practice2", "Practice 2",
             "Practice3", "Practice 3",
@@ -72,6 +77,16 @@ public class Constants {
             "SprintQualifying", "Sprint Qualifying",
             "Sprint", "Sprint",
             "Race", "Race"
+    );
+
+    public static final Map<String, String> SESSION_NAMES_ITA = Map.of(
+            "Practice1", "Prova Libera 1",
+            "Practice2", "Prova Libera 2",
+            "Practice3", "Prova Libera 3",
+            "Qualifying", "Qualifica",
+            "SprintQualifying", "Qualifica Sprint",
+            "Sprint", "Sprint",
+            "Race", "Gara"
     );
 
     public static final Map<String, Integer> SESSION_DURATION = Map.of(
@@ -113,7 +128,7 @@ public class Constants {
     );
 
 
-    public static final Map<String, String> SESSION_DAY = Map.of(
+    public static final Map<String, String> SESSION_DAY_ENG = Map.of(
             "Practice1", "Friday",
             "Practice2", "Friday",
             "Practice3", "Saturday",
@@ -121,6 +136,16 @@ public class Constants {
             "Sprint", "Saturday",
             "Qualifying", "Saturday",
             "Race", "Sunday"
+    );
+
+    public static final Map<String, String> SESSION_DAY_ITA = Map.of(
+            "Practice1", "Venerdì",
+            "Practice2", "Venerdì",
+            "Practice3", "Sabato",
+            "SprintQualifying", "Venerdì",
+            "Sprint", "Sabato",
+            "Qualifying", "Sabato",
+            "Race", "Domenica"
     );
 
     public static final Map<String, Integer> SESSION_DAY_FIELD = Map.of(
@@ -141,6 +166,21 @@ public class Constants {
             "Qualifying", R.id.session_4_time,
             "Race", R.id.session_5_time
     );
+
+    public static final Map<String, String> MONTH_ABBR_ENG_TO_ITA = new HashMap<String, String>() {{
+        put("JAN", "GEN");
+        put("FEB", "FEB");
+        put("MAR", "MAR");
+        put("APR", "APR");
+        put("MAY", "MAG");
+        put("JUN", "GIU");
+        put("JUL", "LUG");
+        put("AUG", "AGO");
+        put("SEP", "SET");
+        put("OCT", "OTT");
+        put("NOV", "NOV");
+        put("DEC", "DIC");
+    }};
 
     public static final List<Integer> PODIUM_DRIVER_NAME = List.of(
             R.id.first_name,
