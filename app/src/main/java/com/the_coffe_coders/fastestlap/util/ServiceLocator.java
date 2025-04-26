@@ -1,6 +1,7 @@
 package com.the_coffe_coders.fastestlap.util;
 
 import android.app.Application;
+import android.util.Log;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.repository.nation.NationRepository;
@@ -126,6 +127,8 @@ public class ServiceLocator {
 
             @Override
             public Call<ResponseBody> getNextRace() {
+                Log.i("Service Locator", "getNextRace: " + CURRENT_YEAR_BASE_URL);
+
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(CURRENT_YEAR_BASE_URL)
                         .addConverterFactory(ScalarsConverterFactory.create())
@@ -171,10 +174,6 @@ public class ServiceLocator {
         return AppRoomDatabase.getDatabase(application);
     }
 
-    public NationRepository getFirebaseNationRepository() {
-        return new NationRepository();
-    }
-
     public IUserRepository getUserRepository(Application application) {
         SharedPreferencesUtils sharedPreferencesUtil = new SharedPreferencesUtils(application);
 
@@ -186,9 +185,5 @@ public class ServiceLocator {
 
         return new UserRepository(userRemoteAuthenticationDataSource,
                 userDataRemoteDataSource);
-    }
-
-    public TrackRepository getTrackRepository() {
-        return new TrackRepository();
     }
 }

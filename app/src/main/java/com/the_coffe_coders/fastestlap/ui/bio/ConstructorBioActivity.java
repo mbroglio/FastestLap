@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
@@ -56,6 +57,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
     private NationViewModel nationViewModel;
     private ConstructorViewModel constructorViewModel;
 
+    private String teamId;
     private Constructor constructor;
     private Nation nation;
     private Driver driverOne;
@@ -67,33 +69,44 @@ public class ConstructorBioActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_constructor_bio);
 
+        start();
+    }
+
+    private void start(){
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
         loadingScreen.showLoadingScreen();
 
         toolbar = findViewById(R.id.topAppBar);
-        appBarLayout = findViewById(R.id.top_bar_layout);
-
         UIUtils.applyWindowInsets(toolbar);
-
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        ScrollView scrollView = findViewById(R.id.constructor_bio_scroll);
-        UIUtils.applyWindowInsets(scrollView);
-
-        String teamId = getIntent().getStringExtra("TEAM_ID");
-        Log.i("ConstructorBioActivity", "Team ID: " + teamId);
-
-        driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory()).get(DriverViewModel.class);
-        constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
-        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory()).get(NationViewModel.class);
-
-        // Set up the favorite icon click listener
         Menu menu = toolbar.getMenu();
         MenuItem favoriteItem = menu.findItem(R.id.favourite_icon_outline);
         favoriteItem.setOnMenuItemClickListener(v -> {
             toggleFavoriteConstructor(teamId, favoriteItem);
             return true;
         });
+
+        appBarLayout = findViewById(R.id.top_bar_layout);
+
+        SwipeRefreshLayout constructorBioLayout = findViewById(R.id.constructor_bio_layout);
+        UIUtils.applyWindowInsets(constructorBioLayout);
+        constructorBioLayout.setOnRefreshListener(() -> {
+            start();
+            constructorBioLayout.setRefreshing(false);
+        });
+
+        teamId = getIntent().getStringExtra("TEAM_ID");
+        Log.i("ConstructorBioActivity", "Team ID: " + teamId);
+
+        initializeViewModels();
+
+    }
+
+    private void initializeViewModels() {
+        driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(getApplication())).get(DriverViewModel.class);
+        constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
+        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(getApplication())).get(NationViewModel.class);
 
         createConstructorBioPage(teamId);
     }
@@ -137,10 +150,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
                 constructor = ((Result.ConstructorSuccess) result).getData();
                 Log.i(TAG, "Constructor: " + constructor);
 
-                String teamName = constructor.getName().toUpperCase();
-
-                TextView title = findViewById(R.id.topAppBarTitle);
-                title.setText(teamName);
+                UIUtils.singleSetTextViewText(constructor.getName().toUpperCase(), findViewById(R.id.topAppBarTitle));
 
                 toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
                 appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
@@ -236,54 +246,39 @@ public class ConstructorBioActivity extends AppCompatActivity {
     private void setTeamData(Constructor team, Nation nation, Driver driverOne, Driver driverTwo) {
         Log.i("ConstructorBioActivity", "Setting team data");
 
-        ImageView teamLogoImage = findViewById(R.id.team_logo_image);
-        Glide.with(this).load(team.getTeam_logo_url()).into(teamLogoImage);
+        UIUtils.loadSequenceOfImagesWithGlide(this,
+                new String[]{team.getTeam_logo_url(), nation.getNation_flag_url(), team.getCar_pic_url(), driverOne.getDriver_pic_url(), driverTwo.getDriver_pic_url()},
+                new ImageView[]{findViewById(R.id.team_logo_image), findViewById(R.id.team_flag), findViewById(R.id.team_car_image), findViewById(R.id.driver_1_image), findViewById(R.id.driver_2_image)},
+                () -> setTeamDataFinalStep(team));
 
-        ImageView teamFlag = findViewById(R.id.team_flag);
-        Glide.with(this).load(nation.getNation_flag_url()).into(teamFlag);
+    }
 
-        ImageView teamCarImage = findViewById(R.id.team_car_image);
-        Glide.with(this).load(team.getCar_pic_url()).into(teamCarImage);
+    private void setTeamDataFinalStep(Constructor team) {
 
-        ImageView driverOneImage = findViewById(R.id.driver_1_image);
-        Glide.with(this).load(driverOne.getDriver_pic_url()).into(driverOneImage);
+        UIUtils.multipleSetTextViewText(
+                new String[]{driverOne.getGivenName() + " " + driverOne.getFamilyName(),
+                        driverTwo.getGivenName() + " " + driverTwo.getFamilyName(),
+                        team.getFull_name(),
+                        team.getHq(),
+                        team.getTeam_principal(),
+                        team.getChassis(),
+                        team.getPower_unit(),
+                        team.getFirst_entry(),
+                        team.getWorld_championships(),
+                        team.getWins(),
+                        team.getPodiums()},
 
-        ImageView driverTwoImage = findViewById(R.id.driver_2_image);
-        Glide.with(this).load(driverTwo.getDriver_pic_url()).into(driverTwoImage);
-
-        TextView driverOneName = findViewById(R.id.driver_1_name);
-        driverOneName.setText(driverOne.getGivenName() + " " + driverOne.getFamilyName());
-
-        TextView driverTwoName = findViewById(R.id.driver_2_name);
-        driverTwoName.setText(driverTwo.getGivenName() + " " + driverTwo.getFamilyName());
-
-        //Team Data
-        TextView teamFullName = findViewById(R.id.team_full_name_value);
-        teamFullName.setText(team.getFull_name());
-
-        TextView teamHq = findViewById(R.id.team_base_value);
-        teamHq.setText(team.getHq());
-
-        TextView teamPrincipal = findViewById(R.id.team_principal_value);
-        teamPrincipal.setText(team.getTeam_principal());
-
-        TextView teamChassis = findViewById(R.id.team_chassis_value);
-        teamChassis.setText(team.getChassis());
-
-        TextView teamPowerUnit = findViewById(R.id.team_power_unit_value);
-        teamPowerUnit.setText(team.getPower_unit());
-
-        TextView teamFirstEntry = findViewById(R.id.team_first_entry_value);
-        teamFirstEntry.setText(team.getFirst_entry());
-
-        TextView championships = findViewById(R.id.team_championships_value);
-        championships.setText(team.getWorld_championships());
-
-        TextView wins = findViewById(R.id.team_wins_value);
-        wins.setText(team.getWins());
-
-        TextView podiums = findViewById(R.id.team_podiums_value);
-        podiums.setText(team.getPodiums());
+                new TextView[]{findViewById(R.id.driver_1_name),
+                        findViewById(R.id.driver_2_name),
+                        findViewById(R.id.team_full_name_value),
+                        findViewById(R.id.team_base_value),
+                        findViewById(R.id.team_principal_value),
+                        findViewById(R.id.team_chassis_value),
+                        findViewById(R.id.team_power_unit_value),
+                        findViewById(R.id.team_first_entry_value),
+                        findViewById(R.id.team_championships_value),
+                        findViewById(R.id.team_wins_value),
+                        findViewById(R.id.team_podiums_value)});
 
         createHistoryTable();
     }
@@ -309,22 +304,20 @@ public class ConstructorBioActivity extends AppCompatActivity {
                 ConstructorHistory history = constructorHistoryList.get(i);
                 View tableRow = inflater.inflate(R.layout.constructor_bio_table_row, tableLayout, false);
                 tableRow.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
-                // Customize the row if needed
-                TextView seasonYear, teamPosition, teamPoints, teamWins, teamPodiums;
-                seasonYear = tableRow.findViewById(R.id.season_year);
-                seasonYear.setText(history.getYear());
 
-                teamPosition = tableRow.findViewById(R.id.team_position);
-                teamPosition.setText(history.getPosition());
+                UIUtils.multipleSetTextViewText(
+                        new String[]{history.getYear(),
+                                history.getPosition(),
+                                history.getPoints(),
+                                history.getWins(),
+                                history.getPodiums()},
 
-                teamPoints = tableRow.findViewById(R.id.team_points);
-                teamPoints.setText(history.getPoints());
-
-                teamWins = tableRow.findViewById(R.id.team_wins);
-                teamWins.setText(history.getWins());
-
-                teamPodiums = tableRow.findViewById(R.id.team_podiums);
-                teamPodiums.setText(history.getPodiums());
+                        new TextView[]{tableRow.findViewById(R.id.season_year),
+                                tableRow.findViewById(R.id.team_position),
+                                tableRow.findViewById(R.id.team_points),
+                                tableRow.findViewById(R.id.team_wins),
+                                tableRow.findViewById(R.id.team_podiums)}
+                );
 
                 // Set bottom margin to 5dp
                 TableLayout.LayoutParams tableParams = (TableLayout.LayoutParams) tableRow.getLayoutParams();

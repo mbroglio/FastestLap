@@ -17,6 +17,9 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.Sprint;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.SprintQualifying;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Location;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.TrackHistory;
+import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 
 import org.threeten.bp.LocalDateTime;
 
@@ -52,6 +55,17 @@ public class DatabaseConverters {
     @TypeConverter
     public static String fromRaceResultList(List<RaceResult> results) {
         return gson.toJson(results);
+    }
+
+    @TypeConverter
+    public static String fromConstructorDrivers(List<String> drivers){
+        return gson.toJson(drivers);
+    }
+
+    @TypeConverter
+    public static List<String> toConstructorDrivers(String json){
+        Type listType = new TypeToken<List<String>>() {}.getType();
+        return gson.fromJson(json, listType);
     }
 
     //Constructor Standings Element List
@@ -93,6 +107,55 @@ public class DatabaseConverters {
         return gson.fromJson(json, listType);
     }
 
+    //Track
+    @TypeConverter
+    public static String fromTrack(Track track) {
+        return gson.toJson(track);
+    }
+
+    @TypeConverter
+    public static Track toTrack(String json) {
+        Type listType = new TypeToken<Track>() {
+        }.getType();
+        return gson.fromJson(json, listType);
+    }
+
+    //Nation
+    @TypeConverter
+    public static String fromNation(Nation nation) {
+        return gson.toJson(nation);
+    }
+
+    @TypeConverter
+    public static Nation toNation(String json) {
+        Type listType = new TypeToken<Nation>() {
+        }.getType();
+        return gson.fromJson(json, listType);
+    }
+
+    //Location
+    @TypeConverter
+    public static String fromLocation(Location location) {
+        return gson.toJson(location);
+    }
+
+    @TypeConverter
+    public static Location toLocation(String json) {
+        return gson.fromJson(json, Location.class);
+    }
+
+    //TrackHistory List
+    @TypeConverter
+    public static String fromTrackHistoryList(List<TrackHistory> trackHistoryList) {
+        return gson.toJson(trackHistoryList);
+    }
+
+    @TypeConverter
+    public static List<TrackHistory> toTrackHistoryList(String json) {
+        Type listType = new TypeToken<List<TrackHistory>>() {}.getType();
+        return gson.fromJson(json, listType);
+    }
+
     //Contructor List
     @TypeConverter
     public static String fromConstructorList(List<Constructor> list) {
@@ -104,17 +167,6 @@ public class DatabaseConverters {
         Type listType = new TypeToken<List<Constructor>>() {
         }.getType();
         return gson.fromJson(json, listType);
-    }
-
-    //Circuit
-    @TypeConverter
-    public static String fromCircuit(Track track) {
-        return gson.toJson(track);
-    }
-
-    @TypeConverter
-    public static Track toCircuit(String json) {
-        return gson.fromJson(json, Track.class);
     }
 
     //Practice

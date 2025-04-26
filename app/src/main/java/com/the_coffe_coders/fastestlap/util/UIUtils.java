@@ -7,19 +7,40 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
+import android.os.Handler;
+import android.os.Looper;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.TaskCompletionSource;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
+import com.the_coffe_coders.fastestlap.R;
+
+import java.security.MessageDigest;
 
 public class UIUtils {
 
@@ -64,20 +85,136 @@ public class UIUtils {
         });
     }
 
-    public static GestureDetector createTapDetector(Activity activity) {
-        return new GestureDetector(activity, new GestureDetector.SimpleOnGestureListener() {
-            @Override
-            public boolean onSingleTapUp(@NonNull MotionEvent e) {
-                boolean visible = (activity.getWindow().getDecorView().getSystemUiVisibility() & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0;
-                if (visible) {
-                    UIUtils.hideSystemUI(activity);
-                } else {
-                    UIUtils.showSystemUI(activity);
-                }
-                UIUtils.hideSystemUI(activity);
-                return true;
+    public static void loadImageWithGlide(Context context, String url, ImageView imageView, Runnable onSuccess) {
+        loadImage(context, url, imageView, onSuccess, 0);
+    }
+
+    public static void loadSequenceOfImagesWithGlide(Context context, String[] urls, ImageView[] imageViews, Runnable onSuccess) {
+        if (urls.length != imageViews.length) {
+            throw new IllegalArgumentException("The length of urls and imageViews must be the same");
+        }
+
+        for (int i = 0; i < urls.length; i++) {
+            if (i == urls.length - 1) {
+                loadImage(context, urls[i], imageViews[i], onSuccess, 0);
+            } else {
+                loadImage(context, urls[i], imageViews[i], null, 0);
             }
-        });
+        }
+    }
+
+    private static void loadImage(Context context, String url, ImageView imageView, Runnable onSuccess, int retryCount) {
+        Glide.with(context)
+                .load(url)
+                .into(new CustomTarget<Drawable>() {
+
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                        Log.i("Glide", "Image loaded successfully: ");
+                        imageView.setImageDrawable(resource);
+                        if(onSuccess != null){
+                            onSuccess.run();
+                        }
+
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                        // Handle the case when the load is cleared
+                        Log.i("Glide", "Image load cleared: " + url);
+                    }
+
+                    @Override
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                        Log.e("Glide", "Image loading failed: " + url);
+                        if (retryCount < Constants.MAX_RETRY_COUNT) {
+                            Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
+                            new Handler(Looper.getMainLooper()).post(() -> loadImage(context, url, imageView,  onSuccess, retryCount + 1));
+                        }
+                    }
+                });
+    }
+
+    public static void loadImageInEventCardWithAlpha(Context context, String url, LinearLayout card, Runnable onSuccess, int alpha) {
+
+        Glide.with(context)
+                .load(url)
+                .transform(new BitmapTransformation() {
+                    @Override
+                    public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
+
+                    }
+
+                    @Override
+                    protected Bitmap transform(@NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight) {
+                        // Make the bitmap 30% transparent (76/255 ≈ 0.3)
+                        return setAlpha(toTransform, alpha);
+                    }
+
+                    public String getId() {
+                        return "alpha";
+                    }
+
+                    // Helper method to set alpha on bitmap
+                    private Bitmap setAlpha(Bitmap bitmap, int alpha) {
+                        Bitmap mutableBitmap = bitmap.isMutable() ? bitmap : bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                        Canvas canvas = new Canvas(mutableBitmap);
+                        Paint paint = new Paint();
+                        paint.setAlpha(alpha);
+                        canvas.drawRect(0, 0, bitmap.getWidth(), bitmap.getHeight(), paint);
+                        return mutableBitmap;
+                    }
+                })
+                .into(new CustomTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                        card.setBackground(resource);
+                        if(onSuccess != null){
+                            onSuccess.run();
+                        }
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+                        // Use default image if loading fails
+                        Drawable defaultImage = ContextCompat.getDrawable(context, R.drawable.constructors_image);
+                        if (defaultImage != null) {
+                            defaultImage.setAlpha(76);
+                        }
+                        card.setBackground(defaultImage);
+                        if(onSuccess != null){
+                            onSuccess.run();
+                        }
+                    }
+                });
+    }
+
+
+
+    public static void singleSetTextViewText(String text, TextView textView) {
+        setTextViewText(text, textView);
+    }
+
+    public static void setTextViewTextWithCondition(boolean condition, String textIfTrue, String textIfFalse, TextView textView) {
+        if (condition) {
+            setTextViewText(textIfTrue, textView);
+        } else {
+            setTextViewText(textIfFalse, textView);
+        }
+    }
+
+    public static void multipleSetTextViewText(String[] texts, TextView[] textViews) {
+        if(texts.length != textViews.length) {
+            throw new IllegalArgumentException("The length of texts and textViews must be the same");
+        }
+
+        for (int i = 0; i < texts.length; i++) {
+            setTextViewText(texts[i], textViews[i]);
+        }
+    }
+
+    private static void setTextViewText(String text, TextView textView) {
+        textView.setText(text);
     }
 
     public static void animateCardBackgroundColor(Context context, MaterialCardView cardView, int startColorResId, int endColor, int duration, int repeatCount) {

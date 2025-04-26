@@ -63,8 +63,4 @@ public class FirebaseDriverDataSource implements DriverDataSource {
         });
     }
 
-    @Override
-    public void getDrivers(Callback callback) {
-
-    }
 }

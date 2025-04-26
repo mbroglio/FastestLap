@@ -308,9 +308,6 @@
                     android:id="@+id/text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:autoSizeMaxTextSize="20sp"
-                    android:autoSizeMinTextSize="11sp"
-                    android:autoSizeTextType="uniform"
                     android:fontFamily="@font/orbitron_bold"
                     android:text="@string/weekend_schedule_upper_case"
                     android:textColor="@color/white"
@@ -341,32 +338,49 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.4"
+                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+                            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_bold"
+                            android:maxLines="1"
+                            android:paddingEnd="5dp"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size"
-                            android:textStyle="bold" />
+                            tools:ignore="RtlSymmetry" />
 
                         <TextView
                             android:id="@+id/session_1_day"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.23"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="8dp"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_regular"
+                            android:maxLines="1"
+                            android:paddingEnd="5dp"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size" />
+                            android:textSize="@dimen/body_text_size"
+                            tools:ignore="RtlSymmetry" />
 
                         <TextView
                             android:id="@+id/session_1_time"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.27"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="8dp"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_regular"
                             android:gravity="center"
+                            android:maxLines="1"
+                            android:paddingEnd="5dp"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size" />
+                            android:textSize="@dimen/body_text_size"
+                            tools:ignore="RtlSymmetry" />
 
                         <LinearLayout
                             android:id="@+id/session_1_flag_container"
@@ -405,32 +419,49 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.4"
+                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+                            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_bold"
+                            android:maxLines="1"
+                            android:paddingEnd="5dp"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size"
-                            android:textStyle="bold" />
+                            tools:ignore="RtlSymmetry" />
 
                         <TextView
                             android:id="@+id/session_2_day"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.23"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="8dp"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_regular"
+                            android:maxLines="1"
+                            android:paddingEnd="5dp"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size" />
+                            android:textSize="@dimen/body_text_size"
+                            tools:ignore="RtlSymmetry" />
 
                         <TextView
                             android:id="@+id/session_2_time"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.27"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="8dp"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_regular"
                             android:gravity="center"
+                            android:maxLines="1"
+                            android:paddingEnd="5dp"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size" />
+                            android:textSize="@dimen/body_text_size"
+                            tools:ignore="RtlSymmetry" />
 
                         <LinearLayout
                             android:id="@+id/session_2_flag_container"
@@ -469,32 +500,49 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.4"
+                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+                            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_bold"
+                            android:maxLines="1"
+                            android:paddingEnd="5dp"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size"
-                            android:textStyle="bold" />
+                            tools:ignore="RtlSymmetry" />
 
                         <TextView
                             android:id="@+id/session_3_day"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.23"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="8dp"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_regular"
+                            android:maxLines="1"
+                            android:paddingEnd="5dp"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size" />
+                            android:textSize="@dimen/body_text_size"
+                            tools:ignore="RtlSymmetry" />
 
                         <TextView
                             android:id="@+id/session_3_time"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.27"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="8dp"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_regular"
                             android:gravity="center"
+                            android:maxLines="1"
+                            android:paddingEnd="5dp"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size" />
+                            android:textSize="@dimen/body_text_size"
+                            tools:ignore="RtlSymmetry" />
 
                         <LinearLayout
                             android:id="@+id/session_3_flag_container"
@@ -533,32 +581,49 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.4"
+                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+                            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_bold"
+                            android:maxLines="1"
+                            android:paddingEnd="5dp"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size"
-                            android:textStyle="bold" />
+                            tools:ignore="RtlSymmetry" />
 
                         <TextView
                             android:id="@+id/session_4_day"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.23"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="8dp"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_regular"
+                            android:maxLines="1"
+                            android:paddingEnd="5dp"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size" />
+                            android:textSize="@dimen/body_text_size"
+                            tools:ignore="RtlSymmetry" />
 
                         <TextView
                             android:id="@+id/session_4_time"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.27"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="8dp"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_regular"
                             android:gravity="center"
+                            android:maxLines="1"
+                            android:paddingEnd="5dp"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size" />
+                            android:textSize="@dimen/body_text_size"
+                            tools:ignore="RtlSymmetry" />
 
                         <LinearLayout
                             android:id="@+id/session_4_flag_container"
@@ -597,32 +662,49 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.4"
+                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+                            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_bold"
+                            android:maxLines="1"
+                            android:paddingEnd="5dp"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size"
-                            android:textStyle="bold" />
+                            tools:ignore="RtlSymmetry" />
 
                         <TextView
                             android:id="@+id/session_5_day"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.23"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="8dp"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_regular"
+                            android:maxLines="1"
+                            android:paddingEnd="5dp"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size" />
+                            android:textSize="@dimen/body_text_size"
+                            tools:ignore="RtlSymmetry" />
 
                         <TextView
                             android:id="@+id/session_5_time"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.27"
+                            android:autoSizeMaxTextSize="@dimen/body_text_size"
+                            android:autoSizeMinTextSize="8dp"
+                            android:autoSizeTextType="uniform"
                             android:fontFamily="@font/orbitron_regular"
                             android:gravity="center"
+                            android:maxLines="1"
+                            android:paddingEnd="5dp"
                             android:text="@string/not_found"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size" />
+                            android:textSize="@dimen/body_text_size"
+                            tools:ignore="RtlSymmetry" />
 
                         <LinearLayout
                             android:id="@+id/session_5_flag_container"

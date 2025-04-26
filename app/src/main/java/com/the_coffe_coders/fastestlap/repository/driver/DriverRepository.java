@@ -4,8 +4,10 @@ import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
 
+import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
+import com.the_coffe_coders.fastestlap.source.driver.LocalDriverDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.FirebaseDriverDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.JolpicaDriverDataSource;
 
@@ -19,6 +21,8 @@ public class DriverRepository {
     //Data sources
     FirebaseDriverDataSource firebaseDriverDataSource;
     JolpicaDriverDataSource jolpicaDriverDataSource;
+    LocalDriverDataSource localDriverDataSource;
+    AppRoomDatabase appRoomDatabase;
 
     //Cache
     private final Map<String, MutableLiveData<Result>> driverCache;
@@ -26,17 +30,18 @@ public class DriverRepository {
 
     public static DriverRepository instance;
 
-    public static DriverRepository getInstance() {
+    public static DriverRepository getInstance(AppRoomDatabase appRoomDatabase) {
         if(instance == null) {
-            instance = new DriverRepository();
+            instance = new DriverRepository(appRoomDatabase);
         }
         return instance;
     }
 
-    private DriverRepository() {
+    private DriverRepository(AppRoomDatabase appRoomDatabase) {
         driverCache = new HashMap<>();
         lastUpdateTimestamps = new HashMap<>();
         firebaseDriverDataSource = FirebaseDriverDataSource.getInstance();
+        localDriverDataSource = LocalDriverDataSource.getInstance(appRoomDatabase);;
     }
 
     public synchronized MutableLiveData<Result> getDriver(String driverId) {
@@ -83,6 +88,7 @@ public class DriverRepository {
                 public void onDriverLoaded(Driver driver) {
                     if(driver!=null) {
                         driver.setDriverId(driverId);
+                        localDriverDataSource.insertDriver(driver);
                         lastUpdateTimestamps.put(driverId, System.currentTimeMillis());
                         Objects.requireNonNull(driverCache.get(driverId)).postValue(new Result.DriverSuccess(driver));
                     }else {
@@ -94,6 +100,24 @@ public class DriverRepository {
                 public void onError(Exception e) {
                     Log.e(TAG, "Error loading driver: " + e.getMessage());
                     //fetch driver local database
+                    localDriverDataSource.getDriver(driverId, new DriverCallback(){
+                        @Override
+                        public void onDriverLoaded(Driver driver) {
+                            if(driver!=null) {
+                                driver.setDriverId(driverId);
+                                driverCache.put(driverId, new MutableLiveData<>(new Result.DriverSuccess(driver)));
+                                lastUpdateTimestamps.put(driverId, System.currentTimeMillis());
+                                Objects.requireNonNull(driverCache.get(driverId)).postValue(new Result.DriverSuccess(driver));
+                            }else {
+                                Log.e(TAG, "Driver not found: " + driverId);
+                            }
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Log.e(TAG, "Error loading driver from local database: " + e.getMessage());
+                        }
+                    });
                 }
             });
 

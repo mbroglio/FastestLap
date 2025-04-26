@@ -16,6 +16,7 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.the_coffe_coders.fastestlap.R;
@@ -23,6 +24,7 @@ import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import org.apache.commons.logging.LogFactory;
 
@@ -43,7 +45,10 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_intro_screen);
+        setContentView(R.layout.activity_splash_screen);
+
+        ConstraintLayout introScreen = findViewById(R.id.intro_screen);
+        UIUtils.applyWindowInsets(introScreen);
 
         String season_year = getIntent().getStringExtra("season_year");
         Log.d("LaunchFlag", "Valore ricevuto: " + season_year);
