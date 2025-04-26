@@ -25,8 +25,8 @@
             android:autoSizeMinTextSize="@dimen/min_text_resize_1"
             android:autoSizeTextType="uniform"
             android:fontFamily="@font/orbitron_bold"
-            android:maxLines="1"
             android:gravity="center"
+            android:maxLines="1"
             android:text="@string/year_upper_case"
             android:textColor="@color/black"
             android:textSize="@dimen/layout_subtitle_text_size">

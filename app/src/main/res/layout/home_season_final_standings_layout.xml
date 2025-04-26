@@ -59,13 +59,13 @@
                 android:id="@+id/race_podium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginEnd="@dimen/medium_margin"
-                android:gravity="center"
                 android:layout_below="@id/drivers_title"
                 android:layout_centerInParent="true"
+                android:layout_marginStart="@dimen/medium_margin"
                 android:layout_marginTop="5dp"
+                android:layout_marginEnd="@dimen/medium_margin"
                 android:layout_marginBottom="10dp"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <LinearLayout

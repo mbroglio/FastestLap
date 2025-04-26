@@ -62,10 +62,10 @@
             android:layout_centerInParent="true"
             android:layout_gravity="center"
             android:layout_marginStart="5dp"
+            android:layout_toEndOf="@id/team_logo"
             android:autoSizeMaxTextSize="25sp"
             android:autoSizeMinTextSize="12sp"
             android:autoSizeTextType="uniform"
-            android:layout_toEndOf="@id/team_logo"
             android:fontFamily="@font/orbitron_bold"
             android:textColor="@color/black"
             android:textSize="@dimen/layout_subtitle_text_size">

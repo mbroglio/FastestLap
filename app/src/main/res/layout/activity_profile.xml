@@ -114,24 +114,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:orientation="horizontal"
                 android:layout_marginTop="@dimen/medium_margin"
-                android:layout_marginEnd="@dimen/medium_margin">
+                android:layout_marginEnd="@dimen/medium_margin"
+                android:orientation="horizontal">
 
                 <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
+                    android:layout_gravity="center"
                     android:importantForAccessibility="no"
-                    android:src="@drawable/italy_flag"
-                    android:layout_gravity="center">
+                    android:src="@drawable/italy_flag">
 
                 </ImageView>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/orbitron_bold"
                     android:layout_marginStart="5dp"
+                    android:fontFamily="@font/orbitron_bold"
                     android:text="@string/italian_language_abbr_upper_case"
                     android:textColor="@color/white"
                     android:textSize="@dimen/layout_subtitle_text_size">
@@ -149,8 +149,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/orbitron_bold"
                     android:layout_marginEnd="5dp"
+                    android:fontFamily="@font/orbitron_bold"
                     android:text="@string/english_language_abbr_upper_case"
                     android:textColor="@color/white"
                     android:textSize="@dimen/layout_subtitle_text_size">
@@ -160,9 +160,9 @@
                 <ImageView
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:src="@drawable/united_kingdom_flag"
                     android:layout_gravity="center"
-                    android:importantForAccessibility="no">
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/united_kingdom_flag">
 
                 </ImageView>
 

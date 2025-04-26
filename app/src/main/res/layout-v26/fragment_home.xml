@@ -78,10 +78,10 @@
                     android:id="@+id/timer_updating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/orbitron_bold"
                     android:layout_gravity="center"
                     android:layout_marginTop="@dimen/medium_margin"
                     android:layout_marginBottom="@dimen/medium_margin"
+                    android:fontFamily="@font/orbitron_bold"
                     android:text="@string/updating_upper_case_with_dots"
                     android:textColor="@color/white"
                     android:textSize="30sp"
@@ -171,8 +171,6 @@
         </ScrollView>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-
-
 
 
     <include

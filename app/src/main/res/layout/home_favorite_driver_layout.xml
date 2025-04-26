@@ -101,11 +101,11 @@
                 android:id="@+id/driver_rank_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
                 android:layout_alignParentTop="true"
                 android:layout_centerInParent="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <ImageView
@@ -120,10 +120,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="3dp"
-                    android:fontFamily="@font/orbitron_bold"
                     android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
                     android:autoSizeMinTextSize="9sp"
                     android:autoSizeTextType="uniform"
+                    android:fontFamily="@font/orbitron_bold"
                     android:maxLines="1"
                     android:text="@string/rank"
                     android:textColor="@color/black"

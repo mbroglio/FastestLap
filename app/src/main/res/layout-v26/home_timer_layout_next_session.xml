@@ -32,8 +32,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/text_1"
-            android:layout_marginStart="24dp">
+            android:layout_marginStart="24dp"
+            android:layout_toEndOf="@+id/text_1">
 
             <TextView
                 android:id="@+id/home_next_gp_name"
@@ -58,8 +58,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/next_grand_prix"
         android:layout_centerInParent="true"
-        android:layout_marginTop="5dp"
         android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
         android:orientation="horizontal">
 
@@ -91,8 +91,8 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="0.3"
-            android:layout_marginStart="@dimen/medium_margin">
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_weight="0.3">
 
             <include
                 android:id="@+id/timer_frame"
@@ -107,8 +107,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/timer_layout"
-        android:layout_marginTop="5dp"
         android:layout_centerInParent="true"
+        android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
         android:fontFamily="@font/orbitron_bold"
         android:text="@string/not_found"
@@ -122,9 +122,9 @@
         android:id="@+id/timer_live_layout"
         android:layout_width="wrap_content"
         android:layout_height="15dp"
-        android:layout_marginTop="5dp"
         android:layout_below="@id/timer_layout"
         android:layout_alignParentEnd="true"
+        android:layout_marginTop="5dp"
         android:visibility="visible">
 
         <TextView

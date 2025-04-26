@@ -3,7 +3,6 @@
     <string name="app_credits" translatable="false">By\nThe Coffee Coders</string>
 
 
-
     <string name="not_found" translatable="false">-!-</string>
     <string name="unknown">Unknown</string>
 
@@ -27,8 +26,6 @@
     <string name="pending_results_upper_case">PENDING RESULTS</string>
     <string name="upcoming_upper_case">UPCOMING</string>
     <string name="past_upper_case">PAST</string>
-
-
 
 
     <string name="save_upper_case">SAVE</string>
@@ -172,7 +169,6 @@
     <string name="drivers_title_page_upper_case">DRIVERS</string>
     <!-- missing results -->
     <string name="results_not_available">Results not available</string>
-
 
 
     <!--BUTTONS STRINGS -->
