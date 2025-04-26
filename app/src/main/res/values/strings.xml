@@ -106,7 +106,7 @@
     <string name="m" translatable="false">m</string>
     <string name="championships">Championships:</string>
     <string name="driver_history_upper_case">DRIVER HISTORY:</string>
-    <string name="wins_abbr_upper_case" translatable="false">W</string>
+    <string name="wins_abbr_upper_case">W</string>
     <string name="team_upper_case">TEAM</string>
 
     <!-- CONSTRUCTOR BIO STRINGS -->
@@ -138,8 +138,8 @@
     <!-- COMMON BIO HISTORY STRINGS -->
     <string name="year_upper_case">YEAR</string>
     <string name="pos_upper_case" translatable="false">POS</string>
-    <string name="pts_upper_case" translatable="false">PTS</string>
-    <string name="pod_upper_case" translatable="false">POD</string>
+    <string name="pts_upper_case">POINTS</string>
+    <string name="pod_upper_case">POD</string>
 
     <!-- ERRORS WITH REDIRECTION -->
     <string name="no_map_app_found">No map app found</string>

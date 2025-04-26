@@ -96,6 +96,7 @@ public class UIUtils {
             throw new IllegalArgumentException("The length of urls and imageViews must be the same");
         }
 
+
         for (int i = 0; i < urls.length; i++) {
             int nextIndex = i + 1;
             if (i == urls.length - 1) {
