@@ -10,14 +10,10 @@ import com.the_coffe_coders.fastestlap.source.standing.driver.BaseDriverStanding
 import com.the_coffe_coders.fastestlap.source.standing.driver.BaseDriverStandingsRemoteDataSource;
 
 public class DriverStandingRepository {
+    private static final String TAG = "DriverStandingRepository";
+    private static DriverStandingRepository instance;
     private final BaseDriverStandingsRemoteDataSource remoteDataSource;
     private final BaseDriverStandingsLocalDataSource localDataSource;
-    private static final String TAG = "DriverStandingRepository";
-
-
-
-    private static DriverStandingRepository instance;
-
     private final MutableLiveData<Result> driverStandingResult;
 
     private Long lastUpdate;
@@ -50,13 +46,14 @@ public class DriverStandingRepository {
     private void loadDriverStanding() {
         driverStandingResult.postValue(new Result.Loading("Fetching driver standing from remote"));
         try {
-            remoteDataSource.getDriversStandings(new DriverStandingCallback(){
+            remoteDataSource.getDriversStandings(new DriverStandingCallback() {
                 @Override
                 public void onSuccess(DriverStandings driverStanding) {
                     Log.i("DriverStandingRepository", "Driver standing fetched from remote" + driverStanding);
                     lastUpdate = System.currentTimeMillis();
                     driverStandingResult.setValue(new Result.DriverStandingsSuccess(driverStanding));
                 }
+
                 @Override
                 public void onFailure(Exception exception) {
                     Log.e("DriverStandingRepository", "Error fetching driver standing from remote", exception);
@@ -72,7 +69,7 @@ public class DriverStandingRepository {
     private void loadDriverStandingFromLocal() {
         Log.i("DriverStandingRepository", "Fetching driver standing from local");
 
-        localDataSource.getDriversStandings(new DriverStandingCallback(){
+        localDataSource.getDriversStandings(new DriverStandingCallback() {
             @Override
             public void onSuccess(DriverStandings driverStanding) {
                 driverStandingResult.postValue(new Result.DriverStandingsSuccess(driverStanding));

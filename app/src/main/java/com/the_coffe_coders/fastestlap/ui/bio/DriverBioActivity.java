@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -28,7 +27,6 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.driver.DriverHistory;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.TrackHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
@@ -78,7 +76,7 @@ public class DriverBioActivity extends AppCompatActivity {
         start();
     }
 
-    private void start(){
+    private void start() {
         driverBioLayout = findViewById(R.id.driver_bio_layout);
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, driverBioLayout, null);
         loadingScreen.showLoadingScreen();
@@ -172,7 +170,7 @@ public class DriverBioActivity extends AppCompatActivity {
 
         MutableLiveData<Result> driverMutableLiveData = driverViewModel.getDriver(driverId);
         driverMutableLiveData.observe(this, result -> {
-            if(result instanceof Result.Loading) {
+            if (result instanceof Result.Loading) {
                 return;
             }
             if (result.isSuccess()) {
@@ -196,7 +194,7 @@ public class DriverBioActivity extends AppCompatActivity {
         MutableLiveData<Result> constructorMutableLiveData = constructorViewModel.getSelectedConstructor(teamId);
 
         constructorMutableLiveData.observe(this, result -> {
-            if(result instanceof Result.Loading) {
+            if (result instanceof Result.Loading) {
                 return;
             }
             if (result.isSuccess()) {
@@ -213,7 +211,7 @@ public class DriverBioActivity extends AppCompatActivity {
         MutableLiveData<Result> nationMutableLiveData = nationViewModel.getNation(nationId);
 
         nationMutableLiveData.observe(this, result -> {
-            if(result instanceof Result.Loading) {
+            if (result instanceof Result.Loading) {
                 return;
             }
             if (result.isSuccess()) {
@@ -248,7 +246,7 @@ public class DriverBioActivity extends AppCompatActivity {
     private void setDriverData(Driver driver, Nation nation, Constructor team) {
         try {
             teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
-            if(team.getConstructorId().equals("rb")){
+            if (team.getConstructorId().equals("rb")) {
                 teamLogoCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white));
             }
             driverNumberCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
@@ -273,7 +271,7 @@ public class DriverBioActivity extends AppCompatActivity {
 
         UIUtils.multipleSetTextViewText(
                 new String[]{driver.getBirth_place(),
-                driver.getDateOfBirth(),
+                        driver.getDateOfBirth(),
                         driver.getDriverAgeAsString(),
                         driver.getWeight(),
                         driver.getHeight(),

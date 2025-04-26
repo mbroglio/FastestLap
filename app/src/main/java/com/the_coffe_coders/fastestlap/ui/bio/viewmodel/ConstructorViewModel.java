@@ -11,11 +11,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ConstructorViewModel extends ViewModel {
-    ConstructorRepository constructorRepository;
     private final MutableLiveData<Constructor> selectedConstructorLiveData = new MutableLiveData<>();
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
+    ConstructorRepository constructorRepository;
 
     public ConstructorViewModel(ConstructorRepository constructorRepository) {
         this.constructorRepository = constructorRepository;

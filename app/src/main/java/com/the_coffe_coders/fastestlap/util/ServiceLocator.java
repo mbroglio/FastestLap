@@ -4,13 +4,9 @@ import android.app.Application;
 import android.util.Log;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
-import com.the_coffe_coders.fastestlap.repository.nation.NationRepository;
-import com.the_coffe_coders.fastestlap.repository.track.TrackRepository;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.repository.user.UserRepository;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
-import com.the_coffe_coders.fastestlap.source.result.RaceResultLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.result.RaceResultRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.user.BaseUserAuthenticationRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.user.BaseUserDataRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.user.UserAuthenticationFirebaseDataSource;

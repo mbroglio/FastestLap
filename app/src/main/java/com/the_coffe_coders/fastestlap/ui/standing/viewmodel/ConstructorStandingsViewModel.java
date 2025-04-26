@@ -10,7 +10,8 @@ public class ConstructorStandingsViewModel extends ViewModel {
 
     private static final String TAG = ConstructorStandingsViewModel.class.getSimpleName();
 
-    public ConstructorStandingsViewModel() {}
+    public ConstructorStandingsViewModel() {
+    }
 
     public LiveData<Result> getConstructorStandings() {
         return ConstructorStandingRepository.getInstance().fetchConstructorStanding();

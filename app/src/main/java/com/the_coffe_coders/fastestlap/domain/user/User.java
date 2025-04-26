@@ -1,4 +1,5 @@
 package com.the_coffe_coders.fastestlap.domain.user;
+
 import com.google.firebase.database.Exclude;
 
 import lombok.AllArgsConstructor;

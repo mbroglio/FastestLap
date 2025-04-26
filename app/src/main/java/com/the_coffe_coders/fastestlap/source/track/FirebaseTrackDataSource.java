@@ -14,18 +14,18 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.repository.track.TrackCallback;
 
 public class FirebaseTrackDataSource implements TrackDataSource {
-    private final FirebaseDatabase database;
     private static FirebaseTrackDataSource instance;
+    private final FirebaseDatabase database;
+
+    public FirebaseTrackDataSource() {
+        this.database = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
+    }
 
     public static synchronized FirebaseTrackDataSource getInstance() {
         if (instance == null) {
             instance = new FirebaseTrackDataSource();
         }
         return instance;
-    }
-
-    public FirebaseTrackDataSource() {
-        this.database = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
     }
 
     @Override

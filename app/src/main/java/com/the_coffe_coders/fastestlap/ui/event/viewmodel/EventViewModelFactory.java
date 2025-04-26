@@ -6,10 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
-
 public class EventViewModelFactory implements ViewModelProvider.Factory {
-    public EventViewModelFactory(Application application) {}
+    public EventViewModelFactory(Application application) {
+    }
 
     @NonNull
     @Override

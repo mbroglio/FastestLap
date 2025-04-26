@@ -17,18 +17,14 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class ResultRepository {
+    public static ResultRepository instance;
     private final Map<String, MutableLiveData<Result>> resultsCache;
     private final Map<String, Long> resultsTime;
-
     private final String TAG = "ResultRepository";
-
     private final MutableLiveData<Result> allResults;
+    BaseRaceResultRemoteDataSource raceResultRemoteDataSource;
     private long lastTimeAllResults;
     private List<Race> raceList;
-
-    BaseRaceResultRemoteDataSource raceResultRemoteDataSource;
-
-    public static ResultRepository instance;
 
     private ResultRepository() {
         resultsCache = new HashMap<>();
@@ -58,7 +54,7 @@ public class ResultRepository {
         raceResultRemoteDataSource.getRaceResults(Integer.parseInt(round), new RaceResultCallback() {
             @Override
             public void onSuccess(Race race) {
-                if(race != null) {
+                if (race != null) {
                     Objects.requireNonNull(resultsCache.get(round)).postValue(new Result.LastRaceResultsSuccess(race));
                     resultsTime.put(round, System.currentTimeMillis());
                 }

@@ -26,6 +26,8 @@ import retrofit2.Response;
 
 public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
     private static final String TAG = "RaceResultRemoteDataSource";
+    private static final int MAX_RETRIES = 3;
+    private static final int RETRY_DELAY_MS = 2000; // 2 seconds
     private final ErgastAPIService ergastAPIService;
 
     public RaceResultRemoteDataSource() {
@@ -64,8 +66,8 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
     }
 
     public void fetchRaceResult(int raceNumber, int currentRetry,
-                                 AtomicInteger successCount, AtomicInteger failureCount,
-                                 int totalRaces, RaceResultCallback callback) {
+                                AtomicInteger successCount, AtomicInteger failureCount,
+                                int totalRaces, RaceResultCallback callback) {
         Call<ResponseBody> responseCall = ergastAPIService.getRaceResults(raceNumber);
         Log.i(TAG, String.format("Fetching results for race %d (attempt %d)",
                 raceNumber, currentRetry + 1));
@@ -100,9 +102,6 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
             }
         });
     }
-
-    private static final int MAX_RETRIES = 3;
-    private static final int RETRY_DELAY_MS = 2000; // 2 seconds
 
     private void handleRetryOrFailure(int raceNumber, int currentRetry, Exception error,
                                       AtomicInteger successCount, AtomicInteger failureCount,

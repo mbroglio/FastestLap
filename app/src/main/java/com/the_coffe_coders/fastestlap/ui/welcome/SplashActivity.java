@@ -49,7 +49,7 @@ public class SplashActivity extends AppCompatActivity {
         start();
     }
 
-    private void start(){
+    private void start() {
         ConstraintLayout introScreen = findViewById(R.id.intro_screen);
         UIUtils.applyWindowInsets(introScreen);
 
@@ -57,7 +57,7 @@ public class SplashActivity extends AppCompatActivity {
         Log.d("LaunchFlag", "Valore ricevuto: " + season_year);
         if (season_year != null) {
             ServiceLocator.setCurrentYearBaseUrl(season_year);
-        }else {
+        } else {
             Log.d("LaunchFlag", "Using default year (current)");
             ServiceLocator.setCurrentYearBaseUrl("2025");
         }

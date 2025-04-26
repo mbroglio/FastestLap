@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
@@ -39,7 +38,6 @@ import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import org.threeten.bp.LocalDateTime;
@@ -70,7 +68,7 @@ public class EventActivity extends AppCompatActivity {
         start();
     }
 
-    private void start(){
+    private void start() {
         eventLayout = findViewById(R.id.event_layout);
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, eventLayout, null);
         loadingScreen.showLoadingScreen();
@@ -81,7 +79,7 @@ public class EventActivity extends AppCompatActivity {
         UIUtils.applyWindowInsets(toolbar);
 
         UIUtils.applyWindowInsets(eventLayout);
-        eventLayout.setOnRefreshListener(() ->{
+        eventLayout.setOnRefreshListener(() -> {
             start();
             eventLayout.setRefreshing(false);
         });
@@ -101,7 +99,7 @@ public class EventActivity extends AppCompatActivity {
         List<WeeklyRace> races = new ArrayList<>();
         MutableLiveData<Result> data = eventViewModel.getWeeklyRacesLiveData();
         data.observe(this, result -> {
-            if(result instanceof Result.Loading) {
+            if (result instanceof Result.Loading) {
                 return;
             }
             if (result.isSuccess()) {
@@ -134,7 +132,7 @@ public class EventActivity extends AppCompatActivity {
         MutableLiveData<Result> trackData = trackViewModel.getTrack(trackId);
 
         trackData.observe(this, result -> {
-            if(result instanceof Result.Loading) {
+            if (result instanceof Result.Loading) {
                 return;
             }
             if (result.isSuccess()) {
@@ -145,7 +143,7 @@ public class EventActivity extends AppCompatActivity {
                 MutableLiveData<Result> nationData = nationViewModel.getNation(track.getCountry());
 
                 nationData.observe(this, result1 -> {
-                    if(result1 instanceof Result.Loading) {
+                    if (result1 instanceof Result.Loading) {
                         return;
                     }
                     if (result1.isSuccess()) {
@@ -168,7 +166,7 @@ public class EventActivity extends AppCompatActivity {
         LinearLayout eventCard = findViewById(R.id.event_card);
 
         UIUtils.loadImageInEventCardWithAlpha(this, imageUrl, eventCard,
-                () ->  buildEventCardStepTwo(weeklyRace, track, nation),
+                () -> buildEventCardStepTwo(weeklyRace, track, nation),
                 76);
     }
 
@@ -293,7 +291,7 @@ public class EventActivity extends AppCompatActivity {
         MutableLiveData<Result> resultMutableLiveData = eventViewModel.getRaceResults(weeklyRace.getRound());
 
         resultMutableLiveData.observe(this, result -> {
-            if(result instanceof Result.Loading) {
+            if (result instanceof Result.Loading) {
                 return;
             }
             Race race = ((Result.LastRaceResultsSuccess) result).getData();

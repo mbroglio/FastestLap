@@ -27,7 +27,6 @@ import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import java.util.List;
@@ -37,12 +36,9 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     private static final String TAG = "UpcomingEventsActivity";
     private final boolean raceToProcess = true;
     LoadingScreen loadingScreen;
-
-    private SwipeRefreshLayout upcomingEventsLayout;
-
     EventViewModel eventViewModel;
     TrackViewModel trackViewModel;
-
+    private SwipeRefreshLayout upcomingEventsLayout;
     private int counter = 0;
 
     @Override
@@ -55,7 +51,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
     }
 
-    private void start(){
+    private void start() {
         upcomingEventsLayout = findViewById(R.id.upcoming_events_layout);
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, upcomingEventsLayout, null);
 
@@ -69,7 +65,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         UIUtils.applyWindowInsets(upcomingEventsLayout);
-        upcomingEventsLayout.setOnRefreshListener(() ->{
+        upcomingEventsLayout.setOnRefreshListener(() -> {
             counter = 0;
             start();
             upcomingEventsLayout.setRefreshing(false);
@@ -85,7 +81,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
         MutableLiveData<Result> data = eventViewModel.getWeeklyRacesLiveData();
         data.observe(this, result -> {
-            if(result instanceof Result.Loading) {
+            if (result instanceof Result.Loading) {
                 return;
             }
             if (result.isSuccess()) {
@@ -95,14 +91,14 @@ public class UpcomingEventsActivity extends AppCompatActivity {
                 upcomingEvents.removeAllViews();
                 List<WeeklyRace> upcomingRaces = eventViewModel.extractUpcomingRaces(races);
                 Log.i("UpcomingEvents", "upcomingRaces: " + upcomingRaces.size());
-                for (int i=0; i<upcomingRaces.size(); i++) {
+                for (int i = 0; i < upcomingRaces.size(); i++) {
                     createEventCard(upcomingEvents, upcomingRaces.get(i), i, upcomingRaces.size());
                 }
 
                 View space = new View(UpcomingEventsActivity.this);
                 space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, Constants.SPACER_HEIGHT));
                 upcomingEvents.addView(space);
-            }else{
+            } else {
                 loadingScreen.hideLoadingScreen();
             }
 

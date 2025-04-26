@@ -8,6 +8,7 @@ import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Location;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Practice;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Qualifying;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
@@ -16,9 +17,8 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Sprint;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.SprintQualifying;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Location;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.TrackHistory;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 
 import org.threeten.bp.LocalDateTime;
@@ -58,13 +58,14 @@ public class DatabaseConverters {
     }
 
     @TypeConverter
-    public static String fromConstructorDrivers(List<String> drivers){
+    public static String fromConstructorDrivers(List<String> drivers) {
         return gson.toJson(drivers);
     }
 
     @TypeConverter
-    public static List<String> toConstructorDrivers(String json){
-        Type listType = new TypeToken<List<String>>() {}.getType();
+    public static List<String> toConstructorDrivers(String json) {
+        Type listType = new TypeToken<List<String>>() {
+        }.getType();
         return gson.fromJson(json, listType);
     }
 
@@ -152,7 +153,8 @@ public class DatabaseConverters {
 
     @TypeConverter
     public static List<TrackHistory> toTrackHistoryList(String json) {
-        Type listType = new TypeToken<List<TrackHistory>>() {}.getType();
+        Type listType = new TypeToken<List<TrackHistory>>() {
+        }.getType();
         return gson.fromJson(json, listType);
     }
 

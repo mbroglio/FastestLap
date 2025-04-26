@@ -34,6 +34,7 @@ public class HomeViewModel extends ViewModel {
     public MutableLiveData<Result> getLastRace() {
         return WeeklyRaceRepository.getInstance().fetchLastWeeklyRace();
     }
+
     public MutableLiveData<Result> getNextRaceLiveData() {
         return WeeklyRaceRepository.getInstance().fetchNextWeeklyRace();
     }

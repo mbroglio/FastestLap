@@ -117,7 +117,7 @@ public class UIUtils {
                     public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                         Log.i("Glide", "Image loaded successfully: ");
                         imageView.setImageDrawable(resource);
-                        if(onSuccess != null){
+                        if (onSuccess != null) {
                             onSuccess.run();
                         }
 
@@ -134,13 +134,13 @@ public class UIUtils {
                         Log.e("Glide", "Image loading failed: " + url);
                         if (retryCount <= Constants.MAX_RETRY_COUNT) {
                             Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
-                            new Handler(Looper.getMainLooper()).post(() -> loadImage(context, url, imageView,  onSuccess, retryCount + 1));
+                            new Handler(Looper.getMainLooper()).post(() -> loadImage(context, url, imageView, onSuccess, retryCount + 1));
                         }
                     }
                 });
     }
 
-    public static void loadImageInEventCardWithAlpha(Context context, String url, LinearLayout card, Runnable onSuccess, int alpha){
+    public static void loadImageInEventCardWithAlpha(Context context, String url, LinearLayout card, Runnable onSuccess, int alpha) {
         loadImageAlpha(context, url, card, onSuccess, alpha, 0);
     }
 
@@ -178,7 +178,7 @@ public class UIUtils {
                     @Override
                     public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                         card.setBackground(resource);
-                        if(onSuccess != null){
+                        if (onSuccess != null) {
                             onSuccess.run();
                         }
                     }
@@ -191,7 +191,7 @@ public class UIUtils {
                             defaultImage.setAlpha(76);
                         }
                         card.setBackground(defaultImage);
-                        if(onSuccess != null){
+                        if (onSuccess != null) {
                             onSuccess.run();
                         }
                     }
@@ -220,7 +220,7 @@ public class UIUtils {
     }
 
     public static void multipleSetTextViewText(String[] texts, TextView[] textViews) {
-        if(texts.length != textViews.length) {
+        if (texts.length != textViews.length) {
             throw new IllegalArgumentException("The length of texts and textViews must be the same");
         }
 
@@ -284,20 +284,20 @@ public class UIUtils {
     }
 
     public static void translateSessionType(Context context, TextView sessionTypeTextView, String sessionId) {
-        if(AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("en-GB")){
-            UIUtils.singleSetTextViewText(Constants.SESSION_NAMES_ENG.getOrDefault(sessionId, context.getString(R.string.unknown)),sessionTypeTextView);
+        if (AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("en-GB")) {
+            UIUtils.singleSetTextViewText(Constants.SESSION_NAMES_ENG.getOrDefault(sessionId, context.getString(R.string.unknown)), sessionTypeTextView);
 
-        }else if(AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("it-IT")){
-            UIUtils.singleSetTextViewText(Constants.SESSION_NAMES_ITA.getOrDefault(sessionId, context.getString(R.string.unknown)),sessionTypeTextView);
+        } else if (AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("it-IT")) {
+            UIUtils.singleSetTextViewText(Constants.SESSION_NAMES_ITA.getOrDefault(sessionId, context.getString(R.string.unknown)), sessionTypeTextView);
         }
     }
 
     public static void translateSessionDay(Context context, TextView sessionDayTextView, String sessionId) {
-        if(AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("en-GB")){
-            UIUtils.singleSetTextViewText(Constants.SESSION_DAY_ENG.getOrDefault(sessionId, context.getString(R.string.unknown)),sessionDayTextView);
+        if (AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("en-GB")) {
+            UIUtils.singleSetTextViewText(Constants.SESSION_DAY_ENG.getOrDefault(sessionId, context.getString(R.string.unknown)), sessionDayTextView);
 
-        }else if(AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("it-IT")){
-            UIUtils.singleSetTextViewText(Constants.SESSION_DAY_ITA.getOrDefault(sessionId, context.getString(R.string.unknown)),sessionDayTextView);
+        } else if (AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("it-IT")) {
+            UIUtils.singleSetTextViewText(Constants.SESSION_DAY_ITA.getOrDefault(sessionId, context.getString(R.string.unknown)), sessionDayTextView);
         }
     }
 
@@ -308,8 +308,8 @@ public class UIUtils {
                 textView);
     }
 
-    public static void setAppLocale(){
-        if(AppCompatDelegate.getApplicationLocales().get(0) == null){
+    public static void setAppLocale() {
+        if (AppCompatDelegate.getApplicationLocales().get(0) == null) {
             LocaleListCompat appLocale = LocaleListCompat.forLanguageTags(Constants.DEFAULT_LANGUAGE);
             AppCompatDelegate.setApplicationLocales(appLocale);
         }

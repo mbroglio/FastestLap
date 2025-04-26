@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,9 +15,9 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
@@ -101,7 +100,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         MutableLiveData<Result> liveData = (MutableLiveData<Result>) constructorStandingsViewModel.getConstructorStandings();
         Log.i(TAG, "Constructor Standings: " + liveData);
         liveData.observe(this, result -> {
-            if(result instanceof Result.Loading) {
+            if (result instanceof Result.Loading) {
                 // Gestisci lo stato di caricamento, ad esempio mostrando un indicatore di caricamento
                 Log.i(TAG, "Constructor Standings LOADING");
                 // Qui potresti voler mostrare una UI di caricamento
@@ -116,7 +115,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                     Log.i(TAG, "Constructor Standings is empty");
                 } else {
                     Log.i(TAG, "Constructor Standings is not empty");
-                    for (int i=0; i<constructorList.size(); i++) {
+                    for (int i = 0; i < constructorList.size(); i++) {
                         View teamCard = generateTeamCard(constructorList.get(i), constructorId, i, constructorList.size());
                         teamStanding.addView(teamCard);
 
@@ -144,7 +143,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
         View teamCard = getLayoutInflater().inflate(R.layout.team_card, null);
         liveData.observe(this, result -> {
-            if(result instanceof Result.Loading) {
+            if (result instanceof Result.Loading) {
                 return;
             }
             if (result.isSuccess()) {
@@ -156,7 +155,6 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                 teamColor.setBackground(AppCompatResources.getDrawable(this, Objects.requireNonNull(Constants.TEAM_GRADIENT_COLOR.get(teamId))));
 
                 UIUtils.singleSetTextViewText(constructor.getName(), teamCard.findViewById(R.id.team_name));
-
 
 
                 Glide.with(this)
@@ -220,7 +218,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
                 UIUtils.loadImageWithGlide(this, driverTwo.getDriver_pic_url(), driverTwoImageView, () ->
                         generateTeamCardFinalStep(teamCard, constructorIdToHighlight, teamId, standingElement, pos, size));
-                    // Load the image into the ImageView
+                // Load the image into the ImageView
             }
         });
     }

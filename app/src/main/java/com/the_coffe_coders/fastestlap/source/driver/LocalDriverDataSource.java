@@ -8,12 +8,14 @@ import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.repository.driver.DriverCallback;
 
 public class LocalDriverDataSource implements DriverDataSource {
+    private static final String TAG = "DriverLocalDataSource";
     private static LocalDriverDataSource instance;
     private final DriverDAO driverDAO;
-    private static final String TAG = "DriverLocalDataSource";
+
     private LocalDriverDataSource(AppRoomDatabase appRoomDatabase) {
         this.driverDAO = appRoomDatabase.driverDAO();
     }
+
     public static synchronized LocalDriverDataSource getInstance(AppRoomDatabase appRoomDatabase) {
         if (instance == null) {
             instance = new LocalDriverDataSource(appRoomDatabase);

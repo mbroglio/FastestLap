@@ -23,7 +23,9 @@ public class WeeklyRaceSprint extends WeeklyRace {
         this.sprintQualifying = sprintQualifying;
         this.sprint = sprint;
     }
-    public WeeklyRaceSprint() {}
+
+    public WeeklyRaceSprint() {
+    }
 
     public List<Session> getSessions() {
         List<Session> sessions = new ArrayList<>();

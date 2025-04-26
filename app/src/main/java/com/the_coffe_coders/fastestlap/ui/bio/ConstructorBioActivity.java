@@ -8,7 +8,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -19,7 +18,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
@@ -28,7 +26,6 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorHistory;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
-import com.the_coffe_coders.fastestlap.domain.driver.DriverHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
@@ -74,7 +71,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
         start();
     }
 
-    private void start(){
+    private void start() {
         constructorBioLayout = findViewById(R.id.constructor_bio_layout);
 
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, constructorBioLayout, null);
@@ -150,7 +147,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
         MutableLiveData<Result> data = constructorViewModel.getSelectedConstructor(teamId);
         data.observe(this, result -> {
-            if(result instanceof Result.Loading) {
+            if (result instanceof Result.Loading) {
                 return;
             }
             if (result.isSuccess()) {
@@ -165,7 +162,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
                 MaterialCardView teamLogoCard = findViewById(R.id.team_logo_card);
                 teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
 
-                if(teamId.equals("rb")){
+                if (teamId.equals("rb")) {
                     teamLogoCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white));
                 }
 

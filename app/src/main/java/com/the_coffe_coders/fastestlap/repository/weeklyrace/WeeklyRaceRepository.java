@@ -13,15 +13,13 @@ public class WeeklyRaceRepository {
     private static final String TAG = "WeeklyRaceRepository";
     private static WeeklyRaceRepository instance;
     private final MutableLiveData<Result> nextRaceMutableLiveData;
-    private Long nextRaceTime;
     private final MutableLiveData<Result> lastRaceMutableLiveData;
-    private Long lastRaceTime;
     private final MutableLiveData<Result> weeklyRacesMutableLiveData;
-    private Long weeklyRacesTime;
-
     private final BaseWeeklyRaceRemoteDataSource weeklyRaceRemoteDataSource;
-
     private final long FRESH_TIMEOUT = 60000;
+    private Long nextRaceTime;
+    private Long lastRaceTime;
+    private Long weeklyRacesTime;
 
     private WeeklyRaceRepository() {
         this.nextRaceMutableLiveData = new MutableLiveData<>();
@@ -41,7 +39,7 @@ public class WeeklyRaceRepository {
     }
 
     public synchronized MutableLiveData<Result> fetchNextWeeklyRace() {
-        if(System.currentTimeMillis() - FRESH_TIMEOUT > nextRaceTime) {
+        if (System.currentTimeMillis() - FRESH_TIMEOUT > nextRaceTime) {
             nextRaceMutableLiveData.postValue(new Result.Loading("Loading next race"));
             loadNextRace();
         }
@@ -71,7 +69,7 @@ public class WeeklyRaceRepository {
 
     public synchronized MutableLiveData<Result> fetchLastWeeklyRace() {
 
-        if(System.currentTimeMillis() - FRESH_TIMEOUT > lastRaceTime) {
+        if (System.currentTimeMillis() - FRESH_TIMEOUT > lastRaceTime) {
             lastRaceMutableLiveData.postValue(new Result.Loading("Loading last race"));
             loadLastRace();
         }
@@ -96,7 +94,7 @@ public class WeeklyRaceRepository {
 
     public synchronized MutableLiveData<Result> fetchWeeklyRaces() {
 
-        if(System.currentTimeMillis() - FRESH_TIMEOUT > weeklyRacesTime) {
+        if (System.currentTimeMillis() - FRESH_TIMEOUT > weeklyRacesTime) {
             weeklyRacesMutableLiveData.postValue(new Result.Loading("Loading weekly races"));
             loadWeeklyRaces();
         }

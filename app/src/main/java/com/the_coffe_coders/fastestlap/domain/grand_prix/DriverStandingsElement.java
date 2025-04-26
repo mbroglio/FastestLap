@@ -35,7 +35,7 @@ public class DriverStandingsElement {
     }
 
     public void setDriver(Driver driver) {
-        if(this.driver == null) {
+        if (this.driver == null) {
             this.driver = driver;
             return;
         }

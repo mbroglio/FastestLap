@@ -27,18 +27,18 @@ public class TrackRepository {
     LocalTrackDataSource localTrackDataSource;
     AppRoomDatabase appRoomDatabase;
 
-    public static synchronized TrackRepository getInstance(AppRoomDatabase appRoomDatabase) {
-        if (instance == null) {
-            instance = new TrackRepository(appRoomDatabase);
-        }
-        return instance;
-    }
-
     public TrackRepository(AppRoomDatabase appRoomDatabase) {
         trackCache = new HashMap<>();
         lastUpdateTimestamps = new HashMap<>();
         firebaseTrackDataSource = FirebaseTrackDataSource.getInstance();
         localTrackDataSource = LocalTrackDataSource.getInstance(appRoomDatabase);
+    }
+
+    public static synchronized TrackRepository getInstance(AppRoomDatabase appRoomDatabase) {
+        if (instance == null) {
+            instance = new TrackRepository(appRoomDatabase);
+        }
+        return instance;
     }
 
     public synchronized MutableLiveData<Result> getTrack(String trackId) {

@@ -55,7 +55,7 @@ public class TrackBioActivity extends AppCompatActivity {
         start();
     }
 
-    private void start(){
+    private void start() {
         trackBioLayout = findViewById(R.id.track_bio_layout);
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, trackBioLayout, null);
         loadingScreen.showLoadingScreen();
@@ -83,7 +83,7 @@ public class TrackBioActivity extends AppCompatActivity {
         initializeViewModels();
     }
 
-    private void initializeViewModels(){
+    private void initializeViewModels() {
         trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(getApplication())).get(TrackViewModel.class);
         nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(getApplication())).get(NationViewModel.class);
 
@@ -156,7 +156,7 @@ public class TrackBioActivity extends AppCompatActivity {
                 UIUtils.openLocation(this, track.getLocation().getLatitude(), track.getLocation().getLongitude()));
 
         UIUtils.loadSequenceOfImagesWithGlide(this,
-                new String[]{track.getTrack_full_layout_url(),nation.getNation_flag_url()},
+                new String[]{track.getTrack_full_layout_url(), nation.getNation_flag_url()},
                 new ImageView[]{circuitImage, countryFlag},
                 this::createHistoryTable);
     }
@@ -198,7 +198,7 @@ public class TrackBioActivity extends AppCompatActivity {
                             tableRow.findViewById(R.id.third_driver_team)});
 
             ImageView raceHighlights = tableRow.findViewById(R.id.race_highlights_button);
-            if(history.getRaceHighlightsUrl() != null){
+            if (history.getRaceHighlightsUrl() != null) {
                 raceHighlights.setVisibility(View.VISIBLE);
                 raceHighlights.setOnClickListener(v -> {
                     Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(history.getRaceHighlightsUrl()));

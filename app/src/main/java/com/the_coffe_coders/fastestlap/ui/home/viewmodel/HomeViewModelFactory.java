@@ -7,7 +7,8 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 public class HomeViewModelFactory implements ViewModelProvider.Factory {
-    public HomeViewModelFactory(Application application) {}
+    public HomeViewModelFactory(Application application) {
+    }
 
     @NonNull
     @SuppressWarnings("unchecked")

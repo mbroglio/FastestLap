@@ -14,12 +14,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.repository.driver.DriverCallback;
 
-import okhttp3.Callback;
-
 public class FirebaseDriverDataSource implements DriverDataSource {
-    private final FirebaseDatabase database;
-    private static FirebaseDriverDataSource instance;
     private static final String TAG = "FirebaseDriverDataSource";
+    private static FirebaseDriverDataSource instance;
+    private final FirebaseDatabase database;
 
     public FirebaseDriverDataSource() {
         this.database = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);

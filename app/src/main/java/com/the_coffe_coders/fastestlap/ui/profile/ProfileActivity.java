@@ -125,9 +125,9 @@ public class ProfileActivity extends AppCompatActivity {
         languageSwitch.setChecked(currentLanguage.equals("en-GB"));
 
         languageSwitch.setOnCheckedChangeListener(((buttonView, isChecked) -> {
-            if(languageSwitch.isChecked()){
+            if (languageSwitch.isChecked()) {
                 setLocale("en-GB");
-            }else{
+            } else {
                 setLocale("it-IT");
             }
         }));

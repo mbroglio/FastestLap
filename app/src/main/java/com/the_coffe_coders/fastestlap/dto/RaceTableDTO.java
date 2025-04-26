@@ -25,7 +25,7 @@ public class RaceTableDTO {
     public RaceDTO getRace() {
         if (races == null || races.isEmpty()) {
             return null;
-        }else
+        } else
             return races.get(0);
     }
 }

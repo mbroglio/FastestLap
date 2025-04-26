@@ -8,9 +8,9 @@ import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.repository.nation.NationCallback;
 
 public class LocalNationDataSource implements NationDataSource {
+    private static final String TAG = "NationLocalDataSource";
     private static LocalNationDataSource instance;
     private final NationDAO nationDAO;
-    private static final String TAG = "NationLocalDataSource";
 
     private LocalNationDataSource(AppRoomDatabase appRoomDatabase) {
         this.nationDAO = appRoomDatabase.nationDAO();

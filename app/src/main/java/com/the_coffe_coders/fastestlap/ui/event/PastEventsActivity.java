@@ -10,13 +10,11 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
@@ -30,7 +28,6 @@ import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import org.threeten.bp.LocalDateTime;
@@ -58,7 +55,7 @@ public class PastEventsActivity extends AppCompatActivity {
 
     }
 
-    private void start(){
+    private void start() {
         pastEventsLayout = findViewById(R.id.past_events_layout);
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, pastEventsLayout, null);
 
@@ -72,7 +69,7 @@ public class PastEventsActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         UIUtils.applyWindowInsets(pastEventsLayout);
-        pastEventsLayout.setOnRefreshListener(() ->{
+        pastEventsLayout.setOnRefreshListener(() -> {
             counter = 0;
             start();
             pastEventsLayout.setRefreshing(false);
@@ -106,7 +103,7 @@ public class PastEventsActivity extends AppCompatActivity {
                         LinearLayout pastEvents = findViewById(R.id.past_events_list);
                         pastEvents.removeAllViews();
                         //List<WeeklyRace> pastRaces = eventViewModel.extractPastRaces(races);
-                        for (int i=0; i < races.size(); i++) {
+                        for (int i = 0; i < races.size(); i++) {
                             createEventCard(pastEvents, races.get(i), i, races.size());
                         }
 
@@ -150,7 +147,7 @@ public class PastEventsActivity extends AppCompatActivity {
                 UIUtils.multipleSetTextViewText(
                         new String[]{raceDateTime.getDayOfMonth() + "", raceDateTime.getMonth().toString().substring(0, 3)},
 
-                        new TextView[]{eventCard.findViewById(R.id.past_date),eventCard.findViewById(R.id.past_month)}
+                        new TextView[]{eventCard.findViewById(R.id.past_date), eventCard.findViewById(R.id.past_month)}
                 );
 
                 ImageView trackOutline = eventCard.findViewById(R.id.past_track_outline);

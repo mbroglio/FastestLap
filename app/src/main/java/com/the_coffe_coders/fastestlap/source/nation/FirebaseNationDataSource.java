@@ -16,9 +16,9 @@ import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.repository.nation.NationCallback;
 
 public class FirebaseNationDataSource implements NationDataSource {
-    private final FirebaseDatabase database;
-    private static FirebaseNationDataSource instance;
     private static final String TAG = "FirebaseNationDataSource";
+    private static FirebaseNationDataSource instance;
+    private final FirebaseDatabase database;
 
     public FirebaseNationDataSource() {
         this.database = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);

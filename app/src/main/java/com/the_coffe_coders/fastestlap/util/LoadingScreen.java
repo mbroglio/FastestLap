@@ -20,14 +20,10 @@ public class LoadingScreen {
     private final TextView loadingText, percentageText, loadingStatusText;
     private final ProgressBar loadingProgressBar;
     private final View activityView, fragmentView;
-
+    private final Handler timerHandler = new Handler();
     private int dotCount = 0;
     private boolean addingDots = true;
     private Runnable dotRunnable;
-
-    private final Handler timerHandler = new Handler();
-    private final Runnable timerRunnable = this::hide;
-
     public LoadingScreen(View view, Context context, View activityView, View fragmentView) {
         this.handler = new Handler();
         this.loadingScreen = view.findViewById(R.id.loading_screen);
@@ -42,7 +38,7 @@ public class LoadingScreen {
         ImageView loadingWheel = view.findViewById(R.id.loading_wheel);
         Animation rotateAnimation = AnimationUtils.loadAnimation(context, R.anim.rotate);
         loadingWheel.startAnimation(rotateAnimation);
-    }
+    }    private final Runnable timerRunnable = this::hide;
 
     public void showLoadingScreen() {
         if (fragmentView != null) {
@@ -127,10 +123,12 @@ public class LoadingScreen {
         loadingScreen.setVisibility(View.GONE);
         if (fragmentView != null) {
             fragmentView.setVisibility(View.VISIBLE);
-        }else{
+        } else {
             activityView.setVisibility(View.VISIBLE);
         }
         handler.removeCallbacks(dotRunnable);
         timerHandler.removeCallbacks(timerRunnable);
     }
+
+
 }

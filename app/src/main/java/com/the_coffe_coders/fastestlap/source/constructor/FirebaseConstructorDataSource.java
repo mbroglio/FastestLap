@@ -14,18 +14,19 @@ import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorCallback;
 
 public class FirebaseConstructorDataSource implements ConstructorDataSource {
+    private static final String TAG = "FirebaseConstructorDataSource";
     private static FirebaseConstructorDataSource instance;
     private final FirebaseDatabase database;
-    private static final String TAG = "FirebaseConstructorDataSource";
+
+    private FirebaseConstructorDataSource() {
+        this.database = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
+    }
+
     public static FirebaseConstructorDataSource getInstance() {
         if (instance == null) {
             instance = new FirebaseConstructorDataSource();
         }
         return instance;
-    }
-
-    private FirebaseConstructorDataSource() {
-        this.database = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
     }
 
     @Override

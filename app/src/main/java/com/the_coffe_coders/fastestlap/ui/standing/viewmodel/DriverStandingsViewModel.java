@@ -9,6 +9,7 @@ import com.the_coffe_coders.fastestlap.repository.standing.driver.DriverStanding
 public class DriverStandingsViewModel extends ViewModel {
     private static final String TAG = DriverStandingsViewModel.class.getSimpleName();
     DriverStandingRepository driverStandingRepository;
+
     public DriverStandingsViewModel(DriverStandingRepository driverStandingRepository) {
         this.driverStandingRepository = driverStandingRepository;
     }

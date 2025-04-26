@@ -16,30 +16,27 @@ import java.util.Objects;
 
 public class NationRepository {
     private static final String TAG = "NationRepository";
-
+    public static NationRepository instance;
+    //Cache
+    private final Map<String, MutableLiveData<Result>> nationCache;
+    private final Map<String, Long> lastUpdateTimestamps;
     //Data sources
     FirebaseNationDataSource firebaseNationDataSource;
     LocalNationDataSource localNationDataSource;
     AppRoomDatabase appRoomDatabase;
-
-    //Cache
-    private final Map<String, MutableLiveData<Result>> nationCache;
-    private final Map<String, Long> lastUpdateTimestamps;
-
-    public static NationRepository instance;
-
-    public static NationRepository getInstance(AppRoomDatabase appRoomDatabase) {
-        if (instance == null) {
-            instance = new NationRepository(appRoomDatabase);
-        }
-        return instance;
-    }
 
     private NationRepository(AppRoomDatabase appRoomDatabase) {
         nationCache = new HashMap<>();
         lastUpdateTimestamps = new HashMap<>();
         firebaseNationDataSource = FirebaseNationDataSource.getInstance();
         localNationDataSource = LocalNationDataSource.getInstance(appRoomDatabase);
+    }
+
+    public static NationRepository getInstance(AppRoomDatabase appRoomDatabase) {
+        if (instance == null) {
+            instance = new NationRepository(appRoomDatabase);
+        }
+        return instance;
     }
 
     public synchronized MutableLiveData<Result> getNation(String nationId) {

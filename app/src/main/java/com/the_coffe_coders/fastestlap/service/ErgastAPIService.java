@@ -31,7 +31,6 @@ public interface ErgastAPIService {
     Call<ResponseBody> getNextRace();
 
 
-
     @GET("drivers/{driverId}")
     Call<ResponseBody> getDriver(@Path("driverId") String driverId);
 

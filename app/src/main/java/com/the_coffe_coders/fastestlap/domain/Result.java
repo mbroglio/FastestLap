@@ -29,7 +29,7 @@ public abstract class Result {
         }
         return null;
     }
-    
+
     public static final class DriverSuccess extends Result {
         private final Driver driver;
 

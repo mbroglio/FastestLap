@@ -7,10 +7,10 @@ import com.the_coffe_coders.fastestlap.database.TrackDAO;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.repository.track.TrackCallback;
 
-public class LocalTrackDataSource implements TrackDataSource{
+public class LocalTrackDataSource implements TrackDataSource {
+    private static final String TAG = "TrackLocalDataSource";
     private static LocalTrackDataSource instance;
     private final TrackDAO trackDAO;
-    private static final String TAG = "TrackLocalDataSource";
 
     private LocalTrackDataSource(AppRoomDatabase appRoomDatabase) {
         this.trackDAO = appRoomDatabase.trackDAO();

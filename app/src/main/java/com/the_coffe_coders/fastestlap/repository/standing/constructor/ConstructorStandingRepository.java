@@ -14,8 +14,8 @@ public class ConstructorStandingRepository {
     private final MutableLiveData<Result> constructorStandingResult;
 
     private final BaseConstructorStandingsRemoteDataSource remoteDataSource;
-    private Long lastUpdate;
     private final long FRESH_TIMEOUT = 60000;
+    private Long lastUpdate;
 
     private ConstructorStandingRepository() {
         constructorStandingResult = new MutableLiveData<>();
@@ -40,13 +40,14 @@ public class ConstructorStandingRepository {
     public void loadConstructorStanding() {
         constructorStandingResult.postValue(new Result.Loading("Fetching constructor standing from remote"));
         try {
-            remoteDataSource.getConstructorStandings(new ConstructorStandingCallback(){
+            remoteDataSource.getConstructorStandings(new ConstructorStandingCallback() {
                 @Override
                 public void onConstructorLoaded(ConstructorStandings constructorStandings) {
                     Log.i("DriverStandingRepository", "Driver standing fetched from remote" + constructorStandings);
                     lastUpdate = System.currentTimeMillis();
                     constructorStandingResult.postValue(new Result.ConstructorStandingsSuccess(constructorStandings));
                 }
+
                 @Override
                 public void onFailure(Exception exception) {
                     constructorStandingResult.postValue(new Result.Error(exception.getMessage()));

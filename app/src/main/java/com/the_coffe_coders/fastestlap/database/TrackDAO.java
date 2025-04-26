@@ -25,6 +25,7 @@ public interface TrackDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertTrack(Track track);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     List<Long> insertTrackList(List<Track> newsList);
 }

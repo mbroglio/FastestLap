@@ -6,7 +6,6 @@ import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.database.DriverStandingsDAO;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.repository.standing.driver.DriverStandingCallback;
-import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 
 import java.util.concurrent.Executor;
 

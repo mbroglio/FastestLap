@@ -482,7 +482,7 @@ public class HomeFragment extends Fragment {
         buildFinalTeamsStanding(view.findViewById(R.id.season_results));
     }
 
-    private void setUpdating(View view){
+    private void setUpdating(View view) {
         loadingScreen.postLoadingStatus(this.getString(R.string.fetching_next_race, this.getString(R.string.not_found_text)));
         loadingScreen.updateProgress(50);
         view.findViewById(R.id.timer_card_countdown).setVisibility(View.GONE);

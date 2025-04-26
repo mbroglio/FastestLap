@@ -21,18 +21,18 @@ public class ConstructorRepository {
     private final JolpicaConstructorDataSource jolpicaConstructorDataSource;
     private final String TAG = "ConstructorRepository";
 
-    public static ConstructorRepository getInstance() {
-        if (instance == null) {
-            instance = new ConstructorRepository();
-        }
-        return instance;
-    }
-
     private ConstructorRepository() {
         constructorCache = new HashMap<>();
         lastUpdateTimestamps = new HashMap<>();
         firebaseConstructorDataSource = FirebaseConstructorDataSource.getInstance();
         jolpicaConstructorDataSource = JolpicaConstructorDataSource.getInstance();
+    }
+
+    public static ConstructorRepository getInstance() {
+        if (instance == null) {
+            instance = new ConstructorRepository();
+        }
+        return instance;
     }
 
     public synchronized MutableLiveData<Result> getConstructor(String constructorId) {
