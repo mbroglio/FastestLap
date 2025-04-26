@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
@@ -40,7 +41,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class ConstructorsStandingActivity extends AppCompatActivity {
-
     private static final String TAG = "TeamCardActivity";
     private final boolean constructorToProcess = true;
     LoadingScreen loadingScreen;
@@ -60,8 +60,6 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         Log.i(TAG, "Constructor ID: " + constructorId);
 
         start();
-
-
     }
 
     private void start() {
@@ -78,6 +76,15 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
             Intent intent = new Intent(ConstructorsStandingActivity.this, HomePageActivity.class);
             intent.putExtra("CALLER", "ConstructorsStandingActivity");
             startActivity(intent);
+        });
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Intent intent = new Intent(ConstructorsStandingActivity.this, HomePageActivity.class);
+                intent.putExtra("CALLER", "ConstructorsStandingActivity");
+                startActivity(intent);
+            }
         });
 
         UIUtils.applyWindowInsets(teamStandingLayout);
@@ -136,7 +143,6 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
     }
 
     private View generateTeamCard(ConstructorStandingsElement standingElement, String constructorIdToHighlight, int pos, int size) {
-
         String teamId = standingElement.getConstructor().getConstructorId();
         ConstructorViewModel constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
         MutableLiveData<Result> liveData = constructorViewModel.getSelectedConstructor(teamId);
@@ -157,13 +163,9 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                 UIUtils.singleSetTextViewText(constructor.getName(), teamCard.findViewById(R.id.team_name));
 
 
-                Glide.with(this)
-                        .load(constructor.getCar_pic_url())
-                        .into((ImageView) teamCard.findViewById(R.id.car_image));
+                Glide.with(this).load(constructor.getCar_pic_url()).into((ImageView) teamCard.findViewById(R.id.car_image));
 
-                Glide.with(this)
-                        .load(constructor.getTeam_logo_url())
-                        .into((ImageView) teamCard.findViewById(R.id.team_logo));
+                Glide.with(this).load(constructor.getTeam_logo_url()).into((ImageView) teamCard.findViewById(R.id.team_logo));
 
                 generateTeamCardStepTwo(constructor, standingElement, teamCard, constructorIdToHighlight, teamId, pos, size);
 
@@ -198,8 +200,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
                 ImageView driverOneImageView = teamCard.findViewById(R.id.driver_1_pic);
 
-                UIUtils.loadImageWithGlide(this, driverOne.getDriver_pic_url(), driverOneImageView, () ->
-                        generateTeamCardStepThree(driverTwoLiveData, teamCard, constructorIdToHighlight, teamId, standingElement, pos, size));
+                UIUtils.loadImageWithGlide(this, driverOne.getDriver_pic_url(), driverOneImageView, () -> generateTeamCardStepThree(driverTwoLiveData, teamCard, constructorIdToHighlight, teamId, standingElement, pos, size));
             }
         });
     }
@@ -216,8 +217,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
                 ImageView driverTwoImageView = teamCard.findViewById(R.id.driver_2_pic);
 
-                UIUtils.loadImageWithGlide(this, driverTwo.getDriver_pic_url(), driverTwoImageView, () ->
-                        generateTeamCardFinalStep(teamCard, constructorIdToHighlight, teamId, standingElement, pos, size));
+                UIUtils.loadImageWithGlide(this, driverTwo.getDriver_pic_url(), driverTwoImageView, () -> generateTeamCardFinalStep(teamCard, constructorIdToHighlight, teamId, standingElement, pos, size));
                 // Load the image into the ImageView
             }
         });
@@ -225,8 +225,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
     private void generateTeamCardFinalStep(View teamCard, String constructorIdToHighlight, String teamId, ConstructorStandingsElement standingElement, int pos, int size) {
 
-        UIUtils.setTextViewTextWithCondition(standingElement.getPosition() == null,
-                ContextCompat.getString(this, R.string.last_constructor_position), //if true
+        UIUtils.setTextViewTextWithCondition(standingElement.getPosition() == null, ContextCompat.getString(this, R.string.last_constructor_position), //if true
                 standingElement.getPosition(), //if false
                 teamCard.findViewById(R.id.team_position));
 

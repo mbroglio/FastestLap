@@ -16,9 +16,13 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.ui.profile.ProfileActivity;
+import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
+import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import org.threeten.bp.ZoneId;
+
+import java.util.Objects;
 
 public class HomePageActivity extends AppCompatActivity {
     private final String TAG = "HomePageActivity";
@@ -58,13 +62,25 @@ public class HomePageActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if (intent != null && intent.hasExtra("CALLER")) {
             String caller = intent.getStringExtra("CALLER");
-            if (caller != null && (caller.equals("ConstructorsStandingActivity") || caller.equals("DriversStandingActivity"))) {
-                bottomNavigationView.post(() -> {
-                    bottomNavigationView.setSelectedItemId(R.id.standingsFragment);
-                });
-            } else if (caller != null && caller.equals("WelcomeActivity")) {
-                Intent home = new Intent(HomePageActivity.this, HomePageActivity.class);
-                startActivity(home);
+            switch (Objects.requireNonNull(caller)) {
+                case "ConstructorsStandingActivity":
+                case "DriversStandingActivity":
+                    bottomNavigationView.post(() -> {
+                        bottomNavigationView.setSelectedItemId(R.id.standingsFragment);
+                    });
+                    break;
+                case "WelcomeActivity":
+                    Intent home = new Intent(HomePageActivity.this, HomePageActivity.class);
+                    startActivity(home);
+                    break;
+                case "ConstructorBioActivity":
+                    Intent constructorStanding = new Intent(HomePageActivity.this, ConstructorsStandingActivity.class);
+                    startActivity(constructorStanding);
+                    break;
+                case "DriverBioActivity":
+                    Intent driverStanding = new Intent(HomePageActivity.this, DriversStandingActivity.class);
+                    startActivity(driverStanding);
+                    break;
             }
         }
     }

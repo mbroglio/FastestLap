@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
@@ -78,6 +79,15 @@ public class DriversStandingActivity extends AppCompatActivity {
             Intent intent = new Intent(DriversStandingActivity.this, HomePageActivity.class);
             intent.putExtra("CALLER", "DriversStandingActivity");
             startActivity(intent);
+        });
+
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                Intent intent = new Intent(DriversStandingActivity.this, HomePageActivity.class);
+                intent.putExtra("CALLER", "DriversStandingActivity");
+                startActivity(intent);
+            }
         });
 
         UIUtils.applyWindowInsets(driverStandingLayout);
