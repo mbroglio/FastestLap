@@ -179,5 +179,8 @@
     <string name="english_language_abbr_upper_case">ENG</string>
     <string name="language_set">Language successfully set to %1$s</string>
 
-
+    <!-- LOREEEEEEEEE -->
+    <string name="race_results">Race Results</string>
+    <string name="race_results_title">%1$s Results</string>
+    <string name="close">Close</string>
 </resources>

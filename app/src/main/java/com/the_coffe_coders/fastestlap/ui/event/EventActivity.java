@@ -21,6 +21,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.adapter.RaceResultsAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Practice;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
@@ -48,6 +49,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import android.app.Dialog;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.view.ViewGroup;
+import android.view.Window;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 public class EventActivity extends AppCompatActivity {
     private static final String TAG = "EventActivity";
     private final boolean eventToProcess = true;
@@ -57,6 +66,7 @@ public class EventActivity extends AppCompatActivity {
     private Track track;
     private Nation nation;
     private SwipeRefreshLayout eventLayout;
+    private Race currentRace;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -268,6 +278,41 @@ public class EventActivity extends AppCompatActivity {
         }.start();
     }
 
+    private void showRaceResultsDialog(Race race) {
+        if (race == null || race.getRaceResults() == null || race.getRaceResults().isEmpty()) {
+            Log.e(TAG, "No race results to show");
+            return;
+        }
+
+        // Create dialog
+        Dialog resultsDialog = new Dialog(this);
+        resultsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        resultsDialog.setContentView(R.layout.race_results_dialog);
+
+        // Set dialog width to match parent
+        Window window = resultsDialog.getWindow();
+        if (window != null) {
+            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        // Set title
+        TextView titleTextView = resultsDialog.findViewById(R.id.race_results_title);
+        titleTextView.setText(getString(R.string.race_results_title, race.getRaceName()));
+
+        // Setup RecyclerView
+        RecyclerView recyclerView = resultsDialog.findViewById(R.id.race_results_recycler_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        RaceResultsAdapter adapter = new RaceResultsAdapter(this, race.getRaceResults());
+        recyclerView.setAdapter(adapter);
+
+        // Set close button
+        Button closeButton = resultsDialog.findViewById(R.id.close_results_button);
+        closeButton.setOnClickListener(v -> resultsDialog.dismiss());
+
+        resultsDialog.show();
+    }
+
     private void showResults(WeeklyRace weeklyRace) {
 
         loadingScreen.postLoadingStatus(this.getString(R.string.fetching_race_result, ""));
@@ -311,6 +356,13 @@ public class EventActivity extends AppCompatActivity {
                     Integer teamColorObj = Constants.TEAM_COLOR.get(teamId);
                     teamColor.setBackgroundColor(ContextCompat.getColor(this, Objects.requireNonNullElseGet(teamColorObj, () -> R.color.mercedes_f1)));
                 }
+
+                // Make the podium clickable
+                View resultsView = findViewById(R.id.timer_card_results);
+                resultsView.setOnClickListener(v -> showRaceResultsDialog(race));
+
+                // Store the race for later use
+                this.currentRace = race;
             }
         });
     }
