@@ -182,6 +182,12 @@ public class Constants {
         put("DEC", "DIC");
     }};
 
+    public static final Map<String, String> RESULT_STATUS_ABBR = new HashMap<String, String>() {{
+        put("retired", "RET");
+        put("disqualified", "DSQ");
+        put("lapped", "LAP");
+    }};
+
     public static final List<Integer> PODIUM_DRIVER_NAME = List.of(
             R.id.first_name,
             R.id.second_name,

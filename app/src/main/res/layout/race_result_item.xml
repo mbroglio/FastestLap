@@ -27,6 +27,10 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:fontFamily="@font/orbitron_bold"
+        android:autoSizeMaxTextSize="@dimen/page_title_text_size"
+        android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+        android:autoSizeTextType="uniform"
+        android:maxLines="1"
         android:textColor="@color/white"
         android:textSize="14sp" />
 

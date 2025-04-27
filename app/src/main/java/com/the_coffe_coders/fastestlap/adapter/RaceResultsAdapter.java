@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -39,15 +40,26 @@ public class RaceResultsAdapter extends RecyclerView.Adapter<RaceResultsAdapter.
     public void onBindViewHolder(@NonNull ResultViewHolder holder, int position) {
         RaceResult result = raceResults.get(position);
 
-        holder.positionText.setText(String.valueOf(position + 1));
-        holder.driverName.setText(result.getDriver().getFullName());
-        holder.teamName.setText(result.getConstructor().getName());
+        UIUtils.multipleSetTextViewText(
+                new String[]{
+                        String.valueOf(position + 1),
+                        result.getDriver().getFullName(),
+                        result.getConstructor().getName(),
+                        String.valueOf(Integer.parseInt(result.getGrid()) - (position + 1))},
+                new TextView[]{
+                        holder.positionText,
+                        holder.driverName,
+                        holder.teamName,
+                        holder.deltaPosition});
 
-        // Set team color
+        if(!result.isFinished()){
+            UIUtils.singleSetTextViewText(Constants.RESULT_STATUS_ABBR.get(result.getStatus().toLowerCase()), holder.status);
+        }
+
         String teamId = result.getConstructor().getConstructorId();
         Integer teamColorObj = Constants.TEAM_COLOR.get(teamId);
         int teamColor = ContextCompat.getColor(context,
-                Objects.requireNonNullElseGet(teamColorObj, () -> R.color.mercedes_f1));
+                Objects.requireNonNullElseGet(teamColorObj, () -> R.color.white));
         holder.teamColorIndicator.setBackgroundColor(teamColor);
     }
 
@@ -56,11 +68,9 @@ public class RaceResultsAdapter extends RecyclerView.Adapter<RaceResultsAdapter.
         return raceResults.size();
     }
 
-    static class ResultViewHolder extends RecyclerView.ViewHolder {
-        TextView positionText;
+    public static class ResultViewHolder extends RecyclerView.ViewHolder {
+        TextView positionText, driverName, teamName, status, deltaPosition;
         View teamColorIndicator;
-        TextView driverName;
-        TextView teamName;
 
         ResultViewHolder(View itemView) {
             super(itemView);
@@ -68,6 +78,8 @@ public class RaceResultsAdapter extends RecyclerView.Adapter<RaceResultsAdapter.
             teamColorIndicator = itemView.findViewById(R.id.team_color_indicator);
             driverName = itemView.findViewById(R.id.driver_name);
             teamName = itemView.findViewById(R.id.team_name);
+            status = itemView.findViewById(R.id.status);
+            deltaPosition = itemView.findViewById(R.id.delta_position_text);
         }
     }
 }

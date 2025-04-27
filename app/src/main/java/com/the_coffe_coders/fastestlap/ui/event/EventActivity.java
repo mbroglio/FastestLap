@@ -15,13 +15,13 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.adapter.RaceResultsAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Practice;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
@@ -35,6 +35,7 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
+import com.the_coffe_coders.fastestlap.ui.event.fragment.RaceResultsFragment;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
@@ -50,12 +51,7 @@ import java.util.List;
 import java.util.Objects;
 
 import android.app.Dialog;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.view.ViewGroup;
 import android.view.Window;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class EventActivity extends AppCompatActivity {
     private static final String TAG = "EventActivity";
@@ -284,18 +280,18 @@ public class EventActivity extends AppCompatActivity {
             return;
         }
 
-        // Create dialog
-        Dialog resultsDialog = new Dialog(this);
-        resultsDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        resultsDialog.setContentView(R.layout.race_results_dialog);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        RaceResultsFragment raceResultsFragment = new RaceResultsFragment();
+        Bundle args = new Bundle();
+        args.putParcelable("RACE", race);
+        raceResultsFragment.setArguments(args);
+        raceResultsFragment.show(fragmentManager, "ForgotPasswordFragment");
+
+
+
 
         // Set dialog width to match parent
-        Window window = resultsDialog.getWindow();
-        if (window != null) {
-            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
-
+       /*
         // Set title
         TextView titleTextView = resultsDialog.findViewById(R.id.race_results_title);
         titleTextView.setText(getString(R.string.race_results_title, race.getRaceName()));
@@ -311,6 +307,8 @@ public class EventActivity extends AppCompatActivity {
         closeButton.setOnClickListener(v -> resultsDialog.dismiss());
 
         resultsDialog.show();
+
+        */
     }
 
     private void showResults(WeeklyRace weeklyRace) {
