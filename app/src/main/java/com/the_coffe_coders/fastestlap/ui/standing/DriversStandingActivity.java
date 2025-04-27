@@ -17,10 +17,14 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.adapter.DriversStandingRecyclerAdapter;
+import com.the_coffe_coders.fastestlap.adapter.PastEventsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
@@ -102,7 +106,7 @@ public class DriversStandingActivity extends AppCompatActivity {
     }
 
     private void setupPage() {
-        LinearLayout driverStanding = findViewById(R.id.driver_standing);
+        //LinearLayout driverStanding = findViewById(R.id.driver_standing);
 
         loadingScreen.postLoadingStatus(this.getString(R.string.initializing));
 
@@ -111,16 +115,16 @@ public class DriversStandingActivity extends AppCompatActivity {
 
         livedata.observe(this, result -> {
             if (result instanceof Result.Loading) {
-                // Gestisci lo stato di caricamento, ad esempio mostrando un indicatore di caricamento
-                Log.i(TAG, "DRIVER STANDINGS LOADING");
-                // Qui potresti voler mostrare una UI di caricamento
                 return;
             }
             if (result.isSuccess()) {
                 Log.i(TAG, "DRIVER STANDINGS SUCCESS");
-                driverStanding.removeAllViews();
+                //driverStanding.removeAllViews();
                 driverStandings = ((Result.DriverStandingsSuccess) result).getData();
                 List<DriverStandingsElement> driverList = driverStandings.getDriverStandingsElements();
+
+                RecyclerView driversStandingRecyclerView = findViewById(R.id.drivers_standing_recycler_view);
+                driversStandingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
                 if (driverList.isEmpty()) {
                     Log.i(TAG, "DRIVER STANDINGS EMPTY");
@@ -131,6 +135,15 @@ public class DriversStandingActivity extends AppCompatActivity {
                         }
                         if (driverResult.isSuccess()) {
                             List<Driver> driverList2 = ((Result.DriversSuccess) driverResult).getData();
+
+                            DriversStandingRecyclerAdapter driversStandingAdapter = new DriversStandingRecyclerAdapter(this, null, driverList2, driverId, loadingScreen);
+                            driversStandingRecyclerView.setAdapter(driversStandingAdapter);
+
+                            for (int i = 0; i < driversStandingAdapter.getItemCount(); i++) {
+                                driversStandingAdapter.onBindViewHolder(
+                                        driversStandingAdapter.createViewHolder(driversStandingRecyclerView, driversStandingAdapter.getItemViewType(i)), i);
+                            }
+                            /*
                             for (int i = 0; i < driverList2.size(); i++) {
                                 View driverCard = generateDriverCard(driverList2.get(i), driverId, i, driverList2.size());
                                 driverStanding.addView(driverCard);
@@ -142,10 +155,22 @@ public class DriversStandingActivity extends AppCompatActivity {
                             View space = new View(DriversStandingActivity.this);
                             space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
                             driverStanding.addView(space);
+
+                             */
                         }
                     });
                 } else {
                     Log.i(TAG, "DRIVER STANDINGS NOT EMPTY");
+
+                    DriversStandingRecyclerAdapter driversStandingAdapter = new DriversStandingRecyclerAdapter(this, driverList, null, driverId, loadingScreen);
+                    driversStandingRecyclerView.setAdapter(driversStandingAdapter);
+
+                    for (int i = 0; i < driversStandingAdapter.getItemCount(); i++) {
+                        driversStandingAdapter.onBindViewHolder(
+                                driversStandingAdapter.createViewHolder(driversStandingRecyclerView, driversStandingAdapter.getItemViewType(i)), i);
+                    }
+
+                    /*
                     for (int k = 0; k < driverList.size(); k++) {
                         View driverCard = generateDriverCard(driverList.get(k), driverId, k, driverList.size());
                         driverStanding.addView(driverCard);
@@ -157,6 +182,8 @@ public class DriversStandingActivity extends AppCompatActivity {
                     View space = new View(DriversStandingActivity.this);
                     space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 20));
                     driverStanding.addView(space);
+
+                     */
                 }
             } else {
                 Log.i(TAG, "DRIVER STANDINGS ERROR");
