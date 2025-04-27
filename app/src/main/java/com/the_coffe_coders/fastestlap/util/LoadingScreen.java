@@ -40,11 +40,19 @@ public class LoadingScreen {
         loadingWheel.startAnimation(rotateAnimation);
     }    private final Runnable timerRunnable = this::hide;
 
-    public void showLoadingScreen() {
+    public void showLoadingScreen(boolean invisible) {
         if (fragmentView != null) {
-            fragmentView.setVisibility(View.GONE);
+            if(invisible){
+                fragmentView.setVisibility(View.INVISIBLE);
+            } else {
+                fragmentView.setVisibility(View.GONE);
+            }
         } else {
-            activityView.setVisibility(View.GONE);
+            if(invisible){
+                activityView.setVisibility(View.INVISIBLE);
+            } else {
+                activityView.setVisibility(View.GONE);
+            }
         }
 
         loadingScreen.setVisibility(View.VISIBLE);

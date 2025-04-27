@@ -14,10 +14,13 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.adapter.UpcomingEventsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
@@ -55,7 +58,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         upcomingEventsLayout = findViewById(R.id.upcoming_events_layout);
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, upcomingEventsLayout, null);
 
-        loadingScreen.showLoadingScreen();
+        loadingScreen.showLoadingScreen(true);
 
         eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
         trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(getApplication())).get(TrackViewModel.class);
@@ -87,10 +90,19 @@ public class UpcomingEventsActivity extends AppCompatActivity {
             if (result.isSuccess()) {
                 List<WeeklyRace> races = ((Result.WeeklyRaceSuccess) result).getData();
                 Log.i("UpcomingEvents", "SUCCESS");
-                LinearLayout upcomingEvents = findViewById(R.id.upcoming_events_list);
-                upcomingEvents.removeAllViews();
+
+                //LinearLayout upcomingEvents = findViewById(R.id.upcoming_events_list);
+                //upcomingEvents.removeAllViews();
+
                 List<WeeklyRace> upcomingRaces = eventViewModel.extractUpcomingRaces(races);
                 Log.i("UpcomingEvents", "upcomingRaces: " + upcomingRaces.size());
+
+                RecyclerView upcomingEventsRecyclerView = findViewById(R.id.upcoming_events_recycler_view);
+                upcomingEventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+                UpcomingEventsRecyclerAdapter upcomingEventsAdapter = new UpcomingEventsRecyclerAdapter(this, upcomingRaces, trackViewModel, this, loadingScreen);
+                upcomingEventsRecyclerView.setAdapter(upcomingEventsAdapter);
+
+                /*
                 for (int i = 0; i < upcomingRaces.size(); i++) {
                     createEventCard(upcomingEvents, upcomingRaces.get(i), i, upcomingRaces.size());
                 }
@@ -98,6 +110,8 @@ public class UpcomingEventsActivity extends AppCompatActivity {
                 View space = new View(UpcomingEventsActivity.this);
                 space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, Constants.SPACER_HEIGHT));
                 upcomingEvents.addView(space);
+
+                 */
             } else {
                 loadingScreen.hideLoadingScreen();
             }
@@ -106,6 +120,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
     }
 
+    /*
     private void createEventCard(LinearLayout eventsListLayout, WeeklyRace weeklyRace, int i, int totalRaces) {
 
         eventsListLayout.addView(generateEventCard(weeklyRace, i, totalRaces));
@@ -177,6 +192,8 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
         loadingScreen.hideLoadingScreenWithCondition(counter == totalRaces - 1);
     }
+
+     */
 
     @Override
     protected void onResume() {

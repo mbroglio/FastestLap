@@ -62,7 +62,7 @@ public class PastEventsActivity extends AppCompatActivity {
         pastEventsLayout = findViewById(R.id.past_events_layout);
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, pastEventsLayout, null);
 
-        loadingScreen.showLoadingScreen();
+        loadingScreen.showLoadingScreen(true);
 
         eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
         trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(getApplication())).get(TrackViewModel.class);
@@ -105,7 +105,7 @@ public class PastEventsActivity extends AppCompatActivity {
 
                         RecyclerView pastEventsRecyclerView = findViewById(R.id.past_events_recycler_view);
                         pastEventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-                        PastEventsRecyclerAdapter adapter = new PastEventsRecyclerAdapter(this, races, trackViewModel, this);
+                        PastEventsRecyclerAdapter adapter = new PastEventsRecyclerAdapter(this, races, trackViewModel, this, loadingScreen);
                         pastEventsRecyclerView.setAdapter(adapter);
                         /*
 
@@ -122,7 +122,7 @@ public class PastEventsActivity extends AppCompatActivity {
 
                          */
 
-                        loadingScreen.hideLoadingScreen();
+                        //loadingScreen.hideLoadingScreen();
                     } else {
                         loadingScreen.hideLoadingScreen();
                     }
@@ -216,7 +216,7 @@ public class PastEventsActivity extends AppCompatActivity {
         podium.setVisibility(View.GONE);
         arrow.setVisibility(View.GONE);
     }
-    
+
      */
 
     @Override

@@ -66,7 +66,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         teamStandingLayout = findViewById(R.id.team_standing_layout);
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, teamStandingLayout, null);
 
-        loadingScreen.showLoadingScreen();
+        loadingScreen.showLoadingScreen(false);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 

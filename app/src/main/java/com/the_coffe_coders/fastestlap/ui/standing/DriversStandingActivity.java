@@ -69,7 +69,7 @@ public class DriversStandingActivity extends AppCompatActivity {
     private void start() {
         Log.i(TAG, "STARTING DRIVER STANDINGS ACTIVITY");
 
-        loadingScreen.showLoadingScreen();
+        loadingScreen.showLoadingScreen(false);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 

@@ -129,7 +129,7 @@ public class HomeFragment extends Fragment {
 
     private void setupLoadingScreen(View view) {
         loadingScreen = new LoadingScreen(view, getContext(), null, view.findViewById(R.id.home_refresh_layout));
-        loadingScreen.showLoadingScreen();
+        loadingScreen.showLoadingScreen(false);
         loadingScreen.updateProgress(0);
     }
 

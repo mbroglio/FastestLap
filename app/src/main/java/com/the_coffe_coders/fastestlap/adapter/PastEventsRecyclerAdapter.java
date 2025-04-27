@@ -22,6 +22,7 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import org.threeten.bp.LocalDateTime;
@@ -34,12 +35,15 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
     private final Context context;
     private final TrackViewModel trackViewModel;
     private final LifecycleOwner lifecycleOwner;
+    private final LoadingScreen loadingScreen;
+    private int counter = 0;
 
-    public PastEventsRecyclerAdapter(Context context, List<Race> races, TrackViewModel trackViewModel, LifecycleOwner lifecycleOwner) {
+    public PastEventsRecyclerAdapter(Context context, List<Race> races, TrackViewModel trackViewModel, LifecycleOwner lifecycleOwner, LoadingScreen loadingScreen) {
         this.context = context;
         this.races = races;
         this.trackViewModel = trackViewModel;
         this.lifecycleOwner = lifecycleOwner;
+        this.loadingScreen = loadingScreen;
     }
 
     @NonNull
@@ -106,6 +110,10 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
                         holder.pastEventCard.findViewById(Constants.PAST_RACE_DRIVER_NAME.get(i)));
             }
         }
+
+        counter++;
+        Log.i("PastEventsAdapter", "onBindViewHolder: " + counter + " / " + getItemCount());
+        loadingScreen.hideLoadingScreenWithCondition(counter == getItemCount() - 1);
     }
 
     private void setPendingPodium(@NonNull PastEventViewHolder holder) {

@@ -77,7 +77,7 @@ public class EventActivity extends AppCompatActivity {
     private void start() {
         eventLayout = findViewById(R.id.event_layout);
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, eventLayout, null);
-        loadingScreen.showLoadingScreen();
+        loadingScreen.showLoadingScreen(false);
         loadingScreen.updateProgress(0);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
