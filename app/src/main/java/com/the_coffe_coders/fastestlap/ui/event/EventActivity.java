@@ -286,29 +286,6 @@ public class EventActivity extends AppCompatActivity {
         args.putParcelable("RACE", race);
         raceResultsFragment.setArguments(args);
         raceResultsFragment.show(fragmentManager, "ForgotPasswordFragment");
-
-
-
-
-        // Set dialog width to match parent
-       /*
-        // Set title
-        TextView titleTextView = resultsDialog.findViewById(R.id.race_results_title);
-        titleTextView.setText(getString(R.string.race_results_title, race.getRaceName()));
-
-        // Setup RecyclerView
-        RecyclerView recyclerView = resultsDialog.findViewById(R.id.race_results_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        RaceResultsAdapter adapter = new RaceResultsAdapter(this, race.getRaceResults());
-        recyclerView.setAdapter(adapter);
-
-        // Set close button
-        Button closeButton = resultsDialog.findViewById(R.id.close_results_button);
-        closeButton.setOnClickListener(v -> resultsDialog.dismiss());
-
-        resultsDialog.show();
-
-        */
     }
 
     private void showResults(WeeklyRace weeklyRace) {

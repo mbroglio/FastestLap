@@ -13,10 +13,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.adapter.PastEventsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
@@ -100,6 +103,12 @@ public class PastEventsActivity extends AppCompatActivity {
                         races.sort(Comparator.comparingInt(Race::getRoundAsInt));
                         Collections.reverse(races);
 
+                        RecyclerView pastEventsRecyclerView = findViewById(R.id.past_events_recycler_view);
+                        pastEventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+                        PastEventsRecyclerAdapter adapter = new PastEventsRecyclerAdapter(this, races, trackViewModel, this);
+                        pastEventsRecyclerView.setAdapter(adapter);
+                        /*
+
                         LinearLayout pastEvents = findViewById(R.id.past_events_list);
                         pastEvents.removeAllViews();
                         //List<WeeklyRace> pastRaces = eventViewModel.extractPastRaces(races);
@@ -111,6 +120,8 @@ public class PastEventsActivity extends AppCompatActivity {
                         space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, Constants.SPACER_HEIGHT));
                         pastEvents.addView(space);
 
+                         */
+
                         loadingScreen.hideLoadingScreen();
                     } else {
                         loadingScreen.hideLoadingScreen();
@@ -121,6 +132,7 @@ public class PastEventsActivity extends AppCompatActivity {
 
     }
 
+    /*
     private void createEventCard(LinearLayout eventsListLayout, Race race, int i, int totalRaces) {
 
         eventsListLayout.addView(generateEventCard(race, i, totalRaces));
@@ -204,6 +216,8 @@ public class PastEventsActivity extends AppCompatActivity {
         podium.setVisibility(View.GONE);
         arrow.setVisibility(View.GONE);
     }
+    
+     */
 
     @Override
     protected void onResume() {

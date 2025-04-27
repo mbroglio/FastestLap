@@ -19,12 +19,12 @@ import com.the_coffe_coders.fastestlap.util.UIUtils;
 import java.util.List;
 import java.util.Objects;
 
-public class RaceResultsAdapter extends RecyclerView.Adapter<RaceResultsAdapter.ResultViewHolder> {
+public class RaceResultsRecyclerAdapter extends RecyclerView.Adapter<RaceResultsRecyclerAdapter.ResultViewHolder> {
 
     private final List<RaceResult> raceResults;
     private final Context context;
 
-    public RaceResultsAdapter(Context context, List<RaceResult> raceResults) {
+    public RaceResultsRecyclerAdapter(Context context, List<RaceResult> raceResults) {
         this.context = context;
         this.raceResults = raceResults;
     }
@@ -83,7 +83,7 @@ public class RaceResultsAdapter extends RecyclerView.Adapter<RaceResultsAdapter.
     public static class ResultViewHolder extends RecyclerView.ViewHolder {
         TextView positionText, driverName, teamName, status, deltaPosition;
         View teamColorIndicator;
-        ImageView statusIcon, deltaPositionIcon;
+        ImageView deltaPositionIcon;
 
         ResultViewHolder(View itemView) {
             super(itemView);

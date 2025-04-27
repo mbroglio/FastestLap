@@ -14,7 +14,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.adapter.RaceResultsAdapter;
+import com.the_coffe_coders.fastestlap.adapter.RaceResultsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 
 public class RaceResultsFragment extends DialogFragment {
@@ -41,7 +41,7 @@ public class RaceResultsFragment extends DialogFragment {
 
         RecyclerView recyclerView = view.findViewById(R.id.race_results_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        RaceResultsAdapter adapter = new RaceResultsAdapter(requireContext(), race.getRaceResults());
+        RaceResultsRecyclerAdapter adapter = new RaceResultsRecyclerAdapter(requireContext(), race.getRaceResults());
         recyclerView.setAdapter(adapter);
 
         Button closeButton = view.findViewById(R.id.close_results_button);
