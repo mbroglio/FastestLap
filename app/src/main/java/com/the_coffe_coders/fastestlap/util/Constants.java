@@ -33,7 +33,7 @@ public class Constants {
     public static final String WEATHER_ACCESS_PACKAGE = "com.weather.Weather";
     public static final String GOOGLE_WEATHER_ACCESS = "https://www.google.com/search?q=weather+in+%s";
 
-    public static final Map<String, Integer> TEAM_COLOR = new HashMap<String, Integer>() {{
+    public static final Map<String, Integer> TEAM_COLOR = new HashMap<>() {{
         put("mercedes", R.color.mercedes_f1);
         put("red_bull", R.color.redbull_f1);
         put("mclaren", R.color.mclaren_f1);
@@ -46,7 +46,7 @@ public class Constants {
         put("rb", R.color.racing_bulls_f1); // Racing Bulls
     }};
 
-    public static final Map<String, Integer> TEAM_GRADIENT_COLOR = new HashMap<String, Integer>() {{
+    public static final Map<String, Integer> TEAM_GRADIENT_COLOR = new HashMap<>() {{
         put("mercedes", R.drawable.gradient_color_mercedes);
         put("red_bull", R.drawable.gradient_color_red_bull);
         put("mclaren", R.drawable.gradient_color_mclaren);
@@ -167,7 +167,7 @@ public class Constants {
             "Race", R.id.session_5_time
     );
 
-    public static final Map<String, String> MONTH_ABBR_ENG_TO_ITA = new HashMap<String, String>() {{
+    public static final Map<String, String> MONTH_ABBR_ENG_TO_ITA = new HashMap<>() {{
         put("JAN", "GEN");
         put("FEB", "FEB");
         put("MAR", "MAR");
@@ -182,10 +182,11 @@ public class Constants {
         put("DEC", "DIC");
     }};
 
-    public static final Map<String, String> RESULT_STATUS_ABBR = new HashMap<String, String>() {{
+    public static final Map<String, String> RESULT_STATUS_ABBR = new HashMap<>() {{
         put("retired", "RET");
         put("disqualified", "DSQ");
         put("lapped", "LAP");
+        put("finished", "END");
     }};
 
     public static final List<Integer> PODIUM_DRIVER_NAME = List.of(

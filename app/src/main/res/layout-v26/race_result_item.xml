@@ -10,6 +10,7 @@
         android:id="@+id/position_text"
         android:layout_width="32dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:fontFamily="@font/orbitron_regular"
         android:gravity="center"
         android:textColor="@color/white"
@@ -19,20 +20,22 @@
         android:id="@+id/team_color_indicator"
         android:layout_width="4dp"
         android:layout_height="match_parent"
+        android:layout_gravity="center"
         android:layout_marginStart="4dp" />
 
     <TextView
         android:id="@+id/driver_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:gravity="start"
+        android:layout_gravity="center"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
-        android:fontFamily="@font/orbitron_bold"
+        android:layout_weight="1"
         android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
         android:autoSizeMinTextSize="@dimen/min_text_resize_1"
         android:autoSizeTextType="uniform"
+        android:fontFamily="@font/orbitron_bold"
+        android:gravity="start|center"
         android:maxLines="1"
         android:textColor="@color/white"
         android:textSize="@dimen/layout_subtitle_text_size" />
@@ -41,34 +44,37 @@
         android:id="@+id/team_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:fontFamily="@font/orbitron_regular"
-        android:textColor="@color/white"
+        android:layout_gravity="center"
         android:layout_marginEnd="5dp"
+        android:layout_weight="1"
         android:autoSizeMaxTextSize="@dimen/body_text_size"
         android:autoSizeMinTextSize="@dimen/min_text_resize_1"
         android:autoSizeTextType="uniform"
+        android:fontFamily="@font/orbitron_regular"
         android:gravity="center"
         android:maxLines="1"
+        android:textColor="@color/white"
         android:textSize="@dimen/body_text_size" />
 
     <TextView
         android:id="@+id/status"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_weight="0.6"
-        android:fontFamily="@font/orbitron_regular"
-        android:textColor="@color/white"
         android:autoSizeMaxTextSize="@dimen/text_minor_importance_size"
         android:autoSizeMinTextSize="@dimen/min_text_resize_2"
         android:autoSizeTextType="uniform"
+        android:fontFamily="@font/orbitron_regular"
         android:gravity="center"
         android:maxLines="1"
+        android:textColor="@color/white"
         android:textSize="@dimen/body_text_size" />
 
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
         android:layout_marginStart="5dp"
         android:layout_weight="0.4"
         android:orientation="horizontal">
@@ -77,9 +83,8 @@
             android:id="@+id/delta_position_icon"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:scaleType="fitCenter"
             android:importantForAccessibility="no"
-            android:src="@drawable/wheel_red_icon">
+            android:scaleType="fitCenter">
 
         </ImageView>
 
@@ -87,13 +92,13 @@
             android:id="@+id/delta_position_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center"
-            android:fontFamily="@font/orbitron_bold"
-            android:textColor="@color/white"
             android:autoSizeMaxTextSize="@dimen/text_minor_importance_size"
             android:autoSizeMinTextSize="@dimen/min_text_resize_2"
             android:autoSizeTextType="uniform"
+            android:fontFamily="@font/orbitron_bold"
+            android:gravity="center"
             android:maxLines="1"
+            android:textColor="@color/white"
             android:textSize="@dimen/body_text_size">
 
         </TextView>

@@ -10,12 +10,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.RaceResultsAdapter;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
-
 
 public class RaceResultsFragment extends DialogFragment {
     private Race race;
@@ -39,11 +39,13 @@ public class RaceResultsFragment extends DialogFragment {
         TextView titleTextView = view.findViewById(R.id.race_results_title);
         titleTextView.setText(race.getRaceName().toUpperCase());
 
-        // Setup RecyclerView
         RecyclerView recyclerView = view.findViewById(R.id.race_results_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         RaceResultsAdapter adapter = new RaceResultsAdapter(requireContext(), race.getRaceResults());
         recyclerView.setAdapter(adapter);
+
+        Button closeButton = view.findViewById(R.id.close_results_button);
+        closeButton.setOnClickListener(v -> dismiss());
 
         return view;
     }

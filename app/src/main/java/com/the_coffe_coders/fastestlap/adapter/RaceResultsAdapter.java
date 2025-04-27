@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -40,20 +41,31 @@ public class RaceResultsAdapter extends RecyclerView.Adapter<RaceResultsAdapter.
     public void onBindViewHolder(@NonNull ResultViewHolder holder, int position) {
         RaceResult result = raceResults.get(position);
 
+        int delta = Integer.parseInt(result.getGrid()) - (position + 1);
+
         UIUtils.multipleSetTextViewText(
                 new String[]{
                         String.valueOf(position + 1),
                         result.getDriver().getFullName(),
                         result.getConstructor().getName(),
-                        String.valueOf(Integer.parseInt(result.getGrid()) - (position + 1))},
+                        String.valueOf(delta)},
                 new TextView[]{
                         holder.positionText,
                         holder.driverName,
                         holder.teamName,
                         holder.deltaPosition});
 
-        if(!result.isFinished()){
-            UIUtils.singleSetTextViewText(Constants.RESULT_STATUS_ABBR.get(result.getStatus().toLowerCase()), holder.status);
+        UIUtils.singleSetTextViewText(Constants.RESULT_STATUS_ABBR.get(result.getStatus().toLowerCase()), holder.status);
+
+        if(delta > 0){
+            holder.deltaPositionIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.up_arrow));
+            holder.deltaPositionIcon.setColorFilter(ContextCompat.getColor(context, R.color.kick_f1), android.graphics.PorterDuff.Mode.SRC_IN);
+        } else if (delta < 0) {
+            holder.deltaPositionIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.down_arrow));
+            holder.deltaPositionIcon.setColorFilter(ContextCompat.getColor(context, R.color.ferrari_f1), android.graphics.PorterDuff.Mode.SRC_IN);
+        }else{
+            holder.deltaPositionIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.equals_symbol));
+            holder.deltaPositionIcon.setColorFilter(ContextCompat.getColor(context, R.color.timer_gray), android.graphics.PorterDuff.Mode.SRC_IN);
         }
 
         String teamId = result.getConstructor().getConstructorId();
@@ -71,6 +83,7 @@ public class RaceResultsAdapter extends RecyclerView.Adapter<RaceResultsAdapter.
     public static class ResultViewHolder extends RecyclerView.ViewHolder {
         TextView positionText, driverName, teamName, status, deltaPosition;
         View teamColorIndicator;
+        ImageView statusIcon, deltaPositionIcon;
 
         ResultViewHolder(View itemView) {
             super(itemView);
@@ -80,6 +93,7 @@ public class RaceResultsAdapter extends RecyclerView.Adapter<RaceResultsAdapter.
             teamName = itemView.findViewById(R.id.team_name);
             status = itemView.findViewById(R.id.status);
             deltaPosition = itemView.findViewById(R.id.delta_position_text);
+            deltaPositionIcon = itemView.findViewById(R.id.delta_position_icon);
         }
     }
 }
