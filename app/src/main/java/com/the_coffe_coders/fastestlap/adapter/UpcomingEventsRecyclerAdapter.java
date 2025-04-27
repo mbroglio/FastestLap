@@ -34,7 +34,7 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
     private final LifecycleOwner lifecycleOwner;
     private final LoadingScreen loadingScreen;
     private View eventCard;
-    private int counter = 0;
+    private int counter;
 
     public UpcomingEventsRecyclerAdapter(Context context, List<WeeklyRace> races, TrackViewModel trackViewModel, LifecycleOwner lifecycleOwner, LoadingScreen loadingScreen) {
         this.context = context;
@@ -42,6 +42,7 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
         this.trackViewModel = trackViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.loadingScreen = loadingScreen;
+        this.counter = 0;
     }
 
     @NonNull
@@ -65,6 +66,7 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
     @Override
     public void onBindViewHolder(@NonNull UpcomingEventsRecyclerAdapter.UpcomingEventViewHolder holder, int position) {
         WeeklyRace weeklyRace = races.get(position);
+        Log.i("UpcomingEventsAdapter", "onBindViewHolder: " + weeklyRace);
 
         trackViewModel.getTrack(weeklyRace.getTrack().getTrackId()).observe(lifecycleOwner, result -> {
             if(result instanceof Result.Loading) {
@@ -96,7 +98,7 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
                     });
 
                     counter++;
-                    Log.i("UpcomingEventsAdapter", "onBindViewHolder: " + counter + " / " + getItemCount());
+                    Log.i("UpcomingEvent", "onBindViewHolder " + counter + "/" + getItemCount());
                     loadingScreen.hideLoadingScreenWithCondition(counter == getItemCount() - 1);
                 });
 

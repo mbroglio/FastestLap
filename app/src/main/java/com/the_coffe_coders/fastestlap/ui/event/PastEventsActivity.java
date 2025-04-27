@@ -105,8 +105,15 @@ public class PastEventsActivity extends AppCompatActivity {
 
                         RecyclerView pastEventsRecyclerView = findViewById(R.id.past_events_recycler_view);
                         pastEventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-                        PastEventsRecyclerAdapter adapter = new PastEventsRecyclerAdapter(this, races, trackViewModel, this, loadingScreen);
-                        pastEventsRecyclerView.setAdapter(adapter);
+                        PastEventsRecyclerAdapter pastEventsAdapter = new PastEventsRecyclerAdapter(this, races, trackViewModel, this, loadingScreen);
+                        pastEventsRecyclerView.setAdapter(pastEventsAdapter);
+
+                        for (int i = 0; i < pastEventsAdapter.getItemCount(); i++) {
+                            pastEventsAdapter.onBindViewHolder(
+                                    pastEventsAdapter.createViewHolder(pastEventsRecyclerView, pastEventsAdapter.getItemViewType(i)), i);
+                        }
+
+
                         /*
 
                         LinearLayout pastEvents = findViewById(R.id.past_events_list);

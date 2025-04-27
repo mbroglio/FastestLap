@@ -102,6 +102,11 @@ public class UpcomingEventsActivity extends AppCompatActivity {
                 UpcomingEventsRecyclerAdapter upcomingEventsAdapter = new UpcomingEventsRecyclerAdapter(this, upcomingRaces, trackViewModel, this, loadingScreen);
                 upcomingEventsRecyclerView.setAdapter(upcomingEventsAdapter);
 
+                for (int i = 0; i < upcomingEventsAdapter.getItemCount(); i++) {
+                    upcomingEventsAdapter.onBindViewHolder(
+                            upcomingEventsAdapter.createViewHolder(upcomingEventsRecyclerView, upcomingEventsAdapter.getItemViewType(i)), i);
+                }
+
                 /*
                 for (int i = 0; i < upcomingRaces.size(); i++) {
                     createEventCard(upcomingEvents, upcomingRaces.get(i), i, upcomingRaces.size());
