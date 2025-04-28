@@ -35,6 +35,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/top_bar_layout">
 
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/constructors_standing_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </androidx.recyclerview.widget.RecyclerView>
+        <!--
         <ScrollView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
@@ -52,6 +59,7 @@
             </LinearLayout>
 
         </ScrollView>
+        -->
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

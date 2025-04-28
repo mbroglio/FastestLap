@@ -15,11 +15,14 @@ import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.adapter.ConstructorStandingsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
@@ -45,8 +48,11 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
     private final boolean constructorToProcess = true;
     LoadingScreen loadingScreen;
 
+    private DriverViewModel driverViewModel;
+    private ConstructorViewModel constructorViewModel;
     private SwipeRefreshLayout teamStandingLayout;
     private ConstructorStandings constructorStandings;
+    private ConstructorStandingsViewModel constructorStandingsViewModel;
     private String constructorId;
     private int counter = 0;
 
@@ -67,6 +73,8 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, teamStandingLayout, null);
 
         loadingScreen.showLoadingScreen(false);
+
+        initializeViewModels();
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
@@ -98,30 +106,47 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         setupPage();
     }
 
+    private void initializeViewModels() {
+        constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory()).get(ConstructorStandingsViewModel.class);
+        constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
+        driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(getApplication())).get(DriverViewModel.class);
+    }
+
     private void setupPage() {
-        LinearLayout teamStanding = findViewById(R.id.team_standing);
+        //LinearLayout teamStanding = findViewById(R.id.team_standing);
 
         loadingScreen.postLoadingStatus(this.getString(R.string.initializing));
 
-        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory()).get(ConstructorStandingsViewModel.class);
         MutableLiveData<Result> liveData = (MutableLiveData<Result>) constructorStandingsViewModel.getConstructorStandings();
         Log.i(TAG, "Constructor Standings: " + liveData);
         liveData.observe(this, result -> {
             if (result instanceof Result.Loading) {
-                // Gestisci lo stato di caricamento, ad esempio mostrando un indicatore di caricamento
                 Log.i(TAG, "Constructor Standings LOADING");
-                // Qui potresti voler mostrare una UI di caricamento
                 return;
             }
             if (result.isSuccess()) {
-                teamStanding.removeAllViews();
+                //teamStanding.removeAllViews();
                 constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
                 List<ConstructorStandingsElement> constructorList = constructorStandings.getConstructorStandings();
+
+                RecyclerView constructorsStandingRecyclerView = findViewById(R.id.constructors_standing_recycler_view);
+                constructorsStandingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
                 if (constructorList.isEmpty()) {
                     Log.i(TAG, "Constructor Standings is empty");
                 } else {
                     Log.i(TAG, "Constructor Standings is not empty");
+
+                    ConstructorStandingsRecyclerAdapter constructorsStandingAdapter = new ConstructorStandingsRecyclerAdapter(this, constructorId, constructorList, driverViewModel, constructorViewModel, this, loadingScreen);
+                    constructorsStandingRecyclerView.setAdapter(constructorsStandingAdapter);
+
+                    for (int i = 0; i < constructorsStandingAdapter.getItemCount(); i++) {
+                        constructorsStandingAdapter.onBindViewHolder(
+                                constructorsStandingAdapter.createViewHolder(constructorsStandingRecyclerView, constructorsStandingAdapter.getItemViewType(i)), i);
+                    }
+
+
+                    /*
                     for (int i = 0; i < constructorList.size(); i++) {
                         View teamCard = generateTeamCard(constructorList.get(i), constructorId, i, constructorList.size());
                         teamStanding.addView(teamCard);
@@ -133,6 +158,8 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                     View space = new View(ConstructorsStandingActivity.this);
                     space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, Constants.SPACER_HEIGHT));
                     teamStanding.addView(space);
+
+                     */
                 }
             } else if (result instanceof Result.Error) {
                 Result.Error error = (Result.Error) result;
@@ -142,9 +169,9 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         });
     }
 
+    /*
     private View generateTeamCard(ConstructorStandingsElement standingElement, String constructorIdToHighlight, int pos, int size) {
         String teamId = standingElement.getConstructor().getConstructorId();
-        ConstructorViewModel constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
         MutableLiveData<Result> liveData = constructorViewModel.getSelectedConstructor(teamId);
 
         View teamCard = getLayoutInflater().inflate(R.layout.team_card, null);
@@ -171,12 +198,12 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
 
 
-                /* NOT WORKING: MAKES THE PAGE LAGGY
+                NOT WORKING: MAKES THE PAGE LAGGY
                 UIUtils.loadSequenceOfImagesWithGlide(this,
                         new String[]{constructor.getCar_pic_url(), constructor.getTeam_logo_url()},
                         new ImageView[]{teamCard.findViewById(R.id.car_image), teamCard.findViewById(R.id.team_logo)},
                         () -> generateTeamCardStepTwo(constructor, standingElement, teamCard, constructorIdToHighlight, teamId, pos, size));
-                 */
+
             }
 
         });
@@ -185,7 +212,6 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
     }
 
     private void generateTeamCardStepTwo(Constructor constructor, ConstructorStandingsElement standingElement, View teamCard, String constructorIdToHighlight, String teamId, int pos, int size) {
-        DriverViewModel driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(getApplication())).get(DriverViewModel.class);
         MutableLiveData<Result> driverOneLiveData = driverViewModel.getDriver(constructor.getDriverOneId());
         MutableLiveData<Result> driverTwoLiveData = driverViewModel.getDriver(constructor.getDriverTwoId());
 
@@ -225,7 +251,8 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
     private void generateTeamCardFinalStep(View teamCard, String constructorIdToHighlight, String teamId, ConstructorStandingsElement standingElement, int pos, int size) {
 
-        UIUtils.setTextViewTextWithCondition(standingElement.getPosition() == null, ContextCompat.getString(this, R.string.last_constructor_position), //if true
+        UIUtils.setTextViewTextWithCondition(standingElement.getPosition() == null,
+                ContextCompat.getString(this, R.string.last_constructor_position), //if true
                 standingElement.getPosition(), //if false
                 teamCard.findViewById(R.id.team_position));
 
@@ -246,6 +273,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
         loadingScreen.hideLoadingScreenWithCondition(counter == size - 1);
     }
+    */
 
     @Override
     protected void onResume() {

@@ -50,7 +50,9 @@ public class DriversStandingActivity extends AppCompatActivity {
     private static final String TAG = "DriverCardActivity";
     private DriverStandings driverStandings;
     private LoadingScreen loadingScreen;
-
+    private DriverViewModel driverViewModel;
+    private DriverStandingsViewModel driverStandingsViewModel;
+    private ConstructorViewModel constructorViewModel;
     private SwipeRefreshLayout driverStandingLayout;
     private String driverId;
     private int counter = 0;
@@ -74,6 +76,8 @@ public class DriversStandingActivity extends AppCompatActivity {
         Log.i(TAG, "STARTING DRIVER STANDINGS ACTIVITY");
 
         loadingScreen.showLoadingScreen(false);
+
+        initializeViewModels();
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
@@ -105,12 +109,16 @@ public class DriversStandingActivity extends AppCompatActivity {
         setupPage();
     }
 
+    private void initializeViewModels() {
+        driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(getApplication())).get(DriverStandingsViewModel.class);
+        driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(getApplication())).get(DriverViewModel.class);
+        constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
+    }
+
     private void setupPage() {
         //LinearLayout driverStanding = findViewById(R.id.driver_standing);
 
         loadingScreen.postLoadingStatus(this.getString(R.string.initializing));
-
-        DriverStandingsViewModel driverStandingsViewModel = new ViewModelProvider(this, new DriverStandingsViewModelFactory(getApplication())).get(DriverStandingsViewModel.class);
         MutableLiveData<Result> livedata = driverStandingsViewModel.getDriverStandingsLiveData();//TODO get last update from shared preferences
 
         livedata.observe(this, result -> {
@@ -136,13 +144,14 @@ public class DriversStandingActivity extends AppCompatActivity {
                         if (driverResult.isSuccess()) {
                             List<Driver> driverList2 = ((Result.DriversSuccess) driverResult).getData();
 
-                            DriversStandingRecyclerAdapter driversStandingAdapter = new DriversStandingRecyclerAdapter(this, null, driverList2, driverId, loadingScreen);
+                            DriversStandingRecyclerAdapter driversStandingAdapter = new DriversStandingRecyclerAdapter(this, null, driverList2, driverId, driverViewModel, constructorViewModel, this, loadingScreen);
                             driversStandingRecyclerView.setAdapter(driversStandingAdapter);
 
                             for (int i = 0; i < driversStandingAdapter.getItemCount(); i++) {
                                 driversStandingAdapter.onBindViewHolder(
                                         driversStandingAdapter.createViewHolder(driversStandingRecyclerView, driversStandingAdapter.getItemViewType(i)), i);
                             }
+
                             /*
                             for (int i = 0; i < driverList2.size(); i++) {
                                 View driverCard = generateDriverCard(driverList2.get(i), driverId, i, driverList2.size());
@@ -162,7 +171,7 @@ public class DriversStandingActivity extends AppCompatActivity {
                 } else {
                     Log.i(TAG, "DRIVER STANDINGS NOT EMPTY");
 
-                    DriversStandingRecyclerAdapter driversStandingAdapter = new DriversStandingRecyclerAdapter(this, driverList, null, driverId, loadingScreen);
+                    DriversStandingRecyclerAdapter driversStandingAdapter = new DriversStandingRecyclerAdapter(this, driverList, null, driverId, driverViewModel, constructorViewModel,this, loadingScreen);
                     driversStandingRecyclerView.setAdapter(driversStandingAdapter);
 
                     for (int i = 0; i < driversStandingAdapter.getItemCount(); i++) {
@@ -200,6 +209,7 @@ public class DriversStandingActivity extends AppCompatActivity {
         return drivers;
     }
 
+    /*
     private View generateDriverCard(Driver driver, String driverId, int pos, int size) {
 
         DriverStandingsElement driverStandingsElement = new DriverStandingsElement();
@@ -288,5 +298,7 @@ public class DriversStandingActivity extends AppCompatActivity {
 
         loadingScreen.hideLoadingScreenWithCondition(counter == size - 1);
     }
+
+     */
 
 }

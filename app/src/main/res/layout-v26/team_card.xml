@@ -6,7 +6,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="10dp"
+    android:layout_marginTop="4dp"
     android:layout_marginEnd="10dp"
+    android:layout_marginBottom="4dp"
     android:clickable="true"
     android:focusable="true"
     tools:context=".ui.standing.ConstructorsStandingActivity">
@@ -38,8 +40,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_toEndOf="@id/team_position"
+                android:layout_toStartOf="@id/team_points"
                 android:fontFamily="@font/orbitron_bold"
+                android:autoSizeMaxTextSize="@dimen/layout_title_1_text_size"
+                android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
+                android:autoSizeTextType="uniform"
                 android:gravity="center"
+                android:maxLines="2"
                 android:text="@string/not_found"
                 android:textColor="@color/black"
                 android:textSize="@dimen/layout_title_1_text_size" />
@@ -75,7 +85,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    tools:ignore="UselessParent">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -89,7 +100,8 @@
                             android:layout_height="@dimen/image_size_30dp"
                             android:layout_alignParentStart="true"
                             android:layout_centerInParent="true"
-                            android:layout_gravity="fill" />
+                            android:layout_gravity="fill"
+                            android:importantForAccessibility="no" />
 
                         <TextView
                             android:id="@+id/driver_1_name"
@@ -122,7 +134,8 @@
                             android:layout_height="@dimen/image_size_30dp"
                             android:layout_alignParentStart="true"
                             android:layout_centerInParent="true"
-                            android:layout_gravity="fill" />
+                            android:layout_gravity="fill"
+                            android:importantForAccessibility="no" />
 
                         <TextView
                             android:id="@+id/driver_2_name"
@@ -158,6 +171,7 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="10dp"
+                    android:importantForAccessibility="no"
                     android:scaleType="fitCenter" />
 
                 <ImageView
@@ -166,6 +180,7 @@
                     android:layout_height="60dp"
                     android:layout_gravity="center"
                     android:layout_margin="5dp"
+                    android:importantForAccessibility="no"
                     android:scaleType="fitCenter" />
 
             </LinearLayout>

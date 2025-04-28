@@ -119,7 +119,7 @@ public class LoadingScreen {
 
     public void hideLoadingScreenWithCondition(boolean condition) {
         if (condition) {
-            handler.postDelayed(this::hide, 2000);
+            handler.postDelayed(this::hide, 1000);
         }
     }
 
