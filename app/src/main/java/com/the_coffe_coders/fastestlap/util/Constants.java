@@ -182,6 +182,23 @@ public class Constants {
         put("DEC", "DIC");
     }};
 
+    public static final Map<String, String> MONTH_ENG_TO_ITA = new HashMap<>() {{
+        put("january", "gennaio");
+        put("february", "febbraio");
+        put("march", "marzo");
+        put("april", "aprile");
+        put("may", "maggio");
+        put("june", "giugno");
+        put("july", "luglio");
+        put("august", "agosto");
+        put("sdeptember", "settembre");
+        put("october", "ottobre");
+        put("november", "novembre");
+        put("december", "dicembre");
+    }};
+
+
+
     public static final Map<String, String> RESULT_STATUS_ABBR = new HashMap<>() {{
         put("retired", "RET");
         put("disqualified", "DSQ");

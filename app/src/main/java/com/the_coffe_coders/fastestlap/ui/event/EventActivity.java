@@ -50,9 +50,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import android.app.Dialog;
-import android.view.Window;
-
 public class EventActivity extends AppCompatActivity {
     private static final String TAG = "EventActivity";
     private final boolean eventToProcess = true;
@@ -182,16 +179,14 @@ public class EventActivity extends AppCompatActivity {
                 new String[]{
                         "Round " + weeklyRace.getRound(),
                         weeklyRace.getSeason(),
-                        track.getGp_long_name(),
-                        weeklyRace.getDateInterval()},
+                        track.getGp_long_name()},
 
                 new TextView[]{
                         findViewById(R.id.round_number),
                         findViewById(R.id.event_year),
-                        findViewById(R.id.gp_name),
-                        findViewById(R.id.event_date),
-                }
-        );
+                        findViewById(R.id.gp_name)});
+
+        UIUtils.translateEventDateInterval(weeklyRace.getDateInterval(), findViewById(R.id.event_date));
 
         LinearLayout trackLayout = findViewById(R.id.track_outline_layout);
         trackLayout.setOnClickListener(v -> {
@@ -286,29 +281,6 @@ public class EventActivity extends AppCompatActivity {
         args.putParcelable("RACE", race);
         raceResultsFragment.setArguments(args);
         raceResultsFragment.show(fragmentManager, "ForgotPasswordFragment");
-
-
-
-
-        // Set dialog width to match parent
-       /*
-        // Set title
-        TextView titleTextView = resultsDialog.findViewById(R.id.race_results_title);
-        titleTextView.setText(getString(R.string.race_results_title, race.getRaceName()));
-
-        // Setup RecyclerView
-        RecyclerView recyclerView = resultsDialog.findViewById(R.id.race_results_recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        RaceResultsAdapter adapter = new RaceResultsAdapter(this, race.getRaceResults());
-        recyclerView.setAdapter(adapter);
-
-        // Set close button
-        Button closeButton = resultsDialog.findViewById(R.id.close_results_button);
-        closeButton.setOnClickListener(v -> resultsDialog.dismiss());
-
-        resultsDialog.show();
-
-        */
     }
 
     private void showResults(WeeklyRace weeklyRace) {
@@ -408,14 +380,6 @@ public class EventActivity extends AppCompatActivity {
             setChequeredFlag(eventSchedule, session);
         }
         loadingScreen.hideLoadingScreen();
-    }
-
-    private void setSchedule(String sessionName, String sessionDay, View eventSchedule, String sessionId) {
-        UIUtils.multipleSetTextViewText(
-                new String[]{sessionName, sessionDay},
-                new TextView[]{
-                        eventSchedule.findViewById(Constants.SESSION_NAME_FIELD.get(sessionId)),
-                        eventSchedule.findViewById(Constants.SESSION_DAY_FIELD.get(sessionId))});
     }
 
     private void setChequeredFlag(View view, Session session) {

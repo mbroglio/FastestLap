@@ -247,7 +247,7 @@ public class HomeFragment extends Fragment {
         );
 
         UIUtils.translateMonth(dateTime.getMonth().toString().substring(0, 3).toUpperCase(),
-                view.findViewById(R.id.last_race_month));
+                view.findViewById(R.id.last_race_month), false);
 
         MutableLiveData<Result> raceResultData = homeViewModel.getRaceResults(race.getRound());
         raceResultData.observe(getViewLifecycleOwner(), result -> {

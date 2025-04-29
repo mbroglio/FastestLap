@@ -164,7 +164,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         );
 
         UIUtils.translateMonth(weeklyRace.getDateTime().getMonth().toString().substring(0, 3).toUpperCase(),
-                finalEventCard.findViewById(R.id.upcoming_month));
+                finalEventCard.findViewById(R.id.upcoming_month), false);
 
         finalEventCard.setOnClickListener(v -> {
             Intent intent = new Intent(UpcomingEventsActivity.this, EventActivity.class);

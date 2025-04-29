@@ -24,7 +24,7 @@
             android:layout_weight="0.2"
             android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="YEAR"
+            android:text="@string/year_upper_case"
             android:textColor="@color/black"
             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -37,7 +37,7 @@
             android:layout_weight="0.8"
             android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="PODIUM"
+            android:text="@string/podium_upper_case"
             android:textColor="@color/black"
             android:textSize="@dimen/layout_subtitle_text_size">
 
