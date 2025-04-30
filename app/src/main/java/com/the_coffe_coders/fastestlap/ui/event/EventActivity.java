@@ -385,14 +385,6 @@ public class EventActivity extends AppCompatActivity {
         loadingScreen.hideLoadingScreen();
     }
 
-    private void setSchedule(String sessionName, String sessionDay, View eventSchedule, String sessionId) {
-        UIUtils.multipleSetTextViewText(
-                new String[]{sessionName, sessionDay},
-                new TextView[]{
-                        eventSchedule.findViewById(Constants.SESSION_NAME_FIELD.get(sessionId)),
-                        eventSchedule.findViewById(Constants.SESSION_DAY_FIELD.get(sessionId))});
-    }
-
     private void setChequeredFlag(View view, Session session) {
         String sessionId = session.getClass().getSimpleName();
         if (sessionId.equals("Practice")) {
