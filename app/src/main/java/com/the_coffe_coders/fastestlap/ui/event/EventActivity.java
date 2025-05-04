@@ -182,16 +182,14 @@ public class EventActivity extends AppCompatActivity {
                 new String[]{
                         "Round " + weeklyRace.getRound(),
                         weeklyRace.getSeason(),
-                        track.getGp_long_name(),
-                        weeklyRace.getDateInterval()},
+                        track.getGp_long_name()},
 
                 new TextView[]{
                         findViewById(R.id.round_number),
                         findViewById(R.id.event_year),
-                        findViewById(R.id.gp_name),
-                        findViewById(R.id.event_date),
-                }
-        );
+                        findViewById(R.id.gp_name)});
+
+        UIUtils.translateEventDateInterval(weeklyRace.getDateInterval(), findViewById(R.id.event_date));
 
         LinearLayout trackLayout = findViewById(R.id.track_outline_layout);
         trackLayout.setOnClickListener(v -> {

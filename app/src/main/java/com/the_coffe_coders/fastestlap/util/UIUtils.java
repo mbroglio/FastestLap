@@ -43,6 +43,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 
 import java.security.MessageDigest;
+import java.util.Objects;
 
 public class UIUtils {
 
@@ -307,6 +308,16 @@ public class UIUtils {
                 abbr,
                 textView);
     }
+
+    public static void translateEventDateInterval(String eventDate, TextView eventDateTextView){
+        String newEventDate = eventDate.split(" ")[0]+" " +
+                eventDate.split(" ")[1] + " " +
+                eventDate.split(" ")[2] + " " +
+                Objects.requireNonNull(Constants.MONTH_ENG_TO_ITA.get(eventDate.split(" ")[3].toLowerCase())).toUpperCase();
+
+        UIUtils.singleSetTextViewText(newEventDate, eventDateTextView);
+    }
+
 
     public static void setAppLocale() {
         if (AppCompatDelegate.getApplicationLocales().get(0) == null) {
