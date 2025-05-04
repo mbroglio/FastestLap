@@ -319,6 +319,10 @@ public class EventActivity extends AppCompatActivity {
             if (podium == null) {
                 showPendingResults();
             } else {
+                // Store the race for later use
+                this.currentRace = race;
+
+
                 Log.i(TAG, "Podium found" + podium.size());
                 for (int i = 0; i < 3; i++) {
                     String driverId = podium.get(i).getDriver().getDriverId();
@@ -334,10 +338,7 @@ public class EventActivity extends AppCompatActivity {
 
                 // Make the podium clickable
                 View resultsView = findViewById(R.id.timer_card_results);
-                resultsView.setOnClickListener(v -> showRaceResultsDialog(race));
-
-                // Store the race for later use
-                this.currentRace = race;
+                resultsView.setOnClickListener(v -> showRaceResultsDialog(currentRace));
             }
         });
     }
@@ -387,14 +388,6 @@ public class EventActivity extends AppCompatActivity {
         loadingScreen.hideLoadingScreen();
     }
 
-    private void setSchedule(String sessionName, String sessionDay, View eventSchedule, String sessionId) {
-        UIUtils.multipleSetTextViewText(
-                new String[]{sessionName, sessionDay},
-                new TextView[]{
-                        eventSchedule.findViewById(Constants.SESSION_NAME_FIELD.get(sessionId)),
-                        eventSchedule.findViewById(Constants.SESSION_DAY_FIELD.get(sessionId))});
-    }
-
     private void setChequeredFlag(View view, Session session) {
         String sessionId = session.getClass().getSimpleName();
         if (sessionId.equals("Practice")) {
@@ -409,7 +402,14 @@ public class EventActivity extends AppCompatActivity {
             LinearLayout currentSession = view.findViewById(Constants.SESSION_ROW.get(sessionId));
             currentSession.setClickable(true);
             currentSession.setFocusable(true);
-            currentSession.setOnClickListener(v -> Log.i(TAG, "session clicked"));
+            currentSession.setOnClickListener(v -> manageSessionScheduleClick(session));
+        }
+    }
+
+    private void manageSessionScheduleClick(Session session) {
+        String sessionId = session.getClass().getSimpleName();
+        if(sessionId.equals("Race")){
+            showRaceResultsDialog(currentRace);
         }
     }
 

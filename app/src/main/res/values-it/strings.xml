@@ -39,4 +39,6 @@
     <string name="upcoming_upper_case">PROSSIME</string>
     <string name="pts_upper_case">PUNTI</string>
     <string name="pod_upper_case">PODI</string>
+    <string name="fastest_lap_upper_case">GIRO VELOCE</string>
+    <string name="lap">Giro %1$s</string>
 </resources>

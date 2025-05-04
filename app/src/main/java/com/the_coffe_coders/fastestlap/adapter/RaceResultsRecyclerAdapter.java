@@ -1,6 +1,7 @@
 package com.the_coffe_coders.fastestlap.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,6 +42,8 @@ public class RaceResultsRecyclerAdapter extends RecyclerView.Adapter<RaceResults
     public void onBindViewHolder(@NonNull ResultViewHolder holder, int position) {
         RaceResult result = raceResults.get(position);
 
+        Log.i("RaceResultsRecyclerAdapter", "onBindViewHolder: " + result);
+
         int delta = Integer.parseInt(result.getGrid()) - (position + 1);
 
         UIUtils.multipleSetTextViewText(
@@ -57,6 +60,10 @@ public class RaceResultsRecyclerAdapter extends RecyclerView.Adapter<RaceResults
 
         if(!result.isFinished()){
             UIUtils.singleSetTextViewText(Constants.RESULT_STATUS_ABBR.get(result.getStatus().toLowerCase()), holder.status);
+        }else{
+            if(result.getTime() != null) {
+                UIUtils.singleSetTextViewText(result.getTime().getTime(), holder.status);
+            }
         }
         
         if(delta > 0){

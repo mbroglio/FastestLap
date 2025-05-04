@@ -34,6 +34,8 @@ public class RaceResult implements Parcelable {
     private String grid;
     private String laps;
     private String status;
+    private RaceResultTime time;
+    private RaceResultFastestLap fastestLap;
 
     protected RaceResult(Parcel in) {
         uid = in.readInt();
@@ -44,6 +46,8 @@ public class RaceResult implements Parcelable {
         grid = in.readString();
         laps = in.readString();
         status = in.readString();
+        time = in.readParcelable(RaceResultTime.class.getClassLoader());
+        fastestLap = in.readParcelable(RaceResultFastestLap.class.getClassLoader());
     }
 
     public static final Creator<RaceResult> CREATOR = new Creator<RaceResult>() {
@@ -73,6 +77,8 @@ public class RaceResult implements Parcelable {
         dest.writeString(grid);
         dest.writeString(laps);
         dest.writeString(status);
+        dest.writeParcelable(time, flags);
+        dest.writeParcelable(fastestLap, flags);
     }
 
     public boolean isFinished() {

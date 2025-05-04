@@ -55,7 +55,7 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
             ImageView liveIcon = eventCard.findViewById(R.id.upcoming_event_icon);
             Animation pulse = AnimationUtils.loadAnimation(parent.getContext(), R.anim.pulse_dynamic);
             liveIcon.startAnimation(pulse);
-        } else {
+        } else if (viewType == 0) {
             eventCard = LayoutInflater.from(parent.getContext()).inflate(R.layout.upcoming_event_card, parent, false);
         }
 

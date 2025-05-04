@@ -23,4 +23,8 @@ public class ResultDTO {
     private String grid;
     private String laps;
     private String status;
+    @SerializedName("Time")
+    private ResultTimeDTO time;
+    @SerializedName("FastestLap")
+    private ResultFastestLapDTO fastestLap;
 }

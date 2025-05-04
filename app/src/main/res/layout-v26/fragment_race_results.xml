@@ -60,17 +60,116 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/race_results_recycler_view"
             android:layout_below="@id/title_layout"
-            android:layout_above="@id/close_results_button"
+            android:layout_above="@id/fastest_lap_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp" />
+
+        <RelativeLayout
+            android:id="@+id/fastest_lap_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@id/close_results_button"
+            android:background="@color/timer_gray"
+            android:layout_alignStart="@id/close_results_button"
+            android:layout_alignEnd="@id/close_results_button"
+            android:padding="5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:textSize="@dimen/body_text_size"
+                    android:layout_marginBottom="10dp"
+                    android:textColor="@color/black"
+                    android:text="@string/fastest_lap_upper_case">
+
+                </TextView>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:id="@+id/team_color_indicator"
+                        android:layout_width="4dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="4dp" />
+
+                    <TextView
+                        android:id="@+id/driver_name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:layout_weight="1"
+                        android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+                        android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                        android:autoSizeTextType="uniform"
+                        android:fontFamily="@font/orbitron_bold"
+                        android:gravity="start|center"
+                        android:maxLines="1"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/layout_subtitle_text_size" />
+
+                    <TextView
+                        android:id="@+id/fastest_lap"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_weight="0.6"
+                        android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+                        android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                        android:autoSizeTextType="uniform"
+                        android:fontFamily="@font/orbitron_bold"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/layout_subtitle_text_size" />
+
+                    <TextView
+                        android:id="@+id/lap_value"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.4"
+                        android:layout_marginStart="10dp"
+                        android:autoSizeMaxTextSize="@dimen/body_text_size"
+                        android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                        android:autoSizeTextType="uniform"
+                        android:fontFamily="@font/orbitron_regular"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:maxLines="1"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/body_text_size" >
+
+                    </TextView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
         <Button
             android:id="@+id/close_results_button"
             style="@style/Widget.Material3.Button.ElevatedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:layout_marginStart="@dimen/medium_margin"
             android:layout_marginEnd="@dimen/medium_margin"
             android:layout_marginBottom="5dp"
