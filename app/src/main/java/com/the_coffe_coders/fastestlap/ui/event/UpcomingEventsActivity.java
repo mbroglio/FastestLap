@@ -95,7 +95,6 @@ public class UpcomingEventsActivity extends AppCompatActivity {
                 //upcomingEvents.removeAllViews();
 
                 List<WeeklyRace> upcomingRaces = eventViewModel.extractUpcomingRaces(races);
-                Log.i("UpcomingEvents", "upcomingRaces: " + upcomingRaces.size());
 
                 RecyclerView upcomingEventsRecyclerView = findViewById(R.id.upcoming_events_recycler_view);
                 upcomingEventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));

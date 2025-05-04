@@ -9,12 +9,14 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
@@ -33,7 +35,6 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
     private final TrackViewModel trackViewModel;
     private final LifecycleOwner lifecycleOwner;
     private final LoadingScreen loadingScreen;
-    private View eventCard;
     private int counter;
 
     public UpcomingEventsRecyclerAdapter(Context context, List<WeeklyRace> races, TrackViewModel trackViewModel, LifecycleOwner lifecycleOwner, LoadingScreen loadingScreen) {
@@ -42,24 +43,16 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
         this.trackViewModel = trackViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.loadingScreen = loadingScreen;
-        this.counter = 0;
+        this.counter = 1;
     }
 
     @NonNull
     @Override
     public UpcomingEventsRecyclerAdapter.UpcomingEventViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.upcoming_event_card, parent, false);
 
-        if (viewType == 1) {
-            eventCard = LayoutInflater.from(parent.getContext()).inflate(R.layout.upcoming_event_live_card, parent, false);
-
-            ImageView liveIcon = eventCard.findViewById(R.id.upcoming_event_icon);
-            Animation pulse = AnimationUtils.loadAnimation(parent.getContext(), R.anim.pulse_dynamic);
-            liveIcon.startAnimation(pulse);
-        } else if (viewType == 0) {
-            eventCard = LayoutInflater.from(parent.getContext()).inflate(R.layout.upcoming_event_card, parent, false);
-        }
-
-        return new UpcomingEventViewHolder(eventCard);
+        return new UpcomingEventViewHolder(view);
 
     }
 
@@ -74,6 +67,8 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
             }
             if(result.isSuccess()){
                 Track track = ((Result.TrackSuccess) result).getData();
+
+                setupEventCardIcon(weeklyRace, holder);
 
                 UIUtils.loadImageWithGlide(context, track.getTrack_minimal_layout_url(), holder.trackOutline, () -> {
 
@@ -91,7 +86,7 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
                     UIUtils.translateMonth(weeklyRace.getDateTime().getMonth().toString().substring(0, 3).toUpperCase(),
                             holder.monthTextView);
 
-                    eventCard.setOnClickListener(v -> {
+                    holder.upcomingEventCard.setOnClickListener(v -> {
                         Intent intent = new Intent(context, EventActivity.class);
                         intent.putExtra("CIRCUIT_ID", weeklyRace.getTrack().getTrackId());
                         context.startActivity(intent);
@@ -99,16 +94,25 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
 
                     counter++;
                     Log.i("UpcomingEvent", "onBindViewHolder " + counter + "/" + getItemCount());
-                    loadingScreen.hideLoadingScreenWithCondition(counter == getItemCount() - 1);
+                    loadingScreen.hideLoadingScreenWithCondition(counter == getItemCount());
                 });
 
             }
         });
     }
 
-    @Override
-    public int getItemViewType(int position) {
-        return races.get(position).isUnderway(true) ? 1 : 0;
+    private void setupEventCardIcon(WeeklyRace weeklyRace, UpcomingEventViewHolder holder) {
+
+        if(weeklyRace.isUnderway(true)){
+            holder.accessEventIcon.setVisibility(View.GONE);
+            holder.liveEventIconLayout.setVisibility(View.VISIBLE);
+
+            Animation pulse = AnimationUtils.loadAnimation(context, R.anim.pulse_dynamic);
+            holder.liveEventIcon.startAnimation(pulse);
+        }else{
+            holder.accessEventIcon.setVisibility(View.VISIBLE);
+            holder.liveEventIconLayout.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -118,17 +122,23 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
 
     public static class UpcomingEventViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView trackOutline;
+        MaterialCardView upcomingEventCard;
+        ImageView trackOutline, accessEventIcon, liveEventIcon;
         TextView roundTextView, gpTextView, dateTextView, monthTextView;
+        RelativeLayout liveEventIconLayout;
 
         public UpcomingEventViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            upcomingEventCard = itemView.findViewById(R.id.upcoming_events_card_layout);
             trackOutline = itemView.findViewById(R.id.upcoming_track_outline);
             roundTextView = itemView.findViewById(R.id.upcoming_round_number);
             gpTextView = itemView.findViewById(R.id.upcoming_gp_name);
             dateTextView = itemView.findViewById(R.id.upcoming_date);
             monthTextView = itemView.findViewById(R.id.upcoming_month);
+            accessEventIcon = itemView.findViewById(R.id.access_event_icon);
+            liveEventIconLayout = itemView.findViewById(R.id.live_event_icon_layout);
+            liveEventIcon = itemView.findViewById(R.id.upcoming_event_icon);
         }
     }
 }
