@@ -42,7 +42,6 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     EventViewModel eventViewModel;
     TrackViewModel trackViewModel;
     private SwipeRefreshLayout upcomingEventsLayout;
-    private int counter = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +68,6 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
         UIUtils.applyWindowInsets(upcomingEventsLayout);
         upcomingEventsLayout.setOnRefreshListener(() -> {
-            counter = 0;
             start();
             upcomingEventsLayout.setRefreshing(false);
         });
@@ -91,9 +89,6 @@ public class UpcomingEventsActivity extends AppCompatActivity {
                 List<WeeklyRace> races = ((Result.WeeklyRaceSuccess) result).getData();
                 Log.i("UpcomingEvents", "SUCCESS");
 
-                //LinearLayout upcomingEvents = findViewById(R.id.upcoming_events_list);
-                //upcomingEvents.removeAllViews();
-
                 List<WeeklyRace> upcomingRaces = eventViewModel.extractUpcomingRaces(races);
 
                 RecyclerView upcomingEventsRecyclerView = findViewById(R.id.upcoming_events_recycler_view);
@@ -105,17 +100,6 @@ public class UpcomingEventsActivity extends AppCompatActivity {
                     upcomingEventsAdapter.onBindViewHolder(
                             upcomingEventsAdapter.createViewHolder(upcomingEventsRecyclerView, upcomingEventsAdapter.getItemViewType(i)), i);
                 }
-
-                /*
-                for (int i = 0; i < upcomingRaces.size(); i++) {
-                    createEventCard(upcomingEvents, upcomingRaces.get(i), i, upcomingRaces.size());
-                }
-
-                View space = new View(UpcomingEventsActivity.this);
-                space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, Constants.SPACER_HEIGHT));
-                upcomingEvents.addView(space);
-
-                 */
             } else {
                 loadingScreen.hideLoadingScreen();
             }
@@ -123,81 +107,6 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         });
 
     }
-
-    /*
-    private void createEventCard(LinearLayout eventsListLayout, WeeklyRace weeklyRace, int i, int totalRaces) {
-
-        eventsListLayout.addView(generateEventCard(weeklyRace, i, totalRaces));
-
-        View space = new View(UpcomingEventsActivity.this);
-        space.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, Constants.SPACER_HEIGHT));
-        eventsListLayout.addView(space);
-    }
-
-    private View generateEventCard(WeeklyRace weeklyRace, int i, int totalRaces) {
-        View eventCard;
-
-        if (weeklyRace.isUnderway(true)) {
-            eventCard = getLayoutInflater().inflate(R.layout.upcoming_event_live_card, null);
-
-            ImageView liveIcon = eventCard.findViewById(R.id.upcoming_event_icon);
-            Animation pulse = AnimationUtils.loadAnimation(this, R.anim.pulse_dynamic);
-            liveIcon.startAnimation(pulse);
-        } else {
-            eventCard = getLayoutInflater().inflate(R.layout.upcoming_event_card, null);
-        }
-
-        MutableLiveData<Result> trackData = trackViewModel.getTrack(weeklyRace.getTrack().getTrackId());
-
-        View finalEventCard = eventCard;
-        trackData.observe(this, result -> {
-            if (result instanceof Result.Loading) {
-                return;
-            }
-            if (result.isSuccess()) {
-                Track track = ((Result.TrackSuccess) result).getData();
-
-                ImageView trackOutline = finalEventCard.findViewById(R.id.upcoming_track_outline);
-
-                UIUtils.loadImageWithGlide(this, track.getTrack_minimal_layout_url(), trackOutline,
-                        () -> generateEventCardFinalStep(finalEventCard, weeklyRace, i, totalRaces));
-            }
-
-        });
-
-        return eventCard;
-    }
-
-    private void generateEventCardFinalStep(View finalEventCard, WeeklyRace weeklyRace, int i, int totalRaces) {
-
-        UIUtils.multipleSetTextViewText(
-                new String[]{
-                        this.getString(R.string.round_upper_case_plus_value, weeklyRace.getRound()),
-                        weeklyRace.getRaceName(),
-                        weeklyRace.getFirstPractice().getStartDateTime().getDayOfMonth() + " - " + weeklyRace.getDateTime().getDayOfMonth()},
-
-                new TextView[]{
-                        finalEventCard.findViewById(R.id.upcoming_round_number),
-                        finalEventCard.findViewById(R.id.upcoming_gp_name),
-                        finalEventCard.findViewById(R.id.upcoming_date)}
-        );
-
-        UIUtils.translateMonth(weeklyRace.getDateTime().getMonth().toString().substring(0, 3).toUpperCase(),
-                finalEventCard.findViewById(R.id.upcoming_month));
-
-        finalEventCard.setOnClickListener(v -> {
-            Intent intent = new Intent(UpcomingEventsActivity.this, EventActivity.class);
-            intent.putExtra("CIRCUIT_ID", weeklyRace.getTrack().getTrackId());
-            startActivity(intent);
-        });
-        loadingScreen.postLoadingStatus(this.getString(R.string.generating_event_card, Integer.toString(i + 1), Integer.toString(totalRaces)));
-        loadingScreen.updateProgress((i + 1) * 100 / totalRaces);
-        counter++;
-
-        loadingScreen.hideLoadingScreenWithCondition(counter == totalRaces - 1);
-    }
-
-     */
 
     @Override
     protected void onResume() {

@@ -58,7 +58,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
         this.constructorViewModel = constructorViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.loadingScreen = loadingScreen;
-        this.counter = 0;
+        this.counter = 1;
     }
 
     @NonNull
@@ -134,10 +134,11 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
                         intent.putExtra("CALLER", DriversStandingActivity.class.getName());
                         context.startActivity(intent);
                     });
+                    loadingScreen.updateProgress(counter * 100 / getItemCount());
 
-                    counter++;
                     Log.i("DriversStanding", "onBindViewHolder " + counter + "/" + getItemCount());
                     loadingScreen.hideLoadingScreenWithCondition(counter == getItemCount() - 1);
+                    counter++;
                 });
             }
         });

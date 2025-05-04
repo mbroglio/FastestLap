@@ -50,12 +50,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import android.app.Dialog;
-import android.view.Window;
-
 public class EventActivity extends AppCompatActivity {
     private static final String TAG = "EventActivity";
-    private final boolean eventToProcess = true;
     LoadingScreen loadingScreen;
     EventViewModel eventViewModel;
     private String trackId;
@@ -320,10 +316,8 @@ public class EventActivity extends AppCompatActivity {
                 // Store the race for later use
                 this.currentRace = race;
 
-
                 Log.i(TAG, "Podium found" + podium.size());
                 for (int i = 0; i < 3; i++) {
-                    String driverId = podium.get(i).getDriver().getDriverId();
                     String teamId = podium.get(i).getConstructor().getConstructorId();
 
                     UIUtils.singleSetTextViewText(podium.get(i).getDriver().getFullName(),
@@ -334,7 +328,6 @@ public class EventActivity extends AppCompatActivity {
                     teamColor.setBackgroundColor(ContextCompat.getColor(this, Objects.requireNonNullElseGet(teamColorObj, () -> R.color.mercedes_f1)));
                 }
 
-                // Make the podium clickable
                 View resultsView = findViewById(R.id.timer_card_results);
                 resultsView.setOnClickListener(v -> showRaceResultsDialog(currentRace));
             }

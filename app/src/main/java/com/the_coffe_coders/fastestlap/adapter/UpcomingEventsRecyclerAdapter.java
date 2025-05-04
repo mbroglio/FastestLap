@@ -92,9 +92,12 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
                         context.startActivity(intent);
                     });
 
+                    loadingScreen.updateProgress(counter * 100 / getItemCount());
+
+                    Log.i("UpcomingEventsAdapter", "onBindViewHolder: " + counter + " / " + getItemCount());
+                    loadingScreen.hideLoadingScreenWithCondition(counter == getItemCount() - 1);
+
                     counter++;
-                    Log.i("UpcomingEvent", "onBindViewHolder " + counter + "/" + getItemCount());
-                    loadingScreen.hideLoadingScreenWithCondition(counter == getItemCount());
                 });
 
             }

@@ -36,7 +36,7 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
     private final TrackViewModel trackViewModel;
     private final LifecycleOwner lifecycleOwner;
     private final LoadingScreen loadingScreen;
-    private int counter = 0;
+    private int counter;
 
     public PastEventsRecyclerAdapter(Context context, List<Race> races, TrackViewModel trackViewModel, LifecycleOwner lifecycleOwner, LoadingScreen loadingScreen) {
         this.context = context;
@@ -44,6 +44,7 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
         this.trackViewModel = trackViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.loadingScreen = loadingScreen;
+        this.counter = 1;
     }
 
     @NonNull
@@ -111,9 +112,12 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
             }
         }
 
-        counter++;
+        loadingScreen.updateProgress(counter * 100 / getItemCount());
+
         Log.i("PastEventsAdapter", "onBindViewHolder: " + counter + " / " + getItemCount());
         loadingScreen.hideLoadingScreenWithCondition(counter == getItemCount() - 1);
+
+        counter++;
     }
 
     private void setPendingPodium(@NonNull PastEventViewHolder holder) {

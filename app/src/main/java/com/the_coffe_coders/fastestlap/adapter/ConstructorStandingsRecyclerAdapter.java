@@ -56,6 +56,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         this.constructorViewModel = constructorViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.loadingScreen = loadingScreen;
+        this.counter = 1;
     }
 
     @NonNull
@@ -144,9 +145,12 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                 UIUtils.singleSetTextViewText(driverTwo.getFullName(), holder.driverTwoName);
                 UIUtils.loadImageWithGlide(context, driverTwo.getDriver_pic_url(), holder.driverTwoImage, () -> {
 
-                    counter++;
+                    loadingScreen.updateProgress(counter * 100 / getItemCount());
+
                     Log.i("ConstructorsStanding", "onBindViewHolder " + counter + "/" + getItemCount());
                     loadingScreen.hideLoadingScreenWithCondition(counter == getItemCount() - 1);
+
+                    counter++;
                 });
             }
         });
