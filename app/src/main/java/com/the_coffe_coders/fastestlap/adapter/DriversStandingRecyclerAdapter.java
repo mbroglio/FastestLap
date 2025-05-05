@@ -44,7 +44,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
     private final LifecycleOwner lifecycleOwner;
     private DriverStandingsElement driverStandingsElement;
     private View driverCard;
-    private int counter;
+    //private int counter;
 
     public DriversStandingRecyclerAdapter(Context context, List<DriverStandingsElement> driversStandingList,
                                           List<Driver> driversList, String driverId, DriverViewModel driverViewModel,
@@ -58,7 +58,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
         this.constructorViewModel = constructorViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.loadingScreen = loadingScreen;
-        this.counter = 1;
+        //this.counter = 1;
     }
 
     @NonNull
@@ -113,13 +113,13 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
                 }
 
                 UIUtils.loadImageWithGlide(context, driver.getDriver_pic_url(), holder.driverImage, () ->
-                        generateForConstructor(holder, driver, driverStandingsElement));
+                        generateForConstructor(holder, driver, driverStandingsElement, position));
 
             }
         });
     }
 
-    private void generateForConstructor(DriverViewHolder holder, Driver driver, DriverStandingsElement standingElement) {
+    private void generateForConstructor(DriverViewHolder holder, Driver driver, DriverStandingsElement standingElement, int position) {
         constructorViewModel.getSelectedConstructor(driver.getTeam_id()).observe(lifecycleOwner, result -> {
             if(result instanceof Result.Loading){
                 return;
@@ -134,11 +134,11 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
                         intent.putExtra("CALLER", DriversStandingActivity.class.getName());
                         context.startActivity(intent);
                     });
-                    loadingScreen.updateProgress(counter * 100 / getItemCount());
+                    loadingScreen.updateProgress();
 
-                    Log.i("DriversStanding", "onBindViewHolder " + counter + "/" + getItemCount());
-                    loadingScreen.hideLoadingScreenWithCondition(counter == getItemCount() - 1);
-                    counter++;
+                    Log.i("DriversStanding", "onBindViewHolder " + position + "/" + getItemCount());
+                    loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);
+                    //counter++;
                 });
             }
         });

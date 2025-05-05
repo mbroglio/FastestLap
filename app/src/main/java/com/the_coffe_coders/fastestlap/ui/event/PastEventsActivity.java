@@ -82,8 +82,6 @@ public class PastEventsActivity extends AppCompatActivity {
     private void processEvents() {
         Log.i("PastEvent", "Process Event");
 
-        loadingScreen.postLoadingStatus(this.getString(R.string.initializing));
-
         LiveData<Result> dataEvent = eventViewModel.getWeeklyRacesLiveData();
         dataEvent.observe(this, resultEvent -> {
             Log.i("PastEvent", "observed");

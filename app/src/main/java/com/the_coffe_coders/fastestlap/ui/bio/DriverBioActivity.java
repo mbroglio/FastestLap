@@ -83,7 +83,7 @@ public class DriverBioActivity extends AppCompatActivity {
         driverBioLayout = findViewById(R.id.driver_bio_layout);
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, driverBioLayout, null);
         loadingScreen.showLoadingScreen(false);
-        loadingScreen.updateProgress(0);
+        loadingScreen.updateProgress();
 
         toolbar = findViewById(R.id.topAppBar);
         UIUtils.applyWindowInsets(toolbar);
@@ -182,9 +182,6 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     public void createDriverBioPage(String driverId) {
-
-        loadingScreen.postLoadingStatus(this.getString(R.string.initializing));
-
         MutableLiveData<Result> driverMutableLiveData = driverViewModel.getDriver(driverId);
         driverMutableLiveData.observe(this, result -> {
             if (result instanceof Result.Loading) {
@@ -205,8 +202,7 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     public void getTeamInfo(String teamId) {
-        loadingScreen.postLoadingStatus(this.getString(R.string.fetching_driver_info));
-        loadingScreen.updateProgress(50);
+        loadingScreen.updateProgress();
 
         MutableLiveData<Result> constructorMutableLiveData = constructorViewModel.getSelectedConstructor(teamId);
 
@@ -313,9 +309,7 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     private void createHistoryTable() {
-
-        loadingScreen.postLoadingStatus(this.getString(R.string.setting_driver_history));
-        loadingScreen.updateProgress(100);
+        loadingScreen.updateProgress();
 
         TableLayout tableLayout = findViewById(R.id.history_table);
         tableLayout.removeAllViews();

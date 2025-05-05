@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/timer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -25,30 +26,28 @@
             android:fontFamily="@font/orbitron_regular"
             android:text="@string/next_event"
             android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:textSize="@dimen/body_text_size">
 
         </TextView>
 
-        <RelativeLayout
+        <TextView
+            android:id="@+id/home_next_gp_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:layout_marginStart="24dp"
-            android:layout_toEndOf="@+id/text_1">
+            android:layout_marginEnd="10dp"
+            android:layout_toEndOf="@+id/text_1"
+            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+            android:autoSizeTextType="uniform"
+            android:fontFamily="@font/orbitron_bold"
+            android:gravity="center"
+            android:maxLines="1"
+            android:textColor="@color/black"
+            android:textSize="@dimen/layout_subtitle_text_size">
 
-            <TextView
-                android:id="@+id/home_next_gp_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:autoSizeMaxTextSize="16sp"
-                android:autoSizeMinTextSize="8sp"
-                android:autoSizeTextType="uniform"
-                android:fontFamily="@font/orbitron_bold"
-                android:textColor="@color/black">
-
-            </TextView>
-
-        </RelativeLayout>
+        </TextView>
 
     </RelativeLayout>
 
@@ -61,6 +60,7 @@
         android:layout_marginStart="5dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
+        android:baselineAligned="false"
         android:orientation="horizontal">
 
         <RelativeLayout
@@ -72,6 +72,7 @@
                 android:id="@+id/home_next_gp_flag"
                 android:layout_width="55dp"
                 android:layout_height="40dp"
+                android:importantForAccessibility="no"
                 android:layout_centerInParent="true"
                 android:layout_gravity="center">
 
@@ -117,7 +118,6 @@
 
     </TextView>
 
-
     <LinearLayout
         android:id="@+id/timer_live_layout"
         android:layout_width="wrap_content"
@@ -125,7 +125,8 @@
         android:layout_below="@id/timer_layout"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="5dp"
-        android:visibility="visible">
+        android:visibility="visible"
+        tools:ignore="UseCompoundDrawables">
 
         <TextView
             android:id="@+id/live_now"
@@ -143,9 +144,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
+            android:importantForAccessibility="no"
             app:srcCompat="@drawable/dot_inside_a_circle_red">
 
         </ImageView>
+
     </LinearLayout>
 
 </RelativeLayout>

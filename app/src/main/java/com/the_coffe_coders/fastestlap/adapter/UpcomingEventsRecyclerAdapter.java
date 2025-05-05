@@ -35,7 +35,7 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
     private final TrackViewModel trackViewModel;
     private final LifecycleOwner lifecycleOwner;
     private final LoadingScreen loadingScreen;
-    private int counter;
+    //private int counter;
 
     public UpcomingEventsRecyclerAdapter(Context context, List<WeeklyRace> races, TrackViewModel trackViewModel, LifecycleOwner lifecycleOwner, LoadingScreen loadingScreen) {
         this.context = context;
@@ -43,7 +43,7 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
         this.trackViewModel = trackViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.loadingScreen = loadingScreen;
-        this.counter = 1;
+        //this.counter = 1;
     }
 
     @NonNull
@@ -92,12 +92,12 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
                         context.startActivity(intent);
                     });
 
-                    loadingScreen.updateProgress(counter * 100 / getItemCount());
+                    loadingScreen.updateProgress();
 
-                    Log.i("UpcomingEventsAdapter", "onBindViewHolder: " + counter + " / " + getItemCount());
-                    loadingScreen.hideLoadingScreenWithCondition(counter == getItemCount() - 1);
+                    Log.i("UpcomingEventsAdapter", "onBindViewHolder: " + position + " / " + getItemCount());
+                    loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);
 
-                    counter++;
+                    //counter++;
                 });
 
             }

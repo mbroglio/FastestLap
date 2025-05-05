@@ -114,7 +114,6 @@ public class DriversStandingActivity extends AppCompatActivity {
     }
 
     private void setupPage() {
-        loadingScreen.postLoadingStatus(this.getString(R.string.initializing));
         MutableLiveData<Result> livedata = driverStandingsViewModel.getDriverStandingsLiveData();//TODO get last update from shared preferences
 
         livedata.observe(this, result -> {

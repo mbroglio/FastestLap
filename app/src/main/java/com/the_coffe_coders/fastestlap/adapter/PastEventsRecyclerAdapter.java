@@ -36,7 +36,7 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
     private final TrackViewModel trackViewModel;
     private final LifecycleOwner lifecycleOwner;
     private final LoadingScreen loadingScreen;
-    private int counter;
+    //private int counter;
 
     public PastEventsRecyclerAdapter(Context context, List<Race> races, TrackViewModel trackViewModel, LifecycleOwner lifecycleOwner, LoadingScreen loadingScreen) {
         this.context = context;
@@ -44,7 +44,7 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
         this.trackViewModel = trackViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.loadingScreen = loadingScreen;
-        this.counter = 1;
+        //this.counter = 1;
     }
 
     @NonNull
@@ -88,7 +88,7 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
                                     holder.pastRoundTextView,
                                     holder.pastGPTextView});
 
-                    generatePodium(holder, race);
+                    generatePodium(holder, race, position);
 
                     holder.pastEventCard.setOnClickListener(v -> {
                         Intent intent = new Intent(context, EventActivity.class);
@@ -100,7 +100,7 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
         });
     }
 
-    private void generatePodium(@NonNull PastEventsRecyclerAdapter.PastEventViewHolder holder, Race race) {
+    private void generatePodium(@NonNull PastEventsRecyclerAdapter.PastEventViewHolder holder, Race race, int position) {
         if(race.getResults() == null){
             setPendingPodium(holder);
         } else{
@@ -112,12 +112,12 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
             }
         }
 
-        loadingScreen.updateProgress(counter * 100 / getItemCount());
+        loadingScreen.updateProgress();
 
-        Log.i("PastEventsAdapter", "onBindViewHolder: " + counter + " / " + getItemCount());
-        loadingScreen.hideLoadingScreenWithCondition(counter == getItemCount() - 1);
+        Log.i("PastEventsAdapter", "onBindViewHolder: " + position + " / " + getItemCount());
+        loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);
 
-        counter++;
+        //counter++;
     }
 
     private void setPendingPodium(@NonNull PastEventViewHolder holder) {

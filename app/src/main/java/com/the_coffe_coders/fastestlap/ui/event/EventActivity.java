@@ -74,7 +74,7 @@ public class EventActivity extends AppCompatActivity {
         eventLayout = findViewById(R.id.event_layout);
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, eventLayout, null);
         loadingScreen.showLoadingScreen(false);
-        loadingScreen.updateProgress(0);
+        loadingScreen.updateProgress();
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
@@ -124,11 +124,7 @@ public class EventActivity extends AppCompatActivity {
 
     private void buildEventCard(WeeklyRace weeklyRace) {
 
-        loadingScreen.postLoadingStatus(this.getString(R.string.initializing));
-
-        String grandPrixName = weeklyRace.getRaceName().toUpperCase();
-        TextView title = findViewById(R.id.topAppBarTitle);
-        title.setText(grandPrixName);
+        UIUtils.singleSetTextViewText(weeklyRace.getRaceName().toUpperCase(), findViewById(R.id.topAppBarTitle));
 
         TrackViewModel trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(getApplication())).get(TrackViewModel.class);
         MutableLiveData<Result> trackData = trackViewModel.getTrack(trackId);
@@ -160,9 +156,7 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void setEventImage(WeeklyRace weeklyRace, Track track, Nation nation) {
-
-        loadingScreen.postLoadingStatus(this.getString(R.string.setting_event_info));
-        loadingScreen.updateProgress(33);
+        loadingScreen.updateProgress();
 
         String imageUrl = track.getTrack_pic_url();
         LinearLayout eventCard = findViewById(R.id.event_card);
@@ -236,9 +230,7 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void startCountdown(LocalDateTime eventDate) {
-
-        loadingScreen.postLoadingStatus(this.getString(R.string.setting_up_countdown));
-        loadingScreen.updateProgress(66);
+        loadingScreen.updateProgress();
 
         long millisUntilStart = ZonedDateTime.of(eventDate, ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis();
         new CountDownTimer(millisUntilStart, 1000) {
@@ -283,9 +275,7 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void showResults(WeeklyRace weeklyRace) {
-
-        loadingScreen.postLoadingStatus(this.getString(R.string.fetching_race_result, ""));
-        loadingScreen.updateProgress(66);
+        loadingScreen.updateProgress();
 
         View countdownView = findViewById(R.id.timer_card_countdown);
         View resultsView = findViewById(R.id.timer_card_results);
@@ -336,9 +326,7 @@ public class EventActivity extends AppCompatActivity {
 
     private void showPendingResults() {
         Log.i(TAG, "No results found");
-
-        loadingScreen.postLoadingStatus(this.getString(R.string.fetching_race_result, this.getString(R.string.not_found_text)));
-        loadingScreen.updateProgress(66);
+        loadingScreen.updateProgress();
 
         View pendingResultsView = findViewById(R.id.timer_card_pending_results);
         View countdownView = findViewById(R.id.timer_card_countdown);
@@ -351,9 +339,7 @@ public class EventActivity extends AppCompatActivity {
 
     private void createWeekSchedule(List<Session> sessions) {
         View eventSchedule = findViewById(R.id.event_schedule_table);
-
-        loadingScreen.postLoadingStatus(this.getString(R.string.setting_event_schedule));
-        loadingScreen.updateProgress(100);
+        loadingScreen.updateProgress();
 
         String sessionId;
 

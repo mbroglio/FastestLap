@@ -59,7 +59,7 @@ public class TrackBioActivity extends AppCompatActivity {
         trackBioLayout = findViewById(R.id.track_bio_layout);
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, trackBioLayout, null);
         loadingScreen.showLoadingScreen(false);
-        loadingScreen.updateProgress(0);
+        loadingScreen.updateProgress();
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         UIUtils.applyWindowInsets(toolbar);
@@ -91,9 +91,6 @@ public class TrackBioActivity extends AppCompatActivity {
     }
 
     private void fetchTrack() {
-
-        loadingScreen.postLoadingStatus(this.getString(R.string.initializing));
-
         MutableLiveData<Result> trackLiveData = trackViewModel.getTrack(trackId);
         try {
             trackLiveData.observe(this, trackResult -> {
@@ -126,9 +123,7 @@ public class TrackBioActivity extends AppCompatActivity {
     }
 
     private void setCircuitData(Track track, Nation nation) {
-
-        loadingScreen.postLoadingStatus(this.getString(R.string.fetching_track_info));
-        loadingScreen.updateProgress(50);
+        loadingScreen.updateProgress();
 
         UIUtils.multipleSetTextViewText(
                 new String[]{
@@ -162,8 +157,7 @@ public class TrackBioActivity extends AppCompatActivity {
     }
 
     private void createHistoryTable() {
-        loadingScreen.postLoadingStatus(this.getString(R.string.setting_track_history));
-        loadingScreen.updateProgress(100);
+        loadingScreen.updateProgress();
 
         TableLayout tableLayout = findViewById(R.id.history_table);
         tableLayout.removeAllViews();

@@ -1,27 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/no_live_session"
+        android:id="@+id/live_session"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        app:cardBackgroundColor="@color/dark_red"
+        app:cardBackgroundColor="@color/ferrari_f1"
         app:cardCornerRadius="10dp"
         app:cardElevation="5dp"
         app:strokeColor="@color/black"
         app:strokeWidth="3dp">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            tools:ignore="UseCompoundDrawables">
+            android:gravity="center">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -31,23 +27,30 @@
                 android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                 android:autoSizeTextType="uniform"
                 android:fontFamily="@font/orbitron_bold"
-                android:gravity="center"
-                android:maxLines="2"
+                android:maxLines="1"
                 android:layout_marginEnd="10dp"
-                android:text="@string/no_live_session_available_upper_case"
+                android:text="@string/live_session_upper_case"
                 android:textColor="@color/black"
                 android:textSize="@dimen/layout_subtitle_text_size">
 
             </TextView>
 
-            <ImageView
-                android:layout_width="@dimen/icon_size"
-                android:layout_height="@dimen/icon_size"
-                android:layout_gravity="center"
-                android:importantForAccessibility="no"
-                app:srcCompat="@drawable/sad_face">
+            <RelativeLayout
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center">
 
-            </ImageView>
+                <ImageView
+                    android:id="@+id/live_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:importantForAccessibility="no"
+                    app:srcCompat="@drawable/dot_inside_a_circle_black">
+
+                </ImageView>
+
+            </RelativeLayout>
 
         </LinearLayout>
 

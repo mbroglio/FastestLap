@@ -78,8 +78,6 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     private void processEvents() {
         Log.i("UpcomingEvents", "Process Event");
 
-        loadingScreen.postLoadingStatus(this.getString(R.string.initializing));
-
         MutableLiveData<Result> data = eventViewModel.getWeeklyRacesLiveData();
         data.observe(this, result -> {
             if (result instanceof Result.Loading) {

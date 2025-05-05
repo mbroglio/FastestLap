@@ -46,34 +46,6 @@
     <string name="round_upper_case_plus_value" translatable="false">ROUND %1$s</string>
     <string name="updating_upper_case_with_dots">UPDATING…</string>
 
-    <!-- LOADING SCREEN MESSAGES -->
-    <string name="progress" translatable="false">%1$s%%</string>
-    <string name="generating_event_card">Generating event card %1$s/%2$s</string>
-    <string name="fetching_last_race">Fetching last race %1$s</string>
-    <string name="fetching_next_race">Fetching next race %1$s</string>
-    <string name="season_finished">Season is finished: fetching results %1$s</string>
-    <string name="fetching_favourite_driver">Fetching favourite driver %1$s</string>
-    <string name="fetching_favourite_constructor">Fetching favourite constructor %1$s</string>
-    <string name="generating_driver_card">Generating driver card %1$s/%2$s</string>
-    <string name="generating_constructor_card">Generating constructor card %1$s/%2$s</string>
-    <string name="initializing">Initializing page setup</string>
-    <string name="setting_constructor_info">Setting constructor info</string>
-    <string name="fetching_constructor_info">Fetching constructor info</string>
-    <string name="fetching_driver_info">Fetching driver info</string>
-    <string name="fetching_track_info">Fetching track info</string>
-    <string name="setting_driver_history">Setting driver history</string>
-    <string name="setting_constructor_history">Setting constructor history</string>
-    <string name="setting_track_history">Setting track history</string>
-    <string name="setting_event_info">Setting event info</string>
-    <string name="setting_up_countdown">Setting up countdown</string>
-    <string name="fetching_race_result">Fetching race result %1$s</string>
-    <string name="setting_event_schedule">Setting event schedule</string>
-    <string name="podium">(Podium)</string>
-    <string name="podium_not_found">(podium not found)</string>
-    <string name="drivers">(Drivers)</string>
-    <string name="constructors">(Constructors)</string>
-    <string name="not_found_text">(not found)</string>
-
 
     <!-- EVENT PAGE STRINGS -->
     <string name="weather_forecast">Weather forecast</string>

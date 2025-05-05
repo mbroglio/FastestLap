@@ -44,7 +44,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
     private final LoadingScreen loadingScreen;
     private ConstructorStandingsElement constructorStandingsElement;
     private View constructorCard;
-    private int counter;
+    //private int counter;
 
     public ConstructorStandingsRecyclerAdapter(Context context, String constructorId, List<ConstructorStandingsElement> constructorStandingsList,
                                                DriverViewModel driverViewModel, ConstructorViewModel constructorViewModel,
@@ -56,7 +56,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         this.constructorViewModel = constructorViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.loadingScreen = loadingScreen;
-        this.counter = 1;
+        //this.counter = 1;
     }
 
     @NonNull
@@ -113,13 +113,13 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                                 holder.constructorCarImage,
                                 holder.constructorLogo},
 
-                        () -> processDriverOne(holder, constructor));
+                        () -> processDriverOne(holder, constructor, position));
             }
         });
 
     }
 
-    private void processDriverOne(ConstructorViewHolder holder, Constructor constructor) {
+    private void processDriverOne(ConstructorViewHolder holder, Constructor constructor, int position) {
         driverViewModel.getDriver(constructor.getDriverOneId()).observe(lifecycleOwner, result -> {
             if(result instanceof Result.Loading){
                 return;
@@ -129,12 +129,12 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
 
                 UIUtils.singleSetTextViewText(driverOne.getFullName(), holder.driverOneName);
                 UIUtils.loadImageWithGlide(context, driverOne.getDriver_pic_url(), holder.driverOneImage,
-                        () -> processDriverTwo(holder, constructor));
+                        () -> processDriverTwo(holder, constructor, position));
             }
         });
     }
 
-    private void processDriverTwo(ConstructorViewHolder holder, Constructor constructor) {
+    private void processDriverTwo(ConstructorViewHolder holder, Constructor constructor, int position) {
         driverViewModel.getDriver(constructor.getDriverTwoId()).observe(lifecycleOwner, result -> {
             if(result instanceof Result.Loading){
                 return;
@@ -145,12 +145,12 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                 UIUtils.singleSetTextViewText(driverTwo.getFullName(), holder.driverTwoName);
                 UIUtils.loadImageWithGlide(context, driverTwo.getDriver_pic_url(), holder.driverTwoImage, () -> {
 
-                    loadingScreen.updateProgress(counter * 100 / getItemCount());
+                    loadingScreen.updateProgress();
 
-                    Log.i("ConstructorsStanding", "onBindViewHolder " + counter + "/" + getItemCount());
-                    loadingScreen.hideLoadingScreenWithCondition(counter == getItemCount() - 1);
+                    Log.i("ConstructorsStanding", "onBindViewHolder " + position + "/" + getItemCount());
+                    loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);
 
-                    counter++;
+                    //counter++;
                 });
             }
         });

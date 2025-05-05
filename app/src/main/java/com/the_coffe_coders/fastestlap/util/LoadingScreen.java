@@ -17,21 +17,18 @@ public class LoadingScreen {
     private final Handler handler;
     private final View loadingScreen;
     private final Context context;
-    private final TextView loadingText, percentageText, loadingStatusText;
-    private final ProgressBar loadingProgressBar;
+    private final TextView loadingText;
     private final View activityView, fragmentView;
     private final Handler timerHandler = new Handler();
     private int dotCount = 0;
     private boolean addingDots = true;
     private Runnable dotRunnable;
+
     public LoadingScreen(View view, Context context, View activityView, View fragmentView) {
         this.handler = new Handler();
         this.loadingScreen = view.findViewById(R.id.loading_screen);
         this.context = context;
         this.loadingText = view.findViewById(R.id.loading_text);
-        this.percentageText = view.findViewById(R.id.loading_percentage_text);
-        this.loadingProgressBar = view.findViewById(R.id.loading_progress_bar);
-        this.loadingStatusText = view.findViewById(R.id.loading_status_text);
         this.activityView = activityView;
         this.fragmentView = fragmentView;
 

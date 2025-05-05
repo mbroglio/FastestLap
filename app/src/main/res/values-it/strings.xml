@@ -26,7 +26,7 @@
     <string name="race_result_upper_case">RISULTATO GARA:</string>
     <string name="pending_results">In attesa dei risultati…</string>
     <string name="race_cancelled_upper_case">GARA CANCELLATA</string>
-    <string name="no_live_session_available_upper_case">NESSUNA SESSIONE LIVE DISPONIBILE</string>
+    <string name="no_live_session_available_upper_case">NESSUNA SESSIONE\nLIVE DISPONIBILE</string>
     <string name="days_upper_case">GIORNI</string>
     <string name="driver_history_upper_case">STORIA DEL PILOTA:</string>
     <string name="wins_abbr_upper_case">V</string>
