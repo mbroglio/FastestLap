@@ -81,40 +81,23 @@ public class LoadingScreen {
         handler.post(dotRunnable);
     }
 
-    public void postLoadingStatus(String status) {
-        resetTimer();
-        loadingStatusText.setText(status);
-    }
-
     private void resetTimer() {
         timerHandler.removeCallbacks(timerRunnable);
         new CountDownTimer(Constants.LOADING_SLEEP_TIMER_DURATION, 1000) {
-            final TextView seconds = loadingScreen.findViewById(R.id.countdown_text);
 
             @Override
             public void onTick(long millisUntilFinished) {
-
-                UIUtils.singleSetTextViewText(
-                        String.valueOf((((millisUntilFinished % 86400000) % 3600000) % 60000) / 1000),
-                        seconds);
             }
 
             @Override
             public void onFinish() {
-                UIUtils.singleSetTextViewText(
-                        context.getString(R.string.base_countdown),
-                        seconds);
-
                 timerRunnable.run();
             }
         }.start();
     }
 
-    public void updateProgress(int progress) {
+    public void updateProgress() {
         resetTimer();
-        loadingProgressBar.setProgress(progress);
-        String progressString = Integer.toString(progress);
-        percentageText.setText(context.getString(R.string.progress, progressString));
     }
 
     public void hideLoadingScreenWithCondition(boolean condition) {
