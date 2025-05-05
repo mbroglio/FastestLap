@@ -84,7 +84,7 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
                                     holder.dateTextView});
 
                     UIUtils.translateMonth(weeklyRace.getDateTime().getMonth().toString().substring(0, 3).toUpperCase(),
-                            holder.monthTextView);
+                            holder.monthTextView, true);
 
                     holder.upcomingEventCard.setOnClickListener(v -> {
                         Intent intent = new Intent(context, EventActivity.class);

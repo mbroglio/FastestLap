@@ -52,6 +52,7 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
                     JSONParserUtils jsonParserUtils = new JSONParserUtils();
                     RaceResultsAPIResponse raceResultsAPIResponse = jsonParserUtils.parseRaceResults(mrdata);
 
+                    Log.i(TAG, "result race: " + raceResultsAPIResponse);
                     resultCallback.onSuccess(RaceMapper.toRace(raceResultsAPIResponse.getFinalRace()));
                 } else {
                     resultCallback.onFailure(new Exception());

@@ -312,19 +312,13 @@ public class UIUtils {
     }
 
     public static void translateMonth(String abbr, TextView textView, boolean abbreviation) {
-        setTextViewTextWithCondition(AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("it-IT"),
-                Constants.MONTH_ABBR_ENG_TO_ITA.get(abbr),
-                abbr,
-                textView);
-    }
+        if(abbreviation){
+            setTextViewTextWithCondition(AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("it-IT"),
+                    Constants.MONTH_ABBR_ENG_TO_ITA.get(abbr),
+                    abbr,
+                    textView);
+        }
 
-    public static void translateEventDateInterval(String eventDate, TextView eventDateTextView){
-        String newEventDate = eventDate.split(" ")[0]+" " +
-                eventDate.split(" ")[1] + " " +
-                eventDate.split(" ")[2] + " " +
-                Objects.requireNonNull(Constants.MONTH_ENG_TO_ITA.get(eventDate.split(" ")[3].toLowerCase())).toUpperCase();
-
-        UIUtils.singleSetTextViewText(newEventDate, eventDateTextView);
     }
 
 
