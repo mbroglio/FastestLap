@@ -77,7 +77,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
         constructorBioLayout = findViewById(R.id.constructor_bio_layout);
 
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, constructorBioLayout, null);
-        loadingScreen.showLoadingScreen();
+        loadingScreen.showLoadingScreen(false);
         loadingScreen.updateProgress(0);
 
         toolbar = findViewById(R.id.topAppBar);

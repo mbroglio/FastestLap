@@ -184,5 +184,7 @@
     <string name="race_results_title">%1$s Results</string>
     <string name="close">Close</string>
     <!-- TODO: Remove or change this placeholder text -->
+    <string name="fastest_lap_upper_case">FASTEST LAP</string>
+    <string name="lap">Lap %1$s</string>
     <string name="podium_upper_case">PODIUM</string>
 </resources>

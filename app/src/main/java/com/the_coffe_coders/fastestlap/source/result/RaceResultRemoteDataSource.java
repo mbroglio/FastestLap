@@ -41,7 +41,7 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    String responseString = null;
+                    String responseString;
                     try {
                         responseString = response.body().string();
                     } catch (IOException e) {
@@ -72,7 +72,7 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
         Log.i(TAG, String.format("Fetching results for race %d (attempt %d)",
                 raceNumber, currentRetry + 1));
 
-        responseCall.enqueue(new Callback<ResponseBody>() {
+        responseCall.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call,
                                    @NonNull Response<ResponseBody> response) {
@@ -111,10 +111,9 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
                     raceNumber, currentRetry + 1, MAX_RETRIES, error.getMessage()));
 
             // Delay before retry using Handler
-            new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-                fetchRaceResult(raceNumber, currentRetry + 1,
-                        successCount, failureCount, totalRaces, raceResultCallback);
-            }, RETRY_DELAY_MS);
+            new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() ->
+                    fetchRaceResult(raceNumber, currentRetry + 1,
+                        successCount, failureCount, totalRaces, raceResultCallback), RETRY_DELAY_MS);
         } else {
             handleFailure(raceNumber, error, raceResultCallback);
             checkAllRequestsCompleted(successCount.get(),

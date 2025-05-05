@@ -52,7 +52,6 @@ import java.util.Objects;
 
 public class EventActivity extends AppCompatActivity {
     private static final String TAG = "EventActivity";
-    private final boolean eventToProcess = true;
     LoadingScreen loadingScreen;
     EventViewModel eventViewModel;
     private String trackId;
@@ -74,7 +73,7 @@ public class EventActivity extends AppCompatActivity {
     private void start() {
         eventLayout = findViewById(R.id.event_layout);
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, eventLayout, null);
-        loadingScreen.showLoadingScreen();
+        loadingScreen.showLoadingScreen(false);
         loadingScreen.updateProgress(0);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
@@ -314,9 +313,11 @@ public class EventActivity extends AppCompatActivity {
             if (podium == null) {
                 showPendingResults();
             } else {
+                // Store the race for later use
+                this.currentRace = race;
+
                 Log.i(TAG, "Podium found" + podium.size());
                 for (int i = 0; i < 3; i++) {
-                    String driverId = podium.get(i).getDriver().getDriverId();
                     String teamId = podium.get(i).getConstructor().getConstructorId();
 
                     UIUtils.singleSetTextViewText(podium.get(i).getDriver().getFullName(),
@@ -327,12 +328,8 @@ public class EventActivity extends AppCompatActivity {
                     teamColor.setBackgroundColor(ContextCompat.getColor(this, Objects.requireNonNullElseGet(teamColorObj, () -> R.color.mercedes_f1)));
                 }
 
-                // Make the podium clickable
                 View resultsView = findViewById(R.id.timer_card_results);
-                resultsView.setOnClickListener(v -> showRaceResultsDialog(race));
-
-                // Store the race for later use
-                this.currentRace = race;
+                resultsView.setOnClickListener(v -> showRaceResultsDialog(currentRace));
             }
         });
     }
@@ -396,7 +393,14 @@ public class EventActivity extends AppCompatActivity {
             LinearLayout currentSession = view.findViewById(Constants.SESSION_ROW.get(sessionId));
             currentSession.setClickable(true);
             currentSession.setFocusable(true);
-            currentSession.setOnClickListener(v -> Log.i(TAG, "session clicked"));
+            currentSession.setOnClickListener(v -> manageSessionScheduleClick(session));
+        }
+    }
+
+    private void manageSessionScheduleClick(Session session) {
+        String sessionId = session.getClass().getSimpleName();
+        if(sessionId.equals("Race")){
+            showRaceResultsDialog(currentRace);
         }
     }
 

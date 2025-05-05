@@ -58,7 +58,7 @@ public class TrackBioActivity extends AppCompatActivity {
     private void start() {
         trackBioLayout = findViewById(R.id.track_bio_layout);
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, trackBioLayout, null);
-        loadingScreen.showLoadingScreen();
+        loadingScreen.showLoadingScreen(false);
         loadingScreen.updateProgress(0);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);

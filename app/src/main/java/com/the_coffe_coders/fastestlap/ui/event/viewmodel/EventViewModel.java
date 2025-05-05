@@ -4,6 +4,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResultFastestLap;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.repository.result.ResultRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.WeeklyRaceRepository;
@@ -60,5 +62,18 @@ public class EventViewModel extends ViewModel {
         }
 
         return pastRaces;
+    }
+
+    public RaceResultFastestLap extractFastestLap(List<RaceResult> results){
+        RaceResultFastestLap fastestLap = new RaceResultFastestLap();
+        for (RaceResult result : results) {
+            if (result.getFastestLap().getRank().equals("1")) {
+                fastestLap = result.getFastestLap();
+                fastestLap.setDriverName(result.getDriver().getFullName());
+                fastestLap.setConstructorId(result.getConstructor().getConstructorId());
+                break;
+            }
+        }
+        return fastestLap;
     }
 }

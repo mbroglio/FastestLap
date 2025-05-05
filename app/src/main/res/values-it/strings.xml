@@ -97,4 +97,6 @@
     <string name="race_results_title">%1$s Risultati</string>
     <string name="close">Chiudi</string>
     <string name="podium_upper_case">PODIO</string>
+    <string name="fastest_lap_upper_case">GIRO VELOCE</string>
+    <string name="lap">Giro %1$s</string>
 </resources>

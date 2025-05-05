@@ -197,8 +197,6 @@ public class Constants {
         put("december", "dicembre");
     }};
 
-
-
     public static final Map<String, String> RESULT_STATUS_ABBR = new HashMap<>() {{
         put("retired", "RET");
         put("disqualified", "DSQ");

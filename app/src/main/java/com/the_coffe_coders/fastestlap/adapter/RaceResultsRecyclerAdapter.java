@@ -1,6 +1,7 @@
 package com.the_coffe_coders.fastestlap.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +20,12 @@ import com.the_coffe_coders.fastestlap.util.UIUtils;
 import java.util.List;
 import java.util.Objects;
 
-public class RaceResultsAdapter extends RecyclerView.Adapter<RaceResultsAdapter.ResultViewHolder> {
+public class RaceResultsRecyclerAdapter extends RecyclerView.Adapter<RaceResultsRecyclerAdapter.ResultViewHolder> {
 
     private final List<RaceResult> raceResults;
     private final Context context;
 
-    public RaceResultsAdapter(Context context, List<RaceResult> raceResults) {
+    public RaceResultsRecyclerAdapter(Context context, List<RaceResult> raceResults) {
         this.context = context;
         this.raceResults = raceResults;
     }
@@ -41,6 +42,8 @@ public class RaceResultsAdapter extends RecyclerView.Adapter<RaceResultsAdapter.
     public void onBindViewHolder(@NonNull ResultViewHolder holder, int position) {
         RaceResult result = raceResults.get(position);
 
+        Log.i("RaceResultsRecyclerAdapter", "onBindViewHolder: " + result);
+
         int delta = Integer.parseInt(result.getGrid()) - (position + 1);
 
         UIUtils.multipleSetTextViewText(
@@ -55,8 +58,14 @@ public class RaceResultsAdapter extends RecyclerView.Adapter<RaceResultsAdapter.
                         holder.teamName,
                         holder.deltaPosition});
 
-        UIUtils.singleSetTextViewText(Constants.RESULT_STATUS_ABBR.get(result.getStatus().toLowerCase()), holder.status);
-
+        if(!result.isFinished()){
+            UIUtils.singleSetTextViewText(Constants.RESULT_STATUS_ABBR.get(result.getStatus().toLowerCase()), holder.status);
+        }else{
+            if(result.getTime() != null) {
+                UIUtils.singleSetTextViewText(result.getTime().getTime(), holder.status);
+            }
+        }
+        
         if(delta > 0){
             holder.deltaPositionIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.up_arrow));
             holder.deltaPositionIcon.setColorFilter(ContextCompat.getColor(context, R.color.kick_f1), android.graphics.PorterDuff.Mode.SRC_IN);
@@ -83,7 +92,7 @@ public class RaceResultsAdapter extends RecyclerView.Adapter<RaceResultsAdapter.
     public static class ResultViewHolder extends RecyclerView.ViewHolder {
         TextView positionText, driverName, teamName, status, deltaPosition;
         View teamColorIndicator;
-        ImageView statusIcon, deltaPositionIcon;
+        ImageView deltaPositionIcon;
 
         ResultViewHolder(View itemView) {
             super(itemView);

@@ -13,6 +13,8 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.Practice;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Qualifying;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResultFastestLap;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResultTime;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Sprint;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.SprintQualifying;
@@ -55,6 +57,30 @@ public class DatabaseConverters {
     @TypeConverter
     public static String fromRaceResultList(List<RaceResult> results) {
         return gson.toJson(results);
+    }
+
+    @TypeConverter
+    public static String fromRaceResultTime(RaceResultTime time) {
+        return gson.toJson(time);
+    }
+
+    @TypeConverter
+    public static RaceResultTime toRaceResultTime(String json) {
+        Type listType = new TypeToken<RaceResultTime>() {
+        }.getType();
+        return gson.fromJson(json, listType);
+    }
+
+    @TypeConverter
+    public static String fromRaceResultFastestLap(RaceResultFastestLap resultFastestLap) {
+        return gson.toJson(resultFastestLap);
+    }
+
+    @TypeConverter
+    public static RaceResultFastestLap toRaceResultFastestLap(String json) {
+        Type listType = new TypeToken<RaceResultFastestLap>() {
+        }.getType();
+        return gson.fromJson(json, listType);
     }
 
     @TypeConverter

@@ -82,7 +82,7 @@ public class DriverBioActivity extends AppCompatActivity {
     private void start() {
         driverBioLayout = findViewById(R.id.driver_bio_layout);
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, driverBioLayout, null);
-        loadingScreen.showLoadingScreen();
+        loadingScreen.showLoadingScreen(false);
         loadingScreen.updateProgress(0);
 
         toolbar = findViewById(R.id.topAppBar);
