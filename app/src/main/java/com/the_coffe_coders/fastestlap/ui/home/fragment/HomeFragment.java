@@ -130,7 +130,6 @@ public class HomeFragment extends Fragment {
     private void setupLoadingScreen(View view) {
         loadingScreen = new LoadingScreen(view, getContext(), null, view.findViewById(R.id.home_refresh_layout));
         loadingScreen.showLoadingScreen(false);
-        loadingScreen.updateProgress(0);
     }
 
     private void setupUI(View view) {
@@ -165,7 +164,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void setLastRaceCard(View view) {
-        loadingScreen.updateProgress(25);
         MutableLiveData<Result> lastRace = homeViewModel.getLastRace();
         lastRace.observe(getViewLifecycleOwner(), result -> {
             try {
@@ -187,7 +185,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void showPodium(View view, WeeklyRace race) {
-        loadingScreen.updateProgress(25);
         try {
             String circuitId = race.getTrack().getTrackId();
             MutableLiveData<Result> trackData = trackViewModel.getTrack(circuitId);
@@ -214,7 +211,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void updateLastRaceUI(View view, WeeklyRace race, Track track) {
-        loadingScreen.updateProgress(25);
         try {
 
             UIUtils.singleSetTextViewText(race.getRaceName(), view.findViewById(R.id.last_race_name));
@@ -229,7 +225,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void updateLastRaceUIFinalStep(WeeklyRace race, View view) {
-        loadingScreen.updateProgress(25);
         LocalDateTime dateTime = race.getDateTime();
 
         UIUtils.multipleSetTextViewText(
@@ -271,7 +266,6 @@ public class HomeFragment extends Fragment {
 
 
     private void setDriverNames(View view, List<RaceResult> raceResults) {
-        loadingScreen.updateProgress(25);
         try {
             for (int i = 0; i < Math.min(3, raceResults.size()); i++) {
 
@@ -285,14 +279,12 @@ public class HomeFragment extends Fragment {
     }
 
     private void loadPendingResultsLayout(View view) {
-        loadingScreen.updateProgress(25);
         view.findViewById(R.id.pending_last_race_results).setVisibility(View.VISIBLE);
         view.findViewById(R.id.last_race_results).setVisibility(View.GONE);
 
     }
 
     private void setNextSessionCard(View view) {
-        loadingScreen.updateProgress(50);
         MutableLiveData<Result> nextRaceLiveData = homeViewModel.getNextRaceLiveData();
         try {
             nextRaceLiveData.observe(getViewLifecycleOwner(), result -> {
@@ -323,7 +315,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void processNextRace(View view, WeeklyRace nextRace) {
-        loadingScreen.updateProgress(50);
         try {
             if (nextRace == null) throw new Exception("Next race is null");
             MutableLiveData<Result> trackData = trackViewModel.getTrack(nextRace.getTrack().getTrackId());
@@ -351,7 +342,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchNationForNextRace(View view, WeeklyRace nextRace, Track track) {
-        loadingScreen.updateProgress(50);
         MutableLiveData<Result> nationData = nationViewModel.getNation(track.getCountry());
         nationData.observe(getViewLifecycleOwner(), nationResult -> {
             try {
@@ -372,7 +362,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void setNextRaceCard(View view, WeeklyRace nextRace, Nation nation) {
-        loadingScreen.updateProgress(50);
         try {
 
             UIUtils.singleSetTextViewText(nextRace.getRaceName(), view.findViewById(R.id.home_next_gp_name));
@@ -393,7 +382,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void setNextRaceCardFinalStep(WeeklyRace nextRace, View view) throws Exception {
-        loadingScreen.updateProgress(50);
         if (!nextRace.getSeason().equals(ServiceLocator.currentYear)) {
             throw new Exception("Season mismatch");
         }
@@ -420,7 +408,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void startCountdown(View view, LocalDateTime eventDate) {
-        loadingScreen.updateProgress(50);
         LinearLayout liveIconLayout = view.findViewById(R.id.timer_live_layout);
         liveIconLayout.setVisibility(View.GONE);
         long millisUntilStart = ZonedDateTime.of(eventDate, ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis();
@@ -461,7 +448,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void setSeasonEnded(View view) {
-        loadingScreen.updateProgress(50);
         view.findViewById(R.id.last_race_results).setVisibility(View.GONE);
         view.findViewById(R.id.timer).setVisibility(View.GONE);
         view.findViewById(R.id.season_ended).setVisibility(View.VISIBLE);
@@ -473,14 +459,12 @@ public class HomeFragment extends Fragment {
     }
 
     private void setUpdating(View view) {
-        loadingScreen.updateProgress(50);
         view.findViewById(R.id.timer_card_countdown).setVisibility(View.GONE);
         view.findViewById(R.id.timer_updating).setVisibility(View.VISIBLE);
     }
 
     private void buildFinalDriversStanding(View seasonEndedCard) {
         MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData(requireActivity().getApplication());
-        loadingScreen.updateProgress(50);
 
         driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
             try {
@@ -503,7 +487,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void setStandingFields(View seasonEndedCard, String driverId, int position) {
-        loadingScreen.updateProgress(50);
         MutableLiveData<Result> driverData = driverViewModel.getDriver(driverId);
         driverData.observe(getViewLifecycleOwner(), result -> {
             try {
@@ -527,7 +510,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildFinalTeamsStanding(View seasonEndedCard) {
-        loadingScreen.updateProgress(50);
         MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData();
         constructorStandingsData.observe(getViewLifecycleOwner(), result -> {
             try {
@@ -555,7 +537,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void setFavouriteDriverCard(View view) {
-        loadingScreen.updateProgress(75);
         String favoriteDriverId = getFavoriteDriverId();
         if (favoriteDriverId == null || favoriteDriverId.isEmpty()) {
             showSelectFavouriteDriver(view);
@@ -587,7 +568,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchDriverDataForCard(View view, String driverId, DriverStandingsElement favouriteDriver) {
-        loadingScreen.updateProgress(75);
         MutableLiveData<Result> driverData = driverViewModel.getDriver(driverId);
         driverData.observe(getViewLifecycleOwner(), driverResult -> {
             try {
@@ -609,7 +589,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchNationForDriver(View view, DriverStandingsElement favouriteDriver) {
-        loadingScreen.updateProgress(75);
         MutableLiveData<Result> nationData = nationViewModel.getNation(favouriteDriver.getDriver().getNationality());
         nationData.observe(getViewLifecycleOwner(), nationResult -> {
             try {
@@ -630,7 +609,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildDriverCard(View view, DriverStandingsElement standingElement, Nation nation) {
-        loadingScreen.updateProgress(75);
         try {
             Driver driver = standingElement.getDriver();
 
@@ -655,7 +633,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildDriverCardFinalStep(DriverStandingsElement standingElement, View view, Driver driver) {
-        loadingScreen.updateProgress(75);
         if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
 
             UIUtils.multipleSetTextViewText(
@@ -672,7 +649,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void setFavouriteConstructorCard(View view) {
-        loadingScreen.updateProgress(100);
         String favoriteTeamId = getFavoriteTeamId();
         if (favoriteTeamId == null || favoriteTeamId.isEmpty()) {
             showSelectFavouriteConstructor(view);
@@ -704,7 +680,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchConstructorDataForCard(View view, String teamId, ConstructorStandingsElement favouriteConstructor) {
-        loadingScreen.updateProgress(100);
         MutableLiveData<Result> constructorData = constructorViewModel.getSelectedConstructor(teamId);
         constructorData.observe(getViewLifecycleOwner(), constructorResult -> {
             try {
@@ -726,7 +701,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchNationForConstructor(View view, ConstructorStandingsElement favouriteConstructor) {
-        loadingScreen.updateProgress(100);
         MutableLiveData<Result> nationData = nationViewModel.getNation(favouriteConstructor.getConstructor().getNationality());
         nationData.observe(getViewLifecycleOwner(), nationResult -> {
 
@@ -748,7 +722,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildConstructorCard(View view, ConstructorStandingsElement standingElement, Nation nation) {
-        loadingScreen.updateProgress(100);
         try {
             Constructor constructor = standingElement.getConstructor();
 
@@ -777,7 +750,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildConstructorCardFinalStep(ConstructorStandingsElement standingElement, View view, Constructor constructor) {
-        loadingScreen.updateProgress(100);
         if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
 
             UIUtils.multipleSetTextViewText(
@@ -794,25 +766,21 @@ public class HomeFragment extends Fragment {
     }
 
     private void showSelectFavouriteDriver(View view) {
-        loadingScreen.updateProgress(75);
         updateVisibility(view, R.id.pending_favorite_driver, R.id.favorite_driver, R.id.missing_favorite_driver);
         view.findViewById(R.id.pending_favorite_driver).setOnClickListener(v -> startActivity(new Intent(getActivity(), DriversStandingActivity.class)));
     }
 
     private void showDriverNotFound(View view) {
-        loadingScreen.updateProgress(75);
         updateVisibility(view, R.id.missing_favorite_driver, R.id.favorite_driver, R.id.pending_favorite_driver);
         view.findViewById(R.id.missing_favorite_driver).setOnClickListener(v -> startActivity(new Intent(getActivity(), DriversStandingActivity.class)));
     }
 
     private void showSelectFavouriteConstructor(View view) {
-        loadingScreen.updateProgress(100);
         updateVisibility(view, R.id.pending_favorite_constructor, R.id.favorite_constructor, R.id.missing_favorite_constructor);
         view.findViewById(R.id.pending_favorite_constructor).setOnClickListener(v -> startActivity(new Intent(getActivity(), ConstructorsStandingActivity.class)));
     }
 
     private void showConstructorNotFound(View view) {
-        loadingScreen.updateProgress(100);
         updateVisibility(view, R.id.missing_favorite_constructor, R.id.favorite_constructor, R.id.pending_favorite_constructor);
         view.findViewById(R.id.missing_favorite_constructor).setOnClickListener(v -> startActivity(new Intent(getActivity(), ConstructorsStandingActivity.class)));
     }
