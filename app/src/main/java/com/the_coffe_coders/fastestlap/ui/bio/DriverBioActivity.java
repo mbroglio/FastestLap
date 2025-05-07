@@ -230,52 +230,62 @@ public class DriverBioActivity extends AppCompatActivity {
             if (result.isSuccess()) {
                 nation = ((Result.NationSuccess) result).getData();
                 Log.i(TAG, "GET NATION FROM FIREBASE REPO: " + nation);
-                setDriverData(driver, nation, team);
-                setToolbar();
+                if(driver.getTeam_id() != null){
+                    setDriverData(driver, nation, team, true, driver.getTeam_id());
+                    setToolbar(true, driver.getTeam_id());
+                }else{
+                    setDriverData(driver, nation, team, false, null);
+                    setToolbar(false, null);
+                }
+
             }
         });
     }
 
-    public void setToolbar() {
+    public void setToolbar(boolean teamIdPresent, String teamId) {
 
         UIUtils.singleSetTextViewText((driver.getGivenName() + " " + driver.getFamilyName()).toUpperCase(),
                 findViewById(R.id.topAppBarTitle));
 
-        try {
-            toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
-            appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
+        if(teamIdPresent){
+            toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+            appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
 
             teamLogoCard.setOnClickListener(v -> {
                 Intent intent = new Intent(DriverBioActivity.this, ConstructorBioActivity.class);
-                intent.putExtra("TEAM_ID", driver.getTeam_id());
+                intent.putExtra("TEAM_ID", teamId);
                 startActivity(intent);
             });
-        } catch (Exception e) {
+        }else{
             toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
             appBarLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
         }
     }
 
-    private void setDriverData(Driver driver, Nation nation, Constructor team) {
-        try {
-            teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
+    private void setDriverData(Driver driver, Nation nation, Constructor team, boolean teamIdPresent, String teamId) {
+        if(teamIdPresent){
+            teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+            driverNumberCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
             if (team.getConstructorId().equals("rb")) {
                 teamLogoCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white));
             }
-            driverNumberCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(driver.getTeam_id())));
-
-            Glide.with(this).load(team.getTeam_logo_url()).into(teamLogoImage);
-        } catch (Exception e) {
+        }else{
             teamLogoCard.setStrokeColor(ContextCompat.getColor(this, R.color.timer_gray));
             driverNumberCard.setStrokeColor(ContextCompat.getColor(this, R.color.timer_gray));
-
-            teamLogoImage.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.f1_car_icon_filled));
         }
 
         UIUtils.loadSequenceOfImagesWithGlide(this,
-                new String[]{nation.getNation_flag_url(), driver.getDriver_pic_url(), driver.getRacing_number_pic_url()},
+                new String[]{
+                        team.getTeam_logo_url(),
+                        nation.getNation_flag_url(),
+                        driver.getDriver_pic_url(),
+                        driver.getRacing_number_pic_url()},
 
-                new ImageView[]{findViewById(R.id.driver_flag), findViewById(R.id.driver_bio_pic), driverNumberImage},
+                new ImageView[]{
+                        teamLogoImage,
+                        findViewById(R.id.driver_flag),
+                        findViewById(R.id.driver_bio_pic),
+                        driverNumberImage},
 
                 () -> setDriverDataFinalStep(driver));
     }

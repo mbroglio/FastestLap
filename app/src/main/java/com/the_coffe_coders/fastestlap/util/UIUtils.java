@@ -89,12 +89,7 @@ public class UIUtils {
     }
 
     public static void loadImageWithGlide(Context context, String url, ImageView imageView, Runnable onSuccess) {
-        if(url != null){
-            loadImage(context, url, imageView, onSuccess, 0);
-        } else {
-            Log.e("Glide", "URL is null");
-            imageView.setImageDrawable(null);
-        }
+        loadImage(context, url, imageView, onSuccess, 0);
     }
 
     public static void loadSequenceOfImagesWithGlide(Context context, String[] urls, ImageView[] imageViews, Runnable onSuccess) {
@@ -115,35 +110,51 @@ public class UIUtils {
     }
 
     private static void loadImage(Context context, String url, ImageView imageView, Runnable onSuccess, int retryCount) {
-        Glide.with(context)
-                .load(url)
-                .into(new CustomTarget<Drawable>() {
+        Log.i("Glide", "Loading image: " + url);
+        if(url != null && !url.isEmpty()){
+            Glide.with(context)
+                    .load(url)
+                    .into(new CustomTarget<Drawable>() {
 
-                    @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                        Log.i("Glide", "Image loaded successfully: ");
-                        imageView.setImageDrawable(resource);
-                        if (onSuccess != null) {
-                            onSuccess.run();
+                        @Override
+                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                            Log.i("Glide", "Image loaded successfully: ");
+                            imageView.setImageDrawable(resource);
+                            if (onSuccess != null) {
+                                onSuccess.run();
+                            }
+
                         }
 
-                    }
-
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-                        // Handle the case when the load is cleared
-                        Log.i("Glide", "Image load cleared: " + url);
-                    }
-
-                    @Override
-                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                        Log.e("Glide", "Image loading failed: " + url);
-                        if (retryCount <= Constants.MAX_RETRY_COUNT) {
-                            Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
-                            new Handler(Looper.getMainLooper()).post(() -> loadImage(context, url, imageView, onSuccess, retryCount + 1));
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                            // Handle the case when the load is cleared
+                            Log.i("Glide", "Image load cleared: " + url);
                         }
-                    }
-                });
+
+                        @Override
+                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                            Log.e("Glide", "Image loading failed: " + url);
+                            if (retryCount <= Constants.MAX_RETRY_COUNT) {
+                                Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
+                                new Handler(Looper.getMainLooper()).post(() -> loadImage(context, url, imageView, onSuccess, retryCount + 1));
+                            }else{
+                                Log.e("Glide", "Max retry count reached for image: " + url);
+                                imageView.setImageDrawable(null);
+
+                                if (onSuccess != null) {
+                                    onSuccess.run();
+                                }
+                            }
+                        }
+                    });
+        }else{
+            Log.e("Glide", "URL is null");
+            imageView.setImageDrawable(null);
+            if (onSuccess != null) {
+                onSuccess.run();
+            }
+        }
     }
 
     public static void loadImageInEventCardWithAlpha(Context context, String url, LinearLayout card, Runnable onSuccess, int alpha) {
@@ -151,66 +162,79 @@ public class UIUtils {
     }
 
     private static void loadImageAlpha(Context context, String url, LinearLayout card, Runnable onSuccess, int alpha, int retryCount) {
+        if(url != null && !url.isEmpty()) {
+            Glide.with(context)
+                    .load(url)
+                    .transform(new BitmapTransformation() {
+                        @Override
+                        public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
 
-        Glide.with(context)
-                .load(url)
-                .transform(new BitmapTransformation() {
-                    @Override
-                    public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
-
-                    }
-
-                    @Override
-                    protected Bitmap transform(@NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight) {
-                        // Make the bitmap 30% transparent (76/255 ≈ 0.3)
-                        return setAlpha(toTransform, alpha);
-                    }
-
-                    public String getId() {
-                        return "alpha";
-                    }
-
-                    // Helper method to set alpha on bitmap
-                    private Bitmap setAlpha(Bitmap bitmap, int alpha) {
-                        Bitmap mutableBitmap = bitmap.isMutable() ? bitmap : bitmap.copy(Bitmap.Config.ARGB_8888, true);
-                        Canvas canvas = new Canvas(mutableBitmap);
-                        Paint paint = new Paint();
-                        paint.setAlpha(alpha);
-                        canvas.drawRect(0, 0, bitmap.getWidth(), bitmap.getHeight(), paint);
-                        return mutableBitmap;
-                    }
-                })
-                .into(new CustomTarget<Drawable>() {
-                    @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                        card.setBackground(resource);
-                        if (onSuccess != null) {
-                            onSuccess.run();
                         }
-                    }
 
-                    @Override
-                    public void onLoadCleared(@Nullable Drawable placeholder) {
-                        // Use default image if loading fails
-                        Drawable defaultImage = ContextCompat.getDrawable(context, R.drawable.constructors_image);
-                        if (defaultImage != null) {
-                            defaultImage.setAlpha(76);
+                        @Override
+                        protected Bitmap transform(@NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight) {
+                            // Make the bitmap 30% transparent (76/255 ≈ 0.3)
+                            return setAlpha(toTransform, alpha);
                         }
-                        card.setBackground(defaultImage);
-                        if (onSuccess != null) {
-                            onSuccess.run();
-                        }
-                    }
 
-                    @Override
-                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                        Log.e("Glide", "Image loading failed: " + url);
-                        if (retryCount <= Constants.MAX_RETRY_COUNT) {
-                            Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
-                            new Handler(Looper.getMainLooper()).post(() -> loadImageAlpha(context, url, card, onSuccess, alpha, retryCount + 1));
+                        public String getId() {
+                            return "alpha";
                         }
-                    }
-                });
+
+                        // Helper method to set alpha on bitmap
+                        private Bitmap setAlpha(Bitmap bitmap, int alpha) {
+                            Bitmap mutableBitmap = bitmap.isMutable() ? bitmap : bitmap.copy(Bitmap.Config.ARGB_8888, true);
+                            Canvas canvas = new Canvas(mutableBitmap);
+                            Paint paint = new Paint();
+                            paint.setAlpha(alpha);
+                            canvas.drawRect(0, 0, bitmap.getWidth(), bitmap.getHeight(), paint);
+                            return mutableBitmap;
+                        }
+                    })
+                    .into(new CustomTarget<Drawable>() {
+                        @Override
+                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                            card.setBackground(resource);
+                            if (onSuccess != null) {
+                                onSuccess.run();
+                            }
+                        }
+
+                        @Override
+                        public void onLoadCleared(@Nullable Drawable placeholder) {
+                            // Use default image if loading fails
+                            Drawable defaultImage = ContextCompat.getDrawable(context, R.drawable.constructors_image);
+                            if (defaultImage != null) {
+                                defaultImage.setAlpha(76);
+                            }
+                            card.setBackground(defaultImage);
+                            if (onSuccess != null) {
+                                onSuccess.run();
+                            }
+                        }
+
+                        @Override
+                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                            Log.e("Glide", "Image loading failed: " + url);
+                            if (retryCount <= Constants.MAX_RETRY_COUNT) {
+                                Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
+                                new Handler(Looper.getMainLooper()).post(() -> loadImageAlpha(context, url, card, onSuccess, alpha, retryCount + 1));
+                            }else {
+                                Log.e("Glide", "Max retry count reached for image: " + url);
+                                card.setBackgroundColor(context.getColor(R.color.screen_background_color));
+                                if (onSuccess != null) {
+                                    onSuccess.run();
+                                }
+                            }
+                        }
+                    });
+        }else{
+            Log.e("Glide", "URL is null");
+            card.setBackgroundColor(context.getColor(R.color.screen_background_color));
+            if (onSuccess != null) {
+                onSuccess.run();
+            }
+        }
     }
 
     public static void singleSetTextViewText(String text, TextView textView) {
