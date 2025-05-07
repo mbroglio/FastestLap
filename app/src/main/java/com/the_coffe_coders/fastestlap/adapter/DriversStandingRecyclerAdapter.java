@@ -17,6 +17,7 @@ import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
@@ -25,7 +26,6 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
-import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
@@ -43,7 +43,6 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
     private final ConstructorViewModel constructorViewModel;
     private final LifecycleOwner lifecycleOwner;
     private DriverStandingsElement driverStandingsElement;
-    private View driverCard;
     //private int counter;
 
     public DriversStandingRecyclerAdapter(Context context, List<DriverStandingsElement> driversStandingList,
@@ -64,8 +63,8 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
     @NonNull
     @Override
     public DriversStandingRecyclerAdapter.DriverViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        driverCard = LayoutInflater.from(parent.getContext()).inflate(R.layout.driver_card, parent, false);
-        return new DriverViewHolder(driverCard);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.driver_card, parent, false);
+        return new DriverViewHolder(view);
     }
 
     @Override
@@ -102,8 +101,10 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
                        holder.driverPosition);
 
                 if (driverStandingsElement.getDriver().getDriverId().equals(driverId)) {
-                    UIUtils.animateCardBackgroundColor(context, driverCard.findViewById(R.id.driver_card_view), R.color.yellow, Color.TRANSPARENT, 1000, 10);
+                    UIUtils.animateCardBackgroundColor(context, holder.driverCard.findViewById(R.id.driver_card_view), R.color.yellow, Color.TRANSPARENT, 1000, 10);
                 }
+
+                holder.driverCard.setOnClickListener(v -> goToBioPage(position));
 
                 if (driver.getTeam_id() != null) {
                     holder.driverCardInnerLayout.setBackground(AppCompatResources.getDrawable(context, Constants.TEAM_GRADIENT_COLOR.get(driver.getTeam_id())));
@@ -113,13 +114,28 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
                 }
 
                 UIUtils.loadImageWithGlide(context, driver.getDriver_pic_url(), holder.driverImage, () ->
-                        generateForConstructor(holder, driver, driverStandingsElement, position));
+                        generateForConstructor(holder, driver, position));
 
             }
         });
     }
 
-    private void generateForConstructor(DriverViewHolder holder, Driver driver, DriverStandingsElement standingElement, int position) {
+    private void goToBioPage(int position) {
+        //TEMPORARY FIX
+        String driverIdToShow;
+        if(driversStandingList == null){
+            driverIdToShow = driversList.get(position).getDriverId();
+        }else{
+            driverIdToShow = driversStandingList.get(position).getDriver().getDriverId();
+        }
+        //
+
+        Intent intent = new Intent(context, DriverBioActivity.class);
+        intent.putExtra("DRIVER_ID", driverIdToShow);
+        context.startActivity(intent);
+    }
+
+    private void generateForConstructor(DriverViewHolder holder, Driver driver, int position) {
         constructorViewModel.getSelectedConstructor(driver.getTeam_id()).observe(lifecycleOwner, result -> {
             if(result instanceof Result.Loading){
                 return;
@@ -128,12 +144,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
                 Constructor constructor = ((Result.ConstructorSuccess) result).getData();
 
                 UIUtils.loadImageWithGlide(context, constructor.getTeam_logo_minimal_url(), holder.driverTeamImage, () -> {
-                    driverCard.setOnClickListener(v -> {
-                        Intent intent = new Intent(context, DriverBioActivity.class);
-                        intent.putExtra("DRIVER_ID", standingElement.getDriver().getDriverId());
-                        intent.putExtra("CALLER", DriversStandingActivity.class.getName());
-                        context.startActivity(intent);
-                    });
+
                     loadingScreen.updateProgress();
 
                     Log.i("DriversStanding", "onBindViewHolder " + position + "/" + getItemCount());
@@ -157,6 +168,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
 
     public static class DriverViewHolder extends RecyclerView.ViewHolder {
 
+        MaterialCardView driverCard;
         TextView driverName, driverPoints, driverPosition;
         ImageView driverImage, driverTeamImage;
         RelativeLayout driverCardInnerLayout;
@@ -164,6 +176,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
         public DriverViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            driverCard = itemView.findViewById(R.id.driver_card_view);
             driverName = itemView.findViewById(R.id.driver_name);
             driverPoints = itemView.findViewById(R.id.driver_points);
             driverPosition = itemView.findViewById(R.id.driver_position);

@@ -89,7 +89,12 @@ public class UIUtils {
     }
 
     public static void loadImageWithGlide(Context context, String url, ImageView imageView, Runnable onSuccess) {
-        loadImage(context, url, imageView, onSuccess, 0);
+        if(url != null){
+            loadImage(context, url, imageView, onSuccess, 0);
+        } else {
+            Log.e("Glide", "URL is null");
+            imageView.setImageDrawable(null);
+        }
     }
 
     public static void loadSequenceOfImagesWithGlide(Context context, String[] urls, ImageView[] imageViews, Runnable onSuccess) {

@@ -25,7 +25,7 @@ public class ServiceLocator {
     public static final String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
     public static ServiceLocator instance;
     public static String currentYear = "2025";
-    public static String CURRENT_YEAR_BASE_URL = BASE_URL + "${currentYear}";
+    public static String CURRENT_YEAR_BASE_URL = BASE_URL + "${currentYear}" + "/";
 
     public static synchronized ServiceLocator getInstance() {
         if (instance == null) {

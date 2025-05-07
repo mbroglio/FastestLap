@@ -43,7 +43,6 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
     private final LifecycleOwner lifecycleOwner;
     private final LoadingScreen loadingScreen;
     private ConstructorStandingsElement constructorStandingsElement;
-    private View constructorCard;
     //private int counter;
 
     public ConstructorStandingsRecyclerAdapter(Context context, String constructorId, List<ConstructorStandingsElement> constructorStandingsList,
@@ -62,8 +61,8 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
     @NonNull
     @Override
     public ConstructorStandingsRecyclerAdapter.ConstructorViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        constructorCard = LayoutInflater.from(parent.getContext()).inflate(R.layout.team_card, parent, false);
-        return new ConstructorViewHolder(constructorCard);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.team_card, parent, false);
+        return new ConstructorViewHolder(view);
     }
 
     @Override
@@ -96,14 +95,10 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                                 holder.constructorPoints});
 
                 if (currentConstructorId.equals(constructorId)) {
-                    UIUtils.animateCardBackgroundColor(context, holder.constructorCardView, R.color.yellow, Color.TRANSPARENT, 1000, 10);
+                    UIUtils.animateCardBackgroundColor(context, holder.constructorCard, R.color.yellow, Color.TRANSPARENT, 1000, 10);
                 }
 
-                constructorCard.setOnClickListener(v -> {
-                    Intent intent = new Intent(context, ConstructorBioActivity.class);
-                    intent.putExtra("TEAM_ID", currentConstructorId);
-                    context.startActivity(intent);
-                });
+                holder.constructorCard.setOnClickListener(v -> goToBioPage(position));
 
                 UIUtils.loadSequenceOfImagesWithGlide(context,
                         new String[]{
@@ -117,6 +112,16 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
             }
         });
 
+    }
+
+    private void goToBioPage(int position) {
+        //TEMPORARY FIX
+        String constructorIdToShow = constructorStandingsList.get(position).getConstructor().getConstructorId();
+        //
+        Log.i("ConstructorsStanding", "goToBioPage: " + constructorIdToShow + " / " + position);
+        Intent intent = new Intent(context, ConstructorBioActivity.class);
+        intent.putExtra("TEAM_ID", constructorIdToShow);
+        context.startActivity(intent);
     }
 
     private void processDriverOne(ConstructorViewHolder holder, Constructor constructor, int position) {
@@ -166,7 +171,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         TextView constructorName, constructorPoints, constructorPosition, driverOneName, driverTwoName;
         ImageView constructorLogo, constructorCarImage, driverOneImage, driverTwoImage;
         LinearLayout constructorCardInnerLayout;
-        MaterialCardView constructorCardView;
+        MaterialCardView constructorCard;
 
         public ConstructorViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -181,7 +186,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
             driverTwoName = itemView.findViewById(R.id.driver_2_name);
             driverTwoImage = itemView.findViewById(R.id.driver_2_pic);
             constructorCardInnerLayout = itemView.findViewById(R.id.team_card);
-            constructorCardView = itemView.findViewById(R.id.team_card_view);
+            constructorCard = itemView.findViewById(R.id.team_card_view);
         }
     }
 }
