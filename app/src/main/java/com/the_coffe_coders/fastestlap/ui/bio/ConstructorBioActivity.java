@@ -305,16 +305,17 @@ public class ConstructorBioActivity extends AppCompatActivity {
         tableLayout.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
 
-        View tableHeader = inflater.inflate(R.layout.constructor_bio_table_header, tableLayout, false);
-        TableLayout.LayoutParams paramsHeader = (TableLayout.LayoutParams) tableHeader.getLayoutParams();
-        paramsHeader.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
-        tableHeader.setLayoutParams(paramsHeader);
-        tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray_dark));
-
-        //set stroke of tableHeader
-        tableLayout.addView(tableHeader);
-
         if (constructor.getTeam_history() != null) {
+
+            View tableHeader = inflater.inflate(R.layout.constructor_bio_table_header, tableLayout, false);
+            TableLayout.LayoutParams paramsHeader = (TableLayout.LayoutParams) tableHeader.getLayoutParams();
+            paramsHeader.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
+            tableHeader.setLayoutParams(paramsHeader);
+            tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray_dark));
+
+            //set stroke of tableHeader
+            tableLayout.addView(tableHeader);
+
             List<ConstructorHistory> constructorHistoryList = constructor.getTeam_history();
             for (int i = constructorHistoryList.size() - 1; i >= 0; i--) {
                 ConstructorHistory constructorHistory = constructorHistoryList.get(i);

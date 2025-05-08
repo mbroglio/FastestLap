@@ -163,49 +163,50 @@ public class TrackBioActivity extends AppCompatActivity {
         tableLayout.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
 
-        View tableHeader = inflater.inflate(R.layout.track_bio_table_header, tableLayout, false);
-        tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray_dark));
-        tableLayout.addView(tableHeader);
+        if(track.getTrack_history() != null){
+            View tableHeader = inflater.inflate(R.layout.track_bio_table_header, tableLayout, false);
+            tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray_dark));
 
-        List<TrackHistory> trackHistoryList = track.getTrack_history();
-        for (int i = trackHistoryList.size() - 1; i >= 0; i--) {
-            TrackHistory history = trackHistoryList.get(i);
-            View tableRow = inflater.inflate(R.layout.track_bio_table_row, tableLayout, false);
+            tableLayout.addView(tableHeader);
 
-            UIUtils.multipleSetTextViewText(
-                    new String[]{
-                            history.getYear(),
-                            history.getPodium().get(0),
-                            history.getPodium().get(1),
-                            history.getPodium().get(2),
-                            history.getTeam().get(0),
-                            history.getTeam().get(1),
-                            history.getTeam().get(2)},
+            List<TrackHistory> trackHistoryList = track.getTrack_history();
+            for (int i = trackHistoryList.size() - 1; i >= 0; i--) {
+                TrackHistory history = trackHistoryList.get(i);
+                View tableRow = inflater.inflate(R.layout.track_bio_table_row, tableLayout, false);
 
-                    new TextView[]{
-                            tableRow.findViewById(R.id.season_year),
-                            tableRow.findViewById(R.id.first_driver),
-                            tableRow.findViewById(R.id.second_driver),
-                            tableRow.findViewById(R.id.third_driver),
-                            tableRow.findViewById(R.id.first_driver_team),
-                            tableRow.findViewById(R.id.second_driver_team),
-                            tableRow.findViewById(R.id.third_driver_team)});
+                UIUtils.multipleSetTextViewText(
+                        new String[]{
+                                history.getYear(),
+                                history.getPodium().get(0),
+                                history.getPodium().get(1),
+                                history.getPodium().get(2),
+                                history.getTeam().get(0),
+                                history.getTeam().get(1),
+                                history.getTeam().get(2)},
 
-            ImageView raceHighlights = tableRow.findViewById(R.id.race_highlights_button);
-            if (history.getRaceHighlightsUrl() != null) {
-                raceHighlights.setVisibility(View.VISIBLE);
-                raceHighlights.setOnClickListener(v -> {
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(history.getRaceHighlightsUrl()));
-                    startActivity(intent);
-                });
-            } else {
-                raceHighlights.setVisibility(View.GONE);
+                        new TextView[]{
+                                tableRow.findViewById(R.id.season_year),
+                                tableRow.findViewById(R.id.first_driver),
+                                tableRow.findViewById(R.id.second_driver),
+                                tableRow.findViewById(R.id.third_driver),
+                                tableRow.findViewById(R.id.first_driver_team),
+                                tableRow.findViewById(R.id.second_driver_team),
+                                tableRow.findViewById(R.id.third_driver_team)});
+
+                ImageView raceHighlights = tableRow.findViewById(R.id.race_highlights_button);
+                if (history.getRaceHighlightsUrl() != null) {
+                    raceHighlights.setVisibility(View.VISIBLE);
+                    raceHighlights.setOnClickListener(v -> {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(history.getRaceHighlightsUrl()));
+                        startActivity(intent);
+                    });
+                } else {
+                    raceHighlights.setVisibility(View.GONE);
+                }
+
+                tableLayout.addView(tableRow);
             }
-
-            tableLayout.addView(tableRow);
-
         }
-
         loadingScreen.hideLoadingScreen();
     }
 

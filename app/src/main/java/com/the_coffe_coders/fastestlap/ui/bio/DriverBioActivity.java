@@ -325,15 +325,16 @@ public class DriverBioActivity extends AppCompatActivity {
         tableLayout.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
 
-        View tableHeader = inflater.inflate(R.layout.driver_bio_table_header, tableLayout, false);
-        TableLayout.LayoutParams paramsHeader = (TableLayout.LayoutParams) tableHeader.getLayoutParams();
-        paramsHeader.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
-        tableHeader.setLayoutParams(paramsHeader);
-        tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray_dark));
-
-        tableLayout.addView(tableHeader);
-
         if (driver.getDriver_history() != null) {
+
+            View tableHeader = inflater.inflate(R.layout.driver_bio_table_header, tableLayout, false);
+            TableLayout.LayoutParams paramsHeader = (TableLayout.LayoutParams) tableHeader.getLayoutParams();
+            paramsHeader.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
+            tableHeader.setLayoutParams(paramsHeader);
+            tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray_dark));
+
+            tableLayout.addView(tableHeader);
+
             List<DriverHistory> driverHistoryList = driver.getDriver_history();
             for (int i = driverHistoryList.size() - 1; i >= 0; i--) {
                 DriverHistory driverHistory = driverHistoryList.get(i);
