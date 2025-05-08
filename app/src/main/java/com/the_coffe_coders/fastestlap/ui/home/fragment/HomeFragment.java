@@ -117,13 +117,9 @@ public class HomeFragment extends Fragment {
 
     private void initializeViewModels() {
         homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(requireActivity().getApplication())).get(HomeViewModel.class);
-
         constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
-
         driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(requireActivity().getApplication())).get(DriverViewModel.class);
-
         trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(ServiceLocator.getInstance().getTrackRepository())).get(TrackViewModel.class);
-
         nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(ServiceLocator.getInstance().getFirebaseNationRepository())).get(NationViewModel.class);
     }
 
@@ -539,7 +535,7 @@ public class HomeFragment extends Fragment {
         loadingScreen.postLoadingStatus(this.getString(R.string.season_finished, this.getString(R.string.constructors)));
         loadingScreen.updateProgress(50);
 
-        MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData();
+        MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData(requireActivity().getApplication());
         constructorStandingsData.observe(getViewLifecycleOwner(), result -> {
             try {
                 if (result instanceof Result.Loading) {
@@ -699,7 +695,7 @@ public class HomeFragment extends Fragment {
             return;
         }
 
-        MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData();
+        MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData(requireActivity().getApplication());
         constructorStandingsData.observe(getViewLifecycleOwner(), result -> {
             try {
                 if (result instanceof Result.Loading) {

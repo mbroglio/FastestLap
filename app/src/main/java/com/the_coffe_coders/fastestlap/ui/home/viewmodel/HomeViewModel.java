@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
+import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
@@ -16,7 +17,10 @@ import com.the_coffe_coders.fastestlap.repository.weeklyrace.WeeklyRaceRepositor
 import com.the_coffe_coders.fastestlap.source.standing.driver.DriverStandingsLocalDataSource;
 import com.the_coffe_coders.fastestlap.source.standing.driver.DriverStandingsRemoteDataSource;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
+import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
+import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 
 import java.util.List;
 
@@ -39,7 +43,7 @@ public class HomeViewModel extends ViewModel {
     }
 
     public LiveData<Result> getConstructorStandings() {
-        return ConstructorStandingRepository.getInstance().fetchConstructorStanding();
+        return getConstructorStandingsLiveData(null);
     }
 
     public MutableLiveData<Result> getRaceResults(String round) {
@@ -58,8 +62,9 @@ public class HomeViewModel extends ViewModel {
         return DriverStandingRepository.getInstance(new DriverStandingsRemoteDataSource(), new DriverStandingsLocalDataSource(ServiceLocator.getInstance().getRoomDatabase(application))).fetchDriverStanding();
     }
 
-    public MutableLiveData<Result> getConstructorStandingsLiveData() {
-        return ConstructorStandingRepository.getInstance().fetchConstructorStanding();
+    public MutableLiveData<Result> getConstructorStandingsLiveData(Application application) {
+        AppRoomDatabase database = application != null ? ServiceLocator.getInstance().getRoomDatabase(application) : null;
+        return ConstructorStandingRepository.getInstance(database).getConstructorStandings();
     }
 
     // Helper method to find a specific driver in the standings list

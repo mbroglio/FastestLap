@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.repository.nation.NationRepository;
+import com.the_coffe_coders.fastestlap.repository.standing.constructor.ConstructorStandingRepository;
 import com.the_coffe_coders.fastestlap.repository.track.TrackRepository;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.repository.user.UserRepository;

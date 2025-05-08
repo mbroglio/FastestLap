@@ -96,7 +96,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
         loadingScreen.postLoadingStatus(this.getString(R.string.initializing));
 
-        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory()).get(ConstructorStandingsViewModel.class);
+        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(getApplication())).get(ConstructorStandingsViewModel.class);
         MutableLiveData<Result> liveData = (MutableLiveData<Result>) constructorStandingsViewModel.getConstructorStandings();
         Log.i(TAG, "Constructor Standings: " + liveData);
         liveData.observe(this, result -> {

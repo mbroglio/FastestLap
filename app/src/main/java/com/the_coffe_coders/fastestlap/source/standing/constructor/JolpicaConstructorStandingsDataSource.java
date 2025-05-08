@@ -1,7 +1,5 @@
 package com.the_coffe_coders.fastestlap.source.standing.constructor;
 
-
-import static android.content.ContentValues.TAG;
 import static com.the_coffe_coders.fastestlap.util.Constants.RETROFIT_ERROR;
 
 import android.util.Log;
@@ -24,41 +22,55 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ConstructorStandingsRemoteDataSource extends BaseConstructorStandingsRemoteDataSource {
-
+public class JolpicaConstructorStandingsDataSource implements ConstructorStandingDataSource {
+    private static JolpicaConstructorStandingsDataSource instance;
+    private static final String TAG = "JolpicaConstructorStandingsDataSource";
     private final ErgastAPIService ergastAPIService;
 
-    public ConstructorStandingsRemoteDataSource() {
+    private JolpicaConstructorStandingsDataSource() {
         this.ergastAPIService = ServiceLocator.getInstance().getConcreteErgastAPIService();
+    }
+
+    public static synchronized JolpicaConstructorStandingsDataSource getInstance() {
+        if (instance == null) {
+            instance = new JolpicaConstructorStandingsDataSource();
+        }
+        return instance;
     }
 
     @Override
     public void getConstructorStandings(ConstructorStandingCallback constructorCallback) {
-        Log.i(TAG, "getConstructor: ");
+        Log.d(TAG, "Fetching constructor standings");
         Call<ResponseBody> newsResponseCall = ergastAPIService.getConstructorStandings();
         newsResponseCall.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    String responseString = null;
+                    String responseString;
                     try {
                         responseString = response.body().string();
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
+                        constructorCallback.onError(new Exception("Error reading response: " + e.getMessage()));
+                        return;
                     }
                     JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
                     JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
 
                     JSONParserUtils jsonParserUtils = new JSONParserUtils();
                     ConstructorStandingsAPIResponse constructorStandingsAPIResponse = jsonParserUtils.parseConstructorStandings(mrdata);
-                    constructorCallback.onConstructorLoaded(ConstructorStandingsMapper.toConstructorStandings(constructorStandingsAPIResponse.getStandingsTable().getStandingsLists().get(0)));
+                    constructorCallback.onConstructorLoaded(
+                            ConstructorStandingsMapper.toConstructorStandings(
+                                    constructorStandingsAPIResponse.getStandingsTable().getStandingsLists().get(0)
+                            )
+                    );
                 } else {
-                    constructorCallback.onFailure(new Exception());
+                    constructorCallback.onError(new Exception("Response unsuccessful"));
                 }
             }
 
+            @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                constructorCallback.onFailure(new Exception(RETROFIT_ERROR));
+                constructorCallback.onError(new Exception(RETROFIT_ERROR));
             }
         });
     }
