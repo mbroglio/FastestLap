@@ -9,7 +9,6 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.source.standing.constructor.JolpicaConstructorStandingsDataSource;
 import com.the_coffe_coders.fastestlap.source.standing.constructor.LocalConstructorStandingsDataSource;
-import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -60,7 +59,7 @@ public class ConstructorStandingRepository {
 
     private void loadConstructorStanding() {
         String cacheKey = "constructorStanding";
-        constructorStandingCache.get(cacheKey).postValue(new Result.Loading("Fetching constructor standing from remote"));
+        Objects.requireNonNull(constructorStandingCache.get(cacheKey)).postValue(new Result.Loading("Fetching constructor standing from remote"));
         try {
             jolpicaConstructorStandingsDataSource.getConstructorStandings(new ConstructorStandingCallback() {
                 @Override
