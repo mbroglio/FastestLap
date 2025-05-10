@@ -26,10 +26,11 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsEle
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
-import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
+
+import org.checkerframework.checker.guieffect.qual.UI;
 
 import java.util.List;
 import java.util.Objects;
@@ -43,7 +44,6 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
     private final LifecycleOwner lifecycleOwner;
     private final LoadingScreen loadingScreen;
     private ConstructorStandingsElement constructorStandingsElement;
-    //private int counter;
 
     public ConstructorStandingsRecyclerAdapter(Context context, String constructorId, List<ConstructorStandingsElement> constructorStandingsList,
                                                DriverViewModel driverViewModel, ConstructorViewModel constructorViewModel,
@@ -55,7 +55,6 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         this.constructorViewModel = constructorViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.loadingScreen = loadingScreen;
-        //this.counter = 1;
     }
 
     @NonNull
@@ -94,8 +93,10 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                                 holder.constructorName,
                                 holder.constructorPoints});
 
-                if (currentConstructorId.equals(constructorId)) {
-                    UIUtils.animateCardBackgroundColor(context, holder.constructorCard, R.color.yellow, Color.TRANSPARENT, 1000, 10);
+                if(constructorId != null){
+                    if (currentConstructorId.equals(constructorId)) {
+                        UIUtils.animateCardBackgroundColor(context, holder.constructorCard, R.color.yellow, Color.TRANSPARENT, 1000, 10);
+                    }
                 }
 
                 holder.constructorCard.setOnClickListener(v -> goToBioPage(position));
@@ -118,10 +119,8 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         //TEMPORARY FIX
         String constructorIdToShow = constructorStandingsList.get(position).getConstructor().getConstructorId();
         //
-        Log.i("ConstructorsStanding", "goToBioPage: " + constructorIdToShow + " / " + position);
-        Intent intent = new Intent(context, ConstructorBioActivity.class);
-        intent.putExtra("TEAM_ID", constructorIdToShow);
-        context.startActivity(intent);
+
+        UIUtils.navigateToBioPage(context, constructorIdToShow, 0);
     }
 
     private void processDriverOne(ConstructorViewHolder holder, Constructor constructor, int position) {
@@ -155,7 +154,6 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                     Log.i("ConstructorsStanding", "onBindViewHolder " + position + "/" + getItemCount());
                     loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);
 
-                    //counter++;
                 });
             }
         });

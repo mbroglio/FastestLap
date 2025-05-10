@@ -1,12 +1,7 @@
 package com.the_coffe_coders.fastestlap.ui.event;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,18 +17,13 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.PastEventsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModelFactory;
-import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
-
-import org.threeten.bp.LocalDateTime;
 
 import java.util.Collections;
 import java.util.Comparator;

@@ -43,7 +43,6 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
     private final ConstructorViewModel constructorViewModel;
     private final LifecycleOwner lifecycleOwner;
     private DriverStandingsElement driverStandingsElement;
-    //private int counter;
 
     public DriversStandingRecyclerAdapter(Context context, List<DriverStandingsElement> driversStandingList,
                                           List<Driver> driversList, String driverId, DriverViewModel driverViewModel,
@@ -57,7 +56,6 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
         this.constructorViewModel = constructorViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.loadingScreen = loadingScreen;
-        //this.counter = 1;
     }
 
     @NonNull
@@ -100,8 +98,10 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
                         driverStandingsElement.getPosition(), //if false
                        holder.driverPosition);
 
-                if (driverStandingsElement.getDriver().getDriverId().equals(driverId)) {
-                    UIUtils.animateCardBackgroundColor(context, holder.driverCard.findViewById(R.id.driver_card_view), R.color.yellow, Color.TRANSPARENT, 1000, 10);
+                if(driverId != null){
+                    if (driverStandingsElement.getDriver().getDriverId().equals(driverId)) {
+                        UIUtils.animateCardBackgroundColor(context, holder.driverCard.findViewById(R.id.driver_card_view), R.color.yellow, Color.TRANSPARENT, 1000, 10);
+                    }
                 }
 
                 holder.driverCard.setOnClickListener(v -> goToBioPage(position));
@@ -130,9 +130,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
         }
         //
 
-        Intent intent = new Intent(context, DriverBioActivity.class);
-        intent.putExtra("DRIVER_ID", driverIdToShow);
-        context.startActivity(intent);
+        UIUtils.navigateToBioPage(context, driverIdToShow, 1);
     }
 
     private void generateForConstructor(DriverViewHolder holder, Driver driver, int position) {

@@ -36,7 +36,6 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
     private final TrackViewModel trackViewModel;
     private final LifecycleOwner lifecycleOwner;
     private final LoadingScreen loadingScreen;
-    //private int counter;
 
     public PastEventsRecyclerAdapter(Context context, List<Race> races, TrackViewModel trackViewModel, LifecycleOwner lifecycleOwner, LoadingScreen loadingScreen) {
         this.context = context;
@@ -44,7 +43,6 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
         this.trackViewModel = trackViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.loadingScreen = loadingScreen;
-        //this.counter = 1;
     }
 
     @NonNull
@@ -90,11 +88,8 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
 
                     generatePodium(holder, race, position);
 
-                    holder.pastEventCard.setOnClickListener(v -> {
-                        Intent intent = new Intent(context, EventActivity.class);
-                        intent.putExtra("CIRCUIT_ID", race.getTrack().getTrackId());
-                        context.startActivity(intent);
-                    });
+                    holder.pastEventCard.setOnClickListener(v ->
+                            UIUtils.navigateToEventPage(context, race.getTrack().getTrackId()));
                 });
             }
         });
@@ -116,8 +111,6 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
 
         Log.i("PastEventsAdapter", "onBindViewHolder: " + position + " / " + getItemCount());
         loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);
-
-        //counter++;
     }
 
     private void setPendingPodium(@NonNull PastEventViewHolder holder) {

@@ -75,11 +75,8 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
         rootView.setOnClickListener(v -> resetHintPosition());
 
         Button registerButton = findViewById(R.id.RegisterButton);
-        registerButton.setOnClickListener(v -> {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            SignUpFragment signUpFragment = new SignUpFragment();
-            signUpFragment.show(fragmentManager, "SignUpFragment");
-        });
+        registerButton.setOnClickListener(v ->
+                UIUtils.showWelcomeDialogs(getSupportFragmentManager(), 0));
 
         Button loginButton = findViewById(R.id.LoginButton);
         loginButton.setOnClickListener(v -> {
@@ -94,11 +91,8 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
 
                                         userViewModel.getUserPreferences(userViewModel.getLoggedUser().getIdToken());
 
-                                        // Sign in success, update UI with the signed-in user's information
                                         Log.d(TAG, "signInWithEmail:success");
-                                        Intent intent = new Intent(WelcomeActivity.this, HomePageActivity.class);
-                                        intent.putExtra("CALLER", "WelcomeActivity");
-                                        startActivity(intent);
+                                        UIUtils.navigateToHomePage(WelcomeActivity.this);
 
                                     } else {
                                         // If sign in fails, display a message to the user.
@@ -113,11 +107,8 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
         });
 
         Button forgotPasswordButton = findViewById(R.id.forgotten_password_button);
-        forgotPasswordButton.setOnClickListener(v -> {
-            FragmentManager fragmentManager = getSupportFragmentManager();
-            ForgotPasswordFragment forgotPasswordFragment = new ForgotPasswordFragment();
-            forgotPasswordFragment.show(fragmentManager, "ForgotPasswordFragment");
-        });
+        forgotPasswordButton.setOnClickListener(v ->
+                UIUtils.showWelcomeDialogs(getSupportFragmentManager(), 1));
     }
 
     private boolean isEmailOk(String email) {

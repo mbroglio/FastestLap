@@ -1,6 +1,5 @@
 package com.the_coffe_coders.fastestlap.ui.bio;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -36,7 +35,6 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
-import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
@@ -83,18 +81,13 @@ public class ConstructorBioActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.topAppBar);
         UIUtils.applyWindowInsets(toolbar);
 
-        toolbar.setNavigationOnClickListener(v -> {
-            Intent intent = new Intent(ConstructorBioActivity.this, HomePageActivity.class);
-            intent.putExtra("CALLER", "ConstructorBioActivity");
-            startActivity(intent);
-        });
+        toolbar.setNavigationOnClickListener(v ->
+                UIUtils.navigateToHomePage(this));
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                Intent intent = new Intent(ConstructorBioActivity.this, HomePageActivity.class);
-                intent.putExtra("CALLER", "ConstructorBioActivity");
-                startActivity(intent);
+                UIUtils.navigateToHomePage(ConstructorBioActivity.this);
             }
         });
 
@@ -165,30 +158,35 @@ public class ConstructorBioActivity extends AppCompatActivity {
             }
             if (result.isSuccess()) {
                 constructor = ((Result.ConstructorSuccess) result).getData();
-                Log.i(TAG, "Constructor: " + constructor);
 
-                UIUtils.singleSetTextViewText(constructor.getName().toUpperCase(), findViewById(R.id.topAppBarTitle));
+                if(constructor == null){
+                    UIUtils.navigateToHomePage(this);
+                }else{
+                    Log.i(TAG, "Constructor: " + constructor);
 
-                toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
-                appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+                    UIUtils.singleSetTextViewText(constructor.getName().toUpperCase(), findViewById(R.id.topAppBarTitle));
 
-                MaterialCardView teamLogoCard = findViewById(R.id.team_logo_card);
-                teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+                    toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+                    appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
 
-                if (teamId.equals("rb")) {
-                    teamLogoCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white));
+                    MaterialCardView teamLogoCard = findViewById(R.id.team_logo_card);
+                    teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+
+                    if (teamId.equals("rb")) {
+                        teamLogoCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white));
+                    }
+
+                    MaterialCardView driverCard = findViewById(R.id.driver_1_card);
+                    driverCard.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+
+                    driverCard = findViewById(R.id.driver_2_card);
+                    driverCard.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+
+                    // Check if this constructor is the favorite and update the icon
+                    updateFavoriteIcon(teamId);
+
+                    getDriverData(constructor.getDriverOneId(), constructor);
                 }
-
-                MaterialCardView driverCard = findViewById(R.id.driver_1_card);
-                driverCard.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
-
-                driverCard = findViewById(R.id.driver_2_card);
-                driverCard.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
-
-                // Check if this constructor is the favorite and update the icon
-                updateFavoriteIcon(teamId);
-
-                getDriverData(constructor.getDriverOneId(), constructor);
             }
         });
     }
@@ -219,22 +217,17 @@ public class ConstructorBioActivity extends AppCompatActivity {
                     driverOne = ((Result.DriverSuccess) result).getData();
 
                     MaterialCardView driverOneCard = findViewById(R.id.driver_1_card);
-                    driverOneCard.setOnClickListener(v -> {
-                        Intent intent = new Intent(ConstructorBioActivity.this, DriverBioActivity.class);
-                        intent.putExtra("DRIVER_ID", driverId);
-                        startActivity(intent);
-                    });
+                    driverOneCard.setOnClickListener(v ->
+                            UIUtils.navigateToBioPage(this, driverOne.getDriverId(), 1));
+
                     getDriverData(team.getDriverTwoId(), team);
 
                 } else {
                     driverTwo = ((Result.DriverSuccess) result).getData();
 
                     MaterialCardView driverTwoCard = findViewById(R.id.driver_2_card);
-                    driverTwoCard.setOnClickListener(v -> {
-                        Intent intent = new Intent(ConstructorBioActivity.this, DriverBioActivity.class);
-                        intent.putExtra("DRIVER_ID", driverId);
-                        startActivity(intent);
-                    });
+                    driverTwoCard.setOnClickListener(v ->
+                            UIUtils.navigateToBioPage(this, driverTwo.getDriverId(), 1));
 
                     getNationData(team.getNationality());
                 }

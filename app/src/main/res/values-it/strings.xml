@@ -14,12 +14,6 @@
     <string name="profile_upper_case">PROFILO</string>
     <string name="loading_upper_case">CARICAMENTO%1$s</string>
     <string name="updating_upper_case_with_dots">IN AGGIORNAMENTO…</string>
-    <string name="generating_event_card">Genero card dell\'evento %1$s/%2$s</string>
-    <string name="fetching_last_race">Recupero gara passata %1$s</string>
-    <string name="fetching_next_race">Recupero prossima gara %1$s</string>
-    <string name="season_finished">Stagione conclusa: recupero risultati %1$s</string>
-    <string name="fetching_favourite_driver">Recupero pilota preferito %1$s</string>
-    <string name="fetching_favourite_constructor">Recupero costruttore preferito %1$s</string>
     <string name="weather">Meteo a %1$s</string>
     <string name="weekend_schedule_upper_case">PROGRAMMA DEL WEEKEND:</string>
     <string name="next_session">Prossima Sessione in:</string>
@@ -99,4 +93,5 @@
     <string name="podium_upper_case">PODIO</string>
     <string name="fastest_lap_upper_case">GIRO VELOCE</string>
     <string name="lap">Giro %1$s</string>
+    <string name="full_race_results">Risultati gara completi</string>
 </resources>

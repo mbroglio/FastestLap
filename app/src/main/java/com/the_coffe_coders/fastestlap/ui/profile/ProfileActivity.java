@@ -105,8 +105,7 @@ public class ProfileActivity extends AppCompatActivity {
             checkForChanges();
 
             if (isFromLogin) {
-                Intent intent = new Intent(ProfileActivity.this, HomePageActivity.class);
-                startActivity(intent);
+                UIUtils.navigateToHomePage(this);
             } else {
                 getOnBackPressedDispatcher().onBackPressed();
             }
@@ -114,8 +113,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         signOutButton.setOnClickListener(v -> {
             userViewModel.logout();
-            Intent intent = new Intent(ProfileActivity.this, WelcomeActivity.class);
-            startActivity(intent);
+            UIUtils.navigateToWelcomePage(this);
             finish();
         });
 
@@ -207,8 +205,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Return to previous screen
         if (isFromLogin) {
-            Intent intent = new Intent(ProfileActivity.this, HomePageActivity.class);
-            startActivity(intent);
+            UIUtils.navigateToHomePage(this);
         } else {
             getOnBackPressedDispatcher().onBackPressed();
         }

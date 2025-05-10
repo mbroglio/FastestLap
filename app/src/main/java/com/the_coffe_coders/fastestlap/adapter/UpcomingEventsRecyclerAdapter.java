@@ -35,7 +35,6 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
     private final TrackViewModel trackViewModel;
     private final LifecycleOwner lifecycleOwner;
     private final LoadingScreen loadingScreen;
-    //private int counter;
 
     public UpcomingEventsRecyclerAdapter(Context context, List<WeeklyRace> races, TrackViewModel trackViewModel, LifecycleOwner lifecycleOwner, LoadingScreen loadingScreen) {
         this.context = context;
@@ -43,7 +42,6 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
         this.trackViewModel = trackViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.loadingScreen = loadingScreen;
-        //this.counter = 1;
     }
 
     @NonNull
@@ -86,18 +84,14 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
                     UIUtils.translateMonth(weeklyRace.getDateTime().getMonth().toString().substring(0, 3).toUpperCase(),
                             holder.monthTextView, true);
 
-                    holder.upcomingEventCard.setOnClickListener(v -> {
-                        Intent intent = new Intent(context, EventActivity.class);
-                        intent.putExtra("CIRCUIT_ID", weeklyRace.getTrack().getTrackId());
-                        context.startActivity(intent);
-                    });
+                    holder.upcomingEventCard.setOnClickListener(v ->
+                            UIUtils.navigateToEventPage(context, weeklyRace.getTrack().getTrackId()));
 
                     loadingScreen.updateProgress();
 
                     Log.i("UpcomingEventsAdapter", "onBindViewHolder: " + position + " / " + getItemCount());
                     loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);
 
-                    //counter++;
                 });
 
             }

@@ -88,18 +88,13 @@ public class DriverBioActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.topAppBar);
         UIUtils.applyWindowInsets(toolbar);
 
-        toolbar.setNavigationOnClickListener(v -> {
-            Intent intent = new Intent(DriverBioActivity.this, HomePageActivity.class);
-            intent.putExtra("CALLER", "DriverBioActivity");
-            startActivity(intent);
-        });
+        toolbar.setNavigationOnClickListener(v ->
+                UIUtils.navigateToHomePage(this));
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                Intent intent = new Intent(DriverBioActivity.this, HomePageActivity.class);
-                intent.putExtra("CALLER", "DriverBioActivity");
-                startActivity(intent);
+                UIUtils.navigateToHomePage(DriverBioActivity.this);
             }
         });
 
@@ -251,11 +246,8 @@ public class DriverBioActivity extends AppCompatActivity {
             toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
             appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
 
-            teamLogoCard.setOnClickListener(v -> {
-                Intent intent = new Intent(DriverBioActivity.this, ConstructorBioActivity.class);
-                intent.putExtra("TEAM_ID", teamId);
-                startActivity(intent);
-            });
+            teamLogoCard.setOnClickListener(v ->
+                    UIUtils.navigateToBioPage(this, team.getConstructorId(), 0));
         }else{
             toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
             appBarLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));

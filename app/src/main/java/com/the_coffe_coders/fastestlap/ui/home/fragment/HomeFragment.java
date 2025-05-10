@@ -647,7 +647,7 @@ public class HomeFragment extends Fragment {
 
             ImageView driverFlag = view.findViewById(R.id.favourite_driver_flag);
             ImageView driverImage = view.findViewById(R.id.favourite_driver_pic);
-            driverImage.setOnClickListener(v -> startActivity(new Intent(getActivity(), DriverBioActivity.class).putExtra("DRIVER_ID", driver.getDriverId())));
+            driverImage.setOnClickListener(v -> UIUtils.navigateToBioPage(getContext(), driver.getDriverId(), 1));
 
             UIUtils.loadSequenceOfImagesWithGlide(requireContext(),
                     new String[]{nation.getNation_flag_url(), driver.getDriver_pic_url()},
@@ -671,7 +671,7 @@ public class HomeFragment extends Fragment {
                     new TextView[]{view.findViewById(R.id.favourite_driver_position), view.findViewById(R.id.favourite_driver_points)});
 
             MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
-            driverRank.setOnClickListener(v -> startActivity(new Intent(getActivity(), DriversStandingActivity.class).putExtra("DRIVER_ID", driver.getDriverId())));
+            driverRank.setOnClickListener(v -> UIUtils.navigateToStandingsPage(getContext(), driver.getDriverId(), 1));
         } else {
             MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
             driverRank.setClickable(false);
@@ -772,7 +772,7 @@ public class HomeFragment extends Fragment {
             ImageView constructorFlag = view.findViewById(R.id.favourite_constructor_flag);
 
             FrameLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
-            constructorCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), ConstructorBioActivity.class).putExtra("TEAM_ID", constructor.getConstructorId())));
+            constructorCard.setOnClickListener(v -> UIUtils.navigateToBioPage(getContext(), constructor.getConstructorId(), 0));
 
             UIUtils.loadSequenceOfImagesWithGlide(requireContext(),
                     new String[]{nation.getNation_flag_url(), constructor.getCar_pic_url()},
@@ -798,7 +798,7 @@ public class HomeFragment extends Fragment {
                     new TextView[]{view.findViewById(R.id.favourite_constructor_position), view.findViewById(R.id.favourite_constructor_points)});
 
             MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
-            teamRank.setOnClickListener(v -> startActivity(new Intent(getActivity(), ConstructorsStandingActivity.class).putExtra("TEAM_ID", constructor.getConstructorId())));
+            teamRank.setOnClickListener(v -> UIUtils.navigateToStandingsPage(getContext(), constructor.getConstructorId(), 0));
         } else {
             MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
             teamRank.setClickable(false);

@@ -106,7 +106,7 @@ public class SplashActivity extends AppCompatActivity {
                     progressIndicator.setVisibility(View.VISIBLE);
 
                     handler.postDelayed(() -> {
-                        startActivity(new Intent(SplashActivity.this, WelcomeActivity.class));
+                        UIUtils.navigateToWelcomePage(this);
                         finish();
                     }, 5000); // 5 seconds delay
                 }, (long) creditsText.length() * delay);
@@ -153,7 +153,7 @@ public class SplashActivity extends AppCompatActivity {
                     boolean isEnabled = task.getResult();
                     Log.d(TAG, "Auto login is enabled: " + isEnabled);
                     if (isEnabled) {
-                        startActivity(new Intent(SplashActivity.this, HomePageActivity.class));
+                        UIUtils.navigateToHomePage(this);
                     } else {
                         hideIntroScreen();
                         new Handler().postDelayed(this::showIntroScreen, 500);

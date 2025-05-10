@@ -80,17 +80,13 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         UIUtils.applyWindowInsets(toolbar);
 
         toolbar.setNavigationOnClickListener(v -> {
-            Intent intent = new Intent(ConstructorsStandingActivity.this, HomePageActivity.class);
-            intent.putExtra("CALLER", "ConstructorsStandingActivity");
-            startActivity(intent);
+            UIUtils.navigateToHomePage(this);
         });
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                Intent intent = new Intent(ConstructorsStandingActivity.this, HomePageActivity.class);
-                intent.putExtra("CALLER", "ConstructorsStandingActivity");
-                startActivity(intent);
+                UIUtils.navigateToHomePage(ConstructorsStandingActivity.this);
             }
         });
 
@@ -120,29 +116,35 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
             }
             if (result.isSuccess()) {
                 constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
-                List<ConstructorStandingsElement> constructorList = constructorStandings.getConstructorStandings();
 
-                RecyclerView constructorsStandingRecyclerView = findViewById(R.id.constructors_standing_recycler_view);
-                constructorsStandingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+                if(constructorStandings == null) {
+                    Log.i(TAG, "Constructor Standings is null");
+                    UIUtils.navigateToHomePage(this);
+                }else{
+                    List<ConstructorStandingsElement> constructorList = constructorStandings.getConstructorStandings();
 
-                if (constructorList.isEmpty()) {
-                    Log.i(TAG, "Constructor Standings is empty");
-                } else {
-                    Log.i(TAG, "Constructor Standings is not empty");
+                    RecyclerView constructorsStandingRecyclerView = findViewById(R.id.constructors_standing_recycler_view);
+                    constructorsStandingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-                    ConstructorStandingsRecyclerAdapter constructorsStandingAdapter = new ConstructorStandingsRecyclerAdapter(this, constructorId, constructorList, driverViewModel, constructorViewModel, this, loadingScreen);
-                    constructorsStandingRecyclerView.setAdapter(constructorsStandingAdapter);
+                    if (constructorList.isEmpty()) {
+                        Log.i(TAG, "Constructor Standings is empty");
+                    } else {
+                        Log.i(TAG, "Constructor Standings is not empty");
 
-                    for (int i = 0; i < constructorsStandingAdapter.getItemCount(); i++) {
-                        constructorsStandingAdapter.onBindViewHolder(
-                                constructorsStandingAdapter.createViewHolder(constructorsStandingRecyclerView, constructorsStandingAdapter.getItemViewType(i)), i);
+                        ConstructorStandingsRecyclerAdapter constructorsStandingAdapter = new ConstructorStandingsRecyclerAdapter(this, constructorId, constructorList, driverViewModel, constructorViewModel, this, loadingScreen);
+                        constructorsStandingRecyclerView.setAdapter(constructorsStandingAdapter);
+
+                        for (int i = 0; i < constructorsStandingAdapter.getItemCount(); i++) {
+                            constructorsStandingAdapter.onBindViewHolder(
+                                    constructorsStandingAdapter.createViewHolder(constructorsStandingRecyclerView, constructorsStandingAdapter.getItemViewType(i)), i);
+                        }
+
                     }
-
                 }
             } else if (result instanceof Result.Error) {
                 Result.Error error = (Result.Error) result;
                 Log.e(TAG, "Error: " + error.getMessage());
-                loadingScreen.hideLoadingScreen();
+                UIUtils.navigateToHomePage(this);
             }
         });
     }

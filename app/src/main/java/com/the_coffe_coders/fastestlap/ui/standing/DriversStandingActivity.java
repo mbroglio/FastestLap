@@ -83,17 +83,13 @@ public class DriversStandingActivity extends AppCompatActivity {
         UIUtils.applyWindowInsets(toolbar);
 
         toolbar.setNavigationOnClickListener(v -> {
-            Intent intent = new Intent(DriversStandingActivity.this, HomePageActivity.class);
-            intent.putExtra("CALLER", "DriversStandingActivity");
-            startActivity(intent);
+            UIUtils.navigateToHomePage(this);
         });
 
         getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
             @Override
             public void handleOnBackPressed() {
-                Intent intent = new Intent(DriversStandingActivity.this, HomePageActivity.class);
-                intent.putExtra("CALLER", "DriversStandingActivity");
-                startActivity(intent);
+                UIUtils.navigateToHomePage(DriversStandingActivity.this);
             }
         });
 
@@ -123,45 +119,51 @@ public class DriversStandingActivity extends AppCompatActivity {
             if (result.isSuccess()) {
                 Log.i(TAG, "DRIVER STANDINGS SUCCESS");
                 driverStandings = ((Result.DriverStandingsSuccess) result).getData();
-                List<DriverStandingsElement> driverList = driverStandings.getDriverStandingsElements();
 
-                RecyclerView driversStandingRecyclerView = findViewById(R.id.drivers_standing_recycler_view);
-                driversStandingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+                if(driverStandings == null) {
+                    Log.i(TAG, "DRIVER STANDINGS NULL");
+                    UIUtils.navigateToHomePage(this);
+                }else{
+                    List<DriverStandingsElement> driverList = driverStandings.getDriverStandingsElements();
 
-                if (driverList.isEmpty()) {
-                    Log.i(TAG, "DRIVER STANDINGS EMPTY");
-                    MutableLiveData<Result> drivers = fetchDriversList();
-                    drivers.observe(this, driverResult -> {
-                        if (driverResult instanceof Result.Loading) {
-                            return;
-                        }
-                        if (driverResult.isSuccess()) {
-                            List<Driver> driverList2 = ((Result.DriversSuccess) driverResult).getData();
+                    RecyclerView driversStandingRecyclerView = findViewById(R.id.drivers_standing_recycler_view);
+                    driversStandingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-                            DriversStandingRecyclerAdapter driversStandingAdapter = new DriversStandingRecyclerAdapter(this, null, driverList2, driverId, driverViewModel, constructorViewModel, this, loadingScreen);
-                            driversStandingRecyclerView.setAdapter(driversStandingAdapter);
-
-                            for (int i = 0; i < driversStandingAdapter.getItemCount(); i++) {
-                                driversStandingAdapter.onBindViewHolder(
-                                        driversStandingAdapter.createViewHolder(driversStandingRecyclerView, driversStandingAdapter.getItemViewType(i)), i);
+                    if (driverList.isEmpty()) {
+                        Log.i(TAG, "DRIVER STANDINGS EMPTY");
+                        MutableLiveData<Result> drivers = fetchDriversList();
+                        drivers.observe(this, driverResult -> {
+                            if (driverResult instanceof Result.Loading) {
+                                return;
                             }
+                            if (driverResult.isSuccess()) {
+                                List<Driver> driverList2 = ((Result.DriversSuccess) driverResult).getData();
+
+                                DriversStandingRecyclerAdapter driversStandingAdapter = new DriversStandingRecyclerAdapter(this, null, driverList2, driverId, driverViewModel, constructorViewModel, this, loadingScreen);
+                                driversStandingRecyclerView.setAdapter(driversStandingAdapter);
+
+                                for (int i = 0; i < driversStandingAdapter.getItemCount(); i++) {
+                                    driversStandingAdapter.onBindViewHolder(
+                                            driversStandingAdapter.createViewHolder(driversStandingRecyclerView, driversStandingAdapter.getItemViewType(i)), i);
+                                }
+                            }
+                        });
+
+                    } else {
+                        Log.i(TAG, "DRIVER STANDINGS NOT EMPTY");
+
+                        DriversStandingRecyclerAdapter driversStandingAdapter = new DriversStandingRecyclerAdapter(this, driverList, null, driverId, driverViewModel, constructorViewModel,this, loadingScreen);
+                        driversStandingRecyclerView.setAdapter(driversStandingAdapter);
+
+                        for (int i = 0; i < driversStandingAdapter.getItemCount(); i++) {
+                            driversStandingAdapter.onBindViewHolder(
+                                    driversStandingAdapter.createViewHolder(driversStandingRecyclerView, driversStandingAdapter.getItemViewType(i)), i);
                         }
-                    });
-
-                } else {
-                    Log.i(TAG, "DRIVER STANDINGS NOT EMPTY");
-
-                    DriversStandingRecyclerAdapter driversStandingAdapter = new DriversStandingRecyclerAdapter(this, driverList, null, driverId, driverViewModel, constructorViewModel,this, loadingScreen);
-                    driversStandingRecyclerView.setAdapter(driversStandingAdapter);
-
-                    for (int i = 0; i < driversStandingAdapter.getItemCount(); i++) {
-                        driversStandingAdapter.onBindViewHolder(
-                                driversStandingAdapter.createViewHolder(driversStandingRecyclerView, driversStandingAdapter.getItemViewType(i)), i);
                     }
                 }
             } else {
                 Log.i(TAG, "DRIVER STANDINGS ERROR");
-                loadingScreen.hideLoadingScreen();
+                UIUtils.navigateToHomePage(this);
             }
         });
     }

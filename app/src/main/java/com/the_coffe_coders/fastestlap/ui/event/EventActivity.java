@@ -183,10 +183,7 @@ public class EventActivity extends AppCompatActivity {
 
         LinearLayout trackLayout = findViewById(R.id.track_outline_layout);
         trackLayout.setOnClickListener(v -> {
-            Intent intent = new Intent(EventActivity.this, TrackBioActivity.class);
-            intent.putExtra("CIRCUIT_ID", trackId);
-            intent.putExtra("GRAND_PRIX_NAME", weeklyRace.getRaceName().toUpperCase());
-            startActivity(intent);
+            UIUtils.navigateToBioPage(this, trackId + "_" + weeklyRace.getRaceName().toUpperCase(), 2);
         });
 
         Button openForecastButton = findViewById(R.id.goToForecastButton);
@@ -266,12 +263,7 @@ public class EventActivity extends AppCompatActivity {
             return;
         }
 
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        RaceResultsFragment raceResultsFragment = new RaceResultsFragment();
-        Bundle args = new Bundle();
-        args.putParcelable("RACE", race);
-        raceResultsFragment.setArguments(args);
-        raceResultsFragment.show(fragmentManager, "ForgotPasswordFragment");
+        UIUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 0);
     }
 
     private void showResults(WeeklyRace weeklyRace) {

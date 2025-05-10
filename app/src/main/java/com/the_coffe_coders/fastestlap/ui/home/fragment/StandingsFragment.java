@@ -13,6 +13,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
+import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 public class StandingsFragment extends Fragment {
 
@@ -30,15 +31,11 @@ public class StandingsFragment extends Fragment {
         MaterialCardView driverCardView = view.findViewById(R.id.drivers_card);
         MaterialCardView teamCardView = view.findViewById(R.id.constructors_card);
 
-        driverCardView.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), DriversStandingActivity.class);
-            startActivity(intent);
-        });
+        driverCardView.setOnClickListener(v ->
+                UIUtils.navigateToStandingsPage(getContext(), null, 1));
 
-        teamCardView.setOnClickListener(v -> {
-            Intent intent = new Intent(getContext(), ConstructorsStandingActivity.class);
-            startActivity(intent);
-        });
+        teamCardView.setOnClickListener(v ->
+                UIUtils.navigateToStandingsPage(getContext(), null, 0));
 
         return view;
 

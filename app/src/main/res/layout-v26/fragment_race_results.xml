@@ -50,7 +50,7 @@
                 android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                 android:autoSizeTextType="uniform"
                 android:maxLines="1"
-                android:text="Full race results"
+                android:text="@string/full_race_results"
                 android:gravity="center"
                 android:textColor="@color/black"
                 android:textSize="@dimen/layout_subtitle_text_size" />
@@ -76,9 +76,23 @@
             android:layout_alignEnd="@id/close_results_button"
             android:padding="5dp">
 
+            <ImageView
+                android:id="@+id/fastest_lap_image"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:src="@drawable/fastest_lap_icon"
+                android:importantForAccessibility="no"
+                android:layout_centerInParent="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="10dp">
+
+            </ImageView>
+
             <LinearLayout
+                android:id="@+id/fastest_lap_info_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/fastest_lap_image"
                 android:gravity="center"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
@@ -184,7 +198,3 @@
     </RelativeLayout>
 
 </com.google.android.material.card.MaterialCardView>
-<!--
-
-
--->

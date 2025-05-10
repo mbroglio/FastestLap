@@ -14,6 +14,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -26,12 +27,15 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.os.LocaleListCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
@@ -41,6 +45,20 @@ import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
+import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
+import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
+import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
+import com.the_coffe_coders.fastestlap.ui.event.PastEventsActivity;
+import com.the_coffe_coders.fastestlap.ui.event.UpcomingEventsActivity;
+import com.the_coffe_coders.fastestlap.ui.event.fragment.RaceResultsFragment;
+import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
+import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
+import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
+import com.the_coffe_coders.fastestlap.ui.welcome.WelcomeActivity;
+import com.the_coffe_coders.fastestlap.ui.welcome.fragment.ForgotPasswordFragment;
+import com.the_coffe_coders.fastestlap.ui.welcome.fragment.SignUpFragment;
 
 import java.security.MessageDigest;
 import java.util.Objects;
@@ -359,7 +377,6 @@ public class UIUtils {
         }
     }
 
-
     public static void setAppLocale() {
         if (AppCompatDelegate.getApplicationLocales().get(0) == null) {
             LocaleListCompat appLocale = LocaleListCompat.forLanguageTags(Constants.DEFAULT_LANGUAGE);
@@ -367,6 +384,105 @@ public class UIUtils {
         }
 
         AppCompatDelegate.setApplicationLocales(AppCompatDelegate.getApplicationLocales());
+    }
+
+    public static void navigateToHomePage(Context context){
+        Intent intent = new Intent(context, HomePageActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void navigateToBioPage(Context context, String id, int bioType){
+        Intent intent;
+
+        switch (bioType){
+            case 0:
+                intent = new Intent(context, ConstructorBioActivity.class);
+                intent.putExtra("TEAM_ID", id);
+                context.startActivity(intent);
+                break;
+            case 1:
+                intent = new Intent(context, DriverBioActivity.class);
+                intent.putExtra("DRIVER_ID", id);
+                context.startActivity(intent);
+                break;
+            case 2:
+                intent = new Intent(context, TrackBioActivity.class);
+                String circuitId = id.split("_")[0];
+                String grandPrixName = id.split("_")[1];
+
+                intent.putExtra("CIRCUIT_ID", circuitId);
+                intent.putExtra("GRAND_PRIX_NAME", grandPrixName);
+                context.startActivity(intent);
+                break;
+        }
+    }
+
+    public static void navigateToStandingsPage(Context context, String id, int standingsType){
+        Intent intent;
+
+        switch(standingsType){
+            case 0:
+                intent = new Intent(context, ConstructorsStandingActivity.class);
+                intent.putExtra("TEAM_ID", id);
+                context.startActivity(intent);
+                break;
+            case 1:
+                intent = new Intent(context, DriversStandingActivity.class);
+                intent.putExtra("DRIVER_ID", id);
+                context.startActivity(intent);
+                break;
+        }
+    }
+
+    public static void navigateToEventsListPage(Context context, int eventType){
+        Intent intent;
+
+        switch(eventType){
+            case 0:
+                intent = new Intent(context, UpcomingEventsActivity.class);
+                context.startActivity(intent);
+                break;
+            case 1:
+                intent = new Intent(context, PastEventsActivity.class);
+                context.startActivity(intent);
+                break;
+        }
+    }
+
+    public static void navigateToEventPage(Context context, String circuitId){
+        Intent intent = new Intent(context, EventActivity.class);
+        intent.putExtra("CIRCUIT_ID", circuitId);
+        context.startActivity(intent);
+    }
+
+    public static void navigateToWelcomePage(Context context){
+        Intent intent = new Intent(context, WelcomeActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void showRaceResultsDialog(FragmentManager fragmentManager, Race race, int sessionType) {
+        switch (sessionType){
+            case 0:
+                RaceResultsFragment raceResultsFragment = new RaceResultsFragment();
+                Bundle args = new Bundle();
+                args.putParcelable("RACE", race);
+                raceResultsFragment.setArguments(args);
+                raceResultsFragment.show(fragmentManager, "RaceResultsFragment");
+                break;
+        }
+    }
+
+    public static void showWelcomeDialogs(FragmentManager fragmentManager, int dialogType) {
+        switch (dialogType){
+            case 0:
+                SignUpFragment signUpFragment = new SignUpFragment();
+                signUpFragment.show(fragmentManager, "SignUpFragment");
+                break;
+            case 1:
+                ForgotPasswordFragment forgotPasswordFragment = new ForgotPasswordFragment();
+                forgotPasswordFragment.show(fragmentManager, "ForgotPasswordFragment");
+                break;
+        }
     }
 
     // SYSTEM_UI_FLAG_FULLSCREEN: Hide the status bar
