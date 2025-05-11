@@ -52,7 +52,6 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
     private ConstructorViewModel constructorViewModel;
     private SwipeRefreshLayout teamStandingLayout;
     private ConstructorStandings constructorStandings;
-    private ConstructorStandingsViewModel constructorStandingsViewModel;
     private String constructorId;
 
     @Override
@@ -72,8 +71,6 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, teamStandingLayout, null);
 
         loadingScreen.showLoadingScreen(false);
-
-        initializeViewModels();
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
 
@@ -100,13 +97,8 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         setupPage();
     }
 
-    private void initializeViewModels() {
-        constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory()).get(ConstructorStandingsViewModel.class);
-        constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
-        driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(getApplication())).get(DriverViewModel.class);
-    }
-
     private void setupPage() {
+        ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(getApplication())).get(ConstructorStandingsViewModel.class);
         MutableLiveData<Result> liveData = (MutableLiveData<Result>) constructorStandingsViewModel.getConstructorStandings();
         Log.i(TAG, "Constructor Standings: " + liveData);
         liveData.observe(this, result -> {

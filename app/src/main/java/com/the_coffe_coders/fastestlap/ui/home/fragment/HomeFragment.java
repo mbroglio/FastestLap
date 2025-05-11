@@ -118,11 +118,9 @@ public class HomeFragment extends Fragment {
 
         driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(requireActivity().getApplication())).get(DriverViewModel.class);
 
-        trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(requireActivity().getApplication())).get(TrackViewModel.class);
+        trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(getActivity().getApplication())).get(TrackViewModel.class);
 
-        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(requireActivity().getApplication())).get(NationViewModel.class);
-
-        sharedPreferencesUtils = new SharedPreferencesUtils(getActivity());
+        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(getActivity().getApplication())).get(NationViewModel.class);
     }
 
     private void setupLoadingScreen(View view) {
@@ -278,14 +276,12 @@ public class HomeFragment extends Fragment {
         } catch (Exception e) {
             Log.e(TAG, "Error setting driver names: " + e.getMessage());
         }
-
     }
 
     private void loadPendingResultsLayout(View view) {
         loadingScreen.updateProgress();
         view.findViewById(R.id.pending_last_race_results).setVisibility(View.VISIBLE);
         view.findViewById(R.id.last_race_results).setVisibility(View.GONE);
-
     }
 
     private void setNextSessionCard(View view) {
@@ -529,7 +525,7 @@ public class HomeFragment extends Fragment {
     private void buildFinalTeamsStanding(View seasonEndedCard) {
         loadingScreen.updateProgress();
 
-        MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData();
+        MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData(requireActivity().getApplication());
         constructorStandingsData.observe(getViewLifecycleOwner(), result -> {
             try {
                 if (result instanceof Result.Loading) {
@@ -687,7 +683,7 @@ public class HomeFragment extends Fragment {
             return;
         }
 
-        MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData();
+        MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData(requireActivity().getApplication());
         constructorStandingsData.observe(getViewLifecycleOwner(), result -> {
             try {
                 if (result instanceof Result.Loading) {

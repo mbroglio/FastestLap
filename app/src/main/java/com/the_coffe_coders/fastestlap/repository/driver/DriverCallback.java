@@ -6,5 +6,4 @@ public interface DriverCallback {
     void onDriverLoaded(Driver driver);
 
     void onError(Exception e);
-
 }
