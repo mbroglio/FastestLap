@@ -22,12 +22,12 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class DriverStandingsRemoteDataSource extends BaseDriverStandingsRemoteDataSource {
+public class JolpicaDriverStandingsDataSource {
     private static final String TAG = "DriverRemoteDataSource";
 
     private final ErgastAPIService ergastAPIService;
 
-    public DriverStandingsRemoteDataSource() {
+    public JolpicaDriverStandingsDataSource() {
         this.ergastAPIService = ServiceLocator.getInstance().getConcreteErgastAPIService();
     }
 
@@ -42,7 +42,7 @@ public class DriverStandingsRemoteDataSource extends BaseDriverStandingsRemoteDa
                 ResponseBody body = response.body();
                 if (body == null) {
                     Log.e(TAG, "API returned empty body");
-                    driverCallback.onFailure(new Exception("Empty response body"));
+                    driverCallback.onError(new Exception("Empty response body"));
                     return;
                 }
 
@@ -52,14 +52,14 @@ public class DriverStandingsRemoteDataSource extends BaseDriverStandingsRemoteDa
 
                     if (jsonResponse == null) {
                         Log.e(TAG, "Failed to parse JSON response");
-                        driverCallback.onFailure(new Exception("Invalid JSON response"));
+                        driverCallback.onError(new Exception("Invalid JSON response"));
                         return;
                     }
 
                     JsonObject mrdata = jsonResponse.getAsJsonObject("MRData");
                     if (mrdata == null) {
                         Log.e(TAG, "MRData not found in response");
-                        driverCallback.onFailure(new Exception("MRData not found in response"));
+                        driverCallback.onError(new Exception("MRData not found in response"));
                         return;
                     }
 
@@ -67,13 +67,13 @@ public class DriverStandingsRemoteDataSource extends BaseDriverStandingsRemoteDa
                     DriverStandingsAPIResponse driverStandingsAPIResponse = jsonParserUtils.parseDriverStandings(mrdata);
 
                     Log.d(TAG, "Successfully parsed driver standings: " + driverStandingsAPIResponse);
-                    driverCallback.onSuccess(DriverStandingsMapper.toDriverStandings(driverStandingsAPIResponse.getStandingsTable().getDriverStandingsDTOS().get(0)));
+                    driverCallback.onDriverLoaded(DriverStandingsMapper.toDriverStandings(driverStandingsAPIResponse.getStandingsTable().getDriverStandingsDTOS().get(0)));
                 } catch (IOException e) {
                     Log.e(TAG, "IOException while reading response", e);
-                    driverCallback.onFailure(new Exception("Failed to read response: " + e.getMessage(), e));
+                    driverCallback.onError(new Exception("Failed to read response: " + e.getMessage(), e));
                 } catch (Exception e) {
                     Log.e(TAG, "Exception while processing response", e);
-                    driverCallback.onFailure(new Exception("Failed to process response: " + e.getMessage(), e));
+                    driverCallback.onError(new Exception("Failed to process response: " + e.getMessage(), e));
                 }
             }
 
@@ -81,7 +81,7 @@ public class DriverStandingsRemoteDataSource extends BaseDriverStandingsRemoteDa
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable throwable) {
                 Log.e(TAG, "Failed to fetch driver standings", throwable);
                 if (driverCallback != null) {
-                    driverCallback.onFailure(new Exception(RETROFIT_ERROR, throwable));
+                    driverCallback.onError(new Exception(RETROFIT_ERROR, throwable));
                 }
             }
         });

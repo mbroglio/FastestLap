@@ -14,13 +14,10 @@ import com.the_coffe_coders.fastestlap.repository.result.ResultRepository;
 import com.the_coffe_coders.fastestlap.repository.standing.constructor.ConstructorStandingRepository;
 import com.the_coffe_coders.fastestlap.repository.standing.driver.DriverStandingRepository;
 import com.the_coffe_coders.fastestlap.repository.weeklyrace.WeeklyRaceRepository;
-import com.the_coffe_coders.fastestlap.source.standing.driver.DriverStandingsLocalDataSource;
-import com.the_coffe_coders.fastestlap.source.standing.driver.DriverStandingsRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.standing.driver.LocalDriverStandingsDataSource;
+import com.the_coffe_coders.fastestlap.source.standing.driver.JolpicaDriverStandingsDataSource;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
-import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
-import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
-import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 
 import java.util.List;
 
@@ -59,7 +56,7 @@ public class HomeViewModel extends ViewModel {
     }
 
     public MutableLiveData<Result> getDriverStandingsLiveData(Application application) {
-        return DriverStandingRepository.getInstance(new DriverStandingsRemoteDataSource(), new DriverStandingsLocalDataSource(ServiceLocator.getInstance().getRoomDatabase(application))).fetchDriverStanding();
+        return DriverStandingRepository.getInstance(new JolpicaDriverStandingsDataSource(), new LocalDriverStandingsDataSource(ServiceLocator.getInstance().getRoomDatabase(application))).getDriverStandings();
     }
 
     public MutableLiveData<Result> getConstructorStandingsLiveData(Application application) {

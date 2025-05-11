@@ -33,7 +33,7 @@ public class ConstructorStandingRepository {
         this.localConstructorStandingsDataSource = LocalConstructorStandingsDataSource.getInstance(appRoomDatabase);
     }
 
-    public static ConstructorStandingRepository getInstance(AppRoomDatabase appRoomDatabase) {
+    public static synchronized ConstructorStandingRepository getInstance(AppRoomDatabase appRoomDatabase) {
         if (instance == null) {
             instance = new ConstructorStandingRepository(appRoomDatabase);
         }
