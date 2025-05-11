@@ -127,7 +127,7 @@ public class UIUtils {
                     @Override
                     public void onLoadFailed(@Nullable Drawable errorDrawable) {
                         Log.e("Glide", "Image loading failed: " + url);
-                        if (retryCount < Constants.MAX_RETRY_COUNT) {
+                        if (retryCount <= Constants.MAX_RETRY_COUNT) {
                             Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
                             new Handler(Looper.getMainLooper()).post(() -> loadImage(context, url, imageView,  onSuccess, retryCount + 1));
                         }
@@ -135,7 +135,11 @@ public class UIUtils {
                 });
     }
 
-    public static void loadImageInEventCardWithAlpha(Context context, String url, LinearLayout card, Runnable onSuccess, int alpha) {
+    public static void loadImageInEventCardWithAlpha(Context context, String url, LinearLayout card, Runnable onSuccess, int alpha){
+        loadImageAlpha(context, url, card, onSuccess, alpha, 0);
+    }
+
+    private static void loadImageAlpha(Context context, String url, LinearLayout card, Runnable onSuccess, int alpha, int retryCount) {
 
         Glide.with(context)
                 .load(url)
@@ -184,6 +188,15 @@ public class UIUtils {
                         card.setBackground(defaultImage);
                         if(onSuccess != null){
                             onSuccess.run();
+                        }
+                    }
+
+                    @Override
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                        Log.e("Glide", "Image loading failed: " + url);
+                        if (retryCount <= Constants.MAX_RETRY_COUNT) {
+                            Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
+                            new Handler(Looper.getMainLooper()).post(() -> loadImageAlpha(context, url, card, onSuccess, alpha, retryCount + 1));
                         }
                     }
                 });

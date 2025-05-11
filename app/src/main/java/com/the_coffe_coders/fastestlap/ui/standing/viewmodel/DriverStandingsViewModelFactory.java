@@ -1,17 +1,22 @@
 package com.the_coffe_coders.fastestlap.ui.standing.viewmodel;
 
+import android.app.Application;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.repository.standing.driver.DriverStandingRepository;
-import com.the_coffe_coders.fastestlap.source.standing.driver.DriverStandingsRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.standing.driver.LocalDriverStandingsDataSource;
+import com.the_coffe_coders.fastestlap.source.standing.driver.JolpicaDriverStandingsDataSource;
 
 public class DriverStandingsViewModelFactory implements ViewModelProvider.Factory {
     private final DriverStandingRepository driverRepository;
 
-    public DriverStandingsViewModelFactory() {
-        this.driverRepository = DriverStandingRepository.getInstance(new DriverStandingsRemoteDataSource());
+    public DriverStandingsViewModelFactory(Application application) {
+        AppRoomDatabase appRoomDatabase = AppRoomDatabase.getDatabase(application);
+        this.driverRepository = DriverStandingRepository.getInstance(appRoomDatabase);
     }
 
     @NonNull

@@ -71,8 +71,9 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     private void start(){
-        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this);
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, null);
         loadingScreen.showLoadingScreen();
+        loadingScreen.updateProgress(0);
 
         toolbar = findViewById(R.id.topAppBar);
         UIUtils.applyWindowInsets(toolbar);
@@ -139,6 +140,9 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     private void createConstructorBioPage(String teamId) {
+
+        loadingScreen.postLoadingStatus(this.getString(R.string.initializing));
+
         MutableLiveData<Result> data = constructorViewModel.getSelectedConstructor(teamId);
         data.observe(this, result -> {
             if(result instanceof Result.Loading) {
@@ -242,7 +246,8 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     private void setTeamData(Constructor team, Nation nation, Driver driverOne, Driver driverTwo) {
-        Log.i("ConstructorBioActivity", "Setting team data");
+        loadingScreen.postLoadingStatus(this.getString(R.string.fetching_constructor_info));
+        loadingScreen.updateProgress(50);
 
         UIUtils.loadSequenceOfImagesWithGlide(this,
                 new String[]{team.getTeam_logo_url(), nation.getNation_flag_url(), team.getCar_pic_url(), driverOne.getDriver_pic_url(), driverTwo.getDriver_pic_url()},
@@ -283,6 +288,10 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
     private void createHistoryTable() {
         Log.i("ConstructorBioActivity", "Creating history table");
+
+        loadingScreen.postLoadingStatus(this.getString(R.string.setting_constructor_history));
+        loadingScreen.updateProgress(100);
+
         TableLayout tableLayout = findViewById(R.id.history_table);
         tableLayout.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);

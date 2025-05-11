@@ -457,7 +457,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildFinalDriversStanding(View seasonEndedCard) {
-        MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData();
+        MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData(requireActivity().getApplication());
         driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
             try {
                 if (result instanceof Result.Loading) {
@@ -502,7 +502,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildFinalTeamsStanding(View seasonEndedCard) {
-        MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData();
+        MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData(requireActivity().getApplication());
         constructorStandingsData.observe(getViewLifecycleOwner(), result -> {
             try {
                 if (result instanceof Result.Loading) {
@@ -535,7 +535,7 @@ public class HomeFragment extends Fragment {
             return;
         }
 
-        MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData();
+        MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData(requireActivity().getApplication());
         driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
             try {
                 if (result instanceof Result.Loading) {
@@ -647,7 +647,7 @@ public class HomeFragment extends Fragment {
             return;
         }
 
-        MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData();
+        MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData(requireActivity().getApplication());
         constructorStandingsData.observe(getViewLifecycleOwner(), result -> {
             try {
                 if (result instanceof Result.Loading) {
