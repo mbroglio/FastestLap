@@ -7,41 +7,36 @@ import com.the_coffe_coders.fastestlap.database.DriverStandingsDAO;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.repository.standing.driver.DriverStandingCallback;
 
-import java.util.concurrent.Executor;
-
-public class LocalDriverStandingsDataSource {
+public class LocalDriverStandingsDataSource implements DriverStandingDataSource {
     private static final String TAG = "DriverLocalDataSource";
-
+    private static LocalDriverStandingsDataSource instance;
     private final DriverStandingsDAO driverStandingsDAO;
-    private final Executor databaseExecutor;
 
     public LocalDriverStandingsDataSource(AppRoomDatabase appRoomDatabase) {
         this.driverStandingsDAO = appRoomDatabase.driverStandingsDao();
-        this.databaseExecutor = AppRoomDatabase.databaseWriteExecutor;
+    }
+
+    public static synchronized LocalDriverStandingsDataSource getInstance(AppRoomDatabase appRoomDatabase) {
+        if (instance == null) {
+            instance = new LocalDriverStandingsDataSource(appRoomDatabase);
+        }
+        return instance;
     }
 
     @Override
-    public void getDriversStandings(DriverStandingCallback callback) {
-        databaseExecutor.execute(() -> {
-            try {
-                DriverStandings standings = driverStandingsDAO.getDriverStandings();
-                callback.onDriverLoaded(standings);
-            } catch (Exception e) {
-                Log.e(TAG, "Error getting driver standings", e);
-                callback.onError(e);
-            }
-        });
+    public void getDriverStandings(DriverStandingCallback callback) {
+        Log.d(TAG, "Fetching driver standings from local database");
+        DriverStandings standings = (DriverStandings) driverStandingsDAO.getAll();
+        if (standings != null) {
+            callback.onDriverLoaded(standings);
+        } else {
+            callback.onError(new Exception("No driver standings found in local database"));
+        }
     }
 
-    @Override
-    public void insertDriversStandings(DriverStandings driverStandings) {
-        databaseExecutor.execute(() -> {
-            try {
-                Log.d(TAG, "Inserting driver standings into local DB");
-                driverStandingsDAO.insert(driverStandings);
-            } catch (Exception e) {
-                Log.e(TAG, "Error inserting driver standings", e);
-            }
+    public void insertDriverStandings(DriverStandings driverStandings) {
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            driverStandingsDAO.insert(driverStandings);
         });
     }
 }

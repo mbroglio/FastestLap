@@ -22,17 +22,24 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class JolpicaDriverStandingsDataSource {
+public class JolpicaDriverStandingsDataSource implements DriverStandingDataSource {
     private static final String TAG = "DriverRemoteDataSource";
-
+    private static JolpicaDriverStandingsDataSource instance;
     private final ErgastAPIService ergastAPIService;
 
     public JolpicaDriverStandingsDataSource() {
         this.ergastAPIService = ServiceLocator.getInstance().getConcreteErgastAPIService();
     }
 
+    public static synchronized JolpicaDriverStandingsDataSource getInstance() {
+        if (instance == null) {
+            instance = new JolpicaDriverStandingsDataSource();
+        }
+        return instance;
+    }
+
     @Override
-    public void getDriversStandings(DriverStandingCallback driverCallback) {
+    public void getDriverStandings(DriverStandingCallback driverCallback) {
         Log.d(TAG, "Fetching driver standings from remote API");
         Call<ResponseBody> responseCall = ergastAPIService.getDriverStandings();
 

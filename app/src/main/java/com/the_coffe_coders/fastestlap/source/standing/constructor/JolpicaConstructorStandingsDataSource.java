@@ -23,8 +23,8 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class JolpicaConstructorStandingsDataSource implements ConstructorStandingDataSource {
-    private static JolpicaConstructorStandingsDataSource instance;
     private static final String TAG = "JolpicaConstructorStandingsDataSource";
+    private static JolpicaConstructorStandingsDataSource instance;
     private final ErgastAPIService ergastAPIService;
 
     private JolpicaConstructorStandingsDataSource() {

@@ -56,7 +56,8 @@ public class HomeViewModel extends ViewModel {
     }
 
     public MutableLiveData<Result> getDriverStandingsLiveData(Application application) {
-        return DriverStandingRepository.getInstance(new JolpicaDriverStandingsDataSource(), new LocalDriverStandingsDataSource(ServiceLocator.getInstance().getRoomDatabase(application))).getDriverStandings();
+        AppRoomDatabase database = application != null ? ServiceLocator.getInstance().getRoomDatabase(application) : null;
+        return DriverStandingRepository.getInstance(database).getDriverStandings();
     }
 
     public MutableLiveData<Result> getConstructorStandingsLiveData(Application application) {

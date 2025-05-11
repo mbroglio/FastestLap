@@ -15,8 +15,8 @@ public class DriverStandingsViewModelFactory implements ViewModelProvider.Factor
     private final DriverStandingRepository driverRepository;
 
     public DriverStandingsViewModelFactory(Application application) {
-        AppRoomDatabase database = AppRoomDatabase.getDatabase(application);
-        this.driverRepository = DriverStandingRepository.getInstance(new JolpicaDriverStandingsDataSource(), new LocalDriverStandingsDataSource(database));
+        AppRoomDatabase appRoomDatabase = AppRoomDatabase.getDatabase(application);
+        this.driverRepository = DriverStandingRepository.getInstance(appRoomDatabase);
     }
 
     @NonNull
