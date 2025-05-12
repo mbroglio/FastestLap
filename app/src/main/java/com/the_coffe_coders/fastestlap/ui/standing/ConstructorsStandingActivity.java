@@ -38,6 +38,7 @@ import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStanding
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import java.util.List;
@@ -67,13 +68,13 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
     }
 
     private void start() {
+        constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
+        driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(getApplication())).get(DriverViewModel.class);
+
         teamStandingLayout = findViewById(R.id.team_standing_layout);
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, teamStandingLayout, null);
-
         loadingScreen.showLoadingScreen(false);
-
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-
         UIUtils.applyWindowInsets(toolbar);
 
         toolbar.setNavigationOnClickListener(v -> {
