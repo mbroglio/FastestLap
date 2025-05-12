@@ -96,9 +96,16 @@ public class SplashActivity extends AppCompatActivity {
                 for (int i = 0; i < creditsText.length(); i++) {
                     final int index = i;
                     handler.postDelayed(() -> {
-                        mediaPlayer.start();
-                        appCredits.setVisibility(View.VISIBLE);
-                        appCredits.setText(creditsText.substring(0, index + 1));
+                        try{
+                            mediaPlayer.start();
+                            appCredits.setVisibility(View.VISIBLE);
+                            appCredits.setText(creditsText.substring(0, index + 1));
+                        }catch (IllegalStateException e){
+                            Log.e(TAG, "MediaPlayer error: " + e.getMessage());
+                            mediaPlayer.reset();
+                            start();
+                        }
+
                     }, (long) delay * i);
                 }
 
