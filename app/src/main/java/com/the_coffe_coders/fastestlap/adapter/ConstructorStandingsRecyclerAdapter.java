@@ -149,7 +149,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                 UIUtils.singleSetTextViewText(driverTwo.getFullName(), holder.driverTwoName);
                 UIUtils.loadImageWithGlide(context, driverTwo.getDriver_pic_url(), holder.driverTwoImage, () -> {
 
-                    loadingScreen.updateProgress();
+                    //loadingScreen.updateProgress();
 
                     Log.i("ConstructorsStanding", "onBindViewHolder " + position + "/" + getItemCount());
                     loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);

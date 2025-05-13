@@ -83,7 +83,7 @@ public class DriverBioActivity extends AppCompatActivity {
         driverBioLayout = findViewById(R.id.driver_bio_layout);
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, driverBioLayout, null);
         loadingScreen.showLoadingScreen(false);
-        loadingScreen.updateProgress();
+        //loadingScreen.updateProgress();
 
         toolbar = findViewById(R.id.topAppBar);
         UIUtils.applyWindowInsets(toolbar);
@@ -147,7 +147,7 @@ public class DriverBioActivity extends AppCompatActivity {
             menuItem.setIcon(R.drawable.baseline_star_border_24);
 
             // Update user preferences in backend
-            userViewModel.saveUserDriverPreferences("", currentUser.getIdToken());
+            userViewModel.saveUserDriverPreferences("null", currentUser.getIdToken());
 
             Log.i(TAG, "Removed favorite driver: " + driverId);
         } else {
@@ -197,7 +197,7 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     public void getTeamInfo(String teamId) {
-        loadingScreen.updateProgress();
+        //loadingScreen.updateProgress();
 
         MutableLiveData<Result> constructorMutableLiveData = constructorViewModel.getSelectedConstructor(teamId);
 
@@ -311,7 +311,7 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     private void createHistoryTable() {
-        loadingScreen.updateProgress();
+        //loadingScreen.updateProgress();
 
         TableLayout tableLayout = findViewById(R.id.history_table);
         tableLayout.removeAllViews();

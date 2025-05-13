@@ -76,7 +76,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, constructorBioLayout, null);
         loadingScreen.showLoadingScreen(false);
-        loadingScreen.updateProgress();
+        //loadingScreen.updateProgress();
 
         toolbar = findViewById(R.id.topAppBar);
         UIUtils.applyWindowInsets(toolbar);
@@ -135,7 +135,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
             menuItem.setIcon(R.drawable.baseline_star_border_24);
 
             // Update user preferences in backend (if needed)
-            userViewModel.saveUserConstructorPreferences("", currentUser.getIdToken());
+            userViewModel.saveUserConstructorPreferences("null", currentUser.getIdToken());
 
             Log.i(TAG, "Removed favorite constructor: " + teamId);
         } else {
@@ -252,7 +252,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     private void setTeamData(Constructor team, Nation nation, Driver driverOne, Driver driverTwo) {
-        loadingScreen.updateProgress();
+        //loadingScreen.updateProgress();
 
         UIUtils.loadSequenceOfImagesWithGlide(this,
                 new String[]{team.getTeam_logo_url(), nation.getNation_flag_url(), team.getCar_pic_url(), driverOne.getDriver_pic_url(), driverTwo.getDriver_pic_url()},
@@ -292,7 +292,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     private void createHistoryTable() {
-        loadingScreen.updateProgress();
+        //loadingScreen.updateProgress();
 
         TableLayout tableLayout = findViewById(R.id.history_table);
         tableLayout.removeAllViews();

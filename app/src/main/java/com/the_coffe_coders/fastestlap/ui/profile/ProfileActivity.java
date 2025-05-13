@@ -1,6 +1,7 @@
 package com.the_coffe_coders.fastestlap.ui.profile;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -113,6 +114,8 @@ public class ProfileActivity extends AppCompatActivity {
 
         signOutButton.setOnClickListener(v -> {
             userViewModel.logout();
+            SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_FILENAME, MODE_PRIVATE);
+            sharedPreferences.edit().clear().apply();
             UIUtils.navigateToWelcomePage(this);
             finish();
         });

@@ -74,7 +74,7 @@ public class EventActivity extends AppCompatActivity {
         eventLayout = findViewById(R.id.event_layout);
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, eventLayout, null);
         loadingScreen.showLoadingScreen(false);
-        loadingScreen.updateProgress();
+        //loadingScreen.updateProgress();
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
@@ -156,7 +156,7 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void setEventImage(WeeklyRace weeklyRace, Track track, Nation nation) {
-        loadingScreen.updateProgress();
+        //loadingScreen.updateProgress();
 
         String imageUrl = track.getTrack_pic_url();
         LinearLayout eventCard = findViewById(R.id.event_card);
@@ -227,7 +227,7 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void startCountdown(LocalDateTime eventDate) {
-        loadingScreen.updateProgress();
+        //loadingScreen.updateProgress();
 
         long millisUntilStart = ZonedDateTime.of(eventDate, ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis();
         new CountDownTimer(millisUntilStart, 1000) {
@@ -267,7 +267,7 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void showResults(WeeklyRace weeklyRace) {
-        loadingScreen.updateProgress();
+        //loadingScreen.updateProgress();
 
         View countdownView = findViewById(R.id.timer_card_countdown);
         View resultsView = findViewById(R.id.timer_card_results);
@@ -318,7 +318,7 @@ public class EventActivity extends AppCompatActivity {
 
     private void showPendingResults() {
         Log.i(TAG, "No results found");
-        loadingScreen.updateProgress();
+        //loadingScreen.updateProgress();
 
         View pendingResultsView = findViewById(R.id.timer_card_pending_results);
         View countdownView = findViewById(R.id.timer_card_countdown);
@@ -331,7 +331,7 @@ public class EventActivity extends AppCompatActivity {
 
     private void createWeekSchedule(List<Session> sessions) {
         View eventSchedule = findViewById(R.id.event_schedule_table);
-        loadingScreen.updateProgress();
+        //loadingScreen.updateProgress();
 
         String sessionId;
 
