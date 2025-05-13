@@ -2,11 +2,13 @@ package com.the_coffe_coders.fastestlap.ui.home;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -15,9 +17,13 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.ui.profile.ProfileActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
+import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
+import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import org.threeten.bp.ZoneId;
@@ -59,30 +65,40 @@ public class HomePageActivity extends AppCompatActivity {
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
-        Intent intent = getIntent();
-        if (intent != null && intent.hasExtra("CALLER")) {
-            String caller = intent.getStringExtra("CALLER");
-            switch (Objects.requireNonNull(caller)) {
-                case "ConstructorsStandingActivity":
-                case "DriversStandingActivity":
-                    bottomNavigationView.post(() -> {
-                        bottomNavigationView.setSelectedItemId(R.id.standingsFragment);
-                    });
-                    break;
-                case "WelcomeActivity":
-                    Intent home = new Intent(HomePageActivity.this, HomePageActivity.class);
-                    startActivity(home);
-                    break;
-                case "ConstructorBioActivity":
-                    Intent constructorStanding = new Intent(HomePageActivity.this, ConstructorsStandingActivity.class);
-                    startActivity(constructorStanding);
-                    break;
-                case "DriverBioActivity":
-                    Intent driverStanding = new Intent(HomePageActivity.this, DriversStandingActivity.class);
-                    startActivity(driverStanding);
-                    break;
+        IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
+        UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+        String idToken = userViewModel.getLoggedUser().getIdToken();
+
+        userViewModel.getUserPreferences(idToken).observe(this, result -> {
+            if (result.isSuccess()) {
+                Intent intent = getIntent();
+                if (intent != null && intent.hasExtra("CALLER")) {
+                    String caller = intent.getStringExtra("CALLER");
+                    switch (Objects.requireNonNull(caller)) {
+                        case "ConstructorsStandingActivity":
+                        case "DriversStandingActivity":
+                            bottomNavigationView.post(() -> {
+                                bottomNavigationView.setSelectedItemId(R.id.standingsFragment);
+                            });
+                            break;
+                        case "WelcomeActivity":
+                            Intent home = new Intent(HomePageActivity.this, HomePageActivity.class);
+                            startActivity(home);
+                            break;
+                        case "ConstructorBioActivity":
+                            Intent constructorStanding = new Intent(HomePageActivity.this, ConstructorsStandingActivity.class);
+                            startActivity(constructorStanding);
+                            break;
+                        case "DriverBioActivity":
+                            Intent driverStanding = new Intent(HomePageActivity.this, DriversStandingActivity.class);
+                            startActivity(driverStanding);
+                            break;
+                    }
+                }
+            } else {
+                Log.e(TAG, "Error getting user preferences: " + result.getError());
             }
-        }
+        });
     }
 
     @Override

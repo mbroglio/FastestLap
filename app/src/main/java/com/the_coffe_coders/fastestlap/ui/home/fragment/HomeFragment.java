@@ -840,57 +840,13 @@ public class HomeFragment extends Fragment {
     }
 
     private String getFavoriteDriverId() {
-        // Prima controlla nelle SharedPreferences
-        String driverId = sharedPreferencesUtils.readStringData(
-                Constants.SHARED_PREFERENCES_FILENAME,
-                Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
-
-//        // Se il valore non è disponibile nelle SharedPreferences
-//        if (driverId == null || driverId.isEmpty() || driverId.equals("null")) {
-//            // Ottieni l'ID token (assumendo che tu abbia un metodo per ottenerlo)
-//            String idToken = userViewModel.getLoggedUser().getIdToken();
-//            if (idToken != null) {
-//                // Carica le preferenze dal DB in modo asincrono
-//                userViewModel.getUserPreferences(idToken).observe(getViewLifecycleOwner(), result -> {
-//                    if (result.isSuccess()) {
-//                        // Le preferenze sono ora aggiornate nelle SharedPreferences
-//                        // Ricarica il fragment o la parte specifica che ne ha bisogno
-//                        setFavouriteDriverCard(view);
-//                    }
-//                });
-//                // Restituisci null per ora (verrà gestito dal codice chiamante)
-//                return null;
-//            }
-//        }
-
+        String driverId = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
         Log.i(TAG, "Favorite Driver ID: " + driverId);
         return driverId;
     }
 
     private String getFavoriteTeamId() {
-        // Prima controlla nelle SharedPreferences
-        String teamId = sharedPreferencesUtils.readStringData(
-                Constants.SHARED_PREFERENCES_FILENAME,
-                Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
-
-//        // Se il valore non è disponibile nelle SharedPreferences
-//        if (teamId == null || teamId.isEmpty() || teamId.equals("null")) {
-//            // Ottieni l'ID token
-//            String idToken = userViewModel.getLoggedUser().getIdToken();
-//            if (idToken != null) {
-//                // Carica le preferenze dal DB
-//                userViewModel.getUserPreferences(idToken).observe(getViewLifecycleOwner(), result -> {
-//                    if (result.isSuccess()) {
-//                        // Le preferenze sono ora aggiornate nelle SharedPreferences
-//                        // Ricarica il fragment o la parte specifica che ne ha bisogno
-//                        setFavouriteConstructorCard(view);
-//                    }
-//                });
-//                // Restituisci null per ora
-//                return null;
-//            }
-//        }
-
+        String teamId = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
         Log.i(TAG, "Favorite Team ID: " + teamId);
         return teamId;
     }
