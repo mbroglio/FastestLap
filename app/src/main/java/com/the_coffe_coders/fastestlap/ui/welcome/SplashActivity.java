@@ -85,7 +85,8 @@ public class SplashActivity extends AppCompatActivity {
 
         appLogo.startAnimation(logoAnimation);
         appLogo.setVisibility(View.VISIBLE);
-        logoMediaPlayer.start();  // Start the logo sound
+        mediaPlayer.start();
+        logoMediaPlayer.start();
         handler.postDelayed(() -> {
             appName.startAnimation(nameAnimation);
             appName.setVisibility(View.VISIBLE);
@@ -97,13 +98,10 @@ public class SplashActivity extends AppCompatActivity {
                     final int index = i;
                     handler.postDelayed(() -> {
                         try{
-                            mediaPlayer.start();
                             appCredits.setVisibility(View.VISIBLE);
                             appCredits.setText(creditsText.substring(0, index + 1));
                         }catch (IllegalStateException e){
                             Log.e(TAG, "MediaPlayer error: " + e.getMessage());
-                            mediaPlayer.reset();
-                            start();
                         }
 
                     }, (long) delay * i);
