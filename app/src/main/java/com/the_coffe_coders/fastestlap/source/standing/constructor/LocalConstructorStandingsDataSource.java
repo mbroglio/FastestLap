@@ -26,7 +26,7 @@ public class LocalConstructorStandingsDataSource implements ConstructorStandingD
     @Override
     public void getConstructorStandings(ConstructorStandingCallback callback) {
         Log.d(TAG, "Fetching constructor standings from local database");
-        ConstructorStandings standings = (ConstructorStandings) constructorStandingsDAO.getAll();
+        ConstructorStandings standings = (ConstructorStandings) constructorStandingsDAO.get();
         if (standings != null) {
             callback.onConstructorLoaded(standings);
         } else {
