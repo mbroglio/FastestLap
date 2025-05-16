@@ -15,5 +15,5 @@ public interface DriverStandingsDAO {
     void insert(DriverStandings driverStandings);
 
     @Query("SELECT * FROM DriverStandings")
-    List<DriverStandings> getAll();
+    DriverStandings get();
 }

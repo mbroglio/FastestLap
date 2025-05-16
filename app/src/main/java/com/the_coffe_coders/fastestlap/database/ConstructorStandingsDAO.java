@@ -12,7 +12,7 @@ import java.util.List;
 @Dao
 public interface ConstructorStandingsDAO {
     @Query("SELECT * FROM ConstructorStandings")
-    List<ConstructorStandings> getAll();
+    ConstructorStandings get();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<ConstructorStandings> constructorStandingsList);
