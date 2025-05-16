@@ -54,6 +54,29 @@ public class TrackRepository {
         return trackCache.get(trackId);
     }
 
+    public void loadTrackFromLocal(String trackId){
+        localTrackDataSource.getTrack(trackId, new TrackCallback() {
+            @Override
+            public void onTrackLoaded(Track track) {
+                if (track != null) {
+                    track.setTrackId(trackId);
+                    trackCache.put(trackId, new MutableLiveData<>(new Result.TrackSuccess(track)));
+                    lastUpdateTimestamps.put(trackId, System.currentTimeMillis());
+                    Objects.requireNonNull(trackCache.get(trackId)).postValue(new Result.TrackSuccess(track));
+                    Log.d(TAG, "Track loaded from local cache: " + track);
+                } else {
+                    Log.e(TAG, "Track not found in local cache: " + trackId);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e(TAG, "Error loading track from local cache: " + e.getMessage());
+                loadTrackFromLocal(trackId);
+            }
+        });
+    }
+
     public void loadTrack(String trackId) {
         trackCache.get(trackId).postValue(new Result.Loading("Fetching track from remote"));
         try {
@@ -74,24 +97,7 @@ public class TrackRepository {
                 @Override
                 public void onError(Exception exception) {
                     Log.e(TAG, "Error loading track: " + exception.getMessage());
-                    localTrackDataSource.getTrack(trackId, new TrackCallback() {
-                        @Override
-                        public void onTrackLoaded(Track track) {
-                            if (track != null) {
-                                track.setTrackId(trackId);
-                                trackCache.put(trackId, new MutableLiveData<>(new Result.TrackSuccess(track)));
-                                lastUpdateTimestamps.put(trackId, System.currentTimeMillis());
-                                Objects.requireNonNull(trackCache.get(trackId)).postValue(new Result.TrackSuccess(track));
-                            } else {
-                                Log.e(TAG, "Track not found in local cache: " + trackId);
-                            }
-                        }
 
-                        @Override
-                        public void onError(Exception e) {
-                            Log.e(TAG, "Error loading track from local cache: " + e.getMessage());
-                        }
-                    });
                 }
             });
         } catch (Exception e) {
