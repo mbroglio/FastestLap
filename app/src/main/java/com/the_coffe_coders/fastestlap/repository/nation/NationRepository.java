@@ -52,6 +52,27 @@ public class NationRepository {
         return nationCache.get(nationId);
     }
 
+    public void loadNationFromLocal(String nationId){
+        localNationDataSource.getNation(nationId, new NationCallback() {
+            @Override
+            public void onNationLoaded(Nation nation) {
+                if (nation != null) {
+                    nation.setNationId(nationId);
+                    nationCache.put(nationId, new MutableLiveData<>(new Result.NationSuccess(nation)));
+                    lastUpdateTimestamps.put(nationId, System.currentTimeMillis());
+                    Objects.requireNonNull(nationCache.get(nationId)).postValue(new Result.NationSuccess(nation));
+                } else {
+                    Log.e(TAG, "Nation not found: " + nationId);
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e(TAG, "Error loading nation from local database: " + e.getMessage());
+            }
+        });
+    }
+
     private void loadNation(String nationId) {
         nationCache.get(nationId).postValue(new Result.Loading("Fetching nation from remote"));
         try {
@@ -72,24 +93,7 @@ public class NationRepository {
                 public void onError(Exception e) {
                     Log.e(TAG, "Error loading nation: " + e.getMessage());
                     //fetch nation from local database
-                    localNationDataSource.getNation(nationId, new NationCallback() {
-                        @Override
-                        public void onNationLoaded(Nation nation) {
-                            if (nation != null) {
-                                nation.setNationId(nationId);
-                                nationCache.put(nationId, new MutableLiveData<>(new Result.NationSuccess(nation)));
-                                lastUpdateTimestamps.put(nationId, System.currentTimeMillis());
-                                Objects.requireNonNull(nationCache.get(nationId)).postValue(new Result.NationSuccess(nation));
-                            } else {
-                                Log.e(TAG, "Nation not found: " + nationId);
-                            }
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            Log.e(TAG, "Error loading nation from local database: " + e.getMessage());
-                        }
-                    });
+                    loadNationFromLocal(nationId);
                 }
             });
         } catch (Exception e) {
