@@ -23,12 +23,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:layout_marginEnd="10dp"
                 android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
                 android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                 android:autoSizeTextType="uniform"
                 android:fontFamily="@font/orbitron_bold"
                 android:maxLines="1"
-                android:layout_marginEnd="10dp"
                 android:text="@string/live_session_upper_case"
                 android:textColor="@color/black"
                 android:textSize="@dimen/layout_subtitle_text_size">

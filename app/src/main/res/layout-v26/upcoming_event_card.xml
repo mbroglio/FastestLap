@@ -5,10 +5,10 @@
     android:id="@+id/upcoming_events_card_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
     android:layout_marginStart="@dimen/medium_margin"
+    android:layout_marginTop="8dp"
     android:layout_marginEnd="@dimen/medium_margin"
+    android:layout_marginBottom="8dp"
     app:cardBackgroundColor="@color/grey_card"
     app:strokeColor="@color/black"
     app:strokeWidth="3dp">
@@ -26,8 +26,8 @@
             android:id="@+id/upcoming_track_outline"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            android:importantForAccessibility="no"
-            android:layout_marginStart="20dp">
+            android:layout_marginStart="20dp"
+            android:importantForAccessibility="no">
 
         </ImageView>
 
@@ -64,11 +64,11 @@
                 android:id="@+id/upcoming_gp_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/upcoming_round_number"
                 android:layout_above="@id/upcoming_date"
+                android:layout_below="@id/upcoming_round_number"
+                android:layout_centerInParent="true"
                 android:layout_marginTop="5dp"
                 android:layout_marginBottom="5dp"
-                android:layout_centerInParent="true"
                 android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
                 android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                 android:autoSizeTextType="uniform"
@@ -98,8 +98,8 @@
                 android:id="@+id/upcoming_month"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
                 android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true"
                 android:fontFamily="@font/orbitron_bold"
                 android:text="@string/not_found"
                 android:textColor="@color/white"

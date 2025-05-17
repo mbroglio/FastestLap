@@ -4,10 +4,10 @@
     android:id="@+id/past_event_card_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
     android:layout_marginStart="@dimen/medium_margin"
+    android:layout_marginTop="8dp"
     android:layout_marginEnd="@dimen/medium_margin"
+    android:layout_marginBottom="8dp"
     app:cardBackgroundColor="@color/grey_card"
     app:strokeColor="@color/black"
     app:strokeWidth="3dp">
