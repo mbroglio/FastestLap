@@ -35,8 +35,6 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
-import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
-import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
@@ -74,6 +72,7 @@ public class HomeFragment extends Fragment {
     private TrackViewModel trackViewModel;
     private NationViewModel nationViewModel;
     private UserViewModel userViewModel;
+    private boolean hasReloaded = false;
     private View view;
 
     public HomeFragment() {
@@ -109,6 +108,13 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupFragment(View view) {
+        Intent intent = requireActivity().getIntent();
+        if(intent != null && intent.hasExtra("RELOADED")) {
+            if (intent.getStringExtra("RELOADED").equals("true")) {
+                hasReloaded = true;
+            }
+        }
+
         initializeViewModels();
         setupLoadingScreen(view);
         setupUI(view);
@@ -254,7 +260,23 @@ public class HomeFragment extends Fragment {
 
                     List<RaceResult> raceResults = ((Result.LastRaceResultsSuccess) result).getData().getResults();
                     setDriverNames(view, raceResults);
-                    loadingScreen.hideLoadingScreen();
+
+                    // Brutally reloads twice the fragment
+                    if (!hasReloaded) {
+                        Intent intent = new Intent(getActivity(), getActivity().getClass());
+                        intent.putExtra("CALLER", "HomeFragment");
+                        startActivity(intent);
+
+                        // Remove animations
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION);
+                        requireActivity().getWindow().setWindowAnimations(0);
+
+                        startActivity(intent);
+                        requireActivity().overridePendingTransition(0, 0);
+                    } else {
+                        loadingScreen.hideLoadingScreen();
+                    }
                 } else {
                     throw new Exception("Failed to fetch race results: " + result.getError());
                 }

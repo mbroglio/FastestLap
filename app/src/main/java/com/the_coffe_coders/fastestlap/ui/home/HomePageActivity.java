@@ -82,7 +82,9 @@ public class HomePageActivity extends AppCompatActivity {
                             });
                             break;
                         case "WelcomeActivity":
+                        case "HomeFragment":
                             Intent home = new Intent(HomePageActivity.this, HomePageActivity.class);
+                            home.putExtra("RELOADED", "true");
                             startActivity(home);
                             break;
                         case "ConstructorBioActivity":
