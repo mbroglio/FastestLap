@@ -114,7 +114,7 @@ public class RaceResultRemoteDataSource extends BaseRaceResultRemoteDataSource {
             // Delay before retry using Handler
             new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() ->
                     fetchRaceResult(raceNumber, currentRetry + 1,
-                        successCount, failureCount, totalRaces, raceResultCallback), RETRY_DELAY_MS);
+                            successCount, failureCount, totalRaces, raceResultCallback), RETRY_DELAY_MS);
         } else {
             handleFailure(raceNumber, error, raceResultCallback);
             checkAllRequestsCompleted(successCount.get(),

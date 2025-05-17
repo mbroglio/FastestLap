@@ -1,7 +1,6 @@
 package com.the_coffe_coders.fastestlap.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,13 +21,12 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
-import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import java.util.List;
 
-public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<UpcomingEventsRecyclerAdapter.UpcomingEventViewHolder>{
+public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<UpcomingEventsRecyclerAdapter.UpcomingEventViewHolder> {
 
     private final List<WeeklyRace> races;
     private final Context context;
@@ -60,10 +58,10 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
         Log.i("UpcomingEventsAdapter", "onBindViewHolder: " + weeklyRace);
 
         trackViewModel.getTrack(weeklyRace.getTrack().getTrackId()).observe(lifecycleOwner, result -> {
-            if(result instanceof Result.Loading) {
+            if (result instanceof Result.Loading) {
                 return;
             }
-            if(result.isSuccess()){
+            if (result.isSuccess()) {
                 Track track = ((Result.TrackSuccess) result).getData();
 
                 setupEventCardIcon(weeklyRace, holder);
@@ -100,13 +98,13 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
 
     private void setupEventCardIcon(WeeklyRace weeklyRace, UpcomingEventViewHolder holder) {
 
-        if(weeklyRace.isUnderway(true)){
+        if (weeklyRace.isUnderway(true)) {
             holder.accessEventIcon.setVisibility(View.GONE);
             holder.liveEventIconLayout.setVisibility(View.VISIBLE);
 
             Animation pulse = AnimationUtils.loadAnimation(context, R.anim.pulse_dynamic);
             holder.liveEventIcon.startAnimation(pulse);
-        }else{
+        } else {
             holder.accessEventIcon.setVisibility(View.VISIBLE);
             holder.liveEventIconLayout.setVisibility(View.GONE);
         }

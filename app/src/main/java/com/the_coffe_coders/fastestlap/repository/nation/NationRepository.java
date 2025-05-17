@@ -52,7 +52,7 @@ public class NationRepository {
         return nationCache.get(nationId);
     }
 
-    public void loadNationFromLocal(String nationId){
+    public void loadNationFromLocal(String nationId) {
         localNationDataSource.getNation(nationId, new NationCallback() {
             @Override
             public void onNationLoaded(Nation nation) {

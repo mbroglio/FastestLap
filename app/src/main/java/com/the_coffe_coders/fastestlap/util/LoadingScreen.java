@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.the_coffe_coders.fastestlap.R;
@@ -35,17 +34,17 @@ public class LoadingScreen {
         ImageView loadingWheel = view.findViewById(R.id.loading_wheel);
         Animation rotateAnimation = AnimationUtils.loadAnimation(context, R.anim.rotate);
         loadingWheel.startAnimation(rotateAnimation);
-    }    private final Runnable timerRunnable = this::hide;
+    }
 
     public void showLoadingScreen(boolean invisible) {
         if (fragmentView != null) {
-            if(invisible){
+            if (invisible) {
                 fragmentView.setVisibility(View.INVISIBLE);
             } else {
                 fragmentView.setVisibility(View.GONE);
             }
         } else {
-            if(invisible){
+            if (invisible) {
                 activityView.setVisibility(View.INVISIBLE);
             } else {
                 activityView.setVisibility(View.GONE);
@@ -77,6 +76,8 @@ public class LoadingScreen {
         };
         handler.post(dotRunnable);
     }
+
+    private final Runnable timerRunnable = this::hide;
 
     private void resetTimer() {
         timerHandler.removeCallbacks(timerRunnable);

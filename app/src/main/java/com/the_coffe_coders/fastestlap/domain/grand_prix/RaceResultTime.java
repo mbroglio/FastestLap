@@ -19,14 +19,6 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RaceResultTime implements Parcelable {
-    private String time;
-    private String millis;
-
-    protected RaceResultTime(Parcel in) {
-        time = in.readString();
-        millis = in.readString();
-    }
-
     public static final Creator<RaceResultTime> CREATOR = new Creator<RaceResultTime>() {
         @Override
         public RaceResultTime createFromParcel(Parcel in) {
@@ -38,6 +30,13 @@ public class RaceResultTime implements Parcelable {
             return new RaceResultTime[size];
         }
     };
+    private String time;
+    private String millis;
+
+    protected RaceResultTime(Parcel in) {
+        time = in.readString();
+        millis = in.readString();
+    }
 
     @Override
     public int describeContents() {

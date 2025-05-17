@@ -1,6 +1,5 @@
 package com.the_coffe_coders.fastestlap.ui.bio;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,7 +18,6 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.bumptech.glide.Glide;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
@@ -37,8 +35,6 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
-import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
-import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
@@ -225,10 +221,10 @@ public class DriverBioActivity extends AppCompatActivity {
             if (result.isSuccess()) {
                 nation = ((Result.NationSuccess) result).getData();
                 Log.i(TAG, "GET NATION FROM FIREBASE REPO: " + nation);
-                if(driver.getTeam_id() != null){
+                if (driver.getTeam_id() != null) {
                     setDriverData(driver, nation, team, true, driver.getTeam_id());
                     setToolbar(true, driver.getTeam_id());
-                }else{
+                } else {
                     setDriverData(driver, nation, team, false, null);
                     setToolbar(false, null);
                 }
@@ -242,26 +238,26 @@ public class DriverBioActivity extends AppCompatActivity {
         UIUtils.singleSetTextViewText((driver.getGivenName() + " " + driver.getFamilyName()).toUpperCase(),
                 findViewById(R.id.topAppBarTitle));
 
-        if(teamIdPresent){
+        if (teamIdPresent) {
             toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
             appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
 
             teamLogoCard.setOnClickListener(v ->
                     UIUtils.navigateToBioPage(this, team.getConstructorId(), 0));
-        }else{
+        } else {
             toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
             appBarLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
         }
     }
 
     private void setDriverData(Driver driver, Nation nation, Constructor team, boolean teamIdPresent, String teamId) {
-        if(teamIdPresent){
+        if (teamIdPresent) {
             teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
             driverNumberCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
             if (team.getConstructorId().equals("rb")) {
                 teamLogoCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white));
             }
-        }else{
+        } else {
             teamLogoCard.setStrokeColor(ContextCompat.getColor(this, R.color.timer_gray));
             driverNumberCard.setStrokeColor(ContextCompat.getColor(this, R.color.timer_gray));
         }

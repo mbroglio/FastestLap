@@ -1,7 +1,6 @@
 package com.the_coffe_coders.fastestlap.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +19,6 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
-import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
@@ -29,7 +27,7 @@ import org.threeten.bp.LocalDateTime;
 
 import java.util.List;
 
-public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRecyclerAdapter.PastEventViewHolder>{
+public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRecyclerAdapter.PastEventViewHolder> {
 
     private final List<Race> races;
     private final Context context;
@@ -61,11 +59,11 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
         Log.i("PastEventsAdapter", "onBindViewHolder: " + race);
 
         trackViewModel.getTrack(race.getTrack().getTrackId()).observe(lifecycleOwner, result -> {
-            if(result instanceof Result.Loading){
+            if (result instanceof Result.Loading) {
                 return;
             }
 
-            if(result.isSuccess()){
+            if (result.isSuccess()) {
                 Track track = ((Result.TrackSuccess) result).getData();
 
                 LocalDateTime raceDateTime = race.getStartDateTime();
@@ -79,7 +77,7 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
 
                     UIUtils.multipleSetTextViewText(
                             new String[]{
-                                    context.getString(R.string.round_upper_case_plus_value,race.getRound()),
+                                    context.getString(R.string.round_upper_case_plus_value, race.getRound()),
                                     race.getRaceName()},
 
                             new TextView[]{
@@ -96,10 +94,10 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
     }
 
     private void generatePodium(@NonNull PastEventsRecyclerAdapter.PastEventViewHolder holder, Race race, int position) {
-        if(race.getResults() == null){
+        if (race.getResults() == null) {
             setPendingPodium(holder);
-        } else{
-            for(int i = 0; i < 3; i++) {
+        } else {
+            for (int i = 0; i < 3; i++) {
                 RaceResult raceResult = race.getResults().get(i);
                 UIUtils.singleSetTextViewText(
                         raceResult.getDriver().getFullName(),
@@ -139,7 +137,7 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
             super(itemView);
 
             pastEventCard = itemView.findViewById(R.id.past_event_card_layout);
-            pastDateTextView= itemView.findViewById(R.id.past_date);
+            pastDateTextView = itemView.findViewById(R.id.past_date);
             pastMonthTextView = itemView.findViewById(R.id.past_month);
             trackOutline = itemView.findViewById(R.id.past_track_outline);
             pastRoundTextView = itemView.findViewById(R.id.past_round_number);

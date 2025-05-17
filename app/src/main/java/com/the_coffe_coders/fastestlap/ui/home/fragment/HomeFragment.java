@@ -109,7 +109,7 @@ public class HomeFragment extends Fragment {
 
     private void setupFragment(View view) {
         Intent intent = requireActivity().getIntent();
-        if(intent != null && intent.hasExtra("RELOADED")) {
+        if (intent != null && intent.hasExtra("RELOADED")) {
             if (intent.getStringExtra("RELOADED").equals("true")) {
                 hasReloaded = true;
             }
@@ -225,8 +225,7 @@ public class HomeFragment extends Fragment {
 
             UIUtils.singleSetTextViewText(race.getRaceName(), view.findViewById(R.id.last_race_name));
 
-            UIUtils.loadImageWithGlide(requireContext(), track.getTrack_minimal_layout_url(), view.findViewById(R.id.last_race_track_outline), () ->
-                    updateLastRaceUIFinalStep(race, view));
+            UIUtils.loadImageWithGlide(requireContext(), track.getTrack_minimal_layout_url(), view.findViewById(R.id.last_race_track_outline), () -> updateLastRaceUIFinalStep(race, view));
 
         } catch (Exception e) {
             Log.e(TAG, "Error updating last race UI: " + e.getMessage());
@@ -238,17 +237,9 @@ public class HomeFragment extends Fragment {
         //loadingScreen.updateProgress();
         LocalDateTime dateTime = race.getDateTime();
 
-        UIUtils.multipleSetTextViewText(
-                new String[]{String.valueOf(dateTime.getDayOfMonth()),
-                        requireContext().getString(R.string.round, race.getRound())
-                },
-                new TextView[]{view.findViewById(R.id.last_race_date),
-                        view.findViewById(R.id.last_race_round)
-                }
-        );
+        UIUtils.multipleSetTextViewText(new String[]{String.valueOf(dateTime.getDayOfMonth()), requireContext().getString(R.string.round, race.getRound())}, new TextView[]{view.findViewById(R.id.last_race_date), view.findViewById(R.id.last_race_round)});
 
-        UIUtils.translateMonth(dateTime.getMonth().toString().substring(0, 3).toUpperCase(),
-                view.findViewById(R.id.last_race_month), true);
+        UIUtils.translateMonth(dateTime.getMonth().toString().substring(0, 3).toUpperCase(), view.findViewById(R.id.last_race_month), true);
 
         MutableLiveData<Result> raceResultData = homeViewModel.getRaceResults(race.getRound());
         raceResultData.observe(getViewLifecycleOwner(), result -> {
@@ -294,9 +285,7 @@ public class HomeFragment extends Fragment {
         //loadingScreen.updateProgress();
         try {
             for (int i = 0; i < Math.min(3, raceResults.size()); i++) {
-
                 UIUtils.singleSetTextViewText(raceResults.get(i).getDriver().getFullName(), view.findViewById(Constants.LAST_RACE_DRIVER_NAME.get(i)));
-
             }
         } catch (Exception e) {
             Log.e(TAG, "Error setting driver names: " + e.getMessage());
@@ -396,14 +385,13 @@ public class HomeFragment extends Fragment {
 
             UIUtils.singleSetTextViewText(nextRace.getRaceName(), view.findViewById(R.id.home_next_gp_name));
 
-            UIUtils.loadImageWithGlide(requireContext(), nation.getNation_flag_url(), view.findViewById(R.id.home_next_gp_flag),
-                    () -> {
-                        try {
-                            setNextRaceCardFinalStep(nextRace, view);
-                        } catch (Exception e) {
-                            throw new RuntimeException(e);
-                        }
-                    });
+            UIUtils.loadImageWithGlide(requireContext(), nation.getNation_flag_url(), view.findViewById(R.id.home_next_gp_flag), () -> {
+                try {
+                    setNextRaceCardFinalStep(nextRace, view);
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
+            });
 
         } catch (Exception e) {
             Log.e(TAG, "Error in setNextRaceCard: " + e.getMessage());
@@ -456,23 +444,16 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onTick(long millisUntilFinished) {
-                UIUtils.multipleSetTextViewText(
-                        new String[]{String.valueOf(millisUntilFinished / 86400000),
-                                String.valueOf((millisUntilFinished % 86400000) / 3600000),
-                                String.valueOf(((millisUntilFinished % 86400000) % 3600000) / 60000),
-                                String.valueOf((((millisUntilFinished % 86400000) % 3600000) % 60000) / 1000)},
+                UIUtils.multipleSetTextViewText(new String[]{String.valueOf(millisUntilFinished / 86400000), String.valueOf((millisUntilFinished % 86400000) / 3600000), String.valueOf(((millisUntilFinished % 86400000) % 3600000) / 60000), String.valueOf((((millisUntilFinished % 86400000) % 3600000) % 60000) / 1000)},
 
-                        new TextView[]{days, hours, minutes, seconds}
-                );
+                        new TextView[]{days, hours, minutes, seconds});
             }
 
             @Override
             public void onFinish() {
-                UIUtils.multipleSetTextViewText(
-                        new String[]{"0", "0", "0", "0"},
+                UIUtils.multipleSetTextViewText(new String[]{"0", "0", "0", "0"},
 
-                        new TextView[]{days, hours, minutes, seconds}
-                );
+                        new TextView[]{days, hours, minutes, seconds});
 
                 liveIconLayout.setVisibility(View.VISIBLE);
             }
@@ -661,8 +642,7 @@ public class HomeFragment extends Fragment {
         try {
             Driver driver = standingElement.getDriver();
 
-            UIUtils.multipleSetTextViewText(
-                    new String[]{driver.getGivenName() + " " + driver.getFamilyName(), nation.getAbbreviation()},
+            UIUtils.multipleSetTextViewText(new String[]{driver.getGivenName() + " " + driver.getFamilyName(), nation.getAbbreviation()},
 
                     new TextView[]{view.findViewById(R.id.favourite_driver_name), view.findViewById(R.id.favourite_driver_nationality)});
 
@@ -670,10 +650,7 @@ public class HomeFragment extends Fragment {
             ImageView driverImage = view.findViewById(R.id.favourite_driver_pic);
             driverImage.setOnClickListener(v -> UIUtils.navigateToBioPage(getContext(), driver.getDriverId(), 1));
 
-            UIUtils.loadSequenceOfImagesWithGlide(requireContext(),
-                    new String[]{nation.getNation_flag_url(), driver.getDriver_pic_url()},
-                    new ImageView[]{driverFlag, driverImage},
-                    () -> buildDriverCardFinalStep(standingElement, view, driver));
+            UIUtils.loadSequenceOfImagesWithGlide(requireContext(), new String[]{nation.getNation_flag_url(), driver.getDriver_pic_url()}, new ImageView[]{driverFlag, driverImage}, () -> buildDriverCardFinalStep(standingElement, view, driver));
 
         } catch (Exception e) {
             Log.e(TAG, "Error building driver card: " + e.getMessage());
@@ -686,8 +663,7 @@ public class HomeFragment extends Fragment {
 
         if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
 
-            UIUtils.multipleSetTextViewText(
-                    new String[]{standingElement.getPosition(), standingElement.getPoints()},
+            UIUtils.multipleSetTextViewText(new String[]{standingElement.getPosition(), standingElement.getPoints()},
 
                     new TextView[]{view.findViewById(R.id.favourite_driver_position), view.findViewById(R.id.favourite_driver_points)});
 
@@ -784,8 +760,7 @@ public class HomeFragment extends Fragment {
         try {
             Constructor constructor = standingElement.getConstructor();
 
-            UIUtils.multipleSetTextViewText(
-                    new String[]{constructor.getName(), nation.getAbbreviation()},
+            UIUtils.multipleSetTextViewText(new String[]{constructor.getName(), nation.getAbbreviation()},
 
                     new TextView[]{view.findViewById(R.id.favourite_constructor_name), view.findViewById(R.id.favourite_constructor_nationality)});
 
@@ -795,8 +770,7 @@ public class HomeFragment extends Fragment {
             FrameLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
             constructorCard.setOnClickListener(v -> UIUtils.navigateToBioPage(getContext(), constructor.getConstructorId(), 0));
 
-            UIUtils.loadSequenceOfImagesWithGlide(requireContext(),
-                    new String[]{nation.getNation_flag_url(), constructor.getCar_pic_url()},
+            UIUtils.loadSequenceOfImagesWithGlide(requireContext(), new String[]{nation.getNation_flag_url(), constructor.getCar_pic_url()},
 
                     new ImageView[]{constructorFlag, constructorCar},
 
@@ -813,8 +787,7 @@ public class HomeFragment extends Fragment {
 
         if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
 
-            UIUtils.multipleSetTextViewText(
-                    new String[]{standingElement.getPosition(), standingElement.getPoints()},
+            UIUtils.multipleSetTextViewText(new String[]{standingElement.getPosition(), standingElement.getPoints()},
 
                     new TextView[]{view.findViewById(R.id.favourite_constructor_position), view.findViewById(R.id.favourite_constructor_points)});
 

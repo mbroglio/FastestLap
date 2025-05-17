@@ -25,13 +25,23 @@ import lombok.ToString;
 @AllArgsConstructor
 @Entity(tableName = "Constructor")
 public class Constructor implements Parcelable {
+    public static final Creator<Constructor> CREATOR = new Creator<Constructor>() {
+        @Override
+        public Constructor createFromParcel(Parcel in) {
+            return new Constructor(in);
+        }
+
+        @Override
+        public Constructor[] newArray(int size) {
+            return new Constructor[size];
+        }
+    };
     @PrimaryKey(autoGenerate = true)
     private long uid;
     private String constructorId;
     private String url;
     private String name;
     private String nationality;
-
     // Bio Data
     private String car_pic_url;
     private String chassis;
@@ -69,18 +79,6 @@ public class Constructor implements Parcelable {
         wins = in.readString();
         world_championships = in.readString();
     }
-
-    public static final Creator<Constructor> CREATOR = new Creator<Constructor>() {
-        @Override
-        public Constructor createFromParcel(Parcel in) {
-            return new Constructor(in);
-        }
-
-        @Override
-        public Constructor[] newArray(int size) {
-            return new Constructor[size];
-        }
-    };
 
     public String getDriverOneId() {
         return drivers.get(0);

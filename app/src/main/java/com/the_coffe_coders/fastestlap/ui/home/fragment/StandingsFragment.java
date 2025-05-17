@@ -1,6 +1,5 @@
 package com.the_coffe_coders.fastestlap.ui.home.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,8 +10,6 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
-import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 public class StandingsFragment extends Fragment {

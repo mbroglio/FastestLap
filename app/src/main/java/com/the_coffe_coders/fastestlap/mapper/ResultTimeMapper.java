@@ -5,12 +5,12 @@ import com.the_coffe_coders.fastestlap.dto.ResultTimeDTO;
 
 public class ResultTimeMapper {
     public static RaceResultTime toResultTime(ResultTimeDTO timeDTO) {
-        if(timeDTO != null){
+        if (timeDTO != null) {
             RaceResultTime resultTime = new RaceResultTime();
             resultTime.setTime(timeDTO.getTime());
             resultTime.setMillis(timeDTO.getMillis());
             return resultTime;
-        }else{
+        } else {
             return null;
         }
     }

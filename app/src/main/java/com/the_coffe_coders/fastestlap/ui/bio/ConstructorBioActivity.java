@@ -159,9 +159,9 @@ public class ConstructorBioActivity extends AppCompatActivity {
             if (result.isSuccess()) {
                 constructor = ((Result.ConstructorSuccess) result).getData();
 
-                if(constructor == null){
+                if (constructor == null) {
                     UIUtils.navigateToHomePage(this);
-                }else{
+                } else {
                     Log.i(TAG, "Constructor: " + constructor);
 
                     UIUtils.singleSetTextViewText(constructor.getName().toUpperCase(), findViewById(R.id.topAppBarTitle));

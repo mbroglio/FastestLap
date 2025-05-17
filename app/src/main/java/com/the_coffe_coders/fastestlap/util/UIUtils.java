@@ -27,14 +27,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.os.LocaleListCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
@@ -129,7 +127,7 @@ public class UIUtils {
 
     private static void loadImage(Context context, String url, ImageView imageView, Runnable onSuccess, int retryCount) {
         Log.i("Glide", "Loading image: " + url);
-        if(url != null && !url.isEmpty()){
+        if (url != null && !url.isEmpty()) {
             Glide.with(context)
                     .load(url)
                     .into(new CustomTarget<Drawable>() {
@@ -156,7 +154,7 @@ public class UIUtils {
                             if (retryCount <= Constants.MAX_RETRY_COUNT) {
                                 Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
                                 new Handler(Looper.getMainLooper()).post(() -> loadImage(context, url, imageView, onSuccess, retryCount + 1));
-                            }else{
+                            } else {
                                 Log.e("Glide", "Max retry count reached for image: " + url);
                                 imageView.setImageDrawable(null);
 
@@ -166,7 +164,7 @@ public class UIUtils {
                             }
                         }
                     });
-        }else{
+        } else {
             Log.e("Glide", "URL is null");
             imageView.setImageDrawable(null);
             if (onSuccess != null) {
@@ -180,7 +178,7 @@ public class UIUtils {
     }
 
     private static void loadImageAlpha(Context context, String url, LinearLayout card, Runnable onSuccess, int alpha, int retryCount) {
-        if(url != null && !url.isEmpty()) {
+        if (url != null && !url.isEmpty()) {
             Glide.with(context)
                     .load(url)
                     .transform(new BitmapTransformation() {
@@ -237,7 +235,7 @@ public class UIUtils {
                             if (retryCount <= Constants.MAX_RETRY_COUNT) {
                                 Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
                                 new Handler(Looper.getMainLooper()).post(() -> loadImageAlpha(context, url, card, onSuccess, alpha, retryCount + 1));
-                            }else {
+                            } else {
                                 Log.e("Glide", "Max retry count reached for image: " + url);
                                 card.setBackgroundColor(context.getColor(R.color.screen_background_color));
                                 if (onSuccess != null) {
@@ -246,7 +244,7 @@ public class UIUtils {
                             }
                         }
                     });
-        }else{
+        } else {
             Log.e("Glide", "URL is null");
             card.setBackgroundColor(context.getColor(R.color.screen_background_color));
             if (onSuccess != null) {
@@ -349,14 +347,14 @@ public class UIUtils {
         }
     }
 
-    public static void translateEventDateInterval(String eventDate, TextView eventDateTextView){
-        String newEventDate = eventDate.split(" ")[0]+" " +
+    public static void translateEventDateInterval(String eventDate, TextView eventDateTextView) {
+        String newEventDate = eventDate.split(" ")[0] + " " +
                 eventDate.split(" ")[1] + " " +
                 eventDate.split(" ")[2] + " ";
 
-        if(AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("en-GB")){
+        if (AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("en-GB")) {
             newEventDate += eventDate.split(" ")[3].toUpperCase();
-        } else if(AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("it-IT")){
+        } else if (AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("it-IT")) {
             newEventDate += Objects.requireNonNull(Constants.MONTH_ENG_TO_ITA.get(eventDate.split(" ")[3].toLowerCase())).toUpperCase();
         }
 
@@ -364,12 +362,12 @@ public class UIUtils {
     }
 
     public static void translateMonth(String abbr, TextView textView, boolean abbreviation) {
-        if(abbreviation){
+        if (abbreviation) {
             setTextViewTextWithCondition(AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("it-IT"),
                     Constants.MONTH_ABBR_ENG_TO_ITA.get(abbr),
                     abbr,
                     textView);
-        }else{
+        } else {
             setTextViewTextWithCondition(AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("it-IT"),
                     Constants.MONTH_ENG_TO_ITA.get(abbr),
                     abbr,
@@ -386,15 +384,15 @@ public class UIUtils {
         AppCompatDelegate.setApplicationLocales(AppCompatDelegate.getApplicationLocales());
     }
 
-    public static void navigateToHomePage(Context context){
+    public static void navigateToHomePage(Context context) {
         Intent intent = new Intent(context, HomePageActivity.class);
         context.startActivity(intent);
     }
 
-    public static void navigateToBioPage(Context context, String id, int bioType){
+    public static void navigateToBioPage(Context context, String id, int bioType) {
         Intent intent;
 
-        switch (bioType){
+        switch (bioType) {
             case 0:
                 intent = new Intent(context, ConstructorBioActivity.class);
                 intent.putExtra("TEAM_ID", id);
@@ -417,10 +415,10 @@ public class UIUtils {
         }
     }
 
-    public static void navigateToStandingsPage(Context context, String id, int standingsType){
+    public static void navigateToStandingsPage(Context context, String id, int standingsType) {
         Intent intent;
 
-        switch(standingsType){
+        switch (standingsType) {
             case 0:
                 intent = new Intent(context, ConstructorsStandingActivity.class);
                 intent.putExtra("TEAM_ID", id);
@@ -434,10 +432,10 @@ public class UIUtils {
         }
     }
 
-    public static void navigateToEventsListPage(Context context, int eventType){
+    public static void navigateToEventsListPage(Context context, int eventType) {
         Intent intent;
 
-        switch(eventType){
+        switch (eventType) {
             case 0:
                 intent = new Intent(context, UpcomingEventsActivity.class);
                 context.startActivity(intent);
@@ -449,19 +447,19 @@ public class UIUtils {
         }
     }
 
-    public static void navigateToEventPage(Context context, String circuitId){
+    public static void navigateToEventPage(Context context, String circuitId) {
         Intent intent = new Intent(context, EventActivity.class);
         intent.putExtra("CIRCUIT_ID", circuitId);
         context.startActivity(intent);
     }
 
-    public static void navigateToWelcomePage(Context context){
+    public static void navigateToWelcomePage(Context context) {
         Intent intent = new Intent(context, WelcomeActivity.class);
         context.startActivity(intent);
     }
 
     public static void showRaceResultsDialog(FragmentManager fragmentManager, Race race, int sessionType) {
-        switch (sessionType){
+        switch (sessionType) {
             case 0:
                 RaceResultsFragment raceResultsFragment = new RaceResultsFragment();
                 Bundle args = new Bundle();
@@ -473,7 +471,7 @@ public class UIUtils {
     }
 
     public static void showWelcomeDialogs(FragmentManager fragmentManager, int dialogType) {
-        switch (dialogType){
+        switch (dialogType) {
             case 0:
                 SignUpFragment signUpFragment = new SignUpFragment();
                 signUpFragment.show(fragmentManager, "SignUpFragment");

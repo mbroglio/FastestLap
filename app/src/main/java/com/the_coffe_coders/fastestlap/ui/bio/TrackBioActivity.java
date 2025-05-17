@@ -163,7 +163,7 @@ public class TrackBioActivity extends AppCompatActivity {
         tableLayout.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
 
-        if(track.getTrack_history() != null){
+        if (track.getTrack_history() != null) {
             View tableHeader = inflater.inflate(R.layout.track_bio_table_header, tableLayout, false);
             tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray_dark));
 

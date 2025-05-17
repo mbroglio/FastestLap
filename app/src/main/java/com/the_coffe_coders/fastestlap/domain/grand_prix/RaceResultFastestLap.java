@@ -19,6 +19,17 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RaceResultFastestLap implements Parcelable {
+    public static final Creator<RaceResultFastestLap> CREATOR = new Creator<RaceResultFastestLap>() {
+        @Override
+        public RaceResultFastestLap createFromParcel(Parcel in) {
+            return new RaceResultFastestLap(in);
+        }
+
+        @Override
+        public RaceResultFastestLap[] newArray(int size) {
+            return new RaceResultFastestLap[size];
+        }
+    };
     private String rank;
     private String lap;
     private RaceResultTime time;
@@ -32,18 +43,6 @@ public class RaceResultFastestLap implements Parcelable {
         constructorId = in.readString();
         time = in.readParcelable(RaceResultTime.class.getClassLoader());
     }
-
-    public static final Creator<RaceResultFastestLap> CREATOR = new Creator<RaceResultFastestLap>() {
-        @Override
-        public RaceResultFastestLap createFromParcel(Parcel in) {
-            return new RaceResultFastestLap(in);
-        }
-
-        @Override
-        public RaceResultFastestLap[] newArray(int size) {
-            return new RaceResultFastestLap[size];
-        }
-    };
 
     @Override
     public int describeContents() {

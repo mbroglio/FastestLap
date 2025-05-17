@@ -12,6 +12,7 @@ public class DriverStandingsViewModel extends ViewModel {
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final DriverStandingRepository driverStandingRepository;
+
     public DriverStandingsViewModel(DriverStandingRepository driverStandingRepository) {
         this.driverStandingRepository = driverStandingRepository;
     }

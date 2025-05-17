@@ -2,7 +2,6 @@ package com.the_coffe_coders.fastestlap.ui.welcome;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
-import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
@@ -21,7 +20,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
@@ -97,10 +95,10 @@ public class SplashActivity extends AppCompatActivity {
                 for (int i = 0; i < creditsText.length(); i++) {
                     final int index = i;
                     handler.postDelayed(() -> {
-                        try{
+                        try {
                             appCredits.setVisibility(View.VISIBLE);
                             appCredits.setText(creditsText.substring(0, index + 1));
-                        }catch (IllegalStateException e){
+                        } catch (IllegalStateException e) {
                             Log.e(TAG, "MediaPlayer error: " + e.getMessage());
                         }
 

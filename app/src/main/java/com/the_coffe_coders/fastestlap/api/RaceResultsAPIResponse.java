@@ -3,7 +3,6 @@ package com.the_coffe_coders.fastestlap.api;
 
 import android.util.Log;
 
-import com.google.gson.annotations.SerializedName;
 import com.the_coffe_coders.fastestlap.dto.RaceDTO;
 import com.the_coffe_coders.fastestlap.dto.RaceTableDTO;
 import com.the_coffe_coders.fastestlap.dto.ResultDTO;

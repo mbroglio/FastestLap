@@ -1,7 +1,6 @@
 package com.the_coffe_coders.fastestlap.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,14 +22,11 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
-import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
-
-import org.checkerframework.checker.guieffect.qual.UI;
 
 import java.util.List;
 import java.util.Objects;
@@ -70,10 +66,10 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         String currentConstructorId = constructorStandingsElement.getConstructor().getConstructorId();
 
         constructorViewModel.getSelectedConstructor(currentConstructorId).observe(lifecycleOwner, result -> {
-            if(result instanceof Result.Loading){
+            if (result instanceof Result.Loading) {
                 return;
             }
-            if(result.isSuccess()){
+            if (result.isSuccess()) {
                 Constructor constructor = ((Result.ConstructorSuccess) result).getData();
                 constructorStandingsElement.setConstructor(constructor);
 
@@ -93,7 +89,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                                 holder.constructorName,
                                 holder.constructorPoints});
 
-                if(constructorId != null){
+                if (constructorId != null) {
                     if (currentConstructorId.equals(constructorId)) {
                         UIUtils.animateCardBackgroundColor(context, holder.constructorCard, R.color.yellow, Color.TRANSPARENT, 1000, 10);
                     }
@@ -125,10 +121,10 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
 
     private void processDriverOne(ConstructorViewHolder holder, Constructor constructor, int position) {
         driverViewModel.getDriver(constructor.getDriverOneId()).observe(lifecycleOwner, result -> {
-            if(result instanceof Result.Loading){
+            if (result instanceof Result.Loading) {
                 return;
             }
-            if(result.isSuccess()){
+            if (result.isSuccess()) {
                 Driver driverOne = ((Result.DriverSuccess) result).getData();
 
                 UIUtils.singleSetTextViewText(driverOne.getFullName(), holder.driverOneName);
@@ -140,10 +136,10 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
 
     private void processDriverTwo(ConstructorViewHolder holder, Constructor constructor, int position) {
         driverViewModel.getDriver(constructor.getDriverTwoId()).observe(lifecycleOwner, result -> {
-            if(result instanceof Result.Loading){
+            if (result instanceof Result.Loading) {
                 return;
             }
-            if(result.isSuccess()){
+            if (result.isSuccess()) {
                 Driver driverTwo = ((Result.DriverSuccess) result).getData();
 
                 UIUtils.singleSetTextViewText(driverTwo.getFullName(), holder.driverTwoName);

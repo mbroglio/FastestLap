@@ -24,6 +24,17 @@ import lombok.ToString;
 @Entity
 public class Race extends Session implements Parcelable {
 
+    public static final Creator<Race> CREATOR = new Creator<Race>() {
+        @Override
+        public Race createFromParcel(Parcel in) {
+            return new Race(in);
+        }
+
+        @Override
+        public Race[] newArray(int size) {
+            return new Race[size];
+        }
+    };
     public List<RaceResult> raceResults;
     public LocalDateTime dateTime;//TODO REMOVE ?
     @PrimaryKey(autoGenerate = true)
@@ -57,18 +68,6 @@ public class Race extends Session implements Parcelable {
         url = in.readString();
         raceName = in.readString();
     }
-
-    public static final Creator<Race> CREATOR = new Creator<Race>() {
-        @Override
-        public Race createFromParcel(Parcel in) {
-            return new Race(in);
-        }
-
-        @Override
-        public Race[] newArray(int size) {
-            return new Race[size];
-        }
-    };
 
     public int getRoundAsInt() {
         return Integer.parseInt(round);

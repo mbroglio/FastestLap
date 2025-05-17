@@ -58,21 +58,21 @@ public class RaceResultsRecyclerAdapter extends RecyclerView.Adapter<RaceResults
                         holder.teamName,
                         holder.deltaPosition});
 
-        if(!result.isFinished()){
+        if (!result.isFinished()) {
             UIUtils.singleSetTextViewText(Constants.RESULT_STATUS_ABBR.get(result.getStatus().toLowerCase()), holder.status);
-        }else{
-            if(result.getTime() != null) {
+        } else {
+            if (result.getTime() != null) {
                 UIUtils.singleSetTextViewText(result.getTime().getTime(), holder.status);
             }
         }
-        
-        if(delta > 0){
+
+        if (delta > 0) {
             holder.deltaPositionIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.up_arrow));
             holder.deltaPositionIcon.setColorFilter(ContextCompat.getColor(context, R.color.kick_f1), android.graphics.PorterDuff.Mode.SRC_IN);
         } else if (delta < 0) {
             holder.deltaPositionIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.down_arrow));
             holder.deltaPositionIcon.setColorFilter(ContextCompat.getColor(context, R.color.ferrari_f1), android.graphics.PorterDuff.Mode.SRC_IN);
-        }else{
+        } else {
             holder.deltaPositionIcon.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.equals_symbol));
             holder.deltaPositionIcon.setColorFilter(ContextCompat.getColor(context, R.color.timer_gray), android.graphics.PorterDuff.Mode.SRC_IN);
         }

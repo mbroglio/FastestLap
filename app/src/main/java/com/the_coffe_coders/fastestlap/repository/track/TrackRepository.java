@@ -54,7 +54,7 @@ public class TrackRepository {
         return trackCache.get(trackId);
     }
 
-    public void loadTrackFromLocal(String trackId){
+    public void loadTrackFromLocal(String trackId) {
         localTrackDataSource.getTrack(trackId, new TrackCallback() {
             @Override
             public void onTrackLoaded(Track track) {

@@ -1,7 +1,5 @@
 package com.the_coffe_coders.fastestlap.mapper;
 
-import android.util.Log;
-
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Practice;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Qualifying;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;

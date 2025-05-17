@@ -1,7 +1,6 @@
 package com.the_coffe_coders.fastestlap.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +22,6 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
-import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
 import com.the_coffe_coders.fastestlap.util.Constants;
@@ -32,7 +30,7 @@ import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import java.util.List;
 
-public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<DriversStandingRecyclerAdapter.DriverViewHolder>{
+public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<DriversStandingRecyclerAdapter.DriverViewHolder> {
 
     private final Context context;
     private final List<DriverStandingsElement> driversStandingList;
@@ -68,18 +66,18 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
     @Override
     public void onBindViewHolder(@NonNull DriverViewHolder holder, int position) {
         driverStandingsElement = new DriverStandingsElement();
-        if(driversStandingList == null){
+        if (driversStandingList == null) {
             driverStandingsElement.setDriver(driversList.get(position));
             driverStandingsElement.setPoints("0");
-        }else{
+        } else {
             driverStandingsElement = driversStandingList.get(position);
         }
 
         driverViewModel.getDriver(driverStandingsElement.getDriver().getDriverId()).observe(lifecycleOwner, result -> {
-            if(result instanceof Result.Loading){
+            if (result instanceof Result.Loading) {
                 return;
             }
-            if(result.isSuccess()){
+            if (result.isSuccess()) {
                 Driver driver = ((Result.DriverSuccess) result).getData();
 
                 UIUtils.multipleSetTextViewText(
@@ -96,9 +94,9 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
                 UIUtils.setTextViewTextWithCondition(driverStandingsElement.getPosition() == null || driverStandingsElement.getPosition().equals("-"),
                         ContextCompat.getString(context, R.string.last_driver_position), //if true
                         driverStandingsElement.getPosition(), //if false
-                       holder.driverPosition);
+                        holder.driverPosition);
 
-                if(driverId != null){
+                if (driverId != null) {
                     if (driverStandingsElement.getDriver().getDriverId().equals(driverId)) {
                         UIUtils.animateCardBackgroundColor(context, holder.driverCard.findViewById(R.id.driver_card_view), R.color.yellow, Color.TRANSPARENT, 1000, 10);
                     }
@@ -123,9 +121,9 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
     private void goToBioPage(int position) {
         //TEMPORARY FIX
         String driverIdToShow;
-        if(driversStandingList == null){
+        if (driversStandingList == null) {
             driverIdToShow = driversList.get(position).getDriverId();
-        }else{
+        } else {
             driverIdToShow = driversStandingList.get(position).getDriver().getDriverId();
         }
         //
@@ -135,10 +133,10 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
 
     private void generateForConstructor(DriverViewHolder holder, Driver driver, int position) {
         constructorViewModel.getSelectedConstructor(driver.getTeam_id()).observe(lifecycleOwner, result -> {
-            if(result instanceof Result.Loading){
+            if (result instanceof Result.Loading) {
                 return;
             }
-            if(result.isSuccess()){
+            if (result.isSuccess()) {
                 Constructor constructor = ((Result.ConstructorSuccess) result).getData();
 
                 UIUtils.loadImageWithGlide(context, constructor.getTeam_logo_minimal_url(), holder.driverTeamImage, () -> {
@@ -155,11 +153,11 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
 
     @Override
     public int getItemCount() {
-        if(driversList != null){
+        if (driversList != null) {
             return driversList.size();
-        }else if(driversStandingList != null){
+        } else if (driversStandingList != null) {
             return driversStandingList.size();
-        }else{
+        } else {
             return 0;
         }
     }

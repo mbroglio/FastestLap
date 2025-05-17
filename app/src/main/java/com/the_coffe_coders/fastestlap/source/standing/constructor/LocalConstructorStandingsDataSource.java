@@ -8,8 +8,8 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.repository.standing.constructor.ConstructorStandingCallback;
 
 public class LocalConstructorStandingsDataSource implements ConstructorStandingDataSource {
-    private static LocalConstructorStandingsDataSource instance;
     private static final String TAG = "LocalConstructorStandingsDataSource";
+    private static LocalConstructorStandingsDataSource instance;
     private final ConstructorStandingsDAO constructorStandingsDAO;
 
     private LocalConstructorStandingsDataSource(AppRoomDatabase appRoomDatabase) {
@@ -26,7 +26,7 @@ public class LocalConstructorStandingsDataSource implements ConstructorStandingD
     @Override
     public void getConstructorStandings(ConstructorStandingCallback callback) {
         Log.d(TAG, "Fetching constructor standings from local database");
-        ConstructorStandings standings = (ConstructorStandings) constructorStandingsDAO.get();
+        ConstructorStandings standings = constructorStandingsDAO.get();
         if (standings != null) {
             callback.onConstructorLoaded(standings);
         } else {

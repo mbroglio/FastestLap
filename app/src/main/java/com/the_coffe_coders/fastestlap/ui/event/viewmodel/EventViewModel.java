@@ -64,7 +64,7 @@ public class EventViewModel extends ViewModel {
         return pastRaces;
     }
 
-    public RaceResultFastestLap extractFastestLap(List<RaceResult> results){
+    public RaceResultFastestLap extractFastestLap(List<RaceResult> results) {
         RaceResultFastestLap fastestLap = new RaceResultFastestLap();
         for (RaceResult result : results) {
             if (result.getFastestLap().getRank().equals("1")) {

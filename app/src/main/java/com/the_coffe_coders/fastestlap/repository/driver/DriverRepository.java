@@ -77,7 +77,7 @@ public class DriverRepository {
         });
     }
 
-    public void loadDriverFromLocal(String driverId){
+    public void loadDriverFromLocal(String driverId) {
         localDriverDataSource.getDriver(driverId, new DriverCallback() {
             @Override
             public void onDriverLoaded(Driver driver) {

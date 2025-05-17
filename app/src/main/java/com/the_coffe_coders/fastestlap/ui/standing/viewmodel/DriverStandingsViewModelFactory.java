@@ -8,8 +8,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.repository.standing.driver.DriverStandingRepository;
-import com.the_coffe_coders.fastestlap.source.standing.driver.LocalDriverStandingsDataSource;
-import com.the_coffe_coders.fastestlap.source.standing.driver.JolpicaDriverStandingsDataSource;
 
 public class DriverStandingsViewModelFactory implements ViewModelProvider.Factory {
     private final DriverStandingRepository driverRepository;

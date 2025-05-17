@@ -1,13 +1,6 @@
 package com.the_coffe_coders.fastestlap.ui.event.fragment;
 
 import android.os.Bundle;
-
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +8,12 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.RaceResultsRecyclerAdapter;
@@ -36,6 +35,7 @@ public class RaceResultsFragment extends DialogFragment {
     public RaceResultsFragment() {
         // Required empty public constructor
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +60,7 @@ public class RaceResultsFragment extends DialogFragment {
     }
 
     private void initializeViewModels() {
-        eventViewModel =  new ViewModelProvider(this, new EventViewModelFactory(requireActivity().getApplication())).get(EventViewModel.class);
+        eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(requireActivity().getApplication())).get(EventViewModel.class);
     }
 
     private void setupFragment(View view) {
@@ -100,7 +100,7 @@ public class RaceResultsFragment extends DialogFragment {
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         if (getDialog() != null && getDialog().getWindow() != null) {
             Window window = getDialog().getWindow();

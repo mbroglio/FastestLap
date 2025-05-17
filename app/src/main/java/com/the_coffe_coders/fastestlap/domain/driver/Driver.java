@@ -29,6 +29,17 @@ import lombok.ToString;
 @AllArgsConstructor
 @Entity(tableName = "Driver")
 public class Driver implements Parcelable {
+    public static final Creator<Driver> CREATOR = new Creator<Driver>() {
+        @Override
+        public Driver createFromParcel(Parcel in) {
+            return new Driver(in);
+        }
+
+        @Override
+        public Driver[] newArray(int size) {
+            return new Driver[size];
+        }
+    };
     @PrimaryKey(autoGenerate = true)
     private long uid;
     @Getter
@@ -40,7 +51,6 @@ public class Driver implements Parcelable {
     private String familyName; // F/A
     private String dateOfBirth; // F/A
     private String nationality; // TODO: Remove DTO
-
     // Bio Data
     private String best_result; // F
     private String birth_place; // F
@@ -76,18 +86,6 @@ public class Driver implements Parcelable {
         weight = in.readString();
         first_entry = in.readString();
     }
-
-    public static final Creator<Driver> CREATOR = new Creator<Driver>() {
-        @Override
-        public Driver createFromParcel(Parcel in) {
-            return new Driver(in);
-        }
-
-        @Override
-        public Driver[] newArray(int size) {
-            return new Driver[size];
-        }
-    };
 
     public int getDriverAge() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
