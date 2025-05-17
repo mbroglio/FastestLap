@@ -79,20 +79,12 @@ public class DriverBioActivity extends AppCompatActivity {
         driverBioLayout = findViewById(R.id.driver_bio_layout);
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, driverBioLayout, null);
         loadingScreen.showLoadingScreen(false);
-        //loadingScreen.updateProgress();
+        loadingScreen.updateProgress();
 
         toolbar = findViewById(R.id.topAppBar);
         UIUtils.applyWindowInsets(toolbar);
 
-        toolbar.setNavigationOnClickListener(v ->
-                UIUtils.navigateToHomePage(this));
-
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                UIUtils.navigateToHomePage(DriverBioActivity.this);
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         Menu menu = toolbar.getMenu();
         MenuItem favoriteItem = menu.findItem(R.id.favourite_icon_outline);
@@ -193,7 +185,7 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     public void getTeamInfo(String teamId) {
-        //loadingScreen.updateProgress();
+        loadingScreen.updateProgress();
 
         MutableLiveData<Result> constructorMutableLiveData = constructorViewModel.getSelectedConstructor(teamId);
 
@@ -307,7 +299,7 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     private void createHistoryTable() {
-        //loadingScreen.updateProgress();
+        loadingScreen.updateProgress();
 
         TableLayout tableLayout = findViewById(R.id.history_table);
         tableLayout.removeAllViews();

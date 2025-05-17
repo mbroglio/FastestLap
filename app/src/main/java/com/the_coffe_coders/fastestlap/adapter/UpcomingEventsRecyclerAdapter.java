@@ -85,7 +85,7 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
                     holder.upcomingEventCard.setOnClickListener(v ->
                             UIUtils.navigateToEventPage(context, weeklyRace.getTrack().getTrackId()));
 
-                    //loadingScreen.updateProgress();
+                    loadingScreen.updateProgress();
 
                     Log.i("UpcomingEventsAdapter", "onBindViewHolder: " + position + " / " + getItemCount());
                     loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);

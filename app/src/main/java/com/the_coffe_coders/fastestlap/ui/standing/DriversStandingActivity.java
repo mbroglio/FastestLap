@@ -68,16 +68,7 @@ public class DriversStandingActivity extends AppCompatActivity {
 
         UIUtils.applyWindowInsets(toolbar);
 
-        toolbar.setNavigationOnClickListener(v -> {
-            UIUtils.navigateToHomePage(this);
-        });
-
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                UIUtils.navigateToHomePage(DriversStandingActivity.this);
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         UIUtils.applyWindowInsets(driverStandingLayout);
 

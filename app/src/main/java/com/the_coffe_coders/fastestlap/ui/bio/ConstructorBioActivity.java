@@ -76,20 +76,12 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, constructorBioLayout, null);
         loadingScreen.showLoadingScreen(false);
-        //loadingScreen.updateProgress();
+        loadingScreen.updateProgress();
 
         toolbar = findViewById(R.id.topAppBar);
         UIUtils.applyWindowInsets(toolbar);
 
-        toolbar.setNavigationOnClickListener(v ->
-                UIUtils.navigateToHomePage(this));
-
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                UIUtils.navigateToHomePage(ConstructorBioActivity.this);
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         Menu menu = toolbar.getMenu();
         MenuItem favoriteItem = menu.findItem(R.id.favourite_icon_outline);
@@ -252,7 +244,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     private void setTeamData(Constructor team, Nation nation, Driver driverOne, Driver driverTwo) {
-        //loadingScreen.updateProgress();
+        loadingScreen.updateProgress();
 
         UIUtils.loadSequenceOfImagesWithGlide(this,
                 new String[]{team.getTeam_logo_url(), nation.getNation_flag_url(), team.getCar_pic_url(), driverOne.getDriver_pic_url(), driverTwo.getDriver_pic_url()},
@@ -292,7 +284,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     private void createHistoryTable() {
-        //loadingScreen.updateProgress();
+        loadingScreen.updateProgress();
 
         TableLayout tableLayout = findViewById(R.id.history_table);
         tableLayout.removeAllViews();

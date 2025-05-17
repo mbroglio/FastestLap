@@ -105,7 +105,7 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
             }
         }
 
-        //loadingScreen.updateProgress();
+        loadingScreen.updateProgress();
 
         Log.i("PastEventsAdapter", "onBindViewHolder: " + position + " / " + getItemCount());
         loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);

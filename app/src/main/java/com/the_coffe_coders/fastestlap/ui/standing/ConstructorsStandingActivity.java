@@ -62,16 +62,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         UIUtils.applyWindowInsets(toolbar);
 
-        toolbar.setNavigationOnClickListener(v -> {
-            UIUtils.navigateToHomePage(this);
-        });
-
-        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
-            @Override
-            public void handleOnBackPressed() {
-                UIUtils.navigateToHomePage(ConstructorsStandingActivity.this);
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         UIUtils.applyWindowInsets(teamStandingLayout);
 
