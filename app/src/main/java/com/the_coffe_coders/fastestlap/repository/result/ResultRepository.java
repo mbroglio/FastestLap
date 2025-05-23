@@ -95,6 +95,7 @@ public class ResultRepository {
                         Objects.requireNonNull(resultsCache.get(round)).postValue(new Result.LastRaceResultsSuccess(race));
                     } else {
                         Log.e(TAG, "Results not found in cache for round: " + round);
+                        loadResultsFromLocal(round);
                     }
                 }
 
@@ -102,6 +103,7 @@ public class ResultRepository {
                 public void onFailure(Exception exception) {
                     Log.e(TAG, "Error loading results: " + exception.getMessage());
                     Objects.requireNonNull(resultsCache.get(round)).postValue(new Result.Error(exception.getMessage()));
+                    loadResultsFromLocal(round);
                 }
             });
         } catch (Exception e) {
