@@ -26,14 +26,13 @@ public class EventViewModel extends ViewModel {
     public EventViewModel() {
     }
 
-    public MutableLiveData<Result> getAllResults(int numberOfRaces) {
+    /*public MutableLiveData<Result> getAllResults(int numberOfRaces) {
         return ResultRepository.getInstance().fetchAllRaceResults(numberOfRaces);
     }
 
     public MutableLiveData<Result> getRaceResults(String raceId) {
-        System.out.println(raceId);
         return ResultRepository.getInstance().fetchResults(raceId);
-    }
+    }*/
 
     public MutableLiveData<Result> getWeeklyRacesLiveData() {
         return WeeklyRaceRepository.getInstance().fetchWeeklyRaces();

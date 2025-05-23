@@ -44,6 +44,8 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
+import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModel;
+import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
@@ -72,6 +74,7 @@ public class HomeFragment extends Fragment {
     private TrackViewModel trackViewModel;
     private NationViewModel nationViewModel;
     private UserViewModel userViewModel;
+    private RaceResultViewModel raceResultViewModel;
     private boolean hasReloaded = false;
     private View view;
 
@@ -116,6 +119,7 @@ public class HomeFragment extends Fragment {
         sharedPreferencesUtils = new SharedPreferencesUtils(this.getContext());
         IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getActivity().getApplication());
         userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+        raceResultViewModel = new ViewModelProvider(this, new RaceResultViewModelFactory(getActivity().getApplication())).get(RaceResultViewModel.class);
     }
 
     private void setupLoadingScreen(View view) {
@@ -227,7 +231,7 @@ public class HomeFragment extends Fragment {
 
         UIUtils.translateMonth(dateTime.getMonth().toString().substring(0, 3).toUpperCase(), view.findViewById(R.id.last_race_month), true);
 
-        MutableLiveData<Result> raceResultData = homeViewModel.getRaceResults(race.getRound());
+        MutableLiveData<Result> raceResultData = raceResultViewModel.getRaceResults(race.getRound());
         raceResultData.observe(getViewLifecycleOwner(), result -> {
             try {
                 if (result instanceof Result.Loading) {

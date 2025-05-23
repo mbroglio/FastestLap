@@ -22,6 +22,8 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModelFactory;
+import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModel;
+import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
@@ -34,6 +36,7 @@ public class PastEventsActivity extends AppCompatActivity {
     LoadingScreen loadingScreen;
     EventViewModel eventViewModel;
     TrackViewModel trackViewModel;
+    RaceResultViewModel raceResultViewModel;
 
     private SwipeRefreshLayout pastEventsLayout;
 
@@ -55,6 +58,7 @@ public class PastEventsActivity extends AppCompatActivity {
 
         eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
         trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(getApplication())).get(TrackViewModel.class);
+        raceResultViewModel = new ViewModelProvider(this, new RaceResultViewModelFactory(getApplication())).get(RaceResultViewModel.class);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         UIUtils.applyWindowInsets(toolbar);
@@ -81,7 +85,7 @@ public class PastEventsActivity extends AppCompatActivity {
             if (resultEvent.isSuccess()) {
                 List<WeeklyRace> eventRaces = ((Result.WeeklyRaceSuccess) resultEvent).getData();
                 int totalRaces = eventViewModel.extractPastRaces(eventRaces).size();
-                MutableLiveData<Result> data = eventViewModel.getAllResults(totalRaces);
+                MutableLiveData<Result> data = raceResultViewModel.getAllRaceResults(totalRaces);
                 data.observe(this, result -> {
                     Log.i("PastEvent", "observed");
                     if (result.isSuccess()) {

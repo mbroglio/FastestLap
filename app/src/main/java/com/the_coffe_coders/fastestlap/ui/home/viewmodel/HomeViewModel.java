@@ -42,10 +42,6 @@ public class HomeViewModel extends ViewModel {
         return getConstructorStandingsLiveData(null);
     }
 
-    public MutableLiveData<Result> getRaceResults(String round) {
-        return ResultRepository.getInstance().fetchResults(round);
-    }
-
     public LiveData<Boolean> isLoading() {
         return isLoadingLiveData;
     }

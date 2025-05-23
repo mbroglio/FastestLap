@@ -34,6 +34,8 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModelFactory;
+import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModel;
+import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
@@ -50,6 +52,7 @@ public class EventActivity extends AppCompatActivity {
     private static final String TAG = "EventActivity";
     LoadingScreen loadingScreen;
     EventViewModel eventViewModel;
+    RaceResultViewModel raceResultViewModel;
     private String trackId;
     private Track track;
     private Nation nation;
@@ -90,6 +93,7 @@ public class EventActivity extends AppCompatActivity {
 
     private void initializeViewModels() {
         eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
+        raceResultViewModel = new ViewModelProvider(this, new RaceResultViewModelFactory(getApplication())).get(RaceResultViewModel.class);
         processRaceData();
     }
 
@@ -280,8 +284,8 @@ public class EventActivity extends AppCompatActivity {
 
     private void processRaceResults(WeeklyRace weeklyRace) {
         Log.i(TAG, "Processing race results" + " " + weeklyRace.getRound());
-        MutableLiveData<Result> resultMutableLiveData = eventViewModel.getRaceResults(weeklyRace.getRound());
 
+        MutableLiveData<Result> resultMutableLiveData = raceResultViewModel.getRaceResults(weeklyRace.getRound());
         resultMutableLiveData.observe(this, result -> {
             if (result instanceof Result.Loading) {
                 return;

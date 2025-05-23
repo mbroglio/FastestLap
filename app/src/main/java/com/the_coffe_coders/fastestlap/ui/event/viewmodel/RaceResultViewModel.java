@@ -7,7 +7,8 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.repository.result.ResultRepository;
 
 public class RaceResultViewModel extends ViewModel {
-
+    private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
     private final ResultRepository resultRepository;
 
     public RaceResultViewModel(ResultRepository resultRepository) {
