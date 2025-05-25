@@ -24,6 +24,8 @@ import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModelFactory;
+import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModel;
+import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
@@ -37,6 +39,7 @@ public class PastEventsActivity extends AppCompatActivity {
     EventViewModel eventViewModel;
     TrackViewModel trackViewModel;
     RaceResultViewModel raceResultViewModel;
+    WeeklyRaceViewModel weeklyRaceViewModel;
 
     private SwipeRefreshLayout pastEventsLayout;
 
@@ -59,6 +62,7 @@ public class PastEventsActivity extends AppCompatActivity {
         eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
         trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(getApplication())).get(TrackViewModel.class);
         raceResultViewModel = new ViewModelProvider(this, new RaceResultViewModelFactory(getApplication())).get(RaceResultViewModel.class);
+        weeklyRaceViewModel = new ViewModelProvider(this, new WeeklyRaceViewModelFactory(getApplication())).get(WeeklyRaceViewModel.class);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         UIUtils.applyWindowInsets(toolbar);
@@ -76,7 +80,7 @@ public class PastEventsActivity extends AppCompatActivity {
     private void processEvents() {
         Log.i("PastEvent", "Process Event");
 
-        LiveData<Result> dataEvent = eventViewModel.getWeeklyRacesLiveData();
+        LiveData<Result> dataEvent = weeklyRaceViewModel.getWeeklyRacesLiveData();
         dataEvent.observe(this, resultEvent -> {
             Log.i("PastEvent", "observed");
             if (resultEvent instanceof Result.Loading) {

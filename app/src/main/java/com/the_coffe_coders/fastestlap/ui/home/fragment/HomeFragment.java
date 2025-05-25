@@ -46,6 +46,8 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModelFactory;
+import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModel;
+import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
@@ -73,8 +75,8 @@ public class HomeFragment extends Fragment {
     private DriverViewModel driverViewModel;
     private TrackViewModel trackViewModel;
     private NationViewModel nationViewModel;
-    private UserViewModel userViewModel;
     private RaceResultViewModel raceResultViewModel;
+    private WeeklyRaceViewModel weeklyRaceViewModel;
     private boolean hasReloaded = false;
     private View view;
 
@@ -118,8 +120,8 @@ public class HomeFragment extends Fragment {
         nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(getActivity().getApplication())).get(NationViewModel.class);
         sharedPreferencesUtils = new SharedPreferencesUtils(this.getContext());
         IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getActivity().getApplication());
-        userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
         raceResultViewModel = new ViewModelProvider(this, new RaceResultViewModelFactory(getActivity().getApplication())).get(RaceResultViewModel.class);
+        weeklyRaceViewModel = new ViewModelProvider(this, new WeeklyRaceViewModelFactory(getActivity().getApplication())).get(WeeklyRaceViewModel.class);
     }
 
     private void setupLoadingScreen(View view) {
@@ -162,7 +164,7 @@ public class HomeFragment extends Fragment {
     private void setLastRaceCard(View view) {
         loadingScreen.updateProgress();
 
-        MutableLiveData<Result> lastRace = homeViewModel.getLastRace();
+        MutableLiveData<Result> lastRace = weeklyRaceViewModel.getLastRace();
         lastRace.observe(getViewLifecycleOwner(), result -> {
             try {
                 if (result instanceof Result.Loading) {
@@ -291,7 +293,7 @@ public class HomeFragment extends Fragment {
     private void setNextSessionCard(View view) {
         loadingScreen.updateProgress();
 
-        MutableLiveData<Result> nextRaceLiveData = homeViewModel.getNextRaceLiveData();
+        MutableLiveData<Result> nextRaceLiveData = weeklyRaceViewModel.getNextRaceLiveData();
         try {
             nextRaceLiveData.observe(getViewLifecycleOwner(), result -> {
 
