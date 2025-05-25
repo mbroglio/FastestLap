@@ -1,119 +1,213 @@
 package com.the_coffe_coders.fastestlap.repository.weeklyrace;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 
+import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
-import com.the_coffe_coders.fastestlap.source.weeklyrace.BaseWeeklyRaceRemoteDataSource;
-import com.the_coffe_coders.fastestlap.source.weeklyrace.WeeklyRaceRemoteDataSource;
+import com.the_coffe_coders.fastestlap.source.weeklyrace.LocalWeeklyRaceDataSource;
+import com.the_coffe_coders.fastestlap.source.weeklyrace.JolpicaWeeklyRaceDataSource;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class WeeklyRaceRepository {
     private static final String TAG = "WeeklyRaceRepository";
     private static WeeklyRaceRepository instance;
-    private final MutableLiveData<Result> nextRaceMutableLiveData;
-    private final MutableLiveData<Result> lastRaceMutableLiveData;
-    private final MutableLiveData<Result> weeklyRacesMutableLiveData;
-    private final BaseWeeklyRaceRemoteDataSource weeklyRaceRemoteDataSource;
-    private final long FRESH_TIMEOUT = 60000;
-    private Long nextRaceTime;
-    private Long lastRaceTime;
-    private Long weeklyRacesTime;
+    private static final long FRESH_TIMEOUT = 60000;
 
-    private WeeklyRaceRepository() {
-        this.nextRaceMutableLiveData = new MutableLiveData<>();
-        this.nextRaceTime = FRESH_TIMEOUT;
-        this.lastRaceMutableLiveData = new MutableLiveData<>();
-        this.lastRaceTime = FRESH_TIMEOUT;
-        this.weeklyRacesMutableLiveData = new MutableLiveData<>();
-        this.weeklyRacesTime = FRESH_TIMEOUT;
-        this.weeklyRaceRemoteDataSource = new WeeklyRaceRemoteDataSource();
+    // Cache
+    private final Map<String, MutableLiveData<Result>> raceCache;
+    private final Map<String, Long> lastUpdateTimestamps;
+
+    // Data sources
+    private final JolpicaWeeklyRaceDataSource weeklyRaceRemoteDataSource;
+    private final LocalWeeklyRaceDataSource localWeeklyRaceDataSource;
+
+    private WeeklyRaceRepository(AppRoomDatabase appRoomDatabase) {
+        this.raceCache = new HashMap<>();
+        this.lastUpdateTimestamps = new HashMap<>();
+        this.weeklyRaceRemoteDataSource = new JolpicaWeeklyRaceDataSource();
+        this.localWeeklyRaceDataSource = LocalWeeklyRaceDataSource.getInstance(appRoomDatabase);
+
+        // Initialize cache entries
+        raceCache.put("next", new MutableLiveData<>());
+        raceCache.put("last", new MutableLiveData<>());
+        raceCache.put("all", new MutableLiveData<>());
     }
 
-    public static WeeklyRaceRepository getInstance() {
+    public static WeeklyRaceRepository getInstance(AppRoomDatabase appRoomDatabase) {
         if (instance == null) {
-            instance = new WeeklyRaceRepository();
+            instance = new WeeklyRaceRepository(appRoomDatabase);
         }
         return instance;
     }
 
     public synchronized MutableLiveData<Result> fetchNextWeeklyRace() {
-        if (System.currentTimeMillis() - FRESH_TIMEOUT > nextRaceTime) {
-            nextRaceMutableLiveData.postValue(new Result.Loading("Loading next race"));
+        Log.d(TAG, "Fetching next weekly race");
+        if (!lastUpdateTimestamps.containsKey("next") ||
+                System.currentTimeMillis() - lastUpdateTimestamps.get("next") > FRESH_TIMEOUT) {
             loadNextRace();
+        } else {
+            Log.d(TAG, "Next race found in cache");
         }
-        return nextRaceMutableLiveData;
+        return raceCache.get("next");
     }
 
     private void loadNextRace() {
-        nextRaceMutableLiveData.postValue(new Result.Loading("Loading next race"));
+        raceCache.get("next").postValue(new Result.Loading("Loading next race"));
         try {
             weeklyRaceRemoteDataSource.getNextRace(new SingleWeeklyRaceCallback() {
-
                 @Override
                 public void onSuccess(WeeklyRace weeklyRace) {
-                    nextRaceTime = System.currentTimeMillis();
-                    nextRaceMutableLiveData.postValue(new Result.NextRaceSuccess(weeklyRace));
+                    Log.d(TAG, "Next race loaded from remote: " + weeklyRace);
+                    if (weeklyRace != null) {
+                        localWeeklyRaceDataSource.saveNextRace(weeklyRace);
+                        lastUpdateTimestamps.put("next", System.currentTimeMillis());
+                        Objects.requireNonNull(raceCache.get("next")).postValue(new Result.NextRaceSuccess(weeklyRace));
+                    } else {
+                        loadNextRaceFromLocal();
+                    }
                 }
 
                 @Override
                 public void onFailure(Exception exception) {
-                    nextRaceMutableLiveData.postValue(new Result.Error(exception.getMessage()));
+                    Log.e(TAG, "Error loading next race: " + exception.getMessage());
+                    loadNextRaceFromLocal();
                 }
             });
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            Log.e(TAG, "Error fetching next race: " + e.getMessage());
+            loadNextRaceFromLocal();
         }
     }
 
-    public synchronized MutableLiveData<Result> fetchLastWeeklyRace() {
-
-        if (System.currentTimeMillis() - FRESH_TIMEOUT > lastRaceTime) {
-            lastRaceMutableLiveData.postValue(new Result.Loading("Loading last race"));
-            loadLastRace();
-        }
-        return lastRaceMutableLiveData;
-    }
-
-    private void loadLastRace() {
-        lastRaceMutableLiveData.postValue(new Result.Loading("Loading last race"));
-        weeklyRaceRemoteDataSource.getLastRace(new SingleWeeklyRaceCallback() {
+    private void loadNextRaceFromLocal() {
+        localWeeklyRaceDataSource.getNextRace(new SingleWeeklyRaceCallback() {
             @Override
             public void onSuccess(WeeklyRace weeklyRace) {
-                lastRaceTime = System.currentTimeMillis();
-                lastRaceMutableLiveData.postValue(new Result.NextRaceSuccess(weeklyRace));
+                if (weeklyRace != null) {
+                    lastUpdateTimestamps.put("next", System.currentTimeMillis());
+                    Objects.requireNonNull(raceCache.get("next")).postValue(new Result.NextRaceSuccess(weeklyRace));
+                    Log.d(TAG, "Next race loaded from local cache");
+                } else {
+                    Objects.requireNonNull(raceCache.get("next")).postValue(new Result.Error("Race not found in cache"));
+                }
             }
 
             @Override
             public void onFailure(Exception exception) {
-                lastRaceMutableLiveData.postValue(new Result.Error(exception.getMessage()));
+                Objects.requireNonNull(raceCache.get("next")).postValue(new Result.Error(exception.getMessage()));
+            }
+        });
+    }
+
+    public synchronized MutableLiveData<Result> fetchLastWeeklyRace() {
+        Log.d(TAG, "Fetching last weekly race");
+        if (!lastUpdateTimestamps.containsKey("last") ||
+                System.currentTimeMillis() - lastUpdateTimestamps.get("last") > FRESH_TIMEOUT) {
+            loadLastRace();
+        } else {
+            Log.d(TAG, "Last race found in cache");
+        }
+        return raceCache.get("last");
+    }
+
+    private void loadLastRace() {
+        raceCache.get("last").postValue(new Result.Loading("Loading last race"));
+        weeklyRaceRemoteDataSource.getLastRace(new SingleWeeklyRaceCallback() {
+            @Override
+            public void onSuccess(WeeklyRace weeklyRace) {
+                if (weeklyRace != null) {
+                    localWeeklyRaceDataSource.saveLastRace(weeklyRace);
+                    lastUpdateTimestamps.put("last", System.currentTimeMillis());
+                    Objects.requireNonNull(raceCache.get("last")).postValue(new Result.NextRaceSuccess(weeklyRace));
+                } else {
+                    loadLastRaceFromLocal();
+                }
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                Log.e(TAG, "Error loading last race: " + exception.getMessage());
+                loadLastRaceFromLocal();
+            }
+        });
+    }
+
+    private void loadLastRaceFromLocal() {
+        localWeeklyRaceDataSource.getLastRace(new SingleWeeklyRaceCallback() {
+            @Override
+            public void onSuccess(WeeklyRace weeklyRace) {
+                if (weeklyRace != null) {
+                    lastUpdateTimestamps.put("last", System.currentTimeMillis());
+                    Objects.requireNonNull(raceCache.get("last")).postValue(new Result.NextRaceSuccess(weeklyRace));
+                    Log.d(TAG, "Last race loaded from local cache");
+                } else {
+                    Objects.requireNonNull(raceCache.get("last")).postValue(new Result.Error("Race not found in cache"));
+                }
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                Objects.requireNonNull(raceCache.get("last")).postValue(new Result.Error(exception.getMessage()));
             }
         });
     }
 
     public synchronized MutableLiveData<Result> fetchWeeklyRaces() {
-
-        if (System.currentTimeMillis() - FRESH_TIMEOUT > weeklyRacesTime) {
-            weeklyRacesMutableLiveData.postValue(new Result.Loading("Loading weekly races"));
+        Log.d(TAG, "Fetching all weekly races");
+        if (!lastUpdateTimestamps.containsKey("all") ||
+                System.currentTimeMillis() - lastUpdateTimestamps.get("all") > FRESH_TIMEOUT) {
             loadWeeklyRaces();
+        } else {
+            Log.d(TAG, "Weekly races found in cache");
         }
-        return weeklyRacesMutableLiveData;
+        return raceCache.get("all");
     }
 
     private void loadWeeklyRaces() {
-        weeklyRacesMutableLiveData.postValue(new Result.Loading("Loading weekly races"));
+        raceCache.get("all").postValue(new Result.Loading("Loading weekly races"));
         weeklyRaceRemoteDataSource.getWeeklyRaces(new WeeklyRacesCallback() {
-
             @Override
             public void onSuccess(List<WeeklyRace> weeklyRaces) {
-                weeklyRacesTime = System.currentTimeMillis();
-                weeklyRacesMutableLiveData.postValue(new Result.WeeklyRaceSuccess(weeklyRaces));
+                if (weeklyRaces != null && !weeklyRaces.isEmpty()) {
+                    localWeeklyRaceDataSource.saveWeeklyRaces(weeklyRaces);
+                    lastUpdateTimestamps.put("all", System.currentTimeMillis());
+                    Objects.requireNonNull(raceCache.get("all")).postValue(new Result.WeeklyRaceSuccess(weeklyRaces));
+                } else {
+                    loadWeeklyRacesFromLocal();
+                }
             }
 
             @Override
             public void onFailure(Exception exception) {
-                weeklyRacesMutableLiveData.postValue(new Result.Error(exception.getMessage()));
+                Log.e(TAG, "Error loading weekly races: " + exception.getMessage());
+                loadWeeklyRacesFromLocal();
+            }
+        });
+    }
+
+    private void loadWeeklyRacesFromLocal() {
+        localWeeklyRaceDataSource.getWeeklyRaces(new WeeklyRacesCallback() {
+            @Override
+            public void onSuccess(List<WeeklyRace> weeklyRaces) {
+                if (weeklyRaces != null && !weeklyRaces.isEmpty()) {
+                    lastUpdateTimestamps.put("all", System.currentTimeMillis());
+                    Objects.requireNonNull(raceCache.get("all")).postValue(new Result.WeeklyRaceSuccess(weeklyRaces));
+                    Log.d(TAG, "Weekly races loaded from local cache");
+                } else {
+                    Objects.requireNonNull(raceCache.get("all")).postValue(new Result.Error("Weekly races not found in cache"));
+                }
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                Objects.requireNonNull(raceCache.get("all")).postValue(new Result.Error(exception.getMessage()));
             }
         });
     }

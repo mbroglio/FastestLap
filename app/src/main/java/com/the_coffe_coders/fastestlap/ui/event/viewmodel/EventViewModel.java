@@ -7,8 +7,6 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResultFastestLap;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
-import com.the_coffe_coders.fastestlap.repository.result.ResultRepository;
-import com.the_coffe_coders.fastestlap.repository.weeklyrace.WeeklyRaceRepository;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -24,18 +22,6 @@ public class EventViewModel extends ViewModel {
     private static final String TAG = EventViewModel.class.getSimpleName();
 
     public EventViewModel() {
-    }
-
-    /*public MutableLiveData<Result> getAllResults(int numberOfRaces) {
-        return ResultRepository.getInstance().fetchAllRaceResults(numberOfRaces);
-    }
-
-    public MutableLiveData<Result> getRaceResults(String raceId) {
-        return ResultRepository.getInstance().fetchResults(raceId);
-    }*/
-
-    public MutableLiveData<Result> getWeeklyRacesLiveData() {
-        return WeeklyRaceRepository.getInstance().fetchWeeklyRaces();
     }
 
     public List<WeeklyRace> extractUpcomingRaces(List<WeeklyRace> races) {
