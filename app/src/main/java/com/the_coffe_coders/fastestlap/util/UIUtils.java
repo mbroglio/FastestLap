@@ -405,8 +405,8 @@ public class UIUtils {
                 break;
             case 2:
                 intent = new Intent(context, TrackBioActivity.class);
-                String circuitId = id.split("_")[0];
-                String grandPrixName = id.split("_")[1];
+                String circuitId = id.split("&")[0];
+                String grandPrixName = id.split("&")[1];
 
                 intent.putExtra("CIRCUIT_ID", circuitId);
                 intent.putExtra("GRAND_PRIX_NAME", grandPrixName);
