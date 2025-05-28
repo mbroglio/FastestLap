@@ -94,7 +94,8 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
     }
 
     private void generatePodium(@NonNull PastEventsRecyclerAdapter.PastEventViewHolder holder, Race race, int position) {
-        if (race.getResults() == null) {
+        
+        if (race.getResults() == null || race.getResults().isEmpty()) {
             setPendingPodium(holder);
         } else {
             for (int i = 0; i < 3; i++) {

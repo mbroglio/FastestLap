@@ -99,10 +99,17 @@ public class JolpicaRaceResultDataSource implements RaceResultDataSource {
 
     public void fetchRaceResult(int raceNumber, int currentRetry,
                                 AtomicInteger successCount, AtomicInteger failureCount,
-                                int totalRaces, RaceResultCallback callback) {
+                                int totalRaces, RaceResultCallback callback, boolean isAPIRetry) {
         Log.d(TAG, String.format("Fetching results for race %d (attempt %d)",
                 raceNumber, currentRetry + 1));
-        Call<ResponseBody> responseCall = ergastAPIService.getRaceResults(raceNumber);
+        Call<ResponseBody> responseCall;
+        Log.i(TAG, "isAPIRetry: " + isAPIRetry);
+
+        if(isAPIRetry){
+            responseCall = ergastAPIService.getJustFinishedRace(raceNumber);
+        }else{
+            responseCall = ergastAPIService.getRaceResults(raceNumber);
+        }
 
         responseCall.enqueue(new Callback<>() {
             @Override
@@ -111,7 +118,7 @@ public class JolpicaRaceResultDataSource implements RaceResultDataSource {
                 if (response.isSuccessful() && body != null) {
                     try {
                         String responseString = body.string();
-                        processRaceResult(responseString, raceNumber, callback);
+                        processRaceResult(responseString, raceNumber, callback, currentRetry, successCount, failureCount, totalRaces);
 
                         int completed = successCount.incrementAndGet();
                         checkAllRequestsCompleted(completed, failureCount.get(), totalRaces);
@@ -136,7 +143,8 @@ public class JolpicaRaceResultDataSource implements RaceResultDataSource {
         });
     }
 
-    private void processRaceResult(String responseString, int raceNumber, RaceResultCallback callback) {
+    private void processRaceResult(String responseString, int raceNumber, RaceResultCallback callback, int currentRetry,
+                                   AtomicInteger successCount, AtomicInteger failureCount, int totalRaces) {
         try {
             JsonObject jsonResponse = new Gson().fromJson(responseString, JsonObject.class);
 
@@ -155,6 +163,12 @@ public class JolpicaRaceResultDataSource implements RaceResultDataSource {
             JSONParserUtils jsonParserUtils = new JSONParserUtils();
             RaceResultsAPIResponse raceResultsAPIResponse = jsonParserUtils.parseRaceResults(mrdata);
 
+            if(raceResultsAPIResponse.getFinalRace() == null){
+                Log.w(TAG, "Current API returned null, trying backup API");
+                fetchRaceResult(raceNumber, currentRetry, successCount, failureCount, totalRaces, callback, true);
+                return;
+            }
+
             Log.d(TAG, "Successfully processed race " + raceNumber);
             callback.onSuccess(RaceMapper.toRace(raceResultsAPIResponse.getFinalRace()));
         } catch (Exception e) {
@@ -171,7 +185,7 @@ public class JolpicaRaceResultDataSource implements RaceResultDataSource {
 
             new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() ->
                     fetchRaceResult(raceNumber, currentRetry + 1,
-                            successCount, failureCount, totalRaces, callback), RETRY_DELAY_MS);
+                            successCount, failureCount, totalRaces, callback, false), RETRY_DELAY_MS);
         } else {
             handleFailure(raceNumber, error, callback);
             checkAllRequestsCompleted(successCount.get(),

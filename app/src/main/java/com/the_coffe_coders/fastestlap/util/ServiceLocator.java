@@ -163,6 +163,16 @@ public class ServiceLocator {
 
                 return retrofit.create(ErgastAPIService.class).getConstructor(constructorId);
             }
+
+            @Override
+            public Call<ResponseBody> getJustFinishedRace(int round) {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build();
+
+                return retrofit.create(ErgastAPIService.class).getJustFinishedRace(round);
+            }
         };
     }
 

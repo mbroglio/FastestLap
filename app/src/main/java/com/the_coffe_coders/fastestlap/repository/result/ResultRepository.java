@@ -116,7 +116,7 @@ public class ResultRepository {
         AtomicInteger failureCount = new AtomicInteger(0);
 
         for (int i = 1; i <= numberOfRaces; i++) {
-            jolpicaRaceResultDataSource.fetchRaceResult(i, 0, successCount, failureCount, numberOfRaces, callback);
+            jolpicaRaceResultDataSource.fetchRaceResult(i, 0, successCount, failureCount, numberOfRaces, callback, false);
         }
     }
 
