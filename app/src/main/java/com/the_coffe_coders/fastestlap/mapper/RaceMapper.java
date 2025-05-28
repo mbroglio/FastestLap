@@ -14,8 +14,12 @@ public class RaceMapper {
         race.setStartDateTime(raceDTO.getDate(), raceDTO.getTime());
         race.setEndDateTime();
         race.setTrack(TrackMapper.toTrack(raceDTO.getCircuit()));
-        for (ResultDTO resultDTO : raceDTO.getResults()) {
-            race.addResult(SessionMapper.toResult(resultDTO));
+        if (raceDTO.getResults() != null && !raceDTO.getResults().isEmpty()) {
+            for (ResultDTO resultDTO : raceDTO.getResults()) {
+                race.addResult(SessionMapper.toResult(resultDTO));
+            }
+        }else{
+            raceDTO.setResults(null);
         }
         return race;
     }

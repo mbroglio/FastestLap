@@ -26,7 +26,6 @@ public class LocalDriverStandingsDataSource implements DriverStandingDataSource 
     @Override
     public void getDriverStandings(DriverStandingCallback callback) {
         Log.d(TAG, "Fetching driver standings from local database");
-        // TODO: Check if the cast is right
         DriverStandings standings = driverStandingsDAO.get();
         if (standings != null) {
             callback.onDriverLoaded(standings);

@@ -39,4 +39,7 @@ public interface ErgastAPIService {
 
     @GET("constructors/{constructorId}")
     Call<ResponseBody> getConstructor(@Path("constructorId") String constructorId);
+
+    @GET("{round}/?format=json")
+    Call<ResponseBody> getJustFinishedRace(@Path("round") int round);
 }

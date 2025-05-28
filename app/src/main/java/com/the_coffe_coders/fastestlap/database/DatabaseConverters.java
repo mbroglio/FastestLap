@@ -30,7 +30,7 @@ import java.util.List;
 
 public class DatabaseConverters {
 
-    public static Gson gson = new Gson();//TODO MOVE TO SERVICE LOCATOR
+    public static Gson gson = new Gson();
 
     //Driver Standings Element List
     @TypeConverter

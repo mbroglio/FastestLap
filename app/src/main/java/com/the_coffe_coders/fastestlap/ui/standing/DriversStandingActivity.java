@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
-import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
@@ -16,10 +15,8 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.DriversStandingRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
-import com.the_coffe_coders.fastestlap.repository.driver.JolpicaDriverRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
@@ -87,7 +84,7 @@ public class DriversStandingActivity extends AppCompatActivity {
     }
 
     private void setupPage() {
-        MutableLiveData<Result> livedata = driverStandingsViewModel.getDriverStandingsLiveData();//TODO get last update from shared preferences
+        MutableLiveData<Result> livedata = driverStandingsViewModel.getDriverStandingsLiveData();
 
         livedata.observe(this, result -> {
             if (result instanceof Result.Loading) {
@@ -106,36 +103,12 @@ public class DriversStandingActivity extends AppCompatActivity {
                     RecyclerView driversStandingRecyclerView = findViewById(R.id.drivers_standing_recycler_view);
                     driversStandingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-                    if (driverList.isEmpty()) {
-                        Log.i(TAG, "DRIVER STANDINGS EMPTY");
-                        MutableLiveData<Result> drivers = fetchDriversList();
-                        drivers.observe(this, driverResult -> {
-                            if (driverResult instanceof Result.Loading) {
-                                return;
-                            }
-                            if (driverResult.isSuccess()) {
-                                List<Driver> driverList2 = ((Result.DriversSuccess) driverResult).getData();
+                    DriversStandingRecyclerAdapter driversStandingAdapter = new DriversStandingRecyclerAdapter(this, driverList, null, driverId, driverViewModel, constructorViewModel, this, loadingScreen);
+                    driversStandingRecyclerView.setAdapter(driversStandingAdapter);
 
-                                DriversStandingRecyclerAdapter driversStandingAdapter = new DriversStandingRecyclerAdapter(this, null, driverList2, driverId, driverViewModel, constructorViewModel, this, loadingScreen);
-                                driversStandingRecyclerView.setAdapter(driversStandingAdapter);
-
-                                for (int i = 0; i < driversStandingAdapter.getItemCount(); i++) {
-                                    driversStandingAdapter.onBindViewHolder(
-                                            driversStandingAdapter.createViewHolder(driversStandingRecyclerView, driversStandingAdapter.getItemViewType(i)), i);
-                                }
-                            }
-                        });
-
-                    } else {
-                        Log.i(TAG, "DRIVER STANDINGS NOT EMPTY");
-
-                        DriversStandingRecyclerAdapter driversStandingAdapter = new DriversStandingRecyclerAdapter(this, driverList, null, driverId, driverViewModel, constructorViewModel, this, loadingScreen);
-                        driversStandingRecyclerView.setAdapter(driversStandingAdapter);
-
-                        for (int i = 0; i < driversStandingAdapter.getItemCount(); i++) {
-                            driversStandingAdapter.onBindViewHolder(
-                                    driversStandingAdapter.createViewHolder(driversStandingRecyclerView, driversStandingAdapter.getItemViewType(i)), i);
-                        }
+                    for (int i = 0; i < driversStandingAdapter.getItemCount(); i++) {
+                        driversStandingAdapter.onBindViewHolder(
+                                driversStandingAdapter.createViewHolder(driversStandingRecyclerView, driversStandingAdapter.getItemViewType(i)), i);
                     }
                 }
             } else {
@@ -144,12 +117,4 @@ public class DriversStandingActivity extends AppCompatActivity {
             }
         });
     }
-
-    private MutableLiveData<Result> fetchDriversList() {
-        MutableLiveData<Result> drivers = new MutableLiveData<>();
-        JolpicaDriverRepository driverRepository = new JolpicaDriverRepository();
-        driverRepository.getDrivers().thenAccept(drivers::postValue);
-        return drivers;
-    }
-
 }
