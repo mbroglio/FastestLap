@@ -57,6 +57,8 @@ public class LocalWeeklyRaceDataSource {
     public void saveWeeklyRaces(List<WeeklyRace> weeklyRaces) {
         Log.d(TAG, "Saving weekly races to local database. Count: " + weeklyRaces.size());
         try {
+            weeklyRaceClassicDao.deleteAll();
+            weeklyRaceSprintDao.deleteAll();
             for (WeeklyRace weeklyRace : weeklyRaces) {
                 if (weeklyRace instanceof WeeklyRaceClassic) {
                     weeklyRaceClassicDao.insert((WeeklyRaceClassic) weeklyRace);
@@ -67,34 +69,6 @@ public class LocalWeeklyRaceDataSource {
             Log.d(TAG, "Weekly races successfully saved to local database");
         } catch (Exception e) {
             Log.e(TAG, "Error saving weekly races to database: " + e.getMessage());
-        }
-    }
-
-    public void saveNextRace(WeeklyRace weeklyRace) {
-        Log.d(TAG, "Saving next weekly race to local database");
-        try {
-            if (weeklyRace instanceof WeeklyRaceClassic) {
-                weeklyRaceClassicDao.insert((WeeklyRaceClassic) weeklyRace);
-            } else if (weeklyRace instanceof WeeklyRaceSprint) {
-                weeklyRaceSprintDao.insert((WeeklyRaceSprint) weeklyRace);
-            }
-            Log.d(TAG, "Next weekly race successfully saved to local database");
-        } catch (Exception e) {
-            Log.e(TAG, "Error saving next weekly race to database: " + e.getMessage());
-        }
-    }
-
-    public void saveLastRace(WeeklyRace weeklyRace) {
-        Log.d(TAG, "Saving last weekly race to local database");
-        try {
-            if (weeklyRace instanceof WeeklyRaceClassic) {
-                weeklyRaceClassicDao.insert((WeeklyRaceClassic) weeklyRace);
-            } else if (weeklyRace instanceof WeeklyRaceSprint) {
-                weeklyRaceSprintDao.insert((WeeklyRaceSprint) weeklyRace);
-            }
-            Log.d(TAG, "Last weekly race successfully saved to local database");
-        } catch (Exception e) {
-            Log.e(TAG, "Error saving last weekly race to database: " + e.getMessage());
         }
     }
 

@@ -19,4 +19,10 @@ public interface WeeklyRaceSprintDAO {
 
     @Query("SELECT * FROM WeeklyRaceSprint")
     List<WeeklyRaceSprint> getAllRaces();
+
+    @Query("DELETE FROM WeeklyRaceSprint")
+    void deleteAll();
+
+    @Query("DELETE FROM WeeklyRaceSprint WHERE round LIKE :round")
+    void delete(String round);
 }

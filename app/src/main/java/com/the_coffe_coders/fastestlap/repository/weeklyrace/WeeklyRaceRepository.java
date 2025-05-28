@@ -18,7 +18,7 @@ import java.util.Objects;
 public class WeeklyRaceRepository {
     private static final String TAG = "WeeklyRaceRepository";
     private static WeeklyRaceRepository instance;
-    private static final long FRESH_TIMEOUT = 60000;
+    private static final long FRESH_TIMEOUT = 10000;
 
     // Cache
     private final Map<String, MutableLiveData<Result>> raceCache;
@@ -66,7 +66,6 @@ public class WeeklyRaceRepository {
                 public void onSuccess(WeeklyRace weeklyRace) {
                     Log.d(TAG, "Next race loaded from remote: " + weeklyRace);
                     if (weeklyRace != null) {
-                        localWeeklyRaceDataSource.saveNextRace(weeklyRace);
                         lastUpdateTimestamps.put("next", System.currentTimeMillis());
                         Objects.requireNonNull(raceCache.get("next")).postValue(new Result.NextRaceSuccess(weeklyRace));
                     } else {
@@ -123,7 +122,6 @@ public class WeeklyRaceRepository {
             @Override
             public void onSuccess(WeeklyRace weeklyRace) {
                 if (weeklyRace != null) {
-                    localWeeklyRaceDataSource.saveLastRace(weeklyRace);
                     lastUpdateTimestamps.put("last", System.currentTimeMillis());
                     Objects.requireNonNull(raceCache.get("last")).postValue(new Result.NextRaceSuccess(weeklyRace));
                 } else {
@@ -164,6 +162,7 @@ public class WeeklyRaceRepository {
         if (!lastUpdateTimestamps.containsKey("all") ||
                 System.currentTimeMillis() - lastUpdateTimestamps.get("all") > FRESH_TIMEOUT) {
             loadWeeklyRaces();
+            //loadWeeklyRacesFromLocal();
         } else {
             Log.d(TAG, "Weekly races found in cache");
         }
@@ -193,6 +192,7 @@ public class WeeklyRaceRepository {
     }
 
     private void loadWeeklyRacesFromLocal() {
+        raceCache.get("all").postValue(new Result.Loading("Loading weekly races"));
         localWeeklyRaceDataSource.getWeeklyRaces(new WeeklyRacesCallback() {
             @Override
             public void onSuccess(List<WeeklyRace> weeklyRaces) {

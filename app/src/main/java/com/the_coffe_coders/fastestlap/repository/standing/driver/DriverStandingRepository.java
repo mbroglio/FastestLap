@@ -49,7 +49,7 @@ public class DriverStandingRepository {
                 lastUpdateTimestamps.get(cacheKey) == null) {
             driverStandingCache.put(cacheKey, new MutableLiveData<>());
             loadDriverStanding();
-        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(cacheKey) > 60000) {
+        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(cacheKey) > 6000) {
             loadDriverStanding();
         } else {
             Log.d(TAG, "Driver standing found in cache");

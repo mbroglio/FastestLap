@@ -40,4 +40,9 @@ public class WeeklyRaceSprint extends WeeklyRace {
 
         return sessions;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o);
+    }
 }

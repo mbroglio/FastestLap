@@ -17,6 +17,12 @@ public interface WeeklyRaceClassicDAO {
     @Query("SELECT * FROM WeeklyRaceClassic WHERE uid = :id")
     WeeklyRaceClassic getRaceById(int id);
 
-    @Query("SELECT * FROM WeeklyRaceClassic")
+    @Query("SELECT DISTINCT * FROM WeeklyRaceClassic")
     List<WeeklyRaceClassic> getAllRaces();
+
+    @Query("DELETE FROM WeeklyRaceClassic")
+    void deleteAll();
+
+    @Query("DELETE FROM WeeklyRaceClassic WHERE round LIKE :round")
+    void delete(String round);
 }
