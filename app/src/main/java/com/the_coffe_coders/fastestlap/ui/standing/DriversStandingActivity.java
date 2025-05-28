@@ -84,7 +84,7 @@ public class DriversStandingActivity extends AppCompatActivity {
     }
 
     private void setupPage() {
-        MutableLiveData<Result> livedata = driverStandingsViewModel.getDriverStandingsLiveData();//TODO get last update from shared preferences
+        MutableLiveData<Result> livedata = driverStandingsViewModel.getDriverStandingsLiveData();
 
         livedata.observe(this, result -> {
             if (result instanceof Result.Loading) {

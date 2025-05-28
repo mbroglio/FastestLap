@@ -36,7 +36,7 @@ public class Race extends Session implements Parcelable {
         }
     };
     public List<RaceResult> raceResults;
-    public LocalDateTime dateTime;//TODO REMOVE ?
+    public LocalDateTime dateTime;
     @PrimaryKey(autoGenerate = true)
     private int uid;
     private String season;

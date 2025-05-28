@@ -112,7 +112,6 @@ public class EventActivity extends AppCompatActivity {
                 Log.i("PastEvent", "SUCCESS");
                 races.addAll(((Result.WeeklyRaceSuccess) result).getData());
 
-                // Extract in another class
                 WeeklyRace weeklyRace = null;
                 for (WeeklyRace race : races) {
                     if (race.getTrack().getTrackId().equals(trackId)) {

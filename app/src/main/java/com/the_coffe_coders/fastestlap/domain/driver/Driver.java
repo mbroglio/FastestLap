@@ -46,11 +46,11 @@ public class Driver implements Parcelable {
     private String driverId; // A
     private String permanentNumber; // A
     private String code; // A
-    private String url; // TODO: Remove DTO
+    private String url;
     private String givenName; // F/A
     private String familyName; // F/A
     private String dateOfBirth; // F/A
-    private String nationality; // TODO: Remove DTO
+    private String nationality;
     // Bio Data
     private String best_result; // F
     private String birth_place; // F
