@@ -2,6 +2,7 @@ package com.the_coffe_coders.fastestlap.repository.weeklyrace;
 
 import android.util.Log;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
@@ -20,7 +21,7 @@ public class WeeklyRaceRepository {
     private static WeeklyRaceRepository instance;
     private static final long FRESH_TIMEOUT = 10000;
 
-    // Cache
+    // Cache - MutableLiveData private per modifiche interne
     private final Map<String, MutableLiveData<Result>> raceCache;
     private final Map<String, Long> lastUpdateTimestamps;
 
@@ -47,7 +48,8 @@ public class WeeklyRaceRepository {
         return instance;
     }
 
-    public synchronized MutableLiveData<Result> fetchNextWeeklyRace() {
+    // Metodi pubblici che restituiscono LiveData immutabili
+    public synchronized LiveData<Result> fetchNextWeeklyRace() {
         Log.d(TAG, "Fetching next weekly race");
         if (!lastUpdateTimestamps.containsKey("next") ||
                 System.currentTimeMillis() - lastUpdateTimestamps.get("next") > FRESH_TIMEOUT) {
@@ -56,6 +58,28 @@ public class WeeklyRaceRepository {
             Log.d(TAG, "Next race found in cache");
         }
         return raceCache.get("next");
+    }
+
+    public synchronized LiveData<Result> fetchLastWeeklyRace() {
+        Log.d(TAG, "Fetching last weekly race");
+        if (!lastUpdateTimestamps.containsKey("last") ||
+                System.currentTimeMillis() - lastUpdateTimestamps.get("last") > FRESH_TIMEOUT) {
+            loadLastRace();
+        } else {
+            Log.d(TAG, "Last race found in cache");
+        }
+        return raceCache.get("last");
+    }
+
+    public synchronized LiveData<Result> fetchWeeklyRaces() {
+        Log.d(TAG, "Fetching all weekly races");
+        if (!lastUpdateTimestamps.containsKey("all") ||
+                System.currentTimeMillis() - lastUpdateTimestamps.get("all") > FRESH_TIMEOUT) {
+            loadWeeklyRaces();
+        } else {
+            Log.d(TAG, "Weekly races found in cache");
+        }
+        return raceCache.get("all");
     }
 
     private void loadNextRace() {
@@ -105,17 +129,6 @@ public class WeeklyRaceRepository {
         });
     }
 
-    public synchronized MutableLiveData<Result> fetchLastWeeklyRace() {
-        Log.d(TAG, "Fetching last weekly race");
-        if (!lastUpdateTimestamps.containsKey("last") ||
-                System.currentTimeMillis() - lastUpdateTimestamps.get("last") > FRESH_TIMEOUT) {
-            loadLastRace();
-        } else {
-            Log.d(TAG, "Last race found in cache");
-        }
-        return raceCache.get("last");
-    }
-
     private void loadLastRace() {
         raceCache.get("last").postValue(new Result.Loading("Loading last race"));
         weeklyRaceRemoteDataSource.getLastRace(new SingleWeeklyRaceCallback() {
@@ -155,18 +168,6 @@ public class WeeklyRaceRepository {
                 Objects.requireNonNull(raceCache.get("last")).postValue(new Result.Error(exception.getMessage()));
             }
         });
-    }
-
-    public synchronized MutableLiveData<Result> fetchWeeklyRaces() {
-        Log.d(TAG, "Fetching all weekly races");
-        if (!lastUpdateTimestamps.containsKey("all") ||
-                System.currentTimeMillis() - lastUpdateTimestamps.get("all") > FRESH_TIMEOUT) {
-            loadWeeklyRaces();
-            //loadWeeklyRacesFromLocal();
-        } else {
-            Log.d(TAG, "Weekly races found in cache");
-        }
-        return raceCache.get("all");
     }
 
     private void loadWeeklyRaces() {

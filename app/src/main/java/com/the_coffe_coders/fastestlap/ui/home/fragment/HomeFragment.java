@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -164,7 +165,7 @@ public class HomeFragment extends Fragment {
     private void setLastRaceCard(View view) {
         loadingScreen.updateProgress();
 
-        MutableLiveData<Result> lastRace = weeklyRaceViewModel.getLastRace();
+        LiveData<Result> lastRace = weeklyRaceViewModel.getLastRace();
         lastRace.observe(getViewLifecycleOwner(), result -> {
             try {
                 if (result instanceof Result.Loading) {
@@ -293,7 +294,7 @@ public class HomeFragment extends Fragment {
     private void setNextSessionCard(View view) {
         loadingScreen.updateProgress();
 
-        MutableLiveData<Result> nextRaceLiveData = weeklyRaceViewModel.getNextRaceLiveData();
+        LiveData<Result> nextRaceLiveData = weeklyRaceViewModel.getNextRaceLiveData();
         try {
             nextRaceLiveData.observe(getViewLifecycleOwner(), result -> {
 

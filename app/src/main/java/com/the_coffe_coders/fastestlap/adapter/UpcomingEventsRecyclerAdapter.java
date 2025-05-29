@@ -57,6 +57,46 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
         WeeklyRace weeklyRace = races.get(position);
         Log.i("UpcomingEventsAdapter", "onBindViewHolder: " + weeklyRace);
 
+        // Imposta subito i dati che non dipendono dal track
+        setupEventCardIcon(weeklyRace, holder);
+
+        // Imposta i dati di base che sono già disponibili
+        holder.roundTextView.setText(context.getString(R.string.round_upper_case_plus_value, weeklyRace.getRound()));
+        holder.gpTextView.setText(weeklyRace.getRaceName());
+        holder.dateTextView.setText(weeklyRace.getFirstPractice().getStartDateTime().getDayOfMonth() + " - " + weeklyRace.getDateTime().getDayOfMonth());
+        UIUtils.translateMonth(weeklyRace.getDateTime().getMonth().toString().substring(0, 3).toUpperCase(),
+                holder.monthTextView, true);
+
+        trackViewModel.getTrack(weeklyRace.getTrack().getTrackId()).observe(lifecycleOwner, result -> {
+            if (result instanceof Result.Loading) {
+                return;
+            }
+            if (result.isSuccess()) {
+                Track track = ((Result.TrackSuccess) result).getData();
+
+                // Carica l'immagine solo se il track è disponibile
+                UIUtils.loadImageWithGlide(context, track.getTrack_minimal_layout_url(), holder.trackOutline, () -> {
+                    loadingScreen.updateProgress();
+                    Log.i("UpcomingEventsAdapter", "Image loaded for position: " + position);
+                    loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);
+                });
+
+                holder.upcomingEventCard.setOnClickListener(v ->
+                        UIUtils.navigateToEventPage(context, weeklyRace.getTrack().getTrackId()));
+            } else {
+                // Gestisci il caso di errore
+                Log.e("UpcomingEventsAdapter", "Failed to load track for position: " + position);
+                loadingScreen.updateProgress();
+                loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);
+            }
+        });
+    }
+
+    //@Override
+    public void onBindViewHolder2(@NonNull UpcomingEventsRecyclerAdapter.UpcomingEventViewHolder holder, int position) {
+        WeeklyRace weeklyRace = races.get(position);
+        Log.i("UpcomingEventsAdapter", "onBindViewHolder: " + weeklyRace);
+
         trackViewModel.getTrack(weeklyRace.getTrack().getTrackId()).observe(lifecycleOwner, result -> {
             if (result instanceof Result.Loading) {
                 return;

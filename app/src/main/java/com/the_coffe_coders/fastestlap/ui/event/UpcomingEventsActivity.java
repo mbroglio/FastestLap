@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -73,7 +74,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     private void processEvents() {
         Log.i("UpcomingEvents", "Process Event");
 
-        MutableLiveData<Result> data = weeklyRaceViewModel.getWeeklyRacesLiveData();
+        LiveData<Result> data = weeklyRaceViewModel.getWeeklyRacesLiveData();
         data.observe(this, result -> {
             if (result instanceof Result.Loading) {
                 return;

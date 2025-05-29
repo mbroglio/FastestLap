@@ -14,6 +14,7 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -103,7 +104,7 @@ public class EventActivity extends AppCompatActivity {
 
     private void processRaceData() {
         List<WeeklyRace> races = new ArrayList<>();
-        MutableLiveData<Result> data = weeklyRaceViewModel.getWeeklyRacesLiveData();
+        LiveData<Result> data = weeklyRaceViewModel.getWeeklyRacesLiveData();
         data.observe(this, result -> {
             if (result instanceof Result.Loading) {
                 return;

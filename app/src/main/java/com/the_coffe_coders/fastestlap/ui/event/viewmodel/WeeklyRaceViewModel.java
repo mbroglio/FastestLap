@@ -1,5 +1,6 @@
 package com.the_coffe_coders.fastestlap.ui.event.viewmodel;
 
+import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -15,15 +16,15 @@ public class WeeklyRaceViewModel extends ViewModel {
         this.weeklyRaceRepository = weeklyRaceRepository;
     }
 
-    public MutableLiveData<Result> getLastRace() {
+    public LiveData<Result> getLastRace() {
         return weeklyRaceRepository.fetchLastWeeklyRace();
     }
 
-    public MutableLiveData<Result> getNextRaceLiveData() {
+    public LiveData<Result> getNextRaceLiveData() {
         return weeklyRaceRepository.fetchNextWeeklyRace();
     }
 
-    public MutableLiveData<Result> getWeeklyRacesLiveData() {
+    public LiveData<Result> getWeeklyRacesLiveData() {
         return weeklyRaceRepository.fetchWeeklyRaces();
     }
 }
