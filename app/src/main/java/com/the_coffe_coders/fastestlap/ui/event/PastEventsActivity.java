@@ -50,7 +50,6 @@ public class PastEventsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_past_events);
 
         start();
-
     }
 
     private void start() {
@@ -92,8 +91,17 @@ public class PastEventsActivity extends AppCompatActivity {
                 MutableLiveData<Result> data = raceResultViewModel.getAllRaceResults(totalRaces);
                 data.observe(this, result -> {
                     Log.i("PastEvent", "observed");
+                    if(result instanceof Result.Loading) {
+                        return;
+                    }
                     if (result.isSuccess()) {
                         List<Race> races = ((Result.RaceSuccess) result).getData();
+                        Log.i("PastEvent", "SUCCESS");
+                        int x = 1;
+                        for (Race r: races) {
+                            Log.i("PastEventDEBUG "+ x, r.toString());
+                            x++;
+                        }
                         races.sort(Comparator.comparingInt(Race::getRoundAsInt));
                         Collections.reverse(races);
 
@@ -101,11 +109,6 @@ public class PastEventsActivity extends AppCompatActivity {
                         pastEventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
                         PastEventsRecyclerAdapter pastEventsAdapter = new PastEventsRecyclerAdapter(this, races, trackViewModel, this, loadingScreen);
                         pastEventsRecyclerView.setAdapter(pastEventsAdapter);
-
-                        for (int i = 0; i < pastEventsAdapter.getItemCount(); i++) {
-                            pastEventsAdapter.onBindViewHolder(
-                                    pastEventsAdapter.createViewHolder(pastEventsRecyclerView, pastEventsAdapter.getItemViewType(i)), i);
-                        }
                     } else {
                         loadingScreen.hideLoadingScreen();
                     }

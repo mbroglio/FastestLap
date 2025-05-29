@@ -53,11 +53,27 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
 
     @Override
     public void onBindViewHolder(@NonNull PastEventsRecyclerAdapter.PastEventViewHolder holder, int position) {
-
         Race race = races.get(position);
-
         Log.i("PastEventsAdapter", "onBindViewHolder: " + race);
 
+        // Imposta subito i dati di base che sono già disponibili
+        LocalDateTime raceDateTime = race.getStartDateTime();
+        UIUtils.multipleSetTextViewText(
+                new String[]{raceDateTime.getDayOfMonth() + "", raceDateTime.getMonth().toString().substring(0, 3)},
+                new TextView[]{holder.pastDateTextView, holder.pastMonthTextView});
+
+        UIUtils.multipleSetTextViewText(
+                new String[]{
+                        context.getString(R.string.round_upper_case_plus_value, race.getRound()),
+                        race.getRaceName()},
+                new TextView[]{
+                        holder.pastRoundTextView,
+                        holder.pastGPTextView});
+
+        // Prepara il podium subito
+        generatePodium(holder, race, position);
+
+        // Carica il track in modo asincrono
         trackViewModel.getTrack(race.getTrack().getTrackId()).observe(lifecycleOwner, result -> {
             if (result instanceof Result.Loading) {
                 return;
@@ -66,39 +82,29 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
             if (result.isSuccess()) {
                 Track track = ((Result.TrackSuccess) result).getData();
 
-                LocalDateTime raceDateTime = race.getStartDateTime();
-
-                UIUtils.multipleSetTextViewText(
-                        new String[]{raceDateTime.getDayOfMonth() + "", raceDateTime.getMonth().toString().substring(0, 3)},
-
-                        new TextView[]{holder.pastDateTextView, holder.pastMonthTextView});
-
+                // Carica l'immagine del circuito
                 UIUtils.loadImageWithGlide(context, track.getTrack_minimal_layout_url(), holder.trackOutline, () -> {
-
-                    UIUtils.multipleSetTextViewText(
-                            new String[]{
-                                    context.getString(R.string.round_upper_case_plus_value, race.getRound()),
-                                    race.getRaceName()},
-
-                            new TextView[]{
-                                    holder.pastRoundTextView,
-                                    holder.pastGPTextView});
-
-                    generatePodium(holder, race, position);
-
-                    holder.pastEventCard.setOnClickListener(v ->
-                            UIUtils.navigateToEventPage(context, race.getTrack().getTrackId()));
+                    // Callback quando l'immagine è caricata
+                    Log.i("PastEventsAdapter", "Image loaded for position: " + position);
                 });
+
+                // Imposta il click listener
+                holder.pastEventCard.setOnClickListener(v ->
+                        UIUtils.navigateToEventPage(context, race.getTrack().getTrackId()));
+
+            } else {
+                // Gestisci il caso di errore nel caricamento del track
+                Log.e("PastEventsAdapter", "Failed to load track for position: " + position);
             }
         });
     }
 
     private void generatePodium(@NonNull PastEventsRecyclerAdapter.PastEventViewHolder holder, Race race, int position) {
-        
+
         if (race.getResults() == null || race.getResults().isEmpty()) {
             setPendingPodium(holder);
         } else {
-            for (int i = 0; i < 3; i++) {
+            for (int i = 0; i < 3 && i < race.getResults().size(); i++) {
                 RaceResult raceResult = race.getResults().get(i);
                 UIUtils.singleSetTextViewText(
                         raceResult.getDriver().getFullName(),
@@ -107,7 +113,6 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
         }
 
         loadingScreen.updateProgress();
-
         Log.i("PastEventsAdapter", "onBindViewHolder: " + position + " / " + getItemCount());
         loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);
     }
@@ -132,7 +137,6 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
         MaterialCardView pastEventCard;
         TextView pastDateTextView, pastMonthTextView, pastRoundTextView, pastGPTextView;
         ImageView trackOutline;
-
 
         public PastEventViewHolder(@NonNull View itemView) {
             super(itemView);
