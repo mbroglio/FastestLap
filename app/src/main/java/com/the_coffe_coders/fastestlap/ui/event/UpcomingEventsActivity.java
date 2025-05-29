@@ -81,6 +81,11 @@ public class UpcomingEventsActivity extends AppCompatActivity {
             if (result.isSuccess()) {
                 List<WeeklyRace> races = ((Result.WeeklyRaceSuccess) result).getData();
                 Log.i("UpcomingEvents", "SUCCESS");
+                int x = 1;
+                for (WeeklyRace w: races) {
+                    Log.i("UpcomingEventsDEBUG "+ x, w.toString());
+                    x++;
+                }
 
                 List<WeeklyRace> upcomingRaces = eventViewModel.extractUpcomingRaces(races);
 
