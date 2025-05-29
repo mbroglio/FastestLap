@@ -28,6 +28,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.os.LocaleListCompat;
@@ -139,7 +140,6 @@ public class UIUtils {
                             if (onSuccess != null) {
                                 onSuccess.run();
                             }
-
                         }
 
                         @Override
@@ -156,20 +156,14 @@ public class UIUtils {
                                 new Handler(Looper.getMainLooper()).post(() -> loadImage(context, url, imageView, onSuccess, retryCount + 1));
                             } else {
                                 Log.e("Glide", "Max retry count reached for image: " + url);
-                                imageView.setImageDrawable(null);
-
-                                if (onSuccess != null) {
-                                    onSuccess.run();
-                                }
+                                manageContentLoadError(imageView, null, context, onSuccess, 0);
                             }
                         }
+
                     });
         } else {
             Log.e("Glide", "URL is null");
-            imageView.setImageDrawable(null);
-            if (onSuccess != null) {
-                onSuccess.run();
-            }
+            manageContentLoadError(imageView, null, context, onSuccess, 0);
         }
     }
 
@@ -231,25 +225,40 @@ public class UIUtils {
 
                         @Override
                         public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                            Log.e("Glide", "Image loading failed: " + url);
+                            Log.w("Glide", "Image loading failed: " + url);
                             if (retryCount <= Constants.MAX_RETRY_COUNT) {
                                 Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
                                 new Handler(Looper.getMainLooper()).post(() -> loadImageAlpha(context, url, card, onSuccess, alpha, retryCount + 1));
                             } else {
                                 Log.e("Glide", "Max retry count reached for image: " + url);
-                                card.setBackgroundColor(context.getColor(R.color.screen_background_color));
-                                if (onSuccess != null) {
-                                    onSuccess.run();
-                                }
+                                manageContentLoadError(null, card, context, onSuccess, 1);
                             }
                         }
                     });
         } else {
             Log.e("Glide", "URL is null");
-            card.setBackgroundColor(context.getColor(R.color.screen_background_color));
-            if (onSuccess != null) {
-                onSuccess.run();
-            }
+            manageContentLoadError(null, card, context, onSuccess, 1);
+        }
+    }
+
+    private static void manageContentLoadError(ImageView imageView, LinearLayout layout, Context context, Runnable onSuccess, int contentType) {
+        switch (contentType) {
+            case 0: // Image
+                Log.e("Glide", "Image loading failed, setting backup image");
+                Drawable errorImage = AppCompatResources.getDrawable(context, R.drawable.content_not_found_icon);
+                imageView.setImageDrawable(errorImage);
+                imageView.setScaleType(ImageView.ScaleType.CENTER);
+                break;
+            case 1: // Layout
+                Log.e("UIUtils", "Layout loading failed, setting backup background");
+                layout.setBackgroundColor(context.getColor(R.color.timer_gray));
+                break;
+            default:
+                Log.e("UIUtils", "Unknown content type for error handling");
+        }
+
+        if (onSuccess != null) {
+            onSuccess.run();
         }
     }
 
