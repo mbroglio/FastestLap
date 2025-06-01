@@ -36,9 +36,9 @@
             android:layout_marginEnd="@dimen/medium_margin"
             android:hint="@string/email"
             android:textColorHint="@color/black"
-            app:boxStrokeErrorColor="@color/ferrari_f1"
+            app:boxStrokeErrorColor="@color/ferrari_secondary"
             app:cursorColor="@color/black"
-            app:cursorErrorColor="@color/ferrari_f1"
+            app:cursorErrorColor="@color/ferrari_secondary"
             app:startIconDrawable="@drawable/email_icon"
             app:startIconTint="@color/black">
 
@@ -65,9 +65,9 @@
             android:layout_marginEnd="@dimen/medium_margin"
             android:hint="@string/password"
             android:textColorHint="@color/black"
-            app:boxStrokeErrorColor="@color/ferrari_f1"
+            app:boxStrokeErrorColor="@color/ferrari_secondary"
             app:cursorColor="@color/black"
-            app:cursorErrorColor="@color/ferrari_f1"
+            app:cursorErrorColor="@color/ferrari_secondary"
             app:endIconMode="password_toggle"
             app:endIconTint="@color/black"
             app:startIconDrawable="@drawable/password_icon"

@@ -8,7 +8,7 @@
         android:id="@+id/live_session"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        app:cardBackgroundColor="@color/ferrari_f1"
+        app:cardBackgroundColor="@color/ferrari_secondary"
         app:cardCornerRadius="10dp"
         app:cardElevation="5dp"
         app:strokeColor="@color/black"

@@ -56,9 +56,9 @@
             android:background="@drawable/very_round_background"
             android:hint="@string/email"
             android:textColorHint="@color/black"
-            app:boxStrokeErrorColor="@color/ferrari_f1"
+            app:boxStrokeErrorColor="@color/ferrari_secondary"
             app:cursorColor="@color/black"
-            app:cursorErrorColor="@color/ferrari_f1"
+            app:cursorErrorColor="@color/ferrari_secondary"
             app:startIconDrawable="@drawable/email_icon"
             app:startIconTint="@color/black">
 
@@ -85,9 +85,9 @@
             android:background="@drawable/very_round_background"
             android:hint="@string/password"
             android:textColorHint="@color/black"
-            app:boxStrokeErrorColor="@color/ferrari_f1"
+            app:boxStrokeErrorColor="@color/ferrari_secondary"
             app:cursorColor="@color/black"
-            app:cursorErrorColor="@color/ferrari_f1"
+            app:cursorErrorColor="@color/ferrari_secondary"
             app:endIconMode="password_toggle"
             app:endIconTint="@color/black"
             app:startIconDrawable="@drawable/password_icon"
@@ -115,7 +115,7 @@
             android:fontFamily="@font/orbitron_bold"
             android:gravity="start|center"
             android:text="@string/missing_password"
-            android:textColor="@color/ferrari_f1"
+            android:textColor="@color/ferrari_secondary"
             android:textSize="@dimen/layout_subtitle_text_size"
             app:rippleColor="@android:color/transparent" />
 

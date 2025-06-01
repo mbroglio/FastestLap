@@ -102,8 +102,8 @@
                         android:layout_marginStart="15dp"
                         android:layout_marginTop="15dp"
                         android:layout_marginEnd="15dp"
-                        app:cardBackgroundColor="@color/ferrari_f1"
-                        app:strokeColor="@color/ferrari_f1"
+                        app:cardBackgroundColor="@color/ferrari_secondary"
+                        app:strokeColor="@color/ferrari_secondary"
                         app:strokeWidth="5dp">
 
                         <LinearLayout
@@ -419,7 +419,7 @@
                             android:layout_centerInParent="true"
                             android:fontFamily="@font/orbitron_bold"
                             android:text="@string/fastest_lap"
-                            android:textColor="@color/ferrari_f1"
+                            android:textColor="@color/ferrari_secondary"
                             android:textSize="@dimen/layout_subtitle_text_size">
 
                         </TextView>

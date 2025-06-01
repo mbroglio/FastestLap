@@ -47,6 +47,7 @@
                 android:focusable="true"
                 app:cardCornerRadius="40dp"
                 app:strokeColor="@color/black"
+                app:cardBackgroundColor="@color/timer_gray"
                 app:strokeWidth="5dp">
 
                 <LinearLayout
@@ -56,7 +57,7 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scaleType="fitXY"
+                        android:layout_margin="20dp"
                         app:srcCompat="@drawable/driver_card" />
 
                 </LinearLayout>
@@ -83,6 +84,7 @@
                 android:focusable="true"
                 app:cardCornerRadius="40dp"
                 app:strokeColor="@color/black"
+                app:cardBackgroundColor="@color/timer_gray"
                 app:strokeWidth="5dp">
 
                 <LinearLayout
@@ -92,8 +94,8 @@
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scaleType="fitXY"
-                        app:srcCompat="@drawable/constructor_card" />
+                        android:layout_margin="10dp"
+                        app:srcCompat="@drawable/racing" />
 
                 </LinearLayout>
 

@@ -45,7 +45,7 @@
                 android:layout_margin="20dp"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardBackgroundColor="@color/white"
+                app:cardBackgroundColor="@color/timer_gray"
                 app:cardCornerRadius="40dp"
                 app:strokeColor="@color/black"
                 app:strokeWidth="5dp">
@@ -78,7 +78,7 @@
                 android:layout_margin="20dp"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardBackgroundColor="@color/white"
+                app:cardBackgroundColor="@color/timer_gray"
                 app:cardCornerRadius="40dp"
                 app:strokeColor="@color/black"
                 app:strokeWidth="5dp">

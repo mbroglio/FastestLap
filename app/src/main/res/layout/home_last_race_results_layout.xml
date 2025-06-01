@@ -238,7 +238,7 @@
             android:layout_marginBottom="5dp"
             android:clickable="true"
             android:focusable="true"
-            app:cardBackgroundColor="@color/ferrari_f1"
+            app:cardBackgroundColor="@color/ferrari_secondary"
             app:strokeColor="@color/black"
             app:strokeWidth="3dp">
 
