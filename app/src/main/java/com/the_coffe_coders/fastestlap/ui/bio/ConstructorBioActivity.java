@@ -11,7 +11,6 @@ import android.widget.TableLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
@@ -291,7 +290,6 @@ public class ConstructorBioActivity extends AppCompatActivity {
         LayoutInflater inflater = LayoutInflater.from(this);
 
         if (constructor.getTeam_history() != null) {
-
             View tableHeader = inflater.inflate(R.layout.constructor_bio_table_header, tableLayout, false);
             TableLayout.LayoutParams paramsHeader = (TableLayout.LayoutParams) tableHeader.getLayoutParams();
             paramsHeader.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
@@ -320,7 +318,6 @@ public class ConstructorBioActivity extends AppCompatActivity {
                                 tableRow.findViewById(R.id.team_wins),
                                 tableRow.findViewById(R.id.team_podiums)}
                 );
-
 
                 TableLayout.LayoutParams tableParams = (TableLayout.LayoutParams) tableRow.getLayoutParams();
                 tableParams.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
