@@ -291,15 +291,24 @@ public class EventActivity extends AppCompatActivity {
 
         MutableLiveData<Result> resultMutableLiveData = raceResultViewModel.getRaceResults(weeklyRace.getRound());
         resultMutableLiveData.observe(this, result -> {
+            try{
+                ((Result.LastRaceResultsSuccess) result).getData();
+            } catch (Exception e) {
+                showPendingResults();
+            }
+
             if (result instanceof Result.Loading) {
                 return;
             }
+
             Race race = ((Result.LastRaceResultsSuccess) result).getData();
+            Log.i(TAG, "race: " + race);
             List<RaceResult> podium = race.getRaceResults();
-            if (podium == null) {
+            Log.i(TAG, "podium: " + race.getRaceResults());
+
+            if (podium == null || podium.isEmpty()) {
                 showPendingResults();
             } else {
-                // Store the race for later use
                 this.currentRace = race;
 
                 Log.i(TAG, "Podium found" + podium.size());
@@ -318,6 +327,8 @@ public class EventActivity extends AppCompatActivity {
                 resultsView.setOnClickListener(v -> showRaceResultsDialog(currentRace));
             }
         });
+
+
     }
 
     private void showPendingResults() {
