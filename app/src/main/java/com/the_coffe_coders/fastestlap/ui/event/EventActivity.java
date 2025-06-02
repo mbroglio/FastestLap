@@ -291,40 +291,37 @@ public class EventActivity extends AppCompatActivity {
 
         MutableLiveData<Result> resultMutableLiveData = raceResultViewModel.getRaceResults(weeklyRace.getRound());
         resultMutableLiveData.observe(this, result -> {
-            try{
-                ((Result.LastRaceResultsSuccess) result).getData();
-            } catch (Exception e) {
-                showPendingResults();
-            }
-
             if (result instanceof Result.Loading) {
                 return;
             }
 
-            Race race = ((Result.LastRaceResultsSuccess) result).getData();
-            Log.i(TAG, "race: " + race);
-            List<RaceResult> podium = race.getRaceResults();
-            Log.i(TAG, "podium: " + race.getRaceResults());
+            try{
+                Race race = ((Result.LastRaceResultsSuccess) result).getData();
+                List<RaceResult> podium = race.getRaceResults();
 
-            if (podium == null || podium.isEmpty()) {
-                showPendingResults();
-            } else {
-                this.currentRace = race;
+                if (podium == null || podium.isEmpty()) {
+                    showPendingResults();
+                } else {
+                    this.currentRace = race;
 
-                Log.i(TAG, "Podium found" + podium.size());
-                for (int i = 0; i < 3; i++) {
-                    String teamId = podium.get(i).getConstructor().getConstructorId();
+                    Log.i(TAG, "Podium found" + podium.size());
+                    for (int i = 0; i < 3; i++) {
+                        String teamId = podium.get(i).getConstructor().getConstructorId();
 
-                    UIUtils.singleSetTextViewText(podium.get(i).getDriver().getFullName(),
-                            findViewById(Constants.PODIUM_DRIVER_NAME.get(i)));
+                        UIUtils.singleSetTextViewText(podium.get(i).getDriver().getFullName(),
+                                findViewById(Constants.PODIUM_DRIVER_NAME.get(i)));
 
-                    LinearLayout teamColor = findViewById(Constants.PODIUM_TEAM_COLOR.get(i));
-                    Integer teamColorObj = Constants.TEAM_COLOR.get(teamId);
-                    teamColor.setBackgroundColor(ContextCompat.getColor(this, Objects.requireNonNullElseGet(teamColorObj, () -> R.color.mercedes_f1)));
+                        LinearLayout teamColor = findViewById(Constants.PODIUM_TEAM_COLOR.get(i));
+                        Integer teamColorObj = Constants.TEAM_COLOR.get(teamId);
+                        teamColor.setBackgroundColor(ContextCompat.getColor(this, Objects.requireNonNullElseGet(teamColorObj, () -> R.color.mercedes_f1)));
+                    }
+
+                    View resultsView = findViewById(R.id.timer_card_results);
+                    resultsView.setOnClickListener(v -> showRaceResultsDialog(currentRace));
                 }
-
-                View resultsView = findViewById(R.id.timer_card_results);
-                resultsView.setOnClickListener(v -> showRaceResultsDialog(currentRace));
+            } catch (Exception e) {
+                Log.i(TAG, "catch");
+                showPendingResults();
             }
         });
 
