@@ -21,7 +21,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class ServiceLocator {
-
     public static final String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
     public static ServiceLocator instance;
     public static String currentYear = "2025";
@@ -40,6 +39,14 @@ public class ServiceLocator {
     }
 
     public ErgastAPIService getConcreteErgastAPIService() {
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(loggingInterceptor)
+                .addInterceptor(new RetryInterceptor())
+                .build();
+
         return new ErgastAPIService() {
 
             @Override
@@ -47,6 +54,7 @@ public class ServiceLocator {
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(CURRENT_YEAR_BASE_URL)
                         .addConverterFactory(ScalarsConverterFactory.create())
+                        .client(okHttpClient)
                         .build();
 
                 return retrofit.create(ErgastAPIService.class).getConstructorStandings();
@@ -54,14 +62,6 @@ public class ServiceLocator {
 
             @Override
             public Call<ResponseBody> getDriverStandings() {
-                HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
-                loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-                // Build an OkHttpClient with the logging interceptor
-                OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                        .addInterceptor(loggingInterceptor)
-                        .build();
-
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(CURRENT_YEAR_BASE_URL)
                         .addConverterFactory(GsonConverterFactory.create())
@@ -76,6 +76,7 @@ public class ServiceLocator {
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(CURRENT_YEAR_BASE_URL)
                         .addConverterFactory(GsonConverterFactory.create())
+                        .client(okHttpClient)
                         .build();
 
                 return retrofit.create(ErgastAPIService.class).getRaces();
@@ -86,6 +87,7 @@ public class ServiceLocator {
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(CURRENT_YEAR_BASE_URL)
                         .addConverterFactory(ScalarsConverterFactory.create())
+                        .client(okHttpClient)
                         .build();
                 return retrofit.create(ErgastAPIService.class).getResults();
             }
@@ -95,6 +97,7 @@ public class ServiceLocator {
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(CURRENT_YEAR_BASE_URL)
                         .addConverterFactory(ScalarsConverterFactory.create())
+                        .client(okHttpClient)
                         .build();
 
                 return retrofit.create(ErgastAPIService.class).getLastRaceResults();
@@ -102,10 +105,10 @@ public class ServiceLocator {
 
             @Override
             public Call<ResponseBody> getLastRace() {
-
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(CURRENT_YEAR_BASE_URL)
                         .addConverterFactory(ScalarsConverterFactory.create())
+                        .client(okHttpClient)
                         .build();
 
                 return retrofit.create(ErgastAPIService.class).getLastRace();
@@ -116,6 +119,7 @@ public class ServiceLocator {
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(CURRENT_YEAR_BASE_URL)
                         .addConverterFactory(ScalarsConverterFactory.create())
+                        .client(okHttpClient)
                         .build();
 
                 return retrofit.create(ErgastAPIService.class).getRaceResults(round);
@@ -128,6 +132,7 @@ public class ServiceLocator {
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(CURRENT_YEAR_BASE_URL)
                         .addConverterFactory(ScalarsConverterFactory.create())
+                        .client(okHttpClient)
                         .build();
 
                 return retrofit.create(ErgastAPIService.class).getNextRace();
@@ -139,6 +144,7 @@ public class ServiceLocator {
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(CURRENT_YEAR_BASE_URL)
                         .addConverterFactory(ScalarsConverterFactory.create())
+                        .client(okHttpClient)
                         .build();
 
                 return retrofit.create(ErgastAPIService.class).getDriver(driverId);
@@ -149,6 +155,7 @@ public class ServiceLocator {
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(CURRENT_YEAR_BASE_URL)
                         .addConverterFactory(ScalarsConverterFactory.create())
+                        .client(okHttpClient)
                         .build();
 
                 return retrofit.create(ErgastAPIService.class).getDrivers();
@@ -159,6 +166,7 @@ public class ServiceLocator {
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(CURRENT_YEAR_BASE_URL)
                         .addConverterFactory(ScalarsConverterFactory.create())
+                        .client(okHttpClient)
                         .build();
 
                 return retrofit.create(ErgastAPIService.class).getConstructor(constructorId);
@@ -169,6 +177,7 @@ public class ServiceLocator {
                 Retrofit retrofit = new Retrofit.Builder()
                         .baseUrl(CURRENT_YEAR_BASE_URL)
                         .addConverterFactory(ScalarsConverterFactory.create())
+                        .client(okHttpClient)
                         .build();
 
                 return retrofit.create(ErgastAPIService.class).getJustFinishedRace(round);

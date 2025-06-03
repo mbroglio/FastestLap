@@ -13,14 +13,10 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
@@ -79,23 +75,14 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
             if (emailEditText.getText() != null && isEmailOk(emailEditText.getText().toString())) {
                 if (passwordEditText.getText() != null && isPasswordOk(passwordEditText.getText().toString())) {
                     mAuth.signInWithEmailAndPassword(emailEditText.getText().toString(), passwordEditText.getText().toString())
-                            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-
-                                        userViewModel.getUserPreferences(userViewModel.getLoggedUser().getIdToken());
-
-                                        Log.d(TAG, "signInWithEmail:success");
-                                        UIUtils.navigateToHomePage(WelcomeActivity.this);
-
-                                    } else {
-                                        // If sign in fails, display a message to the user.
-                                        Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                        Toast.makeText(WelcomeActivity.this, "Authentication failed.",
-                                                Toast.LENGTH_SHORT).show();
-                                    }
+                            .addOnCompleteListener(this, task -> {
+                                if (task.isSuccessful()) {
+                                    Log.d(TAG, "signInWithEmail:success");
+                                    UIUtils.navigateToHomePage(WelcomeActivity.this);
+                                } else {
+                                    Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                    Toast.makeText(WelcomeActivity.this, "Authentication failed.",
+                                            Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }
