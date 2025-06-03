@@ -15,10 +15,6 @@ public class RaceResultViewModel extends ViewModel {
         this.resultRepository = resultRepository;
     }
 
-    public MutableLiveData<Result> getAllRaceResults(int numberOfRaces) {
-        return resultRepository.fetchAllRaceResults(numberOfRaces);
-    }
-
     public MutableLiveData<Result> getRaceResults(String raceId) {
         return resultRepository.fetchResults(raceId);
     }
