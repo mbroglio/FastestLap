@@ -296,7 +296,7 @@ public class EventActivity extends AppCompatActivity {
             }
 
             try{
-                Race race = ((Result.LastRaceResultsSuccess) result).getData();
+                Race race = ((Result.RaceResultsSuccess) result).getData();
                 List<RaceResult> podium = race.getRaceResults();
 
                 if (podium == null || podium.isEmpty()) {

@@ -19,7 +19,7 @@ import java.util.Objects;
 public class WeeklyRaceRepository {
     private static final String TAG = "WeeklyRaceRepository";
     private static WeeklyRaceRepository instance;
-    private static final long FRESH_TIMEOUT = 10000;
+    private static final long FRESH_TIMEOUT = 60000;
 
     // Cache - MutableLiveData private per modifiche interne
     private final Map<String, MutableLiveData<Result>> raceCache;

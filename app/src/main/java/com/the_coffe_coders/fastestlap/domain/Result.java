@@ -114,30 +114,6 @@ public abstract class Result {
         }
     }
 
-    public static final class RacesResultSuccess extends Result {
-        private final List<RaceResult> raceResultList;
-
-        public RacesResultSuccess(List<RaceResult> raceResultList) {
-            this.raceResultList = raceResultList;
-        }
-
-        public List<RaceResult> getData() {
-            return raceResultList;
-        }
-    }
-
-    public static final class RaceSuccess extends Result {
-        private final List<Race> raceList;
-
-        public RaceSuccess(List<Race> raceList) {
-            this.raceList = raceList;
-        }
-
-        public List<Race> getData() {
-            return raceList;
-        }
-    }
-
     public static final class WeeklyRaceSuccess extends Result {
         private final List<WeeklyRace> weeklyRaceList;
 
@@ -172,10 +148,10 @@ public abstract class Result {
 
     }
 
-    public static class LastRaceResultsSuccess extends Result {
+    public static class RaceResultsSuccess extends Result {
         private final Race race;
 
-        public LastRaceResultsSuccess(Race race) {
+        public RaceResultsSuccess(Race race) {
             this.race = race;
         }
 

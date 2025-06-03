@@ -10,12 +10,9 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.source.result.JolpicaRaceResultDataSource;
 import com.the_coffe_coders.fastestlap.source.result.LocalRaceResultDataSource;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class ResultRepository {
     private static final String TAG = "ResultRepository";
@@ -59,9 +56,9 @@ public class ResultRepository {
             @Override
             public void onSuccess(Race race) {
                 if (race != null) {
-                    resultsCache.put(round, new MutableLiveData<>(new Result.LastRaceResultsSuccess(race)));
+                    resultsCache.put(round, new MutableLiveData<>(new Result.RaceResultsSuccess(race)));
                     lastUpdateTimestamps.put(round, System.currentTimeMillis());
-                    Objects.requireNonNull(resultsCache.get(round)).postValue(new Result.LastRaceResultsSuccess(race));
+                    Objects.requireNonNull(resultsCache.get(round)).postValue(new Result.RaceResultsSuccess(race));
                     Log.d(TAG, "Results loaded from local cache for round: " + race);
                 } else {
                     Log.e(TAG, "Results not found in local cache for round: " + round);
@@ -86,7 +83,7 @@ public class ResultRepository {
                     if (race != null) {
                         localRaceResultDataSource.insertRaceResults(race);
                         lastUpdateTimestamps.put(round, System.currentTimeMillis());
-                        Objects.requireNonNull(resultsCache.get(round)).postValue(new Result.LastRaceResultsSuccess(race));
+                        Objects.requireNonNull(resultsCache.get(round)).postValue(new Result.RaceResultsSuccess(race));
                     } else {
                         Log.e(TAG, "Results not found in cache for round: " + round);
                         loadResultsFromLocal(round);

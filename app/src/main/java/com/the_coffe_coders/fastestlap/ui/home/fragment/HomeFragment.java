@@ -53,7 +53,6 @@ import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
-import com.the_coffe_coders.fastestlap.ui.welcome.WelcomeActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
@@ -271,7 +270,7 @@ public class HomeFragment extends Fragment {
                     return;
                 }
                 if (result.isSuccess()) {
-                    List<RaceResult> raceResults = ((Result.LastRaceResultsSuccess) result).getData().getResults();
+                    List<RaceResult> raceResults = ((Result.RaceResultsSuccess) result).getData().getResults();
                     setDriverNames(view, raceResults);
                 } else {
                     throw new Exception("Failed to fetch race results: " + result.getError());

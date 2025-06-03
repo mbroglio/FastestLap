@@ -191,7 +191,7 @@ public class PastEventsActivity extends AppCompatActivity {
             }
 
             if (result.isSuccess()) {
-                Race race = ((Result.LastRaceResultsSuccess) result).getData();
+                Race race = ((Result.RaceResultsSuccess) result).getData();
                 Log.i("PastEvent", "Successfully loaded race: " + race.toString());
 
                 // Verifica che la gara non sia già presente nella lista
