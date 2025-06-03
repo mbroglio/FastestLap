@@ -13,14 +13,10 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
@@ -82,24 +78,7 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
                             .addOnCompleteListener(this, task -> {
                                 if (task.isSuccessful()) {
                                     Log.d(TAG, "signInWithEmail:success");
-
-                                    // Carica le preferenze e osserva il risultato
-                                    userViewModel.getUserPreferences(userViewModel.getLoggedUser().getIdToken())
-                                            .observe(this, result -> {
-                                                // Questo viene chiamato quando il caricamento è completato
-                                                if (result != null) {
-                                                    if (result.isSuccess()) {
-                                                        Log.d(TAG, "User preferences loaded successfully");
-                                                    } else {
-                                                        Log.e(TAG, "Failed to load user preferences: " + result.getError());
-                                                    }
-
-                                                    // Naviga alla home page sia in caso di successo che di errore
-                                                    // Le preferenze sono state tentate di caricare
-                                                    UIUtils.navigateToHomePage(WelcomeActivity.this);
-                                                }
-                                            });
-
+                                    UIUtils.navigateToHomePage(WelcomeActivity.this);
                                 } else {
                                     Log.w(TAG, "signInWithEmail:failure", task.getException());
                                     Toast.makeText(WelcomeActivity.this, "Authentication failed.",

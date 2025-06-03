@@ -53,6 +53,7 @@ import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
+import com.the_coffe_coders.fastestlap.ui.welcome.WelcomeActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
@@ -118,13 +119,13 @@ public class HomeFragment extends Fragment {
         homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(requireActivity().getApplication())).get(HomeViewModel.class);
         constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
         driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(requireActivity().getApplication())).get(DriverViewModel.class);
-        trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(getActivity().getApplication())).get(TrackViewModel.class);
-        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(getActivity().getApplication())).get(NationViewModel.class);
+        trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(requireActivity().getApplication())).get(TrackViewModel.class);
+        nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(requireActivity().getApplication())).get(NationViewModel.class);
         sharedPreferencesUtils = new SharedPreferencesUtils(this.getContext());
-        raceResultViewModel = new ViewModelProvider(this, new RaceResultViewModelFactory(getActivity().getApplication())).get(RaceResultViewModel.class);
-        weeklyRaceViewModel = new ViewModelProvider(this, new WeeklyRaceViewModelFactory(getActivity().getApplication())).get(WeeklyRaceViewModel.class);
-        IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getActivity().getApplication());
-        UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+        raceResultViewModel = new ViewModelProvider(this, new RaceResultViewModelFactory(requireActivity().getApplication())).get(RaceResultViewModel.class);
+        weeklyRaceViewModel = new ViewModelProvider(this, new WeeklyRaceViewModelFactory(requireActivity().getApplication())).get(WeeklyRaceViewModel.class);
+        IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(requireActivity().getApplication());
+        userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
     }
 
     private void setupLoadingScreen(View view) {
@@ -137,9 +138,19 @@ public class HomeFragment extends Fragment {
         setRefreshLayout(view);
         setLastRaceCard(view);
         setNextSessionCard(view);
-        setFavouriteDriverCard(view);
-        setFavouriteConstructorCard(view);
-        //refreshUI();
+        userViewModel.getUserPreferences(userViewModel.getLoggedUser().getIdToken()).observe(getViewLifecycleOwner(), result -> {
+            if (result != null) {
+                if (result.isSuccess()) {
+                    Log.d(TAG, "User preferences loaded successfully");
+                } else {
+                    Log.e(TAG, "Failed to load user preferences: " + result.getError());
+                }
+
+                setFavouriteDriverCard(view);
+                setFavouriteConstructorCard(view);
+                //refreshUI();
+            }
+        });
     }
 
     private void refreshUI() {
