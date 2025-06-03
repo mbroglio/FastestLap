@@ -104,7 +104,7 @@ public class UserViewModel extends ViewModel {
                 Constants.SHARED_PREFERENCES_FILENAME,
                 Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
 
-        if (driverId == null || driverId.isEmpty()) {
+        if (driverId == null || driverId.isEmpty() || driverId.equals("null")) {
             // Not found in SharedPreferences, try to fetch from remote DB
             User loggedUser = getLoggedUser();
             if (loggedUser != null && loggedUser.getIdToken() != null) {
@@ -136,7 +136,7 @@ public class UserViewModel extends ViewModel {
                 Constants.SHARED_PREFERENCES_FILENAME,
                 Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
 
-        if (teamId == null || teamId.isEmpty()) {
+        if (teamId == null || teamId.isEmpty() || teamId.equals("null")) {
             // Not found in SharedPreferences, try to fetch from remote DB
             User loggedUser = getLoggedUser();
             if (loggedUser != null && loggedUser.getIdToken() != null) {

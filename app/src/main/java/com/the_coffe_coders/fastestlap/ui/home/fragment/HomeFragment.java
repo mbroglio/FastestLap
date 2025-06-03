@@ -78,6 +78,7 @@ public class HomeFragment extends Fragment {
     private NationViewModel nationViewModel;
     private RaceResultViewModel raceResultViewModel;
     private WeeklyRaceViewModel weeklyRaceViewModel;
+    private UserViewModel userViewModel;
     private boolean hasReloaded = false;
     private View view;
 
@@ -120,9 +121,10 @@ public class HomeFragment extends Fragment {
         trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(getActivity().getApplication())).get(TrackViewModel.class);
         nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(getActivity().getApplication())).get(NationViewModel.class);
         sharedPreferencesUtils = new SharedPreferencesUtils(this.getContext());
-        IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getActivity().getApplication());
         raceResultViewModel = new ViewModelProvider(this, new RaceResultViewModelFactory(getActivity().getApplication())).get(RaceResultViewModel.class);
         weeklyRaceViewModel = new ViewModelProvider(this, new WeeklyRaceViewModelFactory(getActivity().getApplication())).get(WeeklyRaceViewModel.class);
+        IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getActivity().getApplication());
+        UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
     }
 
     private void setupLoadingScreen(View view) {
@@ -137,6 +139,26 @@ public class HomeFragment extends Fragment {
         setNextSessionCard(view);
         setFavouriteDriverCard(view);
         setFavouriteConstructorCard(view);
+        //refreshUI();
+    }
+
+    private void refreshUI() {
+        // Brutally reloads twice the fragment
+        if (!hasReloaded) {
+            Intent intent = new Intent(getActivity(), getActivity().getClass());
+            intent.putExtra("CALLER", "HomeFragment");
+            startActivity(intent);
+
+            // Remove animations
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION);
+            requireActivity().getWindow().setWindowAnimations(0);
+
+            startActivity(intent);
+            requireActivity().overridePendingTransition(0, 0);
+        } else {
+            loadingScreen.hideLoadingScreen();
+        }
     }
 
     private void setRefreshLayout(View view) {
@@ -215,11 +237,8 @@ public class HomeFragment extends Fragment {
     private void updateLastRaceUI(View view, WeeklyRace race, Track track) {
         loadingScreen.updateProgress();
         try {
-
             UIUtils.singleSetTextViewText(race.getRaceName(), view.findViewById(R.id.last_race_name));
-
             UIUtils.loadImageWithGlide(requireContext(), track.getTrack_minimal_layout_url(), view.findViewById(R.id.last_race_track_outline), () -> updateLastRaceUIFinalStep(race, view));
-
         } catch (Exception e) {
             Log.e(TAG, "Error updating last race UI: " + e.getMessage());
             loadPendingResultsLayout(view);
@@ -241,26 +260,8 @@ public class HomeFragment extends Fragment {
                     return;
                 }
                 if (result.isSuccess()) {
-
                     List<RaceResult> raceResults = ((Result.LastRaceResultsSuccess) result).getData().getResults();
                     setDriverNames(view, raceResults);
-
-                    // Brutally reloads twice the fragment
-                    if (!hasReloaded) {
-                        Intent intent = new Intent(getActivity(), getActivity().getClass());
-                        intent.putExtra("CALLER", "HomeFragment");
-                        startActivity(intent);
-
-                        // Remove animations
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_USER_ACTION);
-                        requireActivity().getWindow().setWindowAnimations(0);
-
-                        startActivity(intent);
-                        requireActivity().overridePendingTransition(0, 0);
-                    } else {
-                        loadingScreen.hideLoadingScreen();
-                    }
                 } else {
                     throw new Exception("Failed to fetch race results: " + result.getError());
                 }
@@ -272,7 +273,6 @@ public class HomeFragment extends Fragment {
         MaterialCardView resultCard = view.findViewById(R.id.past_event_result);
         resultCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), EventActivity.class).putExtra("CIRCUIT_ID", race.getTrack().getTrackId())));
     }
-
 
     private void setDriverNames(View view, List<RaceResult> raceResults) {
         loadingScreen.updateProgress();
@@ -571,6 +571,7 @@ public class HomeFragment extends Fragment {
                     if (favouriteDriver == null) {
                         showSelectFavouriteDriver(view);
                     } else {
+                        Log.e(TAG, "Fetching driver data card");
                         fetchDriverDataForCard(view, favoriteDriverId, favouriteDriver);
                     }
                 } else {
@@ -595,6 +596,7 @@ public class HomeFragment extends Fragment {
                 if (driverResult.isSuccess()) {
                     Driver driver = ((Result.DriverSuccess) driverResult).getData();
                     favouriteDriver.setDriver(driver);
+                    Log.e(TAG, "Fetching nation data for driver card");
                     fetchNationForDriver(view, favouriteDriver);
                 } else {
                     throw new Exception("Failed to fetch driver data: " + driverResult.getError());
@@ -618,6 +620,7 @@ public class HomeFragment extends Fragment {
                 }
                 if (nationResult.isSuccess()) {
                     Nation nation = ((Result.NationSuccess) nationResult).getData();
+                    Log.e(TAG, "Building driver card");
                     buildDriverCard(view, favouriteDriver, nation);
                 } else {
                     throw new Exception("Failed to fetch nation data: " + nationResult.getError());
@@ -636,7 +639,6 @@ public class HomeFragment extends Fragment {
             Driver driver = standingElement.getDriver();
 
             UIUtils.multipleSetTextViewText(new String[]{driver.getGivenName() + " " + driver.getFamilyName(), nation.getAbbreviation()},
-
                     new TextView[]{view.findViewById(R.id.favourite_driver_name), view.findViewById(R.id.favourite_driver_nationality)});
 
             ImageView driverFlag = view.findViewById(R.id.favourite_driver_flag);
@@ -644,7 +646,6 @@ public class HomeFragment extends Fragment {
             driverImage.setOnClickListener(v -> UIUtils.navigateToBioPage(getContext(), driver.getDriverId(), 1));
 
             UIUtils.loadSequenceOfImagesWithGlide(requireContext(), new String[]{nation.getNation_flag_url(), driver.getDriver_pic_url()}, new ImageView[]{driverFlag, driverImage}, () -> buildDriverCardFinalStep(standingElement, view, driver));
-
         } catch (Exception e) {
             Log.e(TAG, "Error building driver card: " + e.getMessage());
             showDriverNotFound(view);
@@ -655,9 +656,7 @@ public class HomeFragment extends Fragment {
         loadingScreen.updateProgress();
 
         if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
-
             UIUtils.multipleSetTextViewText(new String[]{standingElement.getPosition(), standingElement.getPoints()},
-
                     new TextView[]{view.findViewById(R.id.favourite_driver_position), view.findViewById(R.id.favourite_driver_points)});
 
             MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
@@ -666,6 +665,10 @@ public class HomeFragment extends Fragment {
             MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
             driverRank.setClickable(false);
         }
+
+        Log.e(TAG, "Driver card built successfully");
+        view.findViewById(R.id.pending_favorite_driver).setVisibility(View.GONE);
+        view.findViewById(R.id.favorite_driver).setVisibility(View.VISIBLE);
     }
 
     private void setFavouriteConstructorCard(View view) {
@@ -673,6 +676,7 @@ public class HomeFragment extends Fragment {
 
         String favoriteTeamId = getFavoriteTeamId();
         if (favoriteTeamId == null || favoriteTeamId.isEmpty() || favoriteTeamId.equals("null")) {
+            Log.e(TAG, "Showing select favourite constructor card");
             showSelectFavouriteConstructor(view);
             return;
         }
@@ -687,8 +691,10 @@ public class HomeFragment extends Fragment {
                     ConstructorStandings standings = ((Result.ConstructorStandingsSuccess) result).getData();
                     ConstructorStandingsElement favouriteConstructor = homeViewModel.getConstructorStandingsElement(standings.getConstructorStandings(), favoriteTeamId);
                     if (favouriteConstructor == null) {
+                        Log.e(TAG, "Showing select favourite constructor card");
                         showSelectFavouriteConstructor(view);
                     } else {
+                        Log.e(TAG, "Fetching constructor data card");
                         fetchConstructorDataForCard(view, favoriteTeamId, favouriteConstructor);
                     }
                 } else {
@@ -713,6 +719,7 @@ public class HomeFragment extends Fragment {
                 if (constructorResult.isSuccess()) {
                     Constructor constructor = ((Result.ConstructorSuccess) constructorResult).getData();
                     favouriteConstructor.setConstructor(constructor);
+                    Log.e(TAG, "Fetching nation data for constructor card");
                     fetchNationForConstructor(view, favouriteConstructor);
                 } else {
                     throw new Exception("Failed to fetch constructor data: " + constructorResult.getError());
@@ -729,13 +736,13 @@ public class HomeFragment extends Fragment {
 
         MutableLiveData<Result> nationData = nationViewModel.getNation(favouriteConstructor.getConstructor().getNationality());
         nationData.observe(getViewLifecycleOwner(), nationResult -> {
-
             try {
                 if (nationResult instanceof Result.Loading) {
                     return;
                 }
                 if (nationResult.isSuccess()) {
                     Nation nation = ((Result.NationSuccess) nationResult).getData();
+                    Log.e(TAG, "Building constructor card");
                     buildConstructorCard(view, favouriteConstructor, nation);
                 } else {
                     throw new Exception("Failed to fetch nation data: " + nationResult.getError());
@@ -754,7 +761,6 @@ public class HomeFragment extends Fragment {
             Constructor constructor = standingElement.getConstructor();
 
             UIUtils.multipleSetTextViewText(new String[]{constructor.getName(), nation.getAbbreviation()},
-
                     new TextView[]{view.findViewById(R.id.favourite_constructor_name), view.findViewById(R.id.favourite_constructor_nationality)});
 
             ImageView constructorCar = view.findViewById(R.id.favourite_constructor_car);
@@ -764,9 +770,7 @@ public class HomeFragment extends Fragment {
             constructorCard.setOnClickListener(v -> UIUtils.navigateToBioPage(getContext(), constructor.getConstructorId(), 0));
 
             UIUtils.loadSequenceOfImagesWithGlide(requireContext(), new String[]{nation.getNation_flag_url(), constructor.getCar_pic_url()},
-
                     new ImageView[]{constructorFlag, constructorCar},
-
                     () -> buildConstructorCardFinalStep(standingElement, view, constructor));
 
         } catch (Exception e) {
@@ -779,9 +783,7 @@ public class HomeFragment extends Fragment {
         loadingScreen.updateProgress();
 
         if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
-
             UIUtils.multipleSetTextViewText(new String[]{standingElement.getPosition(), standingElement.getPoints()},
-
                     new TextView[]{view.findViewById(R.id.favourite_constructor_position), view.findViewById(R.id.favourite_constructor_points)});
 
             MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
@@ -790,6 +792,10 @@ public class HomeFragment extends Fragment {
             MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
             teamRank.setClickable(false);
         }
+
+        view.findViewById(R.id.pending_favorite_constructor).setVisibility(View.GONE);
+        view.findViewById(R.id.favorite_constructor).setVisibility(View.VISIBLE);
+        Log.e(TAG, "Constructor card built successfully");
     }
 
     private void showSelectFavouriteDriver(View view) {
@@ -797,6 +803,7 @@ public class HomeFragment extends Fragment {
 
         updateVisibility(view, R.id.pending_favorite_driver, R.id.favorite_driver, R.id.missing_favorite_driver);
         view.findViewById(R.id.pending_favorite_driver).setOnClickListener(v -> startActivity(new Intent(getActivity(), DriversStandingActivity.class)));
+        Log.e(TAG, "Showing select favourite driver card");
     }
 
     private void showDriverNotFound(View view) {

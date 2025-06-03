@@ -79,23 +79,31 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
             if (emailEditText.getText() != null && isEmailOk(emailEditText.getText().toString())) {
                 if (passwordEditText.getText() != null && isPasswordOk(passwordEditText.getText().toString())) {
                     mAuth.signInWithEmailAndPassword(emailEditText.getText().toString(), passwordEditText.getText().toString())
-                            .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                            .addOnCompleteListener(this, task -> {
+                                if (task.isSuccessful()) {
+                                    Log.d(TAG, "signInWithEmail:success");
 
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
+                                    // Carica le preferenze e osserva il risultato
+                                    userViewModel.getUserPreferences(userViewModel.getLoggedUser().getIdToken())
+                                            .observe(this, result -> {
+                                                // Questo viene chiamato quando il caricamento è completato
+                                                if (result != null) {
+                                                    if (result.isSuccess()) {
+                                                        Log.d(TAG, "User preferences loaded successfully");
+                                                    } else {
+                                                        Log.e(TAG, "Failed to load user preferences: " + result.getError());
+                                                    }
 
-                                        userViewModel.getUserPreferences(userViewModel.getLoggedUser().getIdToken());
+                                                    // Naviga alla home page sia in caso di successo che di errore
+                                                    // Le preferenze sono state tentate di caricare
+                                                    UIUtils.navigateToHomePage(WelcomeActivity.this);
+                                                }
+                                            });
 
-                                        Log.d(TAG, "signInWithEmail:success");
-                                        UIUtils.navigateToHomePage(WelcomeActivity.this);
-
-                                    } else {
-                                        // If sign in fails, display a message to the user.
-                                        Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                        Toast.makeText(WelcomeActivity.this, "Authentication failed.",
-                                                Toast.LENGTH_SHORT).show();
-                                    }
+                                } else {
+                                    Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                    Toast.makeText(WelcomeActivity.this, "Authentication failed.",
+                                            Toast.LENGTH_SHORT).show();
                                 }
                             });
                 }
