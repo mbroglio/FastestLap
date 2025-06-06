@@ -15,7 +15,7 @@ public class ConstructorStandingsViewModelFactory implements ViewModelProvider.F
 
     public ConstructorStandingsViewModelFactory(Application application) {
         AppRoomDatabase appRoomDatabase = ServiceLocator.getInstance().getRoomDatabase(application);
-        this.constructorStandingRepository = ConstructorStandingRepository.getInstance(appRoomDatabase);
+        this.constructorStandingRepository = ConstructorStandingRepository.getInstance(appRoomDatabase, application.getApplicationContext());
     }
 
     @NonNull

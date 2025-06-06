@@ -1,5 +1,8 @@
 package com.the_coffe_coders.fastestlap.repository.standing.driver;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -26,18 +29,32 @@ public class DriverStandingRepository {
     private final JolpicaDriverStandingsDataSource jolpicaDriverStandingsDataSource;
     private final LocalDriverStandingsDataSource localDriverStandingsDataSource;
 
-    private DriverStandingRepository(AppRoomDatabase appRoomDatabase) {
+    private Context context;
+
+    private DriverStandingRepository(AppRoomDatabase appRoomDatabase, Context context) {
         driverStandingCache = new HashMap<>();
         lastUpdateTimestamps = new HashMap<>();
         this.jolpicaDriverStandingsDataSource = JolpicaDriverStandingsDataSource.getInstance();
         this.localDriverStandingsDataSource = LocalDriverStandingsDataSource.getInstance(appRoomDatabase);
+        this.context = context;
     }
 
-    public static synchronized DriverStandingRepository getInstance(AppRoomDatabase appRoomDatabase) {
+    public static synchronized DriverStandingRepository getInstance(AppRoomDatabase appRoomDatabase, Context context) {
         if (instance == null) {
-            instance = new DriverStandingRepository(appRoomDatabase);
+            instance = new DriverStandingRepository(appRoomDatabase, context);
         }
         return instance;
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connectivityManager != null) {
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        }
+        return false;
     }
 
     public synchronized MutableLiveData<Result> getDriverStandings() {
@@ -48,9 +65,17 @@ public class DriverStandingRepository {
                 !lastUpdateTimestamps.containsKey(cacheKey) ||
                 lastUpdateTimestamps.get(cacheKey) == null) {
             driverStandingCache.put(cacheKey, new MutableLiveData<>());
-            loadDriverStanding();
+            if(isNetworkAvailable()){
+                loadDriverStanding();
+            }else{
+                fetchFromLocal(cacheKey);
+            }
         } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(cacheKey) > 60000) {
-            loadDriverStanding();
+            if(isNetworkAvailable()){
+                loadDriverStanding();
+            }else{
+                fetchFromLocal(cacheKey);
+            }
         } else {
             Log.d(TAG, "Driver standing found in cache");
         }

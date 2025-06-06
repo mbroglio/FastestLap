@@ -15,7 +15,7 @@ public class TrackViewModelFactory implements ViewModelProvider.Factory {
 
     public TrackViewModelFactory(Application application) {
         AppRoomDatabase appRoomDatabase = ServiceLocator.getInstance().getRoomDatabase(application);
-        this.trackRepository = TrackRepository.getInstance(appRoomDatabase);
+        this.trackRepository = TrackRepository.getInstance(appRoomDatabase, application.getApplicationContext());
     }
 
     @NonNull

@@ -1,5 +1,8 @@
 package com.the_coffe_coders.fastestlap.repository.nation;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -25,27 +28,51 @@ public class NationRepository {
     LocalNationDataSource localNationDataSource;
     AppRoomDatabase appRoomDatabase;
 
-    private NationRepository(AppRoomDatabase appRoomDatabase) {
+    private Context context;
+
+    private NationRepository(AppRoomDatabase appRoomDatabase, Context context) {
         nationCache = new HashMap<>();
         lastUpdateTimestamps = new HashMap<>();
         firebaseNationDataSource = FirebaseNationDataSource.getInstance();
         localNationDataSource = LocalNationDataSource.getInstance(appRoomDatabase);
+        this.context = context;
     }
 
-    public static NationRepository getInstance(AppRoomDatabase appRoomDatabase) {
+    public static NationRepository getInstance(AppRoomDatabase appRoomDatabase, Context context) {
         if (instance == null) {
-            instance = new NationRepository(appRoomDatabase);
+            instance = new NationRepository(appRoomDatabase, context);
         }
         return instance;
     }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connectivityManager != null) {
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        }
+        return false;
+    }
+
 
     public synchronized MutableLiveData<Result> getNation(String nationId) {
         Log.d(TAG, "Fetching nation with ID: " + nationId);
         if (!nationCache.containsKey(nationId) || !lastUpdateTimestamps.containsKey(nationId) || lastUpdateTimestamps.get(nationId) == null) {
             nationCache.put(nationId, new MutableLiveData<>());
-            loadNation(nationId);
-        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(nationId) > 60000) {
-            loadNation(nationId);
+
+            if(isNetworkAvailable()) {
+                loadNation(nationId);
+            }else {
+                loadNationFromLocal(nationId);
+            }
+        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(nationId) > 6000) {
+            if(isNetworkAvailable()) {
+                loadNation(nationId);
+            }else {
+                loadNationFromLocal(nationId);
+            }
         } else {
             Log.d(TAG, "Nation found in cache: " + nationId);
         }

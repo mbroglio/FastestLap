@@ -15,7 +15,7 @@ public class NationViewModelFactory implements ViewModelProvider.Factory {
 
     public NationViewModelFactory(Application application) {
         AppRoomDatabase appRoomDatabase = ServiceLocator.getInstance().getRoomDatabase(application);
-        this.nationRepository = NationRepository.getInstance(appRoomDatabase);
+        this.nationRepository = NationRepository.getInstance(appRoomDatabase, application.getApplicationContext());
     }
 
     @NonNull

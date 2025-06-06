@@ -1,5 +1,8 @@
 package com.the_coffe_coders.fastestlap.repository.track;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -27,27 +30,50 @@ public class TrackRepository {
     LocalTrackDataSource localTrackDataSource;
     AppRoomDatabase appRoomDatabase;
 
-    public TrackRepository(AppRoomDatabase appRoomDatabase) {
+    private Context context;
+
+    public TrackRepository(AppRoomDatabase appRoomDatabase, Context context) {
         trackCache = new HashMap<>();
         lastUpdateTimestamps = new HashMap<>();
         firebaseTrackDataSource = FirebaseTrackDataSource.getInstance();
         localTrackDataSource = LocalTrackDataSource.getInstance(appRoomDatabase);
+        this.context = context;
     }
 
-    public static synchronized TrackRepository getInstance(AppRoomDatabase appRoomDatabase) {
+    public static synchronized TrackRepository getInstance(AppRoomDatabase appRoomDatabase, Context context) {
         if (instance == null) {
-            instance = new TrackRepository(appRoomDatabase);
+            instance = new TrackRepository(appRoomDatabase, context);
         }
         return instance;
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connectivityManager != null) {
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        }
+        return false;
     }
 
     public synchronized MutableLiveData<Result> getTrack(String trackId) {
         Log.d(TAG, "Fetching track with ID: " + trackId);
         if (!trackCache.containsKey(trackId) || !lastUpdateTimestamps.containsKey(trackId) || lastUpdateTimestamps.get(trackId) == null) {
             trackCache.put(trackId, new MutableLiveData<>());
-            loadTrack(trackId);
-        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(trackId) > 60000) {
-            loadTrack(trackId);
+            if(isNetworkAvailable()){
+                loadTrack(trackId);
+            }else{
+                Log.d(TAG, "No network connection");
+                loadTrackFromLocal(trackId);
+            }
+        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(trackId) > 6000) {
+            if(isNetworkAvailable()){
+                loadTrack(trackId);
+            }else{
+                loadTrackFromLocal(trackId);
+            }
         } else {
             Log.d(TAG, "Track found in cache: " + trackId);
         }

@@ -15,7 +15,7 @@ public class DriverViewModelFactory implements ViewModelProvider.Factory {
 
     public DriverViewModelFactory(Application application) {
         AppRoomDatabase appRoomDatabase = ServiceLocator.getInstance().getRoomDatabase(application);
-        this.driverRepository = DriverRepository.getInstance(appRoomDatabase);
+        this.driverRepository = DriverRepository.getInstance(appRoomDatabase, application.getApplicationContext());
     }
 
     @NonNull

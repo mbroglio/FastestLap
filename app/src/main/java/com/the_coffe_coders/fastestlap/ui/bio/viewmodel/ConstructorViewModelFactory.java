@@ -1,9 +1,12 @@
 package com.the_coffe_coders.fastestlap.ui.bio.viewmodel;
 
+import android.app.Application;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
 
 public class ConstructorViewModelFactory implements ViewModelProvider.Factory {
@@ -13,8 +16,8 @@ public class ConstructorViewModelFactory implements ViewModelProvider.Factory {
         this.constructorRepository = constructorRepository;
     }
 
-    public ConstructorViewModelFactory() {
-        this.constructorRepository = ConstructorRepository.getInstance();
+    public ConstructorViewModelFactory(Application application) {
+        this.constructorRepository = ConstructorRepository.getInstance(AppRoomDatabase.getDatabase(application), application.getApplicationContext());
     }
 
     @NonNull

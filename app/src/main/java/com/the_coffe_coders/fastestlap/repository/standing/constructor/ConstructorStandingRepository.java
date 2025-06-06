@@ -1,5 +1,8 @@
 package com.the_coffe_coders.fastestlap.repository.standing.constructor;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -26,18 +29,32 @@ public class ConstructorStandingRepository {
     private final JolpicaConstructorStandingsDataSource jolpicaConstructorStandingsDataSource;
     private final LocalConstructorStandingsDataSource localConstructorStandingsDataSource;
 
-    private ConstructorStandingRepository(AppRoomDatabase appRoomDatabase) {
+    private Context context;
+
+    private ConstructorStandingRepository(AppRoomDatabase appRoomDatabase, Context context) {
         constructorStandingCache = new HashMap<>();
         lastUpdateTimestamps = new HashMap<>();
         this.jolpicaConstructorStandingsDataSource = JolpicaConstructorStandingsDataSource.getInstance();
         this.localConstructorStandingsDataSource = LocalConstructorStandingsDataSource.getInstance(appRoomDatabase);
+        this.context = context;
     }
 
-    public static synchronized ConstructorStandingRepository getInstance(AppRoomDatabase appRoomDatabase) {
+    public static synchronized ConstructorStandingRepository getInstance(AppRoomDatabase appRoomDatabase, Context context) {
         if (instance == null) {
-            instance = new ConstructorStandingRepository(appRoomDatabase);
+            instance = new ConstructorStandingRepository(appRoomDatabase, context);
         }
         return instance;
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connectivityManager != null) {
+            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        }
+        return false;
     }
 
     public synchronized MutableLiveData<Result> getConstructorStandings() {
@@ -50,7 +67,11 @@ public class ConstructorStandingRepository {
             constructorStandingCache.put(cacheKey, new MutableLiveData<>());
             loadConstructorStanding();
         } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(cacheKey) > 60000) {
-            loadConstructorStanding();
+            if(isNetworkAvailable())
+                loadConstructorStanding();
+            else {
+                fetchFromLocal(cacheKey);
+            }
         } else {
             Log.d(TAG, "Constructor standing found in cache");
         }

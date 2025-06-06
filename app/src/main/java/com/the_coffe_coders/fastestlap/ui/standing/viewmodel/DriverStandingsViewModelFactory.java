@@ -14,7 +14,7 @@ public class DriverStandingsViewModelFactory implements ViewModelProvider.Factor
 
     public DriverStandingsViewModelFactory(Application application) {
         AppRoomDatabase appRoomDatabase = AppRoomDatabase.getDatabase(application);
-        this.driverRepository = DriverStandingRepository.getInstance(appRoomDatabase);
+        this.driverRepository = DriverStandingRepository.getInstance(appRoomDatabase, application.getApplicationContext());
     }
 
     @NonNull

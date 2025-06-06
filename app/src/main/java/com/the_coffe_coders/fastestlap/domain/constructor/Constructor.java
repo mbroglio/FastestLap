@@ -9,6 +9,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.List;
+import java.util.Objects;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -78,6 +79,18 @@ public class Constructor implements Parcelable {
         team_principal = in.readString();
         wins = in.readString();
         world_championships = in.readString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Constructor that = (Constructor) o;
+        return Objects.equals(constructorId, that.constructorId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(constructorId);
     }
 
     public String getDriverOneId() {

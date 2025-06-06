@@ -53,7 +53,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
     }
 
     private void start() {
-        constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory()).get(ConstructorViewModel.class);
+        constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(getApplication())).get(ConstructorViewModel.class);
         driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(getApplication())).get(DriverViewModel.class);
 
         teamStandingLayout = findViewById(R.id.team_standing_layout);
