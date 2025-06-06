@@ -33,6 +33,8 @@ import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 public class TrackBioActivity extends AppCompatActivity {
 
     LoadingScreen loadingScreen;
@@ -110,7 +112,8 @@ public class TrackBioActivity extends AppCompatActivity {
                             nation = ((Result.NationSuccess) nationResult).getData();
                             setCircuitData(track, nation);
                         } else {
-                            Log.e("TrackBioActivity", "Error getting data");
+                            Log.e("TrackBioActivity", "Error getting nation data");
+                            setCircuitData(track, null);
                         }
                     });
                 } else {
@@ -150,8 +153,13 @@ public class TrackBioActivity extends AppCompatActivity {
         goToMapButton.setOnClickListener(v ->
                 UIUtils.openLocation(this, track.getLocation().getLatitude(), track.getLocation().getLongitude()));
 
+        String nationFlag_Url = null;
+        if(nation != null) {
+            nationFlag_Url = nation.getNation_flag_url();
+        }
+
         UIUtils.loadSequenceOfImagesWithGlide(this,
-                new String[]{track.getTrack_full_layout_url(), nation.getNation_flag_url()},
+                new String[]{track.getTrack_full_layout_url(), nationFlag_Url},
                 new ImageView[]{circuitImage, countryFlag},
                 this::createHistoryTable);
     }

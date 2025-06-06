@@ -220,7 +220,14 @@ public class DriverBioActivity extends AppCompatActivity {
                     setDriverData(driver, nation, team, false, null);
                     setToolbar(false, null);
                 }
-
+            }else {
+                if (driver.getTeam_id() != null) {
+                    setDriverData(driver, null, team, true, driver.getTeam_id());
+                    setToolbar(true, driver.getTeam_id());
+                } else {
+                    setDriverData(driver, null, team, false, null);
+                    setToolbar(false, null);
+                }
             }
         });
     }
@@ -254,10 +261,15 @@ public class DriverBioActivity extends AppCompatActivity {
             driverNumberCard.setStrokeColor(ContextCompat.getColor(this, R.color.timer_gray));
         }
 
+        String nationFlagUrl = null;
+        if(nation != null) {
+            nationFlagUrl = nation.getNation_flag_url();
+        }
+
         UIUtils.loadSequenceOfImagesWithGlide(this,
                 new String[]{
                         team.getTeam_logo_url(),
-                        nation.getNation_flag_url(),
+                        nationFlagUrl,
                         driver.getDriver_pic_url(),
                         driver.getRacing_number_pic_url()},
 

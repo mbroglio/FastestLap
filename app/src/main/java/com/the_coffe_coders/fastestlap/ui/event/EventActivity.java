@@ -153,6 +153,9 @@ public class EventActivity extends AppCompatActivity {
                         Log.i(TAG, "Nation: " + nation.toString());
 
                         setEventImage(weeklyRace, track, nation);
+                    }else{
+                        Log.e(TAG, "Error getting nation data");
+                        setEventImage(weeklyRace, track, null);
                     }
                 });
             }
@@ -194,11 +197,14 @@ public class EventActivity extends AppCompatActivity {
         openForecastButton.setOnClickListener(v ->
                 UIUtils.openGoogleWeather(this, track.getLocation().getLocality()));
 
+        String nationFlagUrl = null;
+        if(nation != null) {
+            nationFlagUrl = nation.getNation_flag_url();
+        }
+
         UIUtils.loadSequenceOfImagesWithGlide(this,
-                new String[]{nation.getNation_flag_url(), track.getTrack_minimal_layout_url()},
-
+                new String[]{nationFlagUrl, track.getTrack_minimal_layout_url()},
                 new ImageView[]{findViewById(R.id.country_flag), findViewById(R.id.track_outline_image)},
-
                 () -> buildEventCardFinalStep(weeklyRace));
     }
 
