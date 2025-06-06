@@ -85,6 +85,7 @@ public class NationRepository {
             public void onNationLoaded(Nation nation) {
                 if (nation != null) {
                     nation.setNationId(nationId);
+                    localNationDataSource.insertNation(nation);
                     nationCache.put(nationId, new MutableLiveData<>(new Result.NationSuccess(nation)));
                     lastUpdateTimestamps.put(nationId, System.currentTimeMillis());
                     Objects.requireNonNull(nationCache.get(nationId)).postValue(new Result.NationSuccess(nation));
@@ -125,6 +126,7 @@ public class NationRepository {
             });
         } catch (Exception e) {
             Log.e(TAG, "Error loading nation: " + e.getMessage());
+            loadNationFromLocal(nationId);
         }
     }
 }
