@@ -227,21 +227,25 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     public void getNationData(String nationId) {
-        MutableLiveData<Result> data = nationViewModel.getNation(nationId);
-        data.observe(this, result -> {
-            if (result instanceof Result.Loading) {
-                return;
-            }
-            if (result.isSuccess()) {
-                nation = ((Result.NationSuccess) result).getData();
-                setTeamData(constructor, nation, driverOne, driverTwo);
-            }else{
-                Log.e(TAG, "Error getting nation data");
-                setTeamData(constructor, null, driverOne, driverTwo);
-            }
-        });
+        try{
+            MutableLiveData<Result> data = nationViewModel.getNation(nationId);
+            data.observe(this, result -> {
+                if (result instanceof Result.Loading) {
+                    return;
+                }
+                if (result.isSuccess()) {
+                    nation = ((Result.NationSuccess) result).getData();
+                    setTeamData(constructor, nation, driverOne, driverTwo);
+                }else{
+                    Log.e(TAG, "Error getting nation data");
+                    setTeamData(constructor, null, driverOne, driverTwo);
+                }
+            });
+        }catch (RuntimeException e) {
+            Log.e(TAG, "Error fetching nation data: " + e.getMessage());
+            setTeamData(constructor, null, driverOne, driverTwo);
+        }
 
-        loadingScreen.hideLoadingScreen();
     }
 
     private void setTeamData(Constructor team, Nation nation, Driver driverOne, Driver driverTwo) {
@@ -333,6 +337,8 @@ public class ConstructorBioActivity extends AppCompatActivity {
                 tableLayout.addView(tableRow);
             }
         }
+
+        loadingScreen.hideLoadingScreen();
     }
 
     @Override

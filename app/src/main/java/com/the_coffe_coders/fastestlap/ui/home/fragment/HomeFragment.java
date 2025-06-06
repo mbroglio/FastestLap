@@ -363,32 +363,42 @@ public class HomeFragment extends Fragment {
 
     private void fetchNationForNextRace(View view, WeeklyRace nextRace, Track track) {
         loadingScreen.updateProgress();
-        MutableLiveData<Result> nationData = nationViewModel.getNation(track.getCountry());
-        nationData.observe(getViewLifecycleOwner(), nationResult -> {
-            try {
-                if (nationResult instanceof Result.Loading) {
-                    return;
+        try{
+            MutableLiveData<Result> nationData = nationViewModel.getNation(track.getCountry());
+            nationData.observe(getViewLifecycleOwner(), nationResult -> {
+                try {
+                    if (nationResult instanceof Result.Loading) {
+                        return;
+                    }
+                    if (nationResult.isSuccess()) {
+                        Nation nation = ((Result.NationSuccess) nationResult).getData();
+                        setNextRaceCard(view, nextRace, nation);
+                    } else {
+                        throw new Exception("Failed to fetch nation data: " + nationResult.getError());
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error fetching nation: " + e.getMessage());
+                    setSeasonEnded(view);
                 }
-                if (nationResult.isSuccess()) {
-                    Nation nation = ((Result.NationSuccess) nationResult).getData();
-                    setNextRaceCard(view, nextRace, nation);
-                } else {
-                    throw new Exception("Failed to fetch nation data: " + nationResult.getError());
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Error fetching nation: " + e.getMessage());
-                setSeasonEnded(view);
-            }
-        });
+            });
+        }catch (RuntimeException e) {
+            Log.e(TAG, "Error fetching nation: " + e.getMessage());
+            setNextRaceCard(view, nextRace, null);
+        }
+
     }
 
     private void setNextRaceCard(View view, WeeklyRace nextRace, Nation nation) {
         loadingScreen.updateProgress();
         try {
-
             UIUtils.singleSetTextViewText(nextRace.getRaceName(), view.findViewById(R.id.home_next_gp_name));
 
-            UIUtils.loadImageWithGlide(requireContext(), nation.getNation_flag_url(), view.findViewById(R.id.home_next_gp_flag), () -> {
+            String nationFlagUrl = null;
+            if(nation != null) {
+                nationFlagUrl = nation.getNation_flag_url();
+            }
+
+            UIUtils.loadImageWithGlide(requireContext(), nationFlagUrl, view.findViewById(R.id.home_next_gp_flag), () -> {
                 try {
                     setNextRaceCardFinalStep(nextRace, view);
                 } catch (Exception e) {
@@ -621,25 +631,30 @@ public class HomeFragment extends Fragment {
     private void fetchNationForDriver(View view, DriverStandingsElement favouriteDriver) {
         loadingScreen.updateProgress();
 
+        try{
+            MutableLiveData<Result> nationData = nationViewModel.getNation(favouriteDriver.getDriver().getNationality());
+            nationData.observe(getViewLifecycleOwner(), nationResult -> {
+                try {
+                    if (nationResult instanceof Result.Loading) {
+                        return;
+                    }
+                    if (nationResult.isSuccess()) {
+                        Nation nation = ((Result.NationSuccess) nationResult).getData();
+                        Log.e(TAG, "Building driver card");
+                        buildDriverCard(view, favouriteDriver, nation);
+                    } else {
+                        throw new Exception("Failed to fetch nation data: " + nationResult.getError());
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error fetching nation for driver: " + e.getMessage());
+                    showDriverNotFound(view);
+                }
+            });
+        } catch (RuntimeException e) {
+            Log.e(TAG, "Error fetching nation for driver: " + e.getMessage());
+            buildDriverCard(view, favouriteDriver, null);
+        }
 
-        MutableLiveData<Result> nationData = nationViewModel.getNation(favouriteDriver.getDriver().getNationality());
-        nationData.observe(getViewLifecycleOwner(), nationResult -> {
-            try {
-                if (nationResult instanceof Result.Loading) {
-                    return;
-                }
-                if (nationResult.isSuccess()) {
-                    Nation nation = ((Result.NationSuccess) nationResult).getData();
-                    Log.e(TAG, "Building driver card");
-                    buildDriverCard(view, favouriteDriver, nation);
-                } else {
-                    throw new Exception("Failed to fetch nation data: " + nationResult.getError());
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Error fetching nation for driver: " + e.getMessage());
-                showDriverNotFound(view);
-            }
-        });
     }
 
     private void buildDriverCard(View view, DriverStandingsElement standingElement, Nation nation) {
@@ -648,14 +663,21 @@ public class HomeFragment extends Fragment {
         try {
             Driver driver = standingElement.getDriver();
 
-            UIUtils.multipleSetTextViewText(new String[]{driver.getGivenName() + " " + driver.getFamilyName(), nation.getAbbreviation()},
+            String nationFlagUrl = null;
+            String nationAbbreviation = null;
+            if(nation != null) {
+                nationFlagUrl = nation.getNation_flag_url();
+                nationAbbreviation = nation.getAbbreviation();
+            }
+
+            UIUtils.multipleSetTextViewText(new String[]{driver.getGivenName() + " " + driver.getFamilyName(), nationAbbreviation},
                     new TextView[]{view.findViewById(R.id.favourite_driver_name), view.findViewById(R.id.favourite_driver_nationality)});
 
             ImageView driverFlag = view.findViewById(R.id.favourite_driver_flag);
             ImageView driverImage = view.findViewById(R.id.favourite_driver_pic);
             driverImage.setOnClickListener(v -> UIUtils.navigateToBioPage(getContext(), driver.getDriverId(), 1));
 
-            UIUtils.loadSequenceOfImagesWithGlide(requireContext(), new String[]{nation.getNation_flag_url(), driver.getDriver_pic_url()}, new ImageView[]{driverFlag, driverImage}, () -> buildDriverCardFinalStep(standingElement, view, driver));
+            UIUtils.loadSequenceOfImagesWithGlide(requireContext(), new String[]{nationFlagUrl, driver.getDriver_pic_url()}, new ImageView[]{driverFlag, driverImage}, () -> buildDriverCardFinalStep(standingElement, view, driver));
         } catch (Exception e) {
             Log.e(TAG, "Error building driver card: " + e.getMessage());
             showDriverNotFound(view);
@@ -744,24 +766,30 @@ public class HomeFragment extends Fragment {
     private void fetchNationForConstructor(View view, ConstructorStandingsElement favouriteConstructor) {
         loadingScreen.updateProgress();
 
-        MutableLiveData<Result> nationData = nationViewModel.getNation(favouriteConstructor.getConstructor().getNationality());
-        nationData.observe(getViewLifecycleOwner(), nationResult -> {
-            try {
-                if (nationResult instanceof Result.Loading) {
-                    return;
+        try{
+            MutableLiveData<Result> nationData = nationViewModel.getNation(favouriteConstructor.getConstructor().getNationality());
+            nationData.observe(getViewLifecycleOwner(), nationResult -> {
+                try {
+                    if (nationResult instanceof Result.Loading) {
+                        return;
+                    }
+                    if (nationResult.isSuccess()) {
+                        Nation nation = ((Result.NationSuccess) nationResult).getData();
+                        Log.e(TAG, "Building constructor card");
+                        buildConstructorCard(view, favouriteConstructor, nation);
+                    } else {
+                        throw new Exception("Failed to fetch nation data: " + nationResult.getError());
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error fetching nation for constructor: " + e.getMessage());
+                    showConstructorNotFound(view);
                 }
-                if (nationResult.isSuccess()) {
-                    Nation nation = ((Result.NationSuccess) nationResult).getData();
-                    Log.e(TAG, "Building constructor card");
-                    buildConstructorCard(view, favouriteConstructor, nation);
-                } else {
-                    throw new Exception("Failed to fetch nation data: " + nationResult.getError());
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Error fetching nation for constructor: " + e.getMessage());
-                showConstructorNotFound(view);
-            }
-        });
+            });
+        }catch (RuntimeException e) {
+            Log.e(TAG, "Error fetching nation for constructor: " + e.getMessage());
+            buildConstructorCard(view, favouriteConstructor, null);
+        }
+
     }
 
     private void buildConstructorCard(View view, ConstructorStandingsElement standingElement, Nation nation) {
@@ -770,7 +798,14 @@ public class HomeFragment extends Fragment {
         try {
             Constructor constructor = standingElement.getConstructor();
 
-            UIUtils.multipleSetTextViewText(new String[]{constructor.getName(), nation.getAbbreviation()},
+            String nationFlagUrl = null;
+            String nationAbbreviation = null;
+            if(nation != null) {
+                nationFlagUrl = nation.getNation_flag_url();
+                nationAbbreviation = nation.getAbbreviation();
+            }
+
+            UIUtils.multipleSetTextViewText(new String[]{constructor.getName(), nationAbbreviation},
                     new TextView[]{view.findViewById(R.id.favourite_constructor_name), view.findViewById(R.id.favourite_constructor_nationality)});
 
             ImageView constructorCar = view.findViewById(R.id.favourite_constructor_car);
@@ -779,7 +814,7 @@ public class HomeFragment extends Fragment {
             FrameLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
             constructorCard.setOnClickListener(v -> UIUtils.navigateToBioPage(getContext(), constructor.getConstructorId(), 0));
 
-            UIUtils.loadSequenceOfImagesWithGlide(requireContext(), new String[]{nation.getNation_flag_url(), constructor.getCar_pic_url()},
+            UIUtils.loadSequenceOfImagesWithGlide(requireContext(), new String[]{nationFlagUrl, constructor.getCar_pic_url()},
                     new ImageView[]{constructorFlag, constructorCar},
                     () -> buildConstructorCardFinalStep(standingElement, view, constructor));
 

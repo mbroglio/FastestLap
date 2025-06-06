@@ -285,7 +285,9 @@ public class UIUtils {
     }
 
     private static void setTextViewText(String text, TextView textView) {
-        textView.setText(text);
+        if (text != null) {
+            textView.setText(text);
+        }
     }
 
     public static void animateCardBackgroundColor(Context context, MaterialCardView cardView, int startColorResId, int endColor, int duration, int repeatCount) {

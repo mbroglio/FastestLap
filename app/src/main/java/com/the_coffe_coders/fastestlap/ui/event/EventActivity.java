@@ -142,22 +142,28 @@ public class EventActivity extends AppCompatActivity {
                 Log.i(TAG, "Track: " + track.toString());
 
                 NationViewModel nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(getApplication())).get(NationViewModel.class);
-                MutableLiveData<Result> nationData = nationViewModel.getNation(track.getCountry());
+                try{
+                    MutableLiveData<Result> nationData = nationViewModel.getNation(track.getCountry());
 
-                nationData.observe(this, result1 -> {
-                    if (result1 instanceof Result.Loading) {
-                        return;
-                    }
-                    if (result1.isSuccess()) {
-                        nation = ((Result.NationSuccess) result1).getData();
-                        Log.i(TAG, "Nation: " + nation.toString());
+                    nationData.observe(this, result1 -> {
+                        if (result1 instanceof Result.Loading) {
+                            return;
+                        }
+                        if (result1.isSuccess()) {
+                            nation = ((Result.NationSuccess) result1).getData();
+                            Log.i(TAG, "Nation: " + nation.toString());
 
-                        setEventImage(weeklyRace, track, nation);
-                    }else{
-                        Log.e(TAG, "Error getting nation data");
-                        setEventImage(weeklyRace, track, null);
-                    }
-                });
+                            setEventImage(weeklyRace, track, nation);
+                        }else{
+                            Log.e(TAG, "Error getting nation data");
+                            setEventImage(weeklyRace, track, null);
+                        }
+                    });
+                }catch (RuntimeException e){
+                    Log.e(TAG, "Error getting nation data: " + e.getMessage());
+                    setEventImage(weeklyRace, track, null);
+                }
+
             }
         });
     }

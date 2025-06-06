@@ -204,32 +204,43 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     public void getNationInfo(String nationId) {
-        MutableLiveData<Result> nationMutableLiveData = nationViewModel.getNation(nationId);
+        try{
+            MutableLiveData<Result> nationMutableLiveData = nationViewModel.getNation(nationId);
+            nationMutableLiveData.observe(this, result -> {
+                if (result instanceof Result.Loading) {
+                    return;
+                }
+                if (result.isSuccess()) {
+                    nation = ((Result.NationSuccess) result).getData();
+                    Log.i(TAG, "GET NATION FROM FIREBASE REPO: " + nation);
+                    if (driver.getTeam_id() != null) {
+                        setDriverData(driver, nation, team, true, driver.getTeam_id());
+                        setToolbar(true, driver.getTeam_id());
+                    } else {
+                        setDriverData(driver, nation, team, false, null);
+                        setToolbar(false, null);
+                    }
+                }else {
+                    if (driver.getTeam_id() != null) {
+                        setDriverData(driver, null, team, true, driver.getTeam_id());
+                        setToolbar(true, driver.getTeam_id());
+                    } else {
+                        setDriverData(driver, null, team, false, null);
+                        setToolbar(false, null);
+                    }
+                }
+            });
+        }catch (RuntimeException e) {
+            Log.e(TAG, "Error fetching nation data: " + e.getMessage());
+            if (driver.getTeam_id() != null) {
+                setDriverData(driver, null, team, true, driver.getTeam_id());
+                setToolbar(true, driver.getTeam_id());
+            } else {
+                setDriverData(driver, null, team, false, null);
+                setToolbar(false, null);
+            }
+        }
 
-        nationMutableLiveData.observe(this, result -> {
-            if (result instanceof Result.Loading) {
-                return;
-            }
-            if (result.isSuccess()) {
-                nation = ((Result.NationSuccess) result).getData();
-                Log.i(TAG, "GET NATION FROM FIREBASE REPO: " + nation);
-                if (driver.getTeam_id() != null) {
-                    setDriverData(driver, nation, team, true, driver.getTeam_id());
-                    setToolbar(true, driver.getTeam_id());
-                } else {
-                    setDriverData(driver, nation, team, false, null);
-                    setToolbar(false, null);
-                }
-            }else {
-                if (driver.getTeam_id() != null) {
-                    setDriverData(driver, null, team, true, driver.getTeam_id());
-                    setToolbar(true, driver.getTeam_id());
-                } else {
-                    setDriverData(driver, null, team, false, null);
-                    setToolbar(false, null);
-                }
-            }
-        });
     }
 
     public void setToolbar(boolean teamIdPresent, String teamId) {

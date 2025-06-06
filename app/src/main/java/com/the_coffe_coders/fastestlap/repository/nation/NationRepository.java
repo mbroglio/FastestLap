@@ -57,7 +57,7 @@ public class NationRepository {
     }
 
 
-    public synchronized MutableLiveData<Result> getNation(String nationId) {
+    public synchronized MutableLiveData<Result> getNation(String nationId) throws RuntimeException{
         Log.d(TAG, "Fetching nation with ID: " + nationId);
         if (!nationCache.containsKey(nationId) || !lastUpdateTimestamps.containsKey(nationId) || lastUpdateTimestamps.get(nationId) == null) {
             nationCache.put(nationId, new MutableLiveData<>());
@@ -79,7 +79,7 @@ public class NationRepository {
         return nationCache.get(nationId);
     }
 
-    public void loadNationFromLocal(String nationId) {
+    public void loadNationFromLocal(String nationId) throws RuntimeException {
         localNationDataSource.getNation(nationId, new NationCallback() {
             @Override
             public void onNationLoaded(Nation nation) {
@@ -91,6 +91,7 @@ public class NationRepository {
                     Objects.requireNonNull(nationCache.get(nationId)).postValue(new Result.NationSuccess(nation));
                 } else {
                     Log.e(TAG, "Nation not found: " + nationId);
+                    throw new RuntimeException("Nation not found in local database: " + nationId);
                 }
             }
 

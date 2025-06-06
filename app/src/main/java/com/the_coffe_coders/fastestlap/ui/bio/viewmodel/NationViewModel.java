@@ -17,7 +17,7 @@ public class NationViewModel extends ViewModel {
         Log.i("NationViewModel", "NationViewModel created");
     }
 
-    public MutableLiveData<Result> getNation(String nationId) {
+    public MutableLiveData<Result> getNation(String nationId) throws RuntimeException {
         return nationRepository.getNation(nationId);
     }
 

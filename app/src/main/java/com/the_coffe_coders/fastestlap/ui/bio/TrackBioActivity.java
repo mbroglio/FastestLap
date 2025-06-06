@@ -103,19 +103,25 @@ public class TrackBioActivity extends AppCompatActivity {
                     track = ((Result.TrackSuccess) trackResult).getData();
                     Log.i("TrackBioActivity", "Circuit from DB: " + track);
 
-                    MutableLiveData<Result> nationLiveData = nationViewModel.getNation(track.getCountry());
-                    nationLiveData.observe(this, nationResult -> {
-                        if (nationResult instanceof Result.Loading) {
-                            return;
-                        }
-                        if (nationResult.isSuccess()) {
-                            nation = ((Result.NationSuccess) nationResult).getData();
-                            setCircuitData(track, nation);
-                        } else {
-                            Log.e("TrackBioActivity", "Error getting nation data");
-                            setCircuitData(track, null);
-                        }
-                    });
+                    try{
+                        MutableLiveData<Result> nationLiveData = nationViewModel.getNation(track.getCountry());
+                        nationLiveData.observe(this, nationResult -> {
+                            if (nationResult instanceof Result.Loading) {
+                                return;
+                            }
+                            if (nationResult.isSuccess()) {
+                                nation = ((Result.NationSuccess) nationResult).getData();
+                                setCircuitData(track, nation);
+                            } else {
+                                Log.e("TrackBioActivity", "Error getting nation data");
+                                setCircuitData(track, null);
+                            }
+                        });
+                    }catch (RuntimeException e) {
+                        Log.e("TrackBioActivity", "Error fetching nation data: " + e.getMessage());
+                        setCircuitData(track, null);
+                    }
+
                 } else {
                     Log.e("TrackBioActivity", "Error getting data");
                 }
