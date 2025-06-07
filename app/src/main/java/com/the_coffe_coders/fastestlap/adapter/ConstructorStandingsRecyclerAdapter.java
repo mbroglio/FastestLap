@@ -71,6 +71,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                     return;
                 }
                 if (result.isSuccess()) {
+                    showConstructorFound(holder);
                     Constructor constructor = ((Result.ConstructorSuccess) result).getData();
                     constructorStandingsElement.setConstructor(constructor);
 
