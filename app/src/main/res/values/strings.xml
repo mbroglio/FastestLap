@@ -141,6 +141,8 @@
     <string name="drivers_title_page_upper_case">DRIVERS</string>
     <!-- missing results -->
     <string name="results_not_available">Results not available</string>
+    <string name="driver_info_not_found_upper_case">DRIVER INFO NOT FOUND (%1$s)</string>
+    <string name="constructor_info_not_found_upper_case">CONSTRUCTOR INFO NOT FOUND\n(%1$s)</string>
 
 
     <!--BUTTONS STRINGS -->

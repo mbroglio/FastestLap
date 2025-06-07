@@ -119,6 +119,8 @@ public class DriverRepository {
                     } else {
                         Objects.requireNonNull(driverCache.get(driverId)).postValue(
                                 new Result.Error("Driver not found locally and no network connection available"));
+
+                        throw new RuntimeException("Driver not found in local database: " + driverId);
                     }
                 }
             }

@@ -65,49 +65,54 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         constructorStandingsElement = constructorStandingsList.get(position);
         String currentConstructorId = constructorStandingsElement.getConstructor().getConstructorId();
 
-        constructorViewModel.getSelectedConstructor(currentConstructorId).observe(lifecycleOwner, result -> {
-            if (result instanceof Result.Loading) {
-                return;
-            }
-            if (result.isSuccess()) {
-                Constructor constructor = ((Result.ConstructorSuccess) result).getData();
-                constructorStandingsElement.setConstructor(constructor);
 
-                holder.constructorCardInnerLayout.setBackground(AppCompatResources.getDrawable(context,
-                        Objects.requireNonNull(Constants.TEAM_GRADIENT_COLOR.get(currentConstructorId))));
-
-                UIUtils.setTextViewTextWithCondition(constructorStandingsElement.getPosition() == null,
-                        ContextCompat.getString(context, R.string.last_constructor_position), //if true
-                        constructorStandingsElement.getPosition(), //if false
-                        holder.constructorPosition);
-
-                UIUtils.multipleSetTextViewText(
-                        new String[]{
-                                constructor.getName(),
-                                constructorStandingsElement.getPoints()},
-                        new TextView[]{
-                                holder.constructorName,
-                                holder.constructorPoints});
-
-                if (constructorId != null) {
-                    if (currentConstructorId.equals(constructorId)) {
-                        UIUtils.animateCardBackgroundColor(context, holder.constructorCard, R.color.yellow, Color.TRANSPARENT, 1000, 10);
-                    }
+            constructorViewModel.getSelectedConstructor(currentConstructorId).observe(lifecycleOwner, result -> {
+                if (result instanceof Result.Loading) {
+                    return;
                 }
+                if (result.isSuccess()) {
+                    Constructor constructor = ((Result.ConstructorSuccess) result).getData();
+                    constructorStandingsElement.setConstructor(constructor);
 
-                holder.constructorCard.setOnClickListener(v -> goToBioPage(position));
+                    holder.constructorCardInnerLayout.setBackground(AppCompatResources.getDrawable(context,
+                            Objects.requireNonNull(Constants.TEAM_GRADIENT_COLOR.get(currentConstructorId))));
 
-                UIUtils.loadSequenceOfImagesWithGlide(context,
-                        new String[]{
-                                constructor.getCar_pic_url(),
-                                constructor.getTeam_logo_url()},
-                        new ImageView[]{
-                                holder.constructorCarImage,
-                                holder.constructorLogo},
+                    UIUtils.setTextViewTextWithCondition(constructorStandingsElement.getPosition() == null,
+                            ContextCompat.getString(context, R.string.last_constructor_position), //if true
+                            constructorStandingsElement.getPosition(), //if false
+                            holder.constructorPosition);
 
-                        () -> processDriverOne(holder, constructor, position));
-            }
-        });
+                    UIUtils.multipleSetTextViewText(
+                            new String[]{
+                                    constructor.getName(),
+                                    constructorStandingsElement.getPoints()},
+                            new TextView[]{
+                                    holder.constructorName,
+                                    holder.constructorPoints});
+
+                    if (constructorId != null) {
+                        if (currentConstructorId.equals(constructorId)) {
+                            UIUtils.animateCardBackgroundColor(context, holder.constructorCard, R.color.yellow, Color.TRANSPARENT, 1000, 10);
+                        }
+                    }
+
+                    holder.constructorCard.setOnClickListener(v -> goToBioPage(position));
+
+                    UIUtils.loadSequenceOfImagesWithGlide(context,
+                            new String[]{
+                                    constructor.getCar_pic_url(),
+                                    constructor.getTeam_logo_url()},
+                            new ImageView[]{
+                                    holder.constructorCarImage,
+                                    holder.constructorLogo},
+
+                            () -> processDriverOne(holder, constructor, position));
+                }else{
+                    showConstructorNotFound(holder, currentConstructorId);
+                }
+            });
+
+
 
     }
 
@@ -120,39 +125,90 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
     }
 
     private void processDriverOne(ConstructorViewHolder holder, Constructor constructor, int position) {
-        driverViewModel.getDriver(constructor.getDriverOneId()).observe(lifecycleOwner, result -> {
-            if (result instanceof Result.Loading) {
-                return;
-            }
-            if (result.isSuccess()) {
-                Driver driverOne = ((Result.DriverSuccess) result).getData();
+        try{
+            driverViewModel.getDriver(constructor.getDriverOneId()).observe(lifecycleOwner, result -> {
+                if (result instanceof Result.Loading) {
+                    return;
+                }
+                if (result.isSuccess()) {
+                    Driver driverOne = ((Result.DriverSuccess) result).getData();
 
-                UIUtils.singleSetTextViewText(driverOne.getFullName(), holder.driverOneName);
-                UIUtils.loadImageWithGlide(context, driverOne.getDriver_pic_url(), holder.driverOneImage,
-                        () -> processDriverTwo(holder, constructor, position));
-            }
-        });
+                    UIUtils.singleSetTextViewText(driverOne.getFullName(), holder.driverOneName);
+                    UIUtils.loadImageWithGlide(context, driverOne.getDriver_pic_url(), holder.driverOneImage,
+                            () -> processDriverTwo(holder, constructor, position));
+                }else{
+                    setMissingDriver(holder, constructor.getDriverOneId(), constructor, position, 1);
+                }
+            });
+        } catch (RuntimeException e) {
+            setMissingDriver(holder, constructor.getDriverOneId(), constructor, position, 1);
+        }
+
     }
 
     private void processDriverTwo(ConstructorViewHolder holder, Constructor constructor, int position) {
-        driverViewModel.getDriver(constructor.getDriverTwoId()).observe(lifecycleOwner, result -> {
-            if (result instanceof Result.Loading) {
-                return;
-            }
-            if (result.isSuccess()) {
-                Driver driverTwo = ((Result.DriverSuccess) result).getData();
+        try{
+            driverViewModel.getDriver(constructor.getDriverTwoId()).observe(lifecycleOwner, result -> {
+                if (result instanceof Result.Loading) {
+                    return;
+                }
+                if (result.isSuccess()) {
+                    Driver driverTwo = ((Result.DriverSuccess) result).getData();
 
-                UIUtils.singleSetTextViewText(driverTwo.getFullName(), holder.driverTwoName);
-                UIUtils.loadImageWithGlide(context, driverTwo.getDriver_pic_url(), holder.driverTwoImage, () -> {
+                    UIUtils.singleSetTextViewText(driverTwo.getFullName(), holder.driverTwoName);
+                    UIUtils.loadImageWithGlide(context, driverTwo.getDriver_pic_url(), holder.driverTwoImage, () -> endLoading(position));
+                }else{
+                    setMissingDriver(holder, constructor.getDriverTwoId(), constructor, position, 2);
+                }
+            });
+        } catch (RuntimeException e) {
+            setMissingDriver(holder, constructor.getDriverTwoId(), constructor, position, 2);
+        }
 
-                    loadingScreen.updateProgress();
+    }
 
-                    Log.i("ConstructorsStanding", "onBindViewHolder " + position + "/" + getItemCount());
-                    loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);
+    private void endLoading(int position) {
+        loadingScreen.updateProgress();
 
-                });
-            }
-        });
+        Log.i("ConstructorsStanding", "onBindViewHolder " + position + "/" + getItemCount());
+        loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);
+    }
+
+    private void setMissingDriver(ConstructorViewHolder holder, String driverId, Constructor constructor, int position, int driverType) {
+        if(driverId.contains("_")) {
+            driverId = driverId.split("_")[1];
+        }
+
+        switch (driverType){
+            case 1 :
+                UIUtils.singleSetTextViewText(driverId.toUpperCase(), holder.driverOneName);
+                UIUtils.loadImageWithGlide(context, null, holder.driverOneImage,
+                        () -> processDriverTwo(holder, constructor, position));
+                break;
+            case 2 :
+                UIUtils.singleSetTextViewText(driverId.toUpperCase(), holder.driverTwoName);
+                UIUtils.loadImageWithGlide(context, null, holder.driverTwoImage, () -> endLoading(position));
+        }
+
+    }
+
+    private void showConstructorFound(ConstructorStandingsRecyclerAdapter.ConstructorViewHolder holder) {
+        holder.constructorCardInnerLayout.setVisibility(View.VISIBLE);
+        holder.constructorNotFound.setVisibility(View.GONE);
+    }
+
+    private void showConstructorNotFound(ConstructorViewHolder holder, String constructorId) {
+        holder.constructorCardInnerLayout.setVisibility(View.INVISIBLE);
+        holder.constructorNotFound.setVisibility(View.VISIBLE);
+        Log.i("ConstructorsStandingAdapter", "Constructor not found id test: " + constructorId + " -> " + constructorId.contains("_"));
+
+        if(constructorId.contains("_")) {
+            constructorId = constructorId.split("_")[0] + " " + constructorId.split("_")[1];
+        }
+
+        UIUtils.singleSetTextViewText(context.getString(R.string.constructor_info_not_found_upper_case, constructorId.toUpperCase()), holder.constructorNotFound);
+
+
     }
 
     @Override
@@ -162,7 +218,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
 
     public static class ConstructorViewHolder extends RecyclerView.ViewHolder {
 
-        TextView constructorName, constructorPoints, constructorPosition, driverOneName, driverTwoName;
+        TextView constructorName, constructorPoints, constructorPosition, driverOneName, driverTwoName, constructorNotFound;
         ImageView constructorLogo, constructorCarImage, driverOneImage, driverTwoImage;
         LinearLayout constructorCardInnerLayout;
         MaterialCardView constructorCard;
@@ -181,6 +237,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
             driverTwoImage = itemView.findViewById(R.id.driver_2_pic);
             constructorCardInnerLayout = itemView.findViewById(R.id.team_card);
             constructorCard = itemView.findViewById(R.id.team_card_view);
+            constructorNotFound = itemView.findViewById(R.id.constructor_not_found);
         }
     }
 }

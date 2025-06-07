@@ -118,13 +118,16 @@ public class ConstructorRepository {
                     lastUpdateTimestamps.put(constructorId, System.currentTimeMillis());
                     Objects.requireNonNull(constructorCache.get(constructorId)).postValue(new Result.ConstructorSuccess(constructor));
                 } else {
-                    Log.e(TAG, "Driver not found: " + constructorId);
+                    Log.e(TAG, "Constructor not found: " + constructorId);
+                    throw new RuntimeException("Constructor not found in local database: " + constructorId);
                 }
             }
 
             @Override
             public void onError(Exception e) {
-                Log.e(TAG, "Error loading driver from local database: " + e.getMessage());
+                Log.e(TAG, "Error loading constructor from local database: " + e.getMessage());
+                Objects.requireNonNull(constructorCache.get(constructorId)).postValue(
+                        new Result.Error("Error loading constructor from local database: " + e.getMessage()));
             }
         });
     }

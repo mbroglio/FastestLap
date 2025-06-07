@@ -73,49 +73,76 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
             driverStandingsElement = driversStandingList.get(position);
         }
 
-        driverViewModel.getDriver(driverStandingsElement.getDriver().getDriverId()).observe(lifecycleOwner, result -> {
-            if (result instanceof Result.Loading) {
-                return;
-            }
-            if (result.isSuccess()) {
-                Driver driver = ((Result.DriverSuccess) result).getData();
+        try{
+            driverViewModel.getDriver(driverStandingsElement.getDriver().getDriverId()).observe(lifecycleOwner, result -> {
+                if (result instanceof Result.Loading) {
+                    return;
+                }
+                if (result.isSuccess()) {
+                    showDriverFound(holder);
+                    Driver driver = ((Result.DriverSuccess) result).getData();
 
-                UIUtils.multipleSetTextViewText(
-                        new String[]{
-                                driver.getFullName(),
-                                driverStandingsElement.getPoints(),
-                        },
-                        new TextView[]{
-                                holder.driverName,
-                                holder.driverPoints,
+                    UIUtils.multipleSetTextViewText(
+                            new String[]{
+                                    driver.getFullName(),
+                                    driverStandingsElement.getPoints(),
+                            },
+                            new TextView[]{
+                                    holder.driverName,
+                                    holder.driverPoints,
 
-                        });
+                            });
 
-                UIUtils.setTextViewTextWithCondition(driverStandingsElement.getPosition() == null || driverStandingsElement.getPosition().equals("-"),
-                        ContextCompat.getString(context, R.string.last_driver_position), //if true
-                        driverStandingsElement.getPosition(), //if false
-                        holder.driverPosition);
+                    UIUtils.setTextViewTextWithCondition(driverStandingsElement.getPosition() == null || driverStandingsElement.getPosition().equals("-"),
+                            ContextCompat.getString(context, R.string.last_driver_position), //if true
+                            driverStandingsElement.getPosition(), //if false
+                            holder.driverPosition);
 
-                if (driverId != null) {
-                    if (driverStandingsElement.getDriver().getDriverId().equals(driverId)) {
-                        UIUtils.animateCardBackgroundColor(context, holder.driverCard.findViewById(R.id.driver_card_view), R.color.yellow, Color.TRANSPARENT, 1000, 10);
+                    if (driverId != null) {
+                        if (driverStandingsElement.getDriver().getDriverId().equals(driverId)) {
+                            UIUtils.animateCardBackgroundColor(context, holder.driverCard.findViewById(R.id.driver_card_view), R.color.yellow, Color.TRANSPARENT, 1000, 10);
+                        }
                     }
+
+                    holder.driverCard.setOnClickListener(v -> goToBioPage(position));
+
+                    if (driver.getTeam_id() != null) {
+                        holder.driverCardInnerLayout.setBackground(AppCompatResources.getDrawable(context, Constants.TEAM_GRADIENT_COLOR.get(driver.getTeam_id())));
+                    } else {
+                        holder.driverCardInnerLayout.setBackground(AppCompatResources.getDrawable(context, R.color.timer_gray));
+                        holder.driverTeamImage.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.f1_car_icon_filled));
+                    }
+
+                    UIUtils.loadImageWithGlide(context, driver.getDriver_pic_url(), holder.driverImage, () ->
+                            generateForConstructor(holder, driver, position));
+
+                }else{
+                    showDriverNotFound(holder, driverStandingsElement.getDriver().getDriverId());
                 }
+            });
+        } catch (RuntimeException e) {
+            Log.e("DriversStandingAdapter", "driver error: " + e.getMessage());
+            showDriverNotFound(holder, driverStandingsElement.getDriver().getDriverId());
+        }
 
-                holder.driverCard.setOnClickListener(v -> goToBioPage(position));
+    }
 
-                if (driver.getTeam_id() != null) {
-                    holder.driverCardInnerLayout.setBackground(AppCompatResources.getDrawable(context, Constants.TEAM_GRADIENT_COLOR.get(driver.getTeam_id())));
-                } else {
-                    holder.driverCardInnerLayout.setBackground(AppCompatResources.getDrawable(context, R.color.timer_gray));
-                    holder.driverTeamImage.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.f1_car_icon_filled));
-                }
+    private void showDriverFound(DriverViewHolder holder) {
+        holder.driverCardInnerLayout.setVisibility(View.VISIBLE);
+        holder.driverNotFound.setVisibility(View.GONE);
+    }
 
-                UIUtils.loadImageWithGlide(context, driver.getDriver_pic_url(), holder.driverImage, () ->
-                        generateForConstructor(holder, driver, position));
+    private void showDriverNotFound(DriverViewHolder holder, String driverId) {
+        holder.driverCardInnerLayout.setVisibility(View.INVISIBLE);
+        holder.driverNotFound.setVisibility(View.VISIBLE);
+        Log.i("DriversStandingAdapter", "Driver not found id test: " + driverId + " -> " + driverId.contains("_"));
 
-            }
-        });
+        if(driverId.contains("_")) {
+            driverId = driverId.split("_")[1];
+        }
+
+        UIUtils.singleSetTextViewText(context.getString(R.string.driver_info_not_found_upper_case, driverId.toUpperCase()), holder.driverNotFound);
+
     }
 
     private void goToBioPage(int position) {
@@ -164,7 +191,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
     public static class DriverViewHolder extends RecyclerView.ViewHolder {
 
         MaterialCardView driverCard;
-        TextView driverName, driverPoints, driverPosition;
+        TextView driverName, driverPoints, driverPosition, driverNotFound;
         ImageView driverImage, driverTeamImage;
         RelativeLayout driverCardInnerLayout;
 
@@ -178,6 +205,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
             driverImage = itemView.findViewById(R.id.driver_image);
             driverTeamImage = itemView.findViewById(R.id.team_logo);
             driverCardInnerLayout = itemView.findViewById(R.id.small_driver_card);
+            driverNotFound = itemView.findViewById(R.id.driver_not_found);
         }
     }
 }

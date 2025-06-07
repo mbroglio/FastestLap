@@ -37,6 +37,7 @@ public class LoadingScreen {
     }
 
     public void showLoadingScreen(boolean invisible) {
+        resetTimer();
         if (fragmentView != null) {
             if (invisible) {
                 fragmentView.setVisibility(View.INVISIBLE);

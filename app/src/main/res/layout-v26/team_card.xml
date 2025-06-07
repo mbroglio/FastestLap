@@ -13,6 +13,25 @@
     android:focusable="true"
     tools:context=".ui.standing.ConstructorsStandingActivity">
 
+    <TextView
+        android:id="@+id/constructor_not_found"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/timer_gray"
+        android:gravity="center"
+        android:paddingStart="@dimen/medium_margin"
+        android:paddingEnd="@dimen/medium_margin"
+        android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+        android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
+        android:autoSizeTextType="uniform"
+        android:fontFamily="@font/orbitron_bold"
+        android:maxLines="2"
+        android:textColor="@color/black"
+        android:textSize="@dimen/layout_subtitle_text_size"
+        android:visibility="gone">
+
+    </TextView>
+
     <LinearLayout
         android:id="@+id/team_card"
         android:layout_width="match_parent"
