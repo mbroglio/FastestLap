@@ -13,20 +13,18 @@
         android:id="@+id/driver_history_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        tools:ignore="UselessParent">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_weight="2.25"
-            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
-            android:autoSizeTextType="uniform"
             android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
             android:maxLines="1"
-            android:text="YEAR"
+            android:text="@string/year_upper_case"
             android:textColor="@color/black"
             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -39,7 +37,7 @@
             android:layout_weight="2.3"
             android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="POS"
+            android:text="@string/pos_upper_case"
             android:textColor="@color/black"
             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -52,7 +50,7 @@
             android:layout_weight="2.3"
             android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="PTS"
+            android:text="@string/points_upper_case"
             android:textColor="@color/black"
             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -65,9 +63,11 @@
             android:layout_weight="2.2"
             android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="WINS"
+            android:text="@string/wins_upper_case"
             android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size"></TextView>
+            android:textSize="@dimen/layout_subtitle_text_size">
+
+        </TextView>
 
         <TextView
             android:layout_width="match_parent"
@@ -77,9 +77,11 @@
             android:layout_weight="2.2"
             android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="POD"
+            android:text="@string/pod_upper_case"
             android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size"></TextView>
+            android:textSize="@dimen/layout_subtitle_text_size">
+
+        </TextView>
 
     </LinearLayout>
 

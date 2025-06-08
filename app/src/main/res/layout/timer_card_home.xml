@@ -34,7 +34,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_marginStart="10dp"
                     android:fontFamily="@font/orbitron_regular"
-                    android:text="Next Event:"
+                    android:text="@string/next_event"
                     android:textColor="@color/black">
 
                 </TextView>
@@ -45,11 +45,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     android:layout_toEndOf="@+id/text_1"
-                    android:autoSizeMaxTextSize="20sp"
-                    android:autoSizeMinTextSize="11sp"
-                    android:autoSizeTextType="uniform"
                     android:fontFamily="@font/orbitron_bold"
-                    android:text="Emilia Romagna Grand Prix"
                     android:textColor="@color/black">
 
                 </TextView>
@@ -96,7 +92,7 @@
                         android:layout_gravity="center"
                         android:layout_marginEnd="20dp"
                         android:fontFamily="@font/orbitron_regular"
-                        android:text="DAYS"
+                        android:text="@string/days_upper_case"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="@color/black"
                         android:textSize="11sp">
@@ -109,7 +105,7 @@
                         android:layout_gravity="center"
                         android:layout_marginEnd="20dp"
                         android:fontFamily="@font/orbitron_regular"
-                        android:text="HRS"
+                        android:text="@string/hours_upper_case"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="@color/black"
                         android:textSize="11sp">
@@ -122,7 +118,7 @@
                         android:layout_gravity="center"
                         android:layout_marginEnd="20dp"
                         android:fontFamily="@font/orbitron_regular"
-                        android:text="MINS"
+                        android:text="@string/minutes_upper_case"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="@color/black"
                         android:textSize="11sp">
@@ -134,7 +130,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:fontFamily="@font/orbitron_regular"
-                        android:text="SECS"
+                        android:text="@string/seconds_upper_case"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="@color/black"
                         android:textSize="11sp">

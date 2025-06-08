@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/timer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -35,9 +36,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_toEndOf="@+id/text_1"
-            android:autoSizeMaxTextSize="16sp"
-            android:autoSizeMinTextSize="11sp"
-            android:autoSizeTextType="uniform"
             android:fontFamily="@font/orbitron_bold"
             android:text="@string/not_found"
             android:textColor="@color/black">
@@ -207,7 +205,8 @@
         android:layout_below="@id/timer_layout"
         android:layout_alignParentEnd="true"
         android:layout_marginStart="20dp"
-        android:visibility="visible">
+        android:visibility="visible"
+        tools:ignore="UseCompoundDrawables">
 
         <TextView
             android:id="@+id/live_now"
