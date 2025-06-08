@@ -4,7 +4,6 @@ import androidx.room.Entity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +12,6 @@ import lombok.ToString;
 
 @Getter
 @Setter
-//@EqualsAndHashCode(callSuper = true)
 @ToString
 @NoArgsConstructor
 @Entity(tableName = "WeeklyRaceClassic")

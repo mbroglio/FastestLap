@@ -42,7 +42,6 @@ public class Constructor implements Parcelable {
     private String url;
     private String name;
     private String nationality;
-    // Bio Data
     private String car_pic_url;
     private String chassis;
     private List<String> drivers;

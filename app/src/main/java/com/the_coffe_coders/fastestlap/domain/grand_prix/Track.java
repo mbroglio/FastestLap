@@ -29,7 +29,6 @@ public class Track {
     private String trackName;
     private Location location;
 
-    // Bio Data
     private String track_full_layout_url;
     @SerializedName("circuit_history")
     private List<TrackHistory> track_history;
