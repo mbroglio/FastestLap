@@ -62,7 +62,7 @@ public class DriverRepository {
         if (!driverCache.containsKey(driverId) || !lastUpdateTimestamps.containsKey(driverId) || lastUpdateTimestamps.get(driverId) == null) {
             driverCache.put(driverId, new MutableLiveData<>());
             loadDriver(driverId);
-        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(driverId) > 6000) {
+        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(driverId) > 60000) {
             // Se i dati sono vecchi, prova a caricare nuovi dati solo se c'è connessione
             if (isNetworkAvailable()) {
                 loadDriver(driverId);

@@ -21,11 +21,8 @@
             android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
-            android:autoSizeMaxTextSize="@dimen/page_title_text_size"
-            android:autoSizeMinTextSize="9sp"
-            android:autoSizeTextType="uniform"
             android:fontFamily="@font/orbitron_bold"
-            android:text="-!-"
+            android:text="@string/not_found"
             android:textColor="@color/white"
             android:textSize="20sp">
 
@@ -105,7 +102,7 @@
         android:fontFamily="@font/orbitron_bold"
         android:text="@string/last_race_upper_case"
         android:textColor="@color/white"
-        android:textSize="11dp" />
+        android:textSize="11sp" />
 
     <RelativeLayout
         android:layout_width="match_parent"

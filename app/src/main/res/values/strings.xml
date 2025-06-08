@@ -162,4 +162,5 @@
     <string name="lap">Lap %1$s</string>
     <string name="podium_upper_case">PODIUM</string>
     <string name="full_race_results">Full race results</string>
+    <string name="favorite_text">Favorite</string>
 </resources>

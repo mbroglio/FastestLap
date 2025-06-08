@@ -69,7 +69,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="5dp">
+                    android:padding="5dp"
+                    tools:ignore="UseCompoundDrawables">
 
                     <ImageView
                         android:id="@+id/driver_1_pic"
@@ -83,9 +84,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="6dp"
                         android:layout_marginTop="5dp"
-                        android:autoSizeMaxTextSize="20sp"
-                        android:autoSizeMinTextSize="11sp"
-                        android:autoSizeTextType="uniform"
                         android:fontFamily="@font/orbitron_regular"
                         android:maxWidth="150dp"
                         android:text="@string/not_found"
@@ -97,7 +95,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:padding="5dp">
+                    android:padding="5dp"
+                    tools:ignore="UseCompoundDrawables">
 
                     <ImageView
                         android:id="@+id/driver_2_pic"

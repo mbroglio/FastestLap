@@ -56,11 +56,8 @@
                         android:layout_marginTop="5dp"
                         android:layout_marginEnd="10dp"
                         android:layout_marginBottom="3dp"
-                        android:autoSizeMaxTextSize="20sp"
-                        android:autoSizeMinTextSize="11sp"
-                        android:autoSizeTextType="uniform"
                         android:fontFamily="@font/orbitron_bold"
-                        android:text="-!-"
+                        android:text="@string/not_found"
                         android:textColor="@color/white"
                         android:textSize="20sp">
 
@@ -140,7 +137,7 @@
                     android:fontFamily="@font/orbitron_bold"
                     android:text="@string/last_race_upper_case"
                     android:textColor="@color/white"
-                    android:textSize="11dp" />
+                    android:textSize="11sp" />
 
                 <RelativeLayout
                     android:layout_width="match_parent"
@@ -443,7 +440,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentTop="true"
                                 android:layout_centerInParent="true"
-                                android:orientation="horizontal">
+                                android:orientation="horizontal"
+                                tools:ignore="UseCompoundDrawables">
 
                                 <ImageView
                                     android:layout_width="15dp"

@@ -31,9 +31,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:autoSizeMaxTextSize="25sp"
-                    android:autoSizeMinTextSize="12sp"
-                    android:autoSizeTextType="uniform"
                     android:fontFamily="@font/orbitron_bold"
                     android:gravity="center"
                     android:maxLines="1"
@@ -204,7 +201,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:fontFamily="@font/orbitron_bold"
-                        android:text="Place of Birth:"
+                        android:text="@string/place_of_birth"
                         android:textColor="@color/white"
                         android:textSize="@dimen/layout_subtitle_text_size" />
 
@@ -234,7 +231,7 @@
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="10dp"
                         android:fontFamily="@font/orbitron_bold"
-                        android:text="Date of Birth:"
+                        android:text="@string/date_of_birth"
                         android:textColor="@color/white"
                         android:textSize="@dimen/layout_subtitle_text_size" />
 
@@ -264,7 +261,7 @@
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="10dp"
                         android:fontFamily="@font/orbitron_bold"
-                        android:text="Age:"
+                        android:text="@string/age"
                         android:textColor="@color/white"
                         android:textSize="@dimen/layout_subtitle_text_size" />
 
@@ -294,7 +291,7 @@
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="10dp"
                         android:fontFamily="@font/orbitron_bold"
-                        android:text="Weight - Height:"
+                        android:text="@string/weight_height"
                         android:textColor="@color/white"
                         android:textSize="@dimen/layout_subtitle_text_size" />
 
@@ -322,7 +319,7 @@
                             android:layout_gravity="center"
                             android:layout_marginStart="3dp"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="kg"
+                            android:text="@string/kg"
                             android:textColor="@color/white"
                             android:textSize="@dimen/text_minor_importance_size">
 
@@ -356,7 +353,7 @@
                             android:layout_gravity="center"
                             android:layout_marginStart="3dp"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="m"
+                            android:text="@string/m"
                             android:textColor="@color/white"
                             android:textSize="@dimen/text_minor_importance_size">
 
@@ -370,7 +367,7 @@
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="10dp"
                         android:fontFamily="@font/orbitron_bold"
-                        android:text="Best Result:"
+                        android:text="@string/best_result"
                         android:textColor="@color/white"
                         android:textSize="@dimen/layout_subtitle_text_size" />
 
@@ -400,7 +397,7 @@
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="10dp"
                         android:fontFamily="@font/orbitron_bold"
-                        android:text="Championships:"
+                        android:text="@string/championships"
                         android:textColor="@color/white"
                         android:textSize="@dimen/layout_subtitle_text_size" />
 
@@ -430,7 +427,7 @@
                         android:layout_marginStart="5dp"
                         android:layout_marginTop="10dp"
                         android:fontFamily="@font/orbitron_bold"
-                        android:text="First Entry:"
+                        android:text="@string/first_entry"
                         android:textColor="@color/white"
                         android:textSize="@dimen/layout_subtitle_text_size" />
 
@@ -448,16 +445,10 @@
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="2dp"
                             android:fontFamily="@font/orbitron_regular"
-                            android:text="NA"
                             android:textColor="@color/white"
                             android:textSize="@dimen/body_text_size" />
 
                     </LinearLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="bottom" />
 
                 </LinearLayout>
 

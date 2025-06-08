@@ -32,7 +32,6 @@ public class DatabaseConverters {
 
     public static final Gson gson = new Gson();
 
-    //Driver Standings Element List
     @TypeConverter
     public static String fromDriverStandingsElementList(List<DriverStandingsElement> list) {
         return gson.toJson(list);

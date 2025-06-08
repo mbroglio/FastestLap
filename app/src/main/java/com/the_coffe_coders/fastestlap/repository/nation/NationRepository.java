@@ -67,7 +67,7 @@ public class NationRepository {
             }else {
                 loadNationFromLocal(nationId);
             }
-        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(nationId) > 6000) {
+        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(nationId) > 60000) {
             if(isNetworkAvailable()) {
                 loadNation(nationId);
             }else {

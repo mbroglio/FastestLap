@@ -6,6 +6,5 @@ import java.util.List;
 
 public interface WeeklyRacesCallback {
     void onSuccess(List<WeeklyRace> weeklyRaces);
-
     void onFailure(Exception exception);
 }

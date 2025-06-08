@@ -43,6 +43,8 @@ public class Driver implements Parcelable {
     @PrimaryKey(autoGenerate = true)
     private long uid;
     @Getter
+    // F = Firebase A = API
+
     private String driverId; // A
     private String permanentNumber; // A
     private String code; // A
@@ -51,11 +53,10 @@ public class Driver implements Parcelable {
     private String familyName; // F/A
     private String dateOfBirth; // F/A
     private String nationality;
-    // Bio Data
     private String best_result; // F
     private String birth_place; // F
     private String championships; // F
-    @Ignore // Check if it generates errors
+    @Ignore
     private List<DriverHistory> driver_history; // F
     private String driver_pic_url; // F
     private String height; // F
@@ -63,7 +64,7 @@ public class Driver implements Parcelable {
     private String racing_number_pic_url; // F
     private String team_id; // F
     private String weight;// F
-    private String first_entry; // F
+    private String first_entry;//F
 
     protected Driver(Parcel in) {
         uid = in.readLong();
