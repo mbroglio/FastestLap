@@ -1,5 +1,4 @@
 # FastestLap
-
 ### The Coffee Coders
 - Broglio Matteo - 899562
 - Caputo Lorenzo - 894528
