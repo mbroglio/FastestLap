@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/homepage"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.fragment.HomeFragment">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="0dp" />
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/home_refresh_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/screen_background_color"
+        android:orientation="vertical">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/screen_background_color"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <include
+                        android:id="@+id/last_race_results"
+                        layout="@layout/home_last_race_results_layout"
+                        android:visibility="visible" />
+
+                    <include
+                        android:id="@+id/season_results"
+                        layout="@layout/home_season_final_standings_layout"
+                        android:visibility="gone" />
+
+                    <include
+                        android:id="@+id/pending_last_race_results"
+                        layout="@layout/home_results_not_available_layout"
+                        android:visibility="gone" />
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@color/white">
+
+                </LinearLayout>
+
+                <FrameLayout
+                    android:id="@+id/timer_card_countdown"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/medium_margin"
+                    android:layout_marginBottom="@dimen/medium_margin"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:visibility="visible">
+
+                    <include layout="@layout/timer_card_home" />
+
+                </FrameLayout>
+
+                <TextView
+                    android:id="@+id/timer_updating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="@dimen/medium_margin"
+                    android:layout_marginBottom="@dimen/medium_margin"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:text="@string/updating_upper_case_with_dots"
+                    android:textColor="@color/white"
+                    android:textSize="30sp"
+                    android:visibility="gone">
+
+                </TextView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:background="@color/white">
+
+                </LinearLayout>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_marginTop="@dimen/medium_margin"
+                    android:layout_marginEnd="@dimen/medium_margin"
+                    app:cardBackgroundColor="@color/timer_gray"
+                    app:strokeColor="@color/black"
+                    app:strokeWidth="3dp">
+
+                    <FrameLayout
+                        android:id="@+id/favorite_driver_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <include
+                            android:id="@+id/favorite_driver"
+                            layout="@layout/home_favorite_driver_layout"
+                            android:visibility="visible" />
+
+                        <include
+                            android:id="@+id/missing_favorite_driver"
+                            layout="@layout/home_missing_favorite_driver_layout"
+                            android:visibility="gone" />
+
+                        <include
+                            android:id="@+id/pending_favorite_driver"
+                            layout="@layout/home_select_favorite_driver_layout"
+                            android:visibility="gone" />
+
+                    </FrameLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_marginTop="@dimen/medium_margin"
+                    android:layout_marginEnd="@dimen/medium_margin"
+                    app:cardBackgroundColor="@color/timer_gray"
+                    app:strokeColor="@color/black"
+                    app:strokeWidth="3dp">
+
+                    <FrameLayout
+                        android:id="@+id/favourite_constructor_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <include
+                            android:id="@+id/favorite_constructor"
+                            layout="@layout/home_favorite_constructor_layout"
+                            android:visibility="visible" />
+
+                        <include
+                            android:id="@+id/missing_favorite_constructor"
+                            layout="@layout/home_missing_favorite_constructor_layout"
+                            android:visibility="gone" />
+
+                        <include
+                            android:id="@+id/pending_favorite_constructor"
+                            layout="@layout/home_select_favorite_constructor_layout"
+                            android:visibility="gone" />
+
+                    </FrameLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+    <include
+        android:id="@+id/loading_screen"
+        layout="@layout/loading_screen"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

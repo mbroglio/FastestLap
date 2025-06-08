@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "654782581813",
+    "firebase_url": "https://fastest-lap-ac540-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "fastest-lap-ac540",
+    "storage_bucket": "fastest-lap-ac540.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:654782581813:android:224fbae4e642e3aea4f57c",
+        "android_client_info": {
+          "package_name": "com.the_coffe_coders.fastestlap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "654782581813-hr5hgheacp0d8la2mkigk7773fkl45h7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.the_coffe_coders.fastestlap",
+            "certificate_hash": "64bcbb30e92f0d05ae1efecbc861b3588f7f09e4"
+          }
+        },
+        {
+          "client_id": "654782581813-89cn9afo5nkafrisv67c3apkuhhnhuh6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWOm2AR_viN4qCNYJ-yAXAv2LTnxi0RHI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "654782581813-89cn9afo5nkafrisv67c3apkuhhnhuh6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

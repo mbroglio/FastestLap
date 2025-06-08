@@ -1,0 +1,162 @@
+package com.the_coffe_coders.fastestlap.ui.welcome.fragment;
+
+import static com.the_coffe_coders.fastestlap.util.Constants.UNEXPECTED_ERROR;
+import static com.the_coffe_coders.fastestlap.util.Constants.USER_COLLISION_ERROR;
+import static com.the_coffe_coders.fastestlap.util.Constants.WEAK_PASSWORD_ERROR;
+
+import android.app.Application;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProvider;
+
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputEditText;
+import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.user.User;
+import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
+import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
+import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
+import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
+import com.the_coffe_coders.fastestlap.util.UIUtils;
+
+import org.apache.commons.validator.routines.EmailValidator;
+
+import java.util.Objects;
+
+public class SignUpFragment extends DialogFragment {
+
+    private static final String TAG = "RegisterPopup";
+    private UserViewModel userViewModel;
+    private TextInputEditText textInputEmail, textInputPassword;
+    private SharedPreferencesUtils sharedPreferencesUtils;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_sign_up, container, false);
+
+        IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository((Application) requireActivity().getApplicationContext());
+
+        sharedPreferencesUtils = new SharedPreferencesUtils(requireContext());
+
+        userViewModel = new ViewModelProvider(this, new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+        userViewModel.setAuthenticationError(false);
+
+        textInputEmail = view.findViewById(R.id.textInputEmail);
+        textInputPassword = view.findViewById(R.id.textInputPassword);
+
+        Button submitButton = view.findViewById(R.id.submit_button);
+
+        submitButton.setOnClickListener(v -> {
+            String email = Objects.requireNonNull(textInputEmail.getText()).toString();
+            String password = Objects.requireNonNull(textInputPassword.getText()).toString();
+            checkSignUpCredentials(email, password);
+        });
+
+        return view;
+    }
+
+    private void checkSignUpCredentials(String email, String password) {
+        Log.d(TAG, "Email: " + email);
+        Log.d(TAG, "Password: " + password);
+
+        if (isEmailOk(email) & isPasswordOk(password)) {
+            //binding.progressBar.setVisibility(View.VISIBLE);
+            if (!userViewModel.isAuthenticationError()) {
+                Log.i(TAG, "Getting user");
+
+                userViewModel.getUserMutableLiveData(email, password, false).observe(
+                        this, result -> {
+                            if (result.isSuccess()) {
+                                User user = ((Result.UserSuccess) result).getData();
+                                //saveLoginData(email, password, user.getIdToken());
+                                saveSharedPreferences(sharedPreferencesUtils, user);
+                                userViewModel.setAuthenticationError(false);
+                                Log.i(TAG, "User: " + user);
+
+                                UIUtils.navigateToHomePage(getContext());
+                            } else {
+                                userViewModel.setAuthenticationError(true);
+                                Toast.makeText(getContext(), "Email already registered", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            } else {
+                userViewModel.getUser(email, password, false);
+            }
+            //binding.progressBar.setVisibility(View.GONE);
+        } else {
+            userViewModel.setAuthenticationError(true);
+            Snackbar.make(requireView(),
+                    "Error Mail Login", Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    private String getErrorMessage(String message) {
+        switch (message) {
+            case WEAK_PASSWORD_ERROR:
+                return WEAK_PASSWORD_ERROR;
+            case USER_COLLISION_ERROR:
+                return USER_COLLISION_ERROR;
+            default:
+                return UNEXPECTED_ERROR;
+        }
+    }
+
+    private void saveSharedPreferences(SharedPreferencesUtils sharedPreferencesUtils, User user) {
+        sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
+                Constants.SHARED_PREFERENCES_FAVORITE_DRIVER,
+                "null");
+
+        sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
+                Constants.SHARED_PREFERENCES_FAVORITE_TEAM,
+                "null");
+
+        sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME,
+                Constants.SHARED_PREFERENCES_AUTO_LOGIN,
+                "true");
+
+        userViewModel.saveUserPreferences(
+                "null",
+                "null",
+                "true",
+                user.getIdToken()
+        );
+    }
+
+    private boolean isEmailOk(String email) {
+        // Check if the email is valid through the use of this library:
+        // https://commons.apache.org/proper/commons-validator/
+        if (!EmailValidator.getInstance().isValid((email))) {
+            //emailEditText.setError("Error Email Login");
+            Toast.makeText(getContext(), "Invalid email", Toast.LENGTH_SHORT).show();
+            return false;
+        } else {
+            textInputEmail.setError(null);
+            return true;
+        }
+    }
+
+    private boolean isPasswordOk(String password) {
+        // Check if the password length is correct
+        if (password.isEmpty() || password.length() < Constants.MINIMUM_LENGTH_PASSWORD) {
+            //passwordEditText.setError("Error Password Login");
+            Toast.makeText(getContext(), "Invalid password", Toast.LENGTH_SHORT).show();
+            return false;
+        } else {
+            textInputPassword.setError(null);
+            return true;
+        }
+    }
+}

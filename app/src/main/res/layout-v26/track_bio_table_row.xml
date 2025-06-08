@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constructor_bio_table_row"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_top_bottom_margin_timer_grey"
+    android:orientation="vertical"
+    tools:context=".ui.bio.ConstructorBioActivity">
+
+    <LinearLayout
+        android:id="@+id/driver_history_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:orientation="horizontal"
+        tools:ignore="UselessParent">
+
+        <TextView
+            android:id="@+id/season_year"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="0.8"
+            android:fontFamily="@font/orbitron_regular"
+            android:gravity="center"
+            android:textColor="@color/black"
+            android:textSize="@dimen/body_text_size">
+
+        </TextView>
+
+        <RelativeLayout
+            android:id="@+id/race_podium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="50dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="8dp"
+                android:layout_toStartOf="@id/race_highlights_button"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="10dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/orbitron_bold"
+                        android:gravity="center"
+                        android:text="@string/_1_numeric"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/body_text_size">
+
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/first_driver"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:autoSizeMaxTextSize="@dimen/body_text_size"
+                        android:autoSizeMinTextSize="9sp"
+                        android:autoSizeTextType="uniform"
+                        android:fontFamily="@font/orbitron_regular"
+                        android:maxLines="1"
+                        android:text="@string/not_found"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/body_text_size">
+
+                    </TextView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:fontFamily="@font/orbitron_regular"
+                        android:text="@string/separator_high_dash"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/body_text_size">
+
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/first_driver_team"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:autoSizeMaxTextSize="@dimen/text_minor_importance_size"
+                        android:autoSizeMinTextSize="8sp"
+                        android:autoSizeTextType="uniform"
+                        android:fontFamily="@font/orbitron_regular"
+                        android:maxLines="1"
+                        android:text="@string/not_found"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_minor_importance_size">
+
+                    </TextView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="10dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/orbitron_bold"
+                        android:gravity="center"
+                        android:text="@string/_2_numeric"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/body_text_size">
+
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/second_driver"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:autoSizeMaxTextSize="@dimen/body_text_size"
+                        android:autoSizeMinTextSize="9sp"
+                        android:autoSizeTextType="uniform"
+                        android:fontFamily="@font/orbitron_regular"
+                        android:maxLines="1"
+                        android:text="@string/not_found"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/body_text_size">
+
+                    </TextView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:fontFamily="@font/orbitron_regular"
+                        android:text="@string/separator_high_dash"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/body_text_size">
+
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/second_driver_team"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:autoSizeMaxTextSize="@dimen/text_minor_importance_size"
+                        android:autoSizeMinTextSize="8sp"
+                        android:autoSizeTextType="uniform"
+                        android:fontFamily="@font/orbitron_regular"
+                        android:maxLines="1"
+                        android:text="@string/not_found"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_minor_importance_size">
+
+                    </TextView>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="10dp"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/orbitron_bold"
+                        android:gravity="center"
+                        android:text="@string/_3_numeric"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/body_text_size">
+
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/third_driver"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:autoSizeMaxTextSize="@dimen/body_text_size"
+                        android:autoSizeMinTextSize="9sp"
+                        android:autoSizeTextType="uniform"
+                        android:fontFamily="@font/orbitron_regular"
+                        android:maxLines="1"
+                        android:text="@string/not_found"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/body_text_size">
+
+                    </TextView>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:fontFamily="@font/orbitron_regular"
+                        android:text="@string/separator_high_dash"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/body_text_size">
+
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/third_driver_team"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:autoSizeMaxTextSize="@dimen/text_minor_importance_size"
+                        android:autoSizeMinTextSize="8sp"
+                        android:autoSizeTextType="uniform"
+                        android:fontFamily="@font/orbitron_regular"
+                        android:maxLines="1"
+                        android:text="@string/not_found"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/text_minor_importance_size">
+
+                    </TextView>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/race_highlights_button"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:layout_gravity="center"
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/youtube_icon">
+
+            </ImageView>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

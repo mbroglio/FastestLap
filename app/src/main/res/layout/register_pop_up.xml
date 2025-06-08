@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:backgroundTint="@color/white"
+    app:strokeColor="@color/ferrari_secondary"
+    app:strokeWidth="5dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/registration_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/orbitron_bold"
+            android:text="@string/registration"
+            android:textColor="@color/black"
+            android:textSize="@dimen/page_title_text_size" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/email_field"
+            style="?attr/textInputOutlinedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/registration_text"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="@dimen/medium_margin"
+            android:hint="@string/email"
+            android:textColorHint="@color/black"
+            app:boxStrokeErrorColor="@color/ferrari_secondary"
+            app:cursorColor="@color/black"
+            app:cursorErrorColor="@color/ferrari_secondary"
+            app:startIconDrawable="@drawable/email_icon"
+            app:startIconTint="@color/black">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textInputEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_top_left_right_margins"
+                android:fontFamily="@font/orbitron_regular"
+                android:inputType="textEmailAddress"
+                android:textColor="@color/grey_card"
+                android:textSize="@dimen/body_text_size" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/password_field"
+            style="?attr/textInputOutlinedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/email_field"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:layout_marginEnd="@dimen/medium_margin"
+            android:hint="@string/password"
+            android:textColorHint="@color/black"
+            app:boxStrokeErrorColor="@color/ferrari_secondary"
+            app:cursorColor="@color/black"
+            app:cursorErrorColor="@color/ferrari_secondary"
+            app:endIconMode="password_toggle"
+            app:endIconTint="@color/black"
+            app:startIconDrawable="@drawable/password_icon"
+            app:startIconTint="@color/black">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/textInputPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_top_left_right_margins"
+                android:fontFamily="@font/orbitron_regular"
+                android:inputType="textPassword"
+                android:textColor="@color/grey_card"
+                android:textSize="@dimen/body_text_size" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Button
+            android:id="@+id/submit_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/password_field"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:layout_marginEnd="@dimen/medium_margin"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="@color/ferrari_secondary"
+            android:fontFamily="@font/orbitron_bold"
+            android:text="@string/submit_upper_case"
+            android:textColor="@color/black"
+            android:textSize="@dimen/layout_subtitle_text_size">
+
+        </Button>
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

@@ -1,10 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
+    id("io.freefair.lombok") version "8.11"
+    id("com.google.gms.google-services")
 }
 
 android {
     namespace = "com.the_coffe_coders.fastestlap"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.the_coffe_coders.fastestlap"
@@ -14,6 +16,10 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    sourceSets {
+        getByName("androidTest").assets.srcDirs("$projectDir/schemas")
     }
 
     buildTypes {
@@ -32,12 +38,38 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
+    implementation(libs.gson)
+    implementation(libs.converter.gson)
+    implementation(libs.retrofit)
+    implementation(libs.converter.scalars)
+    implementation(libs.threetenbp)
+    implementation (libs.fragment.ktx)
+    implementation(libs.logging.interceptor)
+    implementation(libs.navigation.fragment)
+    implementation(libs.navigation.ui)
+    implementation(libs.room.common)
+    implementation(libs.room.runtime)
+    implementation(libs.firebase.database)
+    implementation(libs.firebase.auth)
+    implementation(libs.play.services.auth)
+    implementation(libs.firebase.firestore)
+    implementation(libs.lifecycle.livedata)
+    implementation(libs.swiperefreshlayout)
+    compileOnly(libs.lombok.v11830)
+    annotationProcessor(libs.lombok.v11830)
+    testCompileOnly (libs.lombok.v11830)
+    testAnnotationProcessor (libs.lombok.v11830)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+    annotationProcessor(libs.room.compiler)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.commons.validator)
+    implementation(libs.glide)
+    annotationProcessor(libs.compiler)
 }

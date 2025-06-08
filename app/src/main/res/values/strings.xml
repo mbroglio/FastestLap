@@ -1,3 +1,166 @@
 <resources>
-    <string name="app_name">Fastest Lap</string>
+    <string name="app_name" translatable="false">Fastest Lap</string>
+    <string name="app_credits" translatable="false">By\nThe Coffee Coders</string>
+
+
+    <string name="not_found" translatable="false">-!-</string>
+    <string name="unknown">Unknown</string>
+
+    <string name="raceResult">RESULT</string>
+    <string name="rank">Rank:</string>
+    <string name="separator_high_dash" translatable="false">-</string>
+    <string name="points_upper_case" translatable="false">PTS</string>
+    <string name="next_event">Next Event :</string>
+
+    <string name="_1_numeric" translatable="false">1</string>
+    <string name="_2_numeric" translatable="false">2</string>
+    <string name="_3_numeric" translatable="false">3</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="racing_menu">Racing</string>
+    <string name="home_menu" translatable="false">Home</string>
+    <string name="standings_menu">Standings</string>
+    <string name="racing_upper_case">RACING</string>
+    <string name="standings_upper_case">STANDINGS</string>
+    <string name="season_ended_upper_case">SEASON ENDED</string>
+    <string name="pending_results_upper_case">PENDING RESULTS</string>
+    <string name="upcoming_upper_case">UPCOMING</string>
+    <string name="past_upper_case">PAST</string>
+
+
+    <string name="save_upper_case">SAVE</string>
+    <string name="profile_upper_case">PROFILE</string>
+    <string name="sign_out_upper_case" translatable="false">SIGN OUT</string>
+
+    <string name="last_driver_position" translatable="false">20</string>
+    <string name="last_constructor_position" translatable="false">10</string>
+
+
+    <string name="loading_upper_case">LOADING%1$s</string>
+
+
+    <string name="live_upper_case" translatable="false">LIVE</string>
+
+
+    <string name="round" translatable="false">Round %1$s</string>
+    <string name="round_upper_case_plus_value" translatable="false">ROUND %1$s</string>
+    <string name="updating_upper_case_with_dots">UPDATING…</string>
+
+
+    <!-- EVENT PAGE STRINGS -->
+    <string name="weather_forecast">Weather forecast</string>
+    <string name="weather">weather in %1$s</string> <!-- text in browser's search bar -->
+    <string name="weekend_schedule_upper_case">WEEKEND SCHEDULE:</string>
+    <string name="next_session">Next Session in:</string>
+    <string name="race_result_upper_case">RACE RESULT:</string>
+    <string name="pending_results">Pending\nresults…</string>
+    <string name="race_cancelled_upper_case">RACE\nCANCELLED</string>
+    <string name="live_session_upper_case">LIVE SESSION</string>
+    <string name="no_live_session_available_upper_case">NO LIVE SESSION\nAVAILABLE</string>
+
+    <!-- TIMER STRINGS -->
+    <string name="days_upper_case">DAYS</string>
+    <string name="hours_upper_case">HRS</string>
+    <string name="minutes_upper_case" translatable="false">MIN</string>
+    <string name="seconds_upper_case" translatable="false">SEC</string>
+    <string name="base_countdown" translatable="false">00</string>
+
+    <!-- DRIVER BIO STRINGS -->
+    <string name="place_of_birth">Place of Birth:</string>
+    <string name="date_of_birth">Date of Birth:</string>
+    <string name="age">Age:</string>
+    <string name="weight_height">Weight - Height:</string>
+    <string name="kg" translatable="false">kg</string>
+    <string name="best_result">Best Result:</string>
+    <string name="m" translatable="false">m</string>
+    <string name="championships">Championships:</string>
+    <string name="driver_history_upper_case">DRIVER HISTORY:</string>
+    <string name="wins_abbr_upper_case">W</string>
+    <string name="team_upper_case">TEAM</string>
+
+    <!-- CONSTRUCTOR BIO STRINGS -->
+    <string name="drivers_upper_case">DRIVERS:</string>
+    <string name="team_history_upper_case">TEAM HISTORY:</string>
+    <string name="team_info_upper_case">TEAM INFO:</string>
+    <string name="full_name">Full Name:</string>
+    <string name="base">Base:</string>
+    <string name="team_principal">Team Principal:</string>
+    <string name="chassis">Chassis:</string>
+    <string name="power_unit">Power Unit:</string>
+    <string name="world_championships">World Championships:</string>
+    <string name="wins">Wins:</string>
+    <string name="podiums">Podiums:</string>
+    <string name="wins_upper_case">WINS</string>
+
+    <!-- TRACK BIO STRINGS -->
+    <string name="track_name">Track Name:</string>
+    <string name="location">Location:</string>
+    <string name="first_entry">First Entry:</string>
+    <string name="number_of_laps">Number of Laps:</string>
+    <string name="track_length">Track Length:</string>
+    <string name="km" translatable="false">km</string>
+    <string name="race_distance">Race Distance:</string>
+    <string name="fastest_lap">Fastest Lap:</string>
+    <string name="track_history_upper_case">TRACK HISTORY:</string>
+    <string name="open_with_google_maps">See on the map</string>
+
+    <!-- COMMON BIO HISTORY STRINGS -->
+    <string name="year_upper_case">YEAR</string>
+    <string name="pos_upper_case" translatable="false">POS</string>
+    <string name="pts_upper_case">POINTS</string>
+    <string name="pod_upper_case">POD</string>
+
+    <!-- ERRORS WITH REDIRECTION -->
+    <string name="no_map_app_found">No map app found</string>
+    <string name="no_browser_found">No browser found</string>
+
+    <!-- PROFILE PAGE STRINGS -->
+    <string name="remember_me">Remember Me</string>
+    <string name="email_with_dots">Email:</string>
+
+    <!-- WELCOME PAGE STRINGS -->
+    <string name="already_registered">Already registered?</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="missing_password">Forgot your password?</string>
+    <string name="login">Login</string>
+    <string name="or">or</string>
+    <string name="login_with_google">Login with Google</string>
+    <string name="not_registered">Not registered yet?</string>
+    <string name="register">Register</string>
+    <string name="registration">Registration</string>
+    <string name="forgot_password_upper_case">FORGOT\nPASSWORD</string>
+    <string name="forgot_password_text">Provide your account\'s email for which you want to reset your password</string>
+
+    <!-- HOME PAGE STRINGS -->
+    <!-- last race -->
+    <string name="last_race_upper_case">LAST\nRACE</string>
+    <!-- season final results -->
+    <string name="season_final_results">SEASON FINAL RESULTS</string>
+    <string name="constructors_upper_case">CONSTRUCTORS</string>
+    <string name="drivers_title_page_upper_case">DRIVERS</string>
+    <!-- missing results -->
+    <string name="results_not_available">Results not available</string>
+    <string name="driver_info_not_found_upper_case">DRIVER INFO NOT FOUND (%1$s)</string>
+    <string name="constructor_info_not_found_upper_case">CONSTRUCTOR INFO NOT FOUND\n(%1$s)</string>
+
+
+    <!--BUTTONS STRINGS -->
+    <string name="send_email_upper_case">SEND EMAIL</string>
+    <string name="submit_upper_case">SUBMIT</string>
+    <string name="dismiss_upper_case">DISMISS</string>
+    <string name="italian_language_abbr_upper_case">ITA</string>
+    <string name="english_language_abbr_upper_case">ENG</string>
+    <string name="language_set">Language successfully set to %1$s</string>
+
+    <!-- LOREEEEEEEEE -->
+    <string name="race_results">Race Results</string>
+    <string name="race_results_title">%1$s Results</string>
+    <string name="close">Close</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="fastest_lap_upper_case">FASTEST LAP</string>
+    <string name="lap">Lap %1$s</string>
+    <string name="podium_upper_case">PODIUM</string>
+    <string name="full_race_results">Full race results</string>
+    <string name="favorite_text">Favorite</string>
 </resources>

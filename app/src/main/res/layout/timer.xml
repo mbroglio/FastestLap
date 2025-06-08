@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="5dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginEnd="5dp"
+    android:baselineAligned="false"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.25"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:fontFamily="@font/orbitron_regular"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/days_upper_case"
+            android:textColor="@color/black"
+            android:textSize="@dimen/layout_subtitle_text_size">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/next_days_counter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="5dp"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/base_countdown"
+            android:textColor="@color/black"
+            android:textSize="@dimen/timer_text_size"
+            android:textStyle="bold">
+
+        </TextView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.25"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:fontFamily="@font/orbitron_regular"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/hours_upper_case"
+            android:textColor="@color/black"
+            android:textSize="@dimen/layout_subtitle_text_size">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/next_hours_counter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:gravity="center"
+            android:text="@string/base_countdown"
+            android:textColor="@color/black"
+            android:textSize="@dimen/timer_text_size"
+            android:textStyle="bold">
+
+        </TextView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.25"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:fontFamily="@font/orbitron_regular"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/minutes_upper_case"
+            android:textColor="@color/black"
+            android:textSize="@dimen/layout_subtitle_text_size">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/next_minutes_counter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:gravity="center"
+            android:text="@string/base_countdown"
+            android:textColor="@color/black"
+            android:textSize="@dimen/timer_text_size"
+            android:textStyle="bold">
+
+        </TextView>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.25"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:fontFamily="@font/orbitron_regular"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/seconds_upper_case"
+            android:textColor="@color/black"
+            android:textSize="@dimen/layout_subtitle_text_size">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/next_seconds_counter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:gravity="center"
+            android:text="@string/base_countdown"
+            android:textColor="@color/black"
+            android:textSize="@dimen/timer_text_size"
+            android:textStyle="bold">
+
+        </TextView>
+
+    </LinearLayout>
+
+
+</LinearLayout>

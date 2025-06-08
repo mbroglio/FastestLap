@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/favourite_driver_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/favourite_driver_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="@dimen/medium_margin"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="10dp"
+        android:layout_toStartOf="@id/favourite_driver_pic"
+        android:fontFamily="@font/orbitron_bold"
+        android:text="@string/not_found"
+        android:textColor="@color/black"
+        android:textSize="@dimen/layout_title_1_text_size">
+
+    </TextView>
+
+    <RelativeLayout
+        android:id="@+id/favourite_driver_flag_field"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/favourite_driver_name"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="5dp">
+
+        <ImageView
+            android:id="@+id/favourite_driver_flag"
+            android:layout_width="50dp"
+            android:layout_height="45dp"
+            android:layout_alignParentStart="true"
+            android:layout_centerHorizontal="true"
+            android:importantForAccessibility="no">
+
+        </ImageView>
+
+        <TextView
+            android:id="@+id/favourite_driver_nationality"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="5dp"
+            android:layout_toEndOf="@id/favourite_driver_flag"
+            android:fontFamily="@font/orbitron_regular"
+            android:text="@string/not_found"
+            android:textColor="@color/black"
+            android:textSize="@dimen/body_text_size">
+
+        </TextView>
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/favourite_driver_pic"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="42dp"
+        android:layout_marginBottom="@dimen/medium_margin"
+        android:importantForAccessibility="no">
+
+    </ImageView>
+
+    <ImageView
+        android:layout_width="@dimen/icon_size"
+        android:layout_height="@dimen/icon_size"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:importantForAccessibility="no"
+        app:srcCompat="@drawable/star_fav">
+
+    </ImageView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/favourite_driver_rank"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/favourite_driver_flag_field"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="5dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="visible"
+        app:cardBackgroundColor="@color/timer_gray_dark"
+        app:strokeColor="@color/black"
+        app:strokeWidth="3dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp">
+
+            <LinearLayout
+                android:id="@+id/driver_rank_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerInParent="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="15dp"
+                    android:layout_height="match_parent"
+                    android:importantForAccessibility="no"
+                    app:srcCompat="@drawable/podium">
+
+                </ImageView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+                    android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:maxLines="1"
+                    android:text="@string/rank"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/layout_subtitle_text_size">
+
+                </TextView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/driver_rank_layout"
+                android:layout_centerInParent="true"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/favourite_driver_position"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:autoSizeMaxTextSize="@dimen/body_text_size"
+                    android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:maxLines="1"
+                    android:text="@string/not_found"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/body_text_size">
+
+                </TextView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:autoSizeMaxTextSize="@dimen/body_text_size"
+                    android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:maxLines="1"
+                    android:text="@string/separator_high_dash"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/body_text_size">
+
+                </TextView>
+
+                <TextView
+                    android:id="@+id/favourite_driver_points"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:autoSizeMaxTextSize="@dimen/body_text_size"
+                    android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="@string/not_found"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/body_text_size">
+
+                </TextView>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="3dp"
+                    android:autoSizeMaxTextSize="@dimen/text_minor_importance_size"
+                    android:autoSizeMinTextSize="@dimen/min_text_resize_2"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="@font/orbitron_regular"
+                    android:maxLines="1"
+                    android:text="@string/points_upper_case"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_minor_importance_size">
+
+                </TextView>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+</RelativeLayout>

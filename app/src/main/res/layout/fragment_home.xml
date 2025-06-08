@@ -1,0 +1,743 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/homepage"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.home.fragment.HomeFragment">
+
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_top_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="50dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_end="0dp" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/screen_background_color"
+        app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/last_race_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/last_race_name_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:background="@drawable/bottom_right_stroke"
+                    app:maxWidth="220dp">
+
+                    <TextView
+                        android:id="@+id/last_race_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="3dp"
+                        android:fontFamily="@font/orbitron_bold"
+                        android:text="@string/not_found"
+                        android:textColor="@color/white"
+                        android:textSize="20sp">
+
+                    </TextView>
+
+                </LinearLayout>
+
+
+                <RelativeLayout
+                    android:id="@+id/track_info"
+                    android:layout_width="170dp"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/last_race_name_layout"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/last_race_track_outline"
+                        android:layout_width="120dp"
+                        android:layout_height="100dp"
+                        android:importantForAccessibility="no"
+                        android:layout_centerHorizontal="true">
+
+                    </ImageView>
+
+                    <TextView
+                        android:id="@+id/last_race_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/last_race_track_outline"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/orbitron_regular"
+                        android:text="-!-"
+                        android:textColor="@color/white">
+
+                    </TextView>
+
+                    <TextView
+                        android:id="@+id/last_race_month"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/last_race_date"
+                        android:layout_centerHorizontal="true"
+                        android:fontFamily="@font/orbitron_bold"
+                        android:text="-!-"
+                        android:textColor="@color/white">
+
+                    </TextView>
+
+                    <LinearLayout
+                        android:id="@+id/track_separator"
+                        android:layout_width="3dp"
+                        android:layout_height="match_parent"
+                        android:layout_alignTop="@id/last_race_track_outline"
+                        android:layout_alignBottom="@id/last_race_month"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:layout_toEndOf="@id/last_race_track_outline"
+                        android:background="@color/white"
+                        android:orientation="horizontal">
+
+                    </LinearLayout>
+
+
+                </RelativeLayout>
+
+                <TextView
+                    android:id="@+id/last_race"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="5dp"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:text="@string/last_race_upper_case"
+                    android:textColor="@color/white"
+                    android:textSize="11sp" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/last_race_name_layout"
+                    android:layout_toEndOf="@id/track_info">
+
+                    <TextView
+                        android:id="@+id/last_race_round"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_centerInParent="true"
+                        android:fontFamily="@font/orbitron_bold"
+                        android:text="@string/not_found"
+                        android:textColor="@color/white">
+
+                    </TextView>
+
+                    <LinearLayout
+                        android:id="@+id/race_podium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/last_race_round"
+                        android:layout_marginStart="40dp"
+                        android:layout_marginTop="7dp"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="10dp"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/orbitron_regular"
+                                android:gravity="center"
+                                android:text="@string/_1_numeric"
+                                android:textColor="@color/white"
+                                android:textSize="12sp">
+
+                            </TextView>
+
+                            <TextView
+                                android:id="@+id/last_race_first"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:fontFamily="@font/orbitron_regular"
+                                android:text="@string/not_found"
+                                android:textColor="@color/white"
+                                android:textSize="12sp">
+
+                            </TextView>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="10dp"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/orbitron_regular"
+                                android:gravity="center"
+                                android:text="@string/_2_numeric"
+                                android:textColor="@color/white"
+                                android:textSize="12sp">
+
+                            </TextView>
+
+                            <TextView
+                                android:id="@+id/last_race_second"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:fontFamily="@font/orbitron_regular"
+                                android:text="@string/not_found"
+                                android:textColor="@color/white"
+                                android:textSize="12sp">
+
+                            </TextView>
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="10dp"
+                                android:layout_height="wrap_content"
+                                android:fontFamily="@font/orbitron_regular"
+                                android:gravity="center"
+                                android:text="@string/_3_numeric"
+                                android:textColor="@color/white"
+                                android:textSize="12sp">
+
+                            </TextView>
+
+                            <TextView
+                                android:id="@+id/last_race_third"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="5dp"
+                                android:fontFamily="@font/orbitron_regular"
+                                android:text="@string/not_found"
+                                android:textColor="@color/white"
+                                android:textSize="12sp">
+
+                            </TextView>
+
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/driver_current_standing"
+                        android:layout_width="140dp"
+                        android:layout_height="45dp"
+                        android:layout_below="@id/race_podium"
+                        android:layout_centerInParent="true"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:cardBackgroundColor="@color/ferrari_f1"
+                        app:strokeColor="@color/black"
+                        app:strokeWidth="3dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+
+                            <TextView
+                                android:id="@+id/raceResult"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginStart="@dimen/medium_margin"
+                                android:fontFamily="@font/orbitron_bold"
+                                android:text="@string/raceResult"
+                                android:textColor="@color/black">
+
+                            </TextView>
+
+                            <ImageView
+                                android:layout_width="30dp"
+                                android:layout_height="30dp"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginStart="5dp"
+                                android:layout_marginEnd="@dimen/medium_margin"
+                                app:srcCompat="@drawable/checkered_flag">
+
+                            </ImageView>
+
+
+                        </RelativeLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+
+                android:background="@color/white">
+
+            </LinearLayout>
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:layout_marginEnd="40dp">
+
+                <include layout="@layout/timer_card_home" />
+            </FrameLayout>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/medium_margin"
+                app:strokeColor="@color/black"
+                app:strokeWidth="3dp">
+
+                <RelativeLayout
+                    android:id="@+id/favourite_driver_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/alpine_f1">
+
+                    <TextView
+                        android:id="@+id/favourite_driver_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_marginStart="@dimen/medium_margin"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/orbitron_bold"
+                        android:text="@string/not_found"
+                        android:textColor="@color/black"
+                        android:textSize="18sp">
+
+                    </TextView>
+
+                    <RelativeLayout
+                        android:id="@+id/favourite_driver_flag_field"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/favourite_driver_name"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginStart="50dp"
+                        android:layout_marginTop="5dp">
+
+                        <ImageView
+                            android:id="@+id/favourite_driver_flag"
+                            android:layout_width="50dp"
+                            android:layout_height="45dp"
+                            android:importantForAccessibility="no"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerHorizontal="true">
+
+                        </ImageView>
+
+                        <TextView
+                            android:id="@+id/favourite_driver_nationality"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="5dp"
+                            android:layout_toEndOf="@id/favourite_driver_flag"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
+                            android:textColor="@color/black">
+
+                        </TextView>
+
+                    </RelativeLayout>
+
+                    <ImageView
+                        android:id="@+id/favourite_driver_pic"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginEnd="42dp"
+                        android:importantForAccessibility="no"
+                        android:layout_marginBottom="@dimen/medium_margin">
+
+                    </ImageView>
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
+                        app:srcCompat="@drawable/star_fav">
+
+                    </ImageView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/favourite_driver_rank"
+                        android:layout_width="120dp"
+                        android:layout_height="40dp"
+                        android:layout_below="@id/favourite_driver_flag_field"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginStart="30dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="5dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:cardBackgroundColor="@color/mclaren_f1"
+                        app:strokeColor="@color/black"
+                        app:strokeWidth="3dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="5dp">
+
+                            <LinearLayout
+                                android:id="@+id/driver_rank_layout"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_centerInParent="true"
+                                android:orientation="horizontal"
+                                tools:ignore="UseCompoundDrawables">
+
+                                <ImageView
+                                    android:layout_width="15dp"
+                                    android:layout_height="match_parent"
+                                    app:srcCompat="@drawable/podium">
+
+                                </ImageView>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="3dp"
+                                    android:fontFamily="@font/orbitron_bold"
+                                    android:text="@string/rank"
+                                    android:textColor="@color/screen_background_color"
+                                    android:textSize="12sp">
+
+                                </TextView>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/driver_rank_layout"
+                                android:layout_centerInParent="true"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/favourite_driver_position"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp"
+                                    android:fontFamily="@font/orbitron_bold"
+                                    android:text="@string/not_found"
+                                    android:textColor="@color/screen_background_color"
+                                    android:textSize="12sp">
+
+                                </TextView>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_marginEnd="5dp"
+                                    android:fontFamily="@font/orbitron_bold"
+                                    android:text="@string/separator_high_dash"
+                                    android:textColor="@color/screen_background_color"
+                                    android:textSize="12sp">
+
+                                </TextView>
+
+                                <TextView
+                                    android:id="@+id/favourite_driver_points"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/orbitron_bold"
+                                    android:gravity="center"
+                                    android:text="@string/not_found"
+                                    android:textColor="@color/screen_background_color"
+                                    android:textSize="12sp">
+
+                                </TextView>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="3dp"
+                                    android:layout_marginEnd="5dp"
+                                    android:fontFamily="@font/orbitron_regular"
+                                    android:text="@string/points_upper_case"
+                                    android:textColor="@color/screen_background_color"
+                                    android:textSize="10sp">
+
+                                </TextView>
+
+                            </LinearLayout>
+
+
+                        </RelativeLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+
+                </RelativeLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/medium_margin"
+                app:strokeColor="@color/black"
+                app:strokeWidth="3dp">
+
+                <RelativeLayout
+                    android:id="@+id/favourite_constructor_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/ferrari_secondary">
+
+                    <TextView
+                        android:id="@+id/favourite_constructor_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginStart="@dimen/medium_margin"
+                        android:layout_marginTop="5dp"
+                        android:fontFamily="@font/orbitron_bold"
+                        android:text="@string/not_found"
+                        android:textColor="@color/black"
+                        android:textSize="18sp">
+
+                    </TextView>
+
+                    <ImageView
+                        android:id="@+id/favourite_constructor_car"
+                        android:layout_width="match_parent"
+                        android:layout_height="80dp"
+                        android:importantForAccessibility="no"
+                        android:layout_below="@id/favourite_constructor_name">
+
+                    </ImageView>
+
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/favourite_constructor_rank"
+                        android:layout_width="120dp"
+                        android:layout_height="40dp"
+                        android:layout_below="@id/favourite_constructor_car"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginStart="30dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginBottom="5dp"
+                        android:clickable="true"
+                        android:focusable="true"
+                        app:cardBackgroundColor="@color/mclaren_f1"
+                        app:strokeColor="@color/black"
+                        app:strokeWidth="3dp">
+
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_margin="5dp">
+
+                            <LinearLayout
+                                android:id="@+id/constructor_rank_layout"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentTop="true"
+                                android:layout_centerInParent="true"
+                                android:orientation="horizontal"
+                                tools:ignore="UseCompoundDrawables">
+
+                                <ImageView
+                                    android:layout_width="15dp"
+                                    android:layout_height="match_parent"
+                                    app:srcCompat="@drawable/podium">
+
+                                </ImageView>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="3dp"
+                                    android:fontFamily="@font/orbitron_bold"
+                                    android:text="@string/rank"
+                                    android:textColor="@color/screen_background_color"
+                                    android:textSize="12sp">
+
+                                </TextView>
+
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@id/constructor_rank_layout"
+                                android:layout_centerInParent="true"
+                                android:orientation="horizontal">
+
+                                <TextView
+                                    android:id="@+id/favourite_constructor_position"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp"
+                                    android:fontFamily="@font/orbitron_bold"
+                                    android:text="@string/not_found"
+                                    android:textColor="@color/screen_background_color"
+                                    android:textSize="12sp">
+
+                                </TextView>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="5dp"
+                                    android:layout_marginEnd="5dp"
+                                    android:fontFamily="@font/orbitron_bold"
+                                    android:text="@string/separator_high_dash"
+                                    android:textColor="@color/screen_background_color"
+                                    android:textSize="12sp">
+
+                                </TextView>
+
+                                <TextView
+                                    android:id="@+id/favourite_constructor_points"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:fontFamily="@font/orbitron_bold"
+                                    android:gravity="center"
+                                    android:text="@string/not_found"
+                                    android:textColor="@color/screen_background_color"
+                                    android:textSize="12sp">
+
+                                </TextView>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="3dp"
+                                    android:layout_marginEnd="5dp"
+                                    android:fontFamily="@font/orbitron_regular"
+                                    android:text="@string/points_upper_case"
+                                    android:textColor="@color/screen_background_color"
+                                    android:textSize="10sp">
+
+                                </TextView>
+
+                            </LinearLayout>
+
+
+                        </RelativeLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <RelativeLayout
+                        android:id="@+id/favourite_constructor_flag_field"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/favourite_constructor_car"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="42dp"
+                        android:layout_marginBottom="5dp">
+
+                        <ImageView
+                            android:id="@+id/favourite_constructor_flag"
+                            android:layout_width="50dp"
+                            android:layout_height="40dp"
+                            android:layout_marginEnd="@dimen/medium_margin"
+                            android:importantForAccessibility="no"
+                            android:layout_marginBottom="5dp">
+
+                        </ImageView>
+
+                        <TextView
+                            android:id="@+id/favourite_constructor_nationality"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_marginStart="5dp"
+                            android:layout_toEndOf="@id/favourite_constructor_flag"
+                            android:fontFamily="@font/orbitron_regular"
+                            android:text="@string/not_found"
+                            android:textColor="@color/black">
+
+                        </TextView>
+
+                    </RelativeLayout>
+
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="5dp"
+                        app:srcCompat="@drawable/star_fav">
+
+                    </ImageView>
+
+                </RelativeLayout>
+
+
+            </com.google.android.material.card.MaterialCardView>
+
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

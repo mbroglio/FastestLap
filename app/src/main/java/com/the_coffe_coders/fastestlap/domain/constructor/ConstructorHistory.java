@@ -1,0 +1,22 @@
+package com.the_coffe_coders.fastestlap.domain.constructor;
+
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@EqualsAndHashCode
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+public class ConstructorHistory {
+    private String podiums;
+    private String points;
+    private String position;
+    private String wins;
+    private String year;
+}

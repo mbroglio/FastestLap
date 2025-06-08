@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constructor_bio_table_row"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/background_bottom_margin_timer_grey"
+    android:orientation="vertical"
+    tools:context=".ui.bio.ConstructorBioActivity">
+
+    <LinearLayout
+        android:id="@+id/driver_history_row"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="1dp"
+        android:orientation="horizontal"
+        tools:ignore="UselessParent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:fontFamily="@font/orbitron_bold"
+            android:gravity="center"
+            android:text="@string/year_upper_case"
+            android:textColor="@color/black"
+            android:textSize="@dimen/layout_subtitle_text_size">
+
+        </TextView>
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.8"
+            android:fontFamily="@font/orbitron_bold"
+            android:gravity="center"
+            android:text="@string/podium_upper_case"
+            android:textColor="@color/black"
+            android:textSize="@dimen/layout_subtitle_text_size">
+
+        </TextView>
+
+    </LinearLayout>
+
+</LinearLayout>
