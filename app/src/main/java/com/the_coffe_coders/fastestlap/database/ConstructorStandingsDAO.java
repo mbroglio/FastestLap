@@ -13,19 +13,10 @@ import java.util.List;
 public interface ConstructorStandingsDAO {
     @Query("SELECT * FROM ConstructorStandings")
     ConstructorStandings get();
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<ConstructorStandings> constructorStandingsList);
-
-    //@Query("SELECT * FROM ConstructorStandings WHERE Constructor.constructorId LIKE :id")
-    //ConstructorStandings getById(String id);
-
     @Query("DELETE FROM ConstructorStandings")
     void deleteAll();
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(ConstructorStandings constructorStandings);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    List<Long> insertConstructorStandingsList(List<ConstructorStandings> constructorStandingsList);
 }

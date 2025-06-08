@@ -20,12 +20,8 @@ public class WeeklyRaceRepository {
     private static final String TAG = "WeeklyRaceRepository";
     private static WeeklyRaceRepository instance;
     private static final long FRESH_TIMEOUT = 60000;
-
-    // Cache - MutableLiveData private per modifiche interne
     private final Map<String, MutableLiveData<Result>> raceCache;
     private final Map<String, Long> lastUpdateTimestamps;
-
-    // Data sources
     private final JolpicaWeeklyRaceDataSource weeklyRaceRemoteDataSource;
     private final LocalWeeklyRaceDataSource localWeeklyRaceDataSource;
 
@@ -35,7 +31,6 @@ public class WeeklyRaceRepository {
         this.weeklyRaceRemoteDataSource = new JolpicaWeeklyRaceDataSource();
         this.localWeeklyRaceDataSource = LocalWeeklyRaceDataSource.getInstance(appRoomDatabase);
 
-        // Initialize cache entries
         raceCache.put("next", new MutableLiveData<>());
         raceCache.put("last", new MutableLiveData<>());
         raceCache.put("all", new MutableLiveData<>());
@@ -48,7 +43,6 @@ public class WeeklyRaceRepository {
         return instance;
     }
 
-    // Metodi pubblici che restituiscono LiveData immutabili
     public synchronized LiveData<Result> fetchNextWeeklyRace() {
         Log.d(TAG, "Fetching next weekly race");
         if (!lastUpdateTimestamps.containsKey("next") ||
@@ -130,7 +124,7 @@ public class WeeklyRaceRepository {
     }
 
     private void loadLastRace() {
-        raceCache.get("last").postValue(new Result.Loading("Loading last race"));
+        Objects.requireNonNull(raceCache.get("last")).postValue(new Result.Loading("Loading last race"));
         weeklyRaceRemoteDataSource.getLastRace(new SingleWeeklyRaceCallback() {
             @Override
             public void onSuccess(WeeklyRace weeklyRace) {
@@ -171,7 +165,7 @@ public class WeeklyRaceRepository {
     }
 
     private void loadWeeklyRaces() {
-        raceCache.get("all").postValue(new Result.Loading("Loading weekly races"));
+        Objects.requireNonNull(raceCache.get("all")).postValue(new Result.Loading("Loading weekly races"));
         weeklyRaceRemoteDataSource.getWeeklyRaces(new WeeklyRacesCallback() {
             @Override
             public void onSuccess(List<WeeklyRace> weeklyRaces) {
@@ -193,7 +187,7 @@ public class WeeklyRaceRepository {
     }
 
     private void loadWeeklyRacesFromLocal() {
-        raceCache.get("all").postValue(new Result.Loading("Loading weekly races"));
+        Objects.requireNonNull(raceCache.get("all")).postValue(new Result.Loading("Loading weekly races"));
         localWeeklyRaceDataSource.getWeeklyRaces(new WeeklyRacesCallback() {
             @Override
             public void onSuccess(List<WeeklyRace> weeklyRaces) {

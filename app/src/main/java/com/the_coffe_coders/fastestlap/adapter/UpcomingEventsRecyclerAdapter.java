@@ -57,10 +57,8 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
         WeeklyRace weeklyRace = races.get(position);
         Log.i("UpcomingEventsAdapter", "onBindViewHolder: " + weeklyRace);
 
-        // Imposta subito i dati che non dipendono dal track
         setupEventCardIcon(weeklyRace, holder);
 
-        // Imposta i dati di base che sono già disponibili
         holder.roundTextView.setText(context.getString(R.string.round_upper_case_plus_value, weeklyRace.getRound()));
         holder.gpTextView.setText(weeklyRace.getRaceName());
         holder.dateTextView.setText(weeklyRace.getFirstPractice().getStartDateTime().getDayOfMonth() + " - " + weeklyRace.getDateTime().getDayOfMonth());
@@ -88,50 +86,6 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
                 Log.e("UpcomingEventsAdapter", "Failed to load track for position: " + position);
                 loadingScreen.updateProgress();
                 loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);
-            }
-        });
-    }
-
-    //@Override
-    public void onBindViewHolder2(@NonNull UpcomingEventsRecyclerAdapter.UpcomingEventViewHolder holder, int position) {
-        WeeklyRace weeklyRace = races.get(position);
-        Log.i("UpcomingEventsAdapter", "onBindViewHolder: " + weeklyRace);
-
-        trackViewModel.getTrack(weeklyRace.getTrack().getTrackId()).observe(lifecycleOwner, result -> {
-            if (result instanceof Result.Loading) {
-                return;
-            }
-            if (result.isSuccess()) {
-                Track track = ((Result.TrackSuccess) result).getData();
-
-                setupEventCardIcon(weeklyRace, holder);
-
-                UIUtils.loadImageWithGlide(context, track.getTrack_minimal_layout_url(), holder.trackOutline, () -> {
-
-                    UIUtils.multipleSetTextViewText(
-                            new String[]{
-                                    context.getString(R.string.round_upper_case_plus_value, weeklyRace.getRound()),
-                                    weeklyRace.getRaceName(),
-                                    weeklyRace.getFirstPractice().getStartDateTime().getDayOfMonth() + " - " + weeklyRace.getDateTime().getDayOfMonth()},
-
-                            new TextView[]{
-                                    holder.roundTextView,
-                                    holder.gpTextView,
-                                    holder.dateTextView});
-
-                    UIUtils.translateMonth(weeklyRace.getDateTime().getMonth().toString().substring(0, 3).toUpperCase(),
-                            holder.monthTextView, true);
-
-                    holder.upcomingEventCard.setOnClickListener(v ->
-                            UIUtils.navigateToEventPage(context, weeklyRace.getTrack().getTrackId()));
-
-                    loadingScreen.updateProgress();
-
-                    Log.i("UpcomingEventsAdapter", "onBindViewHolder: " + position + " / " + getItemCount());
-                    loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);
-
-                });
-
             }
         });
     }

@@ -11,12 +11,6 @@ import java.util.List;
 
 @Dao
 public interface DriverDAO {
-    @Query("SELECT * FROM Driver")
-    List<Driver> getAll();
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(List<Driver> articles);
-
     @Query("SELECT * FROM Driver WHERE driverId LIKE :id")
     Driver getById(String id);
 
@@ -25,10 +19,6 @@ public interface DriverDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertDriver(Driver driver);//TAXI DRIVER
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    List<Long> insertDriversList(List<Driver> newsList);
-
 }
 
 

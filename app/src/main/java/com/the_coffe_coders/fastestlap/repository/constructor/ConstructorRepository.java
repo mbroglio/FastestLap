@@ -25,7 +25,6 @@ public class ConstructorRepository {
     private final Map<String, MutableLiveData<Result>> constructorCache;
     private final Map<String, Long> lastUpdateTimestamps;
     private final FirebaseConstructorDataSource firebaseConstructorDataSource;
-    private final JolpicaConstructorDataSource jolpicaConstructorDataSource;
 
     private final LocalConstructorDataSource localConstructorDataSource;
     private final String TAG = "ConstructorRepository";
@@ -35,7 +34,6 @@ public class ConstructorRepository {
         constructorCache = new HashMap<>();
         lastUpdateTimestamps = new HashMap<>();
         firebaseConstructorDataSource = FirebaseConstructorDataSource.getInstance();
-        jolpicaConstructorDataSource = JolpicaConstructorDataSource.getInstance();
         localConstructorDataSource = LocalConstructorDataSource.getInstance(appRoomDatabase);
         this.context = context;
     }
