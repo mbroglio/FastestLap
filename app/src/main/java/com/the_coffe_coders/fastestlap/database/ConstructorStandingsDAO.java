@@ -17,9 +17,6 @@ public interface ConstructorStandingsDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(List<ConstructorStandings> constructorStandingsList);
 
-    //@Query("SELECT * FROM ConstructorStandings WHERE Constructor.constructorId LIKE :id")
-    //ConstructorStandings getById(String id);
-
     @Query("DELETE FROM ConstructorStandings")
     void deleteAll();
 

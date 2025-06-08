@@ -210,14 +210,14 @@ public class JolpicaWeeklyRaceDataSource{
         responseCall.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
-                ResponseBody body = response.body();
-                if (body == null) {
-                    Log.e(TAG, "API returned empty body for last race");
-                    handleLastRaceRetryOrFailure(currentRetry, new Exception("Empty response body"), weeklyRaceCallback);
-                    return;
-                }
-
                 try {
+                    ResponseBody body = response.body();
+                    if (body == null) {
+                        Log.e(TAG, "API returned empty body for last race");
+                        handleLastRaceRetryOrFailure(currentRetry, new Exception("Empty response body"), weeklyRaceCallback);
+                        return;
+                    }
+
                     String responseString = body.string();
                     processLastRaceResponse(responseString, weeklyRaceCallback);
                 } catch (IOException e) {

@@ -2,6 +2,8 @@ package com.the_coffe_coders.fastestlap.util;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import java.io.IOException;
 
 import okhttp3.Interceptor;
@@ -13,6 +15,8 @@ public class RetryInterceptor implements Interceptor {
     private static final int MAX_RETRIES = 3;
     private static final long INITIAL_DELAY_MS = 1000; // 1 second
 
+    /** @noinspection ConstantValue*/
+    @NonNull
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
@@ -71,7 +75,7 @@ public class RetryInterceptor implements Interceptor {
                 lastException = e;
                 Log.w(TAG, "IOException on attempt " + (attempt + 1) + "/" + (MAX_RETRIES + 1), e);
 
-                if (attempt >= MAX_RETRIES) {
+                if (attempt == MAX_RETRIES) {
                     throw e; // Re-throw the last exception if we've exhausted retries
                 }
 

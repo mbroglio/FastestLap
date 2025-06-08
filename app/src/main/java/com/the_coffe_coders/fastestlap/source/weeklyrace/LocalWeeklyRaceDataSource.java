@@ -41,7 +41,7 @@ public class LocalWeeklyRaceDataSource {
             weeklyRaceList.addAll(weeklyRaceClassicDao.getAllRaces());
             weeklyRaceList.addAll(weeklyRaceSprintDao.getAllRaces());
 
-            if (weeklyRaceList != null && !weeklyRaceList.isEmpty()) {
+            if (!weeklyRaceList.isEmpty()) {
                 Log.d(TAG, "Found " + weeklyRaceList.size() + " weekly races in local database");
                 callback.onSuccess(weeklyRaceList);
             } else {

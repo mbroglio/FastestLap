@@ -26,11 +26,11 @@ public class TrackRepository {
     private final Map<String, Long> lastUpdateTimestamps;
 
     //Data sources
-    FirebaseTrackDataSource firebaseTrackDataSource;
-    LocalTrackDataSource localTrackDataSource;
+    final FirebaseTrackDataSource firebaseTrackDataSource;
+    final LocalTrackDataSource localTrackDataSource;
     AppRoomDatabase appRoomDatabase;
 
-    private Context context;
+    private final Context context;
 
     public TrackRepository(AppRoomDatabase appRoomDatabase, Context context) {
         trackCache = new HashMap<>();

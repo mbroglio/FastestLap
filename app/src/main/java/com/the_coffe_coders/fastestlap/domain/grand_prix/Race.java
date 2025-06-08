@@ -24,7 +24,7 @@ import lombok.ToString;
 @Entity
 public class Race extends Session implements Parcelable {
 
-    public static final Creator<Race> CREATOR = new Creator<Race>() {
+    public static final Creator<Race> CREATOR = new Creator<>() {
         @Override
         public Race createFromParcel(Parcel in) {
             return new Race(in);

@@ -90,9 +90,13 @@ public class RaceResultsRecyclerAdapter extends RecyclerView.Adapter<RaceResults
     }
 
     public static class ResultViewHolder extends RecyclerView.ViewHolder {
-        TextView positionText, driverName, teamName, status, deltaPosition;
-        View teamColorIndicator;
-        ImageView deltaPositionIcon;
+        final TextView positionText;
+        final TextView driverName;
+        final TextView teamName;
+        final TextView status;
+        final TextView deltaPosition;
+        final View teamColorIndicator;
+        final ImageView deltaPositionIcon;
 
         ResultViewHolder(View itemView) {
             super(itemView);

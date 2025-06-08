@@ -25,7 +25,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Entity(tableName = "Constructor")
 public class Constructor implements Parcelable {
-    public static final Creator<Constructor> CREATOR = new Creator<Constructor>() {
+    public static final Creator<Constructor> CREATOR = new Creator<>() {
         @Override
         public Constructor createFromParcel(Parcel in) {
             return new Constructor(in);

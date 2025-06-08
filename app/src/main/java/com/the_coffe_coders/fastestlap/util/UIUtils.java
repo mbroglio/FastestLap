@@ -63,24 +63,6 @@ import java.security.MessageDigest;
 import java.util.Objects;
 
 public class UIUtils {
-
-    public static void hideSystemUI(Activity activity) {
-        View decorView = activity.getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
-        decorView.setSystemUiVisibility(uiOptions);
-    }
-
-    public static void showSystemUI(Activity activity) {
-        View decorView = activity.getWindow().getDecorView();
-        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
-        decorView.setSystemUiVisibility(uiOptions);
-    }
-
     public static void applyWindowInsets(MaterialToolbar toolbar) {
         ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
@@ -185,10 +167,6 @@ public class UIUtils {
                         protected Bitmap transform(@NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight) {
                             // Make the bitmap 30% transparent (76/255 ≈ 0.3)
                             return setAlpha(toTransform, alpha);
-                        }
-
-                        public String getId() {
-                            return "alpha";
                         }
 
                         // Helper method to set alpha on bitmap
@@ -470,14 +448,12 @@ public class UIUtils {
     }
 
     public static void showRaceResultsDialog(FragmentManager fragmentManager, Race race, int sessionType) {
-        switch (sessionType) {
-            case 0:
-                RaceResultsFragment raceResultsFragment = new RaceResultsFragment();
-                Bundle args = new Bundle();
-                args.putParcelable("RACE", race);
-                raceResultsFragment.setArguments(args);
-                raceResultsFragment.show(fragmentManager, "RaceResultsFragment");
-                break;
+        if (sessionType == 0) {
+            RaceResultsFragment raceResultsFragment = new RaceResultsFragment();
+            Bundle args = new Bundle();
+            args.putParcelable("RACE", race);
+            raceResultsFragment.setArguments(args);
+            raceResultsFragment.show(fragmentManager, "RaceResultsFragment");
         }
     }
 

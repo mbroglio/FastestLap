@@ -19,7 +19,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RaceResultFastestLap implements Parcelable {
-    public static final Creator<RaceResultFastestLap> CREATOR = new Creator<RaceResultFastestLap>() {
+    public static final Creator<RaceResultFastestLap> CREATOR = new Creator<>() {
         @Override
         public RaceResultFastestLap createFromParcel(Parcel in) {
             return new RaceResultFastestLap(in);

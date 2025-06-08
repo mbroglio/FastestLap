@@ -219,10 +219,18 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
 
     public static class ConstructorViewHolder extends RecyclerView.ViewHolder {
 
-        TextView constructorName, constructorPoints, constructorPosition, driverOneName, driverTwoName, constructorNotFound;
-        ImageView constructorLogo, constructorCarImage, driverOneImage, driverTwoImage;
-        LinearLayout constructorCardInnerLayout;
-        MaterialCardView constructorCard;
+        final TextView constructorName;
+        final TextView constructorPoints;
+        final TextView constructorPosition;
+        final TextView driverOneName;
+        final TextView driverTwoName;
+        final TextView constructorNotFound;
+        final ImageView constructorLogo;
+        final ImageView constructorCarImage;
+        final ImageView driverOneImage;
+        final ImageView driverTwoImage;
+        final LinearLayout constructorCardInnerLayout;
+        final MaterialCardView constructorCard;
 
         public ConstructorViewHolder(@NonNull View itemView) {
             super(itemView);

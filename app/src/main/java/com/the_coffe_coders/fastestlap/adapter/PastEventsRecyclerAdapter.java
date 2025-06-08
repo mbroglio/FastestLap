@@ -134,9 +134,12 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
 
     public static class PastEventViewHolder extends RecyclerView.ViewHolder {
 
-        MaterialCardView pastEventCard;
-        TextView pastDateTextView, pastMonthTextView, pastRoundTextView, pastGPTextView;
-        ImageView trackOutline;
+        final MaterialCardView pastEventCard;
+        final TextView pastDateTextView;
+        final TextView pastMonthTextView;
+        final TextView pastRoundTextView;
+        final TextView pastGPTextView;
+        final ImageView trackOutline;
 
         public PastEventViewHolder(@NonNull View itemView) {
             super(itemView);

@@ -181,17 +181,6 @@ public class HomeFragment extends Fragment {
 
     private void observeLoadingAndErrors() {
 
-        /*homeViewModel.isLoading().observe(getViewLifecycleOwner(), isLoading -> {
-            if (isLoading != null && !isLoading) {
-                loadingScreen.hideLoadingScreen();
-            }
-        });
-
-        homeViewModel.getErrorMessage().observe(getViewLifecycleOwner(), error -> {
-            if (error != null) {
-                Log.e(TAG, "Error from ViewModel: " + error);
-            }
-        });*/
     }
 
     private void setLastRaceCard(View view) {

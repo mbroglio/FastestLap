@@ -77,9 +77,7 @@ public class HomePageActivity extends AppCompatActivity {
                     switch (Objects.requireNonNull(caller)) {
                         case "ConstructorsStandingActivity":
                         case "DriversStandingActivity":
-                            bottomNavigationView.post(() -> {
-                                bottomNavigationView.setSelectedItemId(R.id.standingsFragment);
-                            });
+                            bottomNavigationView.post(() -> bottomNavigationView.setSelectedItemId(R.id.standingsFragment));
                             break;
                         case "WelcomeActivity":
                         case "HomeFragment":

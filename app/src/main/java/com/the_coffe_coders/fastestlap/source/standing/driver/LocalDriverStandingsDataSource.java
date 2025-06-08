@@ -35,8 +35,6 @@ public class LocalDriverStandingsDataSource implements DriverStandingDataSource 
     }
 
     public void insertDriverStandings(DriverStandings driverStandings) {
-        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
-            driverStandingsDAO.insert(driverStandings);
-        });
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> driverStandingsDAO.insert(driverStandings));
     }
 }

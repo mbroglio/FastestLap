@@ -25,11 +25,11 @@ public class DriverRepository {
     private final Map<String, MutableLiveData<Result>> driverCache;
     private final Map<String, Long> lastUpdateTimestamps;
     //Data sources
-    FirebaseDriverDataSource firebaseDriverDataSource;
+    final FirebaseDriverDataSource firebaseDriverDataSource;
     JolpicaDriverDataSource jolpicaDriverDataSource;
-    LocalDriverDataSource localDriverDataSource;
+    final LocalDriverDataSource localDriverDataSource;
     AppRoomDatabase appRoomDatabase;
-    private Context context;
+    private final Context context;
 
     private DriverRepository(AppRoomDatabase appRoomDatabase, Context context) {
         driverCache = new HashMap<>();

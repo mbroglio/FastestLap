@@ -29,7 +29,7 @@ public class ConstructorStandingRepository {
     private final JolpicaConstructorStandingsDataSource jolpicaConstructorStandingsDataSource;
     private final LocalConstructorStandingsDataSource localConstructorStandingsDataSource;
 
-    private Context context;
+    private final Context context;
 
     private ConstructorStandingRepository(AppRoomDatabase appRoomDatabase, Context context) {
         constructorStandingCache = new HashMap<>();

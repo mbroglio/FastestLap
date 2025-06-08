@@ -35,11 +35,9 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
 
     private TextInputEditText emailEditText;
     private TextInputEditText passwordEditText;
-    private UserViewModel userViewModel;
     private FirebaseAuth mAuth;
 
     private boolean fromSignOut;
-    private boolean fromEmailVerification;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +55,7 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
 
         IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository((Application) getApplicationContext());
 
-        userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
+        UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
         userViewModel.setAuthenticationError(false);
 
         emailEditText = findViewById(R.id.textInputEmail);
@@ -132,7 +130,7 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
 
     @Override
     public void onFragmentDismissed(String value) {
-        fromEmailVerification = Boolean.parseBoolean(value);
+        boolean fromEmailVerification = Boolean.parseBoolean(value);
     }
 
     @Override

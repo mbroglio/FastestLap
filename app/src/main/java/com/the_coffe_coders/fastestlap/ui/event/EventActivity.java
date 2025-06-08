@@ -195,9 +195,7 @@ public class EventActivity extends AppCompatActivity {
         UIUtils.translateEventDateInterval(weeklyRace.getDateInterval(), findViewById(R.id.event_date));
 
         LinearLayout trackLayout = findViewById(R.id.track_outline_layout);
-        trackLayout.setOnClickListener(v -> {
-            UIUtils.navigateToBioPage(this, trackId + "&" + weeklyRace.getRaceName().toUpperCase(), 2);
-        });
+        trackLayout.setOnClickListener(v -> UIUtils.navigateToBioPage(this, trackId + "&" + weeklyRace.getRaceName().toUpperCase(), 2));
 
         Button openForecastButton = findViewById(R.id.goToForecastButton);
         openForecastButton.setOnClickListener(v ->

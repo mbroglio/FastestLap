@@ -10,7 +10,6 @@ import androidx.room.PrimaryKey;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +23,7 @@ import lombok.ToString;
 @NoArgsConstructor
 @Entity
 public class RaceResult implements Parcelable {
-    public static final Creator<RaceResult> CREATOR = new Creator<RaceResult>() {
+    public static final Creator<RaceResult> CREATOR = new Creator<>() {
         @Override
         public RaceResult createFromParcel(Parcel in) {
             return new RaceResult(in);
@@ -82,18 +81,4 @@ public class RaceResult implements Parcelable {
     public boolean isFinished() {
         return status.equalsIgnoreCase("finished");
     }
-
-    public boolean isRetired() {
-        return status.equalsIgnoreCase("retired");
-    }
-
-    public boolean isDisqualified() {
-        return status.equalsIgnoreCase("disqualified");
-    }
-
-    public boolean isLapped() {
-        return status.equalsIgnoreCase("lapped");
-    }
-
-
 }

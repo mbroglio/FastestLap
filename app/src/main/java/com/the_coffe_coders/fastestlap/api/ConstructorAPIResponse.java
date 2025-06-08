@@ -7,8 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@ToString(callSuper = true)
 @Getter
+@ToString(callSuper = true)
 @Setter
 public class ConstructorAPIResponse extends APIResponse {
     @SerializedName("ConstructorTable")
@@ -18,9 +18,4 @@ public class ConstructorAPIResponse extends APIResponse {
         super(xmlns, series, url, limit, offset, total);
         this.constructorTableDTO = constructorTableDTO;
     }
-
-    public ConstructorTableDTO getConstructorTableDTO() {
-        return constructorTableDTO;
-    }
-
 }

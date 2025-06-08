@@ -157,10 +157,15 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
 
     public static class UpcomingEventViewHolder extends RecyclerView.ViewHolder {
 
-        MaterialCardView upcomingEventCard;
-        ImageView trackOutline, accessEventIcon, liveEventIcon;
-        TextView roundTextView, gpTextView, dateTextView, monthTextView;
-        RelativeLayout liveEventIconLayout;
+        final MaterialCardView upcomingEventCard;
+        final ImageView trackOutline;
+        final ImageView accessEventIcon;
+        final ImageView liveEventIcon;
+        final TextView roundTextView;
+        final TextView gpTextView;
+        final TextView dateTextView;
+        final TextView monthTextView;
+        final RelativeLayout liveEventIconLayout;
 
         public UpcomingEventViewHolder(@NonNull View itemView) {
             super(itemView);

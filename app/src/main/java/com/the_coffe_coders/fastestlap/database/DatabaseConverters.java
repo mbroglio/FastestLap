@@ -30,7 +30,7 @@ import java.util.List;
 
 public class DatabaseConverters {
 
-    public static Gson gson = new Gson();
+    public static final Gson gson = new Gson();
 
     //Driver Standings Element List
     @TypeConverter

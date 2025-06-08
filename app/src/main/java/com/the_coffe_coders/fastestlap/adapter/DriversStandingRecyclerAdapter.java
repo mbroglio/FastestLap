@@ -190,10 +190,14 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
 
     public static class DriverViewHolder extends RecyclerView.ViewHolder {
 
-        MaterialCardView driverCard;
-        TextView driverName, driverPoints, driverPosition, driverNotFound;
-        ImageView driverImage, driverTeamImage;
-        RelativeLayout driverCardInnerLayout;
+        final MaterialCardView driverCard;
+        final TextView driverName;
+        final TextView driverPoints;
+        final TextView driverPosition;
+        final TextView driverNotFound;
+        final ImageView driverImage;
+        final ImageView driverTeamImage;
+        final RelativeLayout driverCardInnerLayout;
 
         public DriverViewHolder(@NonNull View itemView) {
             super(itemView);

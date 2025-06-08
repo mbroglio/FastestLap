@@ -29,7 +29,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @Entity(tableName = "Driver")
 public class Driver implements Parcelable {
-    public static final Creator<Driver> CREATOR = new Creator<Driver>() {
+    public static final Creator<Driver> CREATOR = new Creator<>() {
         @Override
         public Driver createFromParcel(Parcel in) {
             return new Driver(in);

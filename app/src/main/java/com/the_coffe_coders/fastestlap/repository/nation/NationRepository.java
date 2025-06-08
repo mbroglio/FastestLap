@@ -24,11 +24,11 @@ public class NationRepository {
     private final Map<String, MutableLiveData<Result>> nationCache;
     private final Map<String, Long> lastUpdateTimestamps;
     //Data sources
-    FirebaseNationDataSource firebaseNationDataSource;
-    LocalNationDataSource localNationDataSource;
+    final FirebaseNationDataSource firebaseNationDataSource;
+    final LocalNationDataSource localNationDataSource;
     AppRoomDatabase appRoomDatabase;
 
-    private Context context;
+    private final Context context;
 
     private NationRepository(AppRoomDatabase appRoomDatabase, Context context) {
         nationCache = new HashMap<>();

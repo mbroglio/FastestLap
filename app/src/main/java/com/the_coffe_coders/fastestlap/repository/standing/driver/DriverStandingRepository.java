@@ -29,7 +29,7 @@ public class DriverStandingRepository {
     private final JolpicaDriverStandingsDataSource jolpicaDriverStandingsDataSource;
     private final LocalDriverStandingsDataSource localDriverStandingsDataSource;
 
-    private Context context;
+    private final Context context;
 
     private DriverStandingRepository(AppRoomDatabase appRoomDatabase, Context context) {
         driverStandingCache = new HashMap<>();

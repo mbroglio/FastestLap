@@ -35,8 +35,6 @@ public class LocalConstructorStandingsDataSource implements ConstructorStandingD
     }
 
     public void insertConstructorStandings(ConstructorStandings constructorStandings) {
-        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
-            constructorStandingsDAO.insert(constructorStandings);
-        });
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> constructorStandingsDAO.insert(constructorStandings));
     }
 }

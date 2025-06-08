@@ -15,7 +15,7 @@ public class ConstructorViewModel extends ViewModel {
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isLoading = new MutableLiveData<>(false);
-    ConstructorRepository constructorRepository;
+    final ConstructorRepository constructorRepository;
 
     public ConstructorViewModel(ConstructorRepository constructorRepository) {
         this.constructorRepository = constructorRepository;

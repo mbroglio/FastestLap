@@ -50,18 +50,8 @@ public class UserFirebaseDataSource extends BaseUserDataRemoteDataSource {
                 } else {
                     Log.d(TAG, "User not present in Firebase Realtime Database");
                     databaseReference.child(FIREBASE_USERS_COLLECTION).child(user.getIdToken()).setValue(user)
-                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    userResponseCallback.onSuccessFromRemoteDatabase(user);
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    userResponseCallback.onFailureFromRemoteDatabase(e.getLocalizedMessage());
-                                }
-                            });
+                            .addOnSuccessListener(aVoid -> userResponseCallback.onSuccessFromRemoteDatabase(user))
+                            .addOnFailureListener(e -> userResponseCallback.onFailureFromRemoteDatabase(e.getLocalizedMessage()));
                 }
             }
 
@@ -106,53 +96,28 @@ public class UserFirebaseDataSource extends BaseUserDataRemoteDataSource {
                 child(SHARED_PREFERENCES_FAVORITE_DRIVER).setValue(favoriteDriver);
 
         databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
-                child(SHARED_PREFERENCES_FAVORITE_TEAM).setValue(favoriteTeam).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.i(TAG, "fattoooo team");
-                    }
-                });
+                child(SHARED_PREFERENCES_FAVORITE_TEAM).setValue(favoriteTeam).addOnSuccessListener(unused -> Log.i(TAG, "fattoooo team"));
 
         databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
-                child(SHARED_PREFERENCES_AUTO_LOGIN).setValue(autoLogin).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.i(TAG, "fattoooo auto login");
-                    }
-                });
+                child(SHARED_PREFERENCES_AUTO_LOGIN).setValue(autoLogin).addOnSuccessListener(unused -> Log.i(TAG, "fattoooo auto login"));
     }
 
     @Override
     public void saveUserDriverPreferences(String favoriteDriver, String idToken) {
         databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
-                child(SHARED_PREFERENCES_FAVORITE_DRIVER).setValue(favoriteDriver).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.i(TAG, "fattoooo driver");
-                    }
-                });
+                child(SHARED_PREFERENCES_FAVORITE_DRIVER).setValue(favoriteDriver).addOnSuccessListener(unused -> Log.i(TAG, "fattoooo driver"));
     }
 
     @Override
     public void saveUserConstructorPreferences(String favoriteTeam, String idToken) {
         databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
-                child(SHARED_PREFERENCES_FAVORITE_TEAM).setValue(favoriteTeam).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.i(TAG, "fattoooo team");
-                    }
-                });
+                child(SHARED_PREFERENCES_FAVORITE_TEAM).setValue(favoriteTeam).addOnSuccessListener(unused -> Log.i(TAG, "fattoooo team"));
     }
 
     @Override
     public void saveUserAutoLoginPreferences(String autoLogin, String idToken) {
         databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
-                child(SHARED_PREFERENCES_AUTO_LOGIN).setValue(autoLogin).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void unused) {
-                        Log.i(TAG, "fattoooo auto login");
-                    }
-                });
+                child(SHARED_PREFERENCES_AUTO_LOGIN).setValue(autoLogin).addOnSuccessListener(unused -> Log.i(TAG, "fattoooo auto login"));
     }
 
     public Task<Boolean> isAutoLoginEnabled(String idToken) {

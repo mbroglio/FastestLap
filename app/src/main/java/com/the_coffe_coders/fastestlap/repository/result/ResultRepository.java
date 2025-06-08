@@ -21,8 +21,8 @@ public class ResultRepository {
     // Cache
     private final Map<String, MutableLiveData<Result>> resultsCache;
     private final Map<String, Long> lastUpdateTimestamps;
-    JolpicaRaceResultDataSource jolpicaRaceResultDataSource;
-    LocalRaceResultDataSource localRaceResultDataSource;
+    final JolpicaRaceResultDataSource jolpicaRaceResultDataSource;
+    final LocalRaceResultDataSource localRaceResultDataSource;
 
     private ResultRepository(AppRoomDatabase appRoomDatabase) {
         resultsCache = new HashMap<>();
