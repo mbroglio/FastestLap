@@ -81,6 +81,7 @@
     <string name="registration">Registrazione</string>
     <string name="forgot_password_upper_case">PASSWORD DIMENTICATA</string>
     <string name="results_not_available">Risultati non disponibili</string>
+    <string name="constructor_info_not_found_upper_case">INFO COSTRUTTORE NON DISPONIBILI (%1$s)</string>
     <string name="send_email_upper_case">INVIA EMAIL</string>
     <string name="submit_upper_case">INVIA</string>
     <string name="dismiss_upper_case">SCARTA</string>
@@ -94,4 +95,5 @@
     <string name="fastest_lap_upper_case">GIRO VELOCE</string>
     <string name="lap">Giro %1$s</string>
     <string name="full_race_results">Risultati gara completi</string>
+    <string name="driver_info_not_found_upper_case">INFO PILOTA NON DISPONIBILI\n(%1$s)</string>
 </resources>
