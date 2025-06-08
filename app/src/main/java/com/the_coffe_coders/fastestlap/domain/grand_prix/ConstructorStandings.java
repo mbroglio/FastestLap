@@ -19,7 +19,6 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity(tableName = "ConstructorStandings")
 public class ConstructorStandings {
     @PrimaryKey(autoGenerate = true)

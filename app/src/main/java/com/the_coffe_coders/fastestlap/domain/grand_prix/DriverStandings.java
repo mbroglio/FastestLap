@@ -17,7 +17,6 @@ import lombok.ToString;
 @Setter
 @ToString
 @EqualsAndHashCode
-@AllArgsConstructor
 @NoArgsConstructor
 @Entity(tableName = "DriverStandings")
 public class DriverStandings {
@@ -26,8 +25,4 @@ public class DriverStandings {
     private String season;
     private String round;
     private List<DriverStandingsElement> driverStandingsElements;
-
-    public DriverStandings(List<DriverStandingsElement> driverStandingsElements) {
-        this.driverStandingsElements = driverStandingsElements;
-    }
 }

@@ -22,7 +22,6 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class RaceResult implements Parcelable {
     public static final Creator<RaceResult> CREATOR = new Creator<RaceResult>() {
