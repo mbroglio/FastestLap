@@ -76,6 +76,7 @@
                         android:id="@+id/driver_1_pic"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
+                        android:importantForAccessibility="no"
                         android:layout_gravity="fill" />
 
                     <TextView
@@ -102,6 +103,7 @@
                         android:id="@+id/driver_2_pic"
                         android:layout_width="30dp"
                         android:layout_height="30dp"
+                        android:importantForAccessibility="no"
                         android:layout_gravity="fill" />
 
                     <TextView
@@ -129,6 +131,7 @@
                     android:layout_height="40dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="5dp"
+                    android:importantForAccessibility="no"
                     android:scaleType="fitCenter" />
 
                 <ImageView
@@ -136,6 +139,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:layout_margin="5dp"
+                    android:importantForAccessibility="no"
                     android:scaleType="fitCenter" />
             </LinearLayout>
         </LinearLayout>

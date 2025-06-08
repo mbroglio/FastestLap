@@ -105,7 +105,8 @@
                             android:id="@+id/track_image"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_margin="3dp">
+                            android:layout_margin="3dp"
+                            android:importantForAccessibility="no">
 
                         </ImageView>
 

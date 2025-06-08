@@ -57,6 +57,7 @@
             android:id="@+id/home_next_gp_flag"
             android:layout_width="55dp"
             android:layout_height="40dp"
+            android:importantForAccessibility="no"
             android:layout_gravity="center">
 
         </ImageView>
@@ -224,6 +225,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
+            android:importantForAccessibility="no"
             app:srcCompat="@drawable/dot_inside_a_circle_red">
 
         </ImageView>

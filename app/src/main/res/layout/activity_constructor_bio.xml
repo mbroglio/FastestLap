@@ -117,7 +117,8 @@
                             android:id="@+id/team_logo_image"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_margin="5dp">
+                            android:layout_margin="5dp"
+                            android:importantForAccessibility="no">
 
                         </ImageView>
 
@@ -138,7 +139,8 @@
                         android:layout_alignParentTop="true"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentBottom="true"
-                        android:layout_margin="16dp">
+                        android:layout_margin="16dp"
+                        android:importantForAccessibility="no">
 
                     </ImageView>
 
@@ -152,7 +154,8 @@
                 android:layout_height="100dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginEnd="10dp">
+                android:layout_marginEnd="10dp"
+                android:importantForAccessibility="no">
 
             </ImageView>
 
@@ -203,7 +206,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:layout_margin="5dp">
+                                android:layout_margin="5dp"
+                                android:importantForAccessibility="no">
 
                             </ImageView>
 
@@ -246,7 +250,8 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
-                                android:layout_margin="5dp">
+                                android:layout_margin="5dp"
+                                android:importantForAccessibility="no">
 
                             </ImageView>
 

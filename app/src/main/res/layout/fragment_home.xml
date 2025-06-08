@@ -79,6 +79,7 @@
                         android:id="@+id/last_race_track_outline"
                         android:layout_width="120dp"
                         android:layout_height="100dp"
+                        android:importantForAccessibility="no"
                         android:layout_centerHorizontal="true">
 
                     </ImageView>
@@ -372,6 +373,7 @@
                             android:id="@+id/favourite_driver_flag"
                             android:layout_width="50dp"
                             android:layout_height="45dp"
+                            android:importantForAccessibility="no"
                             android:layout_alignParentStart="true"
                             android:layout_centerHorizontal="true">
 
@@ -399,6 +401,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerVertical="true"
                         android:layout_marginEnd="42dp"
+                        android:importantForAccessibility="no"
                         android:layout_marginBottom="@dimen/medium_margin">
 
                     </ImageView>
@@ -565,6 +568,7 @@
                         android:id="@+id/favourite_constructor_car"
                         android:layout_width="match_parent"
                         android:layout_height="80dp"
+                        android:importantForAccessibility="no"
                         android:layout_below="@id/favourite_constructor_name">
 
                     </ImageView>
@@ -695,6 +699,7 @@
                             android:layout_width="50dp"
                             android:layout_height="40dp"
                             android:layout_marginEnd="@dimen/medium_margin"
+                            android:importantForAccessibility="no"
                             android:layout_marginBottom="5dp">
 
                         </ImageView>

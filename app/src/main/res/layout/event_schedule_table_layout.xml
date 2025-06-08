@@ -93,6 +93,7 @@
                     android:layout_height="match_parent"
                     android:layout_margin="3dp"
                     android:visibility="invisible"
+                    android:importantForAccessibility="no"
                     app:srcCompat="@drawable/checkered_flag" />
 
             </LinearLayout>
@@ -165,6 +166,7 @@
                     android:layout_height="match_parent"
                     android:layout_margin="3dp"
                     android:visibility="invisible"
+                    android:importantForAccessibility="no"
                     app:srcCompat="@drawable/checkered_flag" />
 
             </LinearLayout>
@@ -237,6 +239,7 @@
                     android:layout_height="match_parent"
                     android:layout_margin="3dp"
                     android:visibility="invisible"
+                    android:importantForAccessibility="no"
                     app:srcCompat="@drawable/checkered_flag" />
 
             </LinearLayout>
@@ -309,6 +312,7 @@
                     android:layout_height="match_parent"
                     android:layout_margin="3dp"
                     android:visibility="invisible"
+                    android:importantForAccessibility="no"
                     app:srcCompat="@drawable/checkered_flag" />
 
             </LinearLayout>
@@ -380,6 +384,7 @@
                     android:layout_height="match_parent"
                     android:layout_margin="3dp"
                     android:visibility="invisible"
+                    android:importantForAccessibility="no"
                     app:srcCompat="@drawable/checkered_flag" />
 
             </LinearLayout>

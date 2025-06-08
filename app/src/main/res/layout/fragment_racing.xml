@@ -55,6 +55,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="10dp"
+                    android:importantForAccessibility="no"
                     android:src="@drawable/past_events_icon" />
 
 
@@ -88,6 +89,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="10dp"
+                    android:importantForAccessibility="no"
                     android:src="@drawable/upcoming_events_icon" />
 
 

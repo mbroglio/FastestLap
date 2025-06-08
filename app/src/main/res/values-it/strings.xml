@@ -96,4 +96,5 @@
     <string name="lap">Giro %1$s</string>
     <string name="full_race_results">Risultati gara completi</string>
     <string name="driver_info_not_found_upper_case">INFO PILOTA NON DISPONIBILI\n(%1$s)</string>
+    <string name="favorite_text">Preferito</string>
 </resources>

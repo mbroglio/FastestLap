@@ -26,6 +26,7 @@
                 android:id="@+id/upcoming_track_outline"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
+                android:importantForAccessibility="no"
                 android:layout_marginStart="20dp">
 
             </ImageView>
@@ -106,6 +107,7 @@
                     android:layout_alignBottom="@id/upcoming_month"
                     android:layout_alignParentEnd="true"
                     android:layout_marginEnd="5dp"
+                    android:importantForAccessibility="no"
                     app:srcCompat="@drawable/play_icon_white">
 
                 </ImageView>
