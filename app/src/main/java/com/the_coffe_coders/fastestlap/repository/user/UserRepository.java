@@ -8,10 +8,6 @@ import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.source.user.BaseUserAuthenticationRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.user.BaseUserDataRemoteDataSource;
 
-
-/**
- * Repository class to get the user information.
- */
 public class UserRepository implements IUserRepository, UserResponseCallback {
     private static final String TAG = UserRepository.class.getSimpleName();
     private final MutableLiveData<Result> userMutableLiveData;

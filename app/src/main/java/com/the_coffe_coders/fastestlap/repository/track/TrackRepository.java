@@ -20,17 +20,11 @@ import java.util.Objects;
 public class TrackRepository {
     private static final String TAG = "TrackRepository";
     private static TrackRepository instance;
-
-    //Cache
     private final Map<String, MutableLiveData<Result>> trackCache;
     private final Map<String, Long> lastUpdateTimestamps;
-
-    //Data sources
     FirebaseTrackDataSource firebaseTrackDataSource;
     LocalTrackDataSource localTrackDataSource;
-    AppRoomDatabase appRoomDatabase;
-
-    private Context context;
+    private final Context context;
 
     public TrackRepository(AppRoomDatabase appRoomDatabase, Context context) {
         trackCache = new HashMap<>();
@@ -68,7 +62,7 @@ public class TrackRepository {
                 Log.d(TAG, "No network connection");
                 loadTrackFromLocal(trackId);
             }
-        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(trackId) > 6000) {
+        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(trackId) > 60000) {
             if(isNetworkAvailable()){
                 loadTrack(trackId);
             }else{
@@ -104,7 +98,7 @@ public class TrackRepository {
     }
 
     public void loadTrack(String trackId) {
-        trackCache.get(trackId).postValue(new Result.Loading("Fetching track from remote"));
+        Objects.requireNonNull(trackCache.get(trackId)).postValue(new Result.Loading("Fetching track from remote"));
         try {
             firebaseTrackDataSource.getTrack(trackId, new TrackCallback() {
                 @Override

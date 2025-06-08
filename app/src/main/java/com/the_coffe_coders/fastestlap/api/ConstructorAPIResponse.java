@@ -19,8 +19,4 @@ public class ConstructorAPIResponse extends APIResponse {
         this.constructorTableDTO = constructorTableDTO;
     }
 
-    public ConstructorTableDTO getConstructorTableDTO() {
-        return constructorTableDTO;
-    }
-
 }

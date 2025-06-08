@@ -11,21 +11,8 @@ import java.util.List;
 
 @Dao
 public interface TrackDAO {
-    @Query("SELECT * FROM Track")
-    List<Track> getAll();
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(List<Track> articles);
-
     @Query("SELECT * FROM Track WHERE trackId LIKE :id")
     Track getById(String id);
-
-    @Query("DELETE from Track")
-    void deleteAll();
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertTrack(Track track);
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    List<Long> insertTrackList(List<Track> newsList);
 }

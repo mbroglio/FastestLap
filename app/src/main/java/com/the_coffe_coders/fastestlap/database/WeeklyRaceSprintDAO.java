@@ -13,10 +13,6 @@ import java.util.List;
 public interface WeeklyRaceSprintDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(WeeklyRaceSprint sprintRace);
-
-    @Query("SELECT * FROM WeeklyRaceSprint WHERE uid = :id")
-    WeeklyRaceSprint getRaceById(int id);
-
     @Query("SELECT * FROM WeeklyRaceSprint")
     List<WeeklyRaceSprint> getAllRaces();
 
