@@ -19,4 +19,5 @@
     <!-- min text resize -->
     <dimen name="min_text_resize_1">9sp</dimen>
     <dimen name="min_text_resize_2">7sp</dimen>
+    <dimen name="top_bar_height">50dp</dimen>
 </resources>
