@@ -7,8 +7,6 @@ import androidx.room.Query;
 
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 
-import java.util.List;
-
 @Dao
 public interface DriverDAO {
     @Query("SELECT * FROM Driver WHERE driverId LIKE :id")

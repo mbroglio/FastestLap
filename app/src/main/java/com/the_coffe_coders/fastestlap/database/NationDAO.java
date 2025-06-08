@@ -7,8 +7,6 @@ import androidx.room.Query;
 
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 
-import java.util.List;
-
 @Dao
 public interface NationDAO {
     @Query("SELECT * FROM Nation WHERE nationId LIKE :id")

@@ -147,7 +147,6 @@ public class HomeFragment extends Fragment {
 
                 setFavouriteDriverCard(view);
                 setFavouriteConstructorCard(view);
-                //refreshUI();
             }
         });
     }

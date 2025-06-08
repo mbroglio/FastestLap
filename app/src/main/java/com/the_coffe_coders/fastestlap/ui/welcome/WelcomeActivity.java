@@ -51,8 +51,6 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
 
         mAuth = FirebaseAuth.getInstance();
 
-        // fromSignOut = getIntent().getBooleanExtra("SIGN_OUT", false);
-
         IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository((Application) getApplicationContext());
 
         UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);

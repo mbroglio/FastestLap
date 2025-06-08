@@ -10,8 +10,6 @@ import androidx.lifecycle.MutableLiveData;
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
-import com.the_coffe_coders.fastestlap.domain.driver.Driver;
-import com.the_coffe_coders.fastestlap.repository.driver.DriverCallback;
 import com.the_coffe_coders.fastestlap.source.constructor.FirebaseConstructorDataSource;
 import com.the_coffe_coders.fastestlap.source.constructor.JolpicaConstructorDataSource;
 import com.the_coffe_coders.fastestlap.source.constructor.LocalConstructorDataSource;

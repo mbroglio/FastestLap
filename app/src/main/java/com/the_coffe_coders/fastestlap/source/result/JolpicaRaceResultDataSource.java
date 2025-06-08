@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
 import com.the_coffe_coders.fastestlap.api.RaceResultsAPIResponse;
 import com.the_coffe_coders.fastestlap.mapper.RaceMapper;
 import com.the_coffe_coders.fastestlap.repository.result.RaceResultCallback;
@@ -17,7 +16,6 @@ import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;

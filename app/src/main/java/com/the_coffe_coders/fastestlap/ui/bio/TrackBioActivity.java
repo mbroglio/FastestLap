@@ -33,8 +33,6 @@ import com.the_coffe_coders.fastestlap.util.UIUtils;
 
 import java.util.List;
 
-import javax.annotation.Nullable;
-
 public class TrackBioActivity extends AppCompatActivity {
 
     LoadingScreen loadingScreen;

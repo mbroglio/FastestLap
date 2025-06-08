@@ -1,9 +1,7 @@
 package com.the_coffe_coders.fastestlap.ui.event.viewmodel;
 
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResultFastestLap;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
