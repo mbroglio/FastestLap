@@ -3,6 +3,7 @@ package com.the_coffe_coders.fastestlap.api;
 
 import android.util.Log;
 
+import com.the_coffe_coders.fastestlap.dto.QualifyingResultDTO;
 import com.the_coffe_coders.fastestlap.dto.RaceDTO;
 import com.the_coffe_coders.fastestlap.dto.RaceTableDTO;
 import com.the_coffe_coders.fastestlap.dto.ResultDTO;
@@ -34,6 +35,10 @@ public class RaceResultsAPIResponse extends APIResponse {
 
     public List<ResultDTO> getRaceResults() {
         return RaceTable.getRace().getResults();
+    }
+
+    public List<QualifyingResultDTO> getQualifyingResults() {
+        return RaceTable.getRace().getQualifyingResults();
     }
 
 }

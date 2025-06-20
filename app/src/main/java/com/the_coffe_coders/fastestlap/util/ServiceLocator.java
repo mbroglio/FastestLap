@@ -126,6 +126,17 @@ public class ServiceLocator {
             }
 
             @Override
+            public Call<ResponseBody> getQualifyingResults(int round) {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .client(okHttpClient)
+                        .build();
+
+                return retrofit.create(ErgastAPIService.class).getQualifyingResults(round);
+            }
+
+            @Override
             public Call<ResponseBody> getNextRace() {
                 Log.i("Service Locator", "getNextRace: " + CURRENT_YEAR_BASE_URL);
 

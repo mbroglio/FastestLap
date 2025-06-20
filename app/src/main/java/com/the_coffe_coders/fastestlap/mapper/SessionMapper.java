@@ -2,11 +2,13 @@ package com.the_coffe_coders.fastestlap.mapper;
 
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Practice;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Qualifying;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.QualifyingResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Sprint;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.SprintQualifying;
 import com.the_coffe_coders.fastestlap.dto.PracticeDTO;
 import com.the_coffe_coders.fastestlap.dto.QualifyingDTO;
+import com.the_coffe_coders.fastestlap.dto.QualifyingResultDTO;
 import com.the_coffe_coders.fastestlap.dto.ResultDTO;
 import com.the_coffe_coders.fastestlap.dto.SprintDTO;
 import com.the_coffe_coders.fastestlap.dto.SprintQualifyingDTO;
@@ -47,5 +49,16 @@ public class SessionMapper {
         raceResult.setTime(ResultTimeMapper.toResultTime(resultDTO.getTime()));
         raceResult.setFastestLap(ResultFastestLapMapper.toResultFastestLap(resultDTO.getFastestLap()));
         return raceResult;
+    }
+
+    public static QualifyingResult toQualifyingResult(QualifyingResultDTO qualifyingResultDTO) {
+        QualifyingResult qualifyingResult = new QualifyingResult();
+        qualifyingResult.setPosition(qualifyingResultDTO.getPosition());
+        qualifyingResult.setDriver(DriverMapper.toDriver(qualifyingResultDTO.getDriver()));
+        qualifyingResult.setConstructor(ConstructorMapper.toConstructor(qualifyingResultDTO.getConstructor()));
+        qualifyingResult.setQ1(qualifyingResultDTO.getQ1());
+        qualifyingResult.setQ2(qualifyingResultDTO.getQ2());
+        qualifyingResult.setQ3(qualifyingResultDTO.getQ3());
+        return qualifyingResult;
     }
 }

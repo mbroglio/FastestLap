@@ -23,6 +23,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Practice;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.QualifyingResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
@@ -223,7 +224,7 @@ public class EventActivity extends AppCompatActivity {
             showResults(weeklyRace);
         }
 
-        createWeekSchedule(sessions);
+        createWeekSchedule(sessions, weeklyRace.getRound());
     }
 
     private void setLiveSession() {
@@ -350,7 +351,7 @@ public class EventActivity extends AppCompatActivity {
         resultsView.setVisibility(View.GONE);
     }
 
-    private void createWeekSchedule(List<Session> sessions) {
+    private void createWeekSchedule(List<Session> sessions, String round) {
         View eventSchedule = findViewById(R.id.event_schedule_table);
         loadingScreen.updateProgress();
 
@@ -373,14 +374,14 @@ public class EventActivity extends AppCompatActivity {
                     session.getTime(), //if false
                     eventSchedule.findViewById(Constants.SESSION_TIME_FIELD.get(sessionId)));
 
-            setChequeredFlag(eventSchedule, session);
+            setChequeredFlag(eventSchedule, session, round);
         }
         loadingScreen.hideLoadingScreen();
     }
 
-    private void setChequeredFlag(View view, Session session) {
+    private void setChequeredFlag(View view, Session session, String round) {
         String sessionId = session.getClass().getSimpleName();
-        if (sessionId.equals("Practice")) {
+        if (session.isPractice()) {
             Practice practice = (Practice) session;
             sessionId = practice.getPractice();
         }
@@ -392,15 +393,45 @@ public class EventActivity extends AppCompatActivity {
             LinearLayout currentSession = view.findViewById(Constants.SESSION_ROW.get(sessionId));
             currentSession.setClickable(true);
             currentSession.setFocusable(true);
-            currentSession.setOnClickListener(v -> manageSessionScheduleClick(session));
+            currentSession.setOnClickListener(v -> manageSessionScheduleClick(session, round));
         }
     }
 
-    private void manageSessionScheduleClick(Session session) {
-        String sessionId = session.getClass().getSimpleName();
-        if (sessionId.equals("Race")) {
+    private void manageSessionScheduleClick(Session session, String round) {
+
+        if(session.isRace()) {
             showRaceResultsDialog(currentRace);
         }
+        if(session.isQualifying()){
+            processQualifyingData(round);
+        }
+
+    }
+
+    private void processQualifyingData(String round) {
+        Log.d(TAG, "Processing qualifying data for round: " + round);
+
+        MutableLiveData<Result> qualifyingResultLiveData = raceResultViewModel.getQualifyingResults(round);
+        qualifyingResultLiveData.observe(this, result -> {
+            if (result instanceof Result.Loading) {
+                return;
+            }
+
+            try {
+                Race race = ((Result.RaceResultsSuccess) result).getData();
+                List<QualifyingResult> qualifyingResults = race.getQualifyingResults();
+
+                if (qualifyingResults == null || qualifyingResults.isEmpty()) {
+                    Log.i(TAG, "No qualifying results found");
+                } else {
+                    Log.i(TAG, "Qualifying results found: " + qualifyingResults.size());
+
+                    Log.i(TAG, "race: " + race);
+                }
+            }catch (Exception e){
+                Log.e(TAG, "Error processing qualifying data: " + e.getMessage());
+            }
+        });
     }
 
     @Override

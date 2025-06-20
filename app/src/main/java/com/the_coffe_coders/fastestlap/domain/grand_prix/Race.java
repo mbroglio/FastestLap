@@ -36,6 +36,7 @@ public class Race extends Session implements Parcelable {
         }
     };
     public List<RaceResult> raceResults;
+    public List<QualifyingResult> qualifyingResults;
     public LocalDateTime dateTime;
     @PrimaryKey(autoGenerate = true)
     private int uid;
@@ -45,7 +46,7 @@ public class Race extends Session implements Parcelable {
     private String raceName;
     private Track track;
 
-    public Race(String season, String round, String url, String raceName, Track track, List<RaceResult> raceResults, String sessionId, Boolean isFinished, Boolean isUnderway, String date, String time) {
+    public Race(String season, String round, String url, String raceName, Track track, List<RaceResult> raceResults, List<QualifyingResult> qualifyingResults,String sessionId, Boolean isFinished, Boolean isUnderway, String date, String time) {
         super(date, time);
         this.season = season;
         this.round = round;
@@ -53,15 +54,18 @@ public class Race extends Session implements Parcelable {
         this.raceName = raceName;
         this.track = track;
         this.raceResults = raceResults;
+        this.qualifyingResults = qualifyingResults;
         setEndDateTime();
     }
 
     public Race() {
         raceResults = new ArrayList<>();
+        qualifyingResults = new ArrayList<>();
     }
 
     protected Race(Parcel in) {
         raceResults = in.createTypedArrayList(RaceResult.CREATOR);
+        qualifyingResults = in.createTypedArrayList(QualifyingResult.CREATOR);
         uid = in.readInt();
         season = in.readString();
         round = in.readString();
@@ -85,6 +89,10 @@ public class Race extends Session implements Parcelable {
         this.raceResults.add(result);
     }
 
+    public void addQualifyingResult(QualifyingResult result) {
+        this.qualifyingResults.add(result);
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -93,6 +101,7 @@ public class Race extends Session implements Parcelable {
     @Override
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeTypedList(raceResults);
+        dest.writeTypedList(qualifyingResults);
         dest.writeInt(uid);
         dest.writeString(season);
         dest.writeString(round);
