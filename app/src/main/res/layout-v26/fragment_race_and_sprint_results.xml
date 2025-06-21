@@ -39,6 +39,7 @@
                 android:textSize="@dimen/page_title_text_size" />
 
             <TextView
+                android:id="@+id/event_description_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -51,7 +52,6 @@
                 android:fontFamily="@font/orbitron_bold"
                 android:gravity="center"
                 android:maxLines="1"
-                android:text="@string/full_race_results"
                 android:textColor="@color/black"
                 android:textSize="@dimen/layout_subtitle_text_size" />
 

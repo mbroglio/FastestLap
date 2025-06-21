@@ -73,10 +73,16 @@ public class RaceAndSprintResultsFragment extends DialogFragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         RaceResultsRecyclerAdapter adapter = null;
 
+        TextView eventDescriptionTitle = view.findViewById(R.id.event_description_title);
+
         if(raceResultsList != null && !raceResultsList.isEmpty()) {
+            UIUtils.singleSetTextViewText(requireContext().getString(
+                    R.string.full_event_results, requireContext().getString(R.string.race)), eventDescriptionTitle);
             setupFastestLapLayout(view, raceResultsList);
             adapter = new RaceResultsRecyclerAdapter(requireContext(), raceResultsList);
         }else if(sprintResultsList != null && !sprintResultsList.isEmpty()) {
+            UIUtils.singleSetTextViewText(requireContext().getString(
+                    R.string.full_event_results, requireContext().getString(R.string.sprint)), eventDescriptionTitle);
             setupFastestLapLayout(view, sprintResultsList);
             adapter = new RaceResultsRecyclerAdapter(requireContext(), sprintResultsList);
         }

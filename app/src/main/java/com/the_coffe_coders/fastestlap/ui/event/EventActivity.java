@@ -272,12 +272,35 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void showRaceResultsDialog(Race race) {
-        if (race == null || race.getRaceResults() == null || race.getRaceResults().isEmpty()) {
-            Log.e(TAG, "No race results to show");
-            return;
+        if(race != null){
+            if(race.getRaceResults() == null || race.getRaceResults().isEmpty()){
+                Log.e(TAG, "race results not found");
+                if(race.getSprintResults() == null || race.getSprintResults().isEmpty()){
+                    Log.e(TAG, "sprint results not found");
+                }else{
+                    Log.i(TAG, "Showing sprint results");
+                    UIUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 0);
+                }
+            }else{
+                Log.i(TAG, "Showing race results");
+                UIUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 0);
+            }
+        }else{
+            Log.e(TAG, "race is null, cannot show results");
         }
+    }
 
-        UIUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 0);
+    private void showQualifyingResultsDialog(Race race){
+        if(race!=null){
+            if(race.getQualifyingResults() != null && !race.getQualifyingResults().isEmpty()){
+                Log.i(TAG, "Showing qualifying results");
+                UIUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 1);
+            }else{
+                Log.e(TAG, "qualifying results not found");
+            }
+        }else{
+            Log.e(TAG, "race is null, cannot show qualifying results");
+        }
     }
 
     private void showResults(WeeklyRace weeklyRace) {
@@ -430,7 +453,8 @@ public class EventActivity extends AppCompatActivity {
                 } else {
                     Log.i(TAG, "Qualifying results found: " + qualifyingResults.size());
 
-                    Log.i(TAG, "race: " + race);
+                    showQualifyingResultsDialog(race);
+
                 }
             }catch (Exception e){
                 Log.e(TAG, "Error processing qualifying data: " + e.getMessage());
@@ -456,7 +480,7 @@ public class EventActivity extends AppCompatActivity {
                 } else {
                     Log.i(TAG, "Sprint results found: " + sprintResults.size());
 
-                    Log.i(TAG, "race: " + race);
+                    showRaceResultsDialog(race);
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error processing qualifying data: " + e.getMessage());

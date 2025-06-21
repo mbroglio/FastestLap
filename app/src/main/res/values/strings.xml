@@ -157,12 +157,13 @@
     <string name="race_results">Race Results</string>
     <string name="race_results_title">%1$s Results</string>
     <string name="close">Close</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="fastest_lap_upper_case">FASTEST LAP</string>
     <string name="lap">Lap %1$s</string>
     <string name="podium_upper_case">PODIUM</string>
-    <string name="full_race_results">Full race results</string>
+    <string name="full_event_results">Full %1$s results</string>
+    <string name="race">Race</string>
+    <string name="sprint" translatable="false">Sprint</string>
+    <string name="qualifying">Qualifying</string>
     <string name="favorite_text">Favorite</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>
