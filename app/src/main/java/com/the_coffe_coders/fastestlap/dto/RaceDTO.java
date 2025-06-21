@@ -18,6 +18,8 @@ public class RaceDTO {
     List<ResultDTO> results;
     @SerializedName("QualifyingResults")
     List<QualifyingResultDTO> qualifyingResults;
+    @SerializedName("SprintResults")
+    List<ResultDTO> sprintResults;
     private String season;
     private String round;
     private String url;

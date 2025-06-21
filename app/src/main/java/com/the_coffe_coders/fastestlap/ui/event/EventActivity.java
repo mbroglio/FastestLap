@@ -399,11 +399,15 @@ public class EventActivity extends AppCompatActivity {
 
     private void manageSessionScheduleClick(Session session, String round) {
 
+        Log.i(TAG, "session id clicked: " + session.getClass().getSimpleName());
         if(session.isRace()) {
             showRaceResultsDialog(currentRace);
         }
         if(session.isQualifying()){
             processQualifyingData(round);
+        }
+        if(session.isSprint()){
+            processSprintData(round);
         }
 
     }
@@ -429,6 +433,32 @@ public class EventActivity extends AppCompatActivity {
                     Log.i(TAG, "race: " + race);
                 }
             }catch (Exception e){
+                Log.e(TAG, "Error processing qualifying data: " + e.getMessage());
+            }
+        });
+    }
+
+    private void processSprintData(String round) {
+        Log.d(TAG, "Processing sprint data for round: " + round);
+
+        MutableLiveData<Result> sprintResultLiveData = raceResultViewModel.getSprintResults(round);
+        sprintResultLiveData.observe(this, result -> {
+            if (result instanceof Result.Loading) {
+                return;
+            }
+
+            try {
+                Race race = ((Result.RaceResultsSuccess) result).getData();
+                List<RaceResult> sprintResults = race.getSprintResults();
+
+                if (sprintResults == null || sprintResults.isEmpty()) {
+                    Log.i(TAG, "No sprint results found");
+                } else {
+                    Log.i(TAG, "Sprint results found: " + sprintResults.size());
+
+                    Log.i(TAG, "race: " + race);
+                }
+            } catch (Exception e) {
                 Log.e(TAG, "Error processing qualifying data: " + e.getMessage());
             }
         });

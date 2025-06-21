@@ -50,7 +50,7 @@ import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.ui.event.PastEventsActivity;
 import com.the_coffe_coders.fastestlap.ui.event.UpcomingEventsActivity;
-import com.the_coffe_coders.fastestlap.ui.event.fragment.RaceResultsFragment;
+import com.the_coffe_coders.fastestlap.ui.event.fragment.RaceAndSprintResultsFragment;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
@@ -448,11 +448,11 @@ public class UIUtils {
 
     public static void showRaceResultsDialog(FragmentManager fragmentManager, Race race, int sessionType) {
         if (sessionType == 0) {
-            RaceResultsFragment raceResultsFragment = new RaceResultsFragment();
+            RaceAndSprintResultsFragment raceAndSprintResultsFragment = new RaceAndSprintResultsFragment();
             Bundle args = new Bundle();
             args.putParcelable("RACE", race);
-            raceResultsFragment.setArguments(args);
-            raceResultsFragment.show(fragmentManager, "RaceResultsFragment");
+            raceAndSprintResultsFragment.setArguments(args);
+            raceAndSprintResultsFragment.show(fragmentManager, "RaceResultsFragment");
         }
     }
 

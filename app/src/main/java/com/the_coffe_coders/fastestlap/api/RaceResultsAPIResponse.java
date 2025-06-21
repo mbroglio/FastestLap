@@ -41,4 +41,8 @@ public class RaceResultsAPIResponse extends APIResponse {
         return RaceTable.getRace().getQualifyingResults();
     }
 
+    public List<ResultDTO> getSprintResults() {
+        return RaceTable.getRace().getSprintResults();
+    }
+
 }

@@ -31,6 +31,14 @@ public class RaceMapper {
             raceDTO.setQualifyingResults(null);
         }
 
+        if (raceDTO.getSprintResults() != null && !raceDTO.getSprintResults().isEmpty()) {
+            for (ResultDTO sprintResultDTO : raceDTO.getSprintResults()) {
+                race.addSprintResult(SessionMapper.toResult(sprintResultDTO));
+            }
+        }else{
+            raceDTO.setSprintResults(null);
+        }
+
         return race;
     }
 
