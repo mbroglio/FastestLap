@@ -186,7 +186,7 @@ public class Constants {
         put("june", "giugno");
         put("july", "luglio");
         put("august", "agosto");
-        put("sdeptember", "settembre");
+        put("september", "settembre");
         put("october", "ottobre");
         put("november", "novembre");
         put("december", "dicembre");
