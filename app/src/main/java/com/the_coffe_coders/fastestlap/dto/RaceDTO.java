@@ -16,6 +16,10 @@ import lombok.ToString;
 public class RaceDTO {
     @SerializedName("Results")
     List<ResultDTO> results;
+    @SerializedName("QualifyingResults")
+    List<QualifyingResultDTO> qualifyingResults;
+    @SerializedName("SprintResults")
+    List<ResultDTO> sprintResults;
     private String season;
     private String round;
     private String url;

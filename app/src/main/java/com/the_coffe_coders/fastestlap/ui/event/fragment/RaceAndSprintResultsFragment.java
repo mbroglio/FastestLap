@@ -28,11 +28,11 @@ import com.the_coffe_coders.fastestlap.util.UIUtils;
 import java.util.List;
 import java.util.Objects;
 
-public class RaceResultsFragment extends DialogFragment {
+public class RaceAndSprintResultsFragment extends DialogFragment {
     private Race race;
     private EventViewModel eventViewModel;
 
-    public RaceResultsFragment() {
+    public RaceAndSprintResultsFragment() {
         // Required empty public constructor
     }
 
@@ -47,7 +47,7 @@ public class RaceResultsFragment extends DialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_race_results, container, false);
+        View view = inflater.inflate(R.layout.fragment_race_and_sprint_results, container, false);
 
         initializeFragment(view);
 
@@ -64,15 +64,29 @@ public class RaceResultsFragment extends DialogFragment {
     }
 
     private void setupFragment(View view) {
-        List<RaceResult> resultsList = race.getRaceResults();
+        List<RaceResult> raceResultsList = race.getRaceResults();
+        List<RaceResult> sprintResultsList = race.getSprintResults();
 
         UIUtils.singleSetTextViewText(race.getRaceName().toUpperCase(), view.findViewById(R.id.race_results_title));
 
-        setupFastestLapLayout(view, resultsList);
-
         RecyclerView recyclerView = view.findViewById(R.id.race_results_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        RaceResultsRecyclerAdapter adapter = new RaceResultsRecyclerAdapter(requireContext(), resultsList);
+        RaceResultsRecyclerAdapter adapter = null;
+
+        TextView eventDescriptionTitle = view.findViewById(R.id.event_description_title);
+
+        if(raceResultsList != null && !raceResultsList.isEmpty()) {
+            UIUtils.singleSetTextViewText(requireContext().getString(
+                    R.string.full_event_results, requireContext().getString(R.string.race)), eventDescriptionTitle);
+            setupFastestLapLayout(view, raceResultsList);
+            adapter = new RaceResultsRecyclerAdapter(requireContext(), raceResultsList);
+        }else if(sprintResultsList != null && !sprintResultsList.isEmpty()) {
+            UIUtils.singleSetTextViewText(requireContext().getString(
+                    R.string.full_event_results, requireContext().getString(R.string.sprint)), eventDescriptionTitle);
+            setupFastestLapLayout(view, sprintResultsList);
+            adapter = new RaceResultsRecyclerAdapter(requireContext(), sprintResultsList);
+        }
+
         recyclerView.setAdapter(adapter);
 
         Button closeButton = view.findViewById(R.id.close_results_button);

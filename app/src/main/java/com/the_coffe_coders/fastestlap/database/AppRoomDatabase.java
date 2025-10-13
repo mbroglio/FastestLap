@@ -62,6 +62,10 @@ public abstract class AppRoomDatabase extends RoomDatabase {
     public abstract WeeklyRaceSprintDAO weeklyRaceSprintDAO();
 
     public abstract RaceDAO raceDAO();
+
+    public abstract QualifyingDAO qualifyingDAO();
+
+    public abstract SprintDAO sprintDAO();
 }
 
 

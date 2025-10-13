@@ -11,6 +11,7 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Location;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Practice;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Qualifying;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.QualifyingResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResultFastestLap;
@@ -55,6 +56,19 @@ public class DatabaseConverters {
 
     @TypeConverter
     public static String fromRaceResultList(List<RaceResult> results) {
+        return gson.toJson(results);
+    }
+
+    @TypeConverter
+    public static List<QualifyingResult> toQualifyingResultList(String json) {
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<QualifyingResult>>() {
+        }.getType();
+        return gson.fromJson(json, listType);
+    }
+
+    @TypeConverter
+    public static String fromQualifyingResultList(List<QualifyingResult> results) {
         return gson.toJson(results);
     }
 

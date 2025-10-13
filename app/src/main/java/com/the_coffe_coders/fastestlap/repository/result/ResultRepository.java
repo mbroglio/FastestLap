@@ -20,13 +20,21 @@ public class ResultRepository {
 
     // Cache
     private final Map<String, MutableLiveData<Result>> resultsCache;
+    private final Map<String, MutableLiveData<Result>> qualifyingResultsCache;
+    private final Map<String, MutableLiveData<Result>> sprintResultsCache;
     private final Map<String, Long> lastUpdateTimestamps;
+    private final Map<String, Long> qualifyingLastUpdateTimestamps;
+    private final Map<String, Long> sprintLastUpdateTimestamps;
     final JolpicaRaceResultDataSource jolpicaRaceResultDataSource;
     final LocalRaceResultDataSource localRaceResultDataSource;
 
     private ResultRepository(AppRoomDatabase appRoomDatabase) {
         resultsCache = new HashMap<>();
+        qualifyingResultsCache = new HashMap<>();
+        sprintResultsCache = new HashMap<>();
         lastUpdateTimestamps = new HashMap<>();
+        qualifyingLastUpdateTimestamps = new HashMap<>();
+        sprintLastUpdateTimestamps = new HashMap<>();
         jolpicaRaceResultDataSource = new JolpicaRaceResultDataSource();
         localRaceResultDataSource = LocalRaceResultDataSource.getInstance(appRoomDatabase);
     }
@@ -100,5 +108,137 @@ public class ResultRepository {
         } catch (Exception e) {
             Log.e(TAG, "Error loading results: " + e.getMessage());
         }
+    }
+
+    public synchronized MutableLiveData<Result> fetchQualifyingResults(String round) {
+        Log.d(TAG, "Fetching quali results for round: " + round);
+        if (!qualifyingResultsCache.containsKey(round) || !qualifyingLastUpdateTimestamps.containsKey(round) || qualifyingLastUpdateTimestamps.get(round) == null) {
+            qualifyingResultsCache.put(round, new MutableLiveData<>());
+            loadQualifyingResults(round);
+        } else if (System.currentTimeMillis() - qualifyingLastUpdateTimestamps.get(round) > 60000) {
+            loadQualifyingResults(round);
+        } else {
+            Log.d(TAG, "Results found in cache for round: " + round);
+        }
+        return qualifyingResultsCache.get(round);
+    }
+
+    private void loadQualifyingResults(String round) {
+        Objects.requireNonNull(qualifyingResultsCache.get(round)).postValue(new Result.Loading("Fetching results from remote"));
+        try {
+            jolpicaRaceResultDataSource.getQualifyingResults(Integer.parseInt(round), new RaceResultCallback() {
+                @Override
+                public void onSuccess(Race race) {
+                    Log.d(TAG, "Results loaded: " + race);
+                    if(race != null){
+                        localRaceResultDataSource.insertQualifyingResults(race);
+                        qualifyingLastUpdateTimestamps.put(round, System.currentTimeMillis());
+                        Objects.requireNonNull(qualifyingResultsCache.get(round)).postValue(new Result.RaceResultsSuccess(race));
+
+                    }else{
+                        Log.e(TAG, "Results not found in cache for round: " + round);
+                        loadQualifyingResultsFromLocal(round);
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception exception) {
+                    Log.e(TAG, "Error loading results: " + exception.getMessage());
+                    Objects.requireNonNull(qualifyingResultsCache.get(round)).postValue(new Result.Error(exception.getMessage()));
+                    loadQualifyingResultsFromLocal(round);
+
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error loading results: " + e.getMessage());
+        }
+    }
+
+    private void loadQualifyingResultsFromLocal(String round) {
+        localRaceResultDataSource.getQualifyingResults(round, new RaceResultCallback() {
+            @Override
+            public void onSuccess(Race race){
+                if(race != null){
+                    qualifyingResultsCache.put(round, new MutableLiveData<>(new Result.RaceResultsSuccess(race)));
+                    qualifyingLastUpdateTimestamps.put(round, System.currentTimeMillis());
+                    Objects.requireNonNull(qualifyingResultsCache.get(round)).postValue(new Result.RaceResultsSuccess(race));
+                    Log.d(TAG, "Qualifying results loaded from local cache for round: " + round);
+                }else{
+                    Log.e(TAG, "Qualifying results not found in local cache for round: " + round);
+                }
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                Log.e(TAG, "Error loading qualifying results from local cache: " + exception.getMessage());
+                Objects.requireNonNull(qualifyingResultsCache.get(round)).postValue(new Result.Error(exception.getMessage()));
+            }
+        });
+    }
+
+    public MutableLiveData<Result> fetchSprintResults(String round) {
+        Log.d(TAG, "Fetching results for round: " + round);
+        if (!sprintResultsCache.containsKey(round) || !sprintLastUpdateTimestamps.containsKey(round) || sprintLastUpdateTimestamps.get(round) == null) {
+            sprintResultsCache.put(round, new MutableLiveData<>());
+            loadSprintResults(round);
+        } else if (System.currentTimeMillis() - sprintLastUpdateTimestamps.get(round) > 60000) {
+            loadSprintResults(round);
+        } else {
+            Log.d(TAG, "Results found in cache for round: " + round);
+        }
+        return sprintResultsCache.get(round);
+    }
+
+    private void loadSprintResults(String round) {
+        Objects.requireNonNull(sprintResultsCache.get(round)).postValue(new Result.Loading("Fetching results from remote"));
+
+        try {
+            jolpicaRaceResultDataSource.getSprintResults(Integer.parseInt(round), new RaceResultCallback() {
+                @Override
+                public void onSuccess(Race race) {
+                    Log.d(TAG, "Results loaded: " + race);
+                    if(race != null){
+                        localRaceResultDataSource.insertSprintResults(race);
+                        sprintLastUpdateTimestamps.put(round, System.currentTimeMillis());
+                        Objects.requireNonNull(sprintResultsCache.get(round)).postValue(new Result.RaceResultsSuccess(race));
+
+                    }else{
+                        Log.e(TAG, "Results not found in cache for round: " + round);
+                        loadSprintResultsFromLocal(round);
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception exception) {
+                    Log.e(TAG, "Error loading results: " + exception.getMessage());
+                    Objects.requireNonNull(sprintResultsCache.get(round)).postValue(new Result.Error(exception.getMessage()));
+                    loadSprintResultsFromLocal(round);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error loading results: " + e.getMessage());
+        }
+    }
+
+    private void loadSprintResultsFromLocal(String round) {
+        localRaceResultDataSource.getSprintResults(round, new RaceResultCallback() {
+            @Override
+            public void onSuccess(Race race){
+                if(race != null){
+                    sprintResultsCache.put(round, new MutableLiveData<>(new Result.RaceResultsSuccess(race)));
+                    sprintLastUpdateTimestamps.put(round, System.currentTimeMillis());
+                    Objects.requireNonNull(sprintResultsCache.get(round)).postValue(new Result.RaceResultsSuccess(race));
+                    Log.d(TAG, "Sprint results loaded from local cache for round: " + race);
+                }else{
+                    Log.e(TAG, "Sprint results not found in local cache for round: " + round);
+                }
+            }
+
+            @Override
+            public void onFailure(Exception exception) {
+                Log.e(TAG, "Error loading sprint results from local cache: " + exception.getMessage());
+                loadSprintResultsFromLocal(round);
+            }
+        });
     }
 }

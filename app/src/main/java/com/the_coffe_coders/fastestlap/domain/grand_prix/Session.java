@@ -76,4 +76,20 @@ public abstract class Session {
             sessionStatus = SessionStatus.IN_PROGRESS;
         }
     }
+
+    public boolean isRace(){
+        return this.getClass().getSimpleName().equals("Race");
+    }
+
+    public boolean isQualifying() {
+        return this.getClass().getSimpleName().equals("Qualifying");
+    }
+
+    public boolean isSprint() {
+        return this.getClass().getSimpleName().equals("Sprint");
+    }
+
+    public boolean isPractice() {
+        return this.getClass().getSimpleName().equals("Practice");
+    }
 }

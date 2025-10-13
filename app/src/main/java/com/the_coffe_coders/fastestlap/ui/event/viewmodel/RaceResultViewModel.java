@@ -18,4 +18,12 @@ public class RaceResultViewModel extends ViewModel {
     public MutableLiveData<Result> getRaceResults(String raceId) {
         return resultRepository.fetchResults(raceId);
     }
+
+    public MutableLiveData<Result> getQualifyingResults(String raceId) {
+        return resultRepository.fetchQualifyingResults(raceId);
+    }
+
+    public MutableLiveData<Result> getSprintResults(String round) {
+        return resultRepository.fetchSprintResults(round);
+    }
 }

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:backgroundTint="@color/white"
+    app:cardCornerRadius="0dp"
+    app:strokeColor="@color/ferrari_secondary"
+    app:strokeWidth="3dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/screen_background_color"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/title_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:background="@color/ferrari_secondary"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/race_results_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="8dp"
+                android:autoSizeMaxTextSize="@dimen/page_title_text_size"
+                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                android:autoSizeTextType="uniform"
+                android:fontFamily="@font/orbitron_bold"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textSize="@dimen/page_title_text_size" />
+
+            <TextView
+                android:id="@+id/event_description_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="5dp"
+                android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                android:autoSizeTextType="uniform"
+                android:fontFamily="@font/orbitron_bold"
+                android:gravity="center"
+                android:maxLines="1"
+                android:textColor="@color/black"
+                android:textSize="@dimen/layout_subtitle_text_size" />
+
+        </LinearLayout>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/race_results_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_above="@id/close_results_button"
+            android:layout_below="@id/title_layout"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp" />
+
+        <Button
+            android:id="@+id/close_results_button"
+            style="@style/Widget.Material3.Button.ElevatedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="@dimen/medium_margin"
+            android:layout_marginBottom="8dp"
+            android:backgroundTint="@color/white"
+            android:fontFamily="@font/orbitron_bold"
+            android:text="@string/close"
+            android:textColor="@color/black">
+
+        </Button>
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>
