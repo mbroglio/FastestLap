@@ -1,6 +1,7 @@
 package com.the_coffe_coders.fastestlap.mapper;
 
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.dto.QualifyingResultDTO;
 import com.the_coffe_coders.fastestlap.dto.RaceDTO;
 import com.the_coffe_coders.fastestlap.dto.ResultDTO;
 
@@ -21,6 +22,23 @@ public class RaceMapper {
         }else{
             raceDTO.setResults(null);
         }
+
+        if(raceDTO.getQualifyingResults() != null && !raceDTO.getQualifyingResults().isEmpty()) {
+            for (QualifyingResultDTO qualifyingResultDTO : raceDTO.getQualifyingResults()) {
+                race.addQualifyingResult(SessionMapper.toQualifyingResult(qualifyingResultDTO));
+            }
+        }else{
+            raceDTO.setQualifyingResults(null);
+        }
+
+        if (raceDTO.getSprintResults() != null && !raceDTO.getSprintResults().isEmpty()) {
+            for (ResultDTO sprintResultDTO : raceDTO.getSprintResults()) {
+                race.addSprintResult(SessionMapper.toResult(sprintResultDTO));
+            }
+        }else{
+            raceDTO.setSprintResults(null);
+        }
+
         return race;
     }
 

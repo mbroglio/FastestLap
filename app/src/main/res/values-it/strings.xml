@@ -94,7 +94,9 @@
     <string name="podium_upper_case">PODIO</string>
     <string name="fastest_lap_upper_case">GIRO VELOCE</string>
     <string name="lap">Giro %1$s</string>
-    <string name="full_race_results">Risultati gara completi</string>
     <string name="driver_info_not_found_upper_case">INFO PILOTA NON DISPONIBILI\n(%1$s)</string>
+    <string name="full_event_results">Risultati %1$s completi</string>
+    <string name="qualifying">Qualifiche</string>
     <string name="favorite_text">Preferito</string>
+    <string name="race">Gara</string>
 </resources>

@@ -23,6 +23,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Practice;
+import com.the_coffe_coders.fastestlap.domain.grand_prix.QualifyingResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
@@ -223,7 +224,7 @@ public class EventActivity extends AppCompatActivity {
             showResults(weeklyRace);
         }
 
-        createWeekSchedule(sessions);
+        createWeekSchedule(sessions, weeklyRace.getRound());
     }
 
     private void setLiveSession() {
@@ -271,12 +272,35 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void showRaceResultsDialog(Race race) {
-        if (race == null || race.getRaceResults() == null || race.getRaceResults().isEmpty()) {
-            Log.e(TAG, "No race results to show");
-            return;
+        if(race != null){
+            if(race.getRaceResults() == null || race.getRaceResults().isEmpty()){
+                Log.e(TAG, "race results not found");
+                if(race.getSprintResults() == null || race.getSprintResults().isEmpty()){
+                    Log.e(TAG, "sprint results not found");
+                }else{
+                    Log.i(TAG, "Showing sprint results");
+                    UIUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 0);
+                }
+            }else{
+                Log.i(TAG, "Showing race results");
+                UIUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 0);
+            }
+        }else{
+            Log.e(TAG, "race is null, cannot show results");
         }
+    }
 
-        UIUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 0);
+    private void showQualifyingResultsDialog(Race race){
+        if(race!=null){
+            if(race.getQualifyingResults() != null && !race.getQualifyingResults().isEmpty()){
+                Log.i(TAG, "Showing qualifying results");
+                UIUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 1);
+            }else{
+                Log.e(TAG, "qualifying results not found");
+            }
+        }else{
+            Log.e(TAG, "race is null, cannot show qualifying results");
+        }
     }
 
     private void showResults(WeeklyRace weeklyRace) {
@@ -350,7 +374,7 @@ public class EventActivity extends AppCompatActivity {
         resultsView.setVisibility(View.GONE);
     }
 
-    private void createWeekSchedule(List<Session> sessions) {
+    private void createWeekSchedule(List<Session> sessions, String round) {
         View eventSchedule = findViewById(R.id.event_schedule_table);
         loadingScreen.updateProgress();
 
@@ -373,14 +397,14 @@ public class EventActivity extends AppCompatActivity {
                     session.getTime(), //if false
                     eventSchedule.findViewById(Constants.SESSION_TIME_FIELD.get(sessionId)));
 
-            setChequeredFlag(eventSchedule, session);
+            setChequeredFlag(eventSchedule, session, round);
         }
         loadingScreen.hideLoadingScreen();
     }
 
-    private void setChequeredFlag(View view, Session session) {
+    private void setChequeredFlag(View view, Session session, String round) {
         String sessionId = session.getClass().getSimpleName();
-        if (sessionId.equals("Practice")) {
+        if (session.isPractice()) {
             Practice practice = (Practice) session;
             sessionId = practice.getPractice();
         }
@@ -392,15 +416,76 @@ public class EventActivity extends AppCompatActivity {
             LinearLayout currentSession = view.findViewById(Constants.SESSION_ROW.get(sessionId));
             currentSession.setClickable(true);
             currentSession.setFocusable(true);
-            currentSession.setOnClickListener(v -> manageSessionScheduleClick(session));
+            currentSession.setOnClickListener(v -> manageSessionScheduleClick(session, round));
         }
     }
 
-    private void manageSessionScheduleClick(Session session) {
-        String sessionId = session.getClass().getSimpleName();
-        if (sessionId.equals("Race")) {
+    private void manageSessionScheduleClick(Session session, String round) {
+
+        Log.i(TAG, "session id clicked: " + session.getClass().getSimpleName());
+        if(session.isRace()) {
             showRaceResultsDialog(currentRace);
         }
+        if(session.isQualifying()){
+            processQualifyingData(round);
+        }
+        if(session.isSprint()){
+            processSprintData(round);
+        }
+
+    }
+
+    private void processQualifyingData(String round) {
+        Log.d(TAG, "Processing qualifying data for round: " + round);
+
+        MutableLiveData<Result> qualifyingResultLiveData = raceResultViewModel.getQualifyingResults(round);
+        qualifyingResultLiveData.observe(this, result -> {
+            if (result instanceof Result.Loading) {
+                return;
+            }
+
+            try {
+                Race race = ((Result.RaceResultsSuccess) result).getData();
+                List<QualifyingResult> qualifyingResults = race.getQualifyingResults();
+
+                if (qualifyingResults == null || qualifyingResults.isEmpty()) {
+                    Log.i(TAG, "No qualifying results found");
+                } else {
+                    Log.i(TAG, "Qualifying results found: " + qualifyingResults.size());
+
+                    showQualifyingResultsDialog(race);
+
+                }
+            }catch (Exception e){
+                Log.e(TAG, "Error processing qualifying data: " + e.getMessage());
+            }
+        });
+    }
+
+    private void processSprintData(String round) {
+        Log.d(TAG, "Processing sprint data for round: " + round);
+
+        MutableLiveData<Result> sprintResultLiveData = raceResultViewModel.getSprintResults(round);
+        sprintResultLiveData.observe(this, result -> {
+            if (result instanceof Result.Loading) {
+                return;
+            }
+
+            try {
+                Race race = ((Result.RaceResultsSuccess) result).getData();
+                List<RaceResult> sprintResults = race.getSprintResults();
+
+                if (sprintResults == null || sprintResults.isEmpty()) {
+                    Log.i(TAG, "No sprint results found");
+                } else {
+                    Log.i(TAG, "Sprint results found: " + sprintResults.size());
+
+                    showRaceResultsDialog(race);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error processing qualifying data: " + e.getMessage());
+            }
+        });
     }
 
     @Override

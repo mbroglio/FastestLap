@@ -50,7 +50,8 @@ import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.ui.event.PastEventsActivity;
 import com.the_coffe_coders.fastestlap.ui.event.UpcomingEventsActivity;
-import com.the_coffe_coders.fastestlap.ui.event.fragment.RaceResultsFragment;
+import com.the_coffe_coders.fastestlap.ui.event.fragment.QualifyingResultsFragment;
+import com.the_coffe_coders.fastestlap.ui.event.fragment.RaceAndSprintResultsFragment;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
@@ -447,12 +448,21 @@ public class UIUtils {
     }
 
     public static void showRaceResultsDialog(FragmentManager fragmentManager, Race race, int sessionType) {
-        if (sessionType == 0) {
-            RaceResultsFragment raceResultsFragment = new RaceResultsFragment();
-            Bundle args = new Bundle();
-            args.putParcelable("RACE", race);
-            raceResultsFragment.setArguments(args);
-            raceResultsFragment.show(fragmentManager, "RaceResultsFragment");
+        switch(sessionType){
+            case 0:
+                RaceAndSprintResultsFragment raceAndSprintResultsFragment = new RaceAndSprintResultsFragment();
+                Bundle args = new Bundle();
+                args.putParcelable("RACE", race);
+                raceAndSprintResultsFragment.setArguments(args);
+                raceAndSprintResultsFragment.show(fragmentManager, "RaceResultsFragment");
+                break;
+            case 1:
+                QualifyingResultsFragment qualifyingResultsFragment = new QualifyingResultsFragment();
+                Bundle qualifyingArgs = new Bundle();
+                qualifyingArgs.putParcelable("RACE", race);
+                qualifyingResultsFragment.setArguments(qualifyingArgs);
+                qualifyingResultsFragment.show(fragmentManager, "QualifyingResultsFragment");
+                break;
         }
     }
 
