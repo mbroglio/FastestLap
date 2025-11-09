@@ -31,12 +31,16 @@ public class DriverRepository {
     AppRoomDatabase appRoomDatabase;
     private final Context context;
 
+    //private final NetworkUtils networkLiveData;
+
     private DriverRepository(AppRoomDatabase appRoomDatabase, Context context) {
         driverCache = new HashMap<>();
         lastUpdateTimestamps = new HashMap<>();
         firebaseDriverDataSource = FirebaseDriverDataSource.getInstance();
         localDriverDataSource = LocalDriverDataSource.getInstance(appRoomDatabase);
         this.context = context.getApplicationContext();
+
+        //networkLiveData = new NetworkUtils(context);
     }
 
     public static DriverRepository getInstance(AppRoomDatabase appRoomDatabase, Context context) {
@@ -55,6 +59,10 @@ public class DriverRepository {
         }
         return false;
     }
+    /*
+    private boolean isNetworkAvailable() {
+        return networkLiveData.isConnected();
+    */
 
     public synchronized MutableLiveData<Result> getDriver(String driverId) {
         Log.d(TAG, "Fetching driver with ID: " + driverId);

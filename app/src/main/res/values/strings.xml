@@ -161,6 +161,7 @@
     <string name="link_error">Failed to open link</string>
 
     <string name="just_now">just now</string>
+    <string name="no_internet_connection">no internet connection</string>
     <plurals name="minutes_ago">
         <item quantity="one">%d minute ago</item>
         <item quantity="other">%d minutes ago</item>

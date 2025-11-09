@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +29,7 @@ import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
+import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
@@ -75,8 +77,19 @@ public class HomePageActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
         ImageView newsNavigationButton= findViewById(R.id.news_navigation);
-        newsNavigationButton.setOnClickListener(view -> UIUtils.showNewsDialog(this.getSupportFragmentManager(), currentLanguage));
 
+        NetworkUtils networkUtils = new NetworkUtils(this);
+        networkUtils.observe(this, isConnected -> {
+            Log.i("HomePageActivity", "network: " + isConnected);
+            if (isConnected) {
+                newsNavigationButton.setOnClickListener(view ->
+                        UIUtils.showNewsDialog(this.getSupportFragmentManager(), currentLanguage)
+                );
+            } else {
+                newsNavigationButton.setOnClickListener(view ->
+                        Toast.makeText(this, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show());
+            }
+        });
 
         IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
         UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);

@@ -1,47 +1,90 @@
 package com.the_coffe_coders.fastestlap.util;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
-import android.net.NetworkInfo;
-import android.os.Build;
+import androidx.annotation.NonNull;
+import androidx.lifecycle.LiveData;
 
 /**
- * Utility class to check network connectivity status
+ * LiveData\<Boolean\> that reports whether the device currently has a validated internet connection.
+ * Observe this from UI (Activity/Fragment) to get reactive updates when connectivity changes.
  */
-public class NetworkUtils {
 
-    /**
-     * Checks if the device has an active internet connection
-     *
-     * @param context Application context
-     * @return boolean True if device has internet connection, false otherwise
-     */
-    public static boolean isNetworkAvailable(Context context) {
-        if (context == null) return false;
+public class NetworkUtils extends LiveData<Boolean> {
+    private final Context context;
+    private final ConnectivityManager connectivityManager;
+    private ConnectivityManager.NetworkCallback networkCallback;
+    private BroadcastReceiver connectivityReceiver;
 
-        ConnectivityManager connectivityManager = (ConnectivityManager)
-                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    public NetworkUtils(@NonNull Context context) {
+        this.context = context.getApplicationContext();
+        this.connectivityManager = (ConnectivityManager) this.context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    }
 
+    @Override
+    protected void onActive() {
+        super.onActive();
+        // Publish current state immediately
+        postValue(isConnected());
+
+        if (connectivityManager == null) return;
+
+        networkCallback = new ConnectivityManager.NetworkCallback() {
+            @Override
+            public void onAvailable(@NonNull Network network) {
+                postValue(isConnected());
+            }
+
+            @Override
+            public void onLost(@NonNull Network network) {
+                postValue(isConnected());
+            }
+
+            @Override
+            public void onCapabilitiesChanged(@NonNull Network network, @NonNull NetworkCapabilities networkCapabilities) {
+                postValue(isConnected());
+            }
+        };
+
+        connectivityManager.registerDefaultNetworkCallback(networkCallback);
+    }
+
+    @Override
+    protected void onInactive() {
+        super.onInactive();
+        if (connectivityManager != null && networkCallback != null) {
+            try {
+                connectivityManager.unregisterNetworkCallback(networkCallback);
+            } catch (Exception ignored) { }
+            networkCallback = null;
+        }
+        if (connectivityReceiver != null) {
+            try {
+                context.unregisterReceiver(connectivityReceiver);
+            } catch (Exception ignored) { }
+            connectivityReceiver = null;
+        }
+    }
+
+    public boolean isConnected() {
         if (connectivityManager == null) return false;
 
-        // For Android 10 (API 29) and above
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            Network network = connectivityManager.getActiveNetwork();
-            if (network == null) return false;
+        Network network = connectivityManager.getActiveNetwork();
+        if (network == null) return false;
+        NetworkCapabilities nc = connectivityManager.getNetworkCapabilities(network);
+        if (nc == null) return false;
 
-            NetworkCapabilities capabilities = connectivityManager.getNetworkCapabilities(network);
-            return capabilities != null && (
-                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
-                            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) ||
-                            capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET));
-        }
-        // For Android 9 (API 28) and below
-        else {
-            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-        }
+        boolean hasTransport = nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+                || nc.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
+                || nc.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET);
+
+        boolean hasInternetCapability = nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
+        boolean isValidated = nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
+
+        return hasTransport && hasInternetCapability && isValidated;
     }
 
 
