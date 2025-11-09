@@ -49,7 +49,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
                 ()-> UIUtils.multipleSetTextViewText(
                         new String[]{
                                 news.getTitle(),
-                                UIUtils.getTimeAgo(news.getDate())},
+                                UIUtils.getTimeAgo(news.getDate(), context)},
                         new TextView[]{
                                 holder.titleTextView,
                                 holder.dateTextView
@@ -94,7 +94,6 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
                 }
             }
         });
-
     }
 
     @Override

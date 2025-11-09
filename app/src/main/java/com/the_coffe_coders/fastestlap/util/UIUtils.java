@@ -13,6 +13,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
@@ -526,45 +528,46 @@ public class UIUtils {
         }
     }
 
-    public static String getTimeAgo(String dateString) {
+    @RequiresApi(api = Build.VERSION_CODES.S)
+    public static String getTimeAgo(String dateString, Context context) {
         long SECONDS_PER_MINUTE = 60;
         long SECONDS_PER_HOUR = 3600;
         long SECONDS_PER_DAY = 86400;
-        long SECONDS_PER_MONTH = 2592000; // Approx. 30 days
+        long SECONDS_PER_MONTH = 2592000;
         long SECONDS_PER_YEAR = 31536000;
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
 
         try {
             ZonedDateTime pastTime = ZonedDateTime.parse(dateString, formatter);
-            ZonedDateTime now = ZonedDateTime.now(pastTime.getZone()); // Get "now" in the same zone
+            ZonedDateTime now = ZonedDateTime.now(pastTime.getZone());
             Duration duration = Duration.between(pastTime, now);
 
             long seconds = duration.toSeconds();
 
             if (seconds < 60) {
-                return "just now";
+                return context.getString(R.string.just_now);
             }
 
             if (seconds < SECONDS_PER_MINUTE * 60) {
                 long minutes = seconds / SECONDS_PER_MINUTE;
-                return minutes == 1 ? "1 minute ago" : minutes + " minutes ago";
+                return context.getResources().getQuantityString(R.plurals.minutes_ago, (int) minutes, minutes);
             }
             if (seconds < SECONDS_PER_DAY) {
                 long hours = seconds / SECONDS_PER_HOUR;
-                return hours == 1 ? "1 hour ago" : hours + " hours ago";
+                return context.getResources().getQuantityString(R.plurals.hours_ago, (int) hours, hours);
             }
             if (seconds < SECONDS_PER_MONTH) {
                 long days = seconds / SECONDS_PER_DAY;
-                return days == 1 ? "1 day ago" : days + " days ago";
+                return context.getResources().getQuantityString(R.plurals.days_ago, (int) days, days);
             }
             if (seconds < SECONDS_PER_YEAR) {
                 long months = seconds / SECONDS_PER_MONTH;
-                return months == 1 ? "1 month ago" : months + " months ago";
+                return context.getResources().getQuantityString(R.plurals.months_ago, (int) months, months);
             }
 
             long years = seconds / SECONDS_PER_YEAR;
-            return years == 1 ? "1 year ago" : years + " years ago";
+            return context.getResources().getQuantityString(R.plurals.years_ago, (int) years, years);
 
         } catch (DateTimeParseException e) {
             // Handle invalid date string
