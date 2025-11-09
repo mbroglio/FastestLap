@@ -28,6 +28,23 @@ public class Constants {
     public static final String WEATHER_ACCESS_PACKAGE = "com.weather.Weather";
     public static final String GOOGLE_WEATHER_ACCESS = "https://www.google.com/search?q=weather+in+%s";
 
+    public static final List<String> ENGLISH_NEWS_SOURCES = List.of(
+            "Autosport",
+            "Crash.net"
+    );
+
+    public static final List<String> ITALIAN_NEWS_SOURCES = List.of(
+            "Motorsport"
+    );
+
+
+    public static final String DEFAULT_ENG_SOURCE = "Autosport";
+    public static final String DEFAULT_ITA_SOURCE = "Motorsport";
+
+    public static final String AUTOSPORT_RSS_URL = "https://www.autosport.com/rss/f1/news/";
+    public static final String MOTORSPORT_RSS_URL = "https://it.motorsport.com/rss/f1/news/";
+    public static final String CRASH_RSS_URL = "https://www.crash.net/rss/f1";
+
     public static final Map<String, Integer> TEAM_COLOR = new HashMap<>() {{
         put("mercedes", R.color.mercedes_f1);
         put("red_bull", R.color.redbull_f1);

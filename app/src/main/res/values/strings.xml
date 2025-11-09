@@ -1,17 +1,15 @@
 <resources>
     <string name="app_name" translatable="false">Fastest Lap</string>
+    <string name="app_name_upper_case" translatable="false">FASTEST LAP</string>
     <string name="app_credits" translatable="false">By\nThe Coffee Coders</string>
-
 
     <string name="not_found" translatable="false">-!-</string>
     <string name="unknown">Unknown</string>
-
     <string name="raceResult">RESULT</string>
     <string name="rank">Rank:</string>
     <string name="separator_high_dash" translatable="false">-</string>
     <string name="points_upper_case" translatable="false">PTS</string>
     <string name="next_event">Next Event :</string>
-
     <string name="_1_numeric" translatable="false">1</string>
     <string name="_2_numeric" translatable="false">2</string>
     <string name="_3_numeric" translatable="false">3</string>
@@ -26,22 +24,13 @@
     <string name="pending_results_upper_case">PENDING RESULTS</string>
     <string name="upcoming_upper_case">UPCOMING</string>
     <string name="past_upper_case">PAST</string>
-
-
     <string name="save_upper_case">SAVE</string>
     <string name="profile_upper_case">PROFILE</string>
     <string name="sign_out_upper_case" translatable="false">SIGN OUT</string>
-
     <string name="last_driver_position" translatable="false">20</string>
     <string name="last_constructor_position" translatable="false">10</string>
-
-
     <string name="loading_upper_case">LOADING%1$s</string>
-
-
     <string name="live_upper_case" translatable="false">LIVE</string>
-
-
     <string name="round" translatable="false">Round %1$s</string>
     <string name="round_upper_case_plus_value" translatable="false">ROUND %1$s</string>
     <string name="updating_upper_case_with_dots">UPDATING…</string>
@@ -153,7 +142,6 @@
     <string name="english_language_abbr_upper_case">ENG</string>
     <string name="language_set">Language successfully set to %1$s</string>
 
-    <!-- LOREEEEEEEEE -->
     <string name="race_results">Race Results</string>
     <string name="race_results_title">%1$s Results</string>
     <string name="close">Close</string>
@@ -165,5 +153,11 @@
     <string name="sprint" translatable="false">Sprint</string>
     <string name="qualifying">Qualifying</string>
     <string name="favorite_text">Favorite</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="news_upper_case">NEWS</string>
+    <string name="feed_error">Error while fetching news feed</string>
+    <string name="full_article_upper_case">FULL ARTICLE</string>
+    <string name="link_error">Failed to open link</string>
 
 </resources>

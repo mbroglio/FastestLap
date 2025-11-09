@@ -23,6 +23,7 @@ mockitoKotlin = "4.1.0"
 playServicesCronet = "18.0.1"
 retrofit = "2.11.0"
 robolectric = "4.10"
+rome = "2.1.0"
 threetenbp = "1.7.0"
 navigationFragment = "2.8.4"
 navigationUi = "2.8.4"
@@ -63,6 +64,7 @@ play-services-cronet = { module = "com.google.android.gms:play-services-cronet",
 projectlombok-lombok = { module = "org.projectlombok:lombok", version.ref = "lombokVersion" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+rome = { module = "com.rometools:rome", version.ref = "rome" }
 threetenbp = { module = "org.threeten:threetenbp", version.ref = "threetenbp" }
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }

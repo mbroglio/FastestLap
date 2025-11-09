@@ -99,4 +99,8 @@
     <string name="qualifying">Qualifiche</string>
     <string name="favorite_text">Preferito</string>
     <string name="race">Gara</string>
+    <string name="news_upper_case">NOTIZIE</string>
+    <string name="feed_error">Errore durante il recupero delle notizie</string>
+    <string name="full_article_upper_case">ARTICOLO COMPLETO</string>
+    <string name="link_error">Errore nell\'apertura del link</string>
 </resources>

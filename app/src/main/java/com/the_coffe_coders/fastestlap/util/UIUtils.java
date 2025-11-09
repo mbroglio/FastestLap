@@ -53,14 +53,20 @@ import com.the_coffe_coders.fastestlap.ui.event.UpcomingEventsActivity;
 import com.the_coffe_coders.fastestlap.ui.event.fragment.QualifyingResultsFragment;
 import com.the_coffe_coders.fastestlap.ui.event.fragment.RaceAndSprintResultsFragment;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
+import com.the_coffe_coders.fastestlap.ui.home.fragment.NewsFragment;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.WelcomeActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.fragment.ForgotPasswordFragment;
 import com.the_coffe_coders.fastestlap.ui.welcome.fragment.SignUpFragment;
-
 import java.security.MessageDigest;
+import java.time.Duration;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Locale;
 import java.util.Objects;
+
 
 public class UIUtils {
     public static void applyWindowInsets(MaterialToolbar toolbar) {
@@ -364,6 +370,38 @@ public class UIUtils {
         }
     }
 
+    public static String formatXmlText(String xmlRawString){
+        String formattedString;
+        if (xmlRawString != null) {
+            // convert <br>, <br/> and <br /> (case-insensitive) to newlines
+            formattedString = xmlRawString.replaceAll("(?i)<br\\s*/?>", "\n");
+
+            // lowercased version for case-insensitive searches
+            String lower = formattedString.toLowerCase(Locale.ENGLISH);
+
+            int aIndex = lower.indexOf("<a");
+            int readAlsoIndex = lower.indexOf("read also");
+
+            int cutIndex = -1;
+            if (aIndex != -1 && readAlsoIndex != -1) {
+                cutIndex = Math.min(aIndex, readAlsoIndex);
+            } else if (aIndex != -1) {
+                cutIndex = aIndex;
+            } else if (readAlsoIndex != -1) {
+                cutIndex = readAlsoIndex;
+            }
+
+            if (cutIndex != -1) {
+                formattedString = formattedString.substring(0, cutIndex).trim();
+            } else {
+                formattedString = formattedString.trim();
+            }
+        } else {
+            formattedString = "";
+        }
+        return formattedString;
+    }
+
     public static void setAppLocale() {
         if (AppCompatDelegate.getApplicationLocales().get(0) == null) {
             LocaleListCompat appLocale = LocaleListCompat.forLanguageTags(Constants.DEFAULT_LANGUAGE);
@@ -448,7 +486,7 @@ public class UIUtils {
     }
 
     public static void showRaceResultsDialog(FragmentManager fragmentManager, Race race, int sessionType) {
-        switch(sessionType){
+        switch (sessionType) {
             case 0:
                 RaceAndSprintResultsFragment raceAndSprintResultsFragment = new RaceAndSprintResultsFragment();
                 Bundle args = new Bundle();
@@ -466,6 +504,15 @@ public class UIUtils {
         }
     }
 
+    public static void showNewsDialog(FragmentManager fragmentManager, String language) {
+        NewsFragment newsFragment = new NewsFragment();
+        newsFragment.show(fragmentManager, "NewsFragment");
+        Bundle args = new Bundle();
+        args.putString("currentLanguage", language);
+        newsFragment.setArguments(args);
+    }
+
+
     public static void showWelcomeDialogs(FragmentManager fragmentManager, int dialogType) {
         switch (dialogType) {
             case 0:
@@ -476,6 +523,53 @@ public class UIUtils {
                 ForgotPasswordFragment forgotPasswordFragment = new ForgotPasswordFragment();
                 forgotPasswordFragment.show(fragmentManager, "ForgotPasswordFragment");
                 break;
+        }
+    }
+
+    public static String getTimeAgo(String dateString) {
+        long SECONDS_PER_MINUTE = 60;
+        long SECONDS_PER_HOUR = 3600;
+        long SECONDS_PER_DAY = 86400;
+        long SECONDS_PER_MONTH = 2592000; // Approx. 30 days
+        long SECONDS_PER_YEAR = 31536000;
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
+
+        try {
+            ZonedDateTime pastTime = ZonedDateTime.parse(dateString, formatter);
+            ZonedDateTime now = ZonedDateTime.now(pastTime.getZone()); // Get "now" in the same zone
+            Duration duration = Duration.between(pastTime, now);
+
+            long seconds = duration.toSeconds();
+
+            if (seconds < 60) {
+                return "just now";
+            }
+
+            if (seconds < SECONDS_PER_MINUTE * 60) {
+                long minutes = seconds / SECONDS_PER_MINUTE;
+                return minutes == 1 ? "1 minute ago" : minutes + " minutes ago";
+            }
+            if (seconds < SECONDS_PER_DAY) {
+                long hours = seconds / SECONDS_PER_HOUR;
+                return hours == 1 ? "1 hour ago" : hours + " hours ago";
+            }
+            if (seconds < SECONDS_PER_MONTH) {
+                long days = seconds / SECONDS_PER_DAY;
+                return days == 1 ? "1 day ago" : days + " days ago";
+            }
+            if (seconds < SECONDS_PER_YEAR) {
+                long months = seconds / SECONDS_PER_MONTH;
+                return months == 1 ? "1 month ago" : months + " months ago";
+            }
+
+            long years = seconds / SECONDS_PER_YEAR;
+            return years == 1 ? "1 year ago" : years + " years ago";
+
+        } catch (DateTimeParseException e) {
+            // Handle invalid date string
+            e.printStackTrace();
+            return "Invalid date format";
         }
     }
 

@@ -5,9 +5,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.View;
+import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.os.LocaleListCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -18,6 +22,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
+import com.the_coffe_coders.fastestlap.ui.home.fragment.NewsFragment;
 import com.the_coffe_coders.fastestlap.ui.profile.ProfileActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
@@ -41,8 +46,15 @@ public class HomePageActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_home);
 
+        LocaleListCompat appLocales = AppCompatDelegate.getApplicationLocales();
+        String currentLanguage = appLocales.toLanguageTags();
+
         MaterialToolbar toolbar = findViewById(R.id.top_app_bar);
+        toolbar.setNavigationIcon(R.drawable.newspaper_2);
         UIUtils.applyWindowInsets(toolbar);
+
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
+        NavController navController = navHostFragment.getNavController();
 
         setSupportActionBar(toolbar);
         toolbar.setOnMenuItemClickListener(item -> {
@@ -53,10 +65,7 @@ public class HomePageActivity extends AppCompatActivity {
             }
             return false;
         });
-
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
-        NavController navController = navHostFragment.getNavController();
-
+        
         BottomNavigationView bottomNavigationView = findViewById(R.id.navbar);
         UIUtils.applyWindowInsets(bottomNavigationView);
 
@@ -64,6 +73,10 @@ public class HomePageActivity extends AppCompatActivity {
 
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+
+        ImageView newsNavigationButton= findViewById(R.id.news_navigation);
+        newsNavigationButton.setOnClickListener(view -> UIUtils.showNewsDialog(this.getSupportFragmentManager(), currentLanguage));
+
 
         IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
         UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
