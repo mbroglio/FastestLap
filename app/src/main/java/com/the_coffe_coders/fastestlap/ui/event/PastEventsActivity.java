@@ -74,8 +74,8 @@ public class PastEventsActivity extends AppCompatActivity {
 
         eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
         trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(getApplication())).get(TrackViewModel.class);
-        raceResultViewModel = new ViewModelProvider(this, new RaceResultViewModelFactory(getApplication())).get(RaceResultViewModel.class);
-        weeklyRaceViewModel = new ViewModelProvider(this, new WeeklyRaceViewModelFactory(getApplication())).get(WeeklyRaceViewModel.class);
+        raceResultViewModel = new ViewModelProvider(this, new RaceResultViewModelFactory(getApplication(), this)).get(RaceResultViewModel.class);
+        weeklyRaceViewModel = new ViewModelProvider(this, new WeeklyRaceViewModelFactory(getApplication(), this)).get(WeeklyRaceViewModel.class);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         UIUtils.applyWindowInsets(toolbar);

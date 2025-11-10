@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
+import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
 
@@ -38,6 +39,8 @@ public class SplashActivity extends AppCompatActivity {
     private MediaPlayer logoMediaPlayer;
     private UserViewModel userViewModel;
 
+    private NetworkUtils networkLiveData;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +51,8 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void start() {
+        networkLiveData = new NetworkUtils(getApplicationContext());
+
         ConstraintLayout introScreen = findViewById(R.id.intro_screen);
         UIUtils.applyWindowInsets(introScreen);
 
@@ -149,20 +154,26 @@ public class SplashActivity extends AppCompatActivity {
         Log.d(TAG, "Setting up intro screen");
         Log.d(TAG, "Logged user: " + userViewModel.getLoggedUser());
         if (userViewModel.getLoggedUser() != null) {
+            Log.d(TAG, "Logged user is not null");
             showForAutoLogin();
 
-            userViewModel.isAutoLoginEnabled(userViewModel.getLoggedUser().getIdToken()).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    boolean isEnabled = task.getResult();
-                    Log.d(TAG, "Auto login is enabled: " + isEnabled);
-                    if (isEnabled) {
-                        UIUtils.navigateToHomePage(this);
-                    } else {
-                        hideIntroScreen();
-                        new Handler().postDelayed(this::showIntroScreen, 500);
+            if(networkLiveData.isConnected()){
+                userViewModel.isAutoLoginEnabled(userViewModel.getLoggedUser().getIdToken()).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        boolean isEnabled = task.getResult();
+                        Log.d(TAG, "Auto login is enabled: " + isEnabled);
+                        if (isEnabled) {
+                            UIUtils.navigateToHomePage(this);
+                        } else {
+                            hideIntroScreen();
+                            new Handler().postDelayed(this::showIntroScreen, 500);
+                        }
                     }
-                }
-            });
+                });
+            }else{
+                Log.e(TAG, "No internet connection");
+                UIUtils.navigateToHomePage(this);
+            }
         } else {
             showIntroScreen();
         }

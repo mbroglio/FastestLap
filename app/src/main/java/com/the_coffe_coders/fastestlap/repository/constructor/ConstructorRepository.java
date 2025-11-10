@@ -1,19 +1,15 @@
 package com.the_coffe_coders.fastestlap.repository.constructor;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
-
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.source.constructor.FirebaseConstructorDataSource;
 import com.the_coffe_coders.fastestlap.source.constructor.JolpicaConstructorDataSource;
 import com.the_coffe_coders.fastestlap.source.constructor.LocalConstructorDataSource;
-
+import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -25,15 +21,16 @@ public class ConstructorRepository {
     private final FirebaseConstructorDataSource firebaseConstructorDataSource;
     private final LocalConstructorDataSource localConstructorDataSource;
     private final String TAG = "ConstructorRepository";
-    private final Context context;
+
+    private final NetworkUtils networkLiveData;
 
     private ConstructorRepository(AppRoomDatabase appRoomDatabase, Context context) {
         constructorCache = new HashMap<>();
         lastUpdateTimestamps = new HashMap<>();
         firebaseConstructorDataSource = FirebaseConstructorDataSource.getInstance();
-        JolpicaConstructorDataSource jolpicaConstructorDataSource = JolpicaConstructorDataSource.getInstance();
+        JolpicaConstructorDataSource.getInstance();
         localConstructorDataSource = LocalConstructorDataSource.getInstance(appRoomDatabase);
-        this.context = context;
+        networkLiveData = new NetworkUtils(context);
     }
 
     public static ConstructorRepository getInstance(AppRoomDatabase appRoomDatabase, Context context) {
@@ -44,14 +41,7 @@ public class ConstructorRepository {
     }
 
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        if (connectivityManager != null) {
-            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-        }
-        return false;
+        return networkLiveData.isConnected();
     }
 
     public synchronized MutableLiveData<Result> getConstructor(String constructorId) {

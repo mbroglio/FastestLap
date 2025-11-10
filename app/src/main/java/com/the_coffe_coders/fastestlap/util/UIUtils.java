@@ -56,11 +56,13 @@ import com.the_coffe_coders.fastestlap.ui.event.fragment.QualifyingResultsFragme
 import com.the_coffe_coders.fastestlap.ui.event.fragment.RaceAndSprintResultsFragment;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.home.fragment.NewsFragment;
+import com.the_coffe_coders.fastestlap.ui.profile.LoginFragment;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.WelcomeActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.fragment.ForgotPasswordFragment;
 import com.the_coffe_coders.fastestlap.ui.welcome.fragment.SignUpFragment;
+
 import java.security.MessageDigest;
 import java.time.Duration;
 import java.time.ZonedDateTime;
@@ -71,6 +73,7 @@ import java.util.Objects;
 
 
 public class UIUtils {
+
     public static void applyWindowInsets(MaterialToolbar toolbar) {
         ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
@@ -118,6 +121,9 @@ public class UIUtils {
 
     private static void loadImage(Context context, String url, ImageView imageView, Runnable onSuccess, int retryCount) {
         Log.i("Glide", "Loading image: " + url);
+
+        NetworkUtils networkLiveData = new NetworkUtils(context);
+
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
                     .load(url)
@@ -141,15 +147,19 @@ public class UIUtils {
                         @Override
                         public void onLoadFailed(@Nullable Drawable errorDrawable) {
                             Log.e("Glide", "Image loading failed: " + url);
-                            if (retryCount <= Constants.MAX_RETRY_COUNT) {
-                                Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
-                                new Handler(Looper.getMainLooper()).post(() -> loadImage(context, url, imageView, onSuccess, retryCount + 1));
+
+                            if (networkLiveData.isConnected()) {
+                                if (retryCount <= Constants.MAX_RETRY_COUNT) {
+                                    Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
+                                    new Handler(Looper.getMainLooper()).post(() -> loadImage(context, url, imageView, onSuccess, retryCount + 1));
+                                } else {
+                                    Log.e("Glide", "Max retry count reached for image: " + url);
+                                    manageContentLoadError(imageView, null, context, onSuccess, 0);
+                                }
                             } else {
-                                Log.e("Glide", "Max retry count reached for image: " + url);
                                 manageContentLoadError(imageView, null, context, onSuccess, 0);
                             }
                         }
-
                     });
         } else {
             Log.e("Glide", "URL is null");
@@ -233,7 +243,7 @@ public class UIUtils {
                 Log.e("Glide", "Image loading failed, setting backup image");
                 Drawable errorImage = AppCompatResources.getDrawable(context, R.drawable.content_not_found_icon);
                 imageView.setImageDrawable(errorImage);
-                imageView.setScaleType(ImageView.ScaleType.CENTER);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 break;
             case 1: // Layout
                 Log.e("UIUtils", "Layout loading failed, setting backup background");
@@ -372,7 +382,7 @@ public class UIUtils {
         }
     }
 
-    public static String formatXmlText(String xmlRawString){
+    public static String formatXmlText(String xmlRawString) {
         String formattedString;
         if (xmlRawString != null) {
             // convert <br>, <br/> and <br /> (case-insensitive) to newlines
@@ -515,7 +525,7 @@ public class UIUtils {
     }
 
 
-    public static void showWelcomeDialogs(FragmentManager fragmentManager, int dialogType) {
+    public static void showProfileManageDialogs(FragmentManager fragmentManager, int dialogType, String additionalInfo) {
         switch (dialogType) {
             case 0:
                 SignUpFragment signUpFragment = new SignUpFragment();
@@ -524,6 +534,13 @@ public class UIUtils {
             case 1:
                 ForgotPasswordFragment forgotPasswordFragment = new ForgotPasswordFragment();
                 forgotPasswordFragment.show(fragmentManager, "ForgotPasswordFragment");
+                break;
+            case 2:
+                LoginFragment loginFragment = new LoginFragment();
+                Bundle args = new Bundle();
+                args.putString("email", additionalInfo);
+                loginFragment.setArguments(args);
+                loginFragment.show(fragmentManager, "LoginFragment");
                 break;
         }
     }

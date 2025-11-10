@@ -64,7 +64,7 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
 
         Button registerButton = findViewById(R.id.RegisterButton);
         registerButton.setOnClickListener(v ->
-                UIUtils.showWelcomeDialogs(getSupportFragmentManager(), 0));
+                UIUtils.showProfileManageDialogs(getSupportFragmentManager(), 0, null));
 
         Button loginButton = findViewById(R.id.LoginButton);
         loginButton.setOnClickListener(v -> {
@@ -87,7 +87,7 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
 
         Button forgotPasswordButton = findViewById(R.id.forgotten_password_button);
         forgotPasswordButton.setOnClickListener(v ->
-                UIUtils.showWelcomeDialogs(getSupportFragmentManager(), 1));
+                UIUtils.showProfileManageDialogs(getSupportFragmentManager(), 1,null));
     }
 
     private boolean isEmailOk(String email) {

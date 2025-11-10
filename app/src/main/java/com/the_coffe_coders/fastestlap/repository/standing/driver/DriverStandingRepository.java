@@ -1,18 +1,14 @@
 package com.the_coffe_coders.fastestlap.repository.standing.driver;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.util.Log;
-
 import androidx.lifecycle.MutableLiveData;
-
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.source.standing.driver.JolpicaDriverStandingsDataSource;
 import com.the_coffe_coders.fastestlap.source.standing.driver.LocalDriverStandingsDataSource;
-
+import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -29,14 +25,15 @@ public class DriverStandingRepository {
     private final JolpicaDriverStandingsDataSource jolpicaDriverStandingsDataSource;
     private final LocalDriverStandingsDataSource localDriverStandingsDataSource;
 
-    private final Context context;
+    private final NetworkUtils networkLiveData;
+
 
     private DriverStandingRepository(AppRoomDatabase appRoomDatabase, Context context) {
         driverStandingCache = new HashMap<>();
         lastUpdateTimestamps = new HashMap<>();
         this.jolpicaDriverStandingsDataSource = JolpicaDriverStandingsDataSource.getInstance();
         this.localDriverStandingsDataSource = LocalDriverStandingsDataSource.getInstance(appRoomDatabase);
-        this.context = context;
+        this.networkLiveData = new NetworkUtils(context);
     }
 
     public static synchronized DriverStandingRepository getInstance(AppRoomDatabase appRoomDatabase, Context context) {
@@ -47,14 +44,7 @@ public class DriverStandingRepository {
     }
 
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        if (connectivityManager != null) {
-            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-        }
-        return false;
+        return networkLiveData.isConnected();
     }
 
     public synchronized MutableLiveData<Result> getDriverStandings() {

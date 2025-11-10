@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LiveData;
@@ -57,6 +58,7 @@ import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
@@ -66,6 +68,7 @@ import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
 
 import java.util.List;
+import java.util.Objects;
 
 public class HomeFragment extends Fragment {
     private static final String TAG = HomeFragment.class.getSimpleName();
@@ -82,6 +85,8 @@ public class HomeFragment extends Fragment {
     private boolean hasReloaded = false;
     private View view;
 
+    private NetworkUtils networkLiveData;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -95,6 +100,8 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        networkLiveData = new NetworkUtils(requireContext());
+
         setupFragment(view);
 
         return view;
@@ -103,7 +110,7 @@ public class HomeFragment extends Fragment {
     private void setupFragment(View view) {
         Intent intent = requireActivity().getIntent();
         if (intent != null && intent.hasExtra("RELOADED")) {
-            if (intent.getStringExtra("RELOADED").equals("true")) {
+            if (Objects.equals(intent.getStringExtra("RELOADED"), "true")) {
                 hasReloaded = true;
             }
         }
@@ -121,8 +128,8 @@ public class HomeFragment extends Fragment {
         trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(requireActivity().getApplication())).get(TrackViewModel.class);
         nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(requireActivity().getApplication())).get(NationViewModel.class);
         sharedPreferencesUtils = new SharedPreferencesUtils(this.getContext());
-        raceResultViewModel = new ViewModelProvider(this, new RaceResultViewModelFactory(requireActivity().getApplication())).get(RaceResultViewModel.class);
-        weeklyRaceViewModel = new ViewModelProvider(this, new WeeklyRaceViewModelFactory(requireActivity().getApplication())).get(WeeklyRaceViewModel.class);
+        raceResultViewModel = new ViewModelProvider(this, new RaceResultViewModelFactory(requireActivity().getApplication(), getContext())).get(RaceResultViewModel.class);
+        weeklyRaceViewModel = new ViewModelProvider(this, new WeeklyRaceViewModelFactory(requireActivity().getApplication(), getContext())).get(WeeklyRaceViewModel.class);
         IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(requireActivity().getApplication());
         userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
     }
@@ -137,18 +144,25 @@ public class HomeFragment extends Fragment {
         setRefreshLayout(view);
         setLastRaceCard(view);
         setNextSessionCard(view);
-        userViewModel.getUserPreferences(userViewModel.getLoggedUser().getIdToken()).observe(getViewLifecycleOwner(), result -> {
-            if (result != null) {
-                if (result.isSuccess()) {
-                    Log.d(TAG, "User preferences loaded successfully");
-                } else {
-                    Log.e(TAG, "Failed to load user preferences: " + result.getError());
-                }
 
-                setFavouriteDriverCard(view);
-                setFavouriteConstructorCard(view);
-            }
-        });
+        if(networkLiveData.isConnected()){
+            userViewModel.getUserPreferences(userViewModel.getLoggedUser().getIdToken()).observe(getViewLifecycleOwner(), result -> {
+                if (result != null) {
+                    if (result.isSuccess()) {
+                        Log.d(TAG, "User preferences loaded successfully");
+                    } else {
+                        Log.e(TAG, "Failed to load user preferences: " + result.getError());
+                    }
+
+                    setFavouriteDriverCard(view);
+                    setFavouriteConstructorCard(view);
+                }
+            });
+        }else{
+            Log.e(TAG, "Failed to load user preferences: No internet connection");
+            showDriverNotFound(view,1);
+            showConstructorNotFound(view,1);
+        }
     }
 
     private void refreshUI() {
@@ -307,13 +321,23 @@ public class HomeFragment extends Fragment {
                         throw new Exception("Failed to fetch next race: " + result.getError());
                     }
                 } catch (Exception e) {
-                    Log.e(TAG, "Error in setNextSessionCard: " + e.getMessage());
-                    setSeasonEnded(view);
+                    if(networkLiveData.isConnected()){
+                        Log.e(TAG, "Error in setNextSessionCard: " + e.getMessage());
+                        setSeasonEnded(view);
+                    }else{
+                        Log.e(TAG, "Error in setNextSessionCard: No internet connection");
+                        setUpdating(view);
+                    }
                 }
             });
         } catch (Exception e) {
-            Log.e(TAG, "Error in setNextSessionCard: " + e.getMessage());
-            setSeasonEnded(view);
+            if(networkLiveData.isConnected()){
+                Log.e(TAG, "Error in setNextSessionCard: " + e.getMessage());
+                setSeasonEnded(view);
+            }else{
+                Log.e(TAG, "Error in setNextSessionCard: No internet connection");
+                setUpdating(view);
+            }
         }
 
         ImageView iconImageView = view.findViewById(R.id.live_icon);
@@ -339,13 +363,23 @@ public class HomeFragment extends Fragment {
                         throw new Exception("Failed to fetch track data: " + trackResult.getError());
                     }
                 } catch (Exception e) {
-                    Log.e(TAG, "Error processing track: " + e.getMessage());
-                    setSeasonEnded(view);
+                    if(networkLiveData.isConnected()){
+                        Log.e(TAG, "Error in processNextRace: " + e.getMessage());
+                        setSeasonEnded(view);
+                    }else{
+                        Log.e(TAG, "Error in processNextRace: No internet connection");
+                        setUpdating(view);
+                    }
                 }
             });
         } catch (Exception e) {
-            Log.e(TAG, "Error in processNextRace: " + e.getMessage());
-            setSeasonEnded(view);
+            if(networkLiveData.isConnected()){
+                Log.e(TAG, "Error in processNextRace: " + e.getMessage());
+                setSeasonEnded(view);
+            }else{
+                Log.e(TAG, "Error in processNextRace: No internet connection");
+                setUpdating(view);
+            }
         }
     }
 
@@ -395,8 +429,15 @@ public class HomeFragment extends Fragment {
             });
 
         } catch (Exception e) {
-            Log.e(TAG, "Error in setNextRaceCard: " + e.getMessage());
-            setSeasonEnded(view);
+            Log.i(TAG, "connected: " + networkLiveData.isConnected());
+            if(networkLiveData.isConnected()){
+                setSeasonEnded(view);
+                Log.e(TAG, "Error in setNextRaceCard: " + e.getMessage());
+            }else{
+                Log.e(TAG, "Error in setNextRaceCard: No internet connection");
+                loadPendingResultsLayout(view);
+            }
+
         }
     }
 
@@ -587,7 +628,7 @@ public class HomeFragment extends Fragment {
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error in setFavouriteDriverCard: " + e.getMessage());
-                showDriverNotFound(view);
+                showDriverNotFound(view,0);
             }
         });
     }
@@ -611,7 +652,7 @@ public class HomeFragment extends Fragment {
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error fetching driver data: " + e.getMessage());
-                showDriverNotFound(view);
+                showDriverNotFound(view,0);
             }
         });
     }
@@ -635,7 +676,7 @@ public class HomeFragment extends Fragment {
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Error fetching nation for driver: " + e.getMessage());
-                    showDriverNotFound(view);
+                    showDriverNotFound(view,0);
                 }
             });
         } catch (RuntimeException e) {
@@ -648,28 +689,34 @@ public class HomeFragment extends Fragment {
     private void buildDriverCard(View view, DriverStandingsElement standingElement, Nation nation) {
         loadingScreen.updateProgress();
 
-        try {
-            Driver driver = standingElement.getDriver();
+        if(networkLiveData.isConnected()){
+            try {
+                Driver driver = standingElement.getDriver();
 
-            String nationFlagUrl = null;
-            String nationAbbreviation = null;
-            if(nation != null) {
-                nationFlagUrl = nation.getNation_flag_url();
-                nationAbbreviation = nation.getAbbreviation();
+                String nationFlagUrl = null;
+                String nationAbbreviation = null;
+                if(nation != null) {
+                    nationFlagUrl = nation.getNation_flag_url();
+                    nationAbbreviation = nation.getAbbreviation();
+                }
+
+                UIUtils.multipleSetTextViewText(new String[]{driver.getGivenName() + " " + driver.getFamilyName(), nationAbbreviation},
+                        new TextView[]{view.findViewById(R.id.favourite_driver_name), view.findViewById(R.id.favourite_driver_nationality)});
+
+                ImageView driverFlag = view.findViewById(R.id.favourite_driver_flag);
+                ImageView driverImage = view.findViewById(R.id.favourite_driver_pic);
+                driverImage.setOnClickListener(v -> UIUtils.navigateToBioPage(getContext(), driver.getDriverId(), 1));
+
+                UIUtils.loadSequenceOfImagesWithGlide(requireContext(), new String[]{nationFlagUrl, driver.getDriver_pic_url()}, new ImageView[]{driverFlag, driverImage}, () -> buildDriverCardFinalStep(standingElement, view, driver));
+            } catch (Exception e) {
+                Log.e(TAG, "Error building driver card: " + e.getMessage());
+                showDriverNotFound(view,0);
             }
-
-            UIUtils.multipleSetTextViewText(new String[]{driver.getGivenName() + " " + driver.getFamilyName(), nationAbbreviation},
-                    new TextView[]{view.findViewById(R.id.favourite_driver_name), view.findViewById(R.id.favourite_driver_nationality)});
-
-            ImageView driverFlag = view.findViewById(R.id.favourite_driver_flag);
-            ImageView driverImage = view.findViewById(R.id.favourite_driver_pic);
-            driverImage.setOnClickListener(v -> UIUtils.navigateToBioPage(getContext(), driver.getDriverId(), 1));
-
-            UIUtils.loadSequenceOfImagesWithGlide(requireContext(), new String[]{nationFlagUrl, driver.getDriver_pic_url()}, new ImageView[]{driverFlag, driverImage}, () -> buildDriverCardFinalStep(standingElement, view, driver));
-        } catch (Exception e) {
-            Log.e(TAG, "Error building driver card: " + e.getMessage());
-            showDriverNotFound(view);
+        }else{
+            Log.e(TAG, "Error building driver card: No internet connection");
+            showDriverNotFound(view,1);
         }
+
     }
 
     private void buildDriverCardFinalStep(DriverStandingsElement standingElement, View view, Driver driver) {
@@ -722,7 +769,7 @@ public class HomeFragment extends Fragment {
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error in setFavouriteConstructorCard: " + e.getMessage());
-                showConstructorNotFound(view);
+                showConstructorNotFound(view,0);
             }
         });
     }
@@ -746,7 +793,7 @@ public class HomeFragment extends Fragment {
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error fetching constructor data: " + e.getMessage());
-                showConstructorNotFound(view);
+                showConstructorNotFound(view,0);
             }
         });
     }
@@ -770,7 +817,7 @@ public class HomeFragment extends Fragment {
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Error fetching nation for constructor: " + e.getMessage());
-                    showConstructorNotFound(view);
+                    showConstructorNotFound(view,0);
                 }
             });
         }catch (RuntimeException e) {
@@ -783,32 +830,37 @@ public class HomeFragment extends Fragment {
     private void buildConstructorCard(View view, ConstructorStandingsElement standingElement, Nation nation) {
         loadingScreen.updateProgress();
 
-        try {
-            Constructor constructor = standingElement.getConstructor();
+        if(networkLiveData.isConnected()){
+            try {
+                Constructor constructor = standingElement.getConstructor();
 
-            String nationFlagUrl = null;
-            String nationAbbreviation = null;
-            if(nation != null) {
-                nationFlagUrl = nation.getNation_flag_url();
-                nationAbbreviation = nation.getAbbreviation();
+                String nationFlagUrl = null;
+                String nationAbbreviation = null;
+                if(nation != null) {
+                    nationFlagUrl = nation.getNation_flag_url();
+                    nationAbbreviation = nation.getAbbreviation();
+                }
+
+                UIUtils.multipleSetTextViewText(new String[]{constructor.getName(), nationAbbreviation},
+                        new TextView[]{view.findViewById(R.id.favourite_constructor_name), view.findViewById(R.id.favourite_constructor_nationality)});
+
+                ImageView constructorCar = view.findViewById(R.id.favourite_constructor_car);
+                ImageView constructorFlag = view.findViewById(R.id.favourite_constructor_flag);
+
+                FrameLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
+                constructorCard.setOnClickListener(v -> UIUtils.navigateToBioPage(getContext(), constructor.getConstructorId(), 0));
+
+                UIUtils.loadSequenceOfImagesWithGlide(requireContext(), new String[]{nationFlagUrl, constructor.getCar_pic_url()},
+                        new ImageView[]{constructorFlag, constructorCar},
+                        () -> buildConstructorCardFinalStep(standingElement, view, constructor));
+
+            } catch (Exception e) {
+                Log.e(TAG, "Error building constructor card: " + e.getMessage());
+                showConstructorNotFound(view, 0);
             }
-
-            UIUtils.multipleSetTextViewText(new String[]{constructor.getName(), nationAbbreviation},
-                    new TextView[]{view.findViewById(R.id.favourite_constructor_name), view.findViewById(R.id.favourite_constructor_nationality)});
-
-            ImageView constructorCar = view.findViewById(R.id.favourite_constructor_car);
-            ImageView constructorFlag = view.findViewById(R.id.favourite_constructor_flag);
-
-            FrameLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
-            constructorCard.setOnClickListener(v -> UIUtils.navigateToBioPage(getContext(), constructor.getConstructorId(), 0));
-
-            UIUtils.loadSequenceOfImagesWithGlide(requireContext(), new String[]{nationFlagUrl, constructor.getCar_pic_url()},
-                    new ImageView[]{constructorFlag, constructorCar},
-                    () -> buildConstructorCardFinalStep(standingElement, view, constructor));
-
-        } catch (Exception e) {
-            Log.e(TAG, "Error building constructor card: " + e.getMessage());
-            showConstructorNotFound(view);
+        }else{
+            Log.e(TAG, "Error building constructor card: No internet connection");
+            showConstructorNotFound(view,1);
         }
     }
 
@@ -839,11 +891,22 @@ public class HomeFragment extends Fragment {
         Log.e(TAG, "Showing select favourite driver card");
     }
 
-    private void showDriverNotFound(View view) {
+    private void showDriverNotFound(View view, int problem) {
         loadingScreen.updateProgress();
-
         updateVisibility(view, R.id.missing_favorite_driver, R.id.favorite_driver, R.id.pending_favorite_driver);
-        view.findViewById(R.id.missing_favorite_driver).setOnClickListener(v -> startActivity(new Intent(getActivity(), DriversStandingActivity.class)));
+
+        switch(problem){
+            case 0: //general error
+                view.findViewById(R.id.missing_favorite_driver).setOnClickListener(v -> startActivity(new Intent(getActivity(), DriversStandingActivity.class)));
+                break;
+            case 1: //no internet connection
+                Log.e(TAG, "Driver: No internet connection");
+                view.findViewById(R.id.missing_favorite_driver).setOnClickListener(v ->
+                        Toast.makeText(getContext(), "No internet connection", Toast.LENGTH_SHORT).show());
+                break;
+            default:
+                Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void showSelectFavouriteConstructor(View view) {
@@ -853,11 +916,23 @@ public class HomeFragment extends Fragment {
         view.findViewById(R.id.pending_favorite_constructor).setOnClickListener(v -> startActivity(new Intent(getActivity(), ConstructorsStandingActivity.class)));
     }
 
-    private void showConstructorNotFound(View view) {
+    private void showConstructorNotFound(View view, int problem) {
         loadingScreen.updateProgress();
 
         updateVisibility(view, R.id.missing_favorite_constructor, R.id.favorite_constructor, R.id.pending_favorite_constructor);
-        view.findViewById(R.id.missing_favorite_constructor).setOnClickListener(v -> startActivity(new Intent(getActivity(), ConstructorsStandingActivity.class)));
+
+        switch(problem){
+            case 0: //general error
+                view.findViewById(R.id.missing_favorite_constructor).setOnClickListener(v -> startActivity(new Intent(getActivity(), ConstructorsStandingActivity.class)));
+                break;
+            case 1: //no internet connection
+                Log.e(TAG, "Constructor: No internet connection");
+                view.findViewById(R.id.missing_favorite_constructor).setOnClickListener(v ->
+                        Toast.makeText(getContext(), "No internet connection", Toast.LENGTH_SHORT).show());
+                break;
+            default:
+                Toast.makeText(getContext(), "Something went wrong", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void updateVisibility(View view, int visibleId, int... goneIds) {

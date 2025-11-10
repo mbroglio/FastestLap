@@ -107,6 +107,22 @@
 
                 </Button>
 
+                <Button
+                    android:id="@+id/login_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:backgroundTint="@color/timer_gray"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:text="LOGIN"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/layout_subtitle_text_size"
+                    android:visibility="gone"
+                    tools:ignore="RelativeOverlap">
+
+                </Button>
+
+
             </RelativeLayout>
 
             <LinearLayout

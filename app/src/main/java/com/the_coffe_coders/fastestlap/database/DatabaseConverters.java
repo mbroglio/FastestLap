@@ -5,7 +5,9 @@ import androidx.room.TypeConverter;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
+import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorHistory;
 import com.the_coffe_coders.fastestlap.domain.driver.Driver;
+import com.the_coffe_coders.fastestlap.domain.driver.DriverHistory;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Location;
@@ -193,6 +195,32 @@ public class DatabaseConverters {
     @TypeConverter
     public static List<TrackHistory> toTrackHistoryList(String json) {
         Type listType = new TypeToken<List<TrackHistory>>() {
+        }.getType();
+        return gson.fromJson(json, listType);
+    }
+
+    //DriverHistory List
+    @TypeConverter
+    public static String fromDriverHistoryList(List<DriverHistory> driverHistoryList) {
+        return gson.toJson(driverHistoryList);
+    }
+
+    @TypeConverter
+    public static List<DriverHistory> toDriverHistoryList(String json) {
+        Type listType = new TypeToken<List<DriverHistory>>() {
+        }.getType();
+        return gson.fromJson(json, listType);
+    }
+
+    //ConstructorHistory List
+    @TypeConverter
+    public static String fromConstructorHistoryList(List<ConstructorHistory> constructorHistoryList) {
+        return gson.toJson(constructorHistoryList);
+    }
+
+    @TypeConverter
+    public static List<ConstructorHistory> toConstructorHistoryList(String json) {
+        Type listType = new TypeToken<List<ConstructorHistory>>() {
         }.getType();
         return gson.fromJson(json, listType);
     }

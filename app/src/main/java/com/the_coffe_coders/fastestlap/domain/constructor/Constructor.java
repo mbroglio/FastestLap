@@ -49,7 +49,6 @@ public class Constructor implements Parcelable {
     private String hq;
     private String podiums;
     private String power_unit;
-    @Ignore
     private List<ConstructorHistory> team_history;
     private String team_logo_url;
     private String team_logo_minimal_url;

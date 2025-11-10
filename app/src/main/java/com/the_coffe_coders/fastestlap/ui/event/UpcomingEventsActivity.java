@@ -55,7 +55,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
         eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
         trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(getApplication())).get(TrackViewModel.class);
-        weeklyRaceViewModel = new ViewModelProvider(this, new WeeklyRaceViewModelFactory(getApplication())).get(WeeklyRaceViewModel.class);
+        weeklyRaceViewModel = new ViewModelProvider(this, new WeeklyRaceViewModelFactory(getApplication(), this)).get(WeeklyRaceViewModel.class);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         UIUtils.applyWindowInsets(toolbar);

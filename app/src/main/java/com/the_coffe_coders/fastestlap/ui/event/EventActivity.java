@@ -98,8 +98,8 @@ public class EventActivity extends AppCompatActivity {
 
     private void initializeViewModels() {
         eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
-        raceResultViewModel = new ViewModelProvider(this, new RaceResultViewModelFactory(getApplication())).get(RaceResultViewModel.class);
-        weeklyRaceViewModel = new ViewModelProvider(this, new WeeklyRaceViewModelFactory(getApplication())).get(WeeklyRaceViewModel.class);
+        raceResultViewModel = new ViewModelProvider(this, new RaceResultViewModelFactory(getApplication(), this)).get(RaceResultViewModel.class);
+        weeklyRaceViewModel = new ViewModelProvider(this, new WeeklyRaceViewModelFactory(getApplication(), this)).get(WeeklyRaceViewModel.class);
         processRaceData();
     }
 

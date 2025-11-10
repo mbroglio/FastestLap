@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -38,6 +39,7 @@ import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.UIUtils;
@@ -61,11 +63,15 @@ public class ConstructorBioActivity extends AppCompatActivity {
     private Driver driverOne;
     private Driver driverTwo;
 
+    private NetworkUtils networkLiveData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_constructor_bio);
+
+        networkLiveData = new NetworkUtils(this);
 
         start();
     }
@@ -84,10 +90,18 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
         Menu menu = toolbar.getMenu();
         MenuItem favoriteItem = menu.findItem(R.id.favourite_icon_outline);
-        favoriteItem.setOnMenuItemClickListener(v -> {
-            toggleFavoriteConstructor(teamId, favoriteItem);
-            return true;
-        });
+
+        if(networkLiveData.isConnected()){
+            favoriteItem.setOnMenuItemClickListener(v -> {
+                toggleFavoriteConstructor(teamId, favoriteItem);
+                return true;
+            });
+        }else{
+            favoriteItem.setOnMenuItemClickListener(v-> {
+                Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
+                return true;
+            });
+        }
 
         appBarLayout = findViewById(R.id.top_bar_layout);
 

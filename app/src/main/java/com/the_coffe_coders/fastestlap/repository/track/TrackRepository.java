@@ -12,6 +12,7 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.source.track.FirebaseTrackDataSource;
 import com.the_coffe_coders.fastestlap.source.track.LocalTrackDataSource;
+import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,16 +29,15 @@ public class TrackRepository {
     //Data sources
     final FirebaseTrackDataSource firebaseTrackDataSource;
     final LocalTrackDataSource localTrackDataSource;
-    AppRoomDatabase appRoomDatabase;
 
-    private final Context context;
+    private final NetworkUtils networkLiveData;
 
     public TrackRepository(AppRoomDatabase appRoomDatabase, Context context) {
         trackCache = new HashMap<>();
         lastUpdateTimestamps = new HashMap<>();
         firebaseTrackDataSource = FirebaseTrackDataSource.getInstance();
         localTrackDataSource = LocalTrackDataSource.getInstance(appRoomDatabase);
-        this.context = context;
+        networkLiveData = new NetworkUtils(context);
     }
 
     public static synchronized TrackRepository getInstance(AppRoomDatabase appRoomDatabase, Context context) {
@@ -48,14 +48,7 @@ public class TrackRepository {
     }
 
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        if (connectivityManager != null) {
-            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-        }
-        return false;
+        return networkLiveData.isConnected();
     }
 
     public synchronized MutableLiveData<Result> getTrack(String trackId) {

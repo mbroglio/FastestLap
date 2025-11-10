@@ -5,6 +5,8 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 
@@ -83,6 +85,8 @@ public class NetworkUtils extends LiveData<Boolean> {
 
         boolean hasInternetCapability = nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
         boolean isValidated = nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
+
+        Log.d("NetworkUtils","connection: " + hasTransport + " " + hasInternetCapability + " " + isValidated);
 
         return hasTransport && hasInternetCapability && isValidated;
     }

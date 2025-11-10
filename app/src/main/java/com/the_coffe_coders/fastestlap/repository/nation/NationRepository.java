@@ -12,6 +12,7 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.source.nation.FirebaseNationDataSource;
 import com.the_coffe_coders.fastestlap.source.nation.LocalNationDataSource;
+import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,16 +27,16 @@ public class NationRepository {
     //Data sources
     final FirebaseNationDataSource firebaseNationDataSource;
     final LocalNationDataSource localNationDataSource;
-    AppRoomDatabase appRoomDatabase;
 
-    private final Context context;
+    private final NetworkUtils networkLiveData;
+
 
     private NationRepository(AppRoomDatabase appRoomDatabase, Context context) {
         nationCache = new HashMap<>();
         lastUpdateTimestamps = new HashMap<>();
         firebaseNationDataSource = FirebaseNationDataSource.getInstance();
         localNationDataSource = LocalNationDataSource.getInstance(appRoomDatabase);
-        this.context = context;
+        networkLiveData = new NetworkUtils(context);
     }
 
     public static NationRepository getInstance(AppRoomDatabase appRoomDatabase, Context context) {
@@ -46,16 +47,8 @@ public class NationRepository {
     }
 
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        if (connectivityManager != null) {
-            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-        }
-        return false;
+        return networkLiveData.isConnected();
     }
-
 
     public synchronized MutableLiveData<Result> getNation(String nationId) throws RuntimeException{
         Log.d(TAG, "Fetching nation with ID: " + nationId);

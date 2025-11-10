@@ -1,6 +1,7 @@
 package com.the_coffe_coders.fastestlap.ui.event.viewmodel;
 
 import android.app.Application;
+import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
@@ -12,9 +13,9 @@ import com.the_coffe_coders.fastestlap.repository.result.ResultRepository;
 public class RaceResultViewModelFactory implements ViewModelProvider.Factory {
     private final ResultRepository resultRepository;
 
-    public RaceResultViewModelFactory(Application application) {
+    public RaceResultViewModelFactory(Application application, Context context) {
         AppRoomDatabase appRoomDatabase = AppRoomDatabase.getDatabase(application);
-        this.resultRepository = ResultRepository.getInstance(appRoomDatabase);
+        this.resultRepository = ResultRepository.getInstance(appRoomDatabase, context);
     }
 
     @NonNull

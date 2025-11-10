@@ -1,8 +1,6 @@
 package com.the_coffe_coders.fastestlap.repository.driver;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -13,6 +11,7 @@ import com.the_coffe_coders.fastestlap.domain.driver.Driver;
 import com.the_coffe_coders.fastestlap.source.driver.FirebaseDriverDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.JolpicaDriverDataSource;
 import com.the_coffe_coders.fastestlap.source.driver.LocalDriverDataSource;
+import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,19 +27,15 @@ public class DriverRepository {
     final FirebaseDriverDataSource firebaseDriverDataSource;
     JolpicaDriverDataSource jolpicaDriverDataSource;
     final LocalDriverDataSource localDriverDataSource;
-    AppRoomDatabase appRoomDatabase;
-    private final Context context;
 
-    //private final NetworkUtils networkLiveData;
+    private final NetworkUtils networkLiveData;
 
     private DriverRepository(AppRoomDatabase appRoomDatabase, Context context) {
         driverCache = new HashMap<>();
         lastUpdateTimestamps = new HashMap<>();
         firebaseDriverDataSource = FirebaseDriverDataSource.getInstance();
         localDriverDataSource = LocalDriverDataSource.getInstance(appRoomDatabase);
-        this.context = context.getApplicationContext();
-
-        //networkLiveData = new NetworkUtils(context);
+        networkLiveData = new NetworkUtils(context);
     }
 
     public static DriverRepository getInstance(AppRoomDatabase appRoomDatabase, Context context) {
@@ -49,20 +44,10 @@ public class DriverRepository {
         }
         return instance;
     }
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
-        if (connectivityManager != null) {
-            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-        }
-        return false;
-    }
-    /*
     private boolean isNetworkAvailable() {
         return networkLiveData.isConnected();
-    */
+    }
 
     public synchronized MutableLiveData<Result> getDriver(String driverId) {
         Log.d(TAG, "Fetching driver with ID: " + driverId);
