@@ -11,24 +11,21 @@ const db = admin.database();
 // Define constant paths for database nodes
 const DRIVERS_PATH = "drivers"; // Root path for all drivers
 const TEAMS_PATH = "teams"; // Root path for all teams
-const TRACKER_NODE_PATH = "app_config/stats_tracker"; // Path to the lock/tracker node
+const CIRCUITS_PATH = "circuits"; // Root path for all circuits
+const SEASON_TRACKER_PATH = "app_config/stats_tracker"; // Path to the lock/tracker node
+const CALENDAR_PATH = "app_config/calendar"; // Path to the calendar
+const TEAM_ID_NAME_MAP_PATH = "app_config/team_id_name_map"; // Path to the team ID-Name map
+const DRIVER_ID_NAME_MAP_PATH = "app_config/driver_id_name_map"; // Path to the driver ID-Name map
+
 const RACE_RESULTS_API = "https://api.jolpi.ca/ergast/f1/current/last/results/?format=json";
 const DRIVER_STANDINGS_API = "https://api.jolpi.ca/ergast/f1/current/driverstandings/?format=json";
 const CONSTRUCTOR_STANDINGS_API = "https://api.jolpi.ca/ergast/f1/current/constructorstandings/?format=json";
 
 //create a map<String, String> for team id and team name
-const TEAM_ID_NAME_MAP = {
-  "mercedes": "Mercedes",
-  "red_bull": "Red Bull",
-  "ferrari": "Ferrari",
-  "mclaren": "McLaren",
-  "alpine": "Alpine",
-  "rb": "Racing Bulls",
-  "aston_martin": "Aston Martin",
-  "williams": "Williams",
-  "haas": "Haas",
-  "sauber": "KICK Sauber"
-};
+const TEAM_ID_NAME_MAP = {};
+const DRIVER_ID_NAME_MAP = {};
+
+const currentRound = 0; //placeholder
 
 
 /**
@@ -70,9 +67,10 @@ exports.updateRaceStats = onSchedule(
       const raceInfo = resultsData.RaceTable.Races[0];
       const newSeason = parseInt(raceInfo.season);
       const newRound = parseInt(raceInfo.round);
+      Object.assign(currentRound, newRound);
 
       // Get the last processed race info from DB
-      const trackerRef = db.ref(TRACKER_NODE_PATH);
+      const trackerRef = db.ref(SEASON_TRACKER_PATH);
       const trackerSnapshot = await trackerRef.once("value");
       const trackerData = trackerSnapshot.val() || {};
       const lastSeason = trackerData.last_season_updated || 0;
@@ -86,13 +84,69 @@ exports.updateRaceStats = onSchedule(
 
       console.log(`New race detected: ${newSeason}-${newRound}. Processing...`);
 
+      //recover team and driver maps from database
+      const teamIdNameMapRef = db.ref(TEAM_ID_NAME_MAP_PATH);
+      const teamIdNameMapSnapshot = await teamIdNameMapRef.once("value");
+      const teamIdNameMapData = teamIdNameMapSnapshot.val() || {};
+      Object.assign(TEAM_ID_NAME_MAP, teamIdNameMapData); //assign to local map
+
+      const driverIdNameMapRef = db.ref(DRIVER_ID_NAME_MAP_PATH);
+      const driverIdNameMapSnapshot = await driverIdNameMapRef.once("value");
+      const driverIdNameMapData = driverIdNameMapSnapshot.val() || {};
+      Object.assign(DRIVER_ID_NAME_MAP, driverIdNameMapData); //assign to local map
+
+      //recover calendar from database
+      const calendarRef = db.ref(CALENDAR_PATH);
+      const calendarSnapshot = await calendarRef.once("value");
+      const calendarData = calendarSnapshot.val() || {};
+
+
       // Prepare Updates: collect all DB updates in one object for a single atomic write.
       const multiPathUpdates = {};
       const results = raceInfo.Results;
-
       const constructorUpdates = {}; //aggregate stats for constructors (wins and podiums)
 
-      // 4. Loop 1: Process Drivers and Aggregate Constructors
+      // CIRCUIT: find circuit in calendar and update current season results
+      let circuitKey = null;
+      console.log("checking entry for round: " + newRound);
+
+      for (const key in calendarData) {
+        const entry = calendarData[key];
+        if (entry && parseInt(entry.round) === newRound) {
+          circuitKey = key;
+          break;
+        }
+      }
+
+      if (circuitKey) {
+        const podiumDrivers = [];
+        const podiumTeams = [];
+
+        // take top 3 results
+        for (let i = 0; i < 3; i++) {
+          const result = results[i];
+          const driverId = result.Driver.driverId;
+          const constructorId = result.Constructor.constructorId;
+
+          const driverNameFromMap = DRIVER_ID_NAME_MAP[driverId];
+          const teamName = TEAM_ID_NAME_MAP[constructorId];
+
+          podiumDrivers.push(driverNameFromMap);
+          podiumTeams.push(teamName);
+        }
+
+        console.log(`Top 3 podium drivers: ${podiumDrivers.join(", ")}`);
+        console.log(`Top 3 podium teams: ${podiumTeams.join(", ")}`);
+
+        multiPathUpdates[`${CALENDAR_PATH}/${circuitKey}/season_result/year`] = newSeason.toString();
+        multiPathUpdates[`${CALENDAR_PATH}/${circuitKey}/season_result/podium`] = podiumDrivers;
+        multiPathUpdates[`${CALENDAR_PATH}/${circuitKey}/season_result/team`] = podiumTeams;
+
+      } else {
+        console.warn(`Could not find calendar entry for round ${newRound}. Calendar not updated.`);
+      }
+
+      //Process Drivers
       for (const result of results) {
         const driverId = result.Driver.driverId;
         const constructorId = result.Constructor.constructorId;
@@ -114,7 +168,7 @@ exports.updateRaceStats = onSchedule(
             // Update career podiums
             multiPathUpdates[`${DRIVERS_PATH}/${driverId}/podiums`] = (careerPodiums + 1).toString();
 
-            if(position === 1) {
+            if (position === 1) {
               // Handle season wins
               const seasonWins = parseInt(driverData.season_wins) || 0;
               multiPathUpdates[`${DRIVERS_PATH}/${driverId}/season_wins`] = (seasonWins + 1).toString();
@@ -193,8 +247,8 @@ exports.updateRaceStats = onSchedule(
         }
       }
 
-      multiPathUpdates[`${TRACKER_NODE_PATH}/last_season_updated`] = newSeason;
-      multiPathUpdates[`${TRACKER_NODE_PATH}/last_race_updated`] = newRound;
+      multiPathUpdates[`${SEASON_TRACKER_PATH}/last_season_updated`] = newSeason;
+      multiPathUpdates[`${SEASON_TRACKER_PATH}/last_race_updated`] = newRound;
 
       // Perform one atomic update for all changes
       await db.ref().update(multiPathUpdates);
@@ -217,7 +271,7 @@ exports.updateRaceStats = onSchedule(
  */
 exports.updateChampionships = onSchedule(
   {
-    schedule: "0 12 20 12 *", // December 20th at 12:00 
+    schedule: "0 12 20 12 *", // December 20th at 12:00 0 12 20 12 *
     timeZone: "Europe/Rome",
     timeoutSeconds: 180,
 
@@ -239,7 +293,7 @@ exports.updateChampionships = onSchedule(
       const newSeason = parseInt(standingsData.season);
 
       // Lock Check
-      const trackerRef = db.ref(TRACKER_NODE_PATH);
+      const trackerRef = db.ref(SEASON_TRACKER_PATH);
       const trackerSnapshot = await trackerRef.once("value");
       const trackerData = trackerSnapshot.val() || {};
       const lastChampSeason = trackerData.last_champ_season || 0;
@@ -254,8 +308,8 @@ exports.updateChampionships = onSchedule(
 
       // DRIVERS
       const driverStandings = standingsData.StandingsLists[0].DriverStandings;
-    
-      for(const driver of driverStandings) {
+
+      for (const driver of driverStandings) {
         const driverId = driver.Driver.driverId;
         const driverRef = db.ref(`${DRIVERS_PATH}/${driverId}`);
         const driverSnapshot = await driverRef.once("value");
@@ -264,9 +318,9 @@ exports.updateChampionships = onSchedule(
           const driverData = driverSnapshot.val();
 
           //creating new history entry for the season
-         const driverTeams = driver.Constructors.map(constructor => {
-           return TEAM_ID_NAME_MAP[constructor.constructorId] || constructor.name; // Use map, fallback to API name
-         }).join(' / ');
+          const driverTeams = driver.Constructors.map(constructor => {
+            return TEAM_ID_NAME_MAP[constructor.constructorId] || constructor.name; // Use map, fallback to API name
+          }).join(' / ');
           const season_wins = parseInt(driverData.season_wins) || 0;
           const season_podiums = parseInt(driverData.season_podiums) || 0;
 
@@ -281,7 +335,7 @@ exports.updateChampionships = onSchedule(
 
           let history = driverData.driver_history || [];
           history.push(newHistoryEntry);
-          if(history.length > 10) {
+          if (history.length > 10) {
             history = history.slice(1);
           }
           multiPathUpdates[`${DRIVERS_PATH}/${driverId}/driver_history`] = history;
@@ -304,7 +358,7 @@ exports.updateChampionships = onSchedule(
       const constructorStandingsRes = await axios.get(CONSTRUCTOR_STANDINGS_API);
       const constructorStandings = constructorStandingsRes.data.MRData.StandingsTable.StandingsLists[0].ConstructorStandings;
 
-      for(const constructor of constructorStandings) {
+      for (const constructor of constructorStandings) {
         const constructorId = constructor.Constructor.constructorId;
         const constructorRef = db.ref(`${TEAMS_PATH}/${constructorId}`);
         const constructorSnapshot = await constructorRef.once("value");
@@ -326,7 +380,7 @@ exports.updateChampionships = onSchedule(
 
           let history = constructorData.team_history || [];
           history.push(newHistoryEntry);
-          if(history.length > 10) {
+          if (history.length > 10) {
             history = history.slice(1);
           }
           multiPathUpdates[`${TEAMS_PATH}/${constructorId}/team_history`] = history;
@@ -343,8 +397,57 @@ exports.updateChampionships = onSchedule(
         }
       }
 
+
+      //CIRCUITS
+      const calendarRef = db.ref(CALENDAR_PATH);
+      const calendarSnap = await calendarRef.once("value");
+
+      if (calendarSnap.exists()) {
+        const calendarData = calendarSnap.val() || {};
+        console.log(`Found calendar data with ${Object.keys(calendarData).length} circuits.`);
+
+        for (const circuit in calendarData) {
+          console.log(`Processing circuit: ${circuit}`);
+
+          const seasonResult = calendarData[circuit].season_result || null;
+          console.log(`Season result for circuit ${circuit}:`, seasonResult);
+
+          if (seasonResult != null) {
+            const newHistoryEntry = {
+              year: seasonResult.year || newSeason.toString(),
+              podium: seasonResult.podium || [],
+              team: seasonResult.team || []
+            };
+            console.log(`Archiving season result for circuit ${circuit}:`, newHistoryEntry);
+
+            const circuitRef = db.ref(CIRCUITS_PATH + '/' + circuit);
+            const circuitSnapshot = await circuitRef.once("value");
+
+            if (circuitSnapshot.exists()) {
+              const circuitData = circuitSnapshot.val();
+              let history = circuitData.track_history || [];
+              history.push(newHistoryEntry);
+              if (history.length > 10) {
+                history = history.slice(1);
+              }
+              multiPathUpdates[`${CIRCUITS_PATH}/${circuit}/track_history`] = history;
+
+              console.log(`Queueing history update for ${circuit}. New history size: ${history.length}`);
+            }
+          } else {
+            console.warn(`Could not find race_result entry for round ${currentRound}. Result for race not updated.`);
+          }
+
+          multiPathUpdates[`${CALENDAR_PATH}/${circuit}/season_result`] = {
+            year: null,
+            podium: [],
+            team: []
+          };
+        }
+      }
+
       // Update the tracker lock for this season
-      multiPathUpdates[`${TRACKER_NODE_PATH}/last_champ_season`] = newSeason;
+      multiPathUpdates[`${SEASON_TRACKER_PATH}/last_champ_season`] = newSeason;
 
       await db.ref().update(multiPathUpdates);
       console.log(`Championship update for season ${newSeason} complete.`);
@@ -355,4 +458,4 @@ exports.updateChampionships = onSchedule(
       throw error; // Rethrow to trigger retry logic
     }
   }
-);
+);  

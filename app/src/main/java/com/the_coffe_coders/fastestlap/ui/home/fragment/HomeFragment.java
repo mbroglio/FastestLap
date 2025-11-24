@@ -141,10 +141,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupUI(View view) {
-        setRefreshLayout(view);
-        setLastRaceCard(view);
-        setNextSessionCard(view);
-
         if(networkLiveData.isConnected()){
             userViewModel.getUserPreferences(userViewModel.getLoggedUser().getIdToken()).observe(getViewLifecycleOwner(), result -> {
                 if (result != null) {
@@ -163,6 +159,11 @@ public class HomeFragment extends Fragment {
             showDriverNotFound(view,1);
             showConstructorNotFound(view,1);
         }
+
+        setRefreshLayout(view);
+        setLastRaceCard(view);
+        setNextSessionCard(view);
+
     }
 
     private void refreshUI() {
