@@ -29,7 +29,7 @@ import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
-import com.the_coffe_coders.fastestlap.util.UIUtils;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 public class ProfileActivity extends AppCompatActivity {
     private static final String TAG = "ProfileActivity";
@@ -41,6 +41,7 @@ public class ProfileActivity extends AppCompatActivity {
     private boolean isCheckBoxChanged = false;
     private boolean initialAutoLoginState = false;
     private boolean isFromLogin;
+    private boolean loginWithConnection;
 
     private UserViewModel userViewModel;
     private NetworkUtils networkLiveData;
@@ -62,6 +63,9 @@ public class ProfileActivity extends AppCompatActivity {
 
         isFromLogin = getIntent().getBooleanExtra("from_login", false);
         Log.i(TAG, "from login: " + isFromLogin);
+
+        loginWithConnection = getIntent().getBooleanExtra("LOGIN_WITH_CONNECTION", false);
+        Log.i(TAG, "login with connection: " + loginWithConnection);
 
         if (isFromLogin) {
             toolbar.setNavigationOnClickListener(v -> {
@@ -141,7 +145,7 @@ public class ProfileActivity extends AppCompatActivity {
         Button signOutButton = findViewById(R.id.sign_out_button);
         Button loginButton = findViewById(R.id.login_button);
 
-        if(networkLiveData.isConnected()){
+        if(networkLiveData.isConnected() && loginWithConnection){
             signOutButton.setVisibility(View.VISIBLE);
             loginButton.setVisibility(View.GONE);
 

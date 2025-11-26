@@ -19,7 +19,7 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.QualifyingResultsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.QualifyingResult;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
-import com.the_coffe_coders.fastestlap.util.UIUtils;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 public class QualifyingResultsFragment extends DialogFragment {
 

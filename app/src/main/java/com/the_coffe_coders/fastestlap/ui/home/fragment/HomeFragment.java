@@ -57,11 +57,11 @@ import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
-import com.the_coffe_coders.fastestlap.util.UIUtils;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
@@ -84,6 +84,7 @@ public class HomeFragment extends Fragment {
     private UserViewModel userViewModel;
     private boolean hasReloaded = false;
     private View view;
+    private boolean loginWithConnection;
 
     private NetworkUtils networkLiveData;
 
@@ -109,11 +110,17 @@ public class HomeFragment extends Fragment {
 
     private void setupFragment(View view) {
         Intent intent = requireActivity().getIntent();
-        if (intent != null && intent.hasExtra("RELOADED")) {
-            if (Objects.equals(intent.getStringExtra("RELOADED"), "true")) {
-                hasReloaded = true;
+        if (intent != null){
+            if (intent.hasExtra("RELOADED")) {
+                if (Objects.equals(intent.getStringExtra("RELOADED"), "true")) {
+                    hasReloaded = true;
+                }
+            }
+            if (intent.hasExtra("LOGIN_WITH_CONNECTION")) {
+                loginWithConnection = intent.getBooleanExtra("LOGIN_WITH_CONNECTION", false);
             }
         }
+
 
         initializeViewModels();
         setupLoadingScreen(view);
@@ -690,7 +697,7 @@ public class HomeFragment extends Fragment {
     private void buildDriverCard(View view, DriverStandingsElement standingElement, Nation nation) {
         loadingScreen.updateProgress();
 
-        if(networkLiveData.isConnected()){
+        if(networkLiveData.isConnected() && loginWithConnection){
             try {
                 Driver driver = standingElement.getDriver();
 
@@ -715,6 +722,7 @@ public class HomeFragment extends Fragment {
             }
         }else{
             Log.e(TAG, "Error building driver card: No internet connection");
+            loginWithConnection = false;
             showDriverNotFound(view,1);
         }
 
@@ -831,7 +839,7 @@ public class HomeFragment extends Fragment {
     private void buildConstructorCard(View view, ConstructorStandingsElement standingElement, Nation nation) {
         loadingScreen.updateProgress();
 
-        if(networkLiveData.isConnected()){
+        if(networkLiveData.isConnected() && loginWithConnection){
             try {
                 Constructor constructor = standingElement.getConstructor();
 
@@ -861,6 +869,7 @@ public class HomeFragment extends Fragment {
             }
         }else{
             Log.e(TAG, "Error building constructor card: No internet connection");
+            loginWithConnection = false;
             showConstructorNotFound(view,1);
         }
     }

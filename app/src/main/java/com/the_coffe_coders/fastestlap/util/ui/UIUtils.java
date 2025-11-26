@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.util;
+package com.the_coffe_coders.fastestlap.util.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -62,6 +62,8 @@ import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.WelcomeActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.fragment.ForgotPasswordFragment;
 import com.the_coffe_coders.fastestlap.ui.welcome.fragment.SignUpFragment;
+import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 
 import java.security.MessageDigest;
 import java.time.Duration;
@@ -243,7 +245,7 @@ public class UIUtils {
                 Log.e("Glide", "Image loading failed, setting backup image");
                 Drawable errorImage = AppCompatResources.getDrawable(context, R.drawable.content_not_found_icon);
                 imageView.setImageDrawable(errorImage);
-                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 break;
             case 1: // Layout
                 Log.e("UIUtils", "Layout loading failed, setting backup background");
@@ -423,10 +425,17 @@ public class UIUtils {
         AppCompatDelegate.setApplicationLocales(AppCompatDelegate.getApplicationLocales());
     }
 
+    public static void navigateToHomePageStart(Context context, boolean loginWithConnection) {
+        Intent intent = new Intent(context, HomePageActivity.class);
+        intent.putExtra("LOGIN_WITH_CONNECTION", loginWithConnection);
+        context.startActivity(intent);
+    }
+
     public static void navigateToHomePage(Context context) {
         Intent intent = new Intent(context, HomePageActivity.class);
         context.startActivity(intent);
     }
+
 
     public static void navigateToBioPage(Context context, String id, int bioType) {
         Intent intent;

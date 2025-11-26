@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -23,7 +22,6 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
-import com.the_coffe_coders.fastestlap.ui.home.fragment.NewsFragment;
 import com.the_coffe_coders.fastestlap.ui.profile.ProfileActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
@@ -31,7 +29,7 @@ import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
-import com.the_coffe_coders.fastestlap.util.UIUtils;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import org.threeten.bp.ZoneId;
 
@@ -40,6 +38,7 @@ import java.util.Objects;
 public class HomePageActivity extends AppCompatActivity {
     private final String TAG = "HomePageActivity";
     private final ZoneId localZone = ZoneId.systemDefault();
+    private boolean loginWithConnection;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +46,8 @@ public class HomePageActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
 
         setContentView(R.layout.activity_home);
+
+        loginWithConnection = getIntent().getBooleanExtra("LOGIN_WITH_CONNECTION", false);
 
         LocaleListCompat appLocales = AppCompatDelegate.getApplicationLocales();
         String currentLanguage = appLocales.toLanguageTags();
@@ -62,6 +63,7 @@ public class HomePageActivity extends AppCompatActivity {
         toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.userActivity) {
                 Intent intent = new Intent(HomePageActivity.this, ProfileActivity.class);
+                intent.putExtra("LOGIN_WITH_CONNECTION", loginWithConnection);
                 startActivity(intent);
                 return true;
             }
@@ -109,6 +111,7 @@ public class HomePageActivity extends AppCompatActivity {
                         case "HomeFragment":
                             Intent home = new Intent(HomePageActivity.this, HomePageActivity.class);
                             home.putExtra("RELOADED", "true");
+                            home.putExtra("LOGIN_WITH_CONNECTION", loginWithConnection);
                             startActivity(home);
                             break;
                         case "ConstructorBioActivity":

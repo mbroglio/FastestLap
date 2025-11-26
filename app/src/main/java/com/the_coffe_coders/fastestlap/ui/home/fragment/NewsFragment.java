@@ -20,7 +20,7 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.NewsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.news.News;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.NewsFetcher;
+import com.the_coffe_coders.fastestlap.source.news.NewsFetcher;
 import java.util.List;
 
 

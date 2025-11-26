@@ -24,7 +24,7 @@ import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
-import com.the_coffe_coders.fastestlap.util.UIUtils;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 @SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
@@ -163,7 +163,7 @@ public class SplashActivity extends AppCompatActivity {
                         boolean isEnabled = task.getResult();
                         Log.d(TAG, "Auto login is enabled: " + isEnabled);
                         if (isEnabled) {
-                            UIUtils.navigateToHomePage(this);
+                            UIUtils.navigateToHomePageStart(this, true);
                         } else {
                             hideIntroScreen();
                             new Handler().postDelayed(this::showIntroScreen, 500);
@@ -172,7 +172,7 @@ public class SplashActivity extends AppCompatActivity {
                 });
             }else{
                 Log.e(TAG, "No internet connection");
-                UIUtils.navigateToHomePage(this);
+                UIUtils.navigateToHomePageStart(this, false);
             }
         } else {
             showIntroScreen();

@@ -14,12 +14,9 @@ import android.widget.Toast;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.ui.welcome.WelcomeActivity;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
-import com.the_coffe_coders.fastestlap.util.UIUtils;
-
-import org.apache.commons.validator.routines.EmailValidator;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.Objects;
 
@@ -76,7 +73,7 @@ public class LoginFragment extends DialogFragment {
                         .addOnCompleteListener(getActivity(), task -> {
                             if (task.isSuccessful()) {
                                 Log.d("LoginFragment", "signInWithEmail:success");
-                                UIUtils.navigateToHomePage(getContext());
+                                UIUtils.navigateToHomePageStart(getContext(), true);
                             } else {
                                 Log.e("LoginFragment", "signInWithEmail:failure", task.getException());
                                 Toast.makeText(getContext(), "Authentication failed.",

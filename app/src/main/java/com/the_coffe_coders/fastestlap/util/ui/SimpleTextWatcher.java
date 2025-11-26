@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.util;
+package com.the_coffe_coders.fastestlap.util.ui;
 
 import android.text.Editable;
 import android.text.TextWatcher;

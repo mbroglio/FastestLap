@@ -26,8 +26,8 @@ import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModelFactory;
-import com.the_coffe_coders.fastestlap.util.LoadingScreen;
-import com.the_coffe_coders.fastestlap.util.UIUtils;
+import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -24,8 +24,9 @@ import com.the_coffe_coders.fastestlap.ui.welcome.fragment.ForgotPasswordFragmen
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
-import com.the_coffe_coders.fastestlap.util.UIUtils;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import org.apache.commons.validator.routines.EmailValidator;
 
@@ -36,6 +37,7 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
     private TextInputEditText emailEditText;
     private TextInputEditText passwordEditText;
     private FirebaseAuth mAuth;
+    private NetworkUtils networkLiveData;
 
     private boolean fromSignOut;
 
@@ -50,6 +52,7 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
         UIUtils.applyWindowInsets(loginLayout);
 
         mAuth = FirebaseAuth.getInstance();
+        networkLiveData = new NetworkUtils(getApplicationContext());
 
         IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository((Application) getApplicationContext());
 
@@ -63,31 +66,45 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
         rootView.setOnClickListener(v -> resetHintPosition());
 
         Button registerButton = findViewById(R.id.RegisterButton);
-        registerButton.setOnClickListener(v ->
-                UIUtils.showProfileManageDialogs(getSupportFragmentManager(), 0, null));
-
-        Button loginButton = findViewById(R.id.LoginButton);
-        loginButton.setOnClickListener(v -> {
-            if (emailEditText.getText() != null && isEmailOk(emailEditText.getText().toString())) {
-                if (passwordEditText.getText() != null && isPasswordOk(passwordEditText.getText().toString())) {
-                    mAuth.signInWithEmailAndPassword(emailEditText.getText().toString(), passwordEditText.getText().toString())
-                            .addOnCompleteListener(this, task -> {
-                                if (task.isSuccessful()) {
-                                    Log.d(TAG, "signInWithEmail:success");
-                                    UIUtils.navigateToHomePage(WelcomeActivity.this);
-                                } else {
-                                    Log.w(TAG, "signInWithEmail:failure", task.getException());
-                                    Toast.makeText(WelcomeActivity.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                }
-            }
-        });
-
         Button forgotPasswordButton = findViewById(R.id.forgotten_password_button);
-        forgotPasswordButton.setOnClickListener(v ->
-                UIUtils.showProfileManageDialogs(getSupportFragmentManager(), 1,null));
+        Button loginButton = findViewById(R.id.LoginButton);
+        if (networkLiveData.isConnected()) {
+            registerButton.setOnClickListener(v ->
+                    UIUtils.showProfileManageDialogs(getSupportFragmentManager(), 0, null));
+
+            forgotPasswordButton.setOnClickListener(v ->
+                    UIUtils.showProfileManageDialogs(getSupportFragmentManager(), 1, null));
+
+            loginButton.setOnClickListener(v -> {
+                if (emailEditText.getText() != null && isEmailOk(emailEditText.getText().toString())) {
+                    if (passwordEditText.getText() != null && isPasswordOk(passwordEditText.getText().toString())) {
+                        mAuth.signInWithEmailAndPassword(emailEditText.getText().toString(), passwordEditText.getText().toString())
+                                .addOnCompleteListener(this, task -> {
+                                    if (task.isSuccessful()) {
+                                        Log.d(TAG, "signInWithEmail:success");
+                                        UIUtils.navigateToHomePage(WelcomeActivity.this);
+                                    } else {
+                                        Log.w(TAG, "signInWithEmail:failure", task.getException());
+                                        Toast.makeText(WelcomeActivity.this, "No internet connection",
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }
+                }
+            });
+
+        } else {
+            registerButton.setOnClickListener(v ->
+                    Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show());
+
+            forgotPasswordButton.setOnClickListener(v ->
+                    Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show());
+
+            loginButton.setOnClickListener(v ->
+                    Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show());
+        }
+
+
     }
 
     private boolean isEmailOk(String email) {

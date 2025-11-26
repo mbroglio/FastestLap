@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.util;
+package com.the_coffe_coders.fastestlap.source.news;
 
 import static com.the_coffe_coders.fastestlap.util.Constants.AUTOSPORT_RSS_URL;
 import static com.the_coffe_coders.fastestlap.util.Constants.CRASH_RSS_URL;
