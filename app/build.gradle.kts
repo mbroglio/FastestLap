@@ -1,12 +1,12 @@
 plugins {
     alias(libs.plugins.android.application)
-    id("io.freefair.lombok") version "8.11"
+    id("io.freefair.lombok") version "9.1.0"
     id("com.google.gms.google-services")
 }
 
 android {
     namespace = "com.the_coffe_coders.fastestlap"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.the_coffe_coders.fastestlap"
