@@ -2,10 +2,12 @@
 const { onSchedule } = require("firebase-functions/v2/scheduler");
 const admin = require("firebase-admin");
 const axios = require("axios");
+const cheerio = require("cheerio");
 
 // Initialize Firebase Admin SDK
 admin.initializeApp();
 const db = admin.database();
+const currentYear = new Date().getFullYear();
 
 // --- CONSTANTS ---
 const PATHS = {
@@ -15,13 +17,16 @@ const PATHS = {
   TRACKER: "app_config/stats_tracker",
   CALENDAR: "app_config/calendar",
   TEAM_MAP: "app_config/team_id_name_map",
-  DRIVER_MAP: "app_config/driver_id_name_map"
+  DRIVER_MAP: "app_config/driver_id_name_map",
+  JUNIOR_ROOT_PATH: "junior_categories"
 };
 
 const APIS = {
   RACE_RESULTS: "https://api.jolpi.ca/ergast/f1/current/last/results/?format=json",
   DRIVER_STANDINGS: "https://api.jolpi.ca/ergast/f1/current/driverstandings/?format=json",
-  CONSTRUCTOR_STANDINGS: "https://api.jolpi.ca/ergast/f1/current/constructorstandings/?format=json"
+  CONSTRUCTOR_STANDINGS: "https://api.jolpi.ca/ergast/f1/current/constructorstandings/?format=json",
+  F2_WIKI_URL: `https://en.wikipedia.org/wiki/${currentYear}_Formula_2_Championship`,
+  F3_WIKI_URL: `https://en.wikipedia.org/wiki/${currentYear}_FIA_Formula_3_Championship`
 };
 
 // Global maps (populated at runtime)
@@ -284,9 +289,390 @@ async function processCircuitSeasonArchive(newSeason, updates) {
   }
 }
 
+
 /**
  * ===================================================================
- * MAIN EXPORTS
+ * JUNIOR SERIES HELPERS 
+ * ===================================================================
+ */
+
+async function checkRaceYesterday(seriesId) {
+    const calendarPath = `${PATHS.JUNIOR_ROOT_PATH}/${seriesId}/calendar`;
+    const calendarRef = db.ref(calendarPath);
+    const snapshot = await calendarRef.once("value");
+
+    // If the calendar is empty (e.g., first absolute start), force the update to populate it
+    if (!snapshot.exists()) {
+        console.log(`[${seriesId}] Calendar is empty. Forcing first update.`);
+        return true;
+    }
+
+    const calendarData = snapshot.val();
+    
+    // 1. Calculate YESTERDAY's date 
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+
+    // 2. Format "Yesterday" as "D MMMM" string
+    // Using 'en-GB' because Wikipedia uses English dates (Day Month)
+    const formatter = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long' });
+    const yesterdayString = formatter.format(yesterday);
+
+    console.log(`[${seriesId}] Checking date: Looking for race held on '${yesterdayString}'...`);
+
+    // 3. Search in calendar
+    let raceFound = false;
+    for (const key in calendarData) {
+        const race = calendarData[key];
+        // Compare clean string (e.g., "16 March")
+        if (race.feature_date && race.feature_date.toLowerCase() === yesterdayString.toLowerCase()) {
+            raceFound = true;
+            console.log(`[${seriesId}] Match found: Round ${race.round} at ${race.circuit}`);
+            break;
+        }
+    }
+
+    return raceFound;
+}
+
+async function processSeries(seriesId, url) {
+  console.log(`Scraping ${seriesId.toUpperCase()} from ${url}...`);
+  
+  const { data } = await axios.get(url, {
+    headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
+  });
+  const $ = cheerio.load(data);
+  
+  const updates = {};
+  const basePath = `${PATHS.JUNIOR_ROOT_PATH}/${seriesId}`;
+
+  // 1. Entry List
+  const entryList = scrapeEntryList($, url);
+  if (entryList) updates[`${basePath}/entrylist`] = entryList;
+
+  // 2. Calendar
+  const calendar = scrapeCalendar($, url);
+  if (calendar) {
+    // Convert array to indexed map by round ("1": {...})
+    calendar.forEach(race => {
+        updates[`${basePath}/calendar/${race.round}`] = {
+            round: race.round,
+            circuit: race.circuit,
+            sprint_date: race.sprint_date,
+            feature_date: race.feature_date
+        };
+    });
+  }
+
+  // 3. Race Results (Sprint & Feature Orders)
+  const raceResults = scrapeRaceResults($, url);
+  if (raceResults) {
+    raceResults.forEach(race => {
+        // Map scraper JSON structure to DB structure
+        updates[`${basePath}/results/${race.round}/sprint`] = {
+            fastest_lap: race.sprint_race.fastest_lap,
+            pole_position: race.sprint_race.pole_position,
+            order: race.sprint_race.order
+        };
+        updates[`${basePath}/results/${race.round}/feature`] = {
+            fastest_lap: race.feature_race.fastest_lap,
+            pole_position: race.feature_race.pole_position,
+            order: race.feature_race.order
+        };
+    });
+  }
+
+  // 4. Driver Standings
+  const driverStandings = scrapeDriverStandings($, url);
+  if (driverStandings) {
+    driverStandings.forEach(d => {
+        updates[`${basePath}/standings/drivers/${d.position}`] = d;
+    });
+  }
+
+  // 5. Constructor Standings
+  const teamStandings = scrapeTeamStandings($, url);
+  if (teamStandings) {
+    teamStandings.forEach(t => {
+        updates[`${basePath}/standings/constructors/${t.position}`] = t;
+    });
+  }
+
+  // Perform atomic update for this series
+  if (Object.keys(updates).length > 0) {
+    await db.ref().update(updates);
+    console.log(`Database updated for ${seriesId}.`);
+  }
+}
+
+// SCRAPERS FUNCTIONS
+
+function scrapeEntryList($, url) {
+    console.log("Scraping Entry List...");
+    const rawList = []; 
+    let currentTeam = null, currentCarNumber = null;
+    let teamRowSpan = 0, numberRowSpan = 0;
+
+    $('table.wikitable').each((i, table) => {
+        const headers = $(table).find('th').text().toLowerCase();
+        if (!headers.includes('team') || !headers.includes('driver') || !headers.includes('no.')) return;
+
+        $(table).find('tr').each((rowIndex, row) => {
+            const $row = $(row);
+            if ($row.find('th').length > 0 && rowIndex === 0) return;
+            const cells = $row.find('td');
+            if (cells.length === 0) return;
+
+            let cellIndex = 0;
+            // Team 
+            if (teamRowSpan === 0) {
+                const teamCell = $(cells[cellIndex]);
+                currentTeam = teamCell.text().trim();
+                const spanAttr = teamCell.attr('rowspan');
+                teamRowSpan = spanAttr ? parseInt(spanAttr) : 1;
+                cellIndex++;
+            }
+            // Car Number
+            if (numberRowSpan === 0) {
+                const numberCell = $(cells[cellIndex]);
+                currentCarNumber = numberCell.text().trim();
+                const spanAttr = numberCell.attr('rowspan');
+                numberRowSpan = spanAttr ? parseInt(spanAttr) : 1;
+                cellIndex++;
+            }
+            // Driver
+            const driverCell = $(cells[cellIndex]);
+            const driverName = driverCell.text().trim();
+            let rounds = "All";
+            if (cells.length > cellIndex + 1) rounds = $(cells[cellIndex + 1]).text().trim();
+
+            if (currentTeam && driverName) {
+                rawList.push({
+                    team: cleanText(currentTeam),
+                    number: cleanText(currentCarNumber),
+                    driver: cleanText(driverName),
+                    rounds: cleanText(rounds)
+                });
+            }
+            if (teamRowSpan > 0) teamRowSpan--;
+            if (numberRowSpan > 0) numberRowSpan--;
+        });
+    });
+
+    // Grouping and Sorting
+    const teamsMap = {};
+    rawList.forEach(entry => {
+        if (!teamsMap[entry.team]) teamsMap[entry.team] = [];
+        teamsMap[entry.team].push({ number: entry.number, driver: entry.driver, rounds: entry.rounds });
+    });
+
+    for (const teamName in teamsMap) {
+        teamsMap[teamName].sort((a, b) => {
+            const endA = getEndRound(a.rounds);
+            const endB = getEndRound(b.rounds);
+            if (endA !== endB) return endB - endA; // Descending (who finishes later wins)
+            
+            const durA = getRoundDuration(a.rounds);
+            const durB = getRoundDuration(b.rounds);
+            if (durA !== durB) return durB - durA;
+
+            const numA = parseInt(a.number) || 999;
+            const numB = parseInt(b.number) || 999;
+            return numA - numB;
+        });
+    }
+    return teamsMap;
+}
+
+function scrapeCalendar($, url) {
+    console.log("Scraping Calendar...");
+    const calendar = [];
+    $('table.wikitable').each((i, table) => {
+        const headers = $(table).find('th').text().toLowerCase();
+        if (!headers.includes('round') || !headers.includes('circuit') || !headers.includes('feature race')) return;
+
+        $(table).find('tr').each((rowIndex, row) => {
+            const cells = $(row).find('td, th');
+            if (cells.length < 4) return;
+            
+            let roundText = $(cells[0]).text().trim();
+            if (isNaN(parseInt(roundText))) return;
+
+            const circuitCell = $(cells[1]);
+            let circuitName = "";
+            if (circuitCell.find('a').length > 1) circuitName = circuitCell.find('a').eq(1).text().trim();
+            else circuitName = circuitCell.text().replace(circuitCell.find('a').first().text(), '').replace(/,/g, '').trim();
+            
+            // Fix to get clean circuit name
+            if(!circuitName) circuitName = circuitCell.find('a').first().text().trim();
+
+            calendar.push({
+                round: roundText,
+                circuit: cleanText(circuitName),
+                sprint_date: cleanText($(cells[2]).text()),
+                feature_date: cleanText($(cells[3]).text())
+            });
+        });
+    });
+    return calendar;
+}
+
+function scrapeRaceResults($, url) {
+    console.log("Scraping Results Matrix...");
+    const races = [];
+    $('table.wikitable').each((i, table) => {
+        const headers = $(table).find('th').text().toLowerCase();
+        if (!headers.includes('driver') || !headers.includes('points')) return;
+
+        $(table).find('tr').each((rowIndex, row) => {
+            const cells = $(row).find('td, th');
+            if (cells.length === 0) return;
+
+            let driverName = null;
+            let resultsStartIndex = -1;
+            for (let k = 0; k < cells.length; k++) {
+                const cell = $(cells[k]);
+                if (cell.find('.flagicon').length > 0) {
+                    driverName = cell.text().trim();
+                    resultsStartIndex = k + 1;
+                    break;
+                }
+            }
+            if (!driverName || /^[A-Z]{3}$/.test(driverName)) return;
+
+            let raceCounter = 0;
+            for (let j = resultsStartIndex; j < cells.length - 1; j++) {
+                let rawText = $(cells[j]).text().trim();
+                const roundNum = Math.floor(raceCounter / 2) + 1;
+                const typeKey = (raceCounter % 2 !== 0) ? 'feature' : 'sprint';
+                raceCounter++;
+
+                if (!rawText) continue;
+                if (!races[roundNum]) races[roundNum] = { round: roundNum, sprint: { fl: null, pl: null, results: [] }, feature: { fl: null, pl: null, results: [] } };
+
+                // Cleaning and Logic
+                rawText = rawText.replace(/\[.*?\]/g, '');
+                let isFL = false, isPole = false;
+                
+                if (rawText.includes('F')) { isFL = true; rawText = rawText.replace('F', ''); }
+                if (rawText.includes('P')) { isPole = true; rawText = rawText.replace('P', ''); }
+                if (rawText.includes('†')) rawText = "Ret";
+                rawText = rawText.trim();
+
+                if (["SR", "FR", "C"].includes(rawText) && rawText.length < 3) continue;
+
+                if (rawText) {
+                    if (isFL) races[roundNum][typeKey].fl = driverName;
+                    if (isPole) races[roundNum][typeKey].pl = driverName;
+
+                    let sortVal = parseInt(rawText);
+                    if (isNaN(sortVal)) {
+                        const s = rawText.toUpperCase();
+                        sortVal = (s === "RET") ? 1000 : (s === "NC") ? 1001 : (s === "DSQ") ? 1002 : 1003;
+                    }
+
+                    races[roundNum][typeKey].results.push({ driver: driverName, position: rawText, sortVal: sortVal });
+                }
+            }
+        });
+    });
+
+    const finalResults = [];
+    Object.keys(races).sort((a, b) => a - b).forEach(roundKey => {
+        const d = races[roundKey];
+        const sorter = (a, b) => a.sortVal - b.sortVal;
+        d.sprint.results.sort(sorter);
+        d.feature.results.sort(sorter);
+        
+        const clean = (list) => list.map(({ driver, position }) => ({ driver, position }));
+        finalResults.push({
+            round: parseInt(roundKey),
+            sprint_race: { fastest_lap: d.sprint.fl || "N/A", pole_position: d.sprint.pl || "N/A", order: clean(d.sprint.results) },
+            feature_race: { fastest_lap: d.feature.fl || "N/A", pole_position: d.feature.pl || "N/A", order: clean(d.feature.results) }
+        });
+    });
+    return finalResults;
+}
+
+function scrapeDriverStandings($, url) {
+    console.log("Scraping Driver Standings...");
+    const standings = [];
+    $('table.wikitable').each((i, table) => {
+        const headers = $(table).find('th').text().toLowerCase();
+        if (!headers.includes('driver') || !headers.includes('points') || !headers.includes('pos')) return;
+
+        $(table).find('tr').each((rowIndex, row) => {
+            const $row = $(row);
+            let posText = $row.find('th').first().text().trim();
+            if (isNaN(parseInt(posText))) return;
+
+            let driverName = null;
+            $row.find('td').each((idx, cell) => {
+                if ($(cell).find('.flagicon').length > 0) driverName = $(cell).text().trim();
+            });
+            if (!driverName) return;
+
+            let pointsText = $row.children().last().text().trim();
+            standings.push({ position: posText, driver: cleanText(driverName), points: cleanText(pointsText) });
+        });
+    });
+    return standings;
+}
+
+function scrapeTeamStandings($, url) {
+    console.log("Scraping Team Standings...");
+    const standings = [];
+    $('table.wikitable').each((i, table) => {
+        const headers = $(table).find('th').text().toLowerCase();
+        if ((!headers.includes('team') && !headers.includes('entrant')) || !headers.includes('points')) return;
+        if (headers.includes('driver')) return;
+
+        $(table).find('tr').each((rowIndex, row) => {
+            const $row = $(row);
+            let posText = $row.find('th').first().text().trim();
+            if (!posText || isNaN(parseInt(posText))) return;
+
+            const firstTd = $row.find('td').first();
+            let teamName = firstTd.text().trim();
+            if (!teamName) return;
+
+            let pointsText = $row.children().last().text().trim();
+            standings.push({ position: posText, team: cleanText(teamName), points: cleanText(pointsText) });
+        });
+    });
+    return standings;
+}
+
+// --- UTILS ---
+function cleanText(text) {
+    if (!text) return "";
+    return text.replace(/\[.*?\]/g, '').trim();
+}
+
+function getRoundDuration(roundsText) {
+    if (!roundsText) return 0;
+    const clean = roundsText.trim();
+    if (clean.toLowerCase().includes("all")) return 99;
+    const rangeMatch = clean.match(/^(\d+)\s*[\–\-]\s*(\d+)$/);
+    if (rangeMatch) return (parseInt(rangeMatch[2]) - parseInt(rangeMatch[1])) + 1;
+    if (!isNaN(parseInt(clean))) return 1;
+    return 0;
+}
+
+function getEndRound(roundsText) {
+    if (!roundsText) return 0;
+    const clean = roundsText.trim();
+    if (clean.toLowerCase().includes("all")) return 999;
+    const rangeMatch = clean.match(/^(\d+)\s*[\–\-]\s*(\d+)$/);
+    if (rangeMatch) return parseInt(rangeMatch[2]);
+    if (!isNaN(parseInt(clean))) return parseInt(clean);
+    return 0;
+}
+
+/**
+ * ===================================================================
+ *  F1 EXPORTS
  * ===================================================================
  */
 
@@ -295,7 +681,11 @@ exports.updateRaceStats = onSchedule(
     schedule: "every monday 20:00",
     timeZone: "Europe/Rome",
     timeoutSeconds: 300, // Increased slightly
-    retryConfig: { retryCount: 5 } // Adjusted for standard usage
+    retryConfig: {
+      retryCount: 7,
+      minBackoffDuration: "300s",
+      maxBackoffDuration: "3600s"
+    }
   },
   async (event) => {
     console.log("Starting post-race stats check...");
@@ -349,6 +739,11 @@ exports.updateChampionships = onSchedule(
     schedule: "0 12 20 12 *", // December 20th at 12:00
     timeZone: "Europe/Rome",
     timeoutSeconds: 300,
+    retryConfig: {
+      retryCount: 7,
+      minBackoffDuration: "300s",
+      maxBackoffDuration: "3600s"
+    }
   },
   async (event) => {
     console.log("Starting end-of-season championship check...");
@@ -384,6 +779,52 @@ exports.updateChampionships = onSchedule(
 
     } catch (error) {
       console.error("Error in updateChampionships:", error);
+      throw error;
+    }
+  }
+);
+
+/**
+ * ===================================================================
+ * JUNIOR SERIES EXPORTS
+ * ===================================================================
+ */
+exports.updateJuniorSeries = onSchedule(
+  {
+    schedule: "every monday 15:00",
+    timeZone: "Europe/Rome",
+    timeoutSeconds: 300, 
+    retryConfig: {
+      retryCount: 7,
+      minBackoffDuration: "300s",
+      maxBackoffDuration: "3600s"
+    }
+  },
+  async (event) => {
+    console.log("Junior Series pre-update check (F2 & F3)...");
+
+    try {
+      // --- F2 ---
+      const shouldUpdateF2 = await checkRaceYesterday("f2");
+      if (shouldUpdateF2) {
+        console.log("F2: Race detected yesterday. Starting update...");
+        await processSeries("f2", APIS.F2_WIKI_URL);
+      } else {
+        console.log("F2: No Feature Race detected yesterday. Skipping.");
+      }
+      
+      // --- F3 ---
+      const shouldUpdateF3 = await checkRaceYesterday("f3");
+      if (shouldUpdateF3) {
+        console.log("F3: Race detected yesterday. Starting update...");
+        await processSeries("f3", APIS.F3_WIKI_URL);
+      } else {
+        console.log("F3: No Feature Race detected yesterday. Skipping.");
+      }
+
+      console.log("Junior Series procedure completed.");
+    } catch (error) {
+      console.error("Critical error during updateJuniorSeries:", error);
       throw error;
     }
   }
