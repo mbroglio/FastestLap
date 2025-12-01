@@ -208,7 +208,7 @@
 
                             <include
                                 android:id="@+id/timer_card_race_cancelled"
-                                layout="@layout/race_cancelled_layout"
+                                layout="@layout/race_cancelled_layout_black"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"

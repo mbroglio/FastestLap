@@ -13,11 +13,11 @@ async function executeJuniorSeriesUpdate(db) {
     console.log("Starting Junior Series Update...");
     
     // F2
-    if (await checkRaceYesterday("f2")) await processSeries(db, "f2", F2_WIKI_URL);
+    if (await checkRaceYesterday(db, "f2")) await processSeries(db, "f2", F2_WIKI_URL);
     else console.log("F2: No race yesterday.");
 
     // F3
-    if (await checkRaceYesterday("f3")) await processSeries(db, "f3", F3_WIKI_URL);
+    if (await checkRaceYesterday(db, "f3")) await processSeries(db, "f3", F3_WIKI_URL);
     else console.log("F3: No race yesterday.");
 }
 

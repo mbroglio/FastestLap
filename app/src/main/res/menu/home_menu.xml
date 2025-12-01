@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/newsFragment"
+        android:icon="@drawable/newspaper_2"
+        android:title="News" />
+
     <item
         android:id="@+id/racingFragment"
         android:icon="@drawable/f1_car_icon_filled"
@@ -14,4 +20,9 @@
         android:id="@+id/standingsFragment"
         android:icon="@drawable/podium"
         android:title="@string/standings_menu" />
+
+    <item
+        android:id="@+id/juniorCategoriesFragment"
+        android:icon="@drawable/formula_2_logo"
+        android:title="Junior" />
 </menu>

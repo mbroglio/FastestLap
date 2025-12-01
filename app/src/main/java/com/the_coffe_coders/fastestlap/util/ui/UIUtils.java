@@ -36,6 +36,7 @@ import androidx.core.os.LocaleListCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
@@ -55,7 +56,8 @@ import com.the_coffe_coders.fastestlap.ui.event.UpcomingEventsActivity;
 import com.the_coffe_coders.fastestlap.ui.event.fragment.QualifyingResultsFragment;
 import com.the_coffe_coders.fastestlap.ui.event.fragment.RaceAndSprintResultsFragment;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
-import com.the_coffe_coders.fastestlap.ui.home.fragment.NewsFragment;
+import com.the_coffe_coders.fastestlap.ui.junior.JuniorActivity;
+import com.the_coffe_coders.fastestlap.ui.junior.fragment.JuniorDialogFragment;
 import com.the_coffe_coders.fastestlap.ui.profile.LoginFragment;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
@@ -501,6 +503,37 @@ public class UIUtils {
         context.startActivity(intent);
     }
 
+    public static void navigateToJuniorPage(Context context, int categoryType) {
+        Intent intent = new Intent(context, JuniorActivity.class);
+        intent.putExtra("CATEGORY_TYPE", categoryType);
+        context.startActivity(intent);
+    }
+
+    public static void showEntryListDialog(FragmentManager fragmentManager, int categoryType) {
+        showJuniorDialog(fragmentManager, categoryType, 0);
+    }
+
+    public static void showCalendarDialog(FragmentManager fragmentManager, int categoryType) {
+        showJuniorDialog(fragmentManager, categoryType, 1);
+    }
+
+    public static void showDriversStandingDialog(FragmentManager fragmentManager, int categoryType) {
+        showJuniorDialog(fragmentManager, categoryType, 2);
+    }
+
+    public static void showConstructorsStandingDialog(FragmentManager fragmentManager, int categoryType) {
+        showJuniorDialog(fragmentManager, categoryType, 3);
+    }
+
+    private static void showJuniorDialog(FragmentManager fragmentManager, int categoryType, int content){
+        JuniorDialogFragment juniorDialogFragment = new JuniorDialogFragment();
+        Bundle args = new Bundle();
+        args.putInt("CATEGORY_TYPE", categoryType);
+        args.putInt("CONTENT", content);
+        juniorDialogFragment.setArguments(args);
+        juniorDialogFragment.show(fragmentManager, "JuniorDialogFragment");
+    }
+
     public static void navigateToWelcomePage(Context context) {
         Intent intent = new Intent(context, WelcomeActivity.class);
         context.startActivity(intent);
@@ -524,15 +557,6 @@ public class UIUtils {
                 break;
         }
     }
-
-    public static void showNewsDialog(FragmentManager fragmentManager, String language) {
-        NewsFragment newsFragment = new NewsFragment();
-        newsFragment.show(fragmentManager, "NewsFragment");
-        Bundle args = new Bundle();
-        args.putString("currentLanguage", language);
-        newsFragment.setArguments(args);
-    }
-
 
     public static void showProfileManageDialogs(FragmentManager fragmentManager, int dialogType, String additionalInfo) {
         switch (dialogType) {

@@ -39,6 +39,7 @@ public class HomePageActivity extends AppCompatActivity {
     private final String TAG = "HomePageActivity";
     private final ZoneId localZone = ZoneId.systemDefault();
     private boolean loginWithConnection;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,15 +50,16 @@ public class HomePageActivity extends AppCompatActivity {
 
         loginWithConnection = getIntent().getBooleanExtra("LOGIN_WITH_CONNECTION", false);
 
-        LocaleListCompat appLocales = AppCompatDelegate.getApplicationLocales();
-        String currentLanguage = appLocales.toLanguageTags();
+        setToolbar();
 
+        setNavigationBar();
+
+        getUserPreferences();
+    }
+
+    private void setToolbar() {
         MaterialToolbar toolbar = findViewById(R.id.top_app_bar);
-        toolbar.setNavigationIcon(R.drawable.newspaper_2);
         UIUtils.applyWindowInsets(toolbar);
-
-        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
-        NavController navController = navHostFragment.getNavController();
 
         setSupportActionBar(toolbar);
         toolbar.setOnMenuItemClickListener(item -> {
@@ -69,30 +71,22 @@ public class HomePageActivity extends AppCompatActivity {
             }
             return false;
         });
-        
-        BottomNavigationView bottomNavigationView = findViewById(R.id.navbar);
+    }
+
+    private void setNavigationBar() {
+        NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
+        NavController navController = navHostFragment.getNavController();
+
+        bottomNavigationView = findViewById(R.id.navbar);
         UIUtils.applyWindowInsets(bottomNavigationView);
 
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.homeFragment, R.id.standingsFragment, R.id.racingFragment).build();
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.homeFragment, R.id.standingsFragment, R.id.racingFragment, R.id.newsFragment, R.id.juniorCategoriesFragment).build();
 
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+    }
 
-        ImageView newsNavigationButton= findViewById(R.id.news_navigation);
-
-        NetworkUtils networkUtils = new NetworkUtils(this);
-        networkUtils.observe(this, isConnected -> {
-            Log.i("HomePageActivity", "network: " + isConnected);
-            if (isConnected) {
-                newsNavigationButton.setOnClickListener(view ->
-                        UIUtils.showNewsDialog(this.getSupportFragmentManager(), currentLanguage)
-                );
-            } else {
-                newsNavigationButton.setOnClickListener(view ->
-                        Toast.makeText(this, getString(R.string.no_internet_connection), Toast.LENGTH_SHORT).show());
-            }
-        });
-
+    private void getUserPreferences() {
         IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
         UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
         String idToken = userViewModel.getLoggedUser().getIdToken();

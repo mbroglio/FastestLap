@@ -2,7 +2,11 @@ package com.the_coffe_coders.fastestlap.ui.home.fragment;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.os.LocaleListCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
@@ -21,12 +25,17 @@ import com.the_coffe_coders.fastestlap.adapter.NewsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.news.News;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.source.news.NewsFetcher;
+import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+
 import java.util.List;
+import java.util.Objects;
 
 
-public class NewsFragment extends DialogFragment {
+public class NewsFragment extends Fragment {
 
-    private String currentLanguage;
+
+
+    private final String currentLanguage = AppCompatDelegate.getApplicationLocales().toLanguageTags();
     private TextView newsMenu;
     private MaterialSwitch languageFeedSwitch;
     private Boolean languageFeed;
@@ -34,12 +43,13 @@ public class NewsFragment extends DialogFragment {
     private int defaultIndex;
     private static final String TAG = "NewsFragment";
 
+    public NewsFragment() {
+        // Required empty public constructor
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            currentLanguage = getArguments().getString("currentLanguage");
-        }
     }
 
     @Override
@@ -50,23 +60,32 @@ public class NewsFragment extends DialogFragment {
         newsMenu = view.findViewById(R.id.news_menu_layout);
         languageFeedSwitch = view.findViewById(R.id.language_feed_switch);
 
+        newsRecyclerView = view.findViewById(R.id.news_recycler_view);
+        TextView noConnectionText = view.findViewById(R.id.no_connection_text);
+
         languageFeed = currentLanguage.equals("en-GB");
 
-        newsRecyclerView = view.findViewById(R.id.news_recycler_view);
-        newsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        NetworkUtils networkUtils = new NetworkUtils(requireContext());
+        networkUtils.observe(getViewLifecycleOwner(), isConnected -> {
+            Log.i("HomePageActivity", "network: " + isConnected);
+            if (isConnected) {
+                newsRecyclerView.setVisibility(View.VISIBLE);
+                noConnectionText.setVisibility(View.GONE);
 
-        Button closeButton = view.findViewById(R.id.close_news_button);
-        closeButton.setOnClickListener(v -> dismiss());
-
-        newsMenuManagement();
-
-        languageFeed(newsRecyclerView);
-
+                newsMenuManagement();
+                languageFeed(newsRecyclerView);
+            } else {
+                newsRecyclerView.setVisibility(View.GONE);
+                noConnectionText.setVisibility(View.VISIBLE);
+            }
+        });
 
         return view;
     }
 
     private void newsMenuManagement() {
+        newsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+
         if (newsMenu != null && languageFeedSwitch != null) {
             newsMenu.setOnClickListener(v -> {
                 boolean isEnglish = languageFeedSwitch.isChecked();
@@ -163,16 +182,4 @@ public class NewsFragment extends DialogFragment {
 
         dialog.show();
     }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        if (getDialog() != null && getDialog().getWindow() != null) {
-            Window window = getDialog().getWindow();
-            window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            window.setBackgroundDrawableResource(android.R.color.transparent);
-        }
-    }
-
-
 }

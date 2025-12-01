@@ -5,6 +5,12 @@
     app:startDestination="@id/homeFragment">
 
     <fragment
+        android:id="@+id/newsFragment"
+        android:name="com.the_coffe_coders.fastestlap.ui.home.fragment.NewsFragment"
+        android:label="@string/news_upper_case"
+        tools:layout="@layout/fragment_news" />
+
+    <fragment
         android:id="@+id/racingFragment"
         android:name="com.the_coffe_coders.fastestlap.ui.home.fragment.RacingFragment"
         android:label="@string/racing_upper_case"
@@ -14,14 +20,18 @@
         android:id="@+id/homeFragment"
         android:name="com.the_coffe_coders.fastestlap.ui.home.fragment.HomeFragment"
         android:label="FASTEST LAP"
-        tools:layout="@layout/fragment_home">
-
-    </fragment>
+        tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/standingsFragment"
         android:name="com.the_coffe_coders.fastestlap.ui.home.fragment.StandingsFragment"
         android:label="@string/standings_upper_case"
         tools:layout="@layout/fragment_standings" />
+
+    <fragment
+        android:id="@+id/juniorCategoriesFragment"
+        android:name="com.the_coffe_coders.fastestlap.ui.home.fragment.JuniorCategoriesFragment"
+        android:label="JUNIOR"
+        tools:layout="@layout/fragment_junior_categories" />
 
 </navigation>
