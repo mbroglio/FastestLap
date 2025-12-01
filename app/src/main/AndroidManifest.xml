@@ -24,13 +24,8 @@
         tools:targetApi="31">
         <activity
             android:name=".ui.junior.JuniorActivity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.junior.formula3.Formula3Activity"
-            android:exported="false" />
-        <activity
-            android:name=".ui.junior.formula2.Formula2Activity"
-            android:exported="false" />
+            android:exported="false"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.welcome.WelcomeActivity"
             android:exported="false"
