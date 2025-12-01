@@ -24,6 +24,7 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.List;
@@ -96,7 +97,7 @@ public class DriversStandingActivity extends AppCompatActivity {
 
                 if (driverStandings == null) {
                     Log.i(TAG, "DRIVER STANDINGS NULL");
-                    UIUtils.navigateToHomePage(this);
+                    NavigationUtils.navigateToHomePage(this);
                 } else {
                     List<DriverStandingsElement> driverList = driverStandings.getDriverStandingsElements();
 
@@ -113,7 +114,7 @@ public class DriversStandingActivity extends AppCompatActivity {
                 }
             } else {
                 Log.i(TAG, "DRIVER STANDINGS ERROR");
-                UIUtils.navigateToHomePage(this);
+                NavigationUtils.navigateToHomePage(this);
             }
         });
     }

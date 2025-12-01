@@ -12,22 +12,20 @@
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/ferrari_secondary"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:background="@color/ferrari_secondary"
             app:navigationIcon="@drawable/arrow_back_ios_style"
-            app:title="@string/past_upper_case"
+            app:title="@string/results_upper_case"
             app:titleCentered="true"
             app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/past_events_layout"
+        android:id="@+id/results_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/screen_background_color"
@@ -36,7 +34,7 @@
         app:layout_constraintTop_toBottomOf="@id/top_bar_layout">
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/past_events_recycler_view"
+            android:id="@+id/results_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 

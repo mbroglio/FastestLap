@@ -73,7 +73,7 @@ public class LoginFragment extends DialogFragment {
                         .addOnCompleteListener(getActivity(), task -> {
                             if (task.isSuccessful()) {
                                 Log.d("LoginFragment", "signInWithEmail:success");
-                                UIUtils.navigateToHomePage(getContext());
+                                NavigationUtils.navigateToHomePageStart(getContext(), true);
                             } else {
                                 Log.e("LoginFragment", "signInWithEmail:failure", task.getException());
                                 Toast.makeText(getContext(), "Authentication failed.",

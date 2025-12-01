@@ -5,16 +5,12 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -23,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,8 +30,6 @@ import androidx.core.graphics.Insets;
 import androidx.core.os.LocaleListCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.fragment.app.FragmentManager;
-import androidx.navigation.NavController;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
@@ -46,24 +39,6 @@ import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
-import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
-import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
-import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
-import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
-import com.the_coffe_coders.fastestlap.ui.event.PastEventsActivity;
-import com.the_coffe_coders.fastestlap.ui.event.UpcomingEventsActivity;
-import com.the_coffe_coders.fastestlap.ui.event.fragment.QualifyingResultsFragment;
-import com.the_coffe_coders.fastestlap.ui.event.fragment.RaceAndSprintResultsFragment;
-import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
-import com.the_coffe_coders.fastestlap.ui.junior.JuniorActivity;
-import com.the_coffe_coders.fastestlap.ui.junior.fragment.JuniorDialogFragment;
-import com.the_coffe_coders.fastestlap.ui.profile.LoginFragment;
-import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
-import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
-import com.the_coffe_coders.fastestlap.ui.welcome.WelcomeActivity;
-import com.the_coffe_coders.fastestlap.ui.welcome.fragment.ForgotPasswordFragment;
-import com.the_coffe_coders.fastestlap.ui.welcome.fragment.SignUpFragment;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 
@@ -77,6 +52,13 @@ import java.util.Objects;
 
 
 public class UIUtils {
+
+
+    /*
+    * ----------------------------------------------------------------------------------------------
+    * WINDOW MANAGEMENT
+    * ----------------------------------------------------------------------------------------------
+    */
 
     public static void applyWindowInsets(MaterialToolbar toolbar) {
         ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
@@ -101,6 +83,13 @@ public class UIUtils {
             return insets;
         });
     }
+
+
+    /*
+     * ----------------------------------------------------------------------------------------------
+     * IMAGE LOADING AND COLORS
+     * ----------------------------------------------------------------------------------------------
+     */
 
     public static void loadImageWithGlide(Context context, String url, ImageView imageView, Runnable onSuccess) {
         loadImage(context, url, imageView, onSuccess, 0);
@@ -241,6 +230,23 @@ public class UIUtils {
         }
     }
 
+    public static void animateCardBackgroundColor(Context context, MaterialCardView cardView, int startColorResId, int endColor, int duration, int repeatCount) {
+        int startColor = ContextCompat.getColor(context, startColorResId);
+
+        ValueAnimator colorAnimator = ObjectAnimator.ofInt(cardView, "cardBackgroundColor", startColor, endColor);
+        colorAnimator.setDuration(duration); // Duration in milliseconds
+        colorAnimator.setEvaluator(new ArgbEvaluator());
+        colorAnimator.setRepeatCount(repeatCount); // Repeat count
+        colorAnimator.setRepeatMode(ValueAnimator.REVERSE);
+        colorAnimator.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                cardView.setCardBackgroundColor(endColor);
+            }
+        });
+        colorAnimator.start();
+    }
+
     private static void manageContentLoadError(ImageView imageView, LinearLayout layout, Context context, Runnable onSuccess, int contentType) {
         switch (contentType) {
             case 0: // Image
@@ -261,6 +267,13 @@ public class UIUtils {
             onSuccess.run();
         }
     }
+
+
+    /*
+     * ----------------------------------------------------------------------------------------------
+     * TEXTS AND STRINGS FORMATTING
+     * ----------------------------------------------------------------------------------------------
+     */
 
     public static void singleSetTextViewText(String text, TextView textView) {
         setTextViewText(text, textView);
@@ -290,50 +303,44 @@ public class UIUtils {
         }
     }
 
-    public static void animateCardBackgroundColor(Context context, MaterialCardView cardView, int startColorResId, int endColor, int duration, int repeatCount) {
-        int startColor = ContextCompat.getColor(context, startColorResId);
+    public static String formatXmlText(String xmlRawString) {
+        String formattedString;
+        if (xmlRawString != null) {
+            // convert <br>, <br/> and <br /> (case-insensitive) to newlines
+            formattedString = xmlRawString.replaceAll("(?i)<br\\s*/?>", "\n");
 
-        ValueAnimator colorAnimator = ObjectAnimator.ofInt(cardView, "cardBackgroundColor", startColor, endColor);
-        colorAnimator.setDuration(duration); // Duration in milliseconds
-        colorAnimator.setEvaluator(new ArgbEvaluator());
-        colorAnimator.setRepeatCount(repeatCount); // Repeat count
-        colorAnimator.setRepeatMode(ValueAnimator.REVERSE);
-        colorAnimator.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                cardView.setCardBackgroundColor(endColor);
+            // lowercased version for case-insensitive searches
+            String lower = formattedString.toLowerCase(Locale.ENGLISH);
+
+            int aIndex = lower.indexOf("<a");
+            int readAlsoIndex = lower.indexOf("read also");
+
+            int cutIndex = -1;
+            if (aIndex != -1 && readAlsoIndex != -1) {
+                cutIndex = Math.min(aIndex, readAlsoIndex);
+            } else if (aIndex != -1) {
+                cutIndex = aIndex;
+            } else if (readAlsoIndex != -1) {
+                cutIndex = readAlsoIndex;
             }
-        });
-        colorAnimator.start();
-    }
 
-    public static void openLocation(Context context, String latitude, String longitude) {
-        String uri = String.format(Constants.GOOGLE_MAPS_ACCESS, latitude, longitude);
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-        if (intent.resolveActivity(context.getPackageManager()) != null) {
-            context.startActivity(intent);
+            if (cutIndex != -1) {
+                formattedString = formattedString.substring(0, cutIndex).trim();
+            } else {
+                formattedString = formattedString.trim();
+            }
         } else {
-            Toast.makeText(context, R.string.no_map_app_found, Toast.LENGTH_SHORT).show();
-            Log.e("UIUtils", "No map app found to open location");
+            formattedString = "";
         }
+        return formattedString;
     }
 
-    public static void openGoogleWeather(Context context, String locality) {
-        Intent intent = context.getPackageManager().getLaunchIntentForPackage(Constants.WEATHER_ACCESS_PACKAGE);
-        if (intent != null) {
-            intent.setAction(Intent.ACTION_SEARCH);
-            intent.putExtra(SearchManager.QUERY, context.getString(R.string.weather, locality));
-            context.startActivity(intent);
-        } else {
-            openWeatherInBrowser(context, locality);
-        }
-    }
 
-    private static void openWeatherInBrowser(Context context, String locality) {
-        String uri = String.format(Constants.GOOGLE_WEATHER_ACCESS, Uri.encode(locality));
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-        context.startActivity(intent);
-    }
+    /*
+     * ----------------------------------------------------------------------------------------------
+     * TRANSLATIONS
+     * ----------------------------------------------------------------------------------------------
+     */
 
     public static void translateSchedule(Context context, TextView sessionTypeTextView, TextView sessionDayTextView, String sessionId) {
         translateSessionType(context, sessionTypeTextView, sessionId);
@@ -386,37 +393,12 @@ public class UIUtils {
         }
     }
 
-    public static String formatXmlText(String xmlRawString) {
-        String formattedString;
-        if (xmlRawString != null) {
-            // convert <br>, <br/> and <br /> (case-insensitive) to newlines
-            formattedString = xmlRawString.replaceAll("(?i)<br\\s*/?>", "\n");
 
-            // lowercased version for case-insensitive searches
-            String lower = formattedString.toLowerCase(Locale.ENGLISH);
-
-            int aIndex = lower.indexOf("<a");
-            int readAlsoIndex = lower.indexOf("read also");
-
-            int cutIndex = -1;
-            if (aIndex != -1 && readAlsoIndex != -1) {
-                cutIndex = Math.min(aIndex, readAlsoIndex);
-            } else if (aIndex != -1) {
-                cutIndex = aIndex;
-            } else if (readAlsoIndex != -1) {
-                cutIndex = readAlsoIndex;
-            }
-
-            if (cutIndex != -1) {
-                formattedString = formattedString.substring(0, cutIndex).trim();
-            } else {
-                formattedString = formattedString.trim();
-            }
-        } else {
-            formattedString = "";
-        }
-        return formattedString;
-    }
+    /*
+     * ----------------------------------------------------------------------------------------------
+     * LANGUAGE MANAGEMENT
+     * ----------------------------------------------------------------------------------------------
+     */
 
     public static void setAppLocale() {
         if (AppCompatDelegate.getApplicationLocales().get(0) == null) {
@@ -427,150 +409,12 @@ public class UIUtils {
         AppCompatDelegate.setApplicationLocales(AppCompatDelegate.getApplicationLocales());
     }
 
-    public static void navigateToHomePage(Context context) {
-        Intent intent = new Intent(context, HomePageActivity.class);
-        context.startActivity(intent);
-    }
 
-
-    public static void navigateToBioPage(Context context, String id, int bioType) {
-        Intent intent;
-
-        switch (bioType) {
-            case 0:
-                intent = new Intent(context, ConstructorBioActivity.class);
-                intent.putExtra("TEAM_ID", id);
-                context.startActivity(intent);
-                break;
-            case 1:
-                intent = new Intent(context, DriverBioActivity.class);
-                intent.putExtra("DRIVER_ID", id);
-                context.startActivity(intent);
-                break;
-            case 2:
-                intent = new Intent(context, TrackBioActivity.class);
-                String circuitId = id.split("&")[0];
-                String grandPrixName = id.split("&")[1];
-
-                intent.putExtra("CIRCUIT_ID", circuitId);
-                intent.putExtra("GRAND_PRIX_NAME", grandPrixName);
-                context.startActivity(intent);
-                break;
-        }
-    }
-
-    public static void navigateToStandingsPage(Context context, String id, int standingsType) {
-        Intent intent;
-
-        switch (standingsType) {
-            case 0:
-                intent = new Intent(context, ConstructorsStandingActivity.class);
-                intent.putExtra("TEAM_ID", id);
-                context.startActivity(intent);
-                break;
-            case 1:
-                intent = new Intent(context, DriversStandingActivity.class);
-                intent.putExtra("DRIVER_ID", id);
-                context.startActivity(intent);
-                break;
-        }
-    }
-
-    public static void navigateToEventsListPage(Context context, int eventType) {
-        Intent intent;
-
-        switch (eventType) {
-            case 0:
-                intent = new Intent(context, UpcomingEventsActivity.class);
-                context.startActivity(intent);
-                break;
-            case 1:
-                intent = new Intent(context, PastEventsActivity.class);
-                context.startActivity(intent);
-                break;
-        }
-    }
-
-    public static void navigateToEventPage(Context context, String circuitId) {
-        Intent intent = new Intent(context, EventActivity.class);
-        intent.putExtra("CIRCUIT_ID", circuitId);
-        context.startActivity(intent);
-    }
-
-    public static void navigateToJuniorPage(Context context, int categoryType) {
-        Intent intent = new Intent(context, JuniorActivity.class);
-        intent.putExtra("CATEGORY_TYPE", categoryType);
-        context.startActivity(intent);
-    }
-
-    public static void showEntryListDialog(FragmentManager fragmentManager, int categoryType) {
-        showJuniorDialog(fragmentManager, categoryType, 0);
-    }
-
-    public static void showCalendarDialog(FragmentManager fragmentManager, int categoryType) {
-        showJuniorDialog(fragmentManager, categoryType, 1);
-    }
-
-    public static void showDriversStandingDialog(FragmentManager fragmentManager, int categoryType) {
-        showJuniorDialog(fragmentManager, categoryType, 2);
-    }
-
-    public static void showConstructorsStandingDialog(FragmentManager fragmentManager, int categoryType) {
-        showJuniorDialog(fragmentManager, categoryType, 3);
-    }
-
-    private static void showJuniorDialog(FragmentManager fragmentManager, int categoryType, int content){
-        JuniorDialogFragment juniorDialogFragment = new JuniorDialogFragment();
-        Bundle args = new Bundle();
-        args.putInt("CATEGORY_TYPE", categoryType);
-        args.putInt("CONTENT", content);
-        juniorDialogFragment.setArguments(args);
-        juniorDialogFragment.show(fragmentManager, "JuniorDialogFragment");
-    }
-
-    public static void navigateToWelcomePage(Context context) {
-        Intent intent = new Intent(context, WelcomeActivity.class);
-        context.startActivity(intent);
-    }
-
-    public static void showRaceResultsDialog(FragmentManager fragmentManager, Race race, int sessionType) {
-        switch (sessionType) {
-            case 0:
-                RaceAndSprintResultsFragment raceAndSprintResultsFragment = new RaceAndSprintResultsFragment();
-                Bundle args = new Bundle();
-                args.putParcelable("RACE", race);
-                raceAndSprintResultsFragment.setArguments(args);
-                raceAndSprintResultsFragment.show(fragmentManager, "RaceResultsFragment");
-                break;
-            case 1:
-                QualifyingResultsFragment qualifyingResultsFragment = new QualifyingResultsFragment();
-                Bundle qualifyingArgs = new Bundle();
-                qualifyingArgs.putParcelable("RACE", race);
-                qualifyingResultsFragment.setArguments(qualifyingArgs);
-                qualifyingResultsFragment.show(fragmentManager, "QualifyingResultsFragment");
-                break;
-        }
-    }
-
-    public static void showProfileManageDialogs(FragmentManager fragmentManager, int dialogType, String additionalInfo) {
-        switch (dialogType) {
-            case 0:
-                SignUpFragment signUpFragment = new SignUpFragment();
-                signUpFragment.show(fragmentManager, "SignUpFragment");
-                break;
-            case 1:
-                ForgotPasswordFragment forgotPasswordFragment = new ForgotPasswordFragment();
-                forgotPasswordFragment.show(fragmentManager, "ForgotPasswordFragment");
-                break;
-            case 2:
-                LoginFragment loginFragment = new LoginFragment();
-                Bundle args = new Bundle();
-                args.putString("email", additionalInfo);
-                loginFragment.setArguments(args);
-                loginFragment.show(fragmentManager, "LoginFragment");
-                break;
-        }
-    }
+    /*
+     * ----------------------------------------------------------------------------------------------
+     * TIME HELPERS
+     * ----------------------------------------------------------------------------------------------
+     */
 
     @RequiresApi(api = Build.VERSION_CODES.S)
     public static String getTimeAgo(String dateString, Context context) {

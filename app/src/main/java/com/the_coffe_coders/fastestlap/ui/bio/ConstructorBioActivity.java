@@ -42,6 +42,7 @@ import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
+import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.List;
@@ -165,7 +166,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
                 constructor = ((Result.ConstructorSuccess) result).getData();
 
                 if (constructor == null) {
-                    UIUtils.navigateToHomePage(this);
+                    NavigationUtils.navigateToHomePage(this);
                 } else {
                     Log.i(TAG, "Constructor: " + constructor);
 
@@ -223,7 +224,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
                     MaterialCardView driverOneCard = findViewById(R.id.driver_1_card);
                     driverOneCard.setOnClickListener(v ->
-                            UIUtils.navigateToBioPage(this, driverOne.getDriverId(), 1));
+                            NavigationUtils.navigateToBioPage(this, driverOne.getDriverId(), 1));
 
                     getDriverData(team.getDriverTwoId(), team);
 
@@ -232,7 +233,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
                     MaterialCardView driverTwoCard = findViewById(R.id.driver_2_card);
                     driverTwoCard.setOnClickListener(v ->
-                            UIUtils.navigateToBioPage(this, driverTwo.getDriverId(), 1));
+                            NavigationUtils.navigateToBioPage(this, driverTwo.getDriverId(), 1));
 
                     getNationData(team.getNationality());
                 }

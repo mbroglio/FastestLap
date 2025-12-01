@@ -21,6 +21,7 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import org.threeten.bp.LocalDateTime;
@@ -90,7 +91,7 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
 
                 // Imposta il click listener
                 holder.pastEventCard.setOnClickListener(v ->
-                        UIUtils.navigateToEventPage(context, race.getTrack().getTrackId()));
+                        NavigationUtils.navigateToEventPage(context, race.getTrack().getTrackId()));
 
             } else {
                 // Gestisci il caso di errore nel caricamento del track

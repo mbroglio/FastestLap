@@ -3,7 +3,11 @@ const axios = require("axios");
 const PATHS = {
     drivers: "drivers",
     teams: "teams",
-    tracker: "app_config/stats_tracker"
+    circuits: "circuits",
+    calendar: "app_config/calendar",
+    tracker: "app_config/stats_tracker",
+    team_map: "app_config/team_id_name_map",
+    driver_map: "app_config/driver_id_name_map"
 };
 
 const APIS = {
@@ -12,16 +16,23 @@ const APIS = {
     constructorStandings: "https://api.jolpi.ca/ergast/f1/current/constructorstandings/?format=json"
 };
 
-const TEAM_ID_NAME_MAP = {
-  "mercedes": "Mercedes", "red_bull": "Red Bull", "ferrari": "Ferrari", "mclaren": "McLaren",
-  "alpine": "Alpine", "rb": "Racing Bulls", "aston_martin": "Aston Martin", "williams": "Williams",
-  "haas": "Haas", "sauber": "KICK Sauber"
-};
+let DRIVER_ID_NAME_MAP = {};
+let TEAM_ID_NAME_MAP = {};
+
+async function loadMappings(db) {
+    const [teamSnap, driverSnap] = await Promise.all([
+        db.ref(PATHS.team_map).once("value"),
+        db.ref(PATHS.driver_map).once("value")
+    ]);
+
+    TEAM_ID_NAME_MAP = teamSnap.val() || {};
+    DRIVER_ID_NAME_MAP = driverSnap.val() || {};
+}
 
 // Race Update Logic
 async function executeRaceStatsUpdate(db) {
     console.log("Starting F1 post-race stats check...");
- 
+
     const response = await axios.get(APIS.raceResults);
     const resultsData = response.data.MRData;
 
@@ -46,6 +57,9 @@ async function executeRaceStatsUpdate(db) {
     }
 
     console.log(`New F1 race detected: ${newSeason}-${newRound}. Processing...`);
+
+    await loadMappings(db);
+
     const multiPathUpdates = {};
     const results = raceInfo.Results;
     const constructorUpdates = {};
@@ -54,7 +68,7 @@ async function executeRaceStatsUpdate(db) {
         const driverId = result.Driver.driverId;
         const constructorId = result.Constructor.constructorId;
         const position = parseInt(result.position);
-        
+
         const driverRef = db.ref(`${PATHS.drivers}/${driverId}`);
         const driverSnapshot = await driverRef.once("value");
 
@@ -65,32 +79,32 @@ async function executeRaceStatsUpdate(db) {
                 const seasonPodiums = parseInt(driverData.season_podiums) || 0;
                 multiPathUpdates[`${PATHS.drivers}/${driverId}/season_podiums`] = (seasonPodiums + 1).toString();
                 multiPathUpdates[`${PATHS.drivers}/${driverId}/podiums`] = (currentPodiums + 1).toString();
-                if(position === 1) {
+                if (position === 1) {
                     const seasonWins = parseInt(driverData.season_wins) || 0;
                     multiPathUpdates[`${PATHS.drivers}/${driverId}/season_wins`] = (seasonWins + 1).toString();
                 }
             }
-            
+
             // Best Result logic
             let bestResultString = String(driverData.best_result || "99 (x0)");
             if (bestResultString === "null" || bestResultString === "undefined") bestResultString = "99 (x0)";
-            
+
             const currentBestPos = parseInt(bestResultString.match(/(\d+)/)[0]);
             let currentBestCount = 0;
             const countMatch = bestResultString.match(/x(\d+)/);
             if (countMatch && countMatch[1]) currentBestCount = parseInt(countMatch[1]);
 
             if (position < currentBestPos) {
-                multiPathUpdates[`${PATHS.drivers}/${driverId}/best_result`] = `${position} (x1)`; 
+                multiPathUpdates[`${PATHS.drivers}/${driverId}/best_result`] = `${position} (x1)`;
             } else if (position === currentBestPos && position <= 99) {
-                multiPathUpdates[`${PATHS.drivers}/${driverId}/best_result`] = `${position} (x${currentBestCount + 1})`; 
+                multiPathUpdates[`${PATHS.drivers}/${driverId}/best_result`] = `${position} (x${currentBestCount + 1})`;
             }
         }
-        
+
         if (!constructorUpdates[constructorId]) constructorUpdates[constructorId] = { podiums: 0, wins: 0 };
         if (position === 1) constructorUpdates[constructorId].wins += 1;
         if (position <= 3) constructorUpdates[constructorId].podiums += 1;
-    } 
+    }
 
     for (const constructorId in constructorUpdates) {
         const updates = constructorUpdates[constructorId];
@@ -115,12 +129,43 @@ async function executeRaceStatsUpdate(db) {
         }
     }
 
+    await processCircuitRaceUpdate(newSeason, newRound, results, multiPathUpdates);
+
     multiPathUpdates[`${PATHS.tracker}/last_season_updated`] = newSeason;
     multiPathUpdates[`${PATHS.tracker}/last_race_updated`] = newRound;
-    
+
     await db.ref().update(multiPathUpdates);
     console.log(`F1 Post-race update complete.`);
 }
+
+async function processCircuitRaceUpdate(newSeason, newRound, results, updates) {
+    const calendarSnap = await db.ref(PATHS.calendar).once("value");
+    const calendarData = calendarSnap.val() || {};
+
+    let circuitKey = Object.keys(calendarData).find(key => parseInt(calendarData[key]?.round) === newRound);
+
+    if (!circuitKey) {
+        console.warn(`Could not find calendar entry for round ${newRound}.`);
+        return;
+    }
+
+    const podiumDrivers = [];
+    const podiumTeams = [];
+
+    // Get Top 3
+    for (let i = 0; i < 3 && i < results.length; i++) {
+        const result = results[i];
+        podiumDrivers.push(DRIVER_ID_NAME_MAP[result.Driver.driverId] || result.Driver.familyName);
+        podiumTeams.push(TEAM_ID_NAME_MAP[result.Constructor.constructorId] || result.Constructor.name);
+    }
+
+    console.log(`Top 3: ${podiumDrivers.join(", ")} | Teams: ${podiumTeams.join(", ")}`);
+
+    updates[`${PATHS.calendar}/${circuitKey}/season_result/year`] = newSeason.toString();
+    updates[`${PATHS.calendar}/${circuitKey}/season_result/podium`] = podiumDrivers;
+    updates[`${PATHS.calendar}/${circuitKey}/season_result/team`] = podiumTeams;
+}
+
 
 // Championship Update Logic
 async function executeChampionshipsUpdate(db) {
@@ -141,76 +186,112 @@ async function executeChampionshipsUpdate(db) {
     }
 
     console.log(`New F1 season detected: ${newSeason}. Updating...`);
+    await loadMappings(db);
+
     const multiPathUpdates = {};
-    const driverStandings = standingsData.StandingsLists[0].DriverStandings;
 
-    for (const driver of driverStandings) {
-        const driverId = driver.Driver.driverId;
-        const driverRef = db.ref(`${PATHS.drivers}/${driverId}`);
-        const driverSnapshot = await driverRef.once("value");
+    await processDriverSeasonArchive(newSeason, multiPathUpdates);
+    await processConstructorSeasonArchive(newSeason, multiPathUpdates);
+    await processCircuitSeasonArchive(newSeason, multiPathUpdates);
 
-        if (driverSnapshot.exists()) {
-            const driverData = driverSnapshot.val();
-            const driverTeams = driver.Constructors.map(c => TEAM_ID_NAME_MAP[c.constructorId] || c.name).join(' / ');
-            const season_wins = (driverData.season_wins || "0").toString();
-            const season_podiums = (driverData.season_podiums || "0").toString();
-
-            const newHistoryEntry = {
-                year: newSeason.toString(), position: driver.position, points: driver.points,
-                team: driverTeams, wins: season_wins, podiums: season_podiums
-            };
-
-            let history = driverData.driver_history || [];
-            history.push(newHistoryEntry);
-            if (history.length > 10) history = history.slice(1);
-            
-            multiPathUpdates[`${PATHS.drivers}/${driverId}/driver_history`] = history;
-            multiPathUpdates[`${PATHS.drivers}/${driverId}/season_wins`] = "0";
-            multiPathUpdates[`${PATHS.drivers}/${driverId}/season_podiums`] = "0";
-
-            if (driver.position === "1") {
-                const currentChamps = parseInt(driverData.championships) || 0;
-                multiPathUpdates[`${PATHS.drivers}/${driverId}/championships`] = (currentChamps + 1).toString();
-            }
-        }
-    }
-
-    const constructorStandingsRes = await axios.get(APIS.constructorStandings);
-    const constructorStandings = constructorStandingsRes.data.MRData.StandingsTable.StandingsLists[0].ConstructorStandings;
-
-    for (const constructor of constructorStandings) {
-        const constructorId = constructor.Constructor.constructorId;
-        const constructorRef = db.ref(`${PATHS.teams}/${constructorId}`);
-        const constructorSnapshot = await constructorRef.once("value");
-
-        if (constructorSnapshot.exists()) {
-            const constructorData = constructorSnapshot.val();
-            const season_wins = (constructorData.season_wins || "0").toString();
-            const season_podiums = (constructorData.season_podiums || "0").toString();
-
-            const newHistoryEntry = {
-                year: newSeason.toString(), position: constructor.position, points: constructor.points,
-                wins: season_wins, podiums: season_podiums
-            };
-
-            let history = constructorData.team_history || [];
-            history.push(newHistoryEntry);
-            if (history.length > 10) history = history.slice(1);
-            
-            multiPathUpdates[`${PATHS.teams}/${constructorId}/team_history`] = history;
-            multiPathUpdates[`${PATHS.teams}/${constructorId}/season_wins`] = "0";
-            multiPathUpdates[`${PATHS.teams}/${constructorId}/season_podiums`] = "0";
-
-            if (constructor.position === "1") {
-                const currentChamps = parseInt(constructorData.world_championships) || 0;
-                multiPathUpdates[`${PATHS.teams}/${constructorId}/world_championships`] = (currentChamps + 1).toString();
-            }
-        }
-    }
 
     multiPathUpdates[`${PATHS.tracker}/last_champ_season`] = newSeason;
     await db.ref().update(multiPathUpdates);
+
     console.log(`F1 Championship update complete.`);
+}
+
+async function processDriverSeasonArchive(newSeason, updates) {
+    const response = await axios.get(APIS.driverStandings);
+    const standings = response.data.MRData.StandingsTable.StandingsLists[0].DriverStandings;
+
+    for (const driver of standings) {
+        const driverId = driver.Driver.driverId;
+        const snap = await db.ref(`${PATHS.drivers}/${driverId}`).once("value");
+
+        if (snap.exists()) {
+            const data = snap.val();
+
+            const teamNames = driver.Constructors.map(c => TEAM_ID_NAME_MAP[c.constructorId] || c.name).join(' / ');
+            const entry = createHistoryEntry(
+                newSeason,
+                driver.position,
+                driver.points,
+                parseInt(data.season_wins) || 0,
+                parseInt(data.season_podiums) || 0,
+                teamNames
+            );
+
+            updates[`${PATHS.drivers}/${driverId}/driver_history`] = manageHistoryArray(data.driver_history, entry);
+
+            // Reset Season Stats
+            updates[`${PATHS.drivers}/${driverId}/season_wins`] = "0";
+            updates[`${PATHS.drivers}/${driverId}/season_podiums`] = "0";
+            // Champion check
+            if (driver.position === "1") {
+                updates[`${PATHS.drivers}/${driverId}/championships`] = ((parseInt(data.championships) || 0) + 1).toString();
+            }
+        }
+    }
+}
+
+async function processConstructorSeasonArchive(newSeason, updates) {
+    const response = await axios.get(APIS.constructorStandings);
+    const standings = response.data.MRData.StandingsTable.StandingsLists[0].ConstructorStandings;
+
+    for (const team of standings) {
+        const teamId = team.Constructor.constructorId;
+        const snap = await db.ref(`${PATHS.teams}/${teamId}`).once("value");
+
+        if (snap.exists()) {
+            const data = snap.val();
+
+            const entry = createHistoryEntry(
+                newSeason,
+                team.position,
+                team.points,
+                parseInt(data.season_wins) || 0,
+                parseInt(data.season_podiums) || 0,
+                null // Teams don't have a "team" field in history usually
+            );
+
+            updates[`${PATHS.teams}/${teamId}/team_history`] = manageHistoryArray(data.team_history, entry);
+
+            // Reset Season Stats
+            updates[`${PATHS.teams}/${teamId}/season_wins`] = "0";
+            updates[`${PATHS.teams}/${teamId}/season_podiums`] = "0";
+            // Champion check
+            if (team.position === "1") {
+                updates[`${PATHS.teams}/${teamId}/world_championships`] = ((parseInt(data.world_championships) || 0) + 1).toString();
+            }
+        }
+    }
+}
+
+async function processCircuitSeasonArchive(newSeason, updates) {
+    const calendarSnap = await db.ref(PATHS.calendar).once("value");
+    const calendarData = calendarSnap.val() || {};
+
+    for (const [circuitKey, circuitData] of Object.entries(calendarData)) {
+        const result = circuitData.season_result;
+
+        if (result) {
+            const entry = {
+                year: result.year || newSeason.toString(),
+                podium: result.podium || [],
+                team: result.team || []
+            };
+
+            const circuitSnap = await db.ref(`${PATHS.circuits}/${circuitKey}`).once("value");
+            if (circuitSnap.exists()) {
+                const history = manageHistoryArray(circuitSnap.val().track_history, entry);
+                updates[`${PATHS.circuits}/${circuitKey}/track_history`] = history;
+            }
+        }
+
+        // Reset calendar result
+        updates[`${PATHS.calendar}/${circuitKey}/season_result`] = { year: null, podium: [], team: [] };
+    }
 }
 
 // Esxport main functions

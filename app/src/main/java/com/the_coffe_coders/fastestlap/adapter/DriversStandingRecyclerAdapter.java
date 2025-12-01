@@ -26,6 +26,7 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.List;
@@ -155,7 +156,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
         }
         //
 
-        UIUtils.navigateToBioPage(context, driverIdToShow, 1);
+        NavigationUtils.navigateToBioPage(context, driverIdToShow, 1);
     }
 
     private void generateForConstructor(DriverViewHolder holder, Driver driver, int position) {

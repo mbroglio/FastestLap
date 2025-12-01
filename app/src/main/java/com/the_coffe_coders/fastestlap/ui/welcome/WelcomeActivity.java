@@ -26,6 +26,7 @@ import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import org.apache.commons.validator.routines.EmailValidator;
@@ -70,10 +71,10 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
         Button loginButton = findViewById(R.id.LoginButton);
         if (networkLiveData.isConnected()) {
             registerButton.setOnClickListener(v ->
-                    UIUtils.showProfileManageDialogs(getSupportFragmentManager(), 0, null));
+                    NavigationUtils.showProfileManageDialogs(getSupportFragmentManager(), 0, null));
 
             forgotPasswordButton.setOnClickListener(v ->
-                    UIUtils.showProfileManageDialogs(getSupportFragmentManager(), 1, null));
+                    NavigationUtils.showProfileManageDialogs(getSupportFragmentManager(), 1, null));
 
             loginButton.setOnClickListener(v -> {
                 if (emailEditText.getText() != null && isEmailOk(emailEditText.getText().toString())) {
@@ -82,7 +83,7 @@ public class WelcomeActivity extends AppCompatActivity implements ForgotPassword
                                 .addOnCompleteListener(this, task -> {
                                     if (task.isSuccessful()) {
                                         Log.d(TAG, "signInWithEmail:success");
-                                        UIUtils.navigateToHomePage(WelcomeActivity.this);
+                                        NavigationUtils.navigateToHomePage(WelcomeActivity.this);
                                     } else {
                                         Log.w(TAG, "signInWithEmail:failure", task.getException());
                                         Toast.makeText(WelcomeActivity.this, "No internet connection",

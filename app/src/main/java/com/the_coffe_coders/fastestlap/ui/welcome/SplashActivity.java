@@ -114,7 +114,7 @@ public class SplashActivity extends AppCompatActivity {
                     progressIndicator.setVisibility(View.VISIBLE);
 
                     handler.postDelayed(() -> {
-                        UIUtils.navigateToWelcomePage(this);
+                        NavigationUtils.navigateToWelcomePage(this);
                         finish();
                     }, 5000); // 5 seconds delay
                 }, (long) creditsText.length() * delay);
@@ -163,7 +163,7 @@ public class SplashActivity extends AppCompatActivity {
                         boolean isEnabled = task.getResult();
                         Log.d(TAG, "Auto login is enabled: " + isEnabled);
                         if (isEnabled) {
-                            UIUtils.navigateToHomePage(this);
+                            NavigationUtils.navigateToHomePage(this);
                         } else {
                             hideIntroScreen();
                             new Handler().postDelayed(this::showIntroScreen, 500);
@@ -172,10 +172,12 @@ public class SplashActivity extends AppCompatActivity {
                 });
             }else{
                 Log.e(TAG, "No internet connection");
-                UIUtils.navigateToHomePage(this);
+                NavigationUtils.navigateToHomePage(this);
             }
         } else {
             showIntroScreen();
         }
     }
+
+
 }

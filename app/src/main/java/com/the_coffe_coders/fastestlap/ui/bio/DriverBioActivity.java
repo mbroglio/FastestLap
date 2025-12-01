@@ -42,6 +42,7 @@ import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
+import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.List;
@@ -265,7 +266,7 @@ public class DriverBioActivity extends AppCompatActivity {
             appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
 
             teamLogoCard.setOnClickListener(v ->
-                    UIUtils.navigateToBioPage(this, team.getConstructorId(), 0));
+                    NavigationUtils.navigateToBioPage(this, team.getConstructorId(), 0));
         } else {
             toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
             appBarLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));

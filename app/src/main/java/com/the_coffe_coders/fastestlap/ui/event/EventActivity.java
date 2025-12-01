@@ -43,6 +43,7 @@ import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import org.threeten.bp.LocalDateTime;
@@ -197,11 +198,11 @@ public class EventActivity extends AppCompatActivity {
         UIUtils.translateEventDateInterval(weeklyRace.getDateInterval(), findViewById(R.id.event_date));
 
         LinearLayout trackLayout = findViewById(R.id.track_outline_layout);
-        trackLayout.setOnClickListener(v -> UIUtils.navigateToBioPage(this, trackId + "&" + weeklyRace.getRaceName().toUpperCase(), 2));
+        trackLayout.setOnClickListener(v -> NavigationUtils.navigateToBioPage(this, trackId + "&" + weeklyRace.getRaceName().toUpperCase(), 2));
 
         Button openForecastButton = findViewById(R.id.goToForecastButton);
         openForecastButton.setOnClickListener(v ->
-                UIUtils.openGoogleWeather(this, track.getLocation().getLocality()));
+                NavigationUtils.openGoogleWeather(this, track.getLocation().getLocality()));
 
         String nationFlagUrl = null;
         if(nation != null) {
@@ -280,11 +281,11 @@ public class EventActivity extends AppCompatActivity {
                     Log.e(TAG, "sprint results not found");
                 }else{
                     Log.i(TAG, "Showing sprint results");
-                    UIUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 0);
+                    NavigationUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 0);
                 }
             }else{
                 Log.i(TAG, "Showing race results");
-                UIUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 0);
+                NavigationUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 0);
             }
         }else{
             Log.e(TAG, "race is null, cannot show results");
@@ -295,7 +296,7 @@ public class EventActivity extends AppCompatActivity {
         if(race!=null){
             if(race.getQualifyingResults() != null && !race.getQualifyingResults().isEmpty()){
                 Log.i(TAG, "Showing qualifying results");
-                UIUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 1);
+                NavigationUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 1);
             }else{
                 Log.e(TAG, "qualifying results not found");
             }

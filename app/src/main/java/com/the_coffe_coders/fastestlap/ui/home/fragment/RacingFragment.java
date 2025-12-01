@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 public class RacingFragment extends Fragment {
@@ -32,10 +33,10 @@ public class RacingFragment extends Fragment {
         MaterialCardView upcomingEventsCard = view.findViewById(R.id.upcoming_events_card);
 
         pastEventsCard.setOnClickListener(v ->
-                UIUtils.navigateToEventsListPage(getContext(), 1));
+                NavigationUtils.navigateToEventsListPage(getContext(), 1));
 
         upcomingEventsCard.setOnClickListener(v ->
-                UIUtils.navigateToEventsListPage(getContext(), 0));
+                NavigationUtils.navigateToEventsListPage(getContext(), 0));
 
         return view;
     }
