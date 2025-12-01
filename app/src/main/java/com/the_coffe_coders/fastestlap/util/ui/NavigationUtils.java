@@ -33,13 +33,6 @@ import com.the_coffe_coders.fastestlap.ui.welcome.fragment.SignUpFragment;
 import com.the_coffe_coders.fastestlap.util.Constants;
 
 public class NavigationUtils {
-
-    public static void navigateToHomePageStart(Context context, boolean loginWithConnection) {
-        Intent intent = new Intent(context, HomePageActivity.class);
-        intent.putExtra("LOGIN_WITH_CONNECTION", loginWithConnection);
-        context.startActivity(intent);
-    }
-
     public static void navigateToHomePage(Context context) {
         Intent intent = new Intent(context, HomePageActivity.class);
         context.startActivity(intent);
