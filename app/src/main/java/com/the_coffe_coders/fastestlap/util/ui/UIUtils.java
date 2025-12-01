@@ -427,12 +427,6 @@ public class UIUtils {
         AppCompatDelegate.setApplicationLocales(AppCompatDelegate.getApplicationLocales());
     }
 
-    public static void navigateToHomePageStart(Context context, boolean loginWithConnection) {
-        Intent intent = new Intent(context, HomePageActivity.class);
-        intent.putExtra("LOGIN_WITH_CONNECTION", loginWithConnection);
-        context.startActivity(intent);
-    }
-
     public static void navigateToHomePage(Context context) {
         Intent intent = new Intent(context, HomePageActivity.class);
         context.startActivity(intent);

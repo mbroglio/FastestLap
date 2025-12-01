@@ -85,9 +85,9 @@ public class HomeFragment extends Fragment {
     private UserViewModel userViewModel;
     private boolean hasReloaded = false;
     private View view;
-    private boolean loginWithConnection;
     private NetworkUtils networkLiveData;
     private int loadingCounter = 0;
+    private Boolean previousNetworkState = null;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -102,9 +102,21 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(requireActivity().getApplication())).get(HomeViewModel.class);
         networkLiveData = new NetworkUtils(requireContext());
 
+        // Setup the fragment immediately. This ensures cached data is shown if offline.
         setupFragment(view);
+
+        // Observe network changes to refresh data upon reconnection.
+        networkLiveData.observe(getViewLifecycleOwner(), isConnected -> {
+            if (previousNetworkState != null && !previousNetworkState && isConnected) {
+                // If we transitioned from offline to online, refresh the data.
+                Log.d(TAG, "Network connection restored. Refreshing fragment.");
+                setupFragment(view);
+            }
+            previousNetworkState = isConnected;
+        });
 
         return view;
     }
@@ -116,9 +128,6 @@ public class HomeFragment extends Fragment {
                 if (Objects.equals(intent.getStringExtra("RELOADED"), "true")) {
                     hasReloaded = true;
                 }
-            }
-            if (intent.hasExtra("LOGIN_WITH_CONNECTION")) {
-                loginWithConnection = intent.getBooleanExtra("LOGIN_WITH_CONNECTION", false);
             }
         }
 
@@ -151,22 +160,29 @@ public class HomeFragment extends Fragment {
         loadingCounter = 4; // Last race, next session, favorite driver, favorite constructor
 
         if(networkLiveData.isConnected()){
-            userViewModel.getUserPreferences(userViewModel.getLoggedUser().getIdToken()).observe(getViewLifecycleOwner(), result -> {
-                if (result != null) {
-                    if (result.isSuccess()) {
-                        Log.d(TAG, "User preferences loaded successfully");
-                    } else {
-                        Log.e(TAG, "Failed to load user preferences: " + result.getError());
-                    }
+            if (userViewModel.getLoggedUser() != null) {
+                userViewModel.getUserPreferences(userViewModel.getLoggedUser().getIdToken()).observe(getViewLifecycleOwner(), result -> {
+                    if (result != null) {
+                        if (result.isSuccess()) {
+                            Log.d(TAG, "User preferences loaded successfully");
+                        } else {
+                            Log.e(TAG, "Failed to load user preferences: " + result.getError());
+                        }
 
-                    setFavouriteDriverCard(view);
-                    setFavouriteConstructorCard(view);
-                }
-            });
+                        setFavouriteDriverCard(view);
+                        setFavouriteConstructorCard(view);
+                    }
+                });
+            } else {
+                // Not logged in
+                showSelectFavouriteDriver(view);
+                showSelectFavouriteConstructor(view);
+            }
         }else{
             Log.e(TAG, "Failed to load user preferences: No internet connection");
-            showDriverNotFound(view,1);
-            showConstructorNotFound(view,1);
+            // Load from cache if possible
+            setFavouriteDriverCard(view);
+            setFavouriteConstructorCard(view);
         }
 
         setRefreshLayout(view);
@@ -611,7 +627,7 @@ public class HomeFragment extends Fragment {
                     if (favouriteDriver == null) {
                         showSelectFavouriteDriver(view);
                     } else {
-                        Log.e(TAG, "Fetching driver data card");
+                        Log.i(TAG, "Fetching driver data card");
                         fetchDriverDataForCard(view, favoriteDriverId, favouriteDriver);
                     }
                 } else {
@@ -636,7 +652,7 @@ public class HomeFragment extends Fragment {
                 if (driverResult.isSuccess()) {
                     Driver driver = ((Result.DriverSuccess) driverResult).getData();
                     favouriteDriver.setDriver(driver);
-                    Log.e(TAG, "Fetching nation data for driver card");
+                    Log.i(TAG, "Fetching nation data for driver card");
                     fetchNationForDriver(view, favouriteDriver);
                 } else {
                     throw new Exception("Failed to fetch driver data: " + driverResult.getError());
@@ -660,7 +676,7 @@ public class HomeFragment extends Fragment {
                     }
                     if (nationResult.isSuccess()) {
                         Nation nation = ((Result.NationSuccess) nationResult).getData();
-                        Log.e(TAG, "Building driver card");
+                        Log.i(TAG, "Building driver card");
                         buildDriverCard(view, favouriteDriver, nation);
                     } else {
                         throw new Exception("Failed to fetch nation data: " + nationResult.getError());
@@ -680,7 +696,7 @@ public class HomeFragment extends Fragment {
     private void buildDriverCard(View view, DriverStandingsElement standingElement, Nation nation) {
         decrementLoadingCounter();
 
-        if(networkLiveData.isConnected() && loginWithConnection){
+        if(networkLiveData.isConnected() && userViewModel.getLoggedUser() != null){
             try {
                 Driver driver = standingElement.getDriver();
 
@@ -705,7 +721,6 @@ public class HomeFragment extends Fragment {
             }
         }else{
             Log.e(TAG, "Error building driver card: No internet connection");
-            loginWithConnection = false;
             showDriverNotFound(view,1);
         }
 
@@ -725,7 +740,7 @@ public class HomeFragment extends Fragment {
             driverRank.setClickable(false);
         }
 
-        Log.e(TAG, "Driver card built successfully");
+        Log.i(TAG, "Driver card built successfully");
         showFavouriteDriverCard(view);
     }
 
@@ -734,7 +749,7 @@ public class HomeFragment extends Fragment {
 
         String favoriteTeamId = getFavoriteTeamId();
         if (favoriteTeamId == null || favoriteTeamId.isEmpty() || favoriteTeamId.equals("null")) {
-            Log.e(TAG, "Showing select favourite constructor card");
+            Log.i(TAG, "Showing select favourite constructor card");
             showSelectFavouriteConstructor(view);
             return;
         }
@@ -749,10 +764,10 @@ public class HomeFragment extends Fragment {
                     ConstructorStandings standings = ((Result.ConstructorStandingsSuccess) result).getData();
                     ConstructorStandingsElement favouriteConstructor = homeViewModel.getConstructorStandingsElement(standings.getConstructorStandings(), favoriteTeamId);
                     if (favouriteConstructor == null) {
-                        Log.e(TAG, "Showing select favourite constructor card");
+                        Log.i(TAG, "Showing select favourite constructor card");
                         showSelectFavouriteConstructor(view);
                     } else {
-                        Log.e(TAG, "Fetching constructor data card");
+                        Log.i(TAG, "Fetching constructor data card");
                         fetchConstructorDataForCard(view, favoriteTeamId, favouriteConstructor);
                     }
                 } else {
@@ -777,7 +792,7 @@ public class HomeFragment extends Fragment {
                 if (constructorResult.isSuccess()) {
                     Constructor constructor = ((Result.ConstructorSuccess) constructorResult).getData();
                     favouriteConstructor.setConstructor(constructor);
-                    Log.e(TAG, "Fetching nation data for constructor card");
+                    Log.i(TAG, "Fetching nation data for constructor card");
                     fetchNationForConstructor(view, favouriteConstructor);
                 } else {
                     throw new Exception("Failed to fetch constructor data: " + constructorResult.getError());
@@ -801,7 +816,7 @@ public class HomeFragment extends Fragment {
                     }
                     if (nationResult.isSuccess()) {
                         Nation nation = ((Result.NationSuccess) nationResult).getData();
-                        Log.e(TAG, "Building constructor card");
+                        Log.i(TAG, "Building constructor card");
                         buildConstructorCard(view, favouriteConstructor, nation);
                     } else {
                         throw new Exception("Failed to fetch nation data: " + nationResult.getError());
@@ -821,7 +836,7 @@ public class HomeFragment extends Fragment {
     private void buildConstructorCard(View view, ConstructorStandingsElement standingElement, Nation nation) {
         decrementLoadingCounter();
 
-        if(networkLiveData.isConnected() && loginWithConnection){
+        if(networkLiveData.isConnected() && userViewModel.getLoggedUser() != null){
             try {
                 Constructor constructor = standingElement.getConstructor();
 
@@ -851,7 +866,6 @@ public class HomeFragment extends Fragment {
             }
         }else{
             Log.e(TAG, "Error building constructor card: No internet connection");
-            loginWithConnection = false;
             showConstructorNotFound(view,1);
         }
     }
@@ -871,7 +885,7 @@ public class HomeFragment extends Fragment {
         }
 
         showFavouriteConstructorCard(view);
-        Log.e(TAG, "Constructor card built successfully");
+        Log.i(TAG, "Constructor card built successfully");
     }
 
     private void showSelectFavouriteDriver(View view) {

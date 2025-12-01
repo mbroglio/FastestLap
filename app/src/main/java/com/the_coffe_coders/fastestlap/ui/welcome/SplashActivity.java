@@ -163,7 +163,7 @@ public class SplashActivity extends AppCompatActivity {
                         boolean isEnabled = task.getResult();
                         Log.d(TAG, "Auto login is enabled: " + isEnabled);
                         if (isEnabled) {
-                            UIUtils.navigateToHomePageStart(this, true);
+                            UIUtils.navigateToHomePage(this);
                         } else {
                             hideIntroScreen();
                             new Handler().postDelayed(this::showIntroScreen, 500);
@@ -172,12 +172,10 @@ public class SplashActivity extends AppCompatActivity {
                 });
             }else{
                 Log.e(TAG, "No internet connection");
-                UIUtils.navigateToHomePageStart(this, false);
+                UIUtils.navigateToHomePage(this);
             }
         } else {
             showIntroScreen();
         }
     }
-
-
 }

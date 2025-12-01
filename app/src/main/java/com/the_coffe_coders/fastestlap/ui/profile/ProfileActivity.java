@@ -41,7 +41,6 @@ public class ProfileActivity extends AppCompatActivity {
     private boolean isCheckBoxChanged = false;
     private boolean initialAutoLoginState = false;
     private boolean isFromLogin;
-    private boolean loginWithConnection;
 
     private UserViewModel userViewModel;
     private NetworkUtils networkLiveData;
@@ -63,9 +62,6 @@ public class ProfileActivity extends AppCompatActivity {
 
         isFromLogin = getIntent().getBooleanExtra("from_login", false);
         Log.i(TAG, "from login: " + isFromLogin);
-
-        loginWithConnection = getIntent().getBooleanExtra("LOGIN_WITH_CONNECTION", false);
-        Log.i(TAG, "login with connection: " + loginWithConnection);
 
         if (isFromLogin) {
             toolbar.setNavigationOnClickListener(v -> {
@@ -145,7 +141,7 @@ public class ProfileActivity extends AppCompatActivity {
         Button signOutButton = findViewById(R.id.sign_out_button);
         Button loginButton = findViewById(R.id.login_button);
 
-        if(networkLiveData.isConnected() && loginWithConnection){
+        if(networkLiveData.isConnected() && userViewModel.getLoggedUser() != null){
             signOutButton.setVisibility(View.VISIBLE);
             loginButton.setVisibility(View.GONE);
 

@@ -38,7 +38,6 @@ import java.util.Objects;
 public class HomePageActivity extends AppCompatActivity {
     private final String TAG = "HomePageActivity";
     private final ZoneId localZone = ZoneId.systemDefault();
-    private boolean loginWithConnection;
     private BottomNavigationView bottomNavigationView;
 
     @Override
@@ -47,8 +46,6 @@ public class HomePageActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
 
         setContentView(R.layout.activity_home);
-
-        loginWithConnection = getIntent().getBooleanExtra("LOGIN_WITH_CONNECTION", false);
 
         setToolbar();
 
@@ -65,7 +62,6 @@ public class HomePageActivity extends AppCompatActivity {
         toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.userActivity) {
                 Intent intent = new Intent(HomePageActivity.this, ProfileActivity.class);
-                intent.putExtra("LOGIN_WITH_CONNECTION", loginWithConnection);
                 startActivity(intent);
                 return true;
             }
@@ -105,7 +101,6 @@ public class HomePageActivity extends AppCompatActivity {
                         case "HomeFragment":
                             Intent home = new Intent(HomePageActivity.this, HomePageActivity.class);
                             home.putExtra("RELOADED", "true");
-                            home.putExtra("LOGIN_WITH_CONNECTION", loginWithConnection);
                             startActivity(home);
                             break;
                         case "ConstructorBioActivity":
