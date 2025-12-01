@@ -29,6 +29,7 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.List;
@@ -155,7 +156,7 @@ public class TrackBioActivity extends AppCompatActivity {
 
         Button goToMapButton = findViewById(R.id.goToMapButton);
         goToMapButton.setOnClickListener(v ->
-                UIUtils.openLocation(this, track.getLocation().getLatitude(), track.getLocation().getLongitude()));
+                NavigationUtils.openLocation(this, track.getLocation().getLatitude(), track.getLocation().getLongitude()));
 
         String nationFlag_Url = null;
         if(nation != null) {

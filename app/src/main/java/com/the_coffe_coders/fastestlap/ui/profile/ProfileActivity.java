@@ -29,6 +29,7 @@ import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
+import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 public class ProfileActivity extends AppCompatActivity {
@@ -115,7 +116,7 @@ public class ProfileActivity extends AppCompatActivity {
             checkForChanges();
 
             if (isFromLogin) {
-                UIUtils.navigateToHomePage(this);
+                NavigationUtils.navigateToHomePage(this);
             } else {
                 getOnBackPressedDispatcher().onBackPressed();
             }
@@ -153,7 +154,7 @@ public class ProfileActivity extends AppCompatActivity {
                 userViewModel.logout();
                 SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_FILENAME, MODE_PRIVATE);
                 sharedPreferences.edit().clear().apply();
-                UIUtils.navigateToWelcomePage(this);
+                NavigationUtils.navigateToWelcomePage(this);
                 finish();
             });
         } else {
@@ -161,7 +162,7 @@ public class ProfileActivity extends AppCompatActivity {
             autoLoginCheckBox.setVisibility(View.GONE);
             loginButton.setVisibility(View.VISIBLE);
             loginButton.setOnClickListener(v ->
-                    UIUtils.showProfileManageDialogs(getSupportFragmentManager(), 2, currentUser.getEmail()));
+                    NavigationUtils.showProfileManageDialogs(getSupportFragmentManager(), 2, currentUser.getEmail()));
 
         }
 
@@ -238,7 +239,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Return to previous screen
         if (isFromLogin) {
-            UIUtils.navigateToHomePage(this);
+            NavigationUtils.navigateToHomePage(this);
         } else {
             getOnBackPressedDispatcher().onBackPressed();
         }

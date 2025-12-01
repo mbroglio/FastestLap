@@ -24,6 +24,7 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.List;
@@ -87,7 +88,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
                 if (constructorStandings == null) {
                     Log.i(TAG, "Constructor Standings is null");
-                    UIUtils.navigateToHomePage(this);
+                    NavigationUtils.navigateToHomePage(this);
                 } else {
                     List<ConstructorStandingsElement> constructorList = constructorStandings.getConstructorStandings();
 
@@ -112,7 +113,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
             } else if (result instanceof Result.Error) {
                 Result.Error error = (Result.Error) result;
                 Log.e(TAG, "Error: " + error.getMessage());
-                UIUtils.navigateToHomePage(this);
+                NavigationUtils.navigateToHomePage(this);
             }
         });
     }

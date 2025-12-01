@@ -11,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 public class JuniorActivity extends AppCompatActivity {
@@ -22,7 +23,6 @@ public class JuniorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_junior);
-
 
         //0: F2; 1: F3
         categoryType = getIntent().getIntExtra("CATEGORY_TYPE", 0);
@@ -38,10 +38,10 @@ public class JuniorActivity extends AppCompatActivity {
 
         if(categoryType == 0){
             toolbar.setTitle("FORMULA 2");
-            toolbar.setBackgroundColor(R.color.formula_2);
+            toolbar.setBackgroundColor(getColor(R.color.formula_2));
         }else{
             toolbar.setTitle("FORMULA 3");
-            toolbar.setBackgroundColor(R.color.ferrari_secondary);
+            toolbar.setBackgroundColor(getColor(R.color.ferrari_secondary));
         }
 
         UIUtils.applyWindowInsets(toolbar);
@@ -56,24 +56,24 @@ public class JuniorActivity extends AppCompatActivity {
         constructorsStandingCard = findViewById(R.id.constructors_standing_card);
 
         entryListCard.setOnClickListener(v -> {}
-                //UIUtils.showEntryListDialog(getSupportFragmentManager(), categoryType)
+                //NavigationUtils.showEntryListDialog(getSupportFragmentManager(), categoryType)
                     //content = entryList
         );
 
         calendarCard.setOnClickListener(v -> {}
-                //UIUtils.showCalendarDialog(getSupportFragmentManager(), categoryType)
+                //NavigationUtils.showCalendarDialog(getSupportFragmentManager(), categoryType)
         );
 
-        resultsCard.setOnClickListener(v -> {}
-                //UIUtils.navigateToJuniorResultsPage(this, categoryType)
+        resultsCard.setOnClickListener(v ->
+                NavigationUtils.navigateToJuniorResultsPage(this, categoryType)
         );
 
         driversStandingCard.setOnClickListener(v -> {}
-                //UIUtils.showDriversStandingDialog(getSupportFragmentManager(this, categoryType)
+                //NavigationUtils.showDriversStandingDialog(getSupportFragmentManager(this, categoryType)
         );
 
         constructorsStandingCard.setOnClickListener(v -> {}
-                //UIUtils.showConstructorsStandingDialog(getSupportFragmentManager(this, categoryType)
+                //NavigationUtils.showConstructorsStandingDialog(getSupportFragmentManager(this, categoryType)
         );
 
 

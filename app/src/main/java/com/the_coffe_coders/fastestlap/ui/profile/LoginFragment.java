@@ -16,6 +16,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.Objects;
@@ -48,7 +49,7 @@ public class LoginFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.fragment_login, container, false);
 
         mAuth = FirebaseAuth.getInstance();
-        networkLiveData = new NetworkUtils(Objects.requireNonNull(getContext()));
+        networkLiveData = new NetworkUtils(requireContext());
 
         textInputEmail = view.findViewById(R.id.textInputEmail);
         textInputEmail.setText(email);
@@ -73,7 +74,7 @@ public class LoginFragment extends DialogFragment {
                         .addOnCompleteListener(getActivity(), task -> {
                             if (task.isSuccessful()) {
                                 Log.d("LoginFragment", "signInWithEmail:success");
-                                UIUtils.navigateToHomePageStart(getContext(), true);
+                                NavigationUtils.navigateToHomePageStart(getContext(), true);
                             } else {
                                 Log.e("LoginFragment", "signInWithEmail:failure", task.getException());
                                 Toast.makeText(getContext(), "Authentication failed.",

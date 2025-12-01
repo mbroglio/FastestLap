@@ -61,6 +61,7 @@ import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
+import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import org.threeten.bp.LocalDateTime;
@@ -696,7 +697,7 @@ public class HomeFragment extends Fragment {
 
                 ImageView driverFlag = view.findViewById(R.id.favourite_driver_flag);
                 ImageView driverImage = view.findViewById(R.id.favourite_driver_pic);
-                driverImage.setOnClickListener(v -> UIUtils.navigateToBioPage(getContext(), driver.getDriverId(), 1));
+                driverImage.setOnClickListener(v -> NavigationUtils.navigateToBioPage(getContext(), driver.getDriverId(), 1));
 
                 UIUtils.loadSequenceOfImagesWithGlide(requireContext(), new String[]{nationFlagUrl, driver.getDriver_pic_url()}, new ImageView[]{driverFlag, driverImage}, () -> buildDriverCardFinalStep(standingElement, view, driver));
             } catch (Exception e) {
@@ -719,7 +720,7 @@ public class HomeFragment extends Fragment {
                     new TextView[]{view.findViewById(R.id.favourite_driver_position), view.findViewById(R.id.favourite_driver_points)});
 
             MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
-            driverRank.setOnClickListener(v -> UIUtils.navigateToStandingsPage(getContext(), driver.getDriverId(), 1));
+            driverRank.setOnClickListener(v -> NavigationUtils.navigateToStandingsPage(getContext(), driver.getDriverId(), 1));
         } else {
             MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
             driverRank.setClickable(false);
@@ -839,7 +840,7 @@ public class HomeFragment extends Fragment {
                 ImageView constructorFlag = view.findViewById(R.id.favourite_constructor_flag);
 
                 FrameLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
-                constructorCard.setOnClickListener(v -> UIUtils.navigateToBioPage(getContext(), constructor.getConstructorId(), 0));
+                constructorCard.setOnClickListener(v -> NavigationUtils.navigateToBioPage(getContext(), constructor.getConstructorId(), 0));
 
                 UIUtils.loadSequenceOfImagesWithGlide(requireContext(), new String[]{nationFlagUrl, constructor.getCar_pic_url()},
                         new ImageView[]{constructorFlag, constructorCar},
@@ -864,7 +865,7 @@ public class HomeFragment extends Fragment {
                     new TextView[]{view.findViewById(R.id.favourite_constructor_position), view.findViewById(R.id.favourite_constructor_points)});
 
             MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
-            teamRank.setOnClickListener(v -> UIUtils.navigateToStandingsPage(getContext(), constructor.getConstructorId(), 0));
+            teamRank.setOnClickListener(v -> NavigationUtils.navigateToStandingsPage(getContext(), constructor.getConstructorId(), 0));
         } else {
             MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
             teamRank.setClickable(false);

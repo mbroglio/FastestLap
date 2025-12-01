@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 
@@ -33,10 +34,10 @@ public class JuniorCategoriesFragment extends Fragment {
         MaterialCardView formula3Card = view.findViewById(R.id.formula_3_card);
 
         formula2Card.setOnClickListener(v ->
-                UIUtils.navigateToJuniorPage(getContext(), 0));
+                NavigationUtils.navigateToJuniorPage(getContext(), 0));
 
         formula3Card.setOnClickListener(v ->
-                UIUtils.navigateToJuniorPage(getContext(), 1));
+                NavigationUtils.navigateToJuniorPage(getContext(), 1));
 
         return view;
 
