@@ -29,7 +29,7 @@ import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
-import com.the_coffe_coders.fastestlap.util.UIUtils;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import org.apache.commons.validator.routines.EmailValidator;
 

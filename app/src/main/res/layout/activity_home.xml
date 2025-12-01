@@ -20,10 +20,45 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
             android:background="@color/ferrari_secondary"
-            app:menu="@menu/top_app_bar_menu"
-            app:title="FASTEST LAP"
-            app:titleCentered="true"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp" />
+            app:menu="@menu/top_app_bar_menu">
+
+            <ImageView
+                android:id="@+id/news_navigation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:clickable="true"
+                android:focusable="true"
+                android:importantForAccessibility="no"
+                android:src="@drawable/newspaper_2">
+
+            </ImageView>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@id/news_navigation">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:autoSizeMaxTextSize="25sp"
+                    android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                    android:autoSizeTextType="uniform"
+                    android:fontFamily="@font/orbitron_bold"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="@string/app_name_upper_case"
+                    android:textColor="@color/black"
+                    android:textSize="25sp">
+
+                </TextView>
+
+            </RelativeLayout>
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.fragment.app.FragmentContainerView

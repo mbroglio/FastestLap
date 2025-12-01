@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.util;
+package com.the_coffe_coders.fastestlap.util.ui;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -13,6 +13,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
@@ -34,6 +36,7 @@ import androidx.core.os.LocaleListCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
@@ -53,16 +56,28 @@ import com.the_coffe_coders.fastestlap.ui.event.UpcomingEventsActivity;
 import com.the_coffe_coders.fastestlap.ui.event.fragment.QualifyingResultsFragment;
 import com.the_coffe_coders.fastestlap.ui.event.fragment.RaceAndSprintResultsFragment;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
+import com.the_coffe_coders.fastestlap.ui.junior.JuniorActivity;
+import com.the_coffe_coders.fastestlap.ui.junior.fragment.JuniorDialogFragment;
+import com.the_coffe_coders.fastestlap.ui.profile.LoginFragment;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.WelcomeActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.fragment.ForgotPasswordFragment;
 import com.the_coffe_coders.fastestlap.ui.welcome.fragment.SignUpFragment;
+import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 
 import java.security.MessageDigest;
+import java.time.Duration;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.Locale;
 import java.util.Objects;
 
+
 public class UIUtils {
+
     public static void applyWindowInsets(MaterialToolbar toolbar) {
         ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
@@ -110,6 +125,9 @@ public class UIUtils {
 
     private static void loadImage(Context context, String url, ImageView imageView, Runnable onSuccess, int retryCount) {
         Log.i("Glide", "Loading image: " + url);
+
+        NetworkUtils networkLiveData = new NetworkUtils(context);
+
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
                     .load(url)
@@ -133,15 +151,19 @@ public class UIUtils {
                         @Override
                         public void onLoadFailed(@Nullable Drawable errorDrawable) {
                             Log.e("Glide", "Image loading failed: " + url);
-                            if (retryCount <= Constants.MAX_RETRY_COUNT) {
-                                Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
-                                new Handler(Looper.getMainLooper()).post(() -> loadImage(context, url, imageView, onSuccess, retryCount + 1));
+
+                            if (networkLiveData.isConnected()) {
+                                if (retryCount <= Constants.MAX_RETRY_COUNT) {
+                                    Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
+                                    new Handler(Looper.getMainLooper()).post(() -> loadImage(context, url, imageView, onSuccess, retryCount + 1));
+                                } else {
+                                    Log.e("Glide", "Max retry count reached for image: " + url);
+                                    manageContentLoadError(imageView, null, context, onSuccess, 0);
+                                }
                             } else {
-                                Log.e("Glide", "Max retry count reached for image: " + url);
                                 manageContentLoadError(imageView, null, context, onSuccess, 0);
                             }
                         }
-
                     });
         } else {
             Log.e("Glide", "URL is null");
@@ -225,7 +247,7 @@ public class UIUtils {
                 Log.e("Glide", "Image loading failed, setting backup image");
                 Drawable errorImage = AppCompatResources.getDrawable(context, R.drawable.content_not_found_icon);
                 imageView.setImageDrawable(errorImage);
-                imageView.setScaleType(ImageView.ScaleType.CENTER);
+                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 break;
             case 1: // Layout
                 Log.e("UIUtils", "Layout loading failed, setting backup background");
@@ -364,6 +386,38 @@ public class UIUtils {
         }
     }
 
+    public static String formatXmlText(String xmlRawString) {
+        String formattedString;
+        if (xmlRawString != null) {
+            // convert <br>, <br/> and <br /> (case-insensitive) to newlines
+            formattedString = xmlRawString.replaceAll("(?i)<br\\s*/?>", "\n");
+
+            // lowercased version for case-insensitive searches
+            String lower = formattedString.toLowerCase(Locale.ENGLISH);
+
+            int aIndex = lower.indexOf("<a");
+            int readAlsoIndex = lower.indexOf("read also");
+
+            int cutIndex = -1;
+            if (aIndex != -1 && readAlsoIndex != -1) {
+                cutIndex = Math.min(aIndex, readAlsoIndex);
+            } else if (aIndex != -1) {
+                cutIndex = aIndex;
+            } else if (readAlsoIndex != -1) {
+                cutIndex = readAlsoIndex;
+            }
+
+            if (cutIndex != -1) {
+                formattedString = formattedString.substring(0, cutIndex).trim();
+            } else {
+                formattedString = formattedString.trim();
+            }
+        } else {
+            formattedString = "";
+        }
+        return formattedString;
+    }
+
     public static void setAppLocale() {
         if (AppCompatDelegate.getApplicationLocales().get(0) == null) {
             LocaleListCompat appLocale = LocaleListCompat.forLanguageTags(Constants.DEFAULT_LANGUAGE);
@@ -373,10 +427,17 @@ public class UIUtils {
         AppCompatDelegate.setApplicationLocales(AppCompatDelegate.getApplicationLocales());
     }
 
+    public static void navigateToHomePageStart(Context context, boolean loginWithConnection) {
+        Intent intent = new Intent(context, HomePageActivity.class);
+        intent.putExtra("LOGIN_WITH_CONNECTION", loginWithConnection);
+        context.startActivity(intent);
+    }
+
     public static void navigateToHomePage(Context context) {
         Intent intent = new Intent(context, HomePageActivity.class);
         context.startActivity(intent);
     }
+
 
     public static void navigateToBioPage(Context context, String id, int bioType) {
         Intent intent;
@@ -442,13 +503,44 @@ public class UIUtils {
         context.startActivity(intent);
     }
 
+    public static void navigateToJuniorPage(Context context, int categoryType) {
+        Intent intent = new Intent(context, JuniorActivity.class);
+        intent.putExtra("CATEGORY_TYPE", categoryType);
+        context.startActivity(intent);
+    }
+
+    public static void showEntryListDialog(FragmentManager fragmentManager, int categoryType) {
+        showJuniorDialog(fragmentManager, categoryType, 0);
+    }
+
+    public static void showCalendarDialog(FragmentManager fragmentManager, int categoryType) {
+        showJuniorDialog(fragmentManager, categoryType, 1);
+    }
+
+    public static void showDriversStandingDialog(FragmentManager fragmentManager, int categoryType) {
+        showJuniorDialog(fragmentManager, categoryType, 2);
+    }
+
+    public static void showConstructorsStandingDialog(FragmentManager fragmentManager, int categoryType) {
+        showJuniorDialog(fragmentManager, categoryType, 3);
+    }
+
+    private static void showJuniorDialog(FragmentManager fragmentManager, int categoryType, int content){
+        JuniorDialogFragment juniorDialogFragment = new JuniorDialogFragment();
+        Bundle args = new Bundle();
+        args.putInt("CATEGORY_TYPE", categoryType);
+        args.putInt("CONTENT", content);
+        juniorDialogFragment.setArguments(args);
+        juniorDialogFragment.show(fragmentManager, "JuniorDialogFragment");
+    }
+
     public static void navigateToWelcomePage(Context context) {
         Intent intent = new Intent(context, WelcomeActivity.class);
         context.startActivity(intent);
     }
 
     public static void showRaceResultsDialog(FragmentManager fragmentManager, Race race, int sessionType) {
-        switch(sessionType){
+        switch (sessionType) {
             case 0:
                 RaceAndSprintResultsFragment raceAndSprintResultsFragment = new RaceAndSprintResultsFragment();
                 Bundle args = new Bundle();
@@ -466,7 +558,7 @@ public class UIUtils {
         }
     }
 
-    public static void showWelcomeDialogs(FragmentManager fragmentManager, int dialogType) {
+    public static void showProfileManageDialogs(FragmentManager fragmentManager, int dialogType, String additionalInfo) {
         switch (dialogType) {
             case 0:
                 SignUpFragment signUpFragment = new SignUpFragment();
@@ -476,6 +568,61 @@ public class UIUtils {
                 ForgotPasswordFragment forgotPasswordFragment = new ForgotPasswordFragment();
                 forgotPasswordFragment.show(fragmentManager, "ForgotPasswordFragment");
                 break;
+            case 2:
+                LoginFragment loginFragment = new LoginFragment();
+                Bundle args = new Bundle();
+                args.putString("email", additionalInfo);
+                loginFragment.setArguments(args);
+                loginFragment.show(fragmentManager, "LoginFragment");
+                break;
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.S)
+    public static String getTimeAgo(String dateString, Context context) {
+        long SECONDS_PER_MINUTE = 60;
+        long SECONDS_PER_HOUR = 3600;
+        long SECONDS_PER_DAY = 86400;
+        long SECONDS_PER_MONTH = 2592000;
+        long SECONDS_PER_YEAR = 31536000;
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH);
+
+        try {
+            ZonedDateTime pastTime = ZonedDateTime.parse(dateString, formatter);
+            ZonedDateTime now = ZonedDateTime.now(pastTime.getZone());
+            Duration duration = Duration.between(pastTime, now);
+
+            long seconds = duration.toSeconds();
+
+            if (seconds < 60) {
+                return context.getString(R.string.just_now);
+            }
+
+            if (seconds < SECONDS_PER_MINUTE * 60) {
+                long minutes = seconds / SECONDS_PER_MINUTE;
+                return context.getResources().getQuantityString(R.plurals.minutes_ago, (int) minutes, minutes);
+            }
+            if (seconds < SECONDS_PER_DAY) {
+                long hours = seconds / SECONDS_PER_HOUR;
+                return context.getResources().getQuantityString(R.plurals.hours_ago, (int) hours, hours);
+            }
+            if (seconds < SECONDS_PER_MONTH) {
+                long days = seconds / SECONDS_PER_DAY;
+                return context.getResources().getQuantityString(R.plurals.days_ago, (int) days, days);
+            }
+            if (seconds < SECONDS_PER_YEAR) {
+                long months = seconds / SECONDS_PER_MONTH;
+                return context.getResources().getQuantityString(R.plurals.months_ago, (int) months, months);
+            }
+
+            long years = seconds / SECONDS_PER_YEAR;
+            return context.getResources().getQuantityString(R.plurals.years_ago, (int) years, years);
+
+        } catch (DateTimeParseException e) {
+            // Handle invalid date string
+            e.printStackTrace();
+            return "Invalid date format";
         }
     }
 

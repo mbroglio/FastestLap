@@ -1,5 +1,6 @@
 package com.the_coffe_coders.fastestlap.repository.weeklyrace;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -10,6 +11,7 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.source.weeklyrace.LocalWeeklyRaceDataSource;
 import com.the_coffe_coders.fastestlap.source.weeklyrace.JolpicaWeeklyRaceDataSource;
+import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -24,21 +26,23 @@ public class WeeklyRaceRepository {
     private final Map<String, Long> lastUpdateTimestamps;
     private final JolpicaWeeklyRaceDataSource weeklyRaceRemoteDataSource;
     private final LocalWeeklyRaceDataSource localWeeklyRaceDataSource;
+    private final NetworkUtils networkUtils;
 
-    private WeeklyRaceRepository(AppRoomDatabase appRoomDatabase) {
+    private WeeklyRaceRepository(AppRoomDatabase appRoomDatabase, Context context) {
         this.raceCache = new HashMap<>();
         this.lastUpdateTimestamps = new HashMap<>();
         this.weeklyRaceRemoteDataSource = new JolpicaWeeklyRaceDataSource();
         this.localWeeklyRaceDataSource = LocalWeeklyRaceDataSource.getInstance(appRoomDatabase);
+        this.networkUtils = new NetworkUtils(context);
 
         raceCache.put("next", new MutableLiveData<>());
         raceCache.put("last", new MutableLiveData<>());
         raceCache.put("all", new MutableLiveData<>());
     }
 
-    public static WeeklyRaceRepository getInstance(AppRoomDatabase appRoomDatabase) {
+    public static WeeklyRaceRepository getInstance(AppRoomDatabase appRoomDatabase, Context context) {
         if (instance == null) {
-            instance = new WeeklyRaceRepository(appRoomDatabase);
+            instance = new WeeklyRaceRepository(appRoomDatabase, context);
         }
         return instance;
     }
@@ -78,27 +82,33 @@ public class WeeklyRaceRepository {
 
     private void loadNextRace() {
         raceCache.get("next").postValue(new Result.Loading("Loading next race"));
-        try {
-            weeklyRaceRemoteDataSource.getNextRace(new SingleWeeklyRaceCallback() {
-                @Override
-                public void onSuccess(WeeklyRace weeklyRace) {
-                    Log.d(TAG, "Next race loaded from remote: " + weeklyRace);
-                    if (weeklyRace != null) {
-                        lastUpdateTimestamps.put("next", System.currentTimeMillis());
-                        Objects.requireNonNull(raceCache.get("next")).postValue(new Result.NextRaceSuccess(weeklyRace));
-                    } else {
+
+        if(networkUtils.isConnected()){
+            try {
+                weeklyRaceRemoteDataSource.getNextRace(new SingleWeeklyRaceCallback() {
+                    @Override
+                    public void onSuccess(WeeklyRace weeklyRace) {
+                        Log.d(TAG, "Next race loaded from remote: " + weeklyRace);
+                        if (weeklyRace != null) {
+                            lastUpdateTimestamps.put("next", System.currentTimeMillis());
+                            Objects.requireNonNull(raceCache.get("next")).postValue(new Result.NextRaceSuccess(weeklyRace));
+                        } else {
+                            loadNextRaceFromLocal();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Exception exception) {
+                        Log.e(TAG, "Error loading next race: " + exception.getMessage());
                         loadNextRaceFromLocal();
                     }
-                }
-
-                @Override
-                public void onFailure(Exception exception) {
-                    Log.e(TAG, "Error loading next race: " + exception.getMessage());
-                    loadNextRaceFromLocal();
-                }
-            });
-        } catch (Exception e) {
-            Log.e(TAG, "Error fetching next race: " + e.getMessage());
+                });
+            } catch (Exception e) {
+                Log.e(TAG, "Error fetching next race: " + e.getMessage());
+                loadNextRaceFromLocal();
+            }
+        }else{
+            Log.e(TAG, "Error loading next race: " + "No internet connection");
             loadNextRaceFromLocal();
         }
     }
@@ -125,23 +135,29 @@ public class WeeklyRaceRepository {
 
     private void loadLastRace() {
         Objects.requireNonNull(raceCache.get("last")).postValue(new Result.Loading("Loading last race"));
-        weeklyRaceRemoteDataSource.getLastRace(new SingleWeeklyRaceCallback() {
-            @Override
-            public void onSuccess(WeeklyRace weeklyRace) {
-                if (weeklyRace != null) {
-                    lastUpdateTimestamps.put("last", System.currentTimeMillis());
-                    Objects.requireNonNull(raceCache.get("last")).postValue(new Result.NextRaceSuccess(weeklyRace));
-                } else {
+
+        if(networkUtils.isConnected()){
+            weeklyRaceRemoteDataSource.getLastRace(new SingleWeeklyRaceCallback() {
+                @Override
+                public void onSuccess(WeeklyRace weeklyRace) {
+                    if (weeklyRace != null) {
+                        lastUpdateTimestamps.put("last", System.currentTimeMillis());
+                        Objects.requireNonNull(raceCache.get("last")).postValue(new Result.NextRaceSuccess(weeklyRace));
+                    } else {
+                        loadLastRaceFromLocal();
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception exception) {
+                    Log.e(TAG, "Error loading last race: " + exception.getMessage());
                     loadLastRaceFromLocal();
                 }
-            }
-
-            @Override
-            public void onFailure(Exception exception) {
-                Log.e(TAG, "Error loading last race: " + exception.getMessage());
-                loadLastRaceFromLocal();
-            }
-        });
+            });
+        }else{
+            Log.e(TAG, "Error loading last race: " + "No internet connection");
+            loadLastRaceFromLocal();
+        }
     }
 
     private void loadLastRaceFromLocal() {
@@ -166,24 +182,30 @@ public class WeeklyRaceRepository {
 
     private void loadWeeklyRaces() {
         Objects.requireNonNull(raceCache.get("all")).postValue(new Result.Loading("Loading weekly races"));
-        weeklyRaceRemoteDataSource.getWeeklyRaces(new WeeklyRacesCallback() {
-            @Override
-            public void onSuccess(List<WeeklyRace> weeklyRaces) {
-                if (weeklyRaces != null && !weeklyRaces.isEmpty()) {
-                    localWeeklyRaceDataSource.saveWeeklyRaces(weeklyRaces);
-                    lastUpdateTimestamps.put("all", System.currentTimeMillis());
-                    Objects.requireNonNull(raceCache.get("all")).postValue(new Result.WeeklyRaceSuccess(weeklyRaces));
-                } else {
+
+        if(networkUtils.isConnected()){
+            weeklyRaceRemoteDataSource.getWeeklyRaces(new WeeklyRacesCallback() {
+                @Override
+                public void onSuccess(List<WeeklyRace> weeklyRaces) {
+                    if (weeklyRaces != null && !weeklyRaces.isEmpty()) {
+                        localWeeklyRaceDataSource.saveWeeklyRaces(weeklyRaces);
+                        lastUpdateTimestamps.put("all", System.currentTimeMillis());
+                        Objects.requireNonNull(raceCache.get("all")).postValue(new Result.WeeklyRaceSuccess(weeklyRaces));
+                    } else {
+                        loadWeeklyRacesFromLocal();
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception exception) {
+                    Log.e(TAG, "Error loading weekly races: " + exception.getMessage());
                     loadWeeklyRacesFromLocal();
                 }
-            }
-
-            @Override
-            public void onFailure(Exception exception) {
-                Log.e(TAG, "Error loading weekly races: " + exception.getMessage());
-                loadWeeklyRacesFromLocal();
-            }
-        });
+            });
+        }else{
+            Log.e(TAG, "Error loading weekly races: " + "No internet connection");
+            loadWeeklyRacesFromLocal();
+        }
     }
 
     private void loadWeeklyRacesFromLocal() {

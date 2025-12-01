@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.QualifyingResult;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.UIUtils;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.List;
 import java.util.Objects;

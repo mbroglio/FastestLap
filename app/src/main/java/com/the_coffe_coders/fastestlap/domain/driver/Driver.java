@@ -56,7 +56,6 @@ public class Driver implements Parcelable {
     private String best_result; // F
     private String birth_place; // F
     private String championships; // F
-    @Ignore
     private List<DriverHistory> driver_history; // F
     private String driver_pic_url; // F
     private String height; // F

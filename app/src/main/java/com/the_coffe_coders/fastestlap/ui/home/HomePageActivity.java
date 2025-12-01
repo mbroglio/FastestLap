@@ -5,9 +5,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.os.LocaleListCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
@@ -23,8 +27,9 @@ import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
+import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
-import com.the_coffe_coders.fastestlap.util.UIUtils;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import org.threeten.bp.ZoneId;
 
@@ -33,6 +38,8 @@ import java.util.Objects;
 public class HomePageActivity extends AppCompatActivity {
     private final String TAG = "HomePageActivity";
     private final ZoneId localZone = ZoneId.systemDefault();
+    private boolean loginWithConnection;
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +48,16 @@ public class HomePageActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_home);
 
+        loginWithConnection = getIntent().getBooleanExtra("LOGIN_WITH_CONNECTION", false);
+
+        setToolbar();
+
+        setNavigationBar();
+
+        getUserPreferences();
+    }
+
+    private void setToolbar() {
         MaterialToolbar toolbar = findViewById(R.id.top_app_bar);
         UIUtils.applyWindowInsets(toolbar);
 
@@ -48,23 +65,28 @@ public class HomePageActivity extends AppCompatActivity {
         toolbar.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == R.id.userActivity) {
                 Intent intent = new Intent(HomePageActivity.this, ProfileActivity.class);
+                intent.putExtra("LOGIN_WITH_CONNECTION", loginWithConnection);
                 startActivity(intent);
                 return true;
             }
             return false;
         });
+    }
 
+    private void setNavigationBar() {
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
         NavController navController = navHostFragment.getNavController();
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.navbar);
+        bottomNavigationView = findViewById(R.id.navbar);
         UIUtils.applyWindowInsets(bottomNavigationView);
 
-        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.homeFragment, R.id.standingsFragment, R.id.racingFragment).build();
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.homeFragment, R.id.standingsFragment, R.id.racingFragment, R.id.newsFragment, R.id.juniorCategoriesFragment).build();
 
         NavigationUI.setupWithNavController(bottomNavigationView, navController);
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
+    }
 
+    private void getUserPreferences() {
         IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
         UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
         String idToken = userViewModel.getLoggedUser().getIdToken();
@@ -83,6 +105,7 @@ public class HomePageActivity extends AppCompatActivity {
                         case "HomeFragment":
                             Intent home = new Intent(HomePageActivity.this, HomePageActivity.class);
                             home.putExtra("RELOADED", "true");
+                            home.putExtra("LOGIN_WITH_CONNECTION", loginWithConnection);
                             startActivity(home);
                             break;
                         case "ConstructorBioActivity":

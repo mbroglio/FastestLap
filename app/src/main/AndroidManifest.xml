@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" >
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
     <queries>
         <intent>
             <action android:name="android.intent.action.VIEW" />
+
             <data android:scheme="geo" />
         </intent>
     </queries>
@@ -20,7 +21,16 @@
         android:roundIcon="@drawable/iconfl"
         android:supportsRtl="true"
         android:theme="@style/Theme.FastestLap"
-        tools:targetApi="31" >
+        tools:targetApi="31">
+        <activity
+            android:name=".ui.junior.JuniorActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.junior.formula3.Formula3Activity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.junior.formula2.Formula2Activity"
+            android:exported="false" />
         <activity
             android:name=".ui.welcome.WelcomeActivity"
             android:exported="false"
@@ -28,7 +38,7 @@
         <activity
             android:name=".ui.welcome.SplashActivity"
             android:exported="true"
-            android:screenOrientation="portrait" >
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

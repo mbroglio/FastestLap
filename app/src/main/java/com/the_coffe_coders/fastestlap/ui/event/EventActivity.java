@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,8 +42,8 @@ import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModelFac
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.LoadingScreen;
-import com.the_coffe_coders.fastestlap.util.UIUtils;
+import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
@@ -98,8 +99,8 @@ public class EventActivity extends AppCompatActivity {
 
     private void initializeViewModels() {
         eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
-        raceResultViewModel = new ViewModelProvider(this, new RaceResultViewModelFactory(getApplication())).get(RaceResultViewModel.class);
-        weeklyRaceViewModel = new ViewModelProvider(this, new WeeklyRaceViewModelFactory(getApplication())).get(WeeklyRaceViewModel.class);
+        raceResultViewModel = new ViewModelProvider(this, new RaceResultViewModelFactory(getApplication(), this)).get(RaceResultViewModel.class);
+        weeklyRaceViewModel = new ViewModelProvider(this, new WeeklyRaceViewModelFactory(getApplication(), this)).get(WeeklyRaceViewModel.class);
         processRaceData();
     }
 
@@ -450,6 +451,7 @@ public class EventActivity extends AppCompatActivity {
 
                 if (qualifyingResults == null || qualifyingResults.isEmpty()) {
                     Log.i(TAG, "No qualifying results found");
+                    Toast.makeText(this, "No qualifying results found", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.i(TAG, "Qualifying results found: " + qualifyingResults.size());
 
@@ -477,6 +479,7 @@ public class EventActivity extends AppCompatActivity {
 
                 if (sprintResults == null || sprintResults.isEmpty()) {
                     Log.i(TAG, "No sprint results found");
+                    Toast.makeText(this, "No sprint results found", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.i(TAG, "Sprint results found: " + sprintResults.size());
 

@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.util;
+package com.the_coffe_coders.fastestlap.util.ui;
 
 import android.content.Context;
 import android.os.CountDownTimer;
@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.util.Constants;
 
 public class LoadingScreen {
 
