@@ -3,6 +3,7 @@ package com.the_coffe_coders.fastestlap.ui.junior.fragment;
 import android.os.Bundle;
 
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +22,7 @@ public class JuniorDialogFragment extends DialogFragment {
     private LinearLayout raceInfoLayout;
     private RelativeLayout fastestLapLayout, polePositionLayout;
 
-
+    
     public JuniorDialogFragment() {
         // Required empty public constructor
     }

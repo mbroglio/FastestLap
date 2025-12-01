@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/driver_card_view"
+    style="?materialCardViewElevatedStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginBottom="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    tools:context=".ui.standing.DriversStandingActivity"
+    app:cardCornerRadius="5dp">
+
+    <RelativeLayout
+        android:id="@+id/small_driver_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/driver_position"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="5dp"
+            android:fontFamily="@font/orbitron_bold"
+            android:gravity="center"
+            android:text="@string/not_found"
+            android:textColor="@color/black"
+            android:textSize="@dimen/page_title_text_size">
+
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/driver_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="8dp"
+            android:layout_toStartOf="@id/driver_points"
+            android:layout_toEndOf="@id/driver_position"
+            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
+            android:autoSizeTextType="uniform"
+            android:fontFamily="@font/orbitron_bold"
+            android:maxLines="1"
+            android:textColor="@color/black"
+            android:textSize="@dimen/layout_subtitle_text_size">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/driver_points"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:layout_marginEnd="10dp"
+            android:fontFamily="@font/orbitron_bold"
+            android:gravity="center"
+            android:text="@string/not_found"
+            android:textColor="@color/black"
+            android:textSize="@dimen/page_title_text_size">
+
+        </TextView>
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>
+

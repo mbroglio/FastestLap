@@ -4,7 +4,7 @@
     <item
         android:id="@+id/newsFragment"
         android:icon="@drawable/newspaper_2"
-        android:title="News" />
+        android:title="@string/news_menu" />
 
     <item
         android:id="@+id/racingFragment"
@@ -24,5 +24,5 @@
     <item
         android:id="@+id/juniorCategoriesFragment"
         android:icon="@drawable/formula_2_logo"
-        android:title="Junior" />
+        android:title="@string/junior_menu" />
 </menu>

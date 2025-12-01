@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/junior_event_result_card_layout"
+    android:id="@+id/junior_event_calendar_card_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/medium_margin"
@@ -28,7 +28,7 @@
             android:layout_marginStart="5dp">
 
             <TextView
-                android:id="@+id/past_round_number"
+                android:id="@+id/gp_round_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -42,10 +42,10 @@
             </TextView>
 
             <TextView
-                android:id="@+id/past_gp_name"
+                android:id="@+id/gp_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/past_round_number"
+                android:layout_below="@id/gp_round_number"
                 android:layout_centerInParent="true"
                 android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
                 android:autoSizeMinTextSize="@dimen/min_text_resize_1"
@@ -63,19 +63,18 @@
                 android:id="@+id/results_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:baselineAligned="false"
-                android:orientation="horizontal"
-                android:layout_below="@id/past_gp_name"
+                android:layout_below="@id/gp_name"
                 android:layout_alignParentStart="true"
                 android:layout_centerInParent="true"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:id="@+id/sprint_race_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -84,30 +83,38 @@
                         android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                         android:autoSizeTextType="uniform"
                         android:fontFamily="@font/orbitron_bold"
-                        android:maxLines="1"
                         android:gravity="center"
-                        android:text="SPRINT"
+                        android:maxLines="1"
+                        android:text="@string/sprint_upper_case"
                         android:textColor="@color/white"
                         android:textSize="@dimen/body_text_size">
 
                     </TextView>
 
-                    <FrameLayout
-                        android:id="@+id/sprint_race_podium_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/sprint_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/orbitron_regular"
+                        android:text="@string/not_found"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/body_text_size">
 
-                        <include
-                            android:id="@+id/podium"
-                            layout="@layout/junior_race_podium_event_card"
-                            android:visibility="visible"/>
+                    </TextView>
 
-                        <include
-                            android:id="@+id/feature_cancelled"
-                            layout="@layout/race_cancelled_layout_white"
-                            android:visibility="gone"/>
+                    <TextView
+                        android:id="@+id/sprint_month"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/orbitron_bold"
+                        android:text="@string/not_found"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/layout_subtitle_text_size">
 
-                    </FrameLayout>
+                    </TextView>
 
                 </LinearLayout>
 
@@ -124,9 +131,9 @@
                     android:id="@+id/feature_race_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_marginStart="8dp"
-                    android:layout_weight="1">
+                    android:layout_weight="1"
+                    android:orientation="vertical">
 
                     <TextView
                         android:layout_width="match_parent"
@@ -135,49 +142,43 @@
                         android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                         android:autoSizeTextType="uniform"
                         android:fontFamily="@font/orbitron_bold"
-                        android:maxLines="1"
                         android:gravity="center"
-                        android:text="FEATURE"
+                        android:maxLines="1"
+                        android:text="@string/feature_upper_case"
                         android:textColor="@color/white"
                         android:textSize="@dimen/body_text_size">
 
                     </TextView>
 
-                    <FrameLayout
-                        android:id="@+id/feature_race_podium_layout"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/feature_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="10dp"
+                        android:fontFamily="@font/orbitron_regular"
+                        android:text="@string/not_found"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/body_text_size">
 
-                        <include
-                            android:id="@+id/podium"
-                            layout="@layout/junior_race_podium_event_card"
-                            android:visibility="visible"/>
+                    </TextView>
 
-                        <include
-                            android:id="@+id/feature_cancelled"
-                            layout="@layout/race_cancelled_layout_white"
-                            android:visibility="gone"/>
+                    <TextView
+                        android:id="@+id/feature_month"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/orbitron_bold"
+                        android:text="@string/not_found"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/layout_subtitle_text_size">
 
-                    </FrameLayout>
+                    </TextView>
 
                 </LinearLayout>
 
-
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/pending_results_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/past_gp_name"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="30dp"
-                android:fontFamily="@font/orbitron_bold"
-                android:text="@string/pending_results_upper_case"
-                android:textColor="@color/white"
-                android:visibility="gone">
-
-            </TextView>
 
             <!--
             <ImageView
