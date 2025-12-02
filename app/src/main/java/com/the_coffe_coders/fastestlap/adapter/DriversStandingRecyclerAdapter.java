@@ -29,6 +29,7 @@ import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<DriversStandingRecyclerAdapter.DriverViewHolder> {
@@ -48,8 +49,8 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
                                           LoadingScreen loadingScreen) {
         this.context = context;
         // Create defensive copies to prevent external mutation
-        this.driversStandingList = driversStandingList != null ? new java.util.ArrayList<>(driversStandingList) : null;
-        this.driversList = driversList != null ? new java.util.ArrayList<>(driversList) : null;
+        this.driversStandingList = driversStandingList != null ? new ArrayList<>(driversStandingList) : null;
+        this.driversList = driversList != null ? new ArrayList<>(driversList) : null;
         this.driverId = driverId;
         this.driverViewModel = driverViewModel;
         this.constructorViewModel = constructorViewModel;

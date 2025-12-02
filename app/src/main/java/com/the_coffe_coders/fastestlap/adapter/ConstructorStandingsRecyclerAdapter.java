@@ -29,6 +29,7 @@ import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,7 +48,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         this.context = context;
         this.constructorId = constructorId;
         // Create defensive copy to prevent external mutation
-        this.constructorStandingsList = new java.util.ArrayList<>(constructorStandingsList);
+        this.constructorStandingsList = new ArrayList<>(constructorStandingsList);
         this.driverViewModel = driverViewModel;
         this.constructorViewModel = constructorViewModel;
         this.lifecycleOwner = lifecycleOwner;

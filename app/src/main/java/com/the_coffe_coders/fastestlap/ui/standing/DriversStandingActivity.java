@@ -107,8 +107,13 @@ public class DriversStandingActivity extends AppCompatActivity {
 
                     DriversStandingRecyclerAdapter driversStandingAdapter = new DriversStandingRecyclerAdapter(this, driverList, null, driverId, driverViewModel, constructorViewModel, this, loadingScreen);
                     driversStandingRecyclerView.setAdapter(driversStandingAdapter);
-                    // RecyclerView automatically calls onBindViewHolder when items become visible
-                    // Manual calls to onBindViewHolder have been removed to prevent race conditions
+                    
+                    // Pre-load all items at once for better page experience
+                    // This prevents visible loading states as user scrolls
+                    for (int i = 0; i < driversStandingAdapter.getItemCount(); i++) {
+                        driversStandingAdapter.onBindViewHolder(
+                                driversStandingAdapter.createViewHolder(driversStandingRecyclerView, driversStandingAdapter.getItemViewType(i)), i);
+                    }
                 }
             } else {
                 Log.i(TAG, "DRIVER STANDINGS ERROR");

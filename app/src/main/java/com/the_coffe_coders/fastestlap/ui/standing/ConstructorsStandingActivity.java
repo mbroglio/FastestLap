@@ -103,8 +103,13 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
                         ConstructorStandingsRecyclerAdapter constructorsStandingAdapter = new ConstructorStandingsRecyclerAdapter(this, constructorId, constructorList, driverViewModel, constructorViewModel, this, loadingScreen);
                         constructorsStandingRecyclerView.setAdapter(constructorsStandingAdapter);
-                        // RecyclerView automatically calls onBindViewHolder when items become visible
-                        // Manual calls to onBindViewHolder have been removed to prevent race conditions
+
+                        // Pre-load all items at once for better page experience
+                        // This prevents visible loading states as user scrolls
+                        for (int i = 0; i < constructorsStandingAdapter.getItemCount(); i++) {
+                            constructorsStandingAdapter.onBindViewHolder(
+                                    constructorsStandingAdapter.createViewHolder(constructorsStandingRecyclerView, constructorsStandingAdapter.getItemViewType(i)), i);
+                        }
                     }
                 }
             } else if (result instanceof Result.Error) {
