@@ -19,6 +19,13 @@ const APIS = {
 let DRIVER_ID_NAME_MAP = {};
 let TEAM_ID_NAME_MAP = {};
 
+
+
+/* -----------------------------------------------------------------
+* LOCAL MAPS LOADING
+* -----------------------------------------------------------------
+*/
+
 async function loadMappings(db) {
     const [teamSnap, driverSnap] = await Promise.all([
         db.ref(PATHS.team_map).once("value"),
@@ -29,8 +36,14 @@ async function loadMappings(db) {
     DRIVER_ID_NAME_MAP = driverSnap.val() || {};
 }
 
-// Race Update Logic
-async function executeRaceStatsUpdate(db) {
+
+
+/* -----------------------------------------------------------------
+* EXPORTS
+* -----------------------------------------------------------------
+*/
+
+async function executeRaceStatsUpdate(db) { // post race stats update
     console.log("Starting F1 post-race stats check...");
 
     const response = await axios.get(APIS.raceResults);
@@ -138,37 +151,7 @@ async function executeRaceStatsUpdate(db) {
     console.log(`F1 Post-race update complete.`);
 }
 
-async function processCircuitRaceUpdate(newSeason, newRound, results, updates) {
-    const calendarSnap = await db.ref(PATHS.calendar).once("value");
-    const calendarData = calendarSnap.val() || {};
-
-    let circuitKey = Object.keys(calendarData).find(key => parseInt(calendarData[key]?.round) === newRound);
-
-    if (!circuitKey) {
-        console.warn(`Could not find calendar entry for round ${newRound}.`);
-        return;
-    }
-
-    const podiumDrivers = [];
-    const podiumTeams = [];
-
-    // Get Top 3
-    for (let i = 0; i < 3 && i < results.length; i++) {
-        const result = results[i];
-        podiumDrivers.push(DRIVER_ID_NAME_MAP[result.Driver.driverId] || result.Driver.familyName);
-        podiumTeams.push(TEAM_ID_NAME_MAP[result.Constructor.constructorId] || result.Constructor.name);
-    }
-
-    console.log(`Top 3: ${podiumDrivers.join(", ")} | Teams: ${podiumTeams.join(", ")}`);
-
-    updates[`${PATHS.calendar}/${circuitKey}/season_result/year`] = newSeason.toString();
-    updates[`${PATHS.calendar}/${circuitKey}/season_result/podium`] = podiumDrivers;
-    updates[`${PATHS.calendar}/${circuitKey}/season_result/team`] = podiumTeams;
-}
-
-
-// Championship Update Logic
-async function executeChampionshipsUpdate(db) {
+async function executeChampionshipsUpdate(db) { // end of season championship update
     console.log("Starting F1 end-of-season championship check...");
 
     const driverStandingsRes = await axios.get(APIS.driverStandings);
@@ -201,6 +184,42 @@ async function executeChampionshipsUpdate(db) {
     console.log(`F1 Championship update complete.`);
 }
 
+
+
+/*
+* -----------------------------------------------------------------
+* HELPER MAIN FUNCTIONS
+* -----------------------------------------------------------------
+*/
+
+async function processCircuitRaceUpdate(newSeason, newRound, results, updates) {
+    const calendarSnap = await db.ref(PATHS.calendar).once("value");
+    const calendarData = calendarSnap.val() || {};
+
+    let circuitKey = Object.keys(calendarData).find(key => parseInt(calendarData[key]?.round) === newRound);
+
+    if (!circuitKey) {
+        console.warn(`Could not find calendar entry for round ${newRound}.`);
+        return;
+    }
+
+    const podiumDrivers = [];
+    const podiumTeams = [];
+
+    // Get Top 3
+    for (let i = 0; i < 3 && i < results.length; i++) {
+        const result = results[i];
+        podiumDrivers.push(DRIVER_ID_NAME_MAP[result.Driver.driverId] || result.Driver.familyName);
+        podiumTeams.push(TEAM_ID_NAME_MAP[result.Constructor.constructorId] || result.Constructor.name);
+    }
+
+    console.log(`Top 3: ${podiumDrivers.join(", ")} | Teams: ${podiumTeams.join(", ")}`);
+
+    updates[`${PATHS.calendar}/${circuitKey}/season_result/year`] = newSeason.toString();
+    updates[`${PATHS.calendar}/${circuitKey}/season_result/podium`] = podiumDrivers;
+    updates[`${PATHS.calendar}/${circuitKey}/season_result/team`] = podiumTeams;
+}
+
 async function processDriverSeasonArchive(newSeason, updates) {
     const response = await axios.get(APIS.driverStandings);
     const standings = response.data.MRData.StandingsTable.StandingsLists[0].DriverStandings;
@@ -213,7 +232,7 @@ async function processDriverSeasonArchive(newSeason, updates) {
             const data = snap.val();
 
             const teamNames = driver.Constructors.map(c => TEAM_ID_NAME_MAP[c.constructorId] || c.name).join(' / ');
-            const entry = createHistoryEntry(
+            const entry = createHistoryEntryDriver(
                 newSeason,
                 driver.position,
                 driver.points,
@@ -246,13 +265,13 @@ async function processConstructorSeasonArchive(newSeason, updates) {
         if (snap.exists()) {
             const data = snap.val();
 
-            const entry = createHistoryEntry(
+            const entry = createHistoryEntryConstructor(
                 newSeason,
                 team.position,
                 team.points,
                 parseInt(data.season_wins) || 0,
-                parseInt(data.season_podiums) || 0,
-                null // Teams don't have a "team" field in history usually
+                parseInt(data.season_podiums) || 0 
+                // Teams don't have a "team" field in history
             );
 
             updates[`${PATHS.teams}/${teamId}/team_history`] = manageHistoryArray(data.team_history, entry);
@@ -276,11 +295,11 @@ async function processCircuitSeasonArchive(newSeason, updates) {
         const result = circuitData.season_result;
 
         if (result) {
-            const entry = {
-                year: result.year || newSeason.toString(),
-                podium: result.podium || [],
-                team: result.team || []
-            };
+            const entry = createHistoryEntryCircuit(
+                result.year || newSeason.toString(),
+                result.podium || [],
+                result.team || []
+            );
 
             const circuitSnap = await db.ref(`${PATHS.circuits}/${circuitKey}`).once("value");
             if (circuitSnap.exists()) {
@@ -293,6 +312,45 @@ async function processCircuitSeasonArchive(newSeason, updates) {
         updates[`${PATHS.calendar}/${circuitKey}/season_result`] = { year: null, podium: [], team: [] };
     }
 }
+
+
+
+
+/*
+* -----------------------------------------------------------------
+* HELPER SUPPORT FUNCTIONS
+* -----------------------------------------------------------------
+*/
+
+// Helper to create history entry
+function createHistoryEntryDriver(year, position, points, wins, podiums, teamOrTeams) {
+  return { year: year.toString(), position, points, wins, podiums, team: teamOrTeams };
+}
+
+function createHistoryEntryConstructor(year, position, points, wins, podiums) {
+  return { year: year.toString(), position, points, wins, podiums };
+}
+
+function createHistoryEntryCircuit(year, podium, team) {
+    return { year: year.toString(), podium, team };
+}
+
+// Helper to trim history array to last 10 entries
+function manageHistoryArray(existingHistory, newEntry) {
+  let history = existingHistory || [];
+  history.push(newEntry);
+  if (history.length > 10) history = history.slice(1);
+  return history;
+}
+
+
+
+
+/*
+* -----------------------------------------------------------------
+* FUNCTIONS EXPORTS
+* -----------------------------------------------------------------
+*/
 
 // Esxport main functions
 module.exports = { executeRaceStatsUpdate, executeChampionshipsUpdate };
