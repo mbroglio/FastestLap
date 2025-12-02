@@ -40,18 +40,19 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
     private final List<ConstructorStandingsElement> constructorStandingsList;
     private final LifecycleOwner lifecycleOwner;
     private final LoadingScreen loadingScreen;
-    private ConstructorStandingsElement constructorStandingsElement;
 
     public ConstructorStandingsRecyclerAdapter(Context context, String constructorId, List<ConstructorStandingsElement> constructorStandingsList,
                                                DriverViewModel driverViewModel, ConstructorViewModel constructorViewModel,
                                                LifecycleOwner lifecycleOwner, LoadingScreen loadingScreen) {
         this.context = context;
         this.constructorId = constructorId;
-        this.constructorStandingsList = constructorStandingsList;
+        // Create defensive copy to prevent external mutation
+        this.constructorStandingsList = new java.util.ArrayList<>(constructorStandingsList);
         this.driverViewModel = driverViewModel;
         this.constructorViewModel = constructorViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.loadingScreen = loadingScreen;
+        setHasStableIds(true);
     }
 
     @NonNull
@@ -62,9 +63,31 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
     }
 
     @Override
+    public long getItemId(int position) {
+        // Use stable ID based on constructor ID to prevent RecyclerView confusion during async updates
+        if (position < constructorStandingsList.size()) {
+            ConstructorStandingsElement element = constructorStandingsList.get(position);
+            if (element != null && element.getConstructor() != null && element.getConstructor().getConstructorId() != null) {
+                return element.getConstructor().getConstructorId().hashCode();
+            }
+        }
+        return position;
+    }
+
+    @Override
     public void onBindViewHolder(@NonNull ConstructorViewHolder holder, int position) {
-        constructorStandingsElement = constructorStandingsList.get(position);
-        String currentConstructorId = constructorStandingsElement.getConstructor().getConstructorId();
+        // Create local copy to prevent race conditions from shared mutable state
+        ConstructorStandingsElement original = constructorStandingsList.get(position);
+        final ConstructorStandingsElement localElement = new ConstructorStandingsElement();
+        localElement.setPosition(original.getPosition());
+        localElement.setPositionText(original.getPositionText());
+        localElement.setPoints(original.getPoints());
+        localElement.setConstructor(original.getConstructor());
+        localElement.setWins(original.getWins());
+        
+        final String currentConstructorId = localElement.getConstructor().getConstructorId();
+        // Capture position as final for use in callbacks
+        final int currentPosition = position;
 
 
             constructorViewModel.getSelectedConstructor(currentConstructorId).observe(lifecycleOwner, result -> {
@@ -74,20 +97,20 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                 if (result.isSuccess()) {
                     showConstructorFound(holder);
                     Constructor constructor = ((Result.ConstructorSuccess) result).getData();
-                    constructorStandingsElement.setConstructor(constructor);
+                    localElement.setConstructor(constructor);
 
                     holder.constructorCardInnerLayout.setBackground(AppCompatResources.getDrawable(context,
                             Objects.requireNonNull(Constants.TEAM_GRADIENT_COLOR.get(currentConstructorId))));
 
-                    UIUtils.setTextViewTextWithCondition(constructorStandingsElement.getPosition() == null,
+                    UIUtils.setTextViewTextWithCondition(localElement.getPosition() == null,
                             ContextCompat.getString(context, R.string.last_constructor_position), //if true
-                            constructorStandingsElement.getPosition(), //if false
+                            localElement.getPosition(), //if false
                             holder.constructorPosition);
 
                     UIUtils.multipleSetTextViewText(
                             new String[]{
                                     constructor.getName(),
-                                    constructorStandingsElement.getPoints()},
+                                    localElement.getPoints()},
                             new TextView[]{
                                     holder.constructorName,
                                     holder.constructorPoints});
@@ -98,7 +121,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                         }
                     }
 
-                    holder.constructorCard.setOnClickListener(v -> goToBioPage(position));
+                    holder.constructorCard.setOnClickListener(v -> goToBioPage(currentPosition));
 
                     UIUtils.loadSequenceOfImagesWithGlide(context,
                             new String[]{
@@ -108,7 +131,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                                     holder.constructorCarImage,
                                     holder.constructorLogo},
 
-                            () -> processDriverOne(holder, constructor, position));
+                            () -> processDriverOne(holder, constructor, currentPosition));
                 }else{
                     showConstructorNotFound(holder, currentConstructorId);
                 }

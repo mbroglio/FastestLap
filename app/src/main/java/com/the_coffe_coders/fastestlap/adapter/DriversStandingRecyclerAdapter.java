@@ -41,20 +41,21 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
     private final DriverViewModel driverViewModel;
     private final ConstructorViewModel constructorViewModel;
     private final LifecycleOwner lifecycleOwner;
-    private DriverStandingsElement driverStandingsElement;
 
     public DriversStandingRecyclerAdapter(Context context, List<DriverStandingsElement> driversStandingList,
                                           List<Driver> driversList, String driverId, DriverViewModel driverViewModel,
                                           ConstructorViewModel constructorViewModel, LifecycleOwner lifecycleOwner,
                                           LoadingScreen loadingScreen) {
         this.context = context;
-        this.driversStandingList = driversStandingList;
-        this.driversList = driversList;
+        // Create defensive copies to prevent external mutation
+        this.driversStandingList = driversStandingList != null ? new java.util.ArrayList<>(driversStandingList) : null;
+        this.driversList = driversList != null ? new java.util.ArrayList<>(driversList) : null;
         this.driverId = driverId;
         this.driverViewModel = driverViewModel;
         this.constructorViewModel = constructorViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.loadingScreen = loadingScreen;
+        setHasStableIds(true);
     }
 
     @NonNull
@@ -65,17 +66,47 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
     }
 
     @Override
-    public void onBindViewHolder(@NonNull DriverViewHolder holder, int position) {
-        driverStandingsElement = new DriverStandingsElement();
-        if (driversStandingList == null) {
-            driverStandingsElement.setDriver(driversList.get(position));
-            driverStandingsElement.setPoints("0");
-        } else {
-            driverStandingsElement = driversStandingList.get(position);
+    public long getItemId(int position) {
+        // Use stable ID based on driver ID to prevent RecyclerView confusion during async updates
+        if (driversStandingList != null && position < driversStandingList.size()) {
+            DriverStandingsElement element = driversStandingList.get(position);
+            if (element != null && element.getDriver() != null && element.getDriver().getDriverId() != null) {
+                return element.getDriver().getDriverId().hashCode();
+            }
+        } else if (driversList != null && position < driversList.size()) {
+            Driver driver = driversList.get(position);
+            if (driver != null && driver.getDriverId() != null) {
+                return driver.getDriverId().hashCode();
+            }
         }
+        return position;
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull DriverViewHolder holder, int position) {
+        // Create a local copy of the element for this specific bind operation
+        // This prevents race conditions from shared mutable state
+        final DriverStandingsElement localElement;
+        if (driversStandingList == null) {
+            localElement = new DriverStandingsElement();
+            localElement.setDriver(driversList.get(position));
+            localElement.setPoints("0");
+        } else {
+            DriverStandingsElement original = driversStandingList.get(position);
+            localElement = new DriverStandingsElement();
+            localElement.setPosition(original.getPosition());
+            localElement.setPositionText(original.getPositionText());
+            localElement.setPoints(original.getPoints());
+            localElement.setDriver(original.getDriver());
+            localElement.setWins(original.getWins());
+            localElement.setConstructors(original.getConstructors());
+        }
+        
+        // Capture position as final for use in callbacks
+        final int currentPosition = position;
 
         try{
-            driverViewModel.getDriver(driverStandingsElement.getDriver().getDriverId()).observe(lifecycleOwner, result -> {
+            driverViewModel.getDriver(localElement.getDriver().getDriverId()).observe(lifecycleOwner, result -> {
                 if (result instanceof Result.Loading) {
                     return;
                 }
@@ -86,7 +117,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
                     UIUtils.multipleSetTextViewText(
                             new String[]{
                                     driver.getFullName(),
-                                    driverStandingsElement.getPoints(),
+                                    localElement.getPoints(),
                             },
                             new TextView[]{
                                     holder.driverName,
@@ -94,18 +125,18 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
 
                             });
 
-                    UIUtils.setTextViewTextWithCondition(driverStandingsElement.getPosition() == null || driverStandingsElement.getPosition().equals("-"),
+                    UIUtils.setTextViewTextWithCondition(localElement.getPosition() == null || localElement.getPosition().equals("-"),
                             ContextCompat.getString(context, R.string.last_driver_position), //if true
-                            driverStandingsElement.getPosition(), //if false
+                            localElement.getPosition(), //if false
                             holder.driverPosition);
 
                     if (driverId != null) {
-                        if (driverStandingsElement.getDriver().getDriverId().equals(driverId)) {
+                        if (localElement.getDriver().getDriverId().equals(driverId)) {
                             UIUtils.animateCardBackgroundColor(context, holder.driverCard.findViewById(R.id.driver_card_view), R.color.yellow, Color.TRANSPARENT, 1000, 10);
                         }
                     }
 
-                    holder.driverCard.setOnClickListener(v -> goToBioPage(position));
+                    holder.driverCard.setOnClickListener(v -> goToBioPage(currentPosition));
 
                     if (driver.getTeam_id() != null) {
                         holder.driverCardInnerLayout.setBackground(AppCompatResources.getDrawable(context, Constants.TEAM_GRADIENT_COLOR.get(driver.getTeam_id())));
@@ -115,15 +146,15 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
                     }
 
                     UIUtils.loadImageWithGlide(context, driver.getDriver_pic_url(), holder.driverImage, () ->
-                            generateForConstructor(holder, driver, position));
+                            generateForConstructor(holder, driver, currentPosition));
 
                 }else{
-                    showDriverNotFound(holder, driverStandingsElement.getDriver().getDriverId());
+                    showDriverNotFound(holder, localElement.getDriver().getDriverId());
                 }
             });
         } catch (RuntimeException e) {
             Log.e("DriversStandingAdapter", "driver error: " + e.getMessage());
-            showDriverNotFound(holder, driverStandingsElement.getDriver().getDriverId());
+            showDriverNotFound(holder, localElement.getDriver().getDriverId());
         }
 
     }

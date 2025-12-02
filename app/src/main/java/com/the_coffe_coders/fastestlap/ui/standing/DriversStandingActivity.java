@@ -99,18 +99,16 @@ public class DriversStandingActivity extends AppCompatActivity {
                     Log.i(TAG, "DRIVER STANDINGS NULL");
                     NavigationUtils.navigateToHomePage(this);
                 } else {
-                    List<DriverStandingsElement> driverList = driverStandings.getDriverStandingsElements();
+                    // Create defensive copy of the list to ensure adapter has immutable data
+                    List<DriverStandingsElement> driverList = new java.util.ArrayList<>(driverStandings.getDriverStandingsElements());
 
                     RecyclerView driversStandingRecyclerView = findViewById(R.id.drivers_standing_recycler_view);
                     driversStandingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
                     DriversStandingRecyclerAdapter driversStandingAdapter = new DriversStandingRecyclerAdapter(this, driverList, null, driverId, driverViewModel, constructorViewModel, this, loadingScreen);
                     driversStandingRecyclerView.setAdapter(driversStandingAdapter);
-
-                    for (int i = 0; i < driversStandingAdapter.getItemCount(); i++) {
-                        driversStandingAdapter.onBindViewHolder(
-                                driversStandingAdapter.createViewHolder(driversStandingRecyclerView, driversStandingAdapter.getItemViewType(i)), i);
-                    }
+                    // RecyclerView automatically calls onBindViewHolder when items become visible
+                    // Manual calls to onBindViewHolder have been removed to prevent race conditions
                 }
             } else {
                 Log.i(TAG, "DRIVER STANDINGS ERROR");

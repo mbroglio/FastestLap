@@ -90,7 +90,8 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                     Log.i(TAG, "Constructor Standings is null");
                     NavigationUtils.navigateToHomePage(this);
                 } else {
-                    List<ConstructorStandingsElement> constructorList = constructorStandings.getConstructorStandings();
+                    // Create defensive copy of the list to ensure adapter has immutable data
+                    List<ConstructorStandingsElement> constructorList = new java.util.ArrayList<>(constructorStandings.getConstructorStandings());
 
                     RecyclerView constructorsStandingRecyclerView = findViewById(R.id.constructors_standing_recycler_view);
                     constructorsStandingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -102,12 +103,8 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
                         ConstructorStandingsRecyclerAdapter constructorsStandingAdapter = new ConstructorStandingsRecyclerAdapter(this, constructorId, constructorList, driverViewModel, constructorViewModel, this, loadingScreen);
                         constructorsStandingRecyclerView.setAdapter(constructorsStandingAdapter);
-
-                        for (int i = 0; i < constructorsStandingAdapter.getItemCount(); i++) {
-                            constructorsStandingAdapter.onBindViewHolder(
-                                    constructorsStandingAdapter.createViewHolder(constructorsStandingRecyclerView, constructorsStandingAdapter.getItemViewType(i)), i);
-                        }
-
+                        // RecyclerView automatically calls onBindViewHolder when items become visible
+                        // Manual calls to onBindViewHolder have been removed to prevent race conditions
                     }
                 }
             } else if (result instanceof Result.Error) {
