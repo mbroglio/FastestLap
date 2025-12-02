@@ -5,7 +5,6 @@
     android:id="@+id/past_events_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/screen_background_color"
     tools:context=".ui.event.PastEventsActivity">
 
     <com.google.android.material.appbar.AppBarLayout

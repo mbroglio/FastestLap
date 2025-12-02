@@ -1,6 +1,7 @@
 package com.the_coffe_coders.fastestlap.ui.junior;
 
 import android.os.Bundle;
+import android.widget.RelativeLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,6 +9,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
@@ -34,20 +36,27 @@ public class JuniorActivity extends AppCompatActivity {
 
     private void setToolbar() {
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        AppBarLayout appBarLayout = findViewById(R.id.top_bar_layout);
+
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         if(categoryType == 0){
             toolbar.setTitle("FORMULA 2");
             toolbar.setBackgroundColor(getColor(R.color.formula_2));
+            appBarLayout.setBackgroundColor(getColor(R.color.formula_2));
         }else{
             toolbar.setTitle("FORMULA 3");
             toolbar.setBackgroundColor(getColor(R.color.ferrari_secondary));
+            appBarLayout.setBackgroundColor(getColor(R.color.ferrari_secondary));
         }
 
         UIUtils.applyWindowInsets(toolbar);
     }
 
     private void setupPage() {
+        RelativeLayout layout = findViewById(R.id.junior_layout);
+        UIUtils.applyWindowInsets(layout);
+
         MaterialCardView entryListCard, calendarCard, resultsCard, driversStandingCard, constructorsStandingCard;
         entryListCard = findViewById(R.id.entry_list_card);
         calendarCard = findViewById(R.id.calendar_card);
