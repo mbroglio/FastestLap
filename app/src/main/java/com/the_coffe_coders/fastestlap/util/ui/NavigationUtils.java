@@ -21,7 +21,8 @@ import com.the_coffe_coders.fastestlap.ui.event.UpcomingEventsActivity;
 import com.the_coffe_coders.fastestlap.ui.event.fragment.QualifyingResultsFragment;
 import com.the_coffe_coders.fastestlap.ui.event.fragment.RaceAndSprintResultsFragment;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
-import com.the_coffe_coders.fastestlap.ui.junior.JuniorActivity;
+import com.the_coffe_coders.fastestlap.ui.junior.Formula2Activity;
+import com.the_coffe_coders.fastestlap.ui.junior.Formula3Activity;
 import com.the_coffe_coders.fastestlap.ui.junior.JuniorResultsActivity;
 import com.the_coffe_coders.fastestlap.ui.junior.fragment.JuniorDialogFragment;
 import com.the_coffe_coders.fastestlap.ui.profile.LoginFragment;
@@ -104,7 +105,17 @@ public class NavigationUtils {
     }
 
     public static void navigateToJuniorPage(Context context, int categoryType) {
-        Intent intent = new Intent(context, JuniorActivity.class);
+        Intent intent;
+        switch (categoryType){
+            case 0:
+                intent = new Intent(context, Formula2Activity.class);
+                break;
+            case 1:
+                intent = new Intent(context, Formula3Activity.class);
+                break;
+            default:
+                return;
+        }
         intent.putExtra("CATEGORY_TYPE", categoryType);
         context.startActivity(intent);
     }

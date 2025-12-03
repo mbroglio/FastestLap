@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/screen_background_color"
+    tools:context=".ui.junior.Formula2Activity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/top_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/formula_2"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/top_bar_height"
+            android:background="@color/formula_2"
+            app:navigationIcon="@drawable/arrow_back_ios_style"
+            app:title="FORMULA 2"
+            app:titleCentered="true"
+            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:id="@+id/junior_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/screen_background_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/top_bar_layout">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginEnd="@dimen/medium_margin">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/entry_list_card"
+                    style="@style/F2MenuCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:scrollY="20sp"
+                        android:src="@drawable/formula_2_grid_image" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/junior_card_overlay" />
+
+                    <TextView
+                        style="@style/JuniorCardTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Entry List" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/calendar_card"
+                    style="@style/F2MenuCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/racetrack_night_image" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/junior_card_overlay" />
+
+                    <TextView
+                        style="@style/JuniorCardTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Calendar" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/results_card"
+                    style="@style/F2MenuCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/formula_2_result_image" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/junior_card_overlay" />
+
+                    <TextView
+                        style="@style/JuniorCardTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Results" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/drivers_standing_card"
+                    style="@style/F2MenuCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:scrollY="-5sp"
+                        android:src="@drawable/entry_list_formula_2_image" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/junior_card_overlay" />
+
+                    <TextView
+                        style="@style/JuniorCardTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Drivers Standing" />
+                </com.google.android.material.card.MaterialCardView>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/constructors_standing_card"
+                    style="@style/F2MenuCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="120dp"
+                    android:layout_marginTop="16dp"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/formula_2_overtake_image" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/junior_card_overlay" />
+
+                    <TextView
+                        style="@style/JuniorCardTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Constructors Standing" />
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <!--
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/entry_list_card"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:layout_marginBottom="8dp"
+                        app:cardBackgroundColor="@color/timer_gray"
+                        app:cardCornerRadius="5dp"
+                        app:strokeColor="@color/black"
+                        app:strokeWidth="3dp">
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center"
+                            android:layout_margin="8dp"
+                            android:autoSizeMaxTextSize="@dimen/page_title_text_size"
+                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+                            android:autoSizeTextType="uniform"
+                            android:fontFamily="@font/orbitron_bold"
+                            android:gravity="center"
+                            android:text="ENTRY LIST"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/page_title_text_size">
+
+                        </TextView>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+
+<com.google.android.material.card.MaterialCardView
+android:id="@+id/calendar_card"
+android:layout_width="match_parent"
+android:layout_height="100dp"
+android:layout_marginBottom="8dp"
+app:cardBackgroundColor="@color/timer_gray"
+app:cardCornerRadius="5dp"
+app:strokeColor="@color/black"
+app:strokeWidth="3dp">
+
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:layout_margin="8dp"
+    android:autoSizeMaxTextSize="@dimen/page_title_text_size"
+    android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+    android:autoSizeTextType="uniform"
+    android:fontFamily="@font/orbitron_bold"
+    android:gravity="center"
+    android:text="CALENDAR"
+    android:textColor="@color/black"
+    android:textSize="@dimen/page_title_text_size">
+
+</TextView>
+
+</com.google.android.material.card.MaterialCardView>
+
+<com.google.android.material.card.MaterialCardView
+android:id="@+id/results_card"
+android:layout_width="match_parent"
+android:layout_height="100dp"
+android:layout_marginBottom="8dp"
+app:cardBackgroundColor="@color/timer_gray"
+app:cardCornerRadius="5dp"
+app:strokeColor="@color/black"
+app:strokeWidth="3dp">
+
+<TextView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center"
+    android:layout_margin="8dp"
+    android:autoSizeMaxTextSize="@dimen/page_title_text_size"
+    android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+    android:autoSizeTextType="uniform"
+    android:fontFamily="@font/orbitron_bold"
+    android:gravity="center"
+    android:text="RESULTS"
+    android:textColor="@color/black"
+    android:textSize="@dimen/page_title_text_size">
+
+</TextView>
+
+</com.google.android.material.card.MaterialCardView>
+
+<LinearLayout
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:orientation="horizontal">
+
+<com.google.android.material.card.MaterialCardView
+    android:id="@+id/drivers_standing_card"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:layout_marginBottom="8dp"
+    android:layout_weight="1"
+    app:cardBackgroundColor="@color/timer_gray"
+    app:cardCornerRadius="5dp"
+    app:strokeColor="@color/black"
+    app:strokeWidth="3dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="8dp"
+        android:autoSizeMaxTextSize="@dimen/page_title_text_size"
+        android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+        android:autoSizeTextType="uniform"
+        android:fontFamily="@font/orbitron_bold"
+        android:gravity="center"
+        android:maxLines="2"
+        android:text="DRIVERS STANDING"
+        android:textColor="@color/black"
+        android:textSize="@dimen/page_title_text_size">
+
+    </TextView>
+
+</com.google.android.material.card.MaterialCardView>
+
+<com.google.android.material.card.MaterialCardView
+    android:id="@+id/constructors_standing_card"
+    android:layout_width="match_parent"
+    android:layout_height="100dp"
+    android:layout_marginBottom="8dp"
+    android:layout_weight="1"
+    app:cardBackgroundColor="@color/timer_gray"
+    app:cardCornerRadius="5dp"
+    app:strokeColor="@color/black"
+    app:strokeWidth="3dp">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:layout_margin="8sp"
+        android:autoSizeMaxTextSize="@dimen/page_title_text_size"
+        android:autoSizeMinTextSize="@dimen/min_text_resize_1"
+        android:autoSizeTextType="uniform"
+        android:fontFamily="@font/orbitron_bold"
+        android:gravity="center"
+        android:maxLines="2"
+        android:text="CONSTRUCTORS STANDING"
+        android:textColor="@color/black"
+        android:textSize="@dimen/page_title_text_size">
+
+    </TextView>
+
+</com.google.android.material.card.MaterialCardView>
+-->

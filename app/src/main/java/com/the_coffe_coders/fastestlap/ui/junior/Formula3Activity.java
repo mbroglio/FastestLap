@@ -1,7 +1,6 @@
 package com.the_coffe_coders.fastestlap.ui.junior;
 
 import android.os.Bundle;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 
 import androidx.activity.EdgeToEdge;
@@ -17,7 +16,7 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
-public class JuniorActivity extends AppCompatActivity {
+public class Formula3Activity extends AppCompatActivity {
 
     private int categoryType;
 
@@ -25,7 +24,7 @@ public class JuniorActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_junior);
+        setContentView(R.layout.activity_formula3);
 
         //0: F2; 1: F3
         categoryType = getIntent().getIntExtra("CATEGORY_TYPE", 0);
@@ -37,42 +36,9 @@ public class JuniorActivity extends AppCompatActivity {
 
     private void setToolbar() {
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-        AppBarLayout appBarLayout = findViewById(R.id.top_bar_layout);
-
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        if(categoryType == 0){
-            setCards(true);
-            toolbar.setTitle("FORMULA 2");
-            toolbar.setBackgroundColor(getColor(R.color.formula_2));
-            appBarLayout.setBackgroundColor(getColor(R.color.formula_2));
-        }else{
-            toolbar.setTitle("FORMULA 3");
-            toolbar.setBackgroundColor(getColor(R.color.ferrari_secondary));
-            appBarLayout.setBackgroundColor(getColor(R.color.ferrari_secondary));
-        }
-
         UIUtils.applyWindowInsets(toolbar);
-    }
-
-    private void setCards(boolean isF2) {
-        MaterialCardView cards[] = {findViewById(R.id.entry_list_card), findViewById(R.id.calendar_card),
-                findViewById(R.id.results_card), findViewById(R.id.drivers_standing_card),
-                findViewById(R.id.constructors_standing_card)};
-
-        for(MaterialCardView card : cards){
-            card.st
-        }
-
-
-        entryListCard = findViewById(R.id.entry_list_card);
-        calendarCard = findViewById(R.id.calendar_card);
-        resultsCard = findViewById(R.id.results_card);
-        driversStandingCard = findViewById(R.id.drivers_standing_card);
-        constructorsStandingCard = findViewById(R.id.constructors_standing_card);
-
-
-
     }
 
     private void setupPage() {
@@ -80,15 +46,15 @@ public class JuniorActivity extends AppCompatActivity {
         UIUtils.applyWindowInsets(layout);
 
         MaterialCardView entryListCard, calendarCard, resultsCard, driversStandingCard, constructorsStandingCard;
-        entryListCard = findViewById(R.id.entry_list_card);
-        calendarCard = findViewById(R.id.calendar_card);
-        resultsCard = findViewById(R.id.results_card);
-        driversStandingCard = findViewById(R.id.drivers_standing_card);
-        constructorsStandingCard = findViewById(R.id.constructors_standing_card);
+        entryListCard = findViewById(R.id.f3_entry_list_card);
+        calendarCard = findViewById(R.id.f3_calendar_card);
+        resultsCard = findViewById(R.id.f3_results_card);
+        driversStandingCard = findViewById(R.id.f3_drivers_standing_card);
+        constructorsStandingCard = findViewById(R.id.f3_constructors_standing_card);
 
         entryListCard.setOnClickListener(v -> {}
                 //NavigationUtils.showEntryListDialog(getSupportFragmentManager(), categoryType)
-                    //content = entryList
+                //content = entryList
         );
 
         calendarCard.setOnClickListener(v -> {}

@@ -23,10 +23,13 @@
         android:theme="@style/Theme.FastestLap"
         tools:targetApi="31">
         <activity
+            android:name=".ui.junior.Formula3Activity"
+            android:exported="false" />
+        <activity
             android:name=".ui.junior.JuniorResultsActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.junior.JuniorActivity"
+            android:name=".ui.junior.Formula2Activity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity

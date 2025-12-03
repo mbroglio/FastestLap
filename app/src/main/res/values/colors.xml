@@ -205,7 +205,7 @@
     <color name="formula_2">#019DDA</color>
 
 
-    <color name="f2_background">#1A1A1A</color>
-    <color name="f2_card_overlay">#66000000</color>
+    <color name="junior_background">#1A1A1A</color>
+    <color name="junior_card_overlay">#66000000</color>
 
 </resources>
