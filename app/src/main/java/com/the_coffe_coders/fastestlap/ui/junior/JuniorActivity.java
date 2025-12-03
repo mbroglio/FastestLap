@@ -2,6 +2,7 @@ package com.the_coffe_coders.fastestlap.ui.junior;
 
 import android.os.Bundle;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -41,6 +42,7 @@ public class JuniorActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         if(categoryType == 0){
+            setCards(true);
             toolbar.setTitle("FORMULA 2");
             toolbar.setBackgroundColor(getColor(R.color.formula_2));
             appBarLayout.setBackgroundColor(getColor(R.color.formula_2));
@@ -53,8 +55,28 @@ public class JuniorActivity extends AppCompatActivity {
         UIUtils.applyWindowInsets(toolbar);
     }
 
+    private void setCards(boolean isF2) {
+        MaterialCardView cards[] = {findViewById(R.id.entry_list_card), findViewById(R.id.calendar_card),
+                findViewById(R.id.results_card), findViewById(R.id.drivers_standing_card),
+                findViewById(R.id.constructors_standing_card)};
+
+        for(MaterialCardView card : cards){
+            card.st
+        }
+
+
+        entryListCard = findViewById(R.id.entry_list_card);
+        calendarCard = findViewById(R.id.calendar_card);
+        resultsCard = findViewById(R.id.results_card);
+        driversStandingCard = findViewById(R.id.drivers_standing_card);
+        constructorsStandingCard = findViewById(R.id.constructors_standing_card);
+
+
+
+    }
+
     private void setupPage() {
-        RelativeLayout layout = findViewById(R.id.junior_layout);
+        ScrollView layout = findViewById(R.id.junior_layout);
         UIUtils.applyWindowInsets(layout);
 
         MaterialCardView entryListCard, calendarCard, resultsCard, driversStandingCard, constructorsStandingCard;
