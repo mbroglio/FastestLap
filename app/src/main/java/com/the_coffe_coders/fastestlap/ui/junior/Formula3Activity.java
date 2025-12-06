@@ -42,7 +42,7 @@ public class Formula3Activity extends AppCompatActivity {
     }
 
     private void setupPage() {
-        ScrollView layout = findViewById(R.id.junior_layout);
+        ScrollView layout = findViewById(R.id.f3_layout);
         UIUtils.applyWindowInsets(layout);
 
         MaterialCardView entryListCard, calendarCard, resultsCard, driversStandingCard, constructorsStandingCard;

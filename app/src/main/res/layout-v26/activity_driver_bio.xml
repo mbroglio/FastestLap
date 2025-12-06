@@ -189,119 +189,77 @@
                         android:orientation="vertical">
 
                         <TextView
+                            style="@style/BioPageContentIndexWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginEnd="5dp"
-                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_bold"
                             android:gravity="start"
                             android:maxLines="1"
-                            android:text="@string/place_of_birth"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/layout_subtitle_text_size" />
+                            android:text="@string/place_of_birth" />
 
                         <TextView
                             android:id="@+id/driver_birthplace"
+                            style="@style/BioPageContentRegularWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="2dp"
                             android:layout_marginEnd="5dp"
-                            android:autoSizeMaxTextSize="@dimen/body_text_size"
-                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_regular"
                             android:gravity="start"
                             android:maxLines="1"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size" />
+                            android:text="@string/not_found" />
 
                         <TextView
+                            style="@style/BioPageContentIndexWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="5dp"
-                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_bold"
                             android:gravity="start"
-                            android:maxLines="1"
-                            android:text="@string/date_of_birth"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/layout_subtitle_text_size" />
+                            android:text="@string/date_of_birth" />
 
                         <TextView
                             android:id="@+id/driver_birthdate"
+                            style="@style/BioPageContentRegularWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="2dp"
                             android:layout_marginEnd="5dp"
-                            android:autoSizeMaxTextSize="@dimen/body_text_size"
-                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:maxLines="1"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size" />
+                            android:text="@string/not_found" />
 
                         <TextView
+                            style="@style/BioPageContentIndexWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="5dp"
-                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_bold"
-                            android:gravity="start"
-                            android:maxLines="1"
-                            android:text="@string/age"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/layout_subtitle_text_size" />
+                            android:text="@string/age" />
 
                         <TextView
                             android:id="@+id/driver_age"
+                            style="@style/BioPageContentRegularWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="2dp"
                             android:layout_marginEnd="5dp"
-                            android:autoSizeMaxTextSize="@dimen/body_text_size"
-                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:maxLines="1"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size" />
+                            android:text="@string/not_found" />
 
                         <TextView
+                            style="@style/BioPageContentIndexWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="5dp"
-                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_bold"
-                            android:gravity="start"
-                            android:maxLines="1"
-                            android:text="@string/weight_height"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/layout_subtitle_text_size" />
+                            android:text="@string/weight_height" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -312,18 +270,12 @@
 
                             <TextView
                                 android:id="@+id/driver_weight"
+                                style="@style/BioPageContentRegularWhite"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="start"
                                 android:layout_marginTop="2dp"
-                                android:autoSizeMaxTextSize="@dimen/body_text_size"
-                                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                                android:autoSizeTextType="uniform"
-                                android:fontFamily="@font/orbitron_regular"
-                                android:maxLines="1"
-                                android:text="@string/not_found"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/body_text_size" />
+                                android:text="@string/not_found" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -342,34 +294,23 @@
                             </TextView>
 
                             <TextView
+                                style="@style/BioPageContentRegularWhite"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
                                 android:layout_marginStart="10dp"
                                 android:layout_marginEnd="10dp"
-                                android:autoSizeMaxTextSize="@dimen/body_text_size"
-                                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                                android:autoSizeTextType="uniform"
-                                android:fontFamily="@font/orbitron_regular"
                                 android:maxLines="1"
-                                android:text="@string/separator_high_dash"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/body_text_size" />
+                                android:text="@string/separator_high_dash" />
 
                             <TextView
                                 android:id="@+id/driver_height"
+                                style="@style/BioPageContentRegularWhite"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="start"
                                 android:layout_marginTop="2dp"
-                                android:autoSizeMaxTextSize="@dimen/body_text_size"
-                                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                                android:autoSizeTextType="uniform"
-                                android:fontFamily="@font/orbitron_regular"
-                                android:maxLines="1"
-                                android:text="@string/not_found"
-                                android:textColor="@color/white"
-                                android:textSize="@dimen/body_text_size" />
+                                android:text="@string/not_found" />
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -390,136 +331,84 @@
                         </LinearLayout>
 
                         <TextView
+                            style="@style/BioPageContentIndexWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="5dp"
-                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_bold"
-                            android:gravity="start"
-                            android:maxLines="1"
-                            android:text="@string/best_result"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/layout_subtitle_text_size" />
+                            android:text="@string/best_result" />
 
                         <TextView
                             android:id="@+id/driver_best_result"
+                            style="@style/BioPageContentRegularWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="2dp"
                             android:layout_marginEnd="5dp"
-                            android:autoSizeMaxTextSize="@dimen/body_text_size"
-                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:maxLines="1"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size" />
+                            android:text="@string/not_found" />
 
                         <TextView
+                            style="@style/BioPageContentIndexWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="5dp"
-                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_bold"
-                            android:gravity="start"
-                            android:maxLines="1"
-                            android:text="@string/podiums"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/layout_subtitle_text_size" />
+                            android:text="@string/podiums" />
 
                         <TextView
                             android:id="@+id/driver_podiums"
+                            style="@style/BioPageContentRegularWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="2dp"
                             android:layout_marginEnd="5dp"
-                            android:autoSizeMaxTextSize="@dimen/body_text_size"
-                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:maxLines="1"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size" />
+                            android:text="@string/not_found" />
 
                         <TextView
+                            style="@style/BioPageContentIndexWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="5dp"
-                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_bold"
-                            android:gravity="start"
-                            android:maxLines="1"
-                            android:text="@string/championships"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/layout_subtitle_text_size" />
+                            android:text="@string/championships" />
 
                         <TextView
                             android:id="@+id/driver_championships"
+                            style="@style/BioPageContentRegularWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="2dp"
                             android:layout_marginEnd="5dp"
-                            android:autoSizeMaxTextSize="@dimen/body_text_size"
-                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:maxLines="1"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size" />
+                            android:text="@string/not_found" />
 
                         <TextView
+                            style="@style/BioPageContentIndexWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="5dp"
-                            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_bold"
-                            android:gravity="start"
-                            android:maxLines="1"
-                            android:text="@string/first_entry"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/layout_subtitle_text_size" />
+                            android:text="@string/first_entry" />
 
                         <TextView
                             android:id="@+id/driver_first_entry"
+                            style="@style/BioPageContentRegularWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
                             android:layout_marginStart="20dp"
                             android:layout_marginTop="2dp"
                             android:layout_marginEnd="5dp"
-                            android:autoSizeMaxTextSize="@dimen/body_text_size"
-                            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:maxLines="1"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size" />
+                            android:text="@string/not_found" />
 
                     </LinearLayout>
 
@@ -536,13 +425,11 @@
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/LayoutTitle1UppercaseWhite"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/orbitron_bold"
-                        android:text="@string/driver_history_upper_case"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/layout_title_1_text_size" />
-
+                        android:text="driver history:" />
 
                     <TableLayout
                         android:id="@+id/history_table"

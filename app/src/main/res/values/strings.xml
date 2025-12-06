@@ -197,5 +197,10 @@
     <string name="news_menu">News</string>
     <string name="junior_menu">Junior</string>
     <string name="results_upper_case">RESULTS</string>
+    <string name="year">year</string>
+    <string name="pos" translatable="false">pos</string>
+    <string name="points">points</string>
+    <string name="wins_header">wins</string>
+    <string name="pod" translatable="false">pod</string>
 
 </resources>
