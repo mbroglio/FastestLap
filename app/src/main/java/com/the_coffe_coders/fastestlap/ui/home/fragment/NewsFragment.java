@@ -211,8 +211,8 @@ public class NewsFragment extends Fragment {
     }
 
     private void displayNews(List<News> newsList, RecyclerView recyclerView) {
-        // Reduce items to wait for - only wait for first image to load
-        int itemsToWait = 1;
+        // Wait for first 3 images (or all if less than 3) to ensure above-the-fold content is loaded
+        int itemsToWait = Math.min(3, newsList.size());
         loadingCounter += itemsToWait;
         NewsRecyclerAdapter adapter = new NewsRecyclerAdapter(newsList, getContext(), this::decrementLoadingCounter, itemsToWait);
         recyclerView.setAdapter(adapter);

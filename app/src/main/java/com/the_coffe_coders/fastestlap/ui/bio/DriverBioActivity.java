@@ -290,7 +290,7 @@ public class DriverBioActivity extends AppCompatActivity {
             nationFlagUrl = nation.getNation_flag_url();
         }
 
-        UIUtils.loadSequenceOfImagesWithGlide(this,
+        UIUtils.loadImagesInParallel(this,
                 new String[]{
                         team.getTeam_logo_url(),
                         nationFlagUrl,

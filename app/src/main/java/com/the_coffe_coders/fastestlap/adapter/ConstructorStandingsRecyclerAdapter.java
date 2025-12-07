@@ -169,10 +169,11 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
     }
 
     private void endLoading(int position) {
-        loadingScreen.updateProgress();
-
         Log.i("ConstructorsStanding", "onBindViewHolder " + position + "/" + getItemCount());
-        loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);
+        // Only hide loading screen when the last item is fully loaded
+        if (position == getItemCount() - 1) {
+            loadingScreen.hideLoadingScreen();
+        }
     }
 
     private void setMissingDriver(ConstructorViewHolder holder, String driverId, Constructor constructor, int position, int driverType) {

@@ -271,7 +271,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
             nationFlagUrl = nation.getNation_flag_url();
         }
 
-        UIUtils.loadSequenceOfImagesWithGlide(this,
+        UIUtils.loadImagesInParallel(this,
                 new String[]{team.getTeam_logo_url(), nationFlagUrl, team.getCar_pic_url(), driverOne.getDriver_pic_url(), driverTwo.getDriver_pic_url()},
                 new ImageView[]{findViewById(R.id.team_logo_image), findViewById(R.id.team_flag), findViewById(R.id.team_car_image), findViewById(R.id.driver_1_image), findViewById(R.id.driver_2_image)},
                 () -> setTeamDataFinalStep(team));

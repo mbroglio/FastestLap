@@ -87,6 +87,10 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
                 UIUtils.loadImageWithGlide(context, track.getTrack_minimal_layout_url(), holder.trackOutline, () -> {
                     // Callback quando l'immagine è caricata
                     Log.i("PastEventsAdapter", "Image loaded for position: " + position);
+                    // Only hide loading screen when the last item's image is loaded
+                    if (position == getItemCount() - 1) {
+                        loadingScreen.hideLoadingScreen();
+                    }
                 });
 
                 // Imposta il click listener
@@ -112,10 +116,6 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
                         holder.pastEventCard.findViewById(Constants.PAST_RACE_DRIVER_NAME.get(i)));
             }
         }
-
-        loadingScreen.updateProgress();
-        Log.i("PastEventsAdapter", "onBindViewHolder: " + position + " / " + getItemCount());
-        loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);
     }
 
     private void setPendingPodium(@NonNull PastEventViewHolder holder) {

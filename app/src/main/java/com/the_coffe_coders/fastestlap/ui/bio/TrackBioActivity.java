@@ -163,7 +163,7 @@ public class TrackBioActivity extends AppCompatActivity {
             nationFlag_Url = nation.getNation_flag_url();
         }
 
-        UIUtils.loadSequenceOfImagesWithGlide(this,
+        UIUtils.loadImagesInParallel(this,
                 new String[]{track.getTrack_full_layout_url(), nationFlag_Url},
                 new ImageView[]{circuitImage, countryFlag},
                 this::createHistoryTable);

@@ -168,11 +168,11 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
                 Constructor constructor = ((Result.ConstructorSuccess) result).getData();
 
                 UIUtils.loadImageWithGlide(context, constructor.getTeam_logo_minimal_url(), holder.driverTeamImage, () -> {
-
-                    loadingScreen.updateProgress();
-
                     Log.i("DriversStanding", "onBindViewHolder " + position + "/" + getItemCount());
-                    loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);
+                    // Only hide loading screen when the last item is fully loaded
+                    if (position == getItemCount() - 1) {
+                        loadingScreen.hideLoadingScreen();
+                    }
                 });
             }
         });
