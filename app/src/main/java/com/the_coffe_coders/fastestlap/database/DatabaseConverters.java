@@ -4,26 +4,26 @@ import androidx.room.TypeConverter;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
-import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorHistory;
-import com.the_coffe_coders.fastestlap.domain.driver.Driver;
-import com.the_coffe_coders.fastestlap.domain.driver.DriverHistory;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Location;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Practice;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Qualifying;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.QualifyingResult;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResultFastestLap;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResultTime;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Sprint;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.SprintQualifying;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.TrackHistory;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
+import com.the_coffe_coders.fastestlap.domain.f1.constructor.ConstructorHistory;
+import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
+import com.the_coffe_coders.fastestlap.domain.f1.driver.DriverHistory;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.ConstructorStandingsElement;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.DriverStandingsElement;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Location;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Practice;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Qualifying;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.QualifyingResult;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.RaceResult;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.RaceResultFastestLap;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.RaceResultTime;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Session;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Sprint;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.SprintQualifying;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Track;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.TrackHistory;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 
 import org.threeten.bp.LocalDateTime;
@@ -325,4 +325,13 @@ public class DatabaseConverters {
     public static Session toSession(String json) {
         return gson.fromJson(json, Session.class);
     }
+
+
+
+    /*
+    * ----------------------------------------------------------------------------------------------
+    *   JUNIOR
+    * ----------------------------------------------------------------------------------------------
+     */
+
 }

@@ -1,12 +1,12 @@
 package com.the_coffe_coders.fastestlap.domain;
 
-import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
-import com.the_coffe_coders.fastestlap.domain.driver.Driver;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
+import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.ConstructorStandings;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.DriverStandings;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Track;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 

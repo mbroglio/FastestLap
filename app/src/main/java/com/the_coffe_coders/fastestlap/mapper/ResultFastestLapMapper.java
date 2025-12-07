@@ -1,6 +1,6 @@
 package com.the_coffe_coders.fastestlap.mapper;
 
-import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResultFastestLap;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.RaceResultFastestLap;
 import com.the_coffe_coders.fastestlap.dto.ResultFastestLapDTO;
 
 public class ResultFastestLapMapper {

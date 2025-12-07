@@ -1,7 +1,7 @@
 package com.the_coffe_coders.fastestlap.mapper;
 
-import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.ConstructorStandings;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.dto.ConstructorStandingsDTO;
 import com.the_coffe_coders.fastestlap.dto.ConstructorStandingsElementDTO;
 

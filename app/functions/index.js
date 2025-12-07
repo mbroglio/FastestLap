@@ -62,7 +62,7 @@ exports.updateChampionships = onSchedule(
  */
 exports.updateJuniorSeries = onSchedule(
   {
-    schedule: "0 14 * * 0,1",
+    schedule: "0 14 * * 0,1", // every Sunday and Monday at 14:00
     timeZone: "Europe/Rome",
     timeoutSeconds: 300,
     retryConfig: {

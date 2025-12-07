@@ -63,7 +63,13 @@ async function checkRaceYesterday(db, seriesId) {
         const race = calendarData[key];
         // Compare string (e.g., "16 March")
         if (race.feature_date && race.feature_date.toLowerCase() === yesterdayString.toLowerCase()) {
-            console.log(`[${seriesId}] Match found: Round ${race.round} at ${race.circuit}`);
+            console.log(`[${seriesId}] Match found: Round ${race.round} at ${race.circuit} on Feature Date`);
+            raceFound = true;
+            break;
+        }
+
+        if (race.sprint_date && race.sprint_date.toLowerCase() === yesterdayString.toLowerCase()) {
+            console.log(`[${seriesId}] Match found: Round ${race.round} at ${race.circuit} on Sprint Date`);
             raceFound = true;
             break;
         }

@@ -5,7 +5,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Track;
 
 @Dao
 public interface TrackDAO {

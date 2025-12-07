@@ -1,8 +1,8 @@
 package com.the_coffe_coders.fastestlap.mapper;
 
-import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
+import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.DriverStandings;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.dto.ConstructorDTO;
 import com.the_coffe_coders.fastestlap.dto.DriverStandingsDTO;
 import com.the_coffe_coders.fastestlap.dto.DriverStandingsElementDTO;

@@ -1,11 +1,11 @@
 package com.the_coffe_coders.fastestlap.mapper;
 
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Practice;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Qualifying;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.QualifyingResult;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Sprint;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.SprintQualifying;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Practice;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Qualifying;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.QualifyingResult;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.RaceResult;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Sprint;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.SprintQualifying;
 import com.the_coffe_coders.fastestlap.dto.PracticeDTO;
 import com.the_coffe_coders.fastestlap.dto.QualifyingDTO;
 import com.the_coffe_coders.fastestlap.dto.QualifyingResultDTO;

@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
-import com.the_coffe_coders.fastestlap.repository.standing.constructor.ConstructorStandingRepository;
+import com.the_coffe_coders.fastestlap.repository.f1.standing.constructor.ConstructorStandingRepository;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 public class ConstructorStandingsViewModelFactory implements ViewModelProvider.Factory {

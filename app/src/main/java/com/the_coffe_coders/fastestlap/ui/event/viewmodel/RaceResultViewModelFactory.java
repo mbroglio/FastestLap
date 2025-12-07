@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
-import com.the_coffe_coders.fastestlap.repository.result.ResultRepository;
+import com.the_coffe_coders.fastestlap.repository.f1.result.ResultRepository;
 
 public class RaceResultViewModelFactory implements ViewModelProvider.Factory {
     private final ResultRepository resultRepository;

@@ -11,7 +11,7 @@ import android.widget.Toast;
 import androidx.fragment.app.FragmentManager;
 
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
