@@ -12,8 +12,10 @@ import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
 public interface RaceDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(Race race);
+
     @Query("SELECT * FROM Race WHERE round = :round")
     Race getRaceByRound(int round);
+
     @Delete
     void delete(Race race);
 }

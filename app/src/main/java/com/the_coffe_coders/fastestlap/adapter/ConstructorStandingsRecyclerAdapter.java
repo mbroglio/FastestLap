@@ -67,53 +67,52 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         String currentConstructorId = constructorStandingsElement.getConstructor().getConstructorId();
 
 
-            constructorViewModel.getSelectedConstructor(currentConstructorId).observe(lifecycleOwner, result -> {
-                if (result instanceof Result.Loading) {
-                    return;
-                }
-                if (result.isSuccess()) {
-                    showConstructorFound(holder);
-                    Constructor constructor = ((Result.ConstructorSuccess) result).getData();
-                    constructorStandingsElement.setConstructor(constructor);
+        constructorViewModel.getSelectedConstructor(currentConstructorId).observe(lifecycleOwner, result -> {
+            if (result instanceof Result.Loading) {
+                return;
+            }
+            if (result.isSuccess()) {
+                showConstructorFound(holder);
+                Constructor constructor = ((Result.ConstructorSuccess) result).getData();
+                constructorStandingsElement.setConstructor(constructor);
 
-                    holder.constructorCardInnerLayout.setBackground(AppCompatResources.getDrawable(context,
-                            Objects.requireNonNull(Constants.TEAM_GRADIENT_COLOR.get(currentConstructorId))));
+                holder.constructorCardInnerLayout.setBackground(AppCompatResources.getDrawable(context,
+                        Objects.requireNonNull(Constants.TEAM_GRADIENT_COLOR.get(currentConstructorId))));
 
-                    UIUtils.setTextViewTextWithCondition(constructorStandingsElement.getPosition() == null,
-                            ContextCompat.getString(context, R.string.last_constructor_position), //if true
-                            constructorStandingsElement.getPosition(), //if false
-                            holder.constructorPosition);
+                UIUtils.setTextViewTextWithCondition(constructorStandingsElement.getPosition() == null,
+                        ContextCompat.getString(context, R.string.last_constructor_position), //if true
+                        constructorStandingsElement.getPosition(), //if false
+                        holder.constructorPosition);
 
-                    UIUtils.multipleSetTextViewText(
-                            new String[]{
-                                    constructor.getName(),
-                                    constructorStandingsElement.getPoints()},
-                            new TextView[]{
-                                    holder.constructorName,
-                                    holder.constructorPoints});
+                UIUtils.multipleSetTextViewText(
+                        new String[]{
+                                constructor.getName(),
+                                constructorStandingsElement.getPoints()},
+                        new TextView[]{
+                                holder.constructorName,
+                                holder.constructorPoints});
 
-                    if (constructorId != null) {
-                        if (currentConstructorId.equals(constructorId)) {
-                            UIUtils.animateCardBackgroundColor(context, holder.constructorCard, R.color.yellow, Color.TRANSPARENT, 1000, 10);
-                        }
+                if (constructorId != null) {
+                    if (currentConstructorId.equals(constructorId)) {
+                        UIUtils.animateCardBackgroundColor(context, holder.constructorCard, R.color.yellow, Color.TRANSPARENT, 1000, 10);
                     }
-
-                    holder.constructorCard.setOnClickListener(v -> goToBioPage(position));
-
-                    UIUtils.loadSequenceOfImagesWithGlide(context,
-                            new String[]{
-                                    constructor.getCar_pic_url(),
-                                    constructor.getTeam_logo_url()},
-                            new ImageView[]{
-                                    holder.constructorCarImage,
-                                    holder.constructorLogo},
-
-                            () -> processDriverOne(holder, constructor, position));
-                }else{
-                    showConstructorNotFound(holder, currentConstructorId);
                 }
-            });
 
+                holder.constructorCard.setOnClickListener(v -> goToBioPage(position));
+
+                UIUtils.loadSequenceOfImagesWithGlide(context,
+                        new String[]{
+                                constructor.getCar_pic_url(),
+                                constructor.getTeam_logo_url()},
+                        new ImageView[]{
+                                holder.constructorCarImage,
+                                holder.constructorLogo},
+
+                        () -> processDriverOne(holder, constructor, position));
+            } else {
+                showConstructorNotFound(holder, currentConstructorId);
+            }
+        });
 
 
     }
@@ -127,7 +126,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
     }
 
     private void processDriverOne(ConstructorViewHolder holder, Constructor constructor, int position) {
-        try{
+        try {
             driverViewModel.getDriver(constructor.getDriverOneId()).observe(lifecycleOwner, result -> {
                 if (result instanceof Result.Loading) {
                     return;
@@ -138,7 +137,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                     UIUtils.singleSetTextViewText(driverOne.getFullName(), holder.driverOneName);
                     UIUtils.loadImageWithGlide(context, driverOne.getDriver_pic_url(), holder.driverOneImage,
                             () -> processDriverTwo(holder, constructor, position));
-                }else{
+                } else {
                     setMissingDriver(holder, constructor.getDriverOneId(), constructor, position, 1);
                 }
             });
@@ -149,7 +148,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
     }
 
     private void processDriverTwo(ConstructorViewHolder holder, Constructor constructor, int position) {
-        try{
+        try {
             driverViewModel.getDriver(constructor.getDriverTwoId()).observe(lifecycleOwner, result -> {
                 if (result instanceof Result.Loading) {
                     return;
@@ -159,7 +158,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
 
                     UIUtils.singleSetTextViewText(driverTwo.getFullName(), holder.driverTwoName);
                     UIUtils.loadImageWithGlide(context, driverTwo.getDriver_pic_url(), holder.driverTwoImage, () -> endLoading(position));
-                }else{
+                } else {
                     setMissingDriver(holder, constructor.getDriverTwoId(), constructor, position, 2);
                 }
             });
@@ -177,17 +176,17 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
     }
 
     private void setMissingDriver(ConstructorViewHolder holder, String driverId, Constructor constructor, int position, int driverType) {
-        if(driverId.contains("_")) {
+        if (driverId.contains("_")) {
             driverId = driverId.split("_")[1];
         }
 
-        switch (driverType){
-            case 1 :
+        switch (driverType) {
+            case 1:
                 UIUtils.singleSetTextViewText(driverId.toUpperCase(), holder.driverOneName);
                 UIUtils.loadImageWithGlide(context, null, holder.driverOneImage,
                         () -> processDriverTwo(holder, constructor, position));
                 break;
-            case 2 :
+            case 2:
                 UIUtils.singleSetTextViewText(driverId.toUpperCase(), holder.driverTwoName);
                 UIUtils.loadImageWithGlide(context, null, holder.driverTwoImage, () -> endLoading(position));
         }
@@ -204,7 +203,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         holder.constructorNotFound.setVisibility(View.VISIBLE);
         Log.i("ConstructorsStandingAdapter", "Constructor not found id test: " + constructorId + " -> " + constructorId.contains("_"));
 
-        if(constructorId.contains("_")) {
+        if (constructorId.contains("_")) {
             constructorId = constructorId.split("_")[0] + " " + constructorId.split("_")[1];
         }
 

@@ -54,7 +54,7 @@ public class EventViewModel extends ViewModel {
                     fastestLap.setConstructorId(result.getConstructor().getConstructorId());
                     break;
                 }
-            }else{
+            } else {
                 Log.e(TAG, "Fastest lap not found for " + result.getDriver().getFullName());
             }
         }

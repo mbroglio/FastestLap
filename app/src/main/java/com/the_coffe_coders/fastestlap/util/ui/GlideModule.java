@@ -1,7 +1,9 @@
 package com.the_coffe_coders.fastestlap.util.ui;
 
 import android.content.Context;
+
 import androidx.annotation.NonNull;
+
 import com.bumptech.glide.GlideBuilder;
 import com.bumptech.glide.load.engine.cache.DiskLruCacheFactory;
 import com.bumptech.glide.module.AppGlideModule;

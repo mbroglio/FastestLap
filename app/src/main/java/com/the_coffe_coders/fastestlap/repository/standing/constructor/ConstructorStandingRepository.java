@@ -2,13 +2,16 @@ package com.the_coffe_coders.fastestlap.repository.standing.constructor;
 
 import android.content.Context;
 import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
+
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.source.standing.constructor.JolpicaConstructorStandingsDataSource;
 import com.the_coffe_coders.fastestlap.source.standing.constructor.LocalConstructorStandingsDataSource;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -54,13 +57,13 @@ public class ConstructorStandingRepository {
                 !lastUpdateTimestamps.containsKey(cacheKey) ||
                 lastUpdateTimestamps.get(cacheKey) == null) {
             constructorStandingCache.put(cacheKey, new MutableLiveData<>());
-            if(isNetworkAvailable()){
+            if (isNetworkAvailable()) {
                 loadConstructorStanding();
-            }else{
+            } else {
                 fetchFromLocal(cacheKey);
             }
         } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(cacheKey) > 60000) {
-            if(isNetworkAvailable())
+            if (isNetworkAvailable())
                 loadConstructorStanding();
             else {
                 fetchFromLocal(cacheKey);

@@ -3,15 +3,17 @@ package com.the_coffe_coders.fastestlap.source.news;
 import static com.the_coffe_coders.fastestlap.util.Constants.AUTOSPORT_RSS_URL;
 import static com.the_coffe_coders.fastestlap.util.Constants.CRASH_RSS_URL;
 import static com.the_coffe_coders.fastestlap.util.Constants.MOTORSPORT_RSS_URL;
+
 import android.util.Log;
+
 import com.rometools.rome.feed.synd.SyndEntry;
 import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.FeedException;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
 import com.the_coffe_coders.fastestlap.domain.news.News;
+
 import java.io.IOException;
-import java.lang.InterruptedException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;

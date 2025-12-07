@@ -73,7 +73,7 @@ public class JolpicaRaceResultDataSource implements RaceResultDataSource {
                     RaceResultsAPIResponse raceResultsAPIResponse = jsonParserUtils.parseRaceResults(mrdata);
 
                     Log.d(TAG, "Successfully parsed race results: " + raceResultsAPIResponse);
-                    if(raceResultsAPIResponse.getFinalRace() != null){
+                    if (raceResultsAPIResponse.getFinalRace() != null) {
                         resultCallback.onSuccess(RaceMapper.toRace(raceResultsAPIResponse.getFinalRace()));
                     }
                 } catch (IOException e) {

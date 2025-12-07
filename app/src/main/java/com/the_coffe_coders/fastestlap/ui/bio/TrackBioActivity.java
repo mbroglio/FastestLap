@@ -102,7 +102,7 @@ public class TrackBioActivity extends AppCompatActivity {
                     track = ((Result.TrackSuccess) trackResult).getData();
                     Log.i("TrackBioActivity", "Circuit from DB: " + track);
 
-                    try{
+                    try {
                         MutableLiveData<Result> nationLiveData = nationViewModel.getNation(track.getCountry());
                         nationLiveData.observe(this, nationResult -> {
                             if (nationResult instanceof Result.Loading) {
@@ -116,7 +116,7 @@ public class TrackBioActivity extends AppCompatActivity {
                                 setCircuitData(track, null);
                             }
                         });
-                    }catch (RuntimeException e) {
+                    } catch (RuntimeException e) {
                         Log.e("TrackBioActivity", "Error fetching nation data: " + e.getMessage());
                         setCircuitData(track, null);
                     }
@@ -159,7 +159,7 @@ public class TrackBioActivity extends AppCompatActivity {
                 NavigationUtils.openLocation(this, track.getLocation().getLatitude(), track.getLocation().getLongitude()));
 
         String nationFlag_Url = null;
-        if(nation != null) {
+        if (nation != null) {
             nationFlag_Url = nation.getNation_flag_url();
         }
 

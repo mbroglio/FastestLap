@@ -79,8 +79,6 @@ public class LoadingScreen {
         handler.post(dotRunnable);
     }
 
-    private final Runnable timerRunnable = this::hide;
-
     private void resetTimer() {
         timerHandler.removeCallbacks(timerRunnable);
         new CountDownTimer(Constants.LOADING_SLEEP_TIMER_DURATION, 1000) {
@@ -94,7 +92,7 @@ public class LoadingScreen {
                 timerRunnable.run();
             }
         }.start();
-    }
+    }    private final Runnable timerRunnable = this::hide;
 
     public void updateProgress() {
         resetTimer();
@@ -120,6 +118,8 @@ public class LoadingScreen {
         handler.removeCallbacks(dotRunnable);
         timerHandler.removeCallbacks(timerRunnable);
     }
+
+
 
 
 }

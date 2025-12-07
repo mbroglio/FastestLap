@@ -1,10 +1,6 @@
 package com.the_coffe_coders.fastestlap.ui.junior.fragment;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +8,8 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import androidx.fragment.app.DialogFragment;
 
 import com.the_coffe_coders.fastestlap.R;
 
@@ -22,7 +20,7 @@ public class JuniorDialogFragment extends DialogFragment {
     private LinearLayout raceInfoLayout;
     private RelativeLayout fastestLapLayout, polePositionLayout;
 
-    
+
     public JuniorDialogFragment() {
         // Required empty public constructor
     }
@@ -66,9 +64,9 @@ public class JuniorDialogFragment extends DialogFragment {
                 break;
             case 2: // Results
                 raceInfoLayout.setVisibility(View.VISIBLE);
-                if(raceType == 0){
+                if (raceType == 0) {
                     polePositionLayout.setVisibility(View.GONE);
-                }else{
+                } else {
                     polePositionLayout.setVisibility(View.VISIBLE);
                 }
                 executeResults();

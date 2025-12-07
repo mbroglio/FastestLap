@@ -60,10 +60,10 @@ public class UIUtils {
 
 
     /*
-    * ----------------------------------------------------------------------------------------------
-    * WINDOW MANAGEMENT
-    * ----------------------------------------------------------------------------------------------
-    */
+     * ----------------------------------------------------------------------------------------------
+     * WINDOW MANAGEMENT
+     * ----------------------------------------------------------------------------------------------
+     */
 
     public static void applyWindowInsets(MaterialToolbar toolbar) {
         ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
@@ -402,8 +402,8 @@ public class UIUtils {
     }
 
     public static void translateEventDateInterval(String eventDate, TextView eventDateTextView) {
-        String newEventDate = eventDate.split(" ")[0] + " " + 
-                eventDate.split(" ")[1] + " " + 
+        String newEventDate = eventDate.split(" ")[0] + " " +
+                eventDate.split(" ")[1] + " " +
                 eventDate.split(" ")[2] + " ";
 
         if (AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("en-GB")) {

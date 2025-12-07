@@ -145,7 +145,7 @@ public class EventActivity extends AppCompatActivity {
                 Log.i(TAG, "Track: " + track.toString());
 
                 NationViewModel nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(getApplication())).get(NationViewModel.class);
-                try{
+                try {
                     MutableLiveData<Result> nationData = nationViewModel.getNation(track.getCountry());
 
                     nationData.observe(this, result1 -> {
@@ -157,12 +157,12 @@ public class EventActivity extends AppCompatActivity {
                             Log.i(TAG, "Nation: " + nation.toString());
 
                             setEventImage(weeklyRace, track, nation);
-                        }else{
+                        } else {
                             Log.e(TAG, "Error getting nation data");
                             setEventImage(weeklyRace, track, null);
                         }
                     });
-                }catch (RuntimeException e){
+                } catch (RuntimeException e) {
                     Log.e(TAG, "Error getting nation data: " + e.getMessage());
                     setEventImage(weeklyRace, track, null);
                 }
@@ -205,7 +205,7 @@ public class EventActivity extends AppCompatActivity {
                 NavigationUtils.openGoogleWeather(this, track.getLocation().getLocality()));
 
         String nationFlagUrl = null;
-        if(nation != null) {
+        if (nation != null) {
             nationFlagUrl = nation.getNation_flag_url();
         }
 
@@ -274,33 +274,33 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void showRaceResultsDialog(Race race) {
-        if(race != null){
-            if(race.getRaceResults() == null || race.getRaceResults().isEmpty()){
+        if (race != null) {
+            if (race.getRaceResults() == null || race.getRaceResults().isEmpty()) {
                 Log.e(TAG, "race results not found");
-                if(race.getSprintResults() == null || race.getSprintResults().isEmpty()){
+                if (race.getSprintResults() == null || race.getSprintResults().isEmpty()) {
                     Log.e(TAG, "sprint results not found");
-                }else{
+                } else {
                     Log.i(TAG, "Showing sprint results");
                     NavigationUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 0);
                 }
-            }else{
+            } else {
                 Log.i(TAG, "Showing race results");
                 NavigationUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 0);
             }
-        }else{
+        } else {
             Log.e(TAG, "race is null, cannot show results");
         }
     }
 
-    private void showQualifyingResultsDialog(Race race){
-        if(race!=null){
-            if(race.getQualifyingResults() != null && !race.getQualifyingResults().isEmpty()){
+    private void showQualifyingResultsDialog(Race race) {
+        if (race != null) {
+            if (race.getQualifyingResults() != null && !race.getQualifyingResults().isEmpty()) {
                 Log.i(TAG, "Showing qualifying results");
                 NavigationUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 1);
-            }else{
+            } else {
                 Log.e(TAG, "qualifying results not found");
             }
-        }else{
+        } else {
             Log.e(TAG, "race is null, cannot show qualifying results");
         }
     }
@@ -330,7 +330,7 @@ public class EventActivity extends AppCompatActivity {
                 return;
             }
 
-            try{
+            try {
                 Race race = ((Result.RaceResultsSuccess) result).getData();
                 List<RaceResult> podium = race.getRaceResults();
 
@@ -425,13 +425,13 @@ public class EventActivity extends AppCompatActivity {
     private void manageSessionScheduleClick(Session session, String round) {
 
         Log.i(TAG, "session id clicked: " + session.getClass().getSimpleName());
-        if(session.isRace()) {
+        if (session.isRace()) {
             showRaceResultsDialog(currentRace);
         }
-        if(session.isQualifying()){
+        if (session.isQualifying()) {
             processQualifyingData(round);
         }
-        if(session.isSprint()){
+        if (session.isSprint()) {
             processSprintData(round);
         }
 
@@ -459,7 +459,7 @@ public class EventActivity extends AppCompatActivity {
                     showQualifyingResultsDialog(race);
 
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.e(TAG, "Error processing qualifying data: " + e.getMessage());
             }
         });

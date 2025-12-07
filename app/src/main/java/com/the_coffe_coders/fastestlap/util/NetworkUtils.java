@@ -60,13 +60,15 @@ public class NetworkUtils extends LiveData<Boolean> {
         if (connectivityManager != null && networkCallback != null) {
             try {
                 connectivityManager.unregisterNetworkCallback(networkCallback);
-            } catch (Exception ignored) { }
+            } catch (Exception ignored) {
+            }
             networkCallback = null;
         }
         if (connectivityReceiver != null) {
             try {
                 context.unregisterReceiver(connectivityReceiver);
-            } catch (Exception ignored) { }
+            } catch (Exception ignored) {
+            }
             connectivityReceiver = null;
         }
     }
@@ -86,7 +88,7 @@ public class NetworkUtils extends LiveData<Boolean> {
         boolean hasInternetCapability = nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET);
         boolean isValidated = nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
 
-        Log.d("NetworkUtils","connection: " + hasTransport + " " + hasInternetCapability + " " + isValidated);
+        Log.d("NetworkUtils", "connection: " + hasTransport + " " + hasInternetCapability + " " + isValidated);
 
         return hasTransport && hasInternetCapability && isValidated;
     }

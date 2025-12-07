@@ -1,8 +1,6 @@
 package com.the_coffe_coders.fastestlap.repository.nation;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -21,13 +19,12 @@ import java.util.Objects;
 public class NationRepository {
     private static final String TAG = "NationRepository";
     public static NationRepository instance;
-    //Cache
-    private final Map<String, MutableLiveData<Result>> nationCache;
-    private final Map<String, Long> lastUpdateTimestamps;
     //Data sources
     final FirebaseNationDataSource firebaseNationDataSource;
     final LocalNationDataSource localNationDataSource;
-
+    //Cache
+    private final Map<String, MutableLiveData<Result>> nationCache;
+    private final Map<String, Long> lastUpdateTimestamps;
     private final NetworkUtils networkLiveData;
 
 
@@ -50,20 +47,20 @@ public class NationRepository {
         return networkLiveData.isConnected();
     }
 
-    public synchronized MutableLiveData<Result> getNation(String nationId) throws RuntimeException{
+    public synchronized MutableLiveData<Result> getNation(String nationId) throws RuntimeException {
         Log.d(TAG, "Fetching nation with ID: " + nationId);
         if (!nationCache.containsKey(nationId) || !lastUpdateTimestamps.containsKey(nationId) || lastUpdateTimestamps.get(nationId) == null) {
             nationCache.put(nationId, new MutableLiveData<>());
 
-            if(isNetworkAvailable()) {
+            if (isNetworkAvailable()) {
                 loadNation(nationId);
-            }else {
+            } else {
                 loadNationFromLocal(nationId);
             }
         } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(nationId) > 60000) {
-            if(isNetworkAvailable()) {
+            if (isNetworkAvailable()) {
                 loadNation(nationId);
-            }else {
+            } else {
                 loadNationFromLocal(nationId);
             }
         } else {

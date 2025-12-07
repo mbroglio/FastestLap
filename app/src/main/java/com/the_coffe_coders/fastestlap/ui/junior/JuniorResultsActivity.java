@@ -35,10 +35,10 @@ public class JuniorResultsActivity extends AppCompatActivity {
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        if(categoryType == 0){
+        if (categoryType == 0) {
             toolbar.setBackgroundColor(getColor(R.color.formula_2));
             appBarLayout.setBackgroundColor(getColor(R.color.formula_2));
-        }else{
+        } else {
             toolbar.setBackgroundColor(getColor(R.color.ferrari_secondary));
             appBarLayout.setBackgroundColor(getColor(R.color.ferrari_secondary));
         }

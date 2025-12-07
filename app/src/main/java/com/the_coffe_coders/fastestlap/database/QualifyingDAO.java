@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
+
 @Dao
 public interface QualifyingDAO {
 

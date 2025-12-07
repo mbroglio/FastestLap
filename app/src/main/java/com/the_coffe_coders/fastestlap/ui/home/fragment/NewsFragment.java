@@ -33,13 +33,13 @@ import java.util.concurrent.Executors;
 
 public class NewsFragment extends Fragment {
 
+    private static final String TAG = "NewsFragment";
     private final String currentLanguage = AppCompatDelegate.getApplicationLocales().toLanguageTags();
     private TextView newsMenu;
     private MaterialSwitch languageFeedSwitch;
     private Boolean languageFeed;
     private RecyclerView newsRecyclerView;
     private int defaultIndex;
-    private static final String TAG = "NewsFragment";
     private int loadingCounter = 0;
     private LoadingScreen loadingScreen;
 

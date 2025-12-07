@@ -38,10 +38,10 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
+import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
@@ -94,13 +94,13 @@ public class DriverBioActivity extends AppCompatActivity {
 
         Menu menu = toolbar.getMenu();
         MenuItem favoriteItem = menu.findItem(R.id.favourite_icon_outline);
-        if(networkLiveData.isConnected()){
+        if (networkLiveData.isConnected()) {
             favoriteItem.setOnMenuItemClickListener(v -> {
                 toggleFavoriteDriver(driverId, favoriteItem);
                 return true;
             });
-        }else{
-            favoriteItem.setOnMenuItemClickListener(v-> {
+        } else {
+            favoriteItem.setOnMenuItemClickListener(v -> {
                 Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
                 return true;
             });
@@ -217,7 +217,7 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     public void getNationInfo(String nationId) {
-        try{
+        try {
             MutableLiveData<Result> nationMutableLiveData = nationViewModel.getNation(nationId);
             nationMutableLiveData.observe(this, result -> {
                 if (result instanceof Result.Loading) {
@@ -233,7 +233,7 @@ public class DriverBioActivity extends AppCompatActivity {
                         setDriverData(driver, nation, team, false, null);
                         setToolbar(false, null);
                     }
-                }else {
+                } else {
                     if (driver.getTeam_id() != null) {
                         setDriverData(driver, null, team, true, driver.getTeam_id());
                         setToolbar(true, driver.getTeam_id());
@@ -243,7 +243,7 @@ public class DriverBioActivity extends AppCompatActivity {
                     }
                 }
             });
-        }catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             Log.e(TAG, "Error fetching nation data: " + e.getMessage());
             if (driver.getTeam_id() != null) {
                 setDriverData(driver, null, team, true, driver.getTeam_id());
@@ -286,7 +286,7 @@ public class DriverBioActivity extends AppCompatActivity {
         }
 
         String nationFlagUrl = null;
-        if(nation != null) {
+        if (nation != null) {
             nationFlagUrl = nation.getNation_flag_url();
         }
 

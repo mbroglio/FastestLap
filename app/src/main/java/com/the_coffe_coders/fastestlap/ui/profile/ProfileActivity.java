@@ -119,7 +119,6 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
 
-
         MaterialSwitch languageSwitch = findViewById(R.id.language_switch);
         LocaleListCompat appLocales = AppCompatDelegate.getApplicationLocales();
         String currentLanguage = appLocales.toLanguageTags();
@@ -142,7 +141,7 @@ public class ProfileActivity extends AppCompatActivity {
         Button signOutButton = findViewById(R.id.sign_out_button);
         Button loginButton = findViewById(R.id.login_button);
 
-        if(networkLiveData.isConnected() && userViewModel.getLoggedUser() != null){
+        if (networkLiveData.isConnected() && userViewModel.getLoggedUser() != null) {
             signOutButton.setVisibility(View.VISIBLE);
             loginButton.setVisibility(View.GONE);
 

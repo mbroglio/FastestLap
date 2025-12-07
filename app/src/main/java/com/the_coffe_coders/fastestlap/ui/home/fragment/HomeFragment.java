@@ -57,10 +57,10 @@ import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
+import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
@@ -151,7 +151,7 @@ public class HomeFragment extends Fragment {
         cachedConstructorStandings = null;
 
         Intent intent = requireActivity().getIntent();
-        if (intent != null){
+        if (intent != null) {
             if (intent.hasExtra("RELOADED")) {
                 if (Objects.equals(intent.getStringExtra("RELOADED"), "true")) {
                     hasReloaded = true;
@@ -201,7 +201,7 @@ public class HomeFragment extends Fragment {
         prefetchStandingsData();
 
         // Now handle the favorite cards based on login status
-        if(networkLiveData.isConnected()){
+        if (networkLiveData.isConnected()) {
             if (userViewModel.getLoggedUser() != null) {
                 // Start loading favorite cards immediately from SharedPreferences
                 // Don't wait for getUserPreferences API call - it's just a sync operation
@@ -223,7 +223,7 @@ public class HomeFragment extends Fragment {
                 showSelectFavouriteDriver(view);
                 showSelectFavouriteConstructor(view);
             }
-        }else{
+        } else {
             Log.e(TAG, "No internet connection - loading from cache");
             // Load from cache if possible
             setFavouriteDriverCard(view);
@@ -270,7 +270,7 @@ public class HomeFragment extends Fragment {
     }
 
     private synchronized void markCardLoaded(String cardName) {
-        switch(cardName) {
+        switch (cardName) {
             case "lastRace":
                 lastRaceCardLoaded = true;
                 break;
@@ -286,9 +286,9 @@ public class HomeFragment extends Fragment {
         }
 
         Log.d(TAG, "Card loaded: " + cardName + " | LastRace: " + lastRaceCardLoaded +
-                   " | NextSession: " + nextSessionCardLoaded +
-                   " | Driver: " + driverCardLoaded +
-                   " | Constructor: " + constructorCardLoaded);
+                " | NextSession: " + nextSessionCardLoaded +
+                " | Driver: " + driverCardLoaded +
+                " | Constructor: " + constructorCardLoaded);
 
         // Hide loading screen early - as soon as the race cards are ready
         // User can see something immediately, preference cards can load in background
@@ -417,20 +417,20 @@ public class HomeFragment extends Fragment {
                         throw new Exception("Failed to fetch next race: " + result.getError());
                     }
                 } catch (Exception e) {
-                    if(networkLiveData.isConnected()){
+                    if (networkLiveData.isConnected()) {
                         Log.e(TAG, "Error in setNextSessionCard: " + e.getMessage());
                         setSeasonEnded(view);
-                    }else{
+                    } else {
                         Log.e(TAG, "Error in setNextSessionCard: No internet connection");
                         setUpdating(view);
                     }
                 }
             });
         } catch (Exception e) {
-            if(networkLiveData.isConnected()){
+            if (networkLiveData.isConnected()) {
                 Log.e(TAG, "Error in setNextSessionCard: " + e.getMessage());
                 setSeasonEnded(view);
-            }else{
+            } else {
                 Log.e(TAG, "Error in setNextSessionCard: No internet connection");
                 setUpdating(view);
             }
@@ -458,20 +458,20 @@ public class HomeFragment extends Fragment {
                         throw new Exception("Failed to fetch track data: " + trackResult.getError());
                     }
                 } catch (Exception e) {
-                    if(networkLiveData.isConnected()){
+                    if (networkLiveData.isConnected()) {
                         Log.e(TAG, "Error in processNextRace: " + e.getMessage());
                         setSeasonEnded(view);
-                    }else{
+                    } else {
                         Log.e(TAG, "Error in processNextRace: No internet connection");
                         setUpdating(view);
                     }
                 }
             });
         } catch (Exception e) {
-            if(networkLiveData.isConnected()){
+            if (networkLiveData.isConnected()) {
                 Log.e(TAG, "Error in processNextRace: " + e.getMessage());
                 setSeasonEnded(view);
-            }else{
+            } else {
                 Log.e(TAG, "Error in processNextRace: No internet connection");
                 setUpdating(view);
             }
@@ -479,7 +479,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchNationForNextRace(View view, WeeklyRace nextRace, Track track) {
-        try{
+        try {
             MutableLiveData<Result> nationData = nationViewModel.getNation(track.getCountry());
             nationData.observe(getViewLifecycleOwner(), nationResult -> {
                 try {
@@ -497,7 +497,7 @@ public class HomeFragment extends Fragment {
                     setSeasonEnded(view);
                 }
             });
-        }catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             Log.e(TAG, "Error fetching nation: " + e.getMessage());
             setNextRaceCard(view, nextRace, null);
         }
@@ -509,7 +509,7 @@ public class HomeFragment extends Fragment {
             UIUtils.singleSetTextViewText(nextRace.getRaceName(), view.findViewById(R.id.home_next_gp_name));
 
             String nationFlagUrl = null;
-            if(nation != null) {
+            if (nation != null) {
                 nationFlagUrl = nation.getNation_flag_url();
             }
 
@@ -523,10 +523,10 @@ public class HomeFragment extends Fragment {
 
         } catch (Exception e) {
             Log.i(TAG, "connected: " + networkLiveData.isConnected());
-            if(networkLiveData.isConnected()){
+            if (networkLiveData.isConnected()) {
                 setSeasonEnded(view);
                 Log.e(TAG, "Error in setNextRaceCard: " + e.getMessage());
-            }else{
+            } else {
                 Log.e(TAG, "Error in setNextRaceCard: No internet connection");
                 loadPendingResultsLayout(view);
             }
@@ -712,7 +712,7 @@ public class HomeFragment extends Fragment {
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Error in setFavouriteDriverCard: " + e.getMessage());
-                    showDriverNotFound(view,0);
+                    showDriverNotFound(view, 0);
                 }
             });
         }
@@ -729,7 +729,7 @@ public class HomeFragment extends Fragment {
             }
         } catch (Exception e) {
             Log.e(TAG, "Error processing driver standings: " + e.getMessage());
-            showDriverNotFound(view,0);
+            showDriverNotFound(view, 0);
         }
     }
 
@@ -750,13 +750,13 @@ public class HomeFragment extends Fragment {
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error fetching driver data: " + e.getMessage());
-                showDriverNotFound(view,0);
+                showDriverNotFound(view, 0);
             }
         });
     }
 
     private void fetchNationForDriver(View view, DriverStandingsElement favouriteDriver) {
-        try{
+        try {
             MutableLiveData<Result> nationData = nationViewModel.getNation(favouriteDriver.getDriver().getNationality());
             nationData.observe(getViewLifecycleOwner(), nationResult -> {
                 try {
@@ -772,7 +772,7 @@ public class HomeFragment extends Fragment {
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Error fetching nation for driver: " + e.getMessage());
-                    showDriverNotFound(view,0);
+                    showDriverNotFound(view, 0);
                 }
             });
         } catch (RuntimeException e) {
@@ -783,13 +783,13 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildDriverCard(View view, DriverStandingsElement standingElement, Nation nation) {
-        if(networkLiveData.isConnected() && userViewModel.getLoggedUser() != null){
+        if (networkLiveData.isConnected() && userViewModel.getLoggedUser() != null) {
             try {
                 Driver driver = standingElement.getDriver();
 
                 String nationFlagUrl = null;
                 String nationAbbreviation = null;
-                if(nation != null) {
+                if (nation != null) {
                     nationFlagUrl = nation.getNation_flag_url();
                     nationAbbreviation = nation.getAbbreviation();
                 }
@@ -804,11 +804,11 @@ public class HomeFragment extends Fragment {
                 UIUtils.loadImagesInParallel(requireContext(), new String[]{nationFlagUrl, driver.getDriver_pic_url()}, new ImageView[]{driverFlag, driverImage}, () -> buildDriverCardFinalStep(standingElement, view, driver));
             } catch (Exception e) {
                 Log.e(TAG, "Error building driver card: " + e.getMessage());
-                showDriverNotFound(view,0);
+                showDriverNotFound(view, 0);
             }
-        }else{
+        } else {
             Log.e(TAG, "Error building driver card: No internet connection");
-            showDriverNotFound(view,1);
+            showDriverNotFound(view, 1);
         }
 
     }
@@ -857,7 +857,7 @@ public class HomeFragment extends Fragment {
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Error in setFavouriteConstructorCard: " + e.getMessage());
-                    showConstructorNotFound(view,0);
+                    showConstructorNotFound(view, 0);
                 }
             });
         }
@@ -875,7 +875,7 @@ public class HomeFragment extends Fragment {
             }
         } catch (Exception e) {
             Log.e(TAG, "Error processing constructor standings: " + e.getMessage());
-            showConstructorNotFound(view,0);
+            showConstructorNotFound(view, 0);
         }
     }
 
@@ -896,13 +896,13 @@ public class HomeFragment extends Fragment {
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error fetching constructor data: " + e.getMessage());
-                showConstructorNotFound(view,0);
+                showConstructorNotFound(view, 0);
             }
         });
     }
 
     private void fetchNationForConstructor(View view, ConstructorStandingsElement favouriteConstructor) {
-        try{
+        try {
             MutableLiveData<Result> nationData = nationViewModel.getNation(favouriteConstructor.getConstructor().getNationality());
             nationData.observe(getViewLifecycleOwner(), nationResult -> {
                 try {
@@ -918,10 +918,10 @@ public class HomeFragment extends Fragment {
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Error fetching nation for constructor: " + e.getMessage());
-                    showConstructorNotFound(view,0);
+                    showConstructorNotFound(view, 0);
                 }
             });
-        }catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             Log.e(TAG, "Error fetching nation for constructor: " + e.getMessage());
             buildConstructorCard(view, favouriteConstructor, null);
         }
@@ -930,13 +930,13 @@ public class HomeFragment extends Fragment {
 
     private void buildConstructorCard(View view, ConstructorStandingsElement standingElement, Nation nation) {
 
-        if(networkLiveData.isConnected() && userViewModel.getLoggedUser() != null){
+        if (networkLiveData.isConnected() && userViewModel.getLoggedUser() != null) {
             try {
                 Constructor constructor = standingElement.getConstructor();
 
                 String nationFlagUrl = null;
                 String nationAbbreviation = null;
-                if(nation != null) {
+                if (nation != null) {
                     nationFlagUrl = nation.getNation_flag_url();
                     nationAbbreviation = nation.getAbbreviation();
                 }
@@ -958,9 +958,9 @@ public class HomeFragment extends Fragment {
                 Log.e(TAG, "Error building constructor card: " + e.getMessage());
                 showConstructorNotFound(view, 0);
             }
-        }else{
+        } else {
             Log.e(TAG, "Error building constructor card: No internet connection");
-            showConstructorNotFound(view,1);
+            showConstructorNotFound(view, 1);
         }
     }
 
@@ -993,7 +993,7 @@ public class HomeFragment extends Fragment {
         markCardLoaded("driver");
         updateVisibility(view, R.id.missing_favorite_driver, R.id.favorite_driver, R.id.pending_favorite_driver);
 
-        switch(problem){
+        switch (problem) {
             case 0: //general error
                 view.findViewById(R.id.missing_favorite_driver).setOnClickListener(v -> startActivity(new Intent(getActivity(), DriversStandingActivity.class)));
                 break;
@@ -1027,7 +1027,7 @@ public class HomeFragment extends Fragment {
 
         updateVisibility(view, R.id.missing_favorite_constructor, R.id.favorite_constructor, R.id.pending_favorite_constructor);
 
-        switch(problem){
+        switch (problem) {
             case 0: //general error
                 view.findViewById(R.id.missing_favorite_constructor).setOnClickListener(v -> startActivity(new Intent(getActivity(), ConstructorsStandingActivity.class)));
                 break;

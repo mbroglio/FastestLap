@@ -6,7 +6,6 @@ import android.widget.ScrollView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
@@ -49,12 +48,14 @@ public class Formula2Activity extends AppCompatActivity {
         driversStandingCard = findViewById(R.id.f2_drivers_standing_card);
         constructorsStandingCard = findViewById(R.id.f2_constructors_standing_card);
 
-        entryListCard.setOnClickListener(v -> {}
+        entryListCard.setOnClickListener(v -> {
+                }
                 //NavigationUtils.showEntryListDialog(getSupportFragmentManager(), categoryType)
-                    //content = entryList
+                //content = entryList
         );
 
-        calendarCard.setOnClickListener(v -> {}
+        calendarCard.setOnClickListener(v -> {
+                }
                 //NavigationUtils.showCalendarDialog(getSupportFragmentManager(), categoryType)
         );
 
@@ -62,14 +63,15 @@ public class Formula2Activity extends AppCompatActivity {
                 NavigationUtils.navigateToJuniorResultsPage(this, categoryType)
         );
 
-        driversStandingCard.setOnClickListener(v -> {}
+        driversStandingCard.setOnClickListener(v -> {
+                }
                 //NavigationUtils.showDriversStandingDialog(getSupportFragmentManager(this, categoryType)
         );
 
-        constructorsStandingCard.setOnClickListener(v -> {}
+        constructorsStandingCard.setOnClickListener(v -> {
+                }
                 //NavigationUtils.showConstructorsStandingDialog(getSupportFragmentManager(this, categoryType)
         );
-
 
 
     }

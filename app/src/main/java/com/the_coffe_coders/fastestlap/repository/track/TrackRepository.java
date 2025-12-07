@@ -1,8 +1,6 @@
 package com.the_coffe_coders.fastestlap.repository.track;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -21,15 +19,12 @@ import java.util.Objects;
 public class TrackRepository {
     private static final String TAG = "TrackRepository";
     private static TrackRepository instance;
-
-    //Cache
-    private final Map<String, MutableLiveData<Result>> trackCache;
-    private final Map<String, Long> lastUpdateTimestamps;
-
     //Data sources
     final FirebaseTrackDataSource firebaseTrackDataSource;
     final LocalTrackDataSource localTrackDataSource;
-
+    //Cache
+    private final Map<String, MutableLiveData<Result>> trackCache;
+    private final Map<String, Long> lastUpdateTimestamps;
     private final NetworkUtils networkLiveData;
 
     public TrackRepository(AppRoomDatabase appRoomDatabase, Context context) {
@@ -55,16 +50,16 @@ public class TrackRepository {
         Log.d(TAG, "Fetching track with ID: " + trackId);
         if (!trackCache.containsKey(trackId) || !lastUpdateTimestamps.containsKey(trackId) || lastUpdateTimestamps.get(trackId) == null) {
             trackCache.put(trackId, new MutableLiveData<>());
-            if(isNetworkAvailable()){
+            if (isNetworkAvailable()) {
                 loadTrack(trackId);
-            }else{
+            } else {
                 Log.d(TAG, "No network connection");
                 loadTrackFromLocal(trackId);
             }
         } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(trackId) > 6000) {
-            if(isNetworkAvailable()){
+            if (isNetworkAvailable()) {
                 loadTrack(trackId);
-            }else{
+            } else {
                 loadTrackFromLocal(trackId);
             }
         } else {

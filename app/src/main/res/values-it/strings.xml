@@ -66,7 +66,6 @@
     <string name="fastest_lap">Giro più Veloce:</string>
     <string name="track_history_upper_case">Storia del Circuito:</string>
     <string name="no_map_app_found">Nessuna mappa trovata</string>
-    <string name="no_browser_found">Nessun motore di ricerca trovato</string>
     <string name="remember_me">Ricordami</string>
     <string name="email_with_dots">Email:</string>
     <string name="already_registered">Già registrato?</string>
@@ -74,8 +73,6 @@
     <string name="password">Password</string>
     <string name="missing_password">Hai dimeticato la password?</string>
     <string name="login">Login</string>
-    <string name="or">oppure</string>
-    <string name="login_with_google">Login con Google</string>
     <string name="not_registered">Non ancora registrato?</string>
     <string name="register">Registro</string>
     <string name="registration">Registrazione</string>
@@ -88,8 +85,6 @@
     <string name="italian_language_abbr_upper_case">ITA</string>
     <string name="english_language_abbr_upper_case">ENG</string>
     <string name="language_set">Lingua impostata con successo a %1$s</string>
-    <string name="race_results">Risultati Gara</string>
-    <string name="race_results_title">%1$s Risultati</string>
     <string name="close">Chiudi</string>
     <string name="podium_upper_case">PODIO</string>
     <string name="fastest_lap_upper_case">GIRO VELOCE</string>

@@ -74,7 +74,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
             driverStandingsElement = driversStandingList.get(position);
         }
 
-        try{
+        try {
             driverViewModel.getDriver(driverStandingsElement.getDriver().getDriverId()).observe(lifecycleOwner, result -> {
                 if (result instanceof Result.Loading) {
                     return;
@@ -117,7 +117,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
                     UIUtils.loadImageWithGlide(context, driver.getDriver_pic_url(), holder.driverImage, () ->
                             generateForConstructor(holder, driver, position));
 
-                }else{
+                } else {
                     showDriverNotFound(holder, driverStandingsElement.getDriver().getDriverId());
                 }
             });
@@ -138,7 +138,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
         holder.driverNotFound.setVisibility(View.VISIBLE);
         Log.i("DriversStandingAdapter", "Driver not found id test: " + driverId + " -> " + driverId.contains("_"));
 
-        if(driverId.contains("_")) {
+        if (driverId.contains("_")) {
             driverId = driverId.split("_")[1];
         }
 

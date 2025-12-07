@@ -5,11 +5,7 @@ import android.widget.ScrollView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
@@ -52,12 +48,14 @@ public class Formula3Activity extends AppCompatActivity {
         driversStandingCard = findViewById(R.id.f3_drivers_standing_card);
         constructorsStandingCard = findViewById(R.id.f3_constructors_standing_card);
 
-        entryListCard.setOnClickListener(v -> {}
+        entryListCard.setOnClickListener(v -> {
+                }
                 //NavigationUtils.showEntryListDialog(getSupportFragmentManager(), categoryType)
                 //content = entryList
         );
 
-        calendarCard.setOnClickListener(v -> {}
+        calendarCard.setOnClickListener(v -> {
+                }
                 //NavigationUtils.showCalendarDialog(getSupportFragmentManager(), categoryType)
         );
 
@@ -65,14 +63,15 @@ public class Formula3Activity extends AppCompatActivity {
                 NavigationUtils.navigateToJuniorResultsPage(this, categoryType)
         );
 
-        driversStandingCard.setOnClickListener(v -> {}
+        driversStandingCard.setOnClickListener(v -> {
+                }
                 //NavigationUtils.showDriversStandingDialog(getSupportFragmentManager(this, categoryType)
         );
 
-        constructorsStandingCard.setOnClickListener(v -> {}
+        constructorsStandingCard.setOnClickListener(v -> {
+                }
                 //NavigationUtils.showConstructorsStandingDialog(getSupportFragmentManager(this, categoryType)
         );
-
 
 
     }

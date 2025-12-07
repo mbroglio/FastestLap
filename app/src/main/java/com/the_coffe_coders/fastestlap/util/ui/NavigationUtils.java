@@ -106,7 +106,7 @@ public class NavigationUtils {
 
     public static void navigateToJuniorPage(Context context, int categoryType) {
         Intent intent;
-        switch (categoryType){
+        switch (categoryType) {
             case 0:
                 intent = new Intent(context, Formula2Activity.class);
                 break;
@@ -143,7 +143,7 @@ public class NavigationUtils {
         showJuniorDialog(fragmentManager, categoryType, 3);
     }
 
-    private static void showJuniorDialog(FragmentManager fragmentManager, int categoryType, int content){
+    private static void showJuniorDialog(FragmentManager fragmentManager, int categoryType, int content) {
         JuniorDialogFragment juniorDialogFragment = new JuniorDialogFragment();
         Bundle args = new Bundle();
         args.putInt("CATEGORY_TYPE", categoryType);

@@ -152,7 +152,7 @@ public class SplashActivity extends AppCompatActivity {
             Log.d(TAG, "Logged user is not null");
             showForAutoLogin();
 
-            if(networkLiveData.isConnected()){
+            if (networkLiveData.isConnected()) {
                 userViewModel.isAutoLoginEnabled(userViewModel.getLoggedUser().getIdToken()).addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
                         boolean isEnabled = task.getResult();
@@ -165,7 +165,7 @@ public class SplashActivity extends AppCompatActivity {
                         }
                     }
                 });
-            }else{
+            } else {
                 Log.e(TAG, "No internet connection");
                 NavigationUtils.navigateToHomePage(this);
             }

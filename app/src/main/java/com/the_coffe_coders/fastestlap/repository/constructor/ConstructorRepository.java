@@ -2,7 +2,9 @@ package com.the_coffe_coders.fastestlap.repository.constructor;
 
 import android.content.Context;
 import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
+
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
@@ -10,6 +12,7 @@ import com.the_coffe_coders.fastestlap.source.constructor.FirebaseConstructorDat
 import com.the_coffe_coders.fastestlap.source.constructor.JolpicaConstructorDataSource;
 import com.the_coffe_coders.fastestlap.source.constructor.LocalConstructorDataSource;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -47,14 +50,14 @@ public class ConstructorRepository {
     public synchronized MutableLiveData<Result> getConstructor(String constructorId) {
         if (!constructorCache.containsKey(constructorId) || !lastUpdateTimestamps.containsKey(constructorId) || lastUpdateTimestamps.get(constructorId) == null) {
             constructorCache.put(constructorId, new MutableLiveData<>());
-            if(isNetworkAvailable()) {
+            if (isNetworkAvailable()) {
                 loadConstructor(constructorId);
             } else {
                 Log.i(TAG, "No network connection");
                 loadConstructorFromLocal(constructorId);
             }
         } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(constructorId) > 60000) {
-            if(isNetworkAvailable()) {
+            if (isNetworkAvailable()) {
                 loadConstructor(constructorId);
             } else {
                 Log.d(TAG, "No network connection");
