@@ -32,9 +32,13 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
@@ -120,40 +124,37 @@ public class UIUtils {
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
                     .load(url)
-                    .into(new CustomTarget<Drawable>() {
-
+                    .listener(new RequestListener<Drawable>() {
                         @Override
-                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                            Log.i("Glide", "Image loaded successfully: ");
-                            imageView.setImageDrawable(resource);
-                            if (onSuccess != null) {
-                                onSuccess.run();
-                            }
-                        }
-
-                        @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) {
-                            // Handle the case when the load is cleared
-                            Log.i("Glide", "Image load cleared: " + url);
-                        }
-
-                        @Override
-                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                             Log.e("Glide", "Image loading failed: " + url);
 
                             if (networkLiveData.isConnected()) {
                                 if (retryCount <= Constants.MAX_RETRY_COUNT) {
                                     Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
                                     new Handler(Looper.getMainLooper()).post(() -> loadImage(context, url, imageView, onSuccess, retryCount + 1));
+                                    return true; // Return true to prevent Glide from handling the error (since we retry)
                                 } else {
                                     Log.e("Glide", "Max retry count reached for image: " + url);
                                     manageContentLoadError(imageView, null, context, onSuccess, 0);
+                                    return true; // We handled the error
                                 }
                             } else {
                                 manageContentLoadError(imageView, null, context, onSuccess, 0);
+                                return true; // We handled the error
                             }
                         }
-                    });
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            Log.i("Glide", "Image loaded successfully: ");
+                            if (onSuccess != null) {
+                                onSuccess.run();
+                            }
+                            return false; // Return false to allow Glide to handle setting the drawable on the target
+                        }
+                    })
+                    .into(imageView);
         } else {
             Log.e("Glide", "URL is null");
             manageContentLoadError(imageView, null, context, onSuccess, 0);
@@ -366,8 +367,8 @@ public class UIUtils {
     }
 
     public static void translateEventDateInterval(String eventDate, TextView eventDateTextView) {
-        String newEventDate = eventDate.split(" ")[0] + " " +
-                eventDate.split(" ")[1] + " " +
+        String newEventDate = eventDate.split(" ")[0] + " " + 
+                eventDate.split(" ")[1] + " " + 
                 eventDate.split(" ")[2] + " ";
 
         if (AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("en-GB")) {

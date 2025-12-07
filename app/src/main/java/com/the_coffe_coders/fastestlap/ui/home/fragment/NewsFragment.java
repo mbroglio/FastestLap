@@ -2,38 +2,36 @@ package com.the_coffe_coders.fastestlap.ui.home.fragment;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.os.LocaleListCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.NewsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.news.News;
-import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.source.news.NewsFetcher;
+import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 
 import java.util.List;
-import java.util.Objects;
-
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class NewsFragment extends Fragment {
-
-
 
     private final String currentLanguage = AppCompatDelegate.getApplicationLocales().toLanguageTags();
     private TextView newsMenu;
@@ -42,6 +40,8 @@ public class NewsFragment extends Fragment {
     private RecyclerView newsRecyclerView;
     private int defaultIndex;
     private static final String TAG = "NewsFragment";
+    private int loadingCounter = 0;
+    private LoadingScreen loadingScreen;
 
     public NewsFragment() {
         // Required empty public constructor
@@ -63,6 +63,8 @@ public class NewsFragment extends Fragment {
         newsRecyclerView = view.findViewById(R.id.news_recycler_view);
         TextView noConnectionText = view.findViewById(R.id.no_connection_text);
 
+        setupLoadingScreen(view);
+
         languageFeed = currentLanguage.equals("en-GB");
 
         NetworkUtils networkUtils = new NetworkUtils(requireContext());
@@ -77,10 +79,24 @@ public class NewsFragment extends Fragment {
             } else {
                 newsRecyclerView.setVisibility(View.GONE);
                 noConnectionText.setVisibility(View.VISIBLE);
+                // If offline, ensure loading screen is hidden
+                loadingScreen.hideLoadingScreen();
             }
         });
 
         return view;
+    }
+
+    private void setupLoadingScreen(View view) {
+        loadingScreen = new LoadingScreen(view, getContext(), null, newsRecyclerView);
+    }
+
+    private synchronized void decrementLoadingCounter() {
+        loadingCounter--;
+        if (loadingCounter <= 0) {
+            loadingCounter = 0;
+            loadingScreen.hideLoadingScreen();
+        }
     }
 
     private void newsMenuManagement() {
@@ -119,23 +135,50 @@ public class NewsFragment extends Fragment {
     }
 
     private void loadNews(boolean languageFeed, RecyclerView recyclerView, boolean defaultSource, int value) {
-        List<News> newsList;
+        loadingCounter = 1;
+        loadingScreen.showLoadingScreen(false);
 
-        if (languageFeed) {
-            if (defaultSource) {
-                newsList = NewsFetcher.fetchNewsEngSources(0);
-                defaultIndex = 0;
-            } else {
-                newsList = NewsFetcher.fetchNewsEngSources(value);
-                defaultIndex = value;
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        executor.execute(() -> {
+            List<News> newsList = null;
+            try {
+                if (languageFeed) {
+                    if (defaultSource) {
+                        newsList = NewsFetcher.fetchNewsEngSources(0);
+                        defaultIndex = 0;
+                    } else {
+                        newsList = NewsFetcher.fetchNewsEngSources(value);
+                        defaultIndex = value;
+                    }
+                } else {
+                    newsList = NewsFetcher.fetchNewsItSources();
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error fetching news", e);
             }
-        } else {
-            newsList = NewsFetcher.fetchNewsItSources();
-        }
 
-        NewsRecyclerAdapter adapter = new NewsRecyclerAdapter(newsList, getContext());
-        recyclerView.setAdapter(adapter);
-
+            List<News> finalNewsList = newsList;
+            handler.post(() -> {
+                if (finalNewsList != null && !finalNewsList.isEmpty()) {
+                    int itemsToWait = Math.min(finalNewsList.size(), 2);
+                    loadingCounter += itemsToWait;
+                    NewsRecyclerAdapter adapter = new NewsRecyclerAdapter(finalNewsList, getContext(), this::decrementLoadingCounter, itemsToWait);
+                    recyclerView.setAdapter(adapter);
+                    recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new android.view.ViewTreeObserver.OnGlobalLayoutListener() {
+                        @Override
+                        public void onGlobalLayout() {
+                            recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                            decrementLoadingCounter();
+                        }
+                    });
+                } else {
+                    Toast.makeText(getContext(), R.string.feed_error, Toast.LENGTH_SHORT).show();
+                    decrementLoadingCounter();
+                }
+            });
+        });
     }
 
     private void showSourcesDialog(boolean isEnglish) {

@@ -23,10 +23,14 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
     private final List<News> newsList;
     private final Context context;
     private final SparseBooleanArray expandedPositions = new SparseBooleanArray();
+    private final Runnable onImageLoaded;
+    private final int itemsToWaitFor;
 
-    public NewsRecyclerAdapter(List<News> newsList, Context context) {
+    public NewsRecyclerAdapter(List<News> newsList, Context context, Runnable onImageLoaded, int itemsToWaitFor) {
         this.newsList = newsList;
         this.context = context;
+        this.onImageLoaded = onImageLoaded;
+        this.itemsToWaitFor = itemsToWaitFor;
     }
 
     @NonNull
@@ -42,18 +46,25 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
     public void onBindViewHolder(@NonNull NewsViewHolder holder, int position) {
         News news = newsList.get(position);
 
+        UIUtils.multipleSetTextViewText(
+                new String[]{
+                        news.getTitle(),
+                        UIUtils.getTimeAgo(news.getDate(), context)},
+                new TextView[]{
+                        holder.titleTextView,
+                        holder.dateTextView
+                });
+
+        Runnable imageCallback = null;
+        if (position < itemsToWaitFor && onImageLoaded != null) {
+            imageCallback = onImageLoaded;
+        }
+
         UIUtils.loadImageWithGlide(
-                context, 
-                news.getImageUrl(), 
+                context,
+                news.getImageUrl(),
                 holder.newsImageView,
-                ()-> UIUtils.multipleSetTextViewText(
-                        new String[]{
-                                news.getTitle(),
-                                UIUtils.getTimeAgo(news.getDate(), context)},
-                        new TextView[]{
-                                holder.titleTextView,
-                                holder.dateTextView
-                        }));
+                imageCallback);
 
         UIUtils.setTextViewTextWithCondition(news.getDescription() != null,
                 UIUtils.formatXmlText(news.getDescription()),
