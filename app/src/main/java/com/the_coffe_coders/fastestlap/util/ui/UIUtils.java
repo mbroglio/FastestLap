@@ -33,6 +33,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
@@ -104,7 +105,6 @@ public class UIUtils {
             throw new IllegalArgumentException("The length of urls and imageViews must be the same");
         }
 
-
         for (int i = 0; i < urls.length; i++) {
             int nextIndex = i + 1;
             if (i == urls.length - 1) {
@@ -116,6 +116,39 @@ public class UIUtils {
         }
     }
 
+    /**
+     * Load multiple images in parallel (faster than sequence)
+     * All images load simultaneously, onSuccess called when all complete
+     */
+    public static void loadImagesInParallel(Context context, String[] urls, ImageView[] imageViews, Runnable onSuccess) {
+        if (urls.length != imageViews.length) {
+            throw new IllegalArgumentException("The length of urls and imageViews must be the same");
+        }
+
+        if (urls.length == 0) {
+            if (onSuccess != null) onSuccess.run();
+            return;
+        }
+
+        // Track how many images have loaded
+        final int[] loadedCount = {0};
+        final int totalImages = urls.length;
+
+        Runnable checkComplete = () -> {
+            synchronized (loadedCount) {
+                loadedCount[0]++;
+                if (loadedCount[0] == totalImages && onSuccess != null) {
+                    onSuccess.run();
+                }
+            }
+        };
+
+        // Load all images in parallel
+        for (int i = 0; i < urls.length; i++) {
+            loadImage(context, urls[i], imageViews[i], checkComplete, 0);
+        }
+    }
+
     private static void loadImage(Context context, String url, ImageView imageView, Runnable onSuccess, int retryCount) {
         Log.i("Glide", "Loading image: " + url);
 
@@ -124,25 +157,27 @@ public class UIUtils {
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
                     .load(url)
+                    .thumbnail(0.25f)  // Load 25% quality version first for instant display
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)  // Cache both original and resized
                     .listener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                             Log.e("Glide", "Image loading failed: " + url);
 
+                            // We handled the error
                             if (networkLiveData.isConnected()) {
+                                // We handled the error
                                 if (retryCount <= Constants.MAX_RETRY_COUNT) {
                                     Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
                                     new Handler(Looper.getMainLooper()).post(() -> loadImage(context, url, imageView, onSuccess, retryCount + 1));
-                                    return true; // Return true to prevent Glide from handling the error (since we retry)
                                 } else {
                                     Log.e("Glide", "Max retry count reached for image: " + url);
                                     manageContentLoadError(imageView, null, context, onSuccess, 0);
-                                    return true; // We handled the error
                                 }
                             } else {
                                 manageContentLoadError(imageView, null, context, onSuccess, 0);
-                                return true; // We handled the error
                             }
+                            return true; // Return true to prevent Glide from handling the error (since we retry)
                         }
 
                         @Override

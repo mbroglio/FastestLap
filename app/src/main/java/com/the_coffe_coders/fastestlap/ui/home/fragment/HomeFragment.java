@@ -87,8 +87,18 @@ public class HomeFragment extends Fragment {
     private boolean hasReloaded = false;
     private View view;
     private NetworkUtils networkLiveData;
-    private int loadingCounter = 0;
     private Boolean previousNetworkState = null;
+    private boolean isSettingUp = false;
+
+    // Track individual card loading states
+    private boolean lastRaceCardLoaded = false;
+    private boolean nextSessionCardLoaded = false;
+    private boolean driverCardLoaded = false;
+    private boolean constructorCardLoaded = false;
+
+    // Cache standings data to avoid duplicate fetches
+    private DriverStandings cachedDriverStandings = null;
+    private ConstructorStandings cachedConstructorStandings = null;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -123,6 +133,23 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupFragment(View view) {
+        // Prevent multiple simultaneous setups
+        if (isSettingUp) {
+            Log.d(TAG, "Setup already in progress, skipping...");
+            return;
+        }
+        isSettingUp = true;
+
+        // Reset loading states
+        lastRaceCardLoaded = false;
+        nextSessionCardLoaded = false;
+        driverCardLoaded = false;
+        constructorCardLoaded = false;
+
+        // Clear cached standings for fresh data
+        cachedDriverStandings = null;
+        cachedConstructorStandings = null;
+
         Intent intent = requireActivity().getIntent();
         if (intent != null){
             if (intent.hasExtra("RELOADED")) {
@@ -132,10 +159,17 @@ public class HomeFragment extends Fragment {
             }
         }
 
+        // Remove all existing observers to prevent duplicates
+        if (homeViewModel != null) {
+            homeViewModel.getDriverStandingsLiveData(requireActivity().getApplication()).removeObservers(getViewLifecycleOwner());
+            homeViewModel.getConstructorStandingsLiveData(requireActivity().getApplication()).removeObservers(getViewLifecycleOwner());
+        }
 
         initializeViewModels();
         setupLoadingScreen(view);
         setupUI(view);
+
+        isSettingUp = false;
     }
 
     private void initializeViewModels() {
@@ -158,37 +192,73 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupUI(View view) {
-        loadingCounter = 4; // Last race, next session, favorite driver, favorite constructor
+        // Always start with the race cards (these are independent of user preferences)
+        setRefreshLayout(view);
+        setLastRaceCard(view);
+        setNextSessionCard(view);
 
+        // Pre-fetch standings data once to be used by both cards
+        prefetchStandingsData();
+
+        // Now handle the favorite cards based on login status
         if(networkLiveData.isConnected()){
             if (userViewModel.getLoggedUser() != null) {
+                // Start loading favorite cards immediately from SharedPreferences
+                // Don't wait for getUserPreferences API call - it's just a sync operation
+                setFavouriteDriverCard(view);
+                setFavouriteConstructorCard(view);
+
+                // Sync preferences in background (for future loads)
                 userViewModel.getUserPreferences(userViewModel.getLoggedUser().getIdToken()).observe(getViewLifecycleOwner(), result -> {
                     if (result != null) {
                         if (result.isSuccess()) {
-                            Log.d(TAG, "User preferences loaded successfully");
+                            Log.d(TAG, "User preferences synced successfully");
                         } else {
-                            Log.e(TAG, "Failed to load user preferences: " + result.getError());
+                            Log.e(TAG, "Failed to sync user preferences: " + result.getError());
                         }
-
-                        setFavouriteDriverCard(view);
-                        setFavouriteConstructorCard(view);
                     }
                 });
             } else {
-                // Not logged in
+                // Not logged in - show selection prompts
                 showSelectFavouriteDriver(view);
                 showSelectFavouriteConstructor(view);
             }
         }else{
-            Log.e(TAG, "Failed to load user preferences: No internet connection");
+            Log.e(TAG, "No internet connection - loading from cache");
             // Load from cache if possible
             setFavouriteDriverCard(view);
             setFavouriteConstructorCard(view);
         }
+    }
 
-        setRefreshLayout(view);
-        setLastRaceCard(view);
-        setNextSessionCard(view);
+    private void prefetchStandingsData() {
+        // Pre-fetch driver standings
+        if (cachedDriverStandings == null) {
+            MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData(requireActivity().getApplication());
+            driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
+                if (result instanceof Result.Loading) {
+                    return;
+                }
+                if (result.isSuccess()) {
+                    cachedDriverStandings = ((Result.DriverStandingsSuccess) result).getData();
+                    Log.d(TAG, "Driver standings cached");
+                }
+            });
+        }
+
+        // Pre-fetch constructor standings
+        if (cachedConstructorStandings == null) {
+            MutableLiveData<Result> constructorStandingsLiveData = homeViewModel.getConstructorStandingsLiveData(requireActivity().getApplication());
+            constructorStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
+                if (result instanceof Result.Loading) {
+                    return;
+                }
+                if (result.isSuccess()) {
+                    cachedConstructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
+                    Log.d(TAG, "Constructor standings cached");
+                }
+            });
+        }
     }
 
     private void setRefreshLayout(View view) {
@@ -199,9 +269,31 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    private synchronized void decrementLoadingCounter() {
-        loadingCounter--;
-        if (loadingCounter == 0) {
+    private synchronized void markCardLoaded(String cardName) {
+        switch(cardName) {
+            case "lastRace":
+                lastRaceCardLoaded = true;
+                break;
+            case "nextSession":
+                nextSessionCardLoaded = true;
+                break;
+            case "driver":
+                driverCardLoaded = true;
+                break;
+            case "constructor":
+                constructorCardLoaded = true;
+                break;
+        }
+
+        Log.d(TAG, "Card loaded: " + cardName + " | LastRace: " + lastRaceCardLoaded +
+                   " | NextSession: " + nextSessionCardLoaded +
+                   " | Driver: " + driverCardLoaded +
+                   " | Constructor: " + constructorCardLoaded);
+
+        // Hide loading screen early - as soon as the race cards are ready
+        // User can see something immediately, preference cards can load in background
+        if (lastRaceCardLoaded && nextSessionCardLoaded) {
+            Log.d(TAG, "Critical cards loaded, hiding loading screen early");
             loadingScreen.hideLoadingScreen();
         }
     }
@@ -228,7 +320,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void showPodium(View view, WeeklyRace race) {
-        decrementLoadingCounter();
         try {
             String circuitId = race.getTrack().getTrackId();
             MutableLiveData<Result> trackData = trackViewModel.getTrack(circuitId);
@@ -255,7 +346,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void updateLastRaceUI(View view, WeeklyRace race, Track track) {
-        decrementLoadingCounter();
         try {
             UIUtils.singleSetTextViewText(race.getRaceName(), view.findViewById(R.id.last_race_name));
             UIUtils.loadImageWithGlide(requireContext(), track.getTrack_minimal_layout_url(), view.findViewById(R.id.last_race_track_outline), () -> updateLastRaceUIFinalStep(race, view));
@@ -266,7 +356,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void updateLastRaceUIFinalStep(WeeklyRace race, View view) {
-        decrementLoadingCounter();
         LocalDateTime dateTime = race.getDateTime();
 
         UIUtils.multipleSetTextViewText(new String[]{String.valueOf(dateTime.getDayOfMonth()), requireContext().getString(R.string.round, race.getRound())}, new TextView[]{view.findViewById(R.id.last_race_date), view.findViewById(R.id.last_race_round)});
@@ -287,6 +376,7 @@ public class HomeFragment extends Fragment {
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error setting driver names: " + e.getMessage());
+                markCardLoaded("lastRace");
             }
         });
 
@@ -295,7 +385,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void setDriverNames(View view, List<RaceResult> raceResults) {
-        decrementLoadingCounter();
         try {
             for (int i = 0; i < Math.min(3, raceResults.size()); i++) {
                 UIUtils.singleSetTextViewText(raceResults.get(i).getDriver().getFullName(), view.findViewById(Constants.LAST_RACE_DRIVER_NAME.get(i)));
@@ -303,17 +392,16 @@ public class HomeFragment extends Fragment {
         } catch (Exception e) {
             Log.e(TAG, "Error setting driver names: " + e.getMessage());
         }
+        markCardLoaded("lastRace");
     }
 
     private void loadPendingResultsLayout(View view) {
-        decrementLoadingCounter();
         view.findViewById(R.id.pending_last_race_results).setVisibility(View.VISIBLE);
         view.findViewById(R.id.last_race_results).setVisibility(View.GONE);
+        markCardLoaded("lastRace");
     }
 
     private void setNextSessionCard(View view) {
-        decrementLoadingCounter();
-
         LiveData<Result> nextRaceLiveData = weeklyRaceViewModel.getNextRaceLiveData();
         try {
             nextRaceLiveData.observe(getViewLifecycleOwner(), result -> {
@@ -354,7 +442,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void processNextRace(View view, WeeklyRace nextRace) {
-        decrementLoadingCounter();
         try {
             if (nextRace == null) throw new Exception("Next race is null");
             MutableLiveData<Result> trackData = trackViewModel.getTrack(nextRace.getTrack().getTrackId());
@@ -392,7 +479,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchNationForNextRace(View view, WeeklyRace nextRace, Track track) {
-        decrementLoadingCounter();
         try{
             MutableLiveData<Result> nationData = nationViewModel.getNation(track.getCountry());
             nationData.observe(getViewLifecycleOwner(), nationResult -> {
@@ -419,7 +505,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void setNextRaceCard(View view, WeeklyRace nextRace, Nation nation) {
-        decrementLoadingCounter();
         try {
             UIUtils.singleSetTextViewText(nextRace.getRaceName(), view.findViewById(R.id.home_next_gp_name));
 
@@ -450,7 +535,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void setNextRaceCardFinalStep(WeeklyRace nextRace, View view) throws Exception {
-        decrementLoadingCounter();
         if (!nextRace.getSeason().equals(ServiceLocator.currentYear)) {
             throw new Exception("Season mismatch");
         }
@@ -477,12 +561,12 @@ public class HomeFragment extends Fragment {
     }
 
     private void startCountdown(View view, LocalDateTime eventDate) {
-        decrementLoadingCounter();
         LinearLayout liveIconLayout = view.findViewById(R.id.timer_live_layout);
         liveIconLayout.setVisibility(View.GONE);
         long millisUntilStart = ZonedDateTime.of(eventDate, ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis();
         if (millisUntilStart <= 0) {
             liveIconLayout.setVisibility(View.VISIBLE);
+            markCardLoaded("nextSession");
             return;
         }
 
@@ -508,11 +592,10 @@ public class HomeFragment extends Fragment {
                 liveIconLayout.setVisibility(View.VISIBLE);
             }
         }.start();
+        markCardLoaded("nextSession");
     }
 
     private void setSeasonEnded(View view) {
-        decrementLoadingCounter();
-
         view.findViewById(R.id.last_race_results).setVisibility(View.GONE);
         view.findViewById(R.id.timer).setVisibility(View.GONE);
         view.findViewById(R.id.season_ended).setVisibility(View.VISIBLE);
@@ -521,17 +604,17 @@ public class HomeFragment extends Fragment {
 
         buildFinalDriversStanding(view.findViewById(R.id.season_results));
         buildFinalTeamsStanding(view.findViewById(R.id.season_results));
+        markCardLoaded("nextSession");
     }
 
     private void setUpdating(View view) {
-        decrementLoadingCounter();
         view.findViewById(R.id.timer_card_countdown).setVisibility(View.GONE);
         view.findViewById(R.id.timer_updating).setVisibility(View.VISIBLE);
+        markCardLoaded("nextSession");
     }
 
     private void buildFinalDriversStanding(View seasonEndedCard) {
         MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData(requireActivity().getApplication());
-        decrementLoadingCounter();
 
         driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
             try {
@@ -554,8 +637,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void setStandingFields(View seasonEndedCard, String driverId, int position) {
-        decrementLoadingCounter();
-
         MutableLiveData<Result> driverData = driverViewModel.getDriver(driverId);
         driverData.observe(getViewLifecycleOwner(), result -> {
             try {
@@ -579,8 +660,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildFinalTeamsStanding(View seasonEndedCard) {
-        decrementLoadingCounter();
-
         MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData(requireActivity().getApplication());
         constructorStandingsData.observe(getViewLifecycleOwner(), result -> {
             try {
@@ -608,42 +687,53 @@ public class HomeFragment extends Fragment {
     }
 
     private void setFavouriteDriverCard(View view) {
-        decrementLoadingCounter();
-
         String favoriteDriverId = getFavoriteDriverId();
         if (favoriteDriverId == null || favoriteDriverId.isEmpty() || favoriteDriverId.equals("null")) {
             showSelectFavouriteDriver(view);
             return;
         }
 
-        MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData(requireActivity().getApplication());
-        driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
-            try {
-                if (result instanceof Result.Loading) {
-                    return;
-                }
-                if (result.isSuccess()) {
-                    DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
-                    DriverStandingsElement favouriteDriver = homeViewModel.getDriverStandingsElement(driverStandings.getDriverStandingsElements(), favoriteDriverId);
-                    if (favouriteDriver == null) {
-                        showSelectFavouriteDriver(view);
-                    } else {
-                        Log.i(TAG, "Fetching driver data card");
-                        fetchDriverDataForCard(view, favoriteDriverId, favouriteDriver);
+        // Use cached data if available, otherwise fetch
+        if (cachedDriverStandings != null) {
+            processDriverStandings(view, favoriteDriverId, cachedDriverStandings);
+        } else {
+            MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData(requireActivity().getApplication());
+            driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
+                try {
+                    if (result instanceof Result.Loading) {
+                        return;
                     }
-                } else {
-                    throw new Exception("Failed to fetch driver standings: " + result.getError());
+                    if (result.isSuccess()) {
+                        DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
+                        cachedDriverStandings = driverStandings;
+                        processDriverStandings(view, favoriteDriverId, driverStandings);
+                    } else {
+                        throw new Exception("Failed to fetch driver standings: " + result.getError());
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error in setFavouriteDriverCard: " + e.getMessage());
+                    showDriverNotFound(view,0);
                 }
-            } catch (Exception e) {
-                Log.e(TAG, "Error in setFavouriteDriverCard: " + e.getMessage());
-                showDriverNotFound(view,0);
+            });
+        }
+    }
+
+    private void processDriverStandings(View view, String favoriteDriverId, DriverStandings driverStandings) {
+        try {
+            DriverStandingsElement favouriteDriver = homeViewModel.getDriverStandingsElement(driverStandings.getDriverStandingsElements(), favoriteDriverId);
+            if (favouriteDriver == null) {
+                showSelectFavouriteDriver(view);
+            } else {
+                Log.i(TAG, "Fetching driver data card");
+                fetchDriverDataForCard(view, favoriteDriverId, favouriteDriver);
             }
-        });
+        } catch (Exception e) {
+            Log.e(TAG, "Error processing driver standings: " + e.getMessage());
+            showDriverNotFound(view,0);
+        }
     }
 
     private void fetchDriverDataForCard(View view, String driverId, DriverStandingsElement favouriteDriver) {
-        decrementLoadingCounter();
-
         MutableLiveData<Result> driverData = driverViewModel.getDriver(driverId);
         driverData.observe(getViewLifecycleOwner(), driverResult -> {
             try {
@@ -666,8 +756,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchNationForDriver(View view, DriverStandingsElement favouriteDriver) {
-        decrementLoadingCounter();
-
         try{
             MutableLiveData<Result> nationData = nationViewModel.getNation(favouriteDriver.getDriver().getNationality());
             nationData.observe(getViewLifecycleOwner(), nationResult -> {
@@ -695,8 +783,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildDriverCard(View view, DriverStandingsElement standingElement, Nation nation) {
-        decrementLoadingCounter();
-
         if(networkLiveData.isConnected() && userViewModel.getLoggedUser() != null){
             try {
                 Driver driver = standingElement.getDriver();
@@ -715,7 +801,7 @@ public class HomeFragment extends Fragment {
                 ImageView driverImage = view.findViewById(R.id.favourite_driver_pic);
                 driverImage.setOnClickListener(v -> NavigationUtils.navigateToBioPage(getContext(), driver.getDriverId(), 1));
 
-                UIUtils.loadSequenceOfImagesWithGlide(requireContext(), new String[]{nationFlagUrl, driver.getDriver_pic_url()}, new ImageView[]{driverFlag, driverImage}, () -> buildDriverCardFinalStep(standingElement, view, driver));
+                UIUtils.loadImagesInParallel(requireContext(), new String[]{nationFlagUrl, driver.getDriver_pic_url()}, new ImageView[]{driverFlag, driverImage}, () -> buildDriverCardFinalStep(standingElement, view, driver));
             } catch (Exception e) {
                 Log.e(TAG, "Error building driver card: " + e.getMessage());
                 showDriverNotFound(view,0);
@@ -728,8 +814,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildDriverCardFinalStep(DriverStandingsElement standingElement, View view, Driver driver) {
-        decrementLoadingCounter();
-
         if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
             UIUtils.multipleSetTextViewText(new String[]{standingElement.getPosition(), standingElement.getPoints()},
                     new TextView[]{view.findViewById(R.id.favourite_driver_position), view.findViewById(R.id.favourite_driver_points)});
@@ -743,11 +827,10 @@ public class HomeFragment extends Fragment {
 
         Log.i(TAG, "Driver card built successfully");
         showFavouriteDriverCard(view);
+        markCardLoaded("driver");
     }
 
     private void setFavouriteConstructorCard(View view) {
-        decrementLoadingCounter();
-
         String favoriteTeamId = getFavoriteTeamId();
         if (favoriteTeamId == null || favoriteTeamId.isEmpty() || favoriteTeamId.equals("null")) {
             Log.i(TAG, "Showing select favourite constructor card");
@@ -755,35 +838,48 @@ public class HomeFragment extends Fragment {
             return;
         }
 
-        MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData(requireActivity().getApplication());
-        constructorStandingsData.observe(getViewLifecycleOwner(), result -> {
-            try {
-                if (result instanceof Result.Loading) {
-                    return;
-                }
-                if (result.isSuccess()) {
-                    ConstructorStandings standings = ((Result.ConstructorStandingsSuccess) result).getData();
-                    ConstructorStandingsElement favouriteConstructor = homeViewModel.getConstructorStandingsElement(standings.getConstructorStandings(), favoriteTeamId);
-                    if (favouriteConstructor == null) {
-                        Log.i(TAG, "Showing select favourite constructor card");
-                        showSelectFavouriteConstructor(view);
-                    } else {
-                        Log.i(TAG, "Fetching constructor data card");
-                        fetchConstructorDataForCard(view, favoriteTeamId, favouriteConstructor);
+        // Use cached data if available, otherwise fetch
+        if (cachedConstructorStandings != null) {
+            processConstructorStandings(view, favoriteTeamId, cachedConstructorStandings);
+        } else {
+            MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData(requireActivity().getApplication());
+            constructorStandingsData.observe(getViewLifecycleOwner(), result -> {
+                try {
+                    if (result instanceof Result.Loading) {
+                        return;
                     }
-                } else {
-                    throw new Exception("Failed to fetch constructor standings: " + result.getError());
+                    if (result.isSuccess()) {
+                        ConstructorStandings standings = ((Result.ConstructorStandingsSuccess) result).getData();
+                        cachedConstructorStandings = standings;
+                        processConstructorStandings(view, favoriteTeamId, standings);
+                    } else {
+                        throw new Exception("Failed to fetch constructor standings: " + result.getError());
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error in setFavouriteConstructorCard: " + e.getMessage());
+                    showConstructorNotFound(view,0);
                 }
-            } catch (Exception e) {
-                Log.e(TAG, "Error in setFavouriteConstructorCard: " + e.getMessage());
-                showConstructorNotFound(view,0);
+            });
+        }
+    }
+
+    private void processConstructorStandings(View view, String favoriteTeamId, ConstructorStandings standings) {
+        try {
+            ConstructorStandingsElement favouriteConstructor = homeViewModel.getConstructorStandingsElement(standings.getConstructorStandings(), favoriteTeamId);
+            if (favouriteConstructor == null) {
+                Log.i(TAG, "Showing select favourite constructor card");
+                showSelectFavouriteConstructor(view);
+            } else {
+                Log.i(TAG, "Fetching constructor data card");
+                fetchConstructorDataForCard(view, favoriteTeamId, favouriteConstructor);
             }
-        });
+        } catch (Exception e) {
+            Log.e(TAG, "Error processing constructor standings: " + e.getMessage());
+            showConstructorNotFound(view,0);
+        }
     }
 
     private void fetchConstructorDataForCard(View view, String teamId, ConstructorStandingsElement favouriteConstructor) {
-        decrementLoadingCounter();
-
         MutableLiveData<Result> constructorData = constructorViewModel.getSelectedConstructor(teamId);
         constructorData.observe(getViewLifecycleOwner(), constructorResult -> {
             try {
@@ -806,8 +902,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void fetchNationForConstructor(View view, ConstructorStandingsElement favouriteConstructor) {
-        decrementLoadingCounter();
-
         try{
             MutableLiveData<Result> nationData = nationViewModel.getNation(favouriteConstructor.getConstructor().getNationality());
             nationData.observe(getViewLifecycleOwner(), nationResult -> {
@@ -835,7 +929,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildConstructorCard(View view, ConstructorStandingsElement standingElement, Nation nation) {
-        decrementLoadingCounter();
 
         if(networkLiveData.isConnected() && userViewModel.getLoggedUser() != null){
             try {
@@ -857,7 +950,7 @@ public class HomeFragment extends Fragment {
                 FrameLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
                 constructorCard.setOnClickListener(v -> NavigationUtils.navigateToBioPage(getContext(), constructor.getConstructorId(), 0));
 
-                UIUtils.loadSequenceOfImagesWithGlide(requireContext(), new String[]{nationFlagUrl, constructor.getCar_pic_url()},
+                UIUtils.loadImagesInParallel(requireContext(), new String[]{nationFlagUrl, constructor.getCar_pic_url()},
                         new ImageView[]{constructorFlag, constructorCar},
                         () -> buildConstructorCardFinalStep(standingElement, view, constructor));
 
@@ -872,8 +965,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void buildConstructorCardFinalStep(ConstructorStandingsElement standingElement, View view, Constructor constructor) {
-        decrementLoadingCounter();
-
         if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
             UIUtils.multipleSetTextViewText(new String[]{standingElement.getPosition(), standingElement.getPoints()},
                     new TextView[]{view.findViewById(R.id.favourite_constructor_position), view.findViewById(R.id.favourite_constructor_points)});
@@ -887,10 +978,11 @@ public class HomeFragment extends Fragment {
 
         showFavouriteConstructorCard(view);
         Log.i(TAG, "Constructor card built successfully");
+        markCardLoaded("constructor");
     }
 
     private void showSelectFavouriteDriver(View view) {
-        decrementLoadingCounter();
+        markCardLoaded("driver");
 
         updateVisibility(view, R.id.pending_favorite_driver, R.id.favorite_driver, R.id.missing_favorite_driver);
         view.findViewById(R.id.pending_favorite_driver).setOnClickListener(v -> startActivity(new Intent(getActivity(), DriversStandingActivity.class)));
@@ -898,7 +990,7 @@ public class HomeFragment extends Fragment {
     }
 
     private void showDriverNotFound(View view, int problem) {
-        decrementLoadingCounter();
+        markCardLoaded("driver");
         updateVisibility(view, R.id.missing_favorite_driver, R.id.favorite_driver, R.id.pending_favorite_driver);
 
         switch(problem){
@@ -924,14 +1016,14 @@ public class HomeFragment extends Fragment {
     }
 
     private void showSelectFavouriteConstructor(View view) {
-        decrementLoadingCounter();
+        markCardLoaded("constructor");
 
         updateVisibility(view, R.id.pending_favorite_constructor, R.id.favorite_constructor, R.id.missing_favorite_constructor);
         view.findViewById(R.id.pending_favorite_constructor).setOnClickListener(v -> startActivity(new Intent(getActivity(), ConstructorsStandingActivity.class)));
     }
 
     private void showConstructorNotFound(View view, int problem) {
-        decrementLoadingCounter();
+        markCardLoaded("constructor");
 
         updateVisibility(view, R.id.missing_favorite_constructor, R.id.favorite_constructor, R.id.pending_favorite_constructor);
 

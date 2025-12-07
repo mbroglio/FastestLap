@@ -43,6 +43,11 @@ public class NewsFragment extends Fragment {
     private int loadingCounter = 0;
     private LoadingScreen loadingScreen;
 
+    // Cache news data to avoid re-fetching
+    private List<News> cachedEnglishNews = null;
+    private List<News> cachedItalianNews = null;
+    private int cachedEnglishSourceIndex = -1;
+
     public NewsFragment() {
         // Required empty public constructor
     }
@@ -135,6 +140,35 @@ public class NewsFragment extends Fragment {
     }
 
     private void loadNews(boolean languageFeed, RecyclerView recyclerView, boolean defaultSource, int value) {
+        // Check if we have cached data
+        boolean useCache = false;
+        List<News> cachedNews = null;
+
+        if (languageFeed) {
+            // English news
+            if (defaultSource && value == cachedEnglishSourceIndex && cachedEnglishNews != null) {
+                useCache = true;
+                cachedNews = cachedEnglishNews;
+            } else if (!defaultSource && value == cachedEnglishSourceIndex && cachedEnglishNews != null) {
+                useCache = true;
+                cachedNews = cachedEnglishNews;
+            }
+        } else {
+            // Italian news
+            if (cachedItalianNews != null) {
+                useCache = true;
+                cachedNews = cachedItalianNews;
+            }
+        }
+
+        if (useCache) {
+            // Use cached data - instant loading!
+            Log.d(TAG, "Using cached news data");
+            displayNews(cachedNews, recyclerView);
+            return;
+        }
+
+        // No cache available - fetch from network
         loadingCounter = 1;
         loadingScreen.showLoadingScreen(false);
 
@@ -152,8 +186,13 @@ public class NewsFragment extends Fragment {
                         newsList = NewsFetcher.fetchNewsEngSources(value);
                         defaultIndex = value;
                     }
+                    // Cache English news
+                    cachedEnglishNews = newsList;
+                    cachedEnglishSourceIndex = defaultSource ? 0 : value;
                 } else {
                     newsList = NewsFetcher.fetchNewsItSources();
+                    // Cache Italian news
+                    cachedItalianNews = newsList;
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error fetching news", e);
@@ -162,22 +201,27 @@ public class NewsFragment extends Fragment {
             List<News> finalNewsList = newsList;
             handler.post(() -> {
                 if (finalNewsList != null && !finalNewsList.isEmpty()) {
-                    int itemsToWait = Math.min(finalNewsList.size(), 2);
-                    loadingCounter += itemsToWait;
-                    NewsRecyclerAdapter adapter = new NewsRecyclerAdapter(finalNewsList, getContext(), this::decrementLoadingCounter, itemsToWait);
-                    recyclerView.setAdapter(adapter);
-                    recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new android.view.ViewTreeObserver.OnGlobalLayoutListener() {
-                        @Override
-                        public void onGlobalLayout() {
-                            recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                            decrementLoadingCounter();
-                        }
-                    });
+                    displayNews(finalNewsList, recyclerView);
                 } else {
                     Toast.makeText(getContext(), R.string.feed_error, Toast.LENGTH_SHORT).show();
                     decrementLoadingCounter();
                 }
             });
+        });
+    }
+
+    private void displayNews(List<News> newsList, RecyclerView recyclerView) {
+        // Reduce items to wait for - only wait for first image to load
+        int itemsToWait = 1;
+        loadingCounter += itemsToWait;
+        NewsRecyclerAdapter adapter = new NewsRecyclerAdapter(newsList, getContext(), this::decrementLoadingCounter, itemsToWait);
+        recyclerView.setAdapter(adapter);
+        recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new android.view.ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                decrementLoadingCounter();
+            }
         });
     }
 
