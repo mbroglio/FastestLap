@@ -400,7 +400,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Lanticina Riccardo** - [GitHub](https://github.com/Riccardolanticina)
 
 ### Project Links
-- **GitHub:** [https://github.com/yourusername/fastestlap](https://github.com/yourusername/fastestlap)
+- **GitHub:** [https://github.com/yourusername/fastestlap](https://github.com/mbroglio/fastestlap)
 - **Documentation:** [Documentazione/Documentazione FastestLap.pdf](Documentazione/Documentazione%20FastestLap.pdf)
 - **Presentation:** [Documentazione/Presentazione FastestLap.pdf](Documentazione/Presentazione%20FastestLap.pdf)
 
