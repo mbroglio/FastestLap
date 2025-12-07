@@ -57,15 +57,9 @@ public class SplashActivity extends AppCompatActivity {
         ConstraintLayout introScreen = findViewById(R.id.intro_screen);
         UIUtils.applyWindowInsets(introScreen);
 
-        String season_year = getIntent().getStringExtra("season_year");
-        Log.d("LaunchFlag", "Valore ricevuto: " + season_year);
-        if (season_year != null) {
-            ServiceLocator.setCurrentYearBaseUrl(season_year);
-        } else {
-            Log.d("LaunchFlag", "Using default year (current)");
-            ServiceLocator.setCurrentYearBaseUrl("2025");
-        }
-
+        String currentYear = ServiceLocator.getCurrentYear();
+        Log.d("LaunchFlag", "Using year: " + currentYear);
+        ServiceLocator.setCurrentYearBaseUrl(currentYear);
 
         userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(ServiceLocator.getInstance().getUserRepository((Application) getApplicationContext()))).get(UserViewModel.class);
 
