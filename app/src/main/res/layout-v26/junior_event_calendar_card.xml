@@ -106,13 +106,11 @@
 
                     <TextView
                         android:id="@+id/sprint_month"
+                        style="@style/LayoutSubtitleUppercaseWhite"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:fontFamily="@font/orbitron_bold"
-                        android:text="@string/not_found"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/layout_subtitle_text_size">
+                        android:text="@string/not_found">
 
                     </TextView>
 
@@ -165,13 +163,11 @@
 
                     <TextView
                         android:id="@+id/feature_month"
+                        style="@style/LayoutSubtitleUppercaseWhite"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:fontFamily="@font/orbitron_bold"
-                        android:text="@string/not_found"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/layout_subtitle_text_size">
+                        android:text="@string/not_found">
 
                     </TextView>
 

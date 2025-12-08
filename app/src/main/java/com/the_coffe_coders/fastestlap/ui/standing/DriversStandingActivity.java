@@ -13,7 +13,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.adapter.DriversStandingRecyclerAdapter;
+import com.the_coffe_coders.fastestlap.adapter.f1.DriversStandingRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.DriverStandingsElement;

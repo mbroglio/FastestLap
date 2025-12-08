@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/dialog_page"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:backgroundTint="@color/white"
@@ -24,20 +25,16 @@
 
             <TextView
                 android:id="@+id/dialog_title"
+                style="@style/PageTitleUppercaseBlack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:gravity="center"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="5dp"
-                android:autoSizeMaxTextSize="@dimen/page_title_text_size"
-                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                android:autoSizeTextType="uniform"
-                android:fontFamily="@font/orbitron_bold"
                 android:maxLines="1"
-                android:textColor="@color/black"
-                android:textSize="@dimen/page_title_text_size"
                 android:visibility="visible" />
 
             <LinearLayout
@@ -87,7 +84,7 @@
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/race_results_recycler_view"
+            android:id="@+id/junior_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_above="@id/race_info_layout"

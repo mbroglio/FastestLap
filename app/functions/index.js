@@ -34,11 +34,11 @@ exports.updateRaceStats = onSchedule(
 );
 
 /**
- * SCHEDULER 2: F1 Championships (15 Dic 12:00)
+ * SCHEDULER 2: F1 Championships (12 Dic 12:00)
  */
 exports.updateChampionships = onSchedule(
   {
-    schedule: "0 12 15 12 *",
+    schedule: "0 12 12 12 *",
     timeZone: "Europe/Rome",
     timeoutSeconds: 300,
     retryConfig: {

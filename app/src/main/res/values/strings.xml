@@ -202,5 +202,6 @@
     <string name="points">points</string>
     <string name="wins_header">wins</string>
     <string name="pod" translatable="false">pod</string>
+    <string name="calendar">calendar</string>
 
 </resources>

@@ -1,26 +1,13 @@
 package com.the_coffe_coders.fastestlap.ui.junior;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ScrollView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProvider;
-
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.junior.JuniorEntryList;
-import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendar;
-import com.the_coffe_coders.fastestlap.ui.junior.viewmodel.f3.F3ViewModel;
-import com.the_coffe_coders.fastestlap.ui.junior.viewmodel.f3.F3ViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
@@ -62,17 +49,16 @@ public class Formula3Activity extends AppCompatActivity {
         driversStandingCard = findViewById(R.id.f3_drivers_standing_card);
         constructorsStandingCard = findViewById(R.id.f3_constructors_standing_card);
 
-        entryListCard.setOnClickListener(v -> executeOperation2()
-                //NavigationUtils.showEntryListDialog(getSupportFragmentManager(), categoryType)
-                //content = entryList
+        entryListCard.setOnClickListener(v ->
+                NavigationUtils.showEntryListDialog(getSupportFragmentManager(), categoryType)
         );
 
-        calendarCard.setOnClickListener(v -> executeOperation1()
-                //NavigationUtils.showCalendarDialog(getSupportFragmentManager(), categoryType)
+        calendarCard.setOnClickListener(v ->
+                NavigationUtils.showCalendarDialog(getSupportFragmentManager(), categoryType)
         );
 
-        resultsCard.setOnClickListener(v ->
-                NavigationUtils.navigateToJuniorResultsPage(this, categoryType)
+        resultsCard.setOnClickListener(v -> {}
+                //NavigationUtils.navigateToJuniorResultsPage(this, categoryType)
         );
 
         driversStandingCard.setOnClickListener(v -> {}
@@ -86,7 +72,7 @@ public class Formula3Activity extends AppCompatActivity {
 
 
     }
-
+    /*
     private void executeOperation2() {
         F3ViewModel f3ViewModel = new ViewModelProvider(this, new F3ViewModelFactory(getApplication())).get(F3ViewModel.class);
 
@@ -137,7 +123,7 @@ public class Formula3Activity extends AppCompatActivity {
                 }
             }
         });
-
-
     }
+
+     */
 }

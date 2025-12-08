@@ -142,7 +142,7 @@ async function executeRaceStatsUpdate(db) { // post race stats update
         }
     }
 
-    await processCircuitRaceUpdate(newSeason, newRound, results, multiPathUpdates);
+    await processCircuitRaceUpdate(newSeason, newRound, results, multiPathUpdates, db);
 
     multiPathUpdates[`${PATHS.tracker}/last_season_updated`] = newSeason;
     multiPathUpdates[`${PATHS.tracker}/last_race_updated`] = newRound;
@@ -173,9 +173,9 @@ async function executeChampionshipsUpdate(db) { // end of season championship up
 
     const multiPathUpdates = {};
 
-    await processDriverSeasonArchive(newSeason, multiPathUpdates);
-    await processConstructorSeasonArchive(newSeason, multiPathUpdates);
-    await processCircuitSeasonArchive(newSeason, multiPathUpdates);
+    await processDriverSeasonArchive(newSeason, multiPathUpdates, db);
+    await processConstructorSeasonArchive(newSeason, multiPathUpdates, db);
+    await processCircuitSeasonArchive(newSeason, multiPathUpdates, db);
 
 
     multiPathUpdates[`${PATHS.tracker}/last_champ_season`] = newSeason;
@@ -192,7 +192,7 @@ async function executeChampionshipsUpdate(db) { // end of season championship up
 * -----------------------------------------------------------------
 */
 
-async function processCircuitRaceUpdate(newSeason, newRound, results, updates) {
+async function processCircuitRaceUpdate(newSeason, newRound, results, updates, db) {
     const calendarSnap = await db.ref(PATHS.calendar).once("value");
     const calendarData = calendarSnap.val() || {};
 
@@ -220,7 +220,7 @@ async function processCircuitRaceUpdate(newSeason, newRound, results, updates) {
     updates[`${PATHS.calendar}/${circuitKey}/season_result/team`] = podiumTeams;
 }
 
-async function processDriverSeasonArchive(newSeason, updates) {
+async function processDriverSeasonArchive(newSeason, updates, db) {
     const response = await axios.get(APIS.driverStandings);
     const standings = response.data.MRData.StandingsTable.StandingsLists[0].DriverStandings;
 
@@ -254,7 +254,7 @@ async function processDriverSeasonArchive(newSeason, updates) {
     }
 }
 
-async function processConstructorSeasonArchive(newSeason, updates) {
+async function processConstructorSeasonArchive(newSeason, updates, db) {
     const response = await axios.get(APIS.constructorStandings);
     const standings = response.data.MRData.StandingsTable.StandingsLists[0].ConstructorStandings;
 
@@ -287,7 +287,7 @@ async function processConstructorSeasonArchive(newSeason, updates) {
     }
 }
 
-async function processCircuitSeasonArchive(newSeason, updates) {
+async function processCircuitSeasonArchive(newSeason, updates, db) {
     const calendarSnap = await db.ref(PATHS.calendar).once("value");
     const calendarData = calendarSnap.val() || {};
 

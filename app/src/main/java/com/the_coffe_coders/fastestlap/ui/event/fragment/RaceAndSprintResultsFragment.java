@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.adapter.RaceResultsRecyclerAdapter;
+import com.the_coffe_coders.fastestlap.adapter.f1.RaceResultsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.RaceResultFastestLap;
