@@ -119,7 +119,7 @@ Built with modern Android development practices, FastestLap provides an intuitiv
 
 - **Android Studio** Arctic Fox (2020.3.1) or later
 - **JDK** 11 or higher
-- **Android SDK** API 24+ (Android 7.0 Nougat)
+- **Android SDK** API 26+ (Android 8.0 Oreo)
 - **Firebase Account** for authentication and database features
 
 ### Setup Instructions
@@ -224,7 +224,7 @@ app/
 
 #### Core
 - **Language:** Java 11
-- **Min SDK:** 24 (Android 7.0)
+- **Min SDK:** 26 (Android 8.0)
 - **Target SDK:** 34 (Android 14)
 - **Compile SDK:** 36
 
