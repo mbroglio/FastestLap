@@ -53,38 +53,38 @@ public class FirebaseJuniorCalendarDataSource implements JuniorCalendarDataSourc
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()){
-                    JuniorCalendar calendar = snapshot.getValue(JuniorCalendar.class);
+                    JuniorCalendar calendar = new JuniorCalendar();
+                    calendar.setSeries(series);
 
-                    if(calendar == null){
-                        Log.e(TAG, "Calendar data is null");
-                        //callback.onerror(new Exception("Calendar data is null"));
-                    }else{
-                        Log.i(TAG, "Successfully retrieved calendar from Firebase: " + calendar);
-                        List<JuniorCalendarElement> events = new ArrayList<>();
+                    List<JuniorCalendarElement> events = new ArrayList<>();
 
-                        for(DataSnapshot child : snapshot.getChildren()){
-                            if(child.exists()){
-                                JuniorCalendarElement event = child.getValue(JuniorCalendarElement.class);
-                                if(event != null){
-                                    events.add(event);
-                                }
+                    // The snapshot itself is the list, so iterate over its children directly
+                    for(DataSnapshot child : snapshot.getChildren()){
+                        if(child.exists()){
+                            // Each child is a calendar element (an item in the array)
+                            JuniorCalendarElement event = child.getValue(JuniorCalendarElement.class);
+                            if(event != null){
+                                events.add(event);
                             }
                         }
-
-                        calendar.setEvents(events);
-                        //callback.onJuniorCalendarLoaded(calendar);
                     }
-                }
 
+                    // Check if we found any events
+                    if (events.isEmpty()) {
+                        Log.w(TAG, "No events found for series: " + series);
+                    }
+
+                    calendar.setEvents(events);
+                    callback.onCalendarLoaded(calendar);
+
+                }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e(TAG, "Firebase request cancelled: " + error.getMessage());
-                //callback.onError(new Exception("Firebase error: " + error.getMessage()));
+                callback.onError(new Exception("Firebase error: " + error.getMessage()));
             }
         });
-
-
     }
 }

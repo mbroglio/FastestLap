@@ -7,6 +7,8 @@ import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.junior.JuniorEntryList;
+import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendar;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 
@@ -144,7 +146,6 @@ public abstract class Result {
         public Error(String message) {
             this.message = message;
         }
-
     }
 
     public static class RaceResultsSuccess extends Result {
@@ -178,6 +179,29 @@ public abstract class Result {
         public Loading(String message) {
             this.message = message;
         }
+    }
 
+    public static class JuniorCalendarSuccess extends Result {
+        private final JuniorCalendar calendar;
+
+        public JuniorCalendarSuccess(JuniorCalendar calendar) {
+            this.calendar = calendar;
+        }
+
+        public JuniorCalendar getData() {
+            return calendar;
+        }
+    }
+
+    public static class JuniorEntryListSuccess extends Result {
+        private final JuniorEntryList juniorEntryList;
+
+        public JuniorEntryListSuccess(JuniorEntryList juniorEntryList) {
+            this.juniorEntryList = juniorEntryList;
+        }
+
+        public JuniorEntryList getData() {
+            return juniorEntryList;
+        }
     }
 }
