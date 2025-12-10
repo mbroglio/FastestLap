@@ -1,9 +1,11 @@
 package com.the_coffe_coders.fastestlap.adapter.junior;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendar;
 import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendarElement;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 public class JuniorCalendarRecyclerAdapter extends RecyclerView.Adapter<JuniorCalendarRecyclerAdapter.JuniorCalendarViewHolder> {
 
@@ -31,12 +34,13 @@ public class JuniorCalendarRecyclerAdapter extends RecyclerView.Adapter<JuniorCa
 
     @Override
     public void onBindViewHolder(@NonNull JuniorCalendarRecyclerAdapter.JuniorCalendarViewHolder holder, int position) {
+        Log.i("JuniorCalendarRecyclerAdapter", "calendar: " + calendar.getEvents());
         JuniorCalendarElement element = calendar.getEvents().get(position);
         holder.eventRound.setText(context.getString(R.string.round_upper_case_plus_value, element.getRound()));
         holder.eventName.setText(element.getCircuit());
 
-        setDates(holder, element);
-
+        UIUtils.loadImageWithGlide(context, element.getNationFlagUrl(), holder.nationFlag,
+                () ->setDates(holder, element));
     }
 
     private void setDates(JuniorCalendarViewHolder holder, JuniorCalendarElement element) {
@@ -60,6 +64,7 @@ public class JuniorCalendarRecyclerAdapter extends RecyclerView.Adapter<JuniorCa
     public static class JuniorCalendarViewHolder extends RecyclerView.ViewHolder {
 
         final TextView eventRound, eventName, sprintDateDay, sprintDateMonth, featureDateDay, featureDateMonth;
+        final ImageView nationFlag;
 
         public JuniorCalendarViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -69,6 +74,7 @@ public class JuniorCalendarRecyclerAdapter extends RecyclerView.Adapter<JuniorCa
             sprintDateMonth = itemView.findViewById(R.id.sprint_month);
             featureDateDay = itemView.findViewById(R.id.feature_date);
             featureDateMonth = itemView.findViewById(R.id.feature_month);
+            nationFlag = itemView.findViewById(R.id.event_nation_flag);
         }
     }
 }

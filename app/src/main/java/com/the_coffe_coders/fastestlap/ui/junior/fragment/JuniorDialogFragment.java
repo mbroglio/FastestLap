@@ -167,6 +167,7 @@ public class JuniorDialogFragment extends DialogFragment {
     }
 
     private void executeCalendar() {
+        Log.i(TAG, "CALENDAR: " + categoryType);
         MutableLiveData<Result> calendarLiveData = juniorCategoryViewModel.getCalendar(categoryType);
         calendarLiveData.observe(getViewLifecycleOwner(), result -> {
             if (result instanceof Result.Loading) {

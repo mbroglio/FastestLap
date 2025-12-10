@@ -277,4 +277,5 @@ public class Constants {
     public static final String FIREBASE_CIRCUITS_COLLECTION = "circuits";
     public static final String FIREBASE_NATIONS_COLLECTION = "nations";
     public static final String FIREBASE_JUNIOR_COLLECTION = "junior_categories";
+    public static final String FIREBASE_CIRCUIT_MAP_COLLECTION="app_config/circuit_name_id_map";
 }
