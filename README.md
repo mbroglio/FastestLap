@@ -7,7 +7,7 @@
 **Your Ultimate Formula 1 Companion App**
 
 [![Version](https://img.shields.io/badge/version-1.0-blue.svg)](https://github.com/mbroglio/fastestlap)
-[![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg)](https://android-arsenal.com/api?level=24)
+[![API](https://img.shields.io/badge/API-26%2B-brightgreen.svg)](https://android-arsenal.com/api?level=26)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE)
 
 [Features](#features) • [Screenshots](#screenshots) • [Installation](#installation) • [Architecture](#architecture) • [Contributing](#contributing)
@@ -119,7 +119,7 @@ Built with modern Android development practices, FastestLap provides an intuitiv
 
 - **Android Studio** Arctic Fox (2020.3.1) or later
 - **JDK** 11 or higher
-- **Android SDK** API 24+ (Android 7.0 Nougat)
+- **Android SDK** API 26+ (Android 8.0 Oreo)
 - **Firebase Account** for authentication and database features
 
 ### Setup Instructions
@@ -224,7 +224,7 @@ app/
 
 #### Core
 - **Language:** Java 11
-- **Min SDK:** 24 (Android 7.0)
+- **Min SDK:** 26 (Android 8.0)
 - **Target SDK:** 34 (Android 14)
 - **Compile SDK:** 36
 
