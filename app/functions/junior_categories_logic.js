@@ -54,13 +54,14 @@ async function checkRaceYesterday(db, seriesId) {
     // en-GB' to have day before month
     const formatter = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long' });
     const yesterdayString = formatter.format(yesterday);
-
+ 
     console.log(`[${seriesId}] Date check: Looking for race held on '${yesterdayString}'...`);
 
     // 3. Search in calendar
     let raceFound = false;
     for (const key in calendarData) {
         const race = calendarData[key];
+       
         // Compare string (e.g., "16 March")
         if (race.feature_date && race.feature_date.toLowerCase() === yesterdayString.toLowerCase()) {
             console.log(`[${seriesId}] Match found: Round ${race.round} at ${race.circuit} on Feature Date`);
@@ -90,20 +91,36 @@ async function processSeries(db, seriesId, url) {
     const entryList = scrapeEntryList($);
     if (entryList) updates[`${basePath}/entrylist`] = entryList;
 
-    const calendar = scrapeCalendar($);
+    const calendar = await scrapeCalendar($, db);
     if (calendar) {
         calendar.forEach(race => {
-            updates[`${basePath}/calendar/${race.round}`] = {
-                round: race.round, circuit: race.circuit, sprint_date: race.sprint_date, feature_date: race.feature_date
+            const calendarEntry = {
+                round: race.round, 
+                circuit: race.circuit, 
+                sprint_date: race.sprint_date, 
+                feature_date: race.feature_date
             };
+            // Add nationFlagUrl if available
+            if (race.nation_flag_url) {
+                calendarEntry.nation_flag_url = race.nation_flag_url;
+            }
+            updates[`${basePath}/calendar/${race.round}`] = calendarEntry;
         });
     }
 
-    const raceResults = scrapeRaceResults($);
+    const raceResults = scrapeRaceResults($, calendar);
     if (raceResults) {
         raceResults.forEach(race => {
-            updates[`${basePath}/results/${race.round}/sprint`] = race.sprint_race;
-            updates[`${basePath}/results/${race.round}/feature`] = race.feature_race;
+            const raceResultsEntry = {
+                round: race.round,
+                circuit: race.circuit,
+                sprint: race.sprint_race,
+                feature: race.feature_race,
+                nationFlagUrl: race.nationFlagUrl
+            }
+            updates[`${basePath}/results/${race.round}`] = raceResultsEntry;
+
+            console.log(`Race results for Round ${race.round} processed.`);
         });
     }
 
@@ -216,7 +233,7 @@ function scrapeEntryList($) {
     return teamsMap;
 }
 
-function scrapeCalendar($) {
+async function scrapeCalendar($, db) {
     console.log("Scraping Calendar...");
     const calendar = [];
     $('table.wikitable').each((i, table) => {
@@ -246,10 +263,63 @@ function scrapeCalendar($) {
             });
         });
     });
+
+    // Enrich calendar data with circuit details and nation flags
+    if (db && calendar.length > 0) {
+        console.log("Enriching calendar data with circuit and nation information...");
+        
+        // Get circuit_name_id_map
+        const circuitMapSnapshot = await db.ref('app_config/circuit_name_id_map').once('value');
+        const circuitMap = circuitMapSnapshot.val() || {};
+
+        for (const event of calendar) {
+            try {
+                // 1. Get circuit ID from circuit_name_id_map
+                const circuitId = circuitMap[event.circuit];
+                
+                if (circuitId) {
+                    console.log(`Found circuit ID '${circuitId}' for '${event.circuit}'`);
+                    
+                    // 2. Fetch track data from circuits node
+                    const trackSnapshot = await db.ref(`circuits/${circuitId}`).once('value');
+                    const track = trackSnapshot.val();
+                    
+                    if (track) {
+                        // 3. Overwrite circuit with track.trackName
+                        event.circuit = track.trackName;
+                        console.log(`Updated circuit name to '${track.trackName}'`);
+                        
+                        // 4. Fetch nation using track.country
+                        if (track.country) {
+                            const nationSnapshot = await db.ref(`nations/${track.country}`).once('value');
+                            const nation = nationSnapshot.val();
+                            
+                            if (nation && nation.nation_flag_url) {
+                                // 5. Set nationFlagUrl
+                                event.nation_flag_url = nation.nation_flag_url;
+                                console.log(`Added nation flag URL for country '${track.country}'`);
+                            } else {
+                                console.warn(`Nation not found or missing flag URL for country '${track.country}'`);
+                            }
+                        } else {
+                            console.warn(`Track '${circuitId}' has no country field`);
+                        }
+                    } else {
+                        console.warn(`No track found for circuit ID '${circuitId}'`);
+                    }
+                } else {
+                    console.warn(`No circuit ID mapping found for '${event.circuit}'`);
+                }
+            } catch (error) {
+                console.error(`Error enriching calendar event for round ${event.round}:`, error.message);
+            }
+        }
+    }
+
     return calendar;
 }
 
-function scrapeRaceResults($) {
+function scrapeRaceResults($, calendar = null) {
     console.log("Scraping Results Matrix...");
     const races = [];
     $('table.wikitable').each((i, table) => {
@@ -317,11 +387,30 @@ function scrapeRaceResults($) {
         d.feature.results.sort(sorter);
         
         const clean = (list) => list.map(({ driver, position }) => ({ driver, position }));
-        finalResults.push({
+        const result = {
             round: parseInt(roundKey),
             sprint_race: { fastest_lap: d.sprint.fl || "N/A", pole_position: d.sprint.pl || "N/A", order: clean(d.sprint.results) },
             feature_race: { fastest_lap: d.feature.fl || "N/A", pole_position: d.feature.pl || "N/A", order: clean(d.feature.results) }
-        });
+        };
+
+        // Enrich with calendar data (circuit name and nation flag URL)
+        if (calendar && calendar.length > 0) {
+            try {
+                const calendarItem = calendar.find(event => parseInt(event.round) === result.round);
+                if (calendarItem) {
+                    result.circuit = calendarItem.circuit || null;
+                    result.nationFlagUrl = calendarItem.nation_flag_url || null;
+
+                    console.log(`Enriched round ${result.round} with circuit '${result.circuit}'`);
+                } else {
+                    console.warn(`No calendar event found for round ${result.round}`);
+                }
+            } catch (error) {
+                console.error(`Error enriching race results for round ${result.round}:`, error.message);
+            }
+        }
+
+        finalResults.push(result);
     });
     return finalResults;
 }
@@ -401,5 +490,17 @@ function getEndRound(roundsText) {
     return 0;
 }
 
-// Export main functions
-module.exports = { executeJuniorSeriesUpdate, executeJuniorReset };
+// Export main functions and individual scraping functions for testing
+module.exports = { 
+    executeJuniorSeriesUpdate, 
+    executeJuniorReset,
+
+    // Individual functions for testing
+    checkRaceYesterday,
+    processSeries,
+    scrapeEntryList,
+    scrapeCalendar,
+    scrapeRaceResults,
+    scrapeDriverStandings,
+    scrapeTeamStandings
+};

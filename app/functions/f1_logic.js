@@ -352,5 +352,15 @@ function manageHistoryArray(existingHistory, newEntry) {
 * -----------------------------------------------------------------
 */
 
-// Esxport main functions
-module.exports = { executeRaceStatsUpdate, executeChampionshipsUpdate };
+// Export main functions and helper functions for testing
+module.exports = { 
+    executeRaceStatsUpdate, 
+    executeChampionshipsUpdate,
+    
+    // Helper functions for testing
+    loadMappings,
+    processCircuitRaceUpdate,
+    processDriverSeasonArchive,
+    processConstructorSeasonArchive,
+    processCircuitSeasonArchive
+};
