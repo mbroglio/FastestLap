@@ -24,6 +24,14 @@
 
 
 
+    <!--
+    PAGE SUPERTITLE STYLE UPPER CASE
+        -25sp
+        -upper case
+        -bold
+        -autoresize -> 9sp
+        -black/white
+    -->
 
     <style name="PageSuperTitleUpperCaseWhite">
         <item name="android:textSize">@dimen/page_supertitle_text_size</item>
@@ -47,6 +55,14 @@
 
 
 
+    <!--
+    PAGE TITLE STYLE UPPER CASE
+        -20 sp
+        -upper case
+        -bold
+        -autoresize -> 9sp
+        -black/white
+    -->
 
     <style name="PageTitleUppercaseBlack">
         <item name="android:textSize">@dimen/page_title_text_size</item>
@@ -70,6 +86,14 @@
 
 
 
+    <!--
+       PAGE TITLE 1 STYLE UPPER CASE
+           -18 sp
+           -upper case
+           -bold
+           -autoresize -> 9sp
+           -black/white
+    -->
 
     <style name="LayoutTitle1UppercaseBlack">
         <item name="android:textSize">@dimen/layout_title_1_text_size</item>
@@ -93,6 +117,14 @@
 
 
 
+    <!--
+   PAGE SUBTITLE STYLE UPPER CASE
+       -14 sp
+       -upper case
+       -bold
+       -autoresize -> 9sp
+       -black/white
+   -->
 
     <style name="LayoutSubtitleUppercaseBlack">
         <item name="android:textSize">@dimen/layout_subtitle_text_size</item>
@@ -116,8 +148,16 @@
 
 
 
+    <!--
+   PAGE SUBTITLE STYLE CONTENT INDEX
+       -14 sp
+       -bold
+       -autoresize -> 9sp
+       -black/white
+       -maxLines 1
+   -->
 
-    <style name="BioPageContentIndexWhite">
+    <style name="PageSubtitleContentIndexWhite">
         <item name="android:textSize">@dimen/layout_subtitle_text_size</item>
         <item name="android:textColor">@color/white</item>
         <item name="fontFamily">@font/orbitron_bold</item>
@@ -127,7 +167,28 @@
         <item name="maxLines">1</item>
     </style>
 
-    <style name="BioPageContentRegularWhite">
+    <style name="PageSubtitleContentIndexBlack">
+        <item name="android:textSize">@dimen/layout_subtitle_text_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="android:autoSizeMaxTextSize">@dimen/layout_subtitle_text_size</item>
+        <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
+        <item name="autoSizeTextType">uniform</item>
+        <item name="maxLines">1</item>
+    </style>
+
+
+
+    <!--
+    PAGE CONTENT STYLE REGULAR
+      -12 sp
+      -regular
+      -autoresize -> 9sp
+      -black/white
+      -maxLines 1
+    -->
+
+    <style name="PageContentRegularWhite">
         <item name="android:textSize">@dimen/body_text_size</item>
         <item name="android:textColor">@color/white</item>
         <item name="fontFamily">@font/orbitron_regular</item>
@@ -137,7 +198,46 @@
         <item name="maxLines">1</item>
     </style>
 
+    <style name="PageContentRegularBlack">
+        <item name="android:textSize">@dimen/body_text_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="fontFamily">@font/orbitron_regular</item>
+        <item name="android:autoSizeMaxTextSize">@dimen/body_text_size</item>
+        <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
+        <item name="autoSizeTextType">uniform</item>
+        <item name="maxLines">1</item>
+    </style>
 
 
+
+    <!--
+    JUNIOR F2 CARD STYLE
+        -stroke: formula 2 color
+    -->
+
+    <style name="F2MenuCard" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@android:color/transparent</item>
+        <item name="cardCornerRadius">8dp</item>
+        <item name="strokeColor">@color/formula_2</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+
+
+
+    <!--
+    JUNIOR F3 CARD STYLE
+        -stroke: app main color (red)
+    -->
+
+    <style name="F3MenuCard" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@android:color/transparent</item>
+        <item name="cardCornerRadius">8dp</item>
+        <item name="strokeColor">@color/ferrari_secondary</item>
+        <item name="strokeWidth">2dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
 
 </resources>

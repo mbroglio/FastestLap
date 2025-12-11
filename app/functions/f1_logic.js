@@ -348,7 +348,7 @@ function manageHistoryArray(existingHistory, newEntry) {
 
 /*
 * -----------------------------------------------------------------
-* FUNCTIONS EXPORTS
+* FUNCTION EXPORTS
 * -----------------------------------------------------------------
 */
 

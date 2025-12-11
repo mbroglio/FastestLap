@@ -7,7 +7,7 @@
 
 
     <!-- 40dp -->
-    <dimen name="page_supertitle_text_size">26sp</dimen>
+    <dimen name="page_supertitle_text_size">25sp</dimen>
     <dimen name="page_title_text_size">20sp</dimen>
     <dimen name="layout_title_1_text_size">18sp</dimen>
     <dimen name="layout_title_2_text_size">16sp</dimen>

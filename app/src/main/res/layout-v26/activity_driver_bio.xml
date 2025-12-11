@@ -189,7 +189,7 @@
                         android:orientation="vertical">
 
                         <TextView
-                            style="@style/BioPageContentIndexWhite"
+                            style="@style/PageSubtitleContentIndexWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
@@ -200,7 +200,7 @@
 
                         <TextView
                             android:id="@+id/driver_birthplace"
-                            style="@style/BioPageContentRegularWhite"
+                            style="@style/PageContentRegularWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
@@ -212,7 +212,7 @@
                             android:text="@string/not_found" />
 
                         <TextView
-                            style="@style/BioPageContentIndexWhite"
+                            style="@style/PageSubtitleContentIndexWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
@@ -223,7 +223,7 @@
 
                         <TextView
                             android:id="@+id/driver_birthdate"
-                            style="@style/BioPageContentRegularWhite"
+                            style="@style/PageContentRegularWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
@@ -233,7 +233,7 @@
                             android:text="@string/not_found" />
 
                         <TextView
-                            style="@style/BioPageContentIndexWhite"
+                            style="@style/PageSubtitleContentIndexWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
@@ -243,7 +243,7 @@
 
                         <TextView
                             android:id="@+id/driver_age"
-                            style="@style/BioPageContentRegularWhite"
+                            style="@style/PageContentRegularWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
@@ -253,7 +253,7 @@
                             android:text="@string/not_found" />
 
                         <TextView
-                            style="@style/BioPageContentIndexWhite"
+                            style="@style/PageSubtitleContentIndexWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
@@ -270,7 +270,7 @@
 
                             <TextView
                                 android:id="@+id/driver_weight"
-                                style="@style/BioPageContentRegularWhite"
+                                style="@style/PageSubtitleContentIndexWhite"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="start"
@@ -294,7 +294,7 @@
                             </TextView>
 
                             <TextView
-                                style="@style/BioPageContentRegularWhite"
+                                style="@style/PageContentRegularWhite"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
@@ -305,7 +305,7 @@
 
                             <TextView
                                 android:id="@+id/driver_height"
-                                style="@style/BioPageContentRegularWhite"
+                                style="@style/PageContentRegularWhite"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="start"
@@ -331,7 +331,7 @@
                         </LinearLayout>
 
                         <TextView
-                            style="@style/BioPageContentIndexWhite"
+                            style="@style/PageSubtitleContentIndexWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
@@ -341,7 +341,7 @@
 
                         <TextView
                             android:id="@+id/driver_best_result"
-                            style="@style/BioPageContentRegularWhite"
+                            style="@style/PageContentRegularWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
@@ -351,7 +351,7 @@
                             android:text="@string/not_found" />
 
                         <TextView
-                            style="@style/BioPageContentIndexWhite"
+                            style="@style/PageSubtitleContentIndexWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
@@ -361,7 +361,7 @@
 
                         <TextView
                             android:id="@+id/driver_podiums"
-                            style="@style/BioPageContentRegularWhite"
+                            style="@style/PageContentRegularWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
@@ -371,7 +371,7 @@
                             android:text="@string/not_found" />
 
                         <TextView
-                            style="@style/BioPageContentIndexWhite"
+                            style="@style/PageSubtitleContentIndexWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
@@ -381,7 +381,7 @@
 
                         <TextView
                             android:id="@+id/driver_championships"
-                            style="@style/BioPageContentRegularWhite"
+                            style="@style/PageContentRegularWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
@@ -391,7 +391,7 @@
                             android:text="@string/not_found" />
 
                         <TextView
-                            style="@style/BioPageContentIndexWhite"
+                            style="@style/PageSubtitleContentIndexWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
@@ -401,7 +401,7 @@
 
                         <TextView
                             android:id="@+id/driver_first_entry"
-                            style="@style/BioPageContentRegularWhite"
+                            style="@style/PageContentRegularWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"

@@ -8,6 +8,14 @@ const JUNIOR_ROOT_PATH = "junior_categories";
 const F2_WIKI_URL = `https://en.wikipedia.org/wiki/${currentYear}_Formula_2_Championship`;
 const F3_WIKI_URL = `https://en.wikipedia.org/wiki/${currentYear}_FIA_Formula_3_Championship`;
 
+
+
+
+/*------------------------------------------------------------------------------
+* EXPORTS 
+* -------------------------------------------------------------------------------
+*/
+
 // Main Update Function
 async function executeJuniorSeriesUpdate(db) {
     console.log("Starting Junior Series Update...");
@@ -31,7 +39,13 @@ async function executeJuniorReset(db) {
     console.log("Reset complete.");
 }
 
-// --- PRE-CHECK LOGIC ---
+
+
+
+/*------------------------------------------------------------------------------
+* PRE-CHECK LOGIC
+* ------------------------------------------------------------------------------
+*/
 async function checkRaceYesterday(db, seriesId) {
     const calendarPath = `${JUNIOR_ROOT_PATH}/${seriesId}/calendar`;
     const calendarRef = db.ref(calendarPath);
@@ -78,6 +92,14 @@ async function checkRaceYesterday(db, seriesId) {
 
     return raceFound;
 }
+
+
+
+
+/* * ------------------------------------------------------------------------------
+*   SERIES PROCESSING LOGIC
+* ------------------------------------------------------------------------------
+*/
 
 async function processSeries(db, seriesId, url) {
     console.log(`Processing ${seriesId} from ${url}...`);
@@ -140,7 +162,17 @@ async function processSeries(db, seriesId, url) {
     }
 }
 
-// --- CORE SCRAPING LOGIC ---
+
+
+
+
+/*
+* ------------------------------------------------------------------------------
+*   SCRAPING FUNCTIONS
+* ------------------------------------------------------------------------------
+*/
+
+// Scrapes the entry list
 function scrapeEntryList($) {
     console.log("Scraping Entry List...");
     const rawList = []; 
@@ -233,6 +265,7 @@ function scrapeEntryList($) {
     return teamsMap;
 }
 
+// Scrapes the calendar and enriches with circuit and nation data
 async function scrapeCalendar($, db) {
     console.log("Scraping Calendar...");
     const calendar = [];
@@ -319,6 +352,7 @@ async function scrapeCalendar($, db) {
     return calendar;
 }
 
+// scrapes the race results
 function scrapeRaceResults($, calendar = null) {
     console.log("Scraping Results Matrix...");
     const races = [];
@@ -415,6 +449,7 @@ function scrapeRaceResults($, calendar = null) {
     return finalResults;
 }
 
+// scrapes the driver standings
 function scrapeDriverStandings($) {
     console.log("Scraping Driver Standings...");
     const standings = [];
@@ -440,6 +475,7 @@ function scrapeDriverStandings($) {
     return standings;
 }
 
+// scrapes the team standings
 function scrapeTeamStandings($) {
     console.log("Scraping Team Standings...");
     const standings = [];
@@ -464,33 +500,81 @@ function scrapeTeamStandings($) {
     return standings;
 }
 
-// --- UTILS ---
+
+
+
+/*
+* ---------------------------------------------------------------------------
+*   HELPER FUNCTIONS
+* ---------------------------------------------------------------------------
+*/
 function cleanText(text) {
     if (!text) return "";
     return text.replace(/\[.*?\]/g, '').trim();
 }
 
+// Parses rounds text to determine the duration in rounds
 function getRoundDuration(roundsText) {
     if (!roundsText) return 0;
     const clean = roundsText.trim();
     if (clean.toLowerCase().includes("all")) return 99;
+    
+    // Handle composed intervals (e.g., "7, 9–10" or "1–3, 5, 7–8")
+    if (clean.includes(',')) {
+        const parts = clean.split(',').map(p => p.trim());
+        let totalRounds = 0;
+        for (const part of parts) {
+            const rangeMatch = part.match(/^(\d+)\s*[\–\-]\s*(\d+)$/);
+            if (rangeMatch) {
+                totalRounds += (parseInt(rangeMatch[2]) - parseInt(rangeMatch[1])) + 1;
+            } else if (!isNaN(parseInt(part))) {
+                totalRounds += 1;
+            }
+        }
+        return totalRounds;
+    }
+    
     const rangeMatch = clean.match(/^(\d+)\s*[\–\-]\s*(\d+)$/);
     if (rangeMatch) return (parseInt(rangeMatch[2]) - parseInt(rangeMatch[1])) + 1;
     if (!isNaN(parseInt(clean))) return 1;
     return 0;
 }
 
+// Parses rounds text to determine the ending round number
 function getEndRound(roundsText) {
     if (!roundsText) return 0;
     const clean = roundsText.trim();
     if (clean.toLowerCase().includes("all")) return 999;
+    
+    // Handle composed intervals (e.g., "7, 9–10" or "1–3, 5, 7–8")
+    if (clean.includes(',')) {
+        const parts = clean.split(',').map(p => p.trim());
+        let maxRound = 0;
+        for (const part of parts) {
+            const rangeMatch = part.match(/^(\d+)\s*[\–\-]\s*(\d+)$/);
+            if (rangeMatch) {
+                maxRound = Math.max(maxRound, parseInt(rangeMatch[2]));
+            } else if (!isNaN(parseInt(part))) {
+                maxRound = Math.max(maxRound, parseInt(part));
+            }
+        }
+        return maxRound;
+    }
+    
     const rangeMatch = clean.match(/^(\d+)\s*[\–\-]\s*(\d+)$/);
     if (rangeMatch) return parseInt(rangeMatch[2]);
     if (!isNaN(parseInt(clean))) return parseInt(clean);
     return 0;
 }
 
-// Export main functions and individual scraping functions for testing
+
+
+
+/*
+* --------------------------------------------------------------------
+*   FUNCTION EXPORTS
+* --------------------------------------------------------------------
+*/
 module.exports = { 
     executeJuniorSeriesUpdate, 
     executeJuniorReset,

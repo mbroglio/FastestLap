@@ -30,6 +30,13 @@ const juniorLogic = require('../junior_categories_logic');
 // JSON Database path
 const DB_FILE = path.join(__dirname, 'db_test.json');
 
+const currentYear = new Date().getFullYear();
+
+const URLS = {
+    f2: `https://en.wikipedia.org/wiki/${currentYear}_Formula_2_Championship`,
+    f3: `https://en.wikipedia.org/wiki/${currentYear}_FIA_Formula_3_Championship`
+}
+
 // Mock Database classes (same as test_runner.js)
 class MockDatabase {
     constructor(data) {
@@ -173,8 +180,8 @@ const juniorFunctions = {
         example: 'node test_individual_functions.js junior scrapeCalendar f2',
         execute: async (db, seriesId = 'f2') => {
             const url = seriesId === 'f2' 
-                ? 'https://en.wikipedia.org/wiki/2025_Formula_2_Championship'
-                : 'https://en.wikipedia.org/wiki/2025_FIA_Formula_3_Championship';
+                ? URLS.f2
+                : URLS.f3;
             console.log(`Scraping calendar from: ${url}`);
             const { data } = await axios.get(url, {
                 headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
@@ -193,8 +200,8 @@ const juniorFunctions = {
         example: 'node test_individual_functions.js junior scrapeEntryList f2',
         execute: async (db, seriesId = 'f2') => {
             const url = seriesId === 'f2' 
-                ? 'https://en.wikipedia.org/wiki/2025_Formula_2_Championship'
-                : 'https://en.wikipedia.org/wiki/2025_FIA_Formula_3_Championship';
+                ? URLS.f2
+                : URLS.f3;
             console.log(`Scraping entry list from: ${url}`);
             const { data } = await axios.get(url, {
                 headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
@@ -213,8 +220,8 @@ const juniorFunctions = {
         example: 'node test_individual_functions.js junior scrapeRaceResults f2',
         execute: async (db, seriesId = 'f2') => {
             const url = seriesId === 'f2' 
-                ? 'https://en.wikipedia.org/wiki/2025_Formula_2_Championship'
-                : 'https://en.wikipedia.org/wiki/2025_FIA_Formula_3_Championship';
+                ? URLS.f2
+                : URLS.f3;
             console.log(`Scraping race results from: ${url}`);
             const { data } = await axios.get(url, {
                 headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
@@ -232,10 +239,13 @@ const juniorFunctions = {
 
     scrapeDriverStandings: {
         description: 'Scrape driver standings from Wikipedia page',
-        args: ['url'],
-        example: 'node test_individual_functions.js junior scrapeDriverStandings',
-        execute: async (db) => {
-            const url = 'https://en.wikipedia.org/wiki/2025_Formula_2_Championship';
+        args: ['seriesId'],
+        example: 'node test_individual_functions.js junior scrapeDriverStandings f2',
+        needsDb: false,
+        execute: async (seriesId = 'f2') => {
+            const url = seriesId === 'f2' 
+                ? URLS.f2
+                : URLS.f3;
             console.log(`Scraping driver standings from: ${url}`);
             const { data } = await axios.get(url, {
                 headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
@@ -250,10 +260,13 @@ const juniorFunctions = {
 
     scrapeTeamStandings: {
         description: 'Scrape team standings from Wikipedia page',
-        args: ['url'],
-        example: 'node test_individual_functions.js junior scrapeTeamStandings',
-        execute: async (db) => {
-            const url = 'https://en.wikipedia.org/wiki/2025_Formula_2_Championship';
+        args: ['seriesId'],
+        example: 'node test_individual_functions.js junior scrapeTeamStandings f2',
+        needsDb: false,
+        execute: async (seriesId = 'f2') => {
+            const url = seriesId === 'f2' 
+                ? URLS.f2
+                : URLS.f3;
             console.log(`Scraping team standings from: ${url}`);
             const { data } = await axios.get(url, {
                 headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
@@ -272,8 +285,8 @@ const juniorFunctions = {
         example: 'node test_individual_functions.js junior processSeries f2',
         execute: async (db, seriesId = 'f2') => {
             const url = seriesId === 'f2' 
-                ? 'https://en.wikipedia.org/wiki/2025_Formula_2_Championship'
-                : 'https://en.wikipedia.org/wiki/2025_FIA_Formula_3_Championship';
+                ? URLS.f2
+                : URLS.f3; 
             console.log(`Processing ${seriesId} series from: ${url}`);
             await juniorLogic.processSeries(db, seriesId, url);
             console.log(`\n✓ Series ${seriesId} processed successfully`);
@@ -407,6 +420,8 @@ Examples (Junior Functions):
   node test_individual_functions.js junior scrapeRaceResults f2
   node test_individual_functions.js junior scrapeRaceResults f3
   node test_individual_functions.js junior scrapeEntryList f2
+  node test_individual_functions.js junior scrapeDriversStanding f2
+  node test_individual_functions.js junior scrapeDriversStanding f3
   node test_individual_functions.js junior checkRaceYesterday f2
   node test_individual_functions.js junior processSeries f2
 
@@ -492,13 +507,17 @@ Examples (F1 Functions):
     const mockDb = new MockDatabase(dbData);
 
     try {
-        const result = await func.execute(mockDb, ...functionArgs);
+        const result = func.needsDb === false 
+            ? await func.execute(...functionArgs)
+            : await func.execute(mockDb, ...functionArgs);
         
         console.log('\n=== Function execution completed ===');
         
-        // Ask if user wants to save changes
-        const updatedData = mockDb.getData();
-        saveDatabase(updatedData);
+        // Save changes to database if the function needed it
+        if (func.needsDb !== false) {
+            const updatedData = mockDb.getData();
+            saveDatabase(updatedData);
+        }
         
         console.log('\n✓ Test completed successfully');
     } catch (error) {

@@ -60,6 +60,50 @@ public class FirebaseJuniorCalendarDataSource implements JuniorCalendarDataSourc
     * ----------------------------------------------------------------------------------------------
     * */
 
+    //This logic considers the db already enriched with supplementary information (circuit name, nation_flag_url)
+    @Override
+    public void getJuniorCalendar(String series, JuniorCalendarCallback callback) {
+        Log.i(TAG, "Fetching calendar from Firebase with series: " + series);
+
+        DatabaseReference ref = database.getReference(FIREBASE_JUNIOR_COLLECTION).child(series).child("calendar");
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()){
+                    JuniorCalendar calendar = new JuniorCalendar();
+                    calendar.setSeries(series);
+
+                    List<JuniorCalendarElement> events= new ArrayList<>();
+                    for(DataSnapshot child : snapshot.getChildren()){
+                        if(child.exists()) {
+                            JuniorCalendarElement event = child.getValue(JuniorCalendarElement.class);
+                            if(event != null){
+                                events.add(event);
+                            }
+                        }
+                    }
+
+                    if(events.isEmpty()){
+                        Log.w(TAG, "No events found for series: " + series);
+                        calendar.setEvents(null);
+                        callback.onCalendarLoaded(calendar);
+                    }else{
+                        calendar.setEvents(events);
+                        callback.onCalendarLoaded(calendar);
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "Firebase request cancelled: " + error.getMessage());
+                callback.onError(new Exception("Firebase error: " + error.getMessage()));
+            }
+        });
+    }
+
+
+    /* LOGIC BEFORE JS FUNCTION UPDATE
     @Override
     public void getJuniorCalendar(String series, JuniorCalendarCallback callback){
         Log.i(TAG, "Fetching calendar from Firebase with series: " + series);
@@ -183,6 +227,7 @@ public class FirebaseJuniorCalendarDataSource implements JuniorCalendarDataSourc
             callback.onCalendarLoaded(calendar);
         }
     }
+    */
 }
 
 

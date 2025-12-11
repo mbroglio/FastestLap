@@ -23,7 +23,7 @@
             app:navigationIcon="@drawable/arrow_back_ios_style"
             app:title="@string/constructors_upper_case"
             app:titleCentered="true"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp" />
+            app:titleTextAppearance="@style/PageSuperTitleUpperCaseBlack" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
