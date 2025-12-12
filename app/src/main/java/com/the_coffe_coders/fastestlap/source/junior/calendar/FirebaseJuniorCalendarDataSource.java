@@ -36,15 +36,15 @@ public class FirebaseJuniorCalendarDataSource implements JuniorCalendarDataSourc
     private static final String TAG = "FirebaseJuniorCalendarDataSource";
     private static FirebaseJuniorCalendarDataSource instance;
     private final FirebaseDatabase database;
-    private final FirebaseTrackDataSource trackDataSource;
-    private final FirebaseNationDataSource nationDataSource;
+    //private final FirebaseTrackDataSource trackDataSource;
+    //private final FirebaseNationDataSource nationDataSource;
 
     long childrenCount;
 
     private FirebaseJuniorCalendarDataSource() {
         this.database = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
-        this.trackDataSource = FirebaseTrackDataSource.getInstance();
-        this.nationDataSource = FirebaseNationDataSource.getInstance();
+        //this.trackDataSource = FirebaseTrackDataSource.getInstance();
+        //this.nationDataSource = FirebaseNationDataSource.getInstance();
     }
 
     public static synchronized FirebaseJuniorCalendarDataSource getInstance() {

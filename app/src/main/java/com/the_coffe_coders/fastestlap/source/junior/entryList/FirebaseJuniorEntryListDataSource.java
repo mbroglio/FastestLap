@@ -53,20 +53,30 @@ public class FirebaseJuniorEntryListDataSource implements JuniorEntryListDataSou
 
                     for (DataSnapshot child : snapshot.getChildren()) {
                         if (child.exists()) {
-                            JuniorTeam team = new JuniorTeam();
-                            team.setName(child.getKey());
+                            JuniorTeam team = child.getValue(JuniorTeam.class);
+                            if(team != null){
+                                team.setName(child.getKey());
+                            }
+
+
+
+
+                            /*
                             List<JuniorDriver> drivers = new ArrayList<>();
 
                             for (DataSnapshot driverSnapshot : child.getChildren()) {
                                 if (driverSnapshot.exists()) {
+
+
+                                    Log.i(TAG, "Driver: " + driverSnapshot.getKey());
                                     JuniorDriver driver = driverSnapshot.getValue(JuniorDriver.class);
-                                    if (driver != null) {
-                                        drivers.add(driver);
-                                    }
+                                    drivers.add(driver);
                                 }
                             }
 
-                            team.setDrivers(drivers);
+                             */
+
+                            //team.setDrivers(drivers);
                             teams.add(team);
 
                         }

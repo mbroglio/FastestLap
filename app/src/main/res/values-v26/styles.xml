@@ -106,13 +106,41 @@
     </style>
 
     <style name="LayoutTitle1UppercaseWhite">
-        <item name="android:textSize">@dimen/page_title_text_size</item>
+        <item name="android:textSize">@dimen/layout_title_1_text_size</item>
         <item name="android:textColor">@color/white</item>
         <item name="fontFamily">@font/orbitron_bold</item>
-        <item name="android:autoSizeMaxTextSize">@dimen/layout_subtitle_text_size</item>
+        <item name="android:autoSizeMaxTextSize">@dimen/layout_title_1_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
+    </style>
+
+
+
+    <!--
+       PAGE TITLE 1 STYLE
+           -18 sp
+           -bold
+           -autoresize -> 9sp
+           -black/white
+    -->
+
+    <style name="LayoutTitle1Black">
+        <item name="android:textSize">@dimen/layout_title_1_text_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="android:autoSizeMaxTextSize">@dimen/layout_title_1_text_size</item>
+        <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
+        <item name="autoSizeTextType">uniform</item>
+    </style>
+
+    <style name="LayoutTitle1White">
+        <item name="android:textSize">@dimen/layout_title_1_text_size</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="android:autoSizeMaxTextSize">@dimen/layout_title_1_text_size</item>
+        <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
+        <item name="autoSizeTextType">uniform</item>
     </style>
 
 

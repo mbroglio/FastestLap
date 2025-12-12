@@ -71,6 +71,20 @@ public class Constants {
         put("rb", R.drawable.gradient_color_rb); // Racing Bulls
     }};
 
+    public static final Map<String, Integer> JUNIOR_TEAM_GRADIENT_COLOR = new HashMap<>() {{
+        put("dams", R.drawable.gradient_color_dams);
+        put("prema", R.drawable.gradient_color_prema_racing);
+        put("trident", R.drawable.gradient_color_trident);
+        put("hitech", R.drawable.gradient_color_hitech);
+        put("campos", R.drawable.gradient_color_campos_racing);
+        put("aix", R.drawable.gradient_color_aix_racing);
+        put("van_amersfoort", R.drawable.gradient_color_van_amersfoort_racing);
+        put("rodin", R.drawable.gradient_color_rodin_motorsport);
+        put("invicta", R.drawable.gradient_color_invicta_racing);
+        put("art", R.drawable.gradient_color_art_grand_prix);
+        put("mp_motorsport", R.drawable.gradient_color_mp_motorsport);
+    }};
+
     public static final String[] SESSIONS = {
             "Practice1",
             "Practice2",

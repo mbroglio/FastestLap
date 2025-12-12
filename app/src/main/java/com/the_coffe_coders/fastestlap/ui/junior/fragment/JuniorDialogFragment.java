@@ -83,10 +83,12 @@ public class JuniorDialogFragment extends DialogFragment {
     private void executeFunctions() {
         switch (content) {
             case 0: // Entry list
+                Log.i(TAG, "ENTRY LIST clicked");
                 setDialogForEntryList();
                 executeEntryList();
                 break;
             case 1: // Calendar
+                Log.i(TAG, "CALENDAR clicked");
                 setDialogForCalendar();
                 executeCalendar();
                 break;
@@ -128,6 +130,7 @@ public class JuniorDialogFragment extends DialogFragment {
     }
 
     private void setDialogForEntryList() {
+        dialogTitle.setText(R.string.entry_list);
         raceInfoLayout.setVisibility(View.GONE);
         raceTypeChoiceLayout.setVisibility(View.GONE);
         switch (categoryType) {
@@ -158,8 +161,8 @@ public class JuniorDialogFragment extends DialogFragment {
                     Log.i(TAG, "ENTRY LIST NULL");
                 } else {
                     juniorRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-                    JuniorEntryListRecyclerAdapter juniorDialogRecyclerAdapter = new JuniorEntryListRecyclerAdapter(requireContext(), entryList);
-                    juniorRecyclerView.setAdapter(juniorDialogRecyclerAdapter);
+                    JuniorEntryListRecyclerAdapter juniorEntryListRecyclerAdapter = new JuniorEntryListRecyclerAdapter(requireContext(), entryList, categoryType);
+                    juniorRecyclerView.setAdapter(juniorEntryListRecyclerAdapter);
 
                 }
             }
@@ -181,8 +184,8 @@ public class JuniorDialogFragment extends DialogFragment {
                     Log.i(TAG, "CALENDAR NULL");
                 } else {
                     juniorRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-                    JuniorCalendarRecyclerAdapter juniorDialogRecyclerAdapter = new JuniorCalendarRecyclerAdapter(requireContext(), calendar);
-                    juniorRecyclerView.setAdapter(juniorDialogRecyclerAdapter);
+                    JuniorCalendarRecyclerAdapter juniorCalendarRecyclerAdapter = new JuniorCalendarRecyclerAdapter(requireContext(), calendar);
+                    juniorRecyclerView.setAdapter(juniorCalendarRecyclerAdapter);
 
                 }
             }

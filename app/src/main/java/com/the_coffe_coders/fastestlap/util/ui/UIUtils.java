@@ -48,6 +48,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -333,6 +334,52 @@ public class UIUtils {
             formattedString = "";
         }
         return formattedString;
+    }
+
+    // check if a string (inputString) contains a substring (idString)
+    public static boolean containsIdString(String inputString, String idString) {
+        if (inputString == null || idString == null) return false;
+        String normalizedInput = normalizeForMatch(inputString);
+        String normalizedId = normalizeForMatch(idString);
+        if (normalizedId.isEmpty()) return false;
+        return normalizedInput.contains(normalizedId);
+    }
+
+    // check if a string (inputString) contains a substring (idString) and return the idString if it does
+    public static String getContainedIdString(String inputString, String idString) {
+        if (containsIdString(inputString, idString)) {
+            return idString;
+        }
+        return null;
+    }
+
+    // normalize a string for matching
+    private static String normalizeForMatch(String s) {
+        if (s == null) return "";
+        String normalized = s.toLowerCase(Locale.ROOT)
+                .replaceAll("[^\\p{Alnum}]+", " ")
+                .replaceAll("\\s+", " ")
+                .trim();
+        return normalized;
+    }
+
+    // find the key in a map that matches the input string
+    public static String findMatchingKeyInMap(String inputString, Map<String, ?> map) {
+        if (inputString == null || map == null || map.isEmpty()) return null;
+        String bestMatch = null;
+        String normalizedInput = normalizeForMatch(inputString);
+
+        for (String key : map.keySet()) {
+            if (key == null) continue;
+            String normalizedKey = normalizeForMatch(key);
+            if (normalizedKey.isEmpty()) continue;
+            if (normalizedInput.contains(normalizedKey)) {
+                if (bestMatch == null || normalizedKey.length() > normalizeForMatch(bestMatch).length()) {
+                    bestMatch = key;
+                }
+            }
+        }
+        return bestMatch;
     }
 
 
