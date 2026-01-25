@@ -20,4 +20,8 @@ public class DriverStandingsViewModel extends ViewModel {
     public MutableLiveData<Result> getDriverStandingsLiveData() {
         return driverStandingRepository.getDriverStandings();
     }
+
+    public MutableLiveData<Result> getDriverListLiveData() {
+        return driverStandingRepository.getDriverStandings();
+    }
 }

@@ -172,21 +172,28 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
                     UIUtils.singleSetTextViewText(constructor.getName().toUpperCase(), findViewById(R.id.topAppBarTitle));
 
-                    toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
-                    appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+                    int teamColor;
+                    try{
+                        teamColor = Constants.TEAM_COLOR.get(teamId);
+                    }catch (Exception e){
+                        teamColor = R.color.timer_gray;
+                    }
+
+                    toolbar.setBackgroundColor(ContextCompat.getColor(this, teamColor));
+                    appBarLayout.setBackgroundColor(ContextCompat.getColor(this, teamColor));
 
                     MaterialCardView teamLogoCard = findViewById(R.id.team_logo_card);
-                    teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+                    teamLogoCard.setStrokeColor(ContextCompat.getColor(this, teamColor));
 
                     if (teamId.equals("rb")) {
                         teamLogoCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white));
                     }
 
                     MaterialCardView driverCard = findViewById(R.id.driver_1_card);
-                    driverCard.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+                    driverCard.setCardBackgroundColor(ContextCompat.getColor(this, teamColor));
 
                     driverCard = findViewById(R.id.driver_2_card);
-                    driverCard.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+                    driverCard.setCardBackgroundColor(ContextCompat.getColor(this, teamColor));
 
                     // Check if this constructor is the favorite and update the icon
                     updateFavoriteIcon(teamId);

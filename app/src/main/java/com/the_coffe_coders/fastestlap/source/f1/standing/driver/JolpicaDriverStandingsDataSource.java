@@ -78,8 +78,9 @@ public class JolpicaDriverStandingsDataSource implements DriverStandingDataSourc
                         Log.d(TAG, "Successfully parsed driver standings: " + driverStandingsAPIResponse);
                         if(driverStandingsAPIResponse.getStandingsTable().getDriverStandingsDTOS().isEmpty() || driverStandingsAPIResponse.getStandingsTable().getDriverStandingsDTOS().get(0) == null){
                             driverCallback.onError(new Exception("No driver standings found"));
-                            if(!driverStandingsAPIResponse.getStandingsTable().getSeason().equals(currentYear)){
-                                getDriverStandings(driverCallback);
+                            if(driverStandingsAPIResponse.getStandingsTable().getSeason().equals(currentYear)){
+                                Log.i(TAG, "Fetching drivers list");
+                                getDriversList(driverCallback);
                             }
                         }else{
                             driverCallback.onDriverStandingsLoaded(

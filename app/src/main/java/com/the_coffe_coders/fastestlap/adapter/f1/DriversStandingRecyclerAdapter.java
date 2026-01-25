@@ -70,6 +70,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
         if (driversStandingList == null) {
             driverStandingsElement.setDriver(driversList.get(position));
             driverStandingsElement.setPoints("0");
+            driverStandingsElement.setPosition(String.valueOf(position + 1));
         } else {
             driverStandingsElement = driversStandingList.get(position);
         }
@@ -106,9 +107,15 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
                     }
 
                     holder.driverCard.setOnClickListener(v -> goToBioPage(position));
+                    Log.i("DriversStanding", driver.getDriverId() +"driver.getTeam_id()");
 
                     if (driver.getTeam_id() != null) {
-                        holder.driverCardInnerLayout.setBackground(AppCompatResources.getDrawable(context, Constants.TEAM_GRADIENT_COLOR.get(driver.getTeam_id())));
+                        try{
+                            holder.driverCardInnerLayout.setBackground(AppCompatResources.getDrawable(context, Constants.TEAM_GRADIENT_COLOR.get(driver.getTeam_id())));
+                        } catch (Exception e) {
+                            holder.driverCardInnerLayout.setBackground(AppCompatResources.getDrawable(context, R.color.timer_gray));
+                            holder.driverTeamImage.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.f1_car_icon_filled));
+                        }
                     } else {
                         holder.driverCardInnerLayout.setBackground(AppCompatResources.getDrawable(context, R.color.timer_gray));
                         holder.driverTeamImage.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.f1_car_icon_filled));

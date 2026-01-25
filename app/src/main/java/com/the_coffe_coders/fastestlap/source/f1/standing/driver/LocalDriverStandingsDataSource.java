@@ -33,7 +33,7 @@ public class LocalDriverStandingsDataSource implements DriverStandingDataSource 
         if (standings != null) {
             callback.onDriverStandingsLoaded(standings);
         } else {
-            callback.onError(new Exception("No driver standings found in local database"));
+            getDriversList(callback);
         }
     }
 

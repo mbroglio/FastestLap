@@ -17,6 +17,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.f1.DriversStandingRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
@@ -33,7 +34,6 @@ import java.util.List;
 public class DriversStandingActivity extends AppCompatActivity {
 
     private static final String TAG = "DriverCardActivity";
-    private DriverStandings driverStandings;
     private LoadingScreen loadingScreen;
     private DriverViewModel driverViewModel;
     private DriverStandingsViewModel driverStandingsViewModel;
@@ -41,6 +41,7 @@ public class DriversStandingActivity extends AppCompatActivity {
     private SwipeRefreshLayout driverStandingLayout;
     private RecyclerView driversStandingRecyclerView;
     private TextView standingsNotAvailableTextView;
+    private DriversStandingRecyclerAdapter driversStandingAdapter;
 
     private String driverId;
 
@@ -100,30 +101,61 @@ public class DriversStandingActivity extends AppCompatActivity {
             }
             if (result.isSuccess()) {
                 Log.i(TAG, "DRIVER STANDINGS SUCCESS");
-                driverStandings = ((Result.DriverStandingsSuccess) result).getData();
+                DriverStandings driverStandings;
+                try{
+                    driverStandings = ((Result.DriverStandingsSuccess) result).getData();
 
-                Log.i(TAG, driverStandings.toString());
+                    Log.i(TAG, driverStandings.toString());
 
-                if (driverStandings == null) {
-                    Log.i(TAG, "DRIVER STANDINGS NULL");
-                    //show(driversStandingRecyclerView, standingsNotAvailableTextView);
-                } else {
                     show(standingsNotAvailableTextView, driversStandingRecyclerView);
-                    List<DriverStandingsElement> driverList = driverStandings.getDriverStandingsElements();
+                    List<DriverStandingsElement> driverStandingList = driverStandings.getDriverStandingsElements();
 
                     driversStandingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-                    DriversStandingRecyclerAdapter driversStandingAdapter = new DriversStandingRecyclerAdapter(this, driverList, null, driverId, driverViewModel, constructorViewModel, this, loadingScreen);
+                    driversStandingAdapter = new DriversStandingRecyclerAdapter(this, driverStandingList, null, driverId, driverViewModel, constructorViewModel, this, loadingScreen);
                     driversStandingRecyclerView.setAdapter(driversStandingAdapter);
 
                     for (int i = 0; i < driversStandingAdapter.getItemCount(); i++) {
                         driversStandingAdapter.onBindViewHolder(
                                 driversStandingAdapter.createViewHolder(driversStandingRecyclerView, driversStandingAdapter.getItemViewType(i)), i);
                     }
+                }catch (ClassCastException e){
+                    setupPageForDriverList();
                 }
             } else {
                 Log.i(TAG, "DRIVER STANDINGS ERROR");
-                //show(driversStandingRecyclerView, standingsNotAvailableTextView);
+                setupPageForDriverList();
+            }
+        });
+    }
+
+    private void setupPageForDriverList() {
+        MutableLiveData<Result> livedata = driverStandingsViewModel.getDriverListLiveData();
+
+        livedata.observe(this, result -> {
+            if (result instanceof Result.Loading) {
+                return;
+            }
+            if (result.isSuccess()) {
+                Log.i(TAG, "DRIVER LIST SUCCESS");
+                List<Driver> driverList = ((Result.DriversSuccess) result).getData();
+
+                Log.i(TAG, driverList.toString());
+
+                show(standingsNotAvailableTextView, driversStandingRecyclerView);
+
+                driversStandingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+                driversStandingAdapter = new DriversStandingRecyclerAdapter(this, null, driverList, driverId, driverViewModel, constructorViewModel, this, loadingScreen);
+                driversStandingRecyclerView.setAdapter(driversStandingAdapter);
+
+                for (int i = 0; i < driversStandingAdapter.getItemCount(); i++){
+                    driversStandingAdapter.onBindViewHolder(
+                            driversStandingAdapter.createViewHolder(driversStandingRecyclerView, driversStandingAdapter.getItemViewType(i)), i);
+                }
+            }else{
+                Log.i(TAG, "DRIVER LIST ERROR");
+                show(driversStandingRecyclerView, standingsNotAvailableTextView);
             }
         });
     }

@@ -262,8 +262,15 @@ public class DriverBioActivity extends AppCompatActivity {
                 findViewById(R.id.topAppBarTitle));
 
         if (teamIdPresent) {
-            toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
-            appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+            int teamColor;
+            try{
+                teamColor = Constants.TEAM_COLOR.get(teamId);
+            }catch(Exception e){
+                teamColor = R.color.timer_gray;
+            }
+
+            toolbar.setBackgroundColor(ContextCompat.getColor(this, teamColor));
+            appBarLayout.setBackgroundColor(ContextCompat.getColor(this, teamColor));
 
             teamLogoCard.setOnClickListener(v ->
                     NavigationUtils.navigateToBioPage(this, team.getConstructorId(), 0));
@@ -275,8 +282,16 @@ public class DriverBioActivity extends AppCompatActivity {
 
     private void setDriverData(Driver driver, Nation nation, Constructor team, boolean teamIdPresent, String teamId) {
         if (teamIdPresent) {
-            teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
-            driverNumberCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+            int teamColor;
+            try{
+                teamColor = Constants.TEAM_COLOR.get(teamId);
+            }catch(Exception e){
+                teamColor = R.color.timer_gray;
+            }
+
+            teamLogoCard.setStrokeColor(ContextCompat.getColor(this, teamColor));
+            driverNumberCard.setStrokeColor(ContextCompat.getColor(this, teamColor));
+
             if (team.getConstructorId().equals("rb")) {
                 teamLogoCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white));
             }

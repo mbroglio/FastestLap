@@ -155,7 +155,7 @@
     <color name="williams_f1">#66c4fc</color>
     <color name="alpine_f1">#0c93c9</color>
     <color name="kick_f1">#01FE2B</color>
-    <color name="audi_f1">#fb7539</color>
+    <color name="audi_f1">#FF2F1E</color>
 
     <color name="home_page">#11100F</color>
 
@@ -182,7 +182,7 @@
     <color name="williams_transparent">#5C66C4FC</color>
     <color name="alpine_transparent">#4D2173B8</color>
     <color name="kick_transparent">#5C01FE2B</color>
-    <color name="audi_transparent">#5CE70C27</color>
+    <color name="audi_transparent">#5CFF2F1E</color>
 
 
 
@@ -197,6 +197,7 @@
     <color name="alpine_secondary">#0B82B2</color>
     <color name="kick_secondary">#01E526</color>
     <color name="audi_secondary">#E70C27</color>
+
 
 
     <color name="ferrari_secondary_light">#C98282</color>
