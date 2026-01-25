@@ -29,17 +29,12 @@
 
                 <TextView
                     android:id="@+id/topAppBarTitle"
+                    style="@style/PageSuperTitleUpperCaseBlack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:autoSizeMaxTextSize="25sp"
-                    android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                    android:autoSizeTextType="uniform"
-                    android:fontFamily="@font/orbitron_bold"
                     android:gravity="center"
-                    android:maxLines="1"
-                    android:textColor="@color/black"
-                    android:textSize="25sp">
+                    android:maxLines="1">
 
                 </TextView>
 

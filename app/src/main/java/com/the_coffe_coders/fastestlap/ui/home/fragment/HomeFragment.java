@@ -357,6 +357,7 @@ public class HomeFragment extends Fragment {
         decrementLoadingCounter();
         try {
             if (nextRace == null) throw new Exception("Next race is null");
+            if(!nextRace.getSeason().equals(ServiceLocator.currentYear)) throw new Exception("Season mismatch");
             MutableLiveData<Result> trackData = trackViewModel.getTrack(nextRace.getTrack().getTrackId());
             trackData.observe(getViewLifecycleOwner(), trackResult -> {
                 try {
@@ -385,6 +386,7 @@ public class HomeFragment extends Fragment {
                 Log.e(TAG, "Error in processNextRace: " + e.getMessage());
                 setSeasonEnded(view);
             }else{
+                if(Objects.equals(e.getMessage(), "Season mismatch")) setSeasonEnded(view);
                 Log.e(TAG, "Error in processNextRace: No internet connection");
                 setUpdating(view);
             }
@@ -432,7 +434,7 @@ public class HomeFragment extends Fragment {
                 try {
                     setNextRaceCardFinalStep(nextRace, view);
                 } catch (Exception e) {
-                    throw new RuntimeException(e);
+                    setSeasonEnded(view);
                 }
             });
 
@@ -451,6 +453,7 @@ public class HomeFragment extends Fragment {
 
     private void setNextRaceCardFinalStep(WeeklyRace nextRace, View view) throws Exception {
         decrementLoadingCounter();
+        Log.i(TAG, "next race season: " + nextRace.getSeason());
         if (!nextRace.getSeason().equals(ServiceLocator.currentYear)) {
             throw new Exception("Season mismatch");
         }

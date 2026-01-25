@@ -318,12 +318,15 @@ const f1Functions = {
             const newRound = parseInt(round);
             
             console.log(`Fetching race results for season ${newSeason}, round ${newRound}...`);
-            const response = await axios.get('https://api.jolpi.ca/ergast/f1/current/last/results/?format=json');
-            const results = response.data.MRData.RaceTable.Races[0]?.Results || [];
+            const response = await axios.get(`https://api.jolpi.ca/ergast/f1/${newSeason}/${newRound}/results/?format=json`);
+            const raceInfo = response.data.MRData.RaceTable.Races[0];
+            const results = raceInfo?.Results || [];
+            const trackId = raceInfo?.Circuit?.circuitId;
+            console.log("trackId:", trackId);
             
             const updates = {};
             await f1Logic.loadMappings(db);
-            await f1Logic.processCircuitRaceUpdate(newSeason, newRound, results, updates, db);
+            await f1Logic.processCircuitRaceUpdate(newSeason, newRound, trackId, results, updates, db);
             
             console.log('\nUpdates that would be applied:');
             console.log(JSON.stringify(updates, null, 2));

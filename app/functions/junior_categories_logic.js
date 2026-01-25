@@ -19,7 +19,7 @@ const F3_WIKI_URL = `https://en.wikipedia.org/wiki/${currentYear}_FIA_Formula_3_
 // Main Update Function
 async function executeJuniorSeriesUpdate(db) {
     console.log("Starting Junior Series Update...");
-    
+
     // F2
     if (await checkRaceYesterday(db, "f2")) await processSeries(db, "f2", F2_WIKI_URL);
     else console.log("F2: No race yesterday.");
@@ -58,7 +58,7 @@ async function checkRaceYesterday(db, seriesId) {
     }
 
     const calendarData = snapshot.val();
-    
+
     // 1. Calculate YESTERDAY's date
     const today = new Date();
     const yesterday = new Date(today);
@@ -68,14 +68,14 @@ async function checkRaceYesterday(db, seriesId) {
     // en-GB' to have day before month
     const formatter = new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'long' });
     const yesterdayString = formatter.format(yesterday);
- 
+
     console.log(`[${seriesId}] Date check: Looking for race held on '${yesterdayString}'...`);
 
     // 3. Search in calendar
     let raceFound = false;
     for (const key in calendarData) {
         const race = calendarData[key];
-       
+
         // Compare string (e.g., "16 March")
         if (race.feature_date && race.feature_date.toLowerCase() === yesterdayString.toLowerCase()) {
             console.log(`[${seriesId}] Match found: Round ${race.round} at ${race.circuit} on Feature Date`);
@@ -110,16 +110,16 @@ async function processSeries(db, seriesId, url) {
     const updates = {};
     const basePath = `${JUNIOR_ROOT_PATH}/${seriesId}`;
 
-    const entryList = scrapeEntryList($);
+    const entryList = await scrapeEntryList($, db, seriesId);
     if (entryList) updates[`${basePath}/entrylist`] = entryList;
 
     const calendar = await scrapeCalendar($, db);
     if (calendar) {
         calendar.forEach(race => {
             const calendarEntry = {
-                round: race.round, 
-                circuit: race.circuit, 
-                sprint_date: race.sprint_date, 
+                round: race.round,
+                circuit: race.circuit,
+                sprint_date: race.sprint_date,
                 feature_date: race.feature_date
             };
             // Add nationFlagUrl if available
@@ -173,9 +173,9 @@ async function processSeries(db, seriesId, url) {
 */
 
 // Scrapes the entry list
-function scrapeEntryList($) {
+async function scrapeEntryList($, db, seriesId) {
     console.log("Scraping Entry List...");
-    const rawList = []; 
+    const rawList = [];
     let currentTeam = null, currentCarNumber = null;
     let teamRowSpan = 0, numberRowSpan = 0;
 
@@ -227,24 +227,34 @@ function scrapeEntryList($) {
 
     // Grouping and Sorting
     const teamsMap = {};
+    const dbEntryListSnap = await db.ref(`${JUNIOR_ROOT_PATH}/${seriesId}/calendar`).once("value");
+    const dbEntryListData = dbEntryListSnap.val() || {};
+
     rawList.forEach(entry => {
         const teamName = entry.team;
 
-        // If the team does not exist yet, initialize the new structure
-        if (!teamsMap[teamName]) {
-            teamsMap[teamName] = {
-                // Generate the logo URL based on the team name
-                team_logo: {}, 
-                drivers: []
-            };
+        for (key in dbEntryListData) {
+            if (key === teamName) {
+                console.log("team already present");
+                teamsMap[teamName] = {
+                    team_logo: dbEntryListData.getValue(key).team_logo_url
+                };
+                return;
+            } else {
+                teamsMap[teamName] = {
+                    // Generate the logo URL based on the team name
+                    team_logo: {},
+                    drivers: []
+                };
+            }
         }
 
-        // Add the driver to the 'drivers' array
-        teamsMap[teamName].drivers.push({ 
-            number: entry.number, 
-            driver: entry.driver, 
-            rounds: entry.rounds 
+        teamsMap[teamName].drivers.push({
+            number: entry.number,
+            driver: entry.driver,
+            rounds: entry.rounds
         });
+
     });
 
     for (const teamName in teamsMap) {
@@ -252,7 +262,7 @@ function scrapeEntryList($) {
             const endA = getEndRound(a.rounds);
             const endB = getEndRound(b.rounds);
             if (endA !== endB) return endB - endA; // Descending (who finishes later wins)
-            
+
             const durA = getRoundDuration(a.rounds);
             const durB = getRoundDuration(b.rounds);
             if (durA !== durB) return durB - durA;
@@ -276,7 +286,7 @@ async function scrapeCalendar($, db) {
         $(table).find('tr').each((rowIndex, row) => {
             const cells = $(row).find('td, th');
             if (cells.length < 4) return;
-            
+
             let roundText = $(cells[0]).text().trim();
             if (isNaN(parseInt(roundText))) return;
 
@@ -284,9 +294,9 @@ async function scrapeCalendar($, db) {
             let circuitName = "";
             if (circuitCell.find('a').length > 1) circuitName = circuitCell.find('a').eq(1).text().trim();
             else circuitName = circuitCell.text().replace(circuitCell.find('a').first().text(), '').replace(/,/g, '').trim();
-            
+
             // Fix to get clean circuit name
-            if(!circuitName) circuitName = circuitCell.find('a').first().text().trim();
+            if (!circuitName) circuitName = circuitCell.find('a').first().text().trim();
 
             calendar.push({
                 round: roundText,
@@ -300,7 +310,7 @@ async function scrapeCalendar($, db) {
     // Enrich calendar data with circuit details and nation flags
     if (db && calendar.length > 0) {
         console.log("Enriching calendar data with circuit and nation information...");
-        
+
         // Get circuit_name_id_map
         const circuitMapSnapshot = await db.ref('app_config/circuit_name_id_map').once('value');
         const circuitMap = circuitMapSnapshot.val() || {};
@@ -309,24 +319,24 @@ async function scrapeCalendar($, db) {
             try {
                 // 1. Get circuit ID from circuit_name_id_map
                 const circuitId = circuitMap[event.circuit];
-                
+
                 if (circuitId) {
                     console.log(`Found circuit ID '${circuitId}' for '${event.circuit}'`);
-                    
+
                     // 2. Fetch track data from circuits node
                     const trackSnapshot = await db.ref(`circuits/${circuitId}`).once('value');
                     const track = trackSnapshot.val();
-                    
+
                     if (track) {
                         // 3. Overwrite circuit with track.trackName
                         event.circuit = track.trackName;
                         console.log(`Updated circuit name to '${track.trackName}'`);
-                        
+
                         // 4. Fetch nation using track.country
                         if (track.country) {
                             const nationSnapshot = await db.ref(`nations/${track.country}`).once('value');
                             const nation = nationSnapshot.val();
-                            
+
                             if (nation && nation.nation_flag_url) {
                                 // 5. Set nationFlagUrl
                                 event.nation_flag_url = nation.nation_flag_url;
@@ -389,7 +399,7 @@ function scrapeRaceResults($, calendar = null) {
                 // Cleaning and Logic
                 rawText = rawText.replace(/\[.*?\]/g, '');
                 let isFL = false, isPole = false;
-                
+
                 if (rawText.includes('F')) { isFL = true; rawText = rawText.replace('F', ''); }
                 if (rawText.includes('P')) { isPole = true; rawText = rawText.replace('P', ''); }
                 if (rawText.includes('†')) rawText = "Ret";
@@ -419,7 +429,7 @@ function scrapeRaceResults($, calendar = null) {
         const sorter = (a, b) => a.sortVal - b.sortVal;
         d.sprint.results.sort(sorter);
         d.feature.results.sort(sorter);
-        
+
         const clean = (list) => list.map(({ driver, position }) => ({ driver, position }));
         const result = {
             round: parseInt(roundKey),
@@ -518,7 +528,7 @@ function getRoundDuration(roundsText) {
     if (!roundsText) return 0;
     const clean = roundsText.trim();
     if (clean.toLowerCase().includes("all")) return 99;
-    
+
     // Handle composed intervals (e.g., "7, 9–10" or "1–3, 5, 7–8")
     if (clean.includes(',')) {
         const parts = clean.split(',').map(p => p.trim());
@@ -533,7 +543,7 @@ function getRoundDuration(roundsText) {
         }
         return totalRounds;
     }
-    
+
     const rangeMatch = clean.match(/^(\d+)\s*[\–\-]\s*(\d+)$/);
     if (rangeMatch) return (parseInt(rangeMatch[2]) - parseInt(rangeMatch[1])) + 1;
     if (!isNaN(parseInt(clean))) return 1;
@@ -545,7 +555,7 @@ function getEndRound(roundsText) {
     if (!roundsText) return 0;
     const clean = roundsText.trim();
     if (clean.toLowerCase().includes("all")) return 999;
-    
+
     // Handle composed intervals (e.g., "7, 9–10" or "1–3, 5, 7–8")
     if (clean.includes(',')) {
         const parts = clean.split(',').map(p => p.trim());
@@ -560,7 +570,7 @@ function getEndRound(roundsText) {
         }
         return maxRound;
     }
-    
+
     const rangeMatch = clean.match(/^(\d+)\s*[\–\-]\s*(\d+)$/);
     if (rangeMatch) return parseInt(rangeMatch[2]);
     if (!isNaN(parseInt(clean))) return parseInt(clean);
@@ -575,8 +585,8 @@ function getEndRound(roundsText) {
 *   FUNCTION EXPORTS
 * --------------------------------------------------------------------
 */
-module.exports = { 
-    executeJuniorSeriesUpdate, 
+module.exports = {
+    executeJuniorSeriesUpdate,
     executeJuniorReset,
 
     // Individual functions for testing

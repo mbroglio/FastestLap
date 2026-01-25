@@ -42,27 +42,6 @@
 
         </androidx.recyclerview.widget.RecyclerView>
 
-        <!--
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none">
-
-            <LinearLayout
-                android:id="@+id/driver_standing"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginTop="@dimen/medium_margin"
-                android:layout_marginEnd="@dimen/medium_margin"
-                android:orientation="vertical">
-
-            </LinearLayout>
-
-        </ScrollView>
-        -->
-
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <include
