@@ -2,6 +2,8 @@ package com.the_coffe_coders.fastestlap.ui.standing;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,8 +17,8 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.f1.ConstructorStandingsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.ConstructorStandings;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.ConstructorStandingsElement;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
@@ -24,7 +26,6 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.ConstructorStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
-import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.List;
@@ -38,6 +39,9 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
     private ConstructorViewModel constructorViewModel;
     private SwipeRefreshLayout teamStandingLayout;
     private ConstructorStandings constructorStandings;
+    private RecyclerView constructorsStandingRecyclerView;
+    private TextView standingsNotAvailableTextView;
+
     private String constructorId;
 
     @Override
@@ -75,6 +79,9 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
     }
 
     private void setupPage() {
+        constructorsStandingRecyclerView = findViewById(R.id.constructors_standing_recycler_view);
+        standingsNotAvailableTextView = findViewById(R.id.constructors_standing_not_available);
+
         ConstructorStandingsViewModel constructorStandingsViewModel = new ViewModelProvider(this, new ConstructorStandingsViewModelFactory(getApplication())).get(ConstructorStandingsViewModel.class);
         MutableLiveData<Result> liveData = constructorStandingsViewModel.getConstructorStandings();
         Log.i(TAG, "Constructor Standings: " + liveData);
@@ -88,11 +95,12 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
                 if (constructorStandings == null) {
                     Log.i(TAG, "Constructor Standings is null");
-                    NavigationUtils.navigateToHomePage(this);
+                    show(constructorsStandingRecyclerView, standingsNotAvailableTextView);
                 } else {
+                    show(standingsNotAvailableTextView, constructorsStandingRecyclerView);
+
                     List<ConstructorStandingsElement> constructorList = constructorStandings.getConstructorStandings();
 
-                    RecyclerView constructorsStandingRecyclerView = findViewById(R.id.constructors_standing_recycler_view);
                     constructorsStandingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
                     if (constructorList.isEmpty()) {
@@ -111,15 +119,14 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                     }
                 }
             } else if (result instanceof Result.Error) {
-                Result.Error error = (Result.Error) result;
-                Log.e(TAG, "Error: " + error.getMessage());
-                NavigationUtils.navigateToHomePage(this);
+                Log.i(TAG, "CONSTRUCTORS STANDINGS ERROR");
+                show(constructorsStandingRecyclerView, standingsNotAvailableTextView);
             }
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    private void show(View goneView, View visibleView){
+        goneView.setVisibility(View.GONE);
+        visibleView.setVisibility(View.VISIBLE);
     }
 }

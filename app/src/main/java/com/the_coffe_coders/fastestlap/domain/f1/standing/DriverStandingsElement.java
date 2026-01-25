@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.domain.f1.grand_prix;
+package com.the_coffe_coders.fastestlap.domain.f1.standing;
 
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;

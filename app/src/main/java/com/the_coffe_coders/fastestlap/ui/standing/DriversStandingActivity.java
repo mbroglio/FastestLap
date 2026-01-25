@@ -2,6 +2,8 @@ package com.the_coffe_coders.fastestlap.ui.standing;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,8 +17,8 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.f1.DriversStandingRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.DriverStandings;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.DriverStandingsElement;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandings;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
@@ -24,7 +26,6 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
-import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.List;
@@ -38,6 +39,9 @@ public class DriversStandingActivity extends AppCompatActivity {
     private DriverStandingsViewModel driverStandingsViewModel;
     private ConstructorViewModel constructorViewModel;
     private SwipeRefreshLayout driverStandingLayout;
+    private RecyclerView driversStandingRecyclerView;
+    private TextView standingsNotAvailableTextView;
+
     private String driverId;
 
     @Override
@@ -85,6 +89,9 @@ public class DriversStandingActivity extends AppCompatActivity {
     }
 
     private void setupPage() {
+        driversStandingRecyclerView = findViewById(R.id.drivers_standing_recycler_view);
+        standingsNotAvailableTextView = findViewById(R.id.drivers_standing_not_available);
+
         MutableLiveData<Result> livedata = driverStandingsViewModel.getDriverStandingsLiveData();
 
         livedata.observe(this, result -> {
@@ -95,13 +102,15 @@ public class DriversStandingActivity extends AppCompatActivity {
                 Log.i(TAG, "DRIVER STANDINGS SUCCESS");
                 driverStandings = ((Result.DriverStandingsSuccess) result).getData();
 
+                Log.i(TAG, driverStandings.toString());
+
                 if (driverStandings == null) {
                     Log.i(TAG, "DRIVER STANDINGS NULL");
-                    NavigationUtils.navigateToHomePage(this);
+                    //show(driversStandingRecyclerView, standingsNotAvailableTextView);
                 } else {
+                    show(standingsNotAvailableTextView, driversStandingRecyclerView);
                     List<DriverStandingsElement> driverList = driverStandings.getDriverStandingsElements();
 
-                    RecyclerView driversStandingRecyclerView = findViewById(R.id.drivers_standing_recycler_view);
                     driversStandingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
                     DriversStandingRecyclerAdapter driversStandingAdapter = new DriversStandingRecyclerAdapter(this, driverList, null, driverId, driverViewModel, constructorViewModel, this, loadingScreen);
@@ -114,8 +123,13 @@ public class DriversStandingActivity extends AppCompatActivity {
                 }
             } else {
                 Log.i(TAG, "DRIVER STANDINGS ERROR");
-                NavigationUtils.navigateToHomePage(this);
+                //show(driversStandingRecyclerView, standingsNotAvailableTextView);
             }
         });
+    }
+
+    private void show(View goneView, View visibleView){
+        goneView.setVisibility(View.GONE);
+        visibleView.setVisibility(View.VISIBLE);
     }
 }

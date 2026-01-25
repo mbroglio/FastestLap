@@ -35,31 +35,36 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/top_bar_layout">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/constructors_standing_recycler_view"
+        <FrameLayout
+            android:id="@+id/constructors_standing_frame_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        </androidx.recyclerview.widget.RecyclerView>
-        <!--
-        <ScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:scrollbars="none">
-
-            <LinearLayout
-                android:id="@+id/team_standing"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/constructors_standing_recycler_view"
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+            <TextView
+                android:id="@+id/constructors_standing_not_available"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginTop="@dimen/medium_margin"
+                android:text="CONSTRUCTORS STANDING NOT AVAILABLE"
+                style="@style/PageTitleUppercaseWhite"
+                android:gravity="center"
+                android:layout_gravity="center"
                 android:layout_marginEnd="@dimen/medium_margin"
-                android:orientation="vertical">
+                android:layout_marginStart="@dimen/medium_margin"
+                android:visibility="gone">
 
-            </LinearLayout>
+            </TextView>
 
-        </ScrollView>
-        -->
+        </FrameLayout>
+
+
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

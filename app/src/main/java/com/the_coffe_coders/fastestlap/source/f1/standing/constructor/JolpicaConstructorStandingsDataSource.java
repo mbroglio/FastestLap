@@ -58,11 +58,16 @@ public class JolpicaConstructorStandingsDataSource implements ConstructorStandin
 
                     JSONParserUtils jsonParserUtils = new JSONParserUtils();
                     ConstructorStandingsAPIResponse constructorStandingsAPIResponse = jsonParserUtils.parseConstructorStandings(mrdata);
+
+                    Log.d(TAG, "Successfully parsed constructor standings: " + constructorStandingsAPIResponse);
+                    if(constructorStandingsAPIResponse.getStandingsTable().getStandingsLists().isEmpty() ||
+                            constructorStandingsAPIResponse.getStandingsTable().getStandingsLists() == null){
+                        constructorCallback.onError(new Exception("No constructor standings found"));
+                        return;
+                    }
                     constructorCallback.onConstructorLoaded(
                             ConstructorStandingsMapper.toConstructorStandings(
-                                    constructorStandingsAPIResponse.getStandingsTable().getStandingsLists().get(0)
-                            )
-                    );
+                                    constructorStandingsAPIResponse.getStandingsTable().getStandingsLists().get(0)));
                 } else {
                     constructorCallback.onError(new Exception("Response unsuccessful"));
                 }

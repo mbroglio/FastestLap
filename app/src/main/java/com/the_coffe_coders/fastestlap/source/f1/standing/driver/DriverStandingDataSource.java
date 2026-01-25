@@ -4,4 +4,5 @@ import com.the_coffe_coders.fastestlap.repository.f1.standing.driver.DriverStand
 
 public interface DriverStandingDataSource {
     void getDriverStandings(DriverStandingCallback callback);
+    void getDriversList(DriverStandingCallback callback);
 }

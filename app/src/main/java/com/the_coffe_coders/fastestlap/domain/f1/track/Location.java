@@ -1,6 +1,4 @@
-package com.the_coffe_coders.fastestlap.domain.f1.grand_prix;
-
-import java.util.List;
+package com.the_coffe_coders.fastestlap.domain.f1.track;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -15,9 +13,9 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class TrackHistory {
-    private List<String> podium;
-    private List<String> team;
-    private String year;
-    private String raceHighlightsUrl;
+public class Location {
+    private String latitude;
+    private String longitude;
+    private String locality;
+    private String country;
 }

@@ -1,9 +1,9 @@
 package com.the_coffe_coders.fastestlap.mapper;
 
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.ConstructorStandings;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.ConstructorStandingsElement;
-import com.the_coffe_coders.fastestlap.dto.ConstructorStandingsDTO;
-import com.the_coffe_coders.fastestlap.dto.ConstructorStandingsElementDTO;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandingsElement;
+import com.the_coffe_coders.fastestlap.dto.standing.constructor.ConstructorStandingsDTO;
+import com.the_coffe_coders.fastestlap.dto.standing.constructor.ConstructorStandingsElementDTO;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Track;
+import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;

@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.domain.f1.grand_prix;
+package com.the_coffe_coders.fastestlap.domain.f1.result;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -22,37 +22,41 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @Entity
-public class QualifyingResult implements Parcelable {
-
-    public static final Creator<QualifyingResult> CREATOR = new Creator<>() {
+public class RaceResult implements Parcelable {
+    public static final Creator<RaceResult> CREATOR = new Creator<>() {
         @Override
-        public QualifyingResult createFromParcel(Parcel in) {
-            return new QualifyingResult(in);
+        public RaceResult createFromParcel(Parcel in) {
+            return new RaceResult(in);
         }
 
         @Override
-        public QualifyingResult[] newArray(int size) {
-            return new QualifyingResult[size];
+        public RaceResult[] newArray(int size) {
+            return new RaceResult[size];
         }
     };
-
     @PrimaryKey(autoGenerate = true)
     private int uid;
     private String position;
+    private String points;
     private Driver driver;
     private Constructor constructor;
-    private String q1;
-    private String q2;
-    private String q3;
+    private String grid;
+    private String laps;
+    private String status;
+    private RaceResultTime time;
+    private RaceResultFastestLap fastestLap;
 
-    protected QualifyingResult(Parcel in) {
+    protected RaceResult(Parcel in) {
         uid = in.readInt();
         position = in.readString();
+        points = in.readString();
         driver = in.readParcelable(Driver.class.getClassLoader());
         constructor = in.readParcelable(Constructor.class.getClassLoader());
-        q1 = in.readString();
-        q2 = in.readString();
-        q3 = in.readString();
+        grid = in.readString();
+        laps = in.readString();
+        status = in.readString();
+        time = in.readParcelable(RaceResultTime.class.getClassLoader());
+        fastestLap = in.readParcelable(RaceResultFastestLap.class.getClassLoader());
     }
 
     @Override
@@ -64,10 +68,17 @@ public class QualifyingResult implements Parcelable {
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeInt(uid);
         dest.writeString(position);
+        dest.writeString(points);
         dest.writeParcelable(driver, flags);
         dest.writeParcelable(constructor, flags);
-        dest.writeString(q1);
-        dest.writeString(q2);
-        dest.writeString(q3);
+        dest.writeString(grid);
+        dest.writeString(laps);
+        dest.writeString(status);
+        dest.writeParcelable(time, flags);
+        dest.writeParcelable(fastestLap, flags);
+    }
+
+    public boolean isFinished() {
+        return status.equalsIgnoreCase("finished");
     }
 }

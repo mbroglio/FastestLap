@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.dto;
+package com.the_coffe_coders.fastestlap.dto.standing.driver;
 
 import java.util.List;
 
@@ -11,8 +11,8 @@ import lombok.ToString;
 @Getter
 @ToString
 @AllArgsConstructor
-public class ConstructorStandingsDTO {
+public class DriverStandingsDTO {
     private String season;
     private String round;
-    private List<ConstructorStandingsElementDTO> ConstructorStandings;
+    private List<DriverStandingsElementDTO> DriverStandings;
 }

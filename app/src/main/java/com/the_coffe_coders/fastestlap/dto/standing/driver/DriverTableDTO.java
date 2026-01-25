@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.dto;
+package com.the_coffe_coders.fastestlap.dto.standing.driver;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -7,13 +7,15 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Setter
 @Getter
+@ToString
 @AllArgsConstructor
-public class ConstructorTableDTO {
-    String constructorId;
+public class DriverTableDTO {
+    String driverId;
     String season;
-    @SerializedName("Constructors")
-    List<ConstructorDTO> constructorDTOList;
+    @SerializedName("Drivers")
+    List<DriverDTO> driverDTOList;
 }

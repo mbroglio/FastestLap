@@ -1,6 +1,6 @@
 package com.the_coffe_coders.fastestlap.mapper;
 
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Track;
+import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
 import com.the_coffe_coders.fastestlap.dto.CircuitDTO;
 
 public class TrackMapper {

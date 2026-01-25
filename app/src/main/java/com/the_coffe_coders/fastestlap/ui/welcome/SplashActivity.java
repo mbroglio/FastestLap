@@ -27,6 +27,8 @@ import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
+import java.util.Calendar;
+
 @SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
 
@@ -57,14 +59,9 @@ public class SplashActivity extends AppCompatActivity {
         ConstraintLayout introScreen = findViewById(R.id.intro_screen);
         UIUtils.applyWindowInsets(introScreen);
 
-        String season_year = getIntent().getStringExtra("season_year");
+        String season_year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
         Log.d("LaunchFlag", "Valore ricevuto: " + season_year);
-        if (season_year != null) {
-            ServiceLocator.setCurrentYearBaseUrl(season_year);
-        } else {
-            Log.d("LaunchFlag", "Using default year (current)");
-            ServiceLocator.setCurrentYearBaseUrl("2025");
-        }
+        ServiceLocator.setCurrentYearBaseUrl(season_year);
 
 
         userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(ServiceLocator.getInstance().getUserRepository((Application) getApplicationContext()))).get(UserViewModel.class);

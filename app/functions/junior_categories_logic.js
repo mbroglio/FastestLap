@@ -22,11 +22,27 @@ async function executeJuniorSeriesUpdate(db) {
 
     // F2
     if (await checkRaceYesterday(db, "f2")) await processSeries(db, "f2", F2_WIKI_URL);
-    else console.log("F2: No race yesterday.");
+    else{
+        console.log("F2: No race yesterday.");
+        const f2EntryListRef = db.ref(`${JUNIOR_ROOT_PATH}/f2/entrylist`);
+        const snapshot = await f2EntryListRef.once("value");
+        if (!snapshot.exists()) {
+            console.log("F2: Entry list missing");
+            await forceEntryListScrape(db, "f2", F2_WIKI_URL);
+        }
+    } 
 
     // F3
     if (await checkRaceYesterday(db, "f3")) await processSeries(db, "f3", F3_WIKI_URL);
-    else console.log("F3: No race yesterday.");
+    else{
+        console.log("F3: No race yesterday.");
+        const f3EntryListRef = db.ref(`${JUNIOR_ROOT_PATH}/f3/entrylist`);
+        const snapshot = await f3EntryListRef.once("value");
+        if (!snapshot.exists()) {
+            console.log("F3: Entry list missing");
+            await forceEntryListScrape(db, "f3", F3_WIKI_URL);
+        }
+    } 
 }
 
 // Annual Reset Function
@@ -37,6 +53,23 @@ async function executeJuniorReset(db) {
     updates[`${JUNIOR_ROOT_PATH}/f3`] = null;
     await db.ref().update(updates);
     console.log("Reset complete.");
+}
+
+// Force Entry List Scrape
+async function forceEntryListScrape(db, seriesId, url) {  
+    const { data } = await axios.get(url, {
+        headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
+    });
+    const $ = cheerio.load(data);
+    const entryList = await scrapeEntryList($, db, seriesId);
+
+    const updates = {};
+    if (entryList) updates[`${JUNIOR_ROOT_PATH}/${seriesId}/entrylist`] = entryList;
+
+    if (Object.keys(updates).length > 0) {
+        await db.ref().update(updates);
+        console.log(`DB updated for ${seriesId} entry list.`);
+    }
 }
 
 

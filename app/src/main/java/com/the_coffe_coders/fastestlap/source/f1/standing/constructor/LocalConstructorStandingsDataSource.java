@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.database.f1.ConstructorStandingsDAO;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.ConstructorStandings;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.repository.f1.standing.constructor.ConstructorStandingCallback;
 
 public class LocalConstructorStandingsDataSource implements ConstructorStandingDataSource {

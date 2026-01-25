@@ -2,10 +2,10 @@ package com.the_coffe_coders.fastestlap.domain;
 
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.ConstructorStandings;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.DriverStandings;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Track;
+import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.junior.JuniorEntryList;
 import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendar;

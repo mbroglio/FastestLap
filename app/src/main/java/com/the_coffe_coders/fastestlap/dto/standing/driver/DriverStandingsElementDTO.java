@@ -1,6 +1,7 @@
-package com.the_coffe_coders.fastestlap.dto;
+package com.the_coffe_coders.fastestlap.dto.standing.driver;
 
 import com.google.gson.annotations.SerializedName;
+import com.the_coffe_coders.fastestlap.dto.standing.constructor.ConstructorDTO;
 
 import java.util.List;
 

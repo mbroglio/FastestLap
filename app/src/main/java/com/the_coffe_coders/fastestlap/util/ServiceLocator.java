@@ -12,6 +12,9 @@ import com.the_coffe_coders.fastestlap.source.user.BaseUserDataRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.user.UserAuthenticationFirebaseDataSource;
 import com.the_coffe_coders.fastestlap.source.user.UserFirebaseDataSource;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -23,7 +26,7 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 public class ServiceLocator {
     public static final String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
     public static ServiceLocator instance;
-    public static String currentYear = "2025";
+    public static String currentYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
     public static String CURRENT_YEAR_BASE_URL = BASE_URL + "${currentYear}" + "/";
 
     public static synchronized ServiceLocator getInstance() {
@@ -192,6 +195,17 @@ public class ServiceLocator {
                         .build();
 
                 return retrofit.create(ErgastAPIService.class).getConstructor(constructorId);
+            }
+
+            @Override
+            public Call<ResponseBody> getConstructors() {
+                Retrofit retrofit = new Retrofit.Builder()
+                        .baseUrl(CURRENT_YEAR_BASE_URL)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .client(okHttpClient)
+                        .build();
+
+                return retrofit.create(ErgastAPIService.class).getConstructors();
             }
 
             @Override

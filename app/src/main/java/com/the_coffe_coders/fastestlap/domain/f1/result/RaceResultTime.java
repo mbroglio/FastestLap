@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.domain.f1.grand_prix;
+package com.the_coffe_coders.fastestlap.domain.f1.result;
 
 import android.os.Parcel;
 import android.os.Parcelable;

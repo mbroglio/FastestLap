@@ -1,11 +1,14 @@
 package com.the_coffe_coders.fastestlap.mapper;
 
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.DriverStandings;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.DriverStandingsElement;
-import com.the_coffe_coders.fastestlap.dto.ConstructorDTO;
-import com.the_coffe_coders.fastestlap.dto.DriverStandingsDTO;
-import com.the_coffe_coders.fastestlap.dto.DriverStandingsElementDTO;
+import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandings;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandingsElement;
+import com.the_coffe_coders.fastestlap.dto.standing.constructor.ConstructorDTO;
+import com.the_coffe_coders.fastestlap.dto.standing.driver.DriverDTO;
+import com.the_coffe_coders.fastestlap.dto.standing.driver.DriverStandingsDTO;
+import com.the_coffe_coders.fastestlap.dto.standing.driver.DriverStandingsElementDTO;
+import com.the_coffe_coders.fastestlap.dto.standing.driver.DriverTableDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,4 +44,15 @@ public class DriverStandingsMapper {
         driverStandingsElement.setPosition(driverStandingsElementDTO.getPosition());
         return driverStandingsElement;
     }
+
+    public static List<Driver> toDriverList(DriverTableDTO driverTableDTO) {
+        List<Driver> drivers = new ArrayList<>();
+
+        for (DriverDTO dDTO : driverTableDTO.getDriverDTOList()) {
+            drivers.add(DriverMapper.toDriver(dDTO));
+        }
+
+        return drivers;
+        }
+
 }

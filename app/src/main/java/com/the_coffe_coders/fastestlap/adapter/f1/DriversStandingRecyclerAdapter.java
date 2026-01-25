@@ -21,7 +21,7 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.DriverStandingsElement;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
 import com.the_coffe_coders.fastestlap.util.Constants;

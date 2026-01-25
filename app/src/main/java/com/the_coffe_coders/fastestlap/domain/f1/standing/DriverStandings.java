@@ -1,9 +1,7 @@
-package com.the_coffe_coders.fastestlap.domain.f1.grand_prix;
+package com.the_coffe_coders.fastestlap.domain.f1.standing;
 
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-
-import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
@@ -13,17 +11,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+
 @Getter
 @Setter
-@EqualsAndHashCode
 @ToString
+@EqualsAndHashCode
 @NoArgsConstructor
-@Entity(tableName = "ConstructorStandings")
-public class ConstructorStandings {
+@Entity(tableName = "DriverStandings")
+public class DriverStandings {
     @PrimaryKey(autoGenerate = true)
-    private int uid;
+    private long uid;
     private String season;
     private String round;
-    @SerializedName("ConstructorStandings")
-    private List<ConstructorStandingsElement> ConstructorStandings;
+    private List<DriverStandingsElement> driverStandingsElements;
 }

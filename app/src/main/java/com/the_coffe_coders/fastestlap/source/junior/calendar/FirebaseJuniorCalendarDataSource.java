@@ -1,7 +1,6 @@
 package com.the_coffe_coders.fastestlap.source.junior.calendar;
 
 
-import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_CIRCUIT_MAP_COLLECTION;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_JUNIOR_COLLECTION;
 import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
 
@@ -14,22 +13,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Track;
 import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendar;
 import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendarElement;
-import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.repository.junior.calendar.JuniorCalendarCallback;
-import com.the_coffe_coders.fastestlap.repository.nation.NationCallback;
-import com.the_coffe_coders.fastestlap.repository.track.TrackCallback;
-import com.the_coffe_coders.fastestlap.source.nation.FirebaseNationDataSource;
-import com.the_coffe_coders.fastestlap.source.track.FirebaseTrackDataSource;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class FirebaseJuniorCalendarDataSource implements JuniorCalendarDataSource {

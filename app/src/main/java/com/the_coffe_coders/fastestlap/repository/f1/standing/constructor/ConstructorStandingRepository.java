@@ -5,10 +5,12 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.ConstructorStandings;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.source.f1.standing.constructor.JolpicaConstructorStandingsDataSource;
 import com.the_coffe_coders.fastestlap.source.f1.standing.constructor.LocalConstructorStandingsDataSource;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -26,6 +28,8 @@ public class ConstructorStandingRepository {
     private final LocalConstructorStandingsDataSource localConstructorStandingsDataSource;
 
     private final NetworkUtils networkLiveData;
+
+    private String currentYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 
     private ConstructorStandingRepository(AppRoomDatabase appRoomDatabase, Context context) {
         constructorStandingCache = new HashMap<>();
@@ -105,7 +109,7 @@ public class ConstructorStandingRepository {
         localConstructorStandingsDataSource.getConstructorStandings(new ConstructorStandingCallback() {
             @Override
             public void onConstructorLoaded(ConstructorStandings constructorStandings) {
-                if (constructorStandings != null) {
+                if (constructorStandings != null && constructorStandings.getSeason().equals(currentYear)) {
                     constructorStandingCache.put(cacheKey, new MutableLiveData<>(
                             new Result.ConstructorStandingsSuccess(constructorStandings)));
                     lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());

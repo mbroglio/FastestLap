@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Track;
+import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
 import com.the_coffe_coders.fastestlap.source.track.FirebaseTrackDataSource;
 import com.the_coffe_coders.fastestlap.source.track.LocalTrackDataSource;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;

@@ -4,8 +4,8 @@ import android.util.Log;
 
 import androidx.lifecycle.ViewModel;
 
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.RaceResult;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.RaceResultFastestLap;
+import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResult;
+import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResultFastestLap;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
 
 import java.util.ArrayList;

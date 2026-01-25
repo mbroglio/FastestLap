@@ -1,7 +1,7 @@
 package com.the_coffe_coders.fastestlap.api;
 
 import com.google.gson.annotations.SerializedName;
-import com.the_coffe_coders.fastestlap.dto.DriverTableDTO;
+import com.the_coffe_coders.fastestlap.dto.standing.driver.DriverTableDTO;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -19,7 +19,7 @@ public class DriversAPIResponse extends APIResponse {
         this.driverTableDTO = driverTableDTO;
     }
 
-    public DriverTableDTO getStandingsTable() {
+    public DriverTableDTO getDriversTable() {
         return driverTableDTO;
     }
 

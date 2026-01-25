@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.dto;
+package com.the_coffe_coders.fastestlap.dto.standing.constructor;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

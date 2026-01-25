@@ -3,6 +3,8 @@ package com.the_coffe_coders.fastestlap.domain.f1.grand_prix;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
+import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
+
 import org.threeten.bp.LocalDateTime;
 
 import java.util.List;
