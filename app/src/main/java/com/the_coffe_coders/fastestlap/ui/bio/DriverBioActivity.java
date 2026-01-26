@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -352,11 +353,15 @@ public class DriverBioActivity extends AppCompatActivity {
     private void createHistoryTable() {
         loadingScreen.updateProgress();
 
+        LinearLayout driverHistoryLayout = findViewById(R.id.driver_history);
+
         TableLayout tableLayout = findViewById(R.id.history_table);
         tableLayout.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
 
         if (driver.getDriver_history() != null) {
+            driverHistoryLayout.setVisibility(View.VISIBLE);
+            tableLayout.setVisibility(View.VISIBLE);
 
             View tableHeader = inflater.inflate(R.layout.driver_bio_table_header, tableLayout, false);
             TableLayout.LayoutParams paramsHeader = (TableLayout.LayoutParams) tableHeader.getLayoutParams();
@@ -396,6 +401,10 @@ public class DriverBioActivity extends AppCompatActivity {
 
                 tableLayout.addView(tableRow);
             }
+        }else{
+            Log.e(TAG, "Driver history is null");
+            driverHistoryLayout.setVisibility(View.GONE);
+            tableLayout.setVisibility(View.GONE);
         }
         loadingScreen.hideLoadingScreen();
     }

@@ -25,7 +25,7 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.junior.JuniorCalendarRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.adapter.junior.JuniorEntryListRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.junior.JuniorEntryList;
+import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorEntryList;
 import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendar;
 import com.the_coffe_coders.fastestlap.ui.junior.viewmodel.JuniorCategoryViewModel;
 import com.the_coffe_coders.fastestlap.ui.junior.viewmodel.JuniorCategoryViewModelFactory;
@@ -92,20 +92,14 @@ public class JuniorDialogFragment extends DialogFragment {
                 setDialogForCalendar();
                 executeCalendar();
                 break;
-            case 2: // Results
-                raceInfoLayout.setVisibility(View.VISIBLE);
-                if (raceType == 0) {
-                    polePositionLayout.setVisibility(View.GONE);
-                } else {
-                    polePositionLayout.setVisibility(View.VISIBLE);
-                }
-                executeResults();
-                break;
-            case 3: // Drivers standing
+            case 2: // Drivers standing
                 executeDriversStanding();
                 break;
-            case 4: // Constructors standing
+            case 3: // Constructors standing
                 executeConstructorsStanding();
+                break;
+            case 4:
+                executeFullResults();
                 break;
 
         }
@@ -192,13 +186,14 @@ public class JuniorDialogFragment extends DialogFragment {
         });
     }
 
-    private void executeResults() {
-    }
-
     private void executeDriversStanding() {
     }
 
     private void executeConstructorsStanding() {
+    }
+
+    private void executeFullResults() {
+       //show full results
     }
 
     @Override

@@ -1,6 +1,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
     android:orientation="vertical">
 
     <LinearLayout
@@ -20,7 +22,7 @@
         </TextView>
 
         <TextView
-            android:id="@+id/past_first_driver"
+            android:id="@+id/first_driver"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -55,7 +57,7 @@
         </TextView>
 
         <TextView
-            android:id="@+id/past_second_driver"
+            android:id="@+id/second_driver"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -90,7 +92,7 @@
         </TextView>
 
         <TextView
-            android:id="@+id/past_third_driver"
+            android:id="@+id/third_driver"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"

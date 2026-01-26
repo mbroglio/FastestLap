@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -184,11 +185,16 @@ public class TrackBioActivity extends AppCompatActivity {
     private void createHistoryTable() {
         loadingScreen.updateProgress();
 
+        LinearLayout trackHistoryLayout = findViewById(R.id.track_history);
+
         TableLayout tableLayout = findViewById(R.id.history_table);
         tableLayout.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
 
         if (track.getTrack_history() != null) {
+            trackHistoryLayout.setVisibility(View.VISIBLE);
+            tableLayout.setVisibility(View.VISIBLE);
+
             View tableHeader = inflater.inflate(R.layout.track_bio_table_header, tableLayout, false);
             tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray_dark));
 
@@ -231,6 +237,10 @@ public class TrackBioActivity extends AppCompatActivity {
 
                 tableLayout.addView(tableRow);
             }
+        }else{
+            Log.e("TrackBioActivity", "Track history is null");
+            trackHistoryLayout.setVisibility(View.GONE);
+            tableLayout.setVisibility(View.GONE);
         }
         loadingScreen.hideLoadingScreen();
     }

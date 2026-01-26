@@ -67,11 +67,11 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
     @Override
     public void onBindViewHolder(@NonNull DriverViewHolder holder, int position) {
         driverStandingsElement = new DriverStandingsElement();
-        if (driversStandingList == null) {
+        if (driversStandingList == null) { //use driversList
             driverStandingsElement.setDriver(driversList.get(position));
             driverStandingsElement.setPoints("0");
             driverStandingsElement.setPosition(String.valueOf(position + 1));
-        } else {
+        } else { //use driversStandingList
             driverStandingsElement = driversStandingList.get(position);
         }
 
@@ -154,7 +154,6 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
     }
 
     private void goToBioPage(int position) {
-        //TEMPORARY FIX
         String driverIdToShow;
         if (driversStandingList == null) {
             driverIdToShow = driversList.get(position).getDriverId();

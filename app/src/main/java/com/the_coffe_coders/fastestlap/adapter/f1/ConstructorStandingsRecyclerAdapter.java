@@ -38,16 +38,18 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
     private final DriverViewModel driverViewModel;
     private final ConstructorViewModel constructorViewModel;
     private final List<ConstructorStandingsElement> constructorStandingsList;
+    private final List<Constructor> constructorList;
     private final LifecycleOwner lifecycleOwner;
     private final LoadingScreen loadingScreen;
     private ConstructorStandingsElement constructorStandingsElement;
 
     public ConstructorStandingsRecyclerAdapter(Context context, String constructorId, List<ConstructorStandingsElement> constructorStandingsList,
-                                               DriverViewModel driverViewModel, ConstructorViewModel constructorViewModel,
+                                               List<Constructor> constructorList, DriverViewModel driverViewModel, ConstructorViewModel constructorViewModel,
                                                LifecycleOwner lifecycleOwner, LoadingScreen loadingScreen) {
         this.context = context;
         this.constructorId = constructorId;
         this.constructorStandingsList = constructorStandingsList;
+        this.constructorList = constructorList;
         this.driverViewModel = driverViewModel;
         this.constructorViewModel = constructorViewModel;
         this.lifecycleOwner = lifecycleOwner;
@@ -63,10 +65,18 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
 
     @Override
     public void onBindViewHolder(@NonNull ConstructorViewHolder holder, int position) {
-        constructorStandingsElement = constructorStandingsList.get(position);
+        constructorStandingsElement = new  ConstructorStandingsElement();
+        if(constructorStandingsList == null){
+            constructorStandingsElement.setConstructor(constructorList.get(position));
+            constructorStandingsElement.setPoints("0");
+            constructorStandingsElement.setPosition(String.valueOf(position + 1));
+        }else{
+            constructorStandingsElement = constructorStandingsList.get(position);
+        }
+
         String currentConstructorId = constructorStandingsElement.getConstructor().getConstructorId();
 
-
+        try {
             constructorViewModel.getSelectedConstructor(currentConstructorId).observe(lifecycleOwner, result -> {
                 if (result instanceof Result.Loading) {
                     return;
@@ -76,8 +86,12 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                     Constructor constructor = ((Result.ConstructorSuccess) result).getData();
                     constructorStandingsElement.setConstructor(constructor);
 
-                    holder.constructorCardInnerLayout.setBackground(AppCompatResources.getDrawable(context,
-                            Objects.requireNonNull(Constants.TEAM_GRADIENT_COLOR.get(currentConstructorId))));
+                    try {
+                        holder.constructorCardInnerLayout.setBackground(AppCompatResources.getDrawable(context,
+                                Objects.requireNonNull(Constants.TEAM_GRADIENT_COLOR.get(currentConstructorId))));
+                    }catch (Exception e){
+                        holder.constructorCardInnerLayout.setBackground(AppCompatResources.getDrawable(context, R.color.timer_gray));
+                    }
 
                     UIUtils.setTextViewTextWithCondition(constructorStandingsElement.getPosition() == null,
                             ContextCompat.getString(context, R.string.last_constructor_position), //if true
@@ -109,18 +123,24 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                                     holder.constructorLogo},
 
                             () -> processDriverOne(holder, constructor, position));
-                }else{
+                } else {
                     showConstructorNotFound(holder, currentConstructorId);
                 }
             });
-
-
+        }catch (RuntimeException e){
+            Log.e("ConstructorsStandingAdapter", "constructor error: " + e.getMessage());
+            showConstructorNotFound(holder, currentConstructorId);
+        }
 
     }
 
     private void goToBioPage(int position) {
-        //TEMPORARY FIX
-        String constructorIdToShow = constructorStandingsList.get(position).getConstructor().getConstructorId();
+        String constructorIdToShow;
+        if(constructorStandingsList == null){
+            constructorIdToShow = constructorList.get(position).getConstructorId();
+        }else{
+            constructorIdToShow = constructorStandingsList.get(position).getConstructor().getConstructorId();
+        }
         //
 
         NavigationUtils.navigateToBioPage(context, constructorIdToShow, 0);
@@ -215,7 +235,12 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
 
     @Override
     public int getItemCount() {
-        return constructorStandingsList.size();
+        if(constructorList != null)
+            return constructorList.size();
+        else if (constructorStandingsList != null)
+            return constructorStandingsList.size();
+        else
+            return 0;
     }
 
     public static class ConstructorViewHolder extends RecyclerView.ViewHolder {

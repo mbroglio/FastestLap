@@ -20,4 +20,8 @@ public class ConstructorStandingsViewModel extends ViewModel {
     public MutableLiveData<Result> getConstructorStandings() {
         return constructorStandingRepository.getConstructorStandings();
     }
+
+    public MutableLiveData<Result> getConstructorListLiveData() {
+        return constructorStandingRepository.getConstructorStandings();
+    }
 }

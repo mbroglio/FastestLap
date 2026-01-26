@@ -24,8 +24,10 @@ import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.SprintQualifying;
 import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
 import com.the_coffe_coders.fastestlap.domain.f1.track.TrackHistory;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
-import com.the_coffe_coders.fastestlap.domain.junior.JuniorDriver;
-import com.the_coffe_coders.fastestlap.domain.junior.JuniorTeam;
+import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorResultElement;
+import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorSessionResultElement;
+import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorDriver;
+import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorTeam;
 import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendarElement;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 
@@ -344,6 +346,30 @@ public class DatabaseConverters {
     @TypeConverter
     public static List<JuniorCalendarElement> toJuniorCalendarElementList(String json) {
         Type listType = new TypeToken<List<JuniorCalendarElement>>() {
+        }.getType();
+        return gson.fromJson(json, listType);
+    }
+
+    @TypeConverter
+    public static String fromJuniorResultElementList(List<JuniorResultElement> list) {
+        return gson.toJson(list);
+    }
+
+    @TypeConverter
+    public static List<JuniorResultElement> toJuniorResultElementList(String json) {
+        Type listType = new TypeToken<List<JuniorResultElement>>() {
+        }.getType();
+        return gson.fromJson(json, listType);
+    }
+
+    @TypeConverter
+    public static String fromJuniorSessionResultElementList(List<JuniorSessionResultElement> list) {
+        return gson.toJson(list);
+    }
+
+    @TypeConverter
+    public static List<JuniorSessionResultElement> toJuniorSessionResultElementList(String json) {
+        Type listType = new TypeToken<List<JuniorSessionResultElement>>() {
         }.getType();
         return gson.fromJson(json, listType);
     }

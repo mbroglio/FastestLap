@@ -12,6 +12,8 @@ import androidx.fragment.app.FragmentManager;
 
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorResult;
+import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorResultElement;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
@@ -128,26 +130,33 @@ public class NavigationUtils {
 
 
     public static void showEntryListDialog(FragmentManager fragmentManager, int categoryType) {
-        showJuniorDialog(fragmentManager, categoryType, 0);
+        showJuniorDialog(fragmentManager, categoryType, 0, null);
     }
 
     public static void showCalendarDialog(FragmentManager fragmentManager, int categoryType) {
-        showJuniorDialog(fragmentManager, categoryType, 1);
+        showJuniorDialog(fragmentManager, categoryType, 1, null);
     }
 
     public static void showDriversStandingDialog(FragmentManager fragmentManager, int categoryType) {
-        showJuniorDialog(fragmentManager, categoryType, 2);
+        showJuniorDialog(fragmentManager, categoryType, 2, null);
     }
 
     public static void showConstructorsStandingDialog(FragmentManager fragmentManager, int categoryType) {
-        showJuniorDialog(fragmentManager, categoryType, 3);
+        showJuniorDialog(fragmentManager, categoryType, 3, null);
     }
 
-    private static void showJuniorDialog(FragmentManager fragmentManager, int categoryType, int content){
+    public static void showFullResultsDialog(JuniorResult result, FragmentManager fragmentManager, int categoryType, int raceType) {
+        showJuniorDialog(fragmentManager, categoryType, raceType, result);
+        //raceType=0 -> Feature; raceType=1 -> Sprint
+    }
+
+
+    private static void showJuniorDialog(FragmentManager fragmentManager, int categoryType, int content, JuniorResult juniorResult){
         JuniorDialogFragment juniorDialogFragment = new JuniorDialogFragment();
         Bundle args = new Bundle();
         args.putInt("CATEGORY_TYPE", categoryType);
         args.putInt("CONTENT", content);
+        args.putParcelable("JUNIOR_RESULT", juniorResult);
         juniorDialogFragment.setArguments(args);
         juniorDialogFragment.show(fragmentManager, "JuniorDialogFragment");
     }

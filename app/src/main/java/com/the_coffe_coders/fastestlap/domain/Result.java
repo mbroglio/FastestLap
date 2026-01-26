@@ -7,7 +7,8 @@ import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
-import com.the_coffe_coders.fastestlap.domain.junior.JuniorEntryList;
+import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorResult;
+import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorEntryList;
 import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendar;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.domain.user.User;
@@ -139,15 +140,6 @@ public abstract class Result {
         }
     }
 
-    @Getter
-    public static final class Error extends Result {
-        private final String message;
-
-        public Error(String message) {
-            this.message = message;
-        }
-    }
-
     public static class RaceResultsSuccess extends Result {
         private final Race race;
 
@@ -172,13 +164,17 @@ public abstract class Result {
         }
     }
 
-    @Getter
-    public static class Loading extends Result {
-        private final String message;
+    public static class ConstructorsSuccess extends Result {
+        private final List<Constructor> constructors;
 
-        public Loading(String message) {
-            this.message = message;
+        public ConstructorsSuccess(List<Constructor> constructors) {
+            this.constructors = constructors;
         }
+
+        public List<Constructor> getData() {
+            return constructors;
+        }
+
     }
 
     public static class JuniorCalendarSuccess extends Result {
@@ -204,4 +200,35 @@ public abstract class Result {
             return juniorEntryList;
         }
     }
+
+    public static class JuniorResultSuccess extends Result {
+        private final JuniorResult juniorResult;
+
+        public JuniorResultSuccess(JuniorResult juniorResult) {
+            this.juniorResult = juniorResult;
+        }
+
+        public JuniorResult getData() {
+            return juniorResult;
+        }
+    }
+
+    @Getter
+    public static final class Error extends Result {
+        private final String message;
+
+        public Error(String message) {
+            this.message = message;
+        }
+    }
+
+    @Getter
+    public static class Loading extends Result {
+        private final String message;
+
+        public Loading(String message) {
+            this.message = message;
+        }
+    }
+
 }

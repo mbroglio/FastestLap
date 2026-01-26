@@ -1,5 +1,7 @@
 package com.the_coffe_coders.fastestlap.dto.standing.constructor;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -14,5 +16,6 @@ import lombok.ToString;
 public class ConstructorStandingsTableDTO {
     private String season;
     private String round;
-    private List<ConstructorStandingsDTO> StandingsLists;
+    @SerializedName("StandingsLists")
+    private List<ConstructorStandingsDTO> constructorStandingsDTOS;
 }

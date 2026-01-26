@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.domain.junior;
+package com.the_coffe_coders.fastestlap.domain.junior.standings;
 
 import android.os.Parcel;
 import android.os.Parcelable;

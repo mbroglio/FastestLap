@@ -90,6 +90,8 @@ public class HomeFragment extends Fragment {
     private int loadingCounter = 0;
     private Boolean previousNetworkState = null;
 
+    private String nextRaceRound;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -187,8 +189,8 @@ public class HomeFragment extends Fragment {
         }
 
         setRefreshLayout(view);
-        setLastRaceCard(view);
         setNextSessionCard(view);
+        setLastRaceCard(view);
     }
 
     private void setRefreshLayout(View view) {
@@ -206,111 +208,6 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private void setLastRaceCard(View view) {
-        LiveData<Result> lastRace = weeklyRaceViewModel.getLastRace();
-        lastRace.observe(getViewLifecycleOwner(), result -> {
-            try {
-                if (result instanceof Result.Loading) {
-                    return;
-                }
-                if (result.isSuccess()) {
-                    WeeklyRace raceResult = ((Result.NextRaceSuccess) result).getData();
-                    Log.i(TAG, "Last Race: " + raceResult);
-                    showPodium(view, raceResult);
-                } else {
-                    throw new Exception("Failed to fetch last race: " + result.getError());
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Error in setLastRaceCard: " + e.getMessage());
-                loadPendingResultsLayout(view);
-            }
-        });
-    }
-
-    private void showPodium(View view, WeeklyRace race) {
-        decrementLoadingCounter();
-        try {
-            String circuitId = race.getTrack().getTrackId();
-            MutableLiveData<Result> trackData = trackViewModel.getTrack(circuitId);
-            trackData.observe(getViewLifecycleOwner(), trackResult -> {
-                try {
-                    if (trackResult instanceof Result.Loading) {
-                        return;
-                    }
-                    if (trackResult.isSuccess()) {
-                        Track track = ((Result.TrackSuccess) trackResult).getData();
-                        updateLastRaceUI(view, race, track);
-                    } else {
-                        throw new Exception("Failed to fetch track data: " + trackResult.getError());
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, "Error loading track: " + e.getMessage());
-                    loadPendingResultsLayout(view);
-                }
-            });
-        } catch (Exception e) {
-            Log.e(TAG, "Error in showPodium: " + e.getMessage());
-            loadPendingResultsLayout(view);
-        }
-    }
-
-    private void updateLastRaceUI(View view, WeeklyRace race, Track track) {
-        decrementLoadingCounter();
-        try {
-            UIUtils.singleSetTextViewText(race.getRaceName(), view.findViewById(R.id.last_race_name));
-            UIUtils.loadImageWithGlide(requireContext(), track.getTrack_minimal_layout_url(), view.findViewById(R.id.last_race_track_outline), () -> updateLastRaceUIFinalStep(race, view));
-        } catch (Exception e) {
-            Log.e(TAG, "Error updating last race UI: " + e.getMessage());
-            loadPendingResultsLayout(view);
-        }
-    }
-
-    private void updateLastRaceUIFinalStep(WeeklyRace race, View view) {
-        decrementLoadingCounter();
-        LocalDateTime dateTime = race.getDateTime();
-
-        UIUtils.multipleSetTextViewText(new String[]{String.valueOf(dateTime.getDayOfMonth()), requireContext().getString(R.string.round, race.getRound())}, new TextView[]{view.findViewById(R.id.last_race_date), view.findViewById(R.id.last_race_round)});
-
-        UIUtils.translateMonth(dateTime.getMonth().toString().substring(0, 3).toUpperCase(), view.findViewById(R.id.last_race_month), true);
-
-        MutableLiveData<Result> raceResultData = raceResultViewModel.getRaceResults(race.getRound());
-        raceResultData.observe(getViewLifecycleOwner(), result -> {
-            try {
-                if (result instanceof Result.Loading) {
-                    return;
-                }
-                if (result.isSuccess()) {
-                    List<RaceResult> raceResults = ((Result.RaceResultsSuccess) result).getData().getResults();
-                    setDriverNames(view, raceResults);
-                } else {
-                    throw new Exception("Failed to fetch race results: " + result.getError());
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Error setting driver names: " + e.getMessage());
-            }
-        });
-
-        MaterialCardView resultCard = view.findViewById(R.id.past_event_result);
-        resultCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), EventActivity.class).putExtra("CIRCUIT_ID", race.getTrack().getTrackId())));
-    }
-
-    private void setDriverNames(View view, List<RaceResult> raceResults) {
-        decrementLoadingCounter();
-        try {
-            for (int i = 0; i < Math.min(3, raceResults.size()); i++) {
-                UIUtils.singleSetTextViewText(raceResults.get(i).getDriver().getFullName(), view.findViewById(Constants.LAST_RACE_DRIVER_NAME.get(i)));
-            }
-        } catch (Exception e) {
-            Log.e(TAG, "Error setting driver names: " + e.getMessage());
-        }
-    }
-
-    private void loadPendingResultsLayout(View view) {
-        decrementLoadingCounter();
-        view.findViewById(R.id.pending_last_race_results).setVisibility(View.VISIBLE);
-        view.findViewById(R.id.last_race_results).setVisibility(View.GONE);
-    }
-
     private void setNextSessionCard(View view) {
         decrementLoadingCounter();
 
@@ -324,6 +221,8 @@ public class HomeFragment extends Fragment {
                     }
                     if (result.isSuccess()) {
                         WeeklyRace nextRace = ((Result.NextRaceSuccess) result).getData();
+                        Log.i(TAG, "Next race: " + nextRace.getRound());
+                        nextRaceRound = nextRace.getRound();
                         processNextRace(view, nextRace);
                     } else {
                         throw new Exception("Failed to fetch next race: " + result.getError());
@@ -472,6 +371,116 @@ public class HomeFragment extends Fragment {
 
     }
 
+    private void setLastRaceCard(View view) {
+        LiveData<Result> lastRace = weeklyRaceViewModel.getLastRace();
+        lastRace.observe(getViewLifecycleOwner(), result -> {
+            try {
+                if (result instanceof Result.Loading) {
+                    return;
+                }
+                if (result.isSuccess()) {
+                    WeeklyRace raceResult = ((Result.NextRaceSuccess) result).getData();
+                    Log.i(TAG, "Last Race: " + raceResult);
+
+                    if(raceResult.getRound().equals(nextRaceRound)){
+                        showLastRaceNotFound(view);
+                    }
+
+                    showPodium(view, raceResult);
+                } else {
+                    throw new Exception("Failed to fetch last race: " + result.getError());
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error in setLastRaceCard: " + e.getMessage());
+                loadPendingResultsLayout(view);
+            }
+        });
+    }
+
+    private void showPodium(View view, WeeklyRace race) {
+        decrementLoadingCounter();
+        try {
+            String circuitId = race.getTrack().getTrackId();
+            MutableLiveData<Result> trackData = trackViewModel.getTrack(circuitId);
+            trackData.observe(getViewLifecycleOwner(), trackResult -> {
+                try {
+                    if (trackResult instanceof Result.Loading) {
+                        return;
+                    }
+                    if (trackResult.isSuccess()) {
+                        Track track = ((Result.TrackSuccess) trackResult).getData();
+                        updateLastRaceUI(view, race, track);
+                    } else {
+                        throw new Exception("Failed to fetch track data: " + trackResult.getError());
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error loading track: " + e.getMessage());
+                    loadPendingResultsLayout(view);
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error in showPodium: " + e.getMessage());
+            loadPendingResultsLayout(view);
+        }
+    }
+
+    private void updateLastRaceUI(View view, WeeklyRace race, Track track) {
+        decrementLoadingCounter();
+        try {
+            UIUtils.singleSetTextViewText(race.getRaceName(), view.findViewById(R.id.last_race_name));
+            UIUtils.loadImageWithGlide(requireContext(), track.getTrack_minimal_layout_url(), view.findViewById(R.id.last_race_track_outline), () -> updateLastRaceUIFinalStep(race, view));
+        } catch (Exception e) {
+            Log.e(TAG, "Error updating last race UI: " + e.getMessage());
+            loadPendingResultsLayout(view);
+        }
+    }
+
+    private void updateLastRaceUIFinalStep(WeeklyRace race, View view) {
+        decrementLoadingCounter();
+        LocalDateTime dateTime = race.getDateTime();
+
+        UIUtils.multipleSetTextViewText(new String[]{String.valueOf(dateTime.getDayOfMonth()), requireContext().getString(R.string.round, race.getRound())}, new TextView[]{view.findViewById(R.id.last_race_date), view.findViewById(R.id.last_race_round)});
+
+        UIUtils.translateMonth(dateTime.getMonth().toString().substring(0, 3).toUpperCase(), view.findViewById(R.id.last_race_month), true);
+
+        MutableLiveData<Result> raceResultData = raceResultViewModel.getRaceResults(race.getRound());
+        raceResultData.observe(getViewLifecycleOwner(), result -> {
+            try {
+                if (result instanceof Result.Loading) {
+                    return;
+                }
+                if (result.isSuccess()) {
+                    List<RaceResult> raceResults = ((Result.RaceResultsSuccess) result).getData().getResults();
+                    setDriverNames(view, raceResults);
+                } else {
+                    throw new Exception("Failed to fetch race results: " + result.getError());
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error setting driver names: " + e.getMessage());
+            }
+        });
+
+        MaterialCardView resultCard = view.findViewById(R.id.past_event_result);
+        resultCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), EventActivity.class).putExtra("CIRCUIT_ID", race.getTrack().getTrackId())));
+    }
+
+    private void setDriverNames(View view, List<RaceResult> raceResults) {
+        decrementLoadingCounter();
+        try {
+            for (int i = 0; i < Math.min(3, raceResults.size()); i++) {
+                UIUtils.singleSetTextViewText(raceResults.get(i).getDriver().getFullName(), view.findViewById(Constants.LAST_RACE_DRIVER_NAME.get(i)));
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error setting driver names: " + e.getMessage());
+        }
+    }
+
+    private void loadPendingResultsLayout(View view) {
+        decrementLoadingCounter();
+        view.findViewById(R.id.pending_last_race_results).setVisibility(View.VISIBLE);
+        view.findViewById(R.id.last_race_results).setVisibility(View.GONE);
+    }
+
     private void updateSessionType(View view, Session nextEvent) {
         String sessionId = nextEvent.getClass().getSimpleName().equals("Practice") ? "Practice" + ((Practice) nextEvent).getNumber() : nextEvent.getClass().getSimpleName();
         TextView sessionTypeView = view.findViewById(R.id.next_session_type);
@@ -513,6 +522,15 @@ public class HomeFragment extends Fragment {
         }.start();
     }
 
+    private void showLastRaceNotFound(View view) {
+        decrementLoadingCounter();
+
+        view.findViewById(R.id.last_race_results).setVisibility(View.GONE);
+        view.findViewById(R.id.season_results).setVisibility(View.GONE);
+        view.findViewById(R.id.pending_last_race_results).setVisibility(View.GONE);
+        view.findViewById(R.id.last_race_not_found_layout).setVisibility(View.VISIBLE);
+    }
+    
     private void setSeasonEnded(View view) {
         decrementLoadingCounter();
 
@@ -521,6 +539,7 @@ public class HomeFragment extends Fragment {
         view.findViewById(R.id.season_ended).setVisibility(View.VISIBLE);
         view.findViewById(R.id.season_results).setVisibility(View.VISIBLE);
         view.findViewById(R.id.pending_last_race_results).setVisibility(View.GONE);
+        view.findViewById(R.id.last_race_not_found_layout).setVisibility(View.GONE);
 
         buildFinalDriversStanding(view.findViewById(R.id.season_results));
         buildFinalTeamsStanding(view.findViewById(R.id.season_results));

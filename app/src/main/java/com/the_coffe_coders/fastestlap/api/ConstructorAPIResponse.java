@@ -18,4 +18,8 @@ public class ConstructorAPIResponse extends APIResponse {
         super(xmlns, series, url, limit, offset, total);
         this.constructorTableDTO = constructorTableDTO;
     }
+
+    public ConstructorTableDTO getConstructorTable() {
+        return constructorTableDTO;
+    }
 }

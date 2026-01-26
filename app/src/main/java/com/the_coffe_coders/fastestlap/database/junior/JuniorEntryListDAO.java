@@ -5,7 +5,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
-import com.the_coffe_coders.fastestlap.domain.junior.JuniorEntryList;
+import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorEntryList;
 
 @Dao
 public interface JuniorEntryListDAO {

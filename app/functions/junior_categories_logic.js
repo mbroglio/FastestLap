@@ -214,7 +214,12 @@ async function scrapeEntryList($, db, seriesId) {
 
     $('table.wikitable').each((i, table) => {
         const headers = $(table).find('th').text().toLowerCase();
-        if (!headers.includes('team') || !headers.includes('driver') || !headers.includes('no.')) return;
+        //console.log("Entry List Table Headers:", headers);
+        
+        // Accept tables with either 'team' or 'entrant' column
+        const hasTeamColumn = headers.includes('team') || headers.includes('entrant');
+        //console.log(!hasTeamColumn || !headers.includes('driver') || !headers.includes('no.'));
+        if (!hasTeamColumn || !headers.includes('driver') || !headers.includes('no.')) return;
 
         $(table).find('tr').each((rowIndex, row) => {
             const $row = $(row);
@@ -260,26 +265,20 @@ async function scrapeEntryList($, db, seriesId) {
 
     // Grouping and Sorting
     const teamsMap = {};
-    const dbEntryListSnap = await db.ref(`${JUNIOR_ROOT_PATH}/${seriesId}/calendar`).once("value");
+    const dbEntryListSnap = await db.ref(`${JUNIOR_ROOT_PATH}/${seriesId}/entrylist`).once("value");
     const dbEntryListData = dbEntryListSnap.val() || {};
 
     rawList.forEach(entry => {
         const teamName = entry.team;
 
-        for (key in dbEntryListData) {
-            if (key === teamName) {
-                console.log("team already present");
-                teamsMap[teamName] = {
-                    team_logo: dbEntryListData.getValue(key).team_logo_url
-                };
-                return;
-            } else {
-                teamsMap[teamName] = {
-                    // Generate the logo URL based on the team name
-                    team_logo: {},
-                    drivers: []
-                };
-            }
+        // Initialize team if not already present
+        if (!teamsMap[teamName]) {
+            teamsMap[teamName] = {
+                team_logo: (dbEntryListData[teamName] && dbEntryListData[teamName].team_logo) 
+                    ? dbEntryListData[teamName].team_logo 
+                    : {},
+                drivers: []
+            };
         }
 
         teamsMap[teamName].drivers.push({
@@ -287,7 +286,7 @@ async function scrapeEntryList($, db, seriesId) {
             driver: entry.driver,
             rounds: entry.rounds
         });
-
+        
     });
 
     for (const teamName in teamsMap) {

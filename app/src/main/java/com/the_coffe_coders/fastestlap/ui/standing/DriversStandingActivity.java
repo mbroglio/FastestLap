@@ -53,6 +53,7 @@ public class DriversStandingActivity extends AppCompatActivity {
 
         driverId = getIntent().getStringExtra("DRIVER_ID");
         driverStandingLayout = findViewById(R.id.driver_standing_layout);
+        UIUtils.applyWindowInsets(driverStandingLayout);
 
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, driverStandingLayout, null);
 
@@ -61,19 +62,13 @@ public class DriversStandingActivity extends AppCompatActivity {
     }
 
     private void start() {
-        Log.i(TAG, "STARTING DRIVER STANDINGS ACTIVITY");
-
         loadingScreen.showLoadingScreen(false);
 
         initializeViewModels();
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-
         UIUtils.applyWindowInsets(toolbar);
-
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
-
-        UIUtils.applyWindowInsets(driverStandingLayout);
 
         driverStandingLayout.setOnRefreshListener(() -> {
             start();

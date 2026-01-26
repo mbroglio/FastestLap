@@ -30,7 +30,8 @@ const juniorLogic = require('../junior_categories_logic');
 // JSON Database path
 const DB_FILE = path.join(__dirname, 'db_test.json');
 
-const currentYear = new Date().getFullYear();
+//const currentYear = new Date().getFullYear();
+const currentYear = 2025;
 
 const URLS = {
     f2: `https://en.wikipedia.org/wiki/${currentYear}_Formula_2_Championship`,
@@ -215,7 +216,7 @@ const juniorFunctions = {
     },
 
     scrapeRaceResults: {
-        description: 'Scrape race results from Wikipedia page',
+        description: 'Scrape race results from Wikipedia page and update database',
         args: ['seriesId'],
         example: 'node test_individual_functions.js junior scrapeRaceResults f2',
         execute: async (db, seriesId = 'f2') => {
@@ -233,6 +234,28 @@ const juniorFunctions = {
             const result = juniorLogic.scrapeRaceResults($, calendar);
             console.log(`\nRace results found: ${result?.length || 0}`);
             console.log(JSON.stringify(result, null, 2));
+            
+            // Update database with scraped results
+            if (result && result.length > 0) {
+                const updates = {};
+                const basePath = `junior_categories/${seriesId}`;
+                
+                result.forEach(race => {
+                    const raceResultsEntry = {
+                        round: race.round,
+                        circuit: race.circuit,
+                        sprint: race.sprint_race,
+                        feature: race.feature_race,
+                        nationFlagUrl: race.nationFlagUrl
+                    };
+                    updates[`${basePath}/results/${race.round}`] = raceResultsEntry;
+                    console.log(`Updating DB for Round ${race.round}...`);
+                });
+                
+                await db.ref().update(updates);
+                console.log(`\n✓ Database updated with ${result.length} race results for ${seriesId}`);
+            }
+            
             return result;
         }
     },

@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -318,11 +319,16 @@ public class ConstructorBioActivity extends AppCompatActivity {
     private void createHistoryTable() {
         loadingScreen.updateProgress();
 
+        LinearLayout teamHistory = findViewById(R.id.team_history);
+
         TableLayout tableLayout = findViewById(R.id.history_table);
         tableLayout.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
 
-        if (constructor.getTeam_history() != null) {
+        if (constructor.getTeam_history() != null && !constructor.getTeam_history().isEmpty()) {
+            teamHistory.setVisibility(View.VISIBLE);
+            tableLayout.setVisibility(View.VISIBLE);
+
             View tableHeader = inflater.inflate(R.layout.constructor_bio_table_header, tableLayout, false);
             TableLayout.LayoutParams paramsHeader = (TableLayout.LayoutParams) tableHeader.getLayoutParams();
             paramsHeader.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
@@ -358,6 +364,10 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
                 tableLayout.addView(tableRow);
             }
+        }else{
+            Log.e(TAG, "Constructor history is null");
+            teamHistory.setVisibility(View.GONE);
+            tableLayout.setVisibility(View.GONE);
         }
 
         loadingScreen.hideLoadingScreen();

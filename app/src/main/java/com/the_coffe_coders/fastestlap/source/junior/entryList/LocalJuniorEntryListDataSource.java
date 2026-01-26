@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.database.junior.JuniorEntryListDAO;
-import com.the_coffe_coders.fastestlap.domain.junior.JuniorEntryList;
+import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorEntryList;
 import com.the_coffe_coders.fastestlap.repository.junior.entrylist.JuniorEntryListCallback;
 
 public class LocalJuniorEntryListDataSource implements JuniorEntryListDataSource{

@@ -135,6 +135,4 @@ public class JuniorCalendarRepository {
             fetchFromLocal(cacheKey, series);
         }
     }
-
-
 }

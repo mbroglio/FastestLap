@@ -12,10 +12,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.junior.JuniorEntryList;
-import com.the_coffe_coders.fastestlap.domain.junior.JuniorTeam;
+import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorEntryList;
+import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorTeam;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 

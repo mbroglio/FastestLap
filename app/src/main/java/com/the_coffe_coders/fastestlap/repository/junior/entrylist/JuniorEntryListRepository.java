@@ -7,7 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.junior.JuniorEntryList;
+import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorEntryList;
 import com.the_coffe_coders.fastestlap.source.junior.entryList.FirebaseJuniorEntryListDataSource;
 import com.the_coffe_coders.fastestlap.source.junior.entryList.LocalJuniorEntryListDataSource;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;

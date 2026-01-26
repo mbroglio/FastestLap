@@ -5,6 +5,7 @@ import android.util.Log;
 import androidx.lifecycle.MutableLiveData;
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.source.f1.standing.constructor.JolpicaConstructorStandingsDataSource;
 import com.the_coffe_coders.fastestlap.source.f1.standing.constructor.LocalConstructorStandingsDataSource;
@@ -12,6 +13,7 @@ import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -94,6 +96,19 @@ public class ConstructorStandingRepository {
                 }
 
                 @Override
+                public void onConstructorListLoaded(List<Constructor> constructorList) {
+                    if(constructorList != null){
+                        localConstructorStandingsDataSource.insertConstructorList(constructorList);
+                        lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
+                        Objects.requireNonNull(constructorStandingCache.get(cacheKey))
+                                .postValue(new Result.ConstructorsSuccess(constructorList));
+                    }else{
+                        Log.e(TAG, "Constructor list not found");
+                        fetchFromLocal(cacheKey);
+                    }
+                }
+
+                @Override
                 public void onError(Exception e) {
                     Log.e(TAG, "Error loading constructor standing: " + e.getMessage());
                     fetchFromLocal(cacheKey);
@@ -119,6 +134,21 @@ public class ConstructorStandingRepository {
                     Log.e(TAG, "Constructor standing not found in local database");
                     Objects.requireNonNull(constructorStandingCache.get(cacheKey))
                             .postValue(new Result.Error("Constructor standing not found"));
+                }
+            }
+
+            @Override
+            public void onConstructorListLoaded(List<Constructor> constructorList) {
+                if (constructorList != null) {
+                    constructorStandingCache.put(cacheKey, new MutableLiveData<>(
+                            new Result.ConstructorsSuccess(constructorList)));
+                    lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
+                    Objects.requireNonNull(constructorStandingCache.get(cacheKey))
+                            .postValue(new Result.ConstructorsSuccess(constructorList));
+                }else{
+                    Log.e(TAG, "Constructor list not found in local database");
+                    Objects.requireNonNull(constructorStandingCache.get(cacheKey))
+                            .postValue(new Result.Error("Constructor list not found"));
                 }
             }
 

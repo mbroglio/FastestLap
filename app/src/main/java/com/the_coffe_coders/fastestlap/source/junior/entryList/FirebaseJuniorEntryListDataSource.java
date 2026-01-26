@@ -12,9 +12,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.the_coffe_coders.fastestlap.domain.junior.JuniorDriver;
-import com.the_coffe_coders.fastestlap.domain.junior.JuniorEntryList;
-import com.the_coffe_coders.fastestlap.domain.junior.JuniorTeam;
+import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorEntryList;
+import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorTeam;
 import com.the_coffe_coders.fastestlap.repository.junior.entrylist.JuniorEntryListCallback;
 
 import java.util.ArrayList;
@@ -57,26 +56,6 @@ public class FirebaseJuniorEntryListDataSource implements JuniorEntryListDataSou
                             if(team != null){
                                 team.setName(child.getKey());
                             }
-
-
-
-
-                            /*
-                            List<JuniorDriver> drivers = new ArrayList<>();
-
-                            for (DataSnapshot driverSnapshot : child.getChildren()) {
-                                if (driverSnapshot.exists()) {
-
-
-                                    Log.i(TAG, "Driver: " + driverSnapshot.getKey());
-                                    JuniorDriver driver = driverSnapshot.getValue(JuniorDriver.class);
-                                    drivers.add(driver);
-                                }
-                            }
-
-                             */
-
-                            //team.setDrivers(drivers);
                             teams.add(team);
 
                         }

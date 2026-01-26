@@ -14,10 +14,13 @@ import java.util.List;
 public interface DriverStandingsDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(DriverStandings driverStandings);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(List<Driver> driverStandings);
+
     @Query("SELECT * FROM DriverStandings")
     DriverStandings get();
+
     @Query("SELECT * FROM Driver")
     List<Driver> getDrivers();
 }

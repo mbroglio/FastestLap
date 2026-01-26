@@ -5,6 +5,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
+import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
 
 import java.util.List;
@@ -25,4 +26,10 @@ public interface ConstructorStandingsDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     List<Long> insertConstructorStandingsList(List<ConstructorStandings> constructorStandingsList);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertConstructorList(List<Constructor> constructorList);
+
+    @Query("SELECT * FROM Constructor")
+    List<Constructor> getConstructors();
 }

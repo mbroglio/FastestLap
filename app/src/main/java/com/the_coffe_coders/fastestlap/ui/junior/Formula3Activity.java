@@ -57,8 +57,8 @@ public class Formula3Activity extends AppCompatActivity {
                 NavigationUtils.showCalendarDialog(getSupportFragmentManager(), categoryType)
         );
 
-        resultsCard.setOnClickListener(v -> {}
-                //NavigationUtils.navigateToJuniorResultsPage(this, categoryType)
+        resultsCard.setOnClickListener(v ->
+                NavigationUtils.navigateToJuniorResultsPage(this, categoryType)
         );
 
         driversStandingCard.setOnClickListener(v -> {}
