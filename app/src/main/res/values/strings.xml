@@ -204,5 +204,6 @@
     <string name="pod" translatable="false">pod</string>
     <string name="calendar">calendar</string>
     <string name="entry_list">entry list</string>
+    <string name="feature">feature</string>
 
 </resources>

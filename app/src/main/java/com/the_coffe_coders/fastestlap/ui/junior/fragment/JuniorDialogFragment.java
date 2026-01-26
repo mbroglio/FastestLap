@@ -24,23 +24,36 @@ import com.google.android.material.materialswitch.MaterialSwitch;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.junior.JuniorCalendarRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.adapter.junior.JuniorEntryListRecyclerAdapter;
+import com.the_coffe_coders.fastestlap.adapter.junior.JuniorResultsRecyclerAdapter;
+import com.the_coffe_coders.fastestlap.adapter.junior.JuniorStandingsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.junior.result.FeatureRace;
+import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorResult;
+import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorResultElement;
+import com.the_coffe_coders.fastestlap.domain.junior.result.SprintRace;
 import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorEntryList;
 import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendar;
 import com.the_coffe_coders.fastestlap.ui.junior.viewmodel.JuniorCategoryViewModel;
 import com.the_coffe_coders.fastestlap.ui.junior.viewmodel.JuniorCategoryViewModelFactory;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
+
+import java.util.Objects;
 
 public class JuniorDialogFragment extends DialogFragment {
     private static final String TAG = "JuniorDialogFragment";
 
     private int categoryType, content, raceType;
     private MaterialCardView dialogPage;
-    private LinearLayout raceInfoLayout, raceTypeChoiceLayout, titleLayout;
-    private TextView dialogTitle;
-    private MaterialSwitch switchButton;
+    private LinearLayout raceInfoLayout, titleLayout;
+    private TextView dialogTitle, raceTypeTitle, driverNamePole, driverNameFastestLap;
     private RelativeLayout fastestLapLayout, polePositionLayout;
     private JuniorCategoryViewModel juniorCategoryViewModel;
     private RecyclerView juniorRecyclerView;
+
+    String circuit;
+    FeatureRace featureRace;
+    SprintRace sprintRace;
+
 
     public JuniorDialogFragment() {
         // Required empty public constructor
@@ -53,6 +66,9 @@ public class JuniorDialogFragment extends DialogFragment {
             categoryType = getArguments().getInt("CATEGORY_TYPE"); //0: F2; 1:F3
             content = getArguments().getInt("CONTENT");
             raceType = getArguments().getInt("RACE_TYPE"); //0: sprint; 1: feature
+            circuit = getArguments().getString("CIRCUIT");
+            featureRace = getArguments().getParcelable("JUNIOR_FEATURE_RACE");
+            sprintRace = getArguments().getParcelable("JUNIOR_SPRINT_RACE");
         }
     }
 
@@ -65,15 +81,30 @@ public class JuniorDialogFragment extends DialogFragment {
 
         dialogPage = view.findViewById(R.id.dialog_page);
         raceInfoLayout = view.findViewById(R.id.race_info_layout);
-        raceTypeChoiceLayout = view.findViewById(R.id.race_choice_layout);
+        raceTypeTitle = view.findViewById(R.id.race_type_title);
         fastestLapLayout = view.findViewById(R.id.fastest_lap_layout);
         polePositionLayout = view.findViewById(R.id.pole_position_layout);
         juniorRecyclerView = view.findViewById(R.id.junior_recycler_view);
         dialogTitle = view.findViewById(R.id.dialog_title);
         titleLayout = view.findViewById(R.id.title_layout);
+        driverNameFastestLap = view.findViewById(R.id.driver_name_fastest_lap);
+        driverNamePole = view.findViewById(R.id.driver_name_pole);
 
         Button closeButton = view.findViewById(R.id.close_button);
         closeButton.setOnClickListener(v -> dismiss());
+
+        switch (categoryType) {
+            case 0: //F2
+                dialogPage.setStrokeColor(ContextCompat.getColor(requireContext(), R.color.formula_2));
+                dialogTitle.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.formula_2));
+                titleLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.formula_2));
+                break;
+            case 1: //F3
+                dialogPage.setStrokeColor(ContextCompat.getColor(requireContext(), R.color.ferrari_secondary));
+                dialogTitle.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.ferrari_secondary));
+                titleLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.ferrari_secondary));
+                break;
+        }
 
         executeFunctions();
 
@@ -99,6 +130,7 @@ public class JuniorDialogFragment extends DialogFragment {
                 executeConstructorsStanding();
                 break;
             case 4:
+                setDialogForResults();
                 executeFullResults();
                 break;
 
@@ -106,38 +138,44 @@ public class JuniorDialogFragment extends DialogFragment {
     }
 
     private void setDialogForCalendar() {
-        dialogTitle.setText(R.string.calendar);
+        UIUtils.singleSetTextViewText(ContextCompat.getString(requireContext(), R.string.calendar), dialogTitle);
         raceInfoLayout.setVisibility(View.GONE);
-        raceTypeChoiceLayout.setVisibility(View.GONE);
-        switch (categoryType) {
-            case 0: //F2
-                dialogPage.setStrokeColor(ContextCompat.getColor(requireContext(), R.color.formula_2));
-                dialogTitle.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.formula_2));
-                titleLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.formula_2));
-                break;
-            case 1: //F3
-                dialogPage.setStrokeColor(ContextCompat.getColor(requireContext(), R.color.ferrari_secondary));
-                dialogTitle.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.ferrari_secondary));
-                titleLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.ferrari_secondary));
-                break;
-        }
+        raceTypeTitle.setVisibility(View.GONE);
     }
 
     private void setDialogForEntryList() {
-        dialogTitle.setText(R.string.entry_list);
+        UIUtils.singleSetTextViewText(ContextCompat.getString(requireContext(), R.string.entry_list), dialogTitle);
         raceInfoLayout.setVisibility(View.GONE);
-        raceTypeChoiceLayout.setVisibility(View.GONE);
-        switch (categoryType) {
-            case 0: //F2
-                dialogPage.setStrokeColor(ContextCompat.getColor(requireContext(), R.color.formula_2));
-                dialogTitle.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.formula_2));
-                titleLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.formula_2));
-                break;
-            case 1: //F3
-                dialogPage.setStrokeColor(ContextCompat.getColor(requireContext(), R.color.ferrari_secondary));
-                dialogTitle.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.ferrari_secondary));
-                titleLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.ferrari_secondary));
-                break;
+        raceTypeTitle.setVisibility(View.GONE);
+    }
+
+    private void setDialogForResults() {
+        UIUtils.singleSetTextViewText(circuit, dialogTitle);
+        raceInfoLayout.setVisibility(View.VISIBLE);
+        fastestLapLayout.setVisibility(View.VISIBLE);
+
+        if(featureRace == null){
+            polePositionLayout.setVisibility(View.GONE);
+            UIUtils.multipleSetTextViewText(
+                    new String[]{
+                            ContextCompat.getString(requireContext(), R.string.sprint),
+                            sprintRace.getFastest_lap()
+                    },
+                    new TextView[]{
+                            raceTypeTitle,
+                            driverNameFastestLap});
+        }else{
+            polePositionLayout.setVisibility(View.VISIBLE);
+            UIUtils.multipleSetTextViewText(
+                    new String[]{
+                            ContextCompat.getString(requireContext(), R.string.feature),
+                            featureRace.getPole_position(),
+                            featureRace.getFastest_lap()
+                    },
+                    new TextView[]{
+                            raceTypeTitle,
+                            driverNamePole,
+                            driverNameFastestLap});
         }
     }
 
@@ -193,7 +231,16 @@ public class JuniorDialogFragment extends DialogFragment {
     }
 
     private void executeFullResults() {
-       //show full results
+       juniorRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        JuniorResultsRecyclerAdapter juniorResultsRecyclerAdapter;
+
+       if(featureRace != null) {
+            juniorResultsRecyclerAdapter = new JuniorResultsRecyclerAdapter(requireContext(), featureRace, getParentFragmentManager());
+       }else{
+            juniorResultsRecyclerAdapter = new JuniorResultsRecyclerAdapter(requireContext(), sprintRace, getParentFragmentManager());
+       }
+
+       juniorRecyclerView.setAdapter(juniorResultsRecyclerAdapter);
     }
 
     @Override
