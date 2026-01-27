@@ -264,9 +264,9 @@ public class DriverBioActivity extends AppCompatActivity {
 
         if (teamIdPresent) {
             int teamColor;
-            try{
+            try {
                 teamColor = Constants.TEAM_COLOR.get(teamId);
-            }catch(Exception e){
+            } catch (Exception e) {
                 teamColor = R.color.timer_gray;
             }
 
@@ -284,9 +284,9 @@ public class DriverBioActivity extends AppCompatActivity {
     private void setDriverData(Driver driver, Nation nation, Constructor team, boolean teamIdPresent, String teamId) {
         if (teamIdPresent) {
             int teamColor;
-            try{
+            try {
                 teamColor = Constants.TEAM_COLOR.get(teamId);
-            }catch(Exception e){
+            } catch (Exception e) {
                 teamColor = R.color.timer_gray;
             }
 
@@ -401,7 +401,7 @@ public class DriverBioActivity extends AppCompatActivity {
 
                 tableLayout.addView(tableRow);
             }
-        }else{
+        } else {
             Log.e(TAG, "Driver history is null");
             driverHistoryLayout.setVisibility(View.GONE);
             tableLayout.setVisibility(View.GONE);

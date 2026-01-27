@@ -9,8 +9,8 @@ import androidx.lifecycle.MutableLiveData;
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
-import com.the_coffe_coders.fastestlap.source.f1.weeklyrace.LocalWeeklyRaceDataSource;
 import com.the_coffe_coders.fastestlap.source.f1.weeklyrace.JolpicaWeeklyRaceDataSource;
+import com.the_coffe_coders.fastestlap.source.f1.weeklyrace.LocalWeeklyRaceDataSource;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 
 import java.util.HashMap;
@@ -20,8 +20,8 @@ import java.util.Objects;
 
 public class WeeklyRaceRepository {
     private static final String TAG = "WeeklyRaceRepository";
-    private static WeeklyRaceRepository instance;
     private static final long FRESH_TIMEOUT = 60000;
+    private static WeeklyRaceRepository instance;
     private final Map<String, MutableLiveData<Result>> raceCache;
     private final Map<String, Long> lastUpdateTimestamps;
     private final JolpicaWeeklyRaceDataSource weeklyRaceRemoteDataSource;
@@ -83,7 +83,7 @@ public class WeeklyRaceRepository {
     private void loadNextRace() {
         raceCache.get("next").postValue(new Result.Loading("Loading next race"));
 
-        if(networkUtils.isConnected()){
+        if (networkUtils.isConnected()) {
             try {
                 weeklyRaceRemoteDataSource.getNextRace(new SingleWeeklyRaceCallback() {
                     @Override
@@ -107,7 +107,7 @@ public class WeeklyRaceRepository {
                 Log.e(TAG, "Error fetching next race: " + e.getMessage());
                 loadNextRaceFromLocal();
             }
-        }else{
+        } else {
             Log.e(TAG, "Error loading next race: " + "No internet connection");
             loadNextRaceFromLocal();
         }
@@ -136,7 +136,7 @@ public class WeeklyRaceRepository {
     private void loadLastRace() {
         Objects.requireNonNull(raceCache.get("last")).postValue(new Result.Loading("Loading last race"));
 
-        if(networkUtils.isConnected()){
+        if (networkUtils.isConnected()) {
             weeklyRaceRemoteDataSource.getLastRace(new SingleWeeklyRaceCallback() {
                 @Override
                 public void onSuccess(WeeklyRace weeklyRace) {
@@ -154,7 +154,7 @@ public class WeeklyRaceRepository {
                     loadLastRaceFromLocal();
                 }
             });
-        }else{
+        } else {
             Log.e(TAG, "Error loading last race: " + "No internet connection");
             loadLastRaceFromLocal();
         }
@@ -183,7 +183,7 @@ public class WeeklyRaceRepository {
     private void loadWeeklyRaces() {
         Objects.requireNonNull(raceCache.get("all")).postValue(new Result.Loading("Loading weekly races"));
 
-        if(networkUtils.isConnected()){
+        if (networkUtils.isConnected()) {
             weeklyRaceRemoteDataSource.getWeeklyRaces(new WeeklyRacesCallback() {
                 @Override
                 public void onSuccess(List<WeeklyRace> weeklyRaces) {
@@ -202,7 +202,7 @@ public class WeeklyRaceRepository {
                     loadWeeklyRacesFromLocal();
                 }
             });
-        }else{
+        } else {
             Log.e(TAG, "Error loading weekly races: " + "No internet connection");
             loadWeeklyRacesFromLocal();
         }

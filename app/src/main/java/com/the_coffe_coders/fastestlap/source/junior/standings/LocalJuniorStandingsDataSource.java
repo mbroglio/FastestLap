@@ -30,9 +30,9 @@ public class LocalJuniorStandingsDataSource implements JuniorStandingsDataSource
         Log.d(TAG, "Fetching junior driver standings from local database");
         JuniorDriverStandings result = juniorStandingsDAO.getDriverStandingsBySeries(series);
 
-        if (result != null && result.getDriverStandings()!= null && !result.getDriverStandings().isEmpty()) {
+        if (result != null && result.getDriverStandings() != null && !result.getDriverStandings().isEmpty()) {
             callback.onDriverStandingsLoaded(result);
-        }else{
+        } else {
             callback.onError(new Exception("No junior driver standings found in local database"));
         }
     }
@@ -42,9 +42,9 @@ public class LocalJuniorStandingsDataSource implements JuniorStandingsDataSource
         Log.d(TAG, "Fetching junior constructor standings from local database");
         JuniorConstructorStandings result = juniorStandingsDAO.getConstructorStandingsBySeries(series);
 
-        if (result != null && result.getConstructorStandings()!= null && !result.getConstructorStandings().isEmpty()) {
+        if (result != null && result.getConstructorStandings() != null && !result.getConstructorStandings().isEmpty()) {
             callback.onConstructorStandingsLoaded(result);
-        }else{
+        } else {
             callback.onError(new Exception("No junior constructor standings found in local database"));
         }
 

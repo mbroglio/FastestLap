@@ -52,7 +52,7 @@ public class FeatureRace implements Parcelable {
         dest.writeTypedList(order);
     }
 
-    public List<JuniorSessionResultElement> getPodium(){
+    public List<JuniorSessionResultElement> getPodium() {
         return order.subList(0, 3);
     }
 }

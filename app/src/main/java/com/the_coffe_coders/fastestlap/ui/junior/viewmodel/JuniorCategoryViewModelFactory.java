@@ -20,7 +20,6 @@ public class JuniorCategoryViewModelFactory implements ViewModelProvider.Factory
     private final JuniorStandingsRepository juniorStandingsRepository;
 
 
-
     public JuniorCategoryViewModelFactory(Application application) {
         AppRoomDatabase appRoomDatabase = ServiceLocator.getInstance().getRoomDatabase(application);
         this.juniorCalendarRepository = JuniorCalendarRepository.getInstance(appRoomDatabase, application.getApplicationContext());

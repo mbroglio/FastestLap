@@ -50,14 +50,14 @@
 
             <TextView
                 android:id="@+id/drivers_standing_not_available"
+                style="@style/PageTitleUppercaseWhite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="DRIVERS STANDING NOT AVAILABLE"
-                style="@style/PageTitleUppercaseWhite"
-                android:gravity="center"
                 android:layout_gravity="center"
-                android:layout_marginEnd="@dimen/medium_margin"
                 android:layout_marginStart="@dimen/medium_margin"
+                android:layout_marginEnd="@dimen/medium_margin"
+                android:gravity="center"
+                android:text="DRIVERS STANDING NOT AVAILABLE"
                 android:visibility="gone">
 
             </TextView>

@@ -43,7 +43,7 @@ public class LocalDriverStandingsDataSource implements DriverStandingDataSource 
         List<Driver> drivers = driverStandingsDAO.getDrivers();
         if (drivers != null) {
             callback.onDriverListLoaded(drivers);
-        }else{
+        } else {
             callback.onError(new Exception("No drivers found in local database"));
         }
     }

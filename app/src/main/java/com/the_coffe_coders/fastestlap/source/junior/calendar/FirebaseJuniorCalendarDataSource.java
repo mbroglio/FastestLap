@@ -44,10 +44,10 @@ public class FirebaseJuniorCalendarDataSource implements JuniorCalendarDataSourc
     }
 
     /*
-    * ----------------------------------------------------------------------------------------------
-    * Recupero calendario in base alla categoria selezionata
-    * ----------------------------------------------------------------------------------------------
-    * */
+     * ----------------------------------------------------------------------------------------------
+     * Recupero calendario in base alla categoria selezionata
+     * ----------------------------------------------------------------------------------------------
+     * */
 
     //This logic considers the db already enriched with supplementary information (circuit name, nation_flag_url)
     @Override
@@ -58,29 +58,29 @@ public class FirebaseJuniorCalendarDataSource implements JuniorCalendarDataSourc
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()){
+                if (snapshot.exists()) {
                     JuniorCalendar calendar = new JuniorCalendar();
                     calendar.setSeries(series);
 
-                    List<JuniorCalendarElement> events= new ArrayList<>();
-                    for(DataSnapshot child : snapshot.getChildren()){
-                        if(child.exists()) {
+                    List<JuniorCalendarElement> events = new ArrayList<>();
+                    for (DataSnapshot child : snapshot.getChildren()) {
+                        if (child.exists()) {
                             JuniorCalendarElement event = child.getValue(JuniorCalendarElement.class);
-                            if(event != null){
+                            if (event != null) {
                                 events.add(event);
                             }
                         }
                     }
 
-                    if(events.isEmpty()){
+                    if (events.isEmpty()) {
                         Log.w(TAG, "No events found for series: " + series);
                         calendar.setEvents(null);
                         callback.onCalendarLoaded(calendar);
-                    }else{
+                    } else {
                         calendar.setEvents(events);
                         callback.onCalendarLoaded(calendar);
                     }
-                }else{
+                } else {
                     Log.w(TAG, "No events found for series: " + series);
                     callback.onCalendarLoaded(null);
                 }

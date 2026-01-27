@@ -33,7 +33,7 @@ public class JuniorConstructorStandingsElement implements Parcelable {
     private String points;
     private String position;
 
-    protected JuniorConstructorStandingsElement(Parcel in){
+    protected JuniorConstructorStandingsElement(Parcel in) {
         team = in.readString();
         points = in.readString();
         position = in.readString();

@@ -19,11 +19,11 @@
             android:id="@+id/top_app_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
+            android:background="@color/ferrari_secondary"
+            app:menu="@menu/top_app_bar_menu"
             app:title="@string/app_name_upper_case"
             app:titleCentered="true"
-            app:titleTextAppearance="@style/PageSuperTitleUpperCaseBlack"
-            android:background="@color/ferrari_secondary"
-            app:menu="@menu/top_app_bar_menu">
+            app:titleTextAppearance="@style/PageSuperTitleUpperCaseBlack">
 
         </com.google.android.material.appbar.MaterialToolbar>
 

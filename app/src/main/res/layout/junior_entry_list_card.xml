@@ -19,8 +19,8 @@
         android:orientation="vertical">
 
         <TextView
-            style="@style/LayoutTitle1Black"
             android:id="@+id/team_name"
+            style="@style/LayoutTitle1Black"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -52,8 +52,8 @@
                     tools:ignore="UselessParent">
 
                     <TextView
-                        style="@style/PageContentRegularBlack"
                         android:id="@+id/driver_1_name"
+                        style="@style/PageContentRegularBlack"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="start"
@@ -62,8 +62,8 @@
                         android:text="@string/not_found" />
 
                     <TextView
-                        style="@style/PageContentRegularBlack"
                         android:id="@+id/driver_2_name"
+                        style="@style/PageContentRegularBlack"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -73,8 +73,8 @@
                         android:text="@string/not_found" />
 
                     <TextView
-                        style="@style/PageContentRegularBlack"
                         android:id="@+id/driver_3_name"
+                        style="@style/PageContentRegularBlack"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -97,8 +97,8 @@
                     android:id="@+id/team_logo"
                     android:layout_width="match_parent"
                     android:layout_height="60dp"
-                    android:layout_margin="18dp"
                     android:layout_centerInParent="true"
+                    android:layout_margin="18dp"
                     android:importantForAccessibility="no"
                     android:scaleType="fitCenter" />
 

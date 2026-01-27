@@ -11,9 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorResult;
 import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorDriverStandings;

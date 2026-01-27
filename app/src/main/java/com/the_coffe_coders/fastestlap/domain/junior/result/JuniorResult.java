@@ -3,17 +3,16 @@ package com.the_coffe_coders.fastestlap.domain.junior.result;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import androidx.annotation.NonNull;
 
 import java.util.List;
 import java.util.Objects;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -25,7 +24,7 @@ import lombok.ToString;
 
 @Entity(tableName = "JuniorResult")
 public class JuniorResult implements Parcelable {
-    public static final Creator<JuniorResult> CREATOR = new Creator<>(){
+    public static final Creator<JuniorResult> CREATOR = new Creator<>() {
         @Override
         public JuniorResult createFromParcel(Parcel in) {
             return new JuniorResult(in);
@@ -42,7 +41,7 @@ public class JuniorResult implements Parcelable {
     private String series;
     private List<JuniorResultElement> results;
 
-    protected JuniorResult(Parcel in){
+    protected JuniorResult(Parcel in) {
         series = Objects.requireNonNull(in.readString());
         results = in.createTypedArrayList(JuniorResultElement.CREATOR);
     }

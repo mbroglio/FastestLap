@@ -59,13 +59,13 @@ public class JuniorResultRepository {
             } else {
                 fetchFromLocal(cacheKey, series);
             }
-        }else if(System.currentTimeMillis() - lastUpdateTimestamps.get(cacheKey) > 60000){
+        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(cacheKey) > 60000) {
             if (isNetworkAvailable()) {
                 loadJuniorResult(series);
             } else {
                 fetchFromLocal(cacheKey, series);
             }
-        }else{
+        } else {
             Log.i(TAG, "Junior result found in cache: " + cacheKey);
         }
         return juniorResultCache.get(cacheKey);
@@ -82,7 +82,7 @@ public class JuniorResultRepository {
                     lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                     Objects.requireNonNull(juniorResultCache.get(cacheKey))
                             .postValue(new Result.JuniorResultSuccess(result));
-                }else{
+                } else {
                     Log.e(TAG, "Junior result not found in local database");
                 }
             }
@@ -101,7 +101,7 @@ public class JuniorResultRepository {
         Log.i(TAG, "Loading junior result from remote: " + cacheKey);
         Objects.requireNonNull(juniorResultCache.get(cacheKey)).postValue(new Result.Loading("Fetching junior result from remote"));
 
-        try{
+        try {
             firebaseJuniorResultDataSource.getJuniorResults(series, new JuniorResultCallback() {
                 @Override
                 public void onResultLoaded(JuniorResult result) {
@@ -111,7 +111,7 @@ public class JuniorResultRepository {
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                         Objects.requireNonNull(juniorResultCache.get(cacheKey))
                                 .postValue(new Result.JuniorResultSuccess(result));
-                    }else{
+                    } else {
                         Log.e(TAG, "Junior result not found");
                         fetchFromLocal(cacheKey, series);
                     }
@@ -125,7 +125,7 @@ public class JuniorResultRepository {
                             .postValue(new Result.Error("Junior result not available yet"));
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "Error loading junior result: " + e.getMessage());
             fetchFromLocal(cacheKey, series);
         }

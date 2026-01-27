@@ -34,7 +34,7 @@ public class JuniorDriverStandingsElement implements Parcelable {
     private String team;
 
 
-    protected JuniorDriverStandingsElement(Parcel in){
+    protected JuniorDriverStandingsElement(Parcel in) {
         driver = in.readString();
         points = in.readString();
         position = in.readString();

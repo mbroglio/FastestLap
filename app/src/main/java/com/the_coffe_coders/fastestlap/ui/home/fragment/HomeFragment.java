@@ -26,15 +26,15 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Practice;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Session;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandingsElement;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Practice;
-import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResult;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
@@ -345,7 +345,8 @@ public class HomeFragment extends Fragment {
     private void processNextRace(View view, WeeklyRace nextRace) {
         try {
             if (nextRace == null) throw new Exception("Next race is null");
-            if(!nextRace.getSeason().equals(ServiceLocator.currentYear)) throw new Exception("Season mismatch");
+            if (!nextRace.getSeason().equals(ServiceLocator.currentYear))
+                throw new Exception("Season mismatch");
             MutableLiveData<Result> trackData = trackViewModel.getTrack(nextRace.getTrack().getTrackId());
             trackData.observe(getViewLifecycleOwner(), trackResult -> {
                 try {
@@ -373,8 +374,8 @@ public class HomeFragment extends Fragment {
             if (networkLiveData.isConnected()) {
                 Log.e(TAG, "Error in processNextRace: " + e.getMessage());
                 setSeasonEnded(view);
-            }else{
-                if(Objects.equals(e.getMessage(), "Season mismatch")) setSeasonEnded(view);
+            } else {
+                if (Objects.equals(e.getMessage(), "Season mismatch")) setSeasonEnded(view);
                 Log.e(TAG, "Error in processNextRace: No internet connection");
                 setUpdating(view);
             }
@@ -467,7 +468,7 @@ public class HomeFragment extends Fragment {
                     WeeklyRace raceResult = ((Result.NextRaceSuccess) result).getData();
                     Log.i(TAG, "Last Race: " + raceResult);
 
-                    if(raceResult.getRound().equals(nextRaceRound)){
+                    if (raceResult.getRound().equals(nextRaceRound)) {
                         showLastRaceNotFound(view);
                     }
 

@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
+
 @Dao
 public interface SprintDAO {
 

@@ -2,7 +2,9 @@ package com.the_coffe_coders.fastestlap.repository.f1.standing.constructor;
 
 import android.content.Context;
 import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
+
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
@@ -60,13 +62,13 @@ public class ConstructorStandingRepository {
                 !lastUpdateTimestamps.containsKey(cacheKey) ||
                 lastUpdateTimestamps.get(cacheKey) == null) {
             constructorStandingCache.put(cacheKey, new MutableLiveData<>());
-            if(isNetworkAvailable()){
+            if (isNetworkAvailable()) {
                 loadConstructorStanding();
-            }else{
+            } else {
                 fetchFromLocal(cacheKey);
             }
         } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(cacheKey) > 60000) {
-            if(isNetworkAvailable())
+            if (isNetworkAvailable())
                 loadConstructorStanding();
             else {
                 fetchFromLocal(cacheKey);
@@ -97,12 +99,12 @@ public class ConstructorStandingRepository {
 
                 @Override
                 public void onConstructorListLoaded(List<Constructor> constructorList) {
-                    if(constructorList != null){
+                    if (constructorList != null) {
                         localConstructorStandingsDataSource.insertConstructorList(constructorList);
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                         Objects.requireNonNull(constructorStandingCache.get(cacheKey))
                                 .postValue(new Result.ConstructorsSuccess(constructorList));
-                    }else{
+                    } else {
                         Log.e(TAG, "Constructor list not found");
                         fetchFromLocal(cacheKey);
                     }
@@ -145,7 +147,7 @@ public class ConstructorStandingRepository {
                     lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                     Objects.requireNonNull(constructorStandingCache.get(cacheKey))
                             .postValue(new Result.ConstructorsSuccess(constructorList));
-                }else{
+                } else {
                     Log.e(TAG, "Constructor list not found in local database");
                     Objects.requireNonNull(constructorStandingCache.get(cacheKey))
                             .postValue(new Result.Error("Constructor list not found"));

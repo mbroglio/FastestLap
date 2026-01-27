@@ -2,16 +2,16 @@ package com.the_coffe_coders.fastestlap.domain;
 
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandings;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendar;
 import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorResult;
 import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorDriverStandings;
 import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorEntryList;
-import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendar;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 
@@ -230,7 +230,7 @@ public abstract class Result {
     public static class JuniorConstructorStandingsSuccess extends Result {
         private final JuniorConstructorStandings constructorStandings;
 
-        public JuniorConstructorStandingsSuccess(JuniorConstructorStandings constructorStandings){
+        public JuniorConstructorStandingsSuccess(JuniorConstructorStandings constructorStandings) {
             this.constructorStandings = constructorStandings;
         }
 

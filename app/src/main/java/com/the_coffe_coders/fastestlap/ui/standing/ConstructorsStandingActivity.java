@@ -102,7 +102,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
             if (result.isSuccess()) {
                 Log.i(TAG, "CONSTRUCTORS STANDINGS SUCCESS");
                 ConstructorStandings constructorStandings;
-                try{
+                try {
                     constructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
 
                     List<ConstructorStandingsElement> constructorList = constructorStandings.getConstructorStandings();
@@ -116,7 +116,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                         constructorsStandingAdapter.onBindViewHolder(
                                 constructorsStandingAdapter.createViewHolder(constructorsStandingRecyclerView, constructorsStandingAdapter.getItemViewType(i)), i);
                     }
-                }catch(ClassCastException e){
+                } catch (ClassCastException e) {
                     setupPageForConstructorList();
                 }
             } else {
@@ -146,22 +146,21 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                 constructorsStandingAdapter = new ConstructorStandingsRecyclerAdapter(this, constructorId, null, constructorList, driverViewModel, constructorViewModel, this, loadingScreen);
                 constructorsStandingRecyclerView.setAdapter(constructorsStandingAdapter);
 
-                for (int i = 0; i < constructorsStandingAdapter.getItemCount(); i++){
+                for (int i = 0; i < constructorsStandingAdapter.getItemCount(); i++) {
                     constructorsStandingAdapter.onBindViewHolder(
                             constructorsStandingAdapter.createViewHolder(constructorsStandingRecyclerView, constructorsStandingAdapter.getItemViewType(i)), i);
                 }
 
-            }else{
+            } else {
                 Log.i(TAG, "CONSTRUCTORS LIST ERROR");
                 show(constructorsStandingRecyclerView, standingsNotAvailableTextView);
             }
         });
 
 
-
     }
 
-    private void show(View goneView, View visibleView){
+    private void show(View goneView, View visibleView) {
         goneView.setVisibility(View.GONE);
         visibleView.setVisibility(View.VISIBLE);
     }

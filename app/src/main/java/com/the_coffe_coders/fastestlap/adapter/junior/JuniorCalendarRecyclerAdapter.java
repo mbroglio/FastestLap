@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendar;
 import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendarElement;
@@ -17,7 +18,8 @@ import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 public class JuniorCalendarRecyclerAdapter extends RecyclerView.Adapter<JuniorCalendarRecyclerAdapter.JuniorCalendarViewHolder> {
 
-    private final Context context;;
+    private final Context context;
+    ;
     private final JuniorCalendar calendar;
 
     public JuniorCalendarRecyclerAdapter(Context context, JuniorCalendar calendar) {
@@ -40,15 +42,15 @@ public class JuniorCalendarRecyclerAdapter extends RecyclerView.Adapter<JuniorCa
         holder.eventName.setText(element.getCircuit());
 
         UIUtils.loadImageWithGlide(context, element.getNation_flag_url(), holder.nationFlag,
-                () ->setDates(holder, element));
+                () -> setDates(holder, element));
     }
 
     private void setDates(JuniorCalendarViewHolder holder, JuniorCalendarElement element) {
         String sprintDay = element.getSprint_date().split(" ")[0];
-        String sprintMonth = element.getSprint_date().split(" ")[1].substring(0,3);
+        String sprintMonth = element.getSprint_date().split(" ")[1].substring(0, 3);
 
         String featureDay = element.getFeature_date().split(" ")[0];
-        String featureMonth = element.getFeature_date().split(" ")[1].substring(0,3);
+        String featureMonth = element.getFeature_date().split(" ")[1].substring(0, 3);
 
         holder.sprintDateDay.setText(sprintDay);
         holder.sprintDateMonth.setText(sprintMonth);

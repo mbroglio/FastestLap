@@ -53,6 +53,6 @@ public class DriverStandingsMapper {
         }
 
         return drivers;
-        }
+    }
 
 }

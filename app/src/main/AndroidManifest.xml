@@ -25,11 +25,11 @@
         <activity
             android:name=".ui.junior.Formula3Activity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.junior.JuniorResultsActivity"
             android:exported="false"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
         <activity
             android:name=".ui.junior.Formula2Activity"
             android:exported="false"

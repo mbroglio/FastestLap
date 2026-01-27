@@ -13,7 +13,6 @@ import com.the_coffe_coders.fastestlap.source.user.UserAuthenticationFirebaseDat
 import com.the_coffe_coders.fastestlap.source.user.UserFirebaseDataSource;
 
 import java.util.Calendar;
-import java.util.Date;
 
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;

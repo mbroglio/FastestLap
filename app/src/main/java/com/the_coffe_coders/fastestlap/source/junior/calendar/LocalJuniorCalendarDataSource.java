@@ -30,7 +30,7 @@ public class LocalJuniorCalendarDataSource implements JuniorCalendarDataSource {
 
         if (calendar != null && calendar.getEvents() != null && !calendar.getEvents().isEmpty()) {
             callback.onCalendarLoaded(calendar);
-        }else {
+        } else {
             callback.onError(new Exception("No junior calendar found in local database"));
         }
     }

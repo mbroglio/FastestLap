@@ -21,6 +21,7 @@ public class JuniorSessionResultElement implements Parcelable {
         public JuniorSessionResultElement createFromParcel(Parcel in) {
             return new JuniorSessionResultElement(in);
         }
+
         @Override
         public JuniorSessionResultElement[] newArray(int size) {
             return new JuniorSessionResultElement[size];

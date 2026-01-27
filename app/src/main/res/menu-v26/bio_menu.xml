@@ -8,6 +8,6 @@
         android:iconTint="@color/black"
         android:title="Favorite"
         app:showAsAction="always">
-        
+
     </item>
 </menu>

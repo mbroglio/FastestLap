@@ -97,7 +97,7 @@ public class DriversStandingActivity extends AppCompatActivity {
             if (result.isSuccess()) {
                 Log.i(TAG, "DRIVER STANDINGS SUCCESS");
                 DriverStandings driverStandings;
-                try{
+                try {
                     driverStandings = ((Result.DriverStandingsSuccess) result).getData();
 
                     Log.i(TAG, driverStandings.toString());
@@ -114,7 +114,7 @@ public class DriversStandingActivity extends AppCompatActivity {
                         driversStandingAdapter.onBindViewHolder(
                                 driversStandingAdapter.createViewHolder(driversStandingRecyclerView, driversStandingAdapter.getItemViewType(i)), i);
                     }
-                }catch (ClassCastException e){
+                } catch (ClassCastException e) {
                     setupPageForDriverList();
                 }
             } else {
@@ -144,18 +144,18 @@ public class DriversStandingActivity extends AppCompatActivity {
                 driversStandingAdapter = new DriversStandingRecyclerAdapter(this, null, driverList, driverId, driverViewModel, constructorViewModel, this, loadingScreen);
                 driversStandingRecyclerView.setAdapter(driversStandingAdapter);
 
-                for (int i = 0; i < driversStandingAdapter.getItemCount(); i++){
+                for (int i = 0; i < driversStandingAdapter.getItemCount(); i++) {
                     driversStandingAdapter.onBindViewHolder(
                             driversStandingAdapter.createViewHolder(driversStandingRecyclerView, driversStandingAdapter.getItemViewType(i)), i);
                 }
-            }else{
+            } else {
                 Log.i(TAG, "DRIVER LIST ERROR");
                 show(driversStandingRecyclerView, standingsNotAvailableTextView);
             }
         });
     }
 
-    private void show(View goneView, View visibleView){
+    private void show(View goneView, View visibleView) {
         goneView.setVisibility(View.GONE);
         visibleView.setVisibility(View.VISIBLE);
     }

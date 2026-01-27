@@ -6,7 +6,6 @@ import android.widget.ScrollView;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
@@ -68,7 +67,6 @@ public class Formula2Activity extends AppCompatActivity {
         constructorsStandingCard.setOnClickListener(v ->
                 NavigationUtils.showConstructorsStandingDialog(getSupportFragmentManager(), categoryType)
         );
-
 
 
     }

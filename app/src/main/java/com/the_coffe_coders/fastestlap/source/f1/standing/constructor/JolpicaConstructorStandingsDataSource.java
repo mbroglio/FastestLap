@@ -73,15 +73,15 @@ public class JolpicaConstructorStandingsDataSource implements ConstructorStandin
                         ConstructorStandingsAPIResponse constructorStandingsAPIResponse = jsonParserUtils.parseConstructorStandings(mrdata);
 
                         Log.d(TAG, "Successfully parsed constructor standings: " + constructorStandingsAPIResponse);
-                        if(constructorStandingsAPIResponse.getStandingsTable().getConstructorStandingsDTOS() == null ||
+                        if (constructorStandingsAPIResponse.getStandingsTable().getConstructorStandingsDTOS() == null ||
                                 constructorStandingsAPIResponse.getStandingsTable().getConstructorStandingsDTOS().isEmpty() ||
-                                constructorStandingsAPIResponse.getStandingsTable().getConstructorStandingsDTOS().get(0) == null){
+                                constructorStandingsAPIResponse.getStandingsTable().getConstructorStandingsDTOS().get(0) == null) {
                             constructorCallback.onError(new Exception("No constructor standings found"));
-                            if(constructorStandingsAPIResponse.getStandingsTable().getSeason().equals(currentYear)){
+                            if (constructorStandingsAPIResponse.getStandingsTable().getSeason().equals(currentYear)) {
                                 Log.i(TAG, "Fetching constructor list");
                                 getConstructorList(constructorCallback);
                             }
-                        }else{
+                        } else {
                             constructorCallback.onConstructorLoaded(
                                     ConstructorStandingsMapper.toConstructorStandings(
                                             constructorStandingsAPIResponse.getStandingsTable().getConstructorStandingsDTOS().get(0)));
@@ -136,22 +136,22 @@ public class JolpicaConstructorStandingsDataSource implements ConstructorStandin
                         ConstructorAPIResponse constructorAPIResponse = jsonParserUtils.parseConstructor(mrdata);
 
                         Log.d(TAG, "Successfully parsed constructor list: " + constructorAPIResponse);
-                        if(constructorAPIResponse.getConstructorTable().getConstructorDTOList().isEmpty()){
+                        if (constructorAPIResponse.getConstructorTable().getConstructorDTOList().isEmpty()) {
                             constructorCallback.onError(new Exception("No constructor standings found"));
                             return;
                         }
                         constructorCallback.onConstructorListLoaded(
                                 ConstructorStandingsMapper.toConstructorList(
-                                            constructorAPIResponse.getConstructorTable()));
-                    }catch (IOException e){
+                                        constructorAPIResponse.getConstructorTable()));
+                    } catch (IOException e) {
                         Log.e(TAG, "IOException while reading response", e);
                         constructorCallback.onError(new Exception("Error reading response: " + e.getMessage()));
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         Log.e(TAG, "Exception while processing response", e);
                         constructorCallback.onError(new Exception("Error processing response: " + e.getMessage()));
                     }
 
-                }else{
+                } else {
                     constructorCallback.onError(new Exception("Response unsuccessful"));
                 }
             }
@@ -159,7 +159,7 @@ public class JolpicaConstructorStandingsDataSource implements ConstructorStandin
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                 Log.e(TAG, "failed to fetch constructor list", t);
-                if(constructorCallback != null) {
+                if (constructorCallback != null) {
                     constructorCallback.onError(new Exception(RETROFIT_ERROR));
                 }
             }

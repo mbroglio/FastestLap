@@ -65,12 +65,12 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
 
     @Override
     public void onBindViewHolder(@NonNull ConstructorViewHolder holder, int position) {
-        constructorStandingsElement = new  ConstructorStandingsElement();
-        if(constructorStandingsList == null){
+        constructorStandingsElement = new ConstructorStandingsElement();
+        if (constructorStandingsList == null) {
             constructorStandingsElement.setConstructor(constructorList.get(position));
             constructorStandingsElement.setPoints("0");
             constructorStandingsElement.setPosition(String.valueOf(position + 1));
-        }else{
+        } else {
             constructorStandingsElement = constructorStandingsList.get(position);
         }
 
@@ -89,7 +89,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                     try {
                         holder.constructorCardInnerLayout.setBackground(AppCompatResources.getDrawable(context,
                                 Objects.requireNonNull(Constants.TEAM_GRADIENT_COLOR.get(currentConstructorId))));
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         holder.constructorCardInnerLayout.setBackground(AppCompatResources.getDrawable(context, R.color.timer_gray));
                     }
 
@@ -127,7 +127,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                     showConstructorNotFound(holder, currentConstructorId);
                 }
             });
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {
             Log.e("ConstructorsStandingAdapter", "constructor error: " + e.getMessage());
             showConstructorNotFound(holder, currentConstructorId);
         }
@@ -136,9 +136,9 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
 
     private void goToBioPage(int position) {
         String constructorIdToShow;
-        if(constructorStandingsList == null){
+        if (constructorStandingsList == null) {
             constructorIdToShow = constructorList.get(position).getConstructorId();
-        }else{
+        } else {
             constructorIdToShow = constructorStandingsList.get(position).getConstructor().getConstructorId();
         }
         //
@@ -236,7 +236,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
 
     @Override
     public int getItemCount() {
-        if(constructorList != null)
+        if (constructorList != null)
             return constructorList.size();
         else if (constructorStandingsList != null)
             return constructorStandingsList.size();

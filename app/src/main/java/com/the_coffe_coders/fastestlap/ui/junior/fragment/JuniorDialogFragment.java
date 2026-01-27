@@ -1,14 +1,6 @@
 package com.the_coffe_coders.fastestlap.ui.junior.fragment;
 
 import android.os.Bundle;
-
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,31 +12,35 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.card.MaterialCardView;
-import com.google.android.material.materialswitch.MaterialSwitch;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.junior.JuniorCalendarRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.adapter.junior.JuniorEntryListRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.adapter.junior.JuniorResultsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.adapter.junior.JuniorStandingsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendar;
 import com.the_coffe_coders.fastestlap.domain.junior.result.FeatureRace;
-import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorResult;
-import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorResultElement;
 import com.the_coffe_coders.fastestlap.domain.junior.result.SprintRace;
 import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorDriverStandings;
 import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorEntryList;
-import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendar;
 import com.the_coffe_coders.fastestlap.ui.junior.viewmodel.JuniorCategoryViewModel;
 import com.the_coffe_coders.fastestlap.ui.junior.viewmodel.JuniorCategoryViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
-import java.util.Objects;
-
 public class JuniorDialogFragment extends DialogFragment {
     private static final String TAG = "JuniorDialogFragment";
-
+    String circuit;
+    FeatureRace featureRace;
+    SprintRace sprintRace;
     private int categoryType, content, raceType;
     private MaterialCardView dialogPage;
     private LinearLayout raceInfoLayout, titleLayout;
@@ -52,10 +48,6 @@ public class JuniorDialogFragment extends DialogFragment {
     private RelativeLayout fastestLapLayout, polePositionLayout;
     private JuniorCategoryViewModel juniorCategoryViewModel;
     private RecyclerView juniorRecyclerView;
-
-    String circuit;
-    FeatureRace featureRace;
-    SprintRace sprintRace;
 
 
     public JuniorDialogFragment() {
@@ -213,11 +205,11 @@ public class JuniorDialogFragment extends DialogFragment {
                     Log.i(TAG, "ENTRY LIST NULL");
                     dismiss();
                 } else {
-                    if(entryList.getTeams().isEmpty()){
+                    if (entryList.getTeams().isEmpty()) {
                         Log.i(TAG, "ENTRY LIST EMPTY");
                         Toast.makeText(requireContext(), ContextCompat.getString(requireContext(), R.string.content_not_available), Toast.LENGTH_SHORT).show();
                         dismiss();
-                    }else{
+                    } else {
                         juniorRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
                         JuniorEntryListRecyclerAdapter juniorEntryListRecyclerAdapter = new JuniorEntryListRecyclerAdapter(requireContext(), entryList, categoryType);
                         juniorRecyclerView.setAdapter(juniorEntryListRecyclerAdapter);

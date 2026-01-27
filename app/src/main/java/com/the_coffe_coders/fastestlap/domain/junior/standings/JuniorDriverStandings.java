@@ -42,7 +42,7 @@ public class JuniorDriverStandings implements Parcelable {
     public String series;
     private List<JuniorDriverStandingsElement> driverStandings;
 
-    protected JuniorDriverStandings(Parcel in){
+    protected JuniorDriverStandings(Parcel in) {
         series = Objects.requireNonNull(in.readString());
         driverStandings = in.createTypedArrayList(JuniorDriverStandingsElement.CREATOR);
     }

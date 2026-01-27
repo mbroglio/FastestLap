@@ -34,7 +34,7 @@ public class JuniorResultElement implements Parcelable {
     private String circuit;
     private String nationFlagUrl;
 
-    protected JuniorResultElement(Parcel in){
+    protected JuniorResultElement(Parcel in) {
         round = in.readInt();
         feature = in.readParcelable(FeatureRace.class.getClassLoader());
         sprint = in.readParcelable(SprintRace.class.getClassLoader());

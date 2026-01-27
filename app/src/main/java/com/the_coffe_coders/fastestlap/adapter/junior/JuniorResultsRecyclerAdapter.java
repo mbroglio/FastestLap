@@ -1,7 +1,6 @@
 package com.the_coffe_coders.fastestlap.adapter.junior;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -154,7 +153,7 @@ public class JuniorResultsRecyclerAdapter extends RecyclerView.Adapter<JuniorRes
                             holder.thirdDriverFeature});
 
             holder.featureRaceLayout.setOnClickListener(v -> NavigationUtils.showFullResultsDialogFeature(
-                   element.getCircuit(), element.getFeature(), fragmentManager, categoryType, 0));
+                    element.getCircuit(), element.getFeature(), fragmentManager, categoryType, 0));
         } else {
             showFeatureCancelled(holder);
             holder.featureRaceLayout.setOnClickListener(null);
@@ -235,7 +234,7 @@ public class JuniorResultsRecyclerAdapter extends RecyclerView.Adapter<JuniorRes
         public JuniorResultsViewHolder(@NonNull View itemView, int contentType) {
             super(itemView);
 
-            if(contentType == 0){
+            if (contentType == 0) {
                 //junior_event_result_card
                 roundNumber = itemView.findViewById(R.id.round_number);
                 gpName = itemView.findViewById(R.id.gp_name);
@@ -254,7 +253,7 @@ public class JuniorResultsRecyclerAdapter extends RecyclerView.Adapter<JuniorRes
                 eventNationFlag = itemView.findViewById(R.id.event_nation_flag);
                 position = null;
                 driverName = null;
-            }else{
+            } else {
                 roundNumber = null;
                 gpName = null;
                 sprintResultsLayout = null;

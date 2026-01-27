@@ -42,46 +42,46 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="horizontal"
                 android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginEnd="@dimen/medium_margin">
+                android:layout_marginEnd="@dimen/medium_margin"
+                android:orientation="horizontal">
 
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/f2_calendar_card"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:layout_weight="1"
                     android:layout_centerInParent="true"
-                    app:cardBackgroundColor="@color/timer_gray"
-                    app:strokeColor="@color/timer_gray"
-                    app:cardCornerRadius="25sp"
                     android:layout_marginTop="@dimen/medium_margin"
+                    android:layout_marginEnd="@dimen/medium_margin"
                     android:layout_marginBottom="@dimen/medium_margin"
-                    android:layout_marginEnd="@dimen/medium_margin">
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="@color/timer_gray"
+                    app:cardCornerRadius="25sp"
+                    app:strokeColor="@color/timer_gray">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal"
                         android:layout_gravity="center"
                         android:layout_marginStart="@dimen/medium_margin"
-                        android:layout_marginEnd="@dimen/medium_margin">
+                        android:layout_marginEnd="@dimen/medium_margin"
+                        android:orientation="horizontal">
 
                         <TextView
+                            style="@style/LayoutSubtitleUppercaseBlack"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Calendar"
-                            style="@style/LayoutSubtitleUppercaseBlack"
+                            android:layout_gravity="center"
                             android:layout_marginEnd="@dimen/medium_margin"
-                            android:layout_gravity="center">
+                            android:text="Calendar">
 
                         </TextView>
 
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/calendar_icon"
-                            android:layout_gravity="center">
+                            android:layout_gravity="center"
+                            android:src="@drawable/calendar_icon">
 
                         </ImageView>
 
@@ -93,38 +93,38 @@
                     android:id="@+id/f2_entry_list_card"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:layout_weight="1"
                     android:layout_centerInParent="true"
-                    app:cardBackgroundColor="@color/timer_gray"
-                    app:strokeColor="@color/timer_gray"
-                    app:cardCornerRadius="25sp"
                     android:layout_marginStart="@dimen/medium_margin"
                     android:layout_marginTop="@dimen/medium_margin"
-                    android:layout_marginBottom="@dimen/medium_margin">
+                    android:layout_marginBottom="@dimen/medium_margin"
+                    android:layout_weight="1"
+                    app:cardBackgroundColor="@color/timer_gray"
+                    app:cardCornerRadius="25sp"
+                    app:strokeColor="@color/timer_gray">
 
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:orientation="horizontal"
                         android:layout_gravity="center"
                         android:layout_marginStart="@dimen/medium_margin"
-                        android:layout_marginEnd="@dimen/medium_margin">
+                        android:layout_marginEnd="@dimen/medium_margin"
+                        android:orientation="horizontal">
 
                         <TextView
+                            style="@style/LayoutSubtitleUppercaseBlack"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Entry List"
-                            style="@style/LayoutSubtitleUppercaseBlack"
+                            android:layout_gravity="center"
                             android:layout_marginEnd="@dimen/medium_margin"
-                            android:layout_gravity="center">
+                            android:text="Entry List">
 
                         </TextView>
 
                         <ImageView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:src="@drawable/list_icon"
-                            android:layout_gravity="center">
+                            android:layout_gravity="center"
+                            android:src="@drawable/list_icon">
 
                         </ImageView>
 
@@ -142,9 +142,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
                     android:layout_marginStart="@dimen/medium_margin"
-                    android:layout_marginEnd="@dimen/medium_margin">
+                    android:layout_marginEnd="@dimen/medium_margin"
+                    android:orientation="vertical">
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/f2_results_card"
@@ -155,9 +155,9 @@
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:alpha="0.6"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/formula_2_result_image"
-                            android:alpha="0.6"/>
+                            android:src="@drawable/formula_2_result_image" />
 
                         <View
                             android:layout_width="match_parent"
@@ -177,15 +177,15 @@
                         style="@style/F2MenuCard"
                         android:layout_width="match_parent"
                         android:layout_height="120dp"
-                        android:layout_marginTop="16dp" >
+                        android:layout_marginTop="16dp">
 
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:alpha="0.6"
                             android:scaleType="centerCrop"
                             android:scrollY="-5sp"
-                            android:src="@drawable/entry_list_formula_2_image"
-                            android:alpha="0.6" />
+                            android:src="@drawable/entry_list_formula_2_image" />
 
                         <View
                             android:layout_width="match_parent"
@@ -205,14 +205,14 @@
                         style="@style/F2MenuCard"
                         android:layout_width="match_parent"
                         android:layout_height="120dp"
-                        android:layout_marginTop="16dp" >
+                        android:layout_marginTop="16dp">
 
                         <ImageView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:alpha="0.6"
                             android:scaleType="centerCrop"
-                            android:src="@drawable/formula_2_overtake_image"
-                            android:alpha="0.6" />
+                            android:src="@drawable/formula_2_overtake_image" />
 
                         <View
                             android:layout_width="match_parent"

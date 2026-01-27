@@ -174,9 +174,9 @@ public class ConstructorBioActivity extends AppCompatActivity {
                     UIUtils.singleSetTextViewText(constructor.getName().toUpperCase(), findViewById(R.id.topAppBarTitle));
 
                     int teamColor;
-                    try{
+                    try {
                         teamColor = Constants.TEAM_COLOR.get(teamId);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         teamColor = R.color.timer_gray;
                     }
 
@@ -364,7 +364,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
                 tableLayout.addView(tableRow);
             }
-        }else{
+        } else {
             Log.e(TAG, "Constructor history is null");
             teamHistory.setVisibility(View.GONE);
             tableLayout.setVisibility(View.GONE);

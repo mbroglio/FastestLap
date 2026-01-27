@@ -151,13 +151,13 @@ public class TrackBioActivity extends AppCompatActivity {
                         findViewById(R.id.circuit_length_value),
                         findViewById(R.id.race_distance_value)});
 
-        if(track.getLap_record().equals("N/A")){
+        if (track.getLap_record().equals("N/A")) {
             UIUtils.multipleSetTextViewText(
                     new String[]{"N/A", "N/A"},
                     new TextView[]{
                             findViewById(R.id.fastest_lap_value),
                             findViewById(R.id.fastest_lap_driver)});
-        }else{
+        } else {
             UIUtils.multipleSetTextViewText(
                     new String[]{
                             track.getLap_record().split(" ")[0],
@@ -237,7 +237,7 @@ public class TrackBioActivity extends AppCompatActivity {
 
                 tableLayout.addView(tableRow);
             }
-        }else{
+        } else {
             Log.e("TrackBioActivity", "Track history is null");
             trackHistoryLayout.setVisibility(View.GONE);
             tableLayout.setVisibility(View.GONE);

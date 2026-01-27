@@ -92,11 +92,11 @@ public class LoadingScreen {
                 timerRunnable.run();
             }
         }.start();
-    }    private final Runnable timerRunnable = this::hide;
+    }
 
     public void updateProgress() {
         resetTimer();
-    }
+    }    private final Runnable timerRunnable = this::hide;
 
     public void hideLoadingScreenWithCondition(boolean condition) {
         if (condition) {

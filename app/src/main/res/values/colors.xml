@@ -89,7 +89,6 @@
     <color name="audi_transparent">#5CFF2F1E</color>
 
 
-
     <color name="ferrari_secondary">#CA3131</color>
     <color name="mclaren_secondary">#E67A1F</color>
     <color name="mercedes_secondary">#2BC2A8</color>
@@ -101,7 +100,6 @@
     <color name="alpine_secondary">#0B82B2</color>
     <color name="kick_secondary">#01E526</color>
     <color name="audi_secondary">#E70C27</color>
-
 
 
     <color name="screen_background_color">#1E1E24</color>

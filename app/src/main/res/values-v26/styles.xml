@@ -23,7 +23,6 @@
     </style>
 
 
-
     <!--
     PAGE SUPERTITLE STYLE UPPER CASE
         -25sp
@@ -52,7 +51,6 @@
         <item name="autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
     </style>
-
 
 
     <!--
@@ -85,7 +83,6 @@
     </style>
 
 
-
     <!--
        PAGE TITLE 1 STYLE UPPER CASE
            -18 sp
@@ -116,7 +113,6 @@
     </style>
 
 
-
     <!--
        PAGE TITLE 1 STYLE
            -18 sp
@@ -142,7 +138,6 @@
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="autoSizeTextType">uniform</item>
     </style>
-
 
 
     <!--
@@ -175,7 +170,6 @@
     </style>
 
 
-
     <!--
    PAGE SUBTITLE STYLE CONTENT INDEX
        -14 sp
@@ -204,7 +198,6 @@
         <item name="autoSizeTextType">uniform</item>
         <item name="maxLines">1</item>
     </style>
-
 
 
     <!--
@@ -237,7 +230,6 @@
     </style>
 
 
-
     <!--
     JUNIOR F2 CARD STYLE
         -stroke: formula 2 color
@@ -251,7 +243,6 @@
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
     </style>
-
 
 
     <!--

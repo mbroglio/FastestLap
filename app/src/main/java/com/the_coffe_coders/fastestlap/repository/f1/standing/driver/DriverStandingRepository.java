@@ -2,7 +2,9 @@ package com.the_coffe_coders.fastestlap.repository.f1.standing.driver;
 
 import android.content.Context;
 import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
+
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
@@ -60,15 +62,15 @@ public class DriverStandingRepository {
                 !lastUpdateTimestamps.containsKey(cacheKey) ||
                 lastUpdateTimestamps.get(cacheKey) == null) {
             driverStandingCache.put(cacheKey, new MutableLiveData<>());
-            if(isNetworkAvailable()){
+            if (isNetworkAvailable()) {
                 loadDriverStanding();
-            }else{
+            } else {
                 fetchFromLocal(cacheKey);
             }
         } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(cacheKey) > 60000) {
-            if(isNetworkAvailable()){
+            if (isNetworkAvailable()) {
                 loadDriverStanding();
-            }else{
+            } else {
                 fetchFromLocal(cacheKey);
             }
         } else {
@@ -97,12 +99,12 @@ public class DriverStandingRepository {
 
                 @Override
                 public void onDriverListLoaded(List<Driver> driverList) {
-                    if(driverList != null){
+                    if (driverList != null) {
                         localDriverStandingsDataSource.insertDriverList(driverList);
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                         Objects.requireNonNull(driverStandingCache.get(cacheKey))
                                 .postValue(new Result.DriversSuccess(driverList));
-                    }else{
+                    } else {
                         Log.e(TAG, "Driver list not found");
                         fetchFromLocal(cacheKey);
                     }
@@ -147,7 +149,7 @@ public class DriverStandingRepository {
                     lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                     Objects.requireNonNull(driverStandingCache.get(cacheKey))
                             .postValue(new Result.DriversSuccess(driverList));
-                }else{
+                } else {
                     Log.e(TAG, "Driver list not found in local database");
                     Objects.requireNonNull(driverStandingCache.get(cacheKey))
                             .postValue(new Result.Error("Driver list not found"));

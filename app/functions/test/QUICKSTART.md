@@ -44,7 +44,7 @@ node test\test_individual_functions.js f1 processCircuitRaceUpdate 2025 23
 ### 3. Available Complete Functions
 
 - `f1RaceStats` - Update F1 post-race statistics
-- `f1Championships` - Update F1 end-of-season championships  
+- `f1Championships` - Update F1 end-of-season championships
 - `juniorUpdate` - Update junior series (F2/F3)
 - `juniorReset` - Reset junior series database
 
@@ -62,21 +62,25 @@ node test_individual_functions.js --list
 ## 📋 Common Commands
 
 ### Backup Database Before Testing
+
 ```powershell
 Copy-Item db_test.json db_test.backup.json
 ```
 
 ### Run a Test
+
 ```powershell
 node test_runner.js f1RaceStats
 ```
 
 ### Restore Database After Testing
+
 ```powershell
 Copy-Item db_test.backup.json db_test.json
 ```
 
 ### View Results in PowerShell
+
 ```powershell
 $db = Get-Content db_test.json | ConvertFrom-Json
 $db.app_config.stats_tracker
@@ -93,18 +97,21 @@ $db.app_config.stats_tracker
 
 - **Database is Modified**: Each test run will modify `db_test.json`
 - **Always Backup**: Create backups before testing
-- **API Calls**: Functions that call external APIs (F1 stats, Wikipedia) still make real HTTP requests
+- **API Calls**: Functions that call external APIs (F1 stats, Wikipedia) still make real HTTP
+  requests
 - **Date-Sensitive**: Some functions check dates (e.g., junior series checks for yesterday's races)
 
 ## 📖 Full Documentation
 
 See **TESTING_README.md** for:
+
 - Detailed function descriptions
 - Advanced testing scenarios
 - Debugging tips
 - Integration workflows
 
 See **TEST_COMMANDS.ps1** for:
+
 - Ready-to-use PowerShell commands
 - Database inspection techniques
 - Common testing workflows
@@ -138,18 +145,23 @@ Copy-Item db_test.backup.json db_test.json
 ## 🐛 Troubleshooting
 
 ### "Cannot find module" Error
+
 Install dependencies:
+
 ```powershell
 npm install
 ```
 
 ### PowerShell Execution Policy Error
+
 Use npm.cmd directly:
+
 ```powershell
 & "C:\Program Files\nodejs\npm.cmd" install
 ```
 
 ### Function Doesn't Update Data
+
 - Check console output for specific error messages
 - Some functions only run when conditions are met (e.g., new race detected)
 - Review function logic to understand trigger conditions

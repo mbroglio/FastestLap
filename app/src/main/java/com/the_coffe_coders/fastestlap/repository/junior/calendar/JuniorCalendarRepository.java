@@ -57,25 +57,25 @@ public class JuniorCalendarRepository {
                 !lastUpdateTimestamps.containsKey(cacheKey) ||
                 lastUpdateTimestamps.get(cacheKey) == null) {
             juniorCalendarCache.put(cacheKey, new MutableLiveData<>());
-            if(isNetworkAvailable()){
+            if (isNetworkAvailable()) {
                 loadJuniorCalendar(series);
-            }else{
+            } else {
                 fetchFromLocal(cacheKey, series);
             }
-        }else if(System.currentTimeMillis() - lastUpdateTimestamps.get(cacheKey) > 60000) {
-            if(isNetworkAvailable()){
+        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(cacheKey) > 60000) {
+            if (isNetworkAvailable()) {
                 loadJuniorCalendar(series);
-            }else{
+            } else {
                 fetchFromLocal(cacheKey, series);
             }
-        }else{
+        } else {
             Log.i(TAG, "Junior calendar found in cache: " + cacheKey);
         }
 
         return juniorCalendarCache.get(cacheKey);
     }
 
-    private void fetchFromLocal(String cacheKey,String series) {
+    private void fetchFromLocal(String cacheKey, String series) {
         Log.i(TAG, "Fetching junior calendar from local database: " + cacheKey);
         localJuniorCalendarDataSource.getJuniorCalendar(series, new JuniorCalendarCallback() {
             @Override
@@ -108,7 +108,7 @@ public class JuniorCalendarRepository {
         Log.i(TAG, "Loading junior calendar from remote: " + cacheKey);
         Objects.requireNonNull(juniorCalendarCache.get(cacheKey)).postValue(new Result.Loading("Fetching junior calendar from remote"));
 
-        try{
+        try {
             firebaseJuniorCalendarDataSource.getJuniorCalendar(series, new JuniorCalendarCallback() {
                 @Override
                 public void onCalendarLoaded(JuniorCalendar calendar) {

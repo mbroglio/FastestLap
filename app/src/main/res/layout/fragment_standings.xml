@@ -45,9 +45,9 @@
                 android:layout_margin="20dp"
                 android:clickable="true"
                 android:focusable="true"
+                app:cardBackgroundColor="@color/timer_gray"
                 app:cardCornerRadius="40dp"
                 app:strokeColor="@color/black"
-                app:cardBackgroundColor="@color/timer_gray"
                 app:strokeWidth="5dp">
 
                 <LinearLayout
@@ -83,9 +83,9 @@
                 android:layout_margin="20dp"
                 android:clickable="true"
                 android:focusable="true"
+                app:cardBackgroundColor="@color/timer_gray"
                 app:cardCornerRadius="40dp"
                 app:strokeColor="@color/black"
-                app:cardBackgroundColor="@color/timer_gray"
                 app:strokeWidth="5dp">
 
                 <LinearLayout

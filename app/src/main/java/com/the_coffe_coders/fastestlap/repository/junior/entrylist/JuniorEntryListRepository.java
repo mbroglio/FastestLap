@@ -55,18 +55,18 @@ public class JuniorEntryListRepository {
                 !lastUpdateTimestamps.containsKey(cacheKey) ||
                 lastUpdateTimestamps.get(cacheKey) == null) {
             juniorEntryListCache.put(cacheKey, new MutableLiveData<>());
-            if(isNetworkAvailable()){
+            if (isNetworkAvailable()) {
                 loadJuniorEntryList(series);
-            }else{
+            } else {
                 fetchFromLocal(cacheKey, series);
             }
-        }else if(System.currentTimeMillis() - lastUpdateTimestamps.get(cacheKey) > 60000) {
-            if(isNetworkAvailable()){
+        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(cacheKey) > 60000) {
+            if (isNetworkAvailable()) {
                 loadJuniorEntryList(series);
-            }else{
+            } else {
                 fetchFromLocal(cacheKey, series);
             }
-        }else{
+        } else {
             Log.i(TAG, "Junior entry list found in cache: " + cacheKey);
         }
         return juniorEntryListCache.get(cacheKey);
@@ -83,7 +83,7 @@ public class JuniorEntryListRepository {
                     lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                     Objects.requireNonNull(juniorEntryListCache.get(cacheKey))
                             .postValue(new Result.JuniorEntryListSuccess(entryList));
-                }else{
+                } else {
                     Log.e(TAG, "Junior entry list not found in local database");
                     Objects.requireNonNull(juniorEntryListCache.get(cacheKey))
                             .postValue(new Result.Error("Junior entry list not found"));
@@ -104,7 +104,7 @@ public class JuniorEntryListRepository {
         Log.i(TAG, "Loading junior entry list from remote: " + cacheKey);
         Objects.requireNonNull(juniorEntryListCache.get(cacheKey)).postValue(new Result.Loading("Fetching junior entry list from remote"));
 
-        try{
+        try {
             firebaseJuniorEntryListDataSource.getJuniorEntryList(series, new JuniorEntryListCallback() {
                 @Override
                 public void onEntryListLoaded(JuniorEntryList entryList) {
@@ -114,7 +114,7 @@ public class JuniorEntryListRepository {
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                         Objects.requireNonNull(juniorEntryListCache.get(cacheKey))
                                 .postValue(new Result.JuniorEntryListSuccess(entryList));
-                    }else{
+                    } else {
                         Log.e(TAG, "Junior entry list not found - deleting old data from local DB");
                         localJuniorEntryListDataSource.deleteJuniorEntryList(series);
                         Objects.requireNonNull(juniorEntryListCache.get(cacheKey))
@@ -128,7 +128,7 @@ public class JuniorEntryListRepository {
                     fetchFromLocal(cacheKey, series);
                 }
             });
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "Error loading junior entry list: " + e.getMessage());
             fetchFromLocal(cacheKey, series);
         }

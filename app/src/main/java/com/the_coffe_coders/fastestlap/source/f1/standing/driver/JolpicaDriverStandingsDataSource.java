@@ -10,7 +10,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.api.DriversAPIResponse;
-import com.the_coffe_coders.fastestlap.mapper.DriverMapper;
 import com.the_coffe_coders.fastestlap.mapper.DriverStandingsMapper;
 import com.the_coffe_coders.fastestlap.repository.f1.standing.driver.DriverStandingCallback;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
@@ -29,6 +28,7 @@ public class JolpicaDriverStandingsDataSource implements DriverStandingDataSourc
     private static final String TAG = "DriverRemoteDataSource";
     private static JolpicaDriverStandingsDataSource instance;
     private final ErgastAPIService ergastAPIService;
+    private String currentYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 
     public JolpicaDriverStandingsDataSource() {
         this.ergastAPIService = ServiceLocator.getInstance().getConcreteErgastAPIService();
@@ -40,9 +40,6 @@ public class JolpicaDriverStandingsDataSource implements DriverStandingDataSourc
         }
         return instance;
     }
-
-    private String currentYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
-
 
     @Override
     public void getDriverStandings(DriverStandingCallback driverCallback) {
@@ -76,15 +73,15 @@ public class JolpicaDriverStandingsDataSource implements DriverStandingDataSourc
                         DriverStandingsAPIResponse driverStandingsAPIResponse = jsonParserUtils.parseDriverStandings(mrdata);
 
                         Log.d(TAG, "Successfully parsed driver standings: " + driverStandingsAPIResponse);
-                        if(driverStandingsAPIResponse.getStandingsTable().getDriverStandingsDTOS() == null ||
+                        if (driverStandingsAPIResponse.getStandingsTable().getDriverStandingsDTOS() == null ||
                                 driverStandingsAPIResponse.getStandingsTable().getDriverStandingsDTOS().isEmpty() ||
-                                driverStandingsAPIResponse.getStandingsTable().getDriverStandingsDTOS().get(0) == null){
+                                driverStandingsAPIResponse.getStandingsTable().getDriverStandingsDTOS().get(0) == null) {
                             driverCallback.onError(new Exception("No driver standings found"));
-                            if(driverStandingsAPIResponse.getStandingsTable().getSeason().equals(currentYear)){
+                            if (driverStandingsAPIResponse.getStandingsTable().getSeason().equals(currentYear)) {
                                 Log.i(TAG, "Fetching drivers list");
                                 getDriversList(driverCallback);
                             }
-                        }else{
+                        } else {
                             driverCallback.onDriverStandingsLoaded(
                                     DriverStandingsMapper.toDriverStandings(
                                             driverStandingsAPIResponse.getStandingsTable().getDriverStandingsDTOS().get(0)));
@@ -97,7 +94,7 @@ public class JolpicaDriverStandingsDataSource implements DriverStandingDataSourc
                         Log.e(TAG, "Exception while processing response", e);
                         driverCallback.onError(new Exception("Failed to process response: " + e.getMessage(), e));
                     }
-                }else{
+                } else {
                     driverCallback.onError(new Exception("Response unsuccessful"));
                 }
             }
@@ -144,7 +141,7 @@ public class JolpicaDriverStandingsDataSource implements DriverStandingDataSourc
                         DriversAPIResponse driversAPIResponse = jsonParserUtils.parseDrivers(mrdata);
 
                         Log.d(TAG, "Successfully parsed driver list: " + driversAPIResponse);
-                        if(driversAPIResponse.getDriversTable().getDriverDTOList().isEmpty()){
+                        if (driversAPIResponse.getDriversTable().getDriverDTOList().isEmpty()) {
                             driverCallback.onError(new Exception("No driver standings found"));
                             return;
                         }
@@ -158,7 +155,7 @@ public class JolpicaDriverStandingsDataSource implements DriverStandingDataSourc
                         Log.e(TAG, "Exception while processing response", e);
                         driverCallback.onError(new Exception("Failed to process response: " + e.getMessage(), e));
                     }
-                }else{
+                } else {
                     driverCallback.onError(new Exception("Response unsuccessful"));
                 }
             }

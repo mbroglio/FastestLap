@@ -8,29 +8,29 @@ import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.ConstructorHistory;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.DriverHistory;
-import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandingsElement;
-import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandingsElement;
-import com.the_coffe_coders.fastestlap.domain.f1.track.Location;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Practice;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Qualifying;
-import com.the_coffe_coders.fastestlap.domain.f1.result.QualifyingResult;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
-import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResult;
-import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResultFastestLap;
-import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResultTime;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Sprint;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.SprintQualifying;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.f1.result.QualifyingResult;
+import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResult;
+import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResultFastestLap;
+import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResultTime;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandingsElement;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandingsElement;
+import com.the_coffe_coders.fastestlap.domain.f1.track.Location;
 import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
 import com.the_coffe_coders.fastestlap.domain.f1.track.TrackHistory;
-import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendarElement;
 import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorResultElement;
 import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorSessionResultElement;
 import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorDriver;
 import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorDriverStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorTeam;
-import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendarElement;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 
 import org.threeten.bp.LocalDateTime;
@@ -334,11 +334,10 @@ public class DatabaseConverters {
     }
 
 
-
     /*
-    * ----------------------------------------------------------------------------------------------
-    *   JUNIOR
-    * ----------------------------------------------------------------------------------------------
+     * ----------------------------------------------------------------------------------------------
+     *   JUNIOR
+     * ----------------------------------------------------------------------------------------------
      */
     @TypeConverter
     public static String fromJuniorCalendarElementList(List<JuniorCalendarElement> list) {
@@ -423,7 +422,6 @@ public class DatabaseConverters {
         }.getType();
         return gson.fromJson(json, listType);
     }
-
 
 
 }

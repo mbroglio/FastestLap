@@ -16,7 +16,6 @@ public class JuniorCategoryViewModel extends ViewModel {
     private final JuniorStandingsRepository juniorStandingsRepository;
 
 
-
     public JuniorCategoryViewModel(
             JuniorCalendarRepository juniorCalendarRepository,
             JuniorEntryListRepository juniorEntryListRepository,

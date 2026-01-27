@@ -107,10 +107,10 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
                     }
 
                     holder.driverCard.setOnClickListener(v -> goToBioPage(position));
-                    Log.i("DriversStanding", driver.getDriverId() +"driver.getTeam_id()");
+                    Log.i("DriversStanding", driver.getDriverId() + "driver.getTeam_id()");
 
                     if (driver.getTeam_id() != null) {
-                        try{
+                        try {
                             holder.driverCardInnerLayout.setBackground(AppCompatResources.getDrawable(context, Constants.TEAM_GRADIENT_COLOR.get(driver.getTeam_id())));
                         } catch (Exception e) {
                             holder.driverCardInnerLayout.setBackground(AppCompatResources.getDrawable(context, R.color.timer_gray));

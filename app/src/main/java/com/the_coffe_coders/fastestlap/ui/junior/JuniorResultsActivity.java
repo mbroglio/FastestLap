@@ -34,7 +34,6 @@ public class JuniorResultsActivity extends AppCompatActivity {
     private JuniorResultsRecyclerAdapter juniorResultsAdapter;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -120,11 +119,11 @@ public class JuniorResultsActivity extends AppCompatActivity {
                         showContentNotAvailable();
                         Log.e(TAG, "Junior result is null");
                     }
-                }else{
+                } else {
                     Log.e(TAG, "1 Results fetch failed");
                     showContentNotAvailable();
                 }
-            }else{
+            } else {
                 Log.e(TAG, "2 Results fetch failed");
                 showContentNotAvailable();
             }
@@ -132,12 +131,12 @@ public class JuniorResultsActivity extends AppCompatActivity {
 
     }
 
-    public void showResults(){
+    public void showResults() {
         resultsrRecyclerView.setVisibility(View.VISIBLE);
         contentNotAvailableLayout.setVisibility(View.GONE);
     }
 
-    public void showContentNotAvailable(){
+    public void showContentNotAvailable() {
         resultsrRecyclerView.setVisibility(View.GONE);
         contentNotAvailableLayout.setVisibility(View.VISIBLE);
     }

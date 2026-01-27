@@ -32,7 +32,7 @@ public class LocalJuniorResultsDataSource implements JuniorResultsDataSource {
 
         if (result != null && result.getResults() != null && !result.getResults().isEmpty()) {
             callback.onResultLoaded(result);
-        }else{
+        } else {
             callback.onError(new Exception("No junior results found in local database"));
 
         }

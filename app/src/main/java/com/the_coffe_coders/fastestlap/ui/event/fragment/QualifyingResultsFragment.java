@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.f1.QualifyingResultsRecyclerAdapter;
-import com.the_coffe_coders.fastestlap.domain.f1.result.QualifyingResult;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.f1.result.QualifyingResult;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.List;

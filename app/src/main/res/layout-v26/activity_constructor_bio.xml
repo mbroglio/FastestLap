@@ -26,8 +26,8 @@
                 android:layout_gravity="center">
 
                 <TextView
-                    style="@style/PageSuperTitleUpperCaseBlack"
                     android:id="@+id/topAppBarTitle"
+                    style="@style/PageSuperTitleUpperCaseBlack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
@@ -189,8 +189,8 @@
                             </com.google.android.material.card.MaterialCardView>
 
                             <TextView
-                                style="@style/PageContentRegularWhite"
                                 android:id="@+id/driver_1_name"
+                                style="@style/PageContentRegularWhite"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
@@ -231,8 +231,8 @@
                             </com.google.android.material.card.MaterialCardView>
 
                             <TextView
-                                style="@style/PageContentRegularWhite"
                                 android:id="@+id/driver_2_name"
+                                style="@style/PageContentRegularWhite"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
@@ -530,8 +530,8 @@
                             </TextView>
 
                             <TextView
-                                style="@style/PageContentRegularWhite"
                                 android:id="@+id/team_podiums_value"
+                                style="@style/PageContentRegularWhite"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"

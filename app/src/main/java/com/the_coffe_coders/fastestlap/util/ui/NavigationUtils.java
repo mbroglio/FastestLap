@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentManager;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.junior.result.FeatureRace;
-import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorResultElement;
 import com.the_coffe_coders.fastestlap.domain.junior.result.SprintRace;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
@@ -109,7 +108,7 @@ public class NavigationUtils {
 
     public static void navigateToJuniorPage(Context context, int categoryType) {
         Intent intent;
-        switch (categoryType){
+        switch (categoryType) {
             case 0:
                 intent = new Intent(context, Formula2Activity.class);
                 break;
@@ -157,7 +156,7 @@ public class NavigationUtils {
 
     private static void showJuniorDialog(FragmentManager fragmentManager,
                                          int categoryType, int raceType, int content,
-                                         FeatureRace featureRace, SprintRace sprintRace, String circuit){
+                                         FeatureRace featureRace, SprintRace sprintRace, String circuit) {
         JuniorDialogFragment juniorDialogFragment = new JuniorDialogFragment();
         Bundle args = new Bundle();
         args.putInt("CATEGORY_TYPE", categoryType);
