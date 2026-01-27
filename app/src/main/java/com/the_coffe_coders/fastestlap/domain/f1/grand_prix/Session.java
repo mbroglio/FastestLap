@@ -77,7 +77,7 @@ public abstract class Session {
         }
     }
 
-    public boolean isRace(){
+    public boolean isRace() {
         return this.getClass().getSimpleName().equals("Race");
     }
 

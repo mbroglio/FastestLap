@@ -82,8 +82,8 @@ public class UpcomingEventsActivity extends AppCompatActivity {
                 List<WeeklyRace> races = ((Result.WeeklyRaceSuccess) result).getData();
                 Log.i("UpcomingEvents", "SUCCESS");
                 int x = 1;
-                for (WeeklyRace w: races) {
-                    Log.i("UpcomingEventsDEBUG "+ x, w.toString());
+                for (WeeklyRace w : races) {
+                    Log.i("UpcomingEventsDEBUG " + x, w.toString());
                     x++;
                 }
 

@@ -75,9 +75,11 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
 
                 // Carica l'immagine solo se il track è disponibile
                 UIUtils.loadImageWithGlide(context, track.getTrack_minimal_layout_url(), holder.trackOutline, () -> {
-                    loadingScreen.updateProgress();
                     Log.i("UpcomingEventsAdapter", "Image loaded for position: " + position);
-                    loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);
+                    // Only hide loading screen when the last item's image is loaded
+                    if (position == getItemCount() - 1) {
+                        loadingScreen.hideLoadingScreen();
+                    }
                 });
 
                 holder.upcomingEventCard.setOnClickListener(v ->
@@ -85,8 +87,10 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
             } else {
                 // Gestisci il caso di errore
                 Log.e("UpcomingEventsAdapter", "Failed to load track for position: " + position);
-                loadingScreen.updateProgress();
-                loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);
+                // Hide loading screen if last item fails
+                if (position == getItemCount() - 1) {
+                    loadingScreen.hideLoadingScreen();
+                }
             }
         });
     }

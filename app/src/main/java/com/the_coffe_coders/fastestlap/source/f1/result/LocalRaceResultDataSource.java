@@ -80,48 +80,48 @@ public class LocalRaceResultDataSource implements RaceResultDataSource {
         });
     }
 
-    public void getQualifyingResults(String round, RaceResultCallback callback){
+    public void getQualifyingResults(String round, RaceResultCallback callback) {
         Log.d(TAG, "Fetching qualifying results from local database for round: " + round);
         try {
             int roundInt = Integer.parseInt(round);
             Race race = qualifyingDAO.getRaceByRound(roundInt);
-            if(race != null){
+            if (race != null) {
                 Log.d(TAG, "Qualifying results found in local database for round: " + round);
                 callback.onSuccess(race);
-            }else{
+            } else {
                 Log.d(TAG, "No qualifying results found in local database for round: " + round);
                 callback.onFailure(new Exception("No qualifying results found in local database"));
             }
         } catch (NumberFormatException e) {
             Log.e(TAG, "Invalid round format: " + round);
             callback.onFailure(new Exception("Invalid round format: " + round));
-        }catch(Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "Error retrieving qualifying results from database: " + e.getMessage());
             callback.onFailure(e);
         }
     }
 
-    public void getQualifyingResults(int round, RaceResultCallback callback){
+    public void getQualifyingResults(int round, RaceResultCallback callback) {
         Log.d(TAG, "Fetching qualifying results from local database for round: " + round);
         try {
             Race race = qualifyingDAO.getRaceByRound(round);
-            if(race != null){
+            if (race != null) {
                 Log.d(TAG, "Qualifying results found in local database for round: " + round);
                 callback.onSuccess(race);
-            }else{
+            } else {
                 Log.d(TAG, "No qualifying results found in local database for round: " + round);
                 callback.onFailure(new Exception("No qualifying results found in local database"));
             }
         } catch (NumberFormatException e) {
             Log.e(TAG, "Invalid round format: " + round);
             callback.onFailure(new Exception("Invalid round format: " + round));
-        }catch(Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "Error retrieving qualifying results from database: " + e.getMessage());
             callback.onFailure(e);
         }
     }
 
-    public void insertQualifyingResults(Race race){
+    public void insertQualifyingResults(Race race) {
         Log.d(TAG, "Inserting qualifying results into local database for round: " + race.getRound());
         AppRoomDatabase.databaseWriteExecutor.execute(() -> {
             try {
@@ -133,48 +133,48 @@ public class LocalRaceResultDataSource implements RaceResultDataSource {
         });
     }
 
-    public void getSprintResults(String round, RaceResultCallback callback){
+    public void getSprintResults(String round, RaceResultCallback callback) {
         Log.d(TAG, "Fetching sprint results from local database for round: " + round);
         try {
             int roundInt = Integer.parseInt(round);
             Race race = sprintDAO.getRaceByRound(roundInt);
-            if(race != null){
+            if (race != null) {
                 Log.d(TAG, "sprint results found in local database for round: " + round);
                 callback.onSuccess(race);
-            }else{
+            } else {
                 Log.d(TAG, "No sprint results found in local database for round: " + round);
                 callback.onFailure(new Exception("No sprint results found in local database"));
             }
         } catch (NumberFormatException e) {
             Log.e(TAG, "Invalid round format: " + round);
             callback.onFailure(new Exception("Invalid round format: " + round));
-        }catch(Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "Error retrieving sprint results from database: " + e.getMessage());
             callback.onFailure(e);
         }
     }
 
-    public void getSprintResults(int round, RaceResultCallback callback){
+    public void getSprintResults(int round, RaceResultCallback callback) {
         Log.d(TAG, "Fetching sprint results from local database for round: " + round);
         try {
             Race race = sprintDAO.getRaceByRound(round);
-            if(race != null){
+            if (race != null) {
                 Log.d(TAG, "sprint results found in local database for round: " + round);
                 callback.onSuccess(race);
-            }else{
+            } else {
                 Log.d(TAG, "No sprint results found in local database for round: " + round);
                 callback.onFailure(new Exception("No sprint results found in local database"));
             }
         } catch (NumberFormatException e) {
             Log.e(TAG, "Invalid round format: " + round);
             callback.onFailure(new Exception("Invalid round format: " + round));
-        }catch(Exception e){
+        } catch (Exception e) {
             Log.e(TAG, "Error retrieving sprint results from database: " + e.getMessage());
             callback.onFailure(e);
         }
     }
 
-    public void insertSprintResults(Race race){
+    public void insertSprintResults(Race race) {
         Log.d(TAG, "Inserting sprint results into local database for round: " + race.getRound());
         AppRoomDatabase.databaseWriteExecutor.execute(() -> {
             try {
@@ -187,7 +187,4 @@ public class LocalRaceResultDataSource implements RaceResultDataSource {
     }
 
 
-
-
-    
 }

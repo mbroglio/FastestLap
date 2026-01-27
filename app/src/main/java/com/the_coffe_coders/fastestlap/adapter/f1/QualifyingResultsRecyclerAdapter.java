@@ -18,11 +18,12 @@ import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 import java.util.List;
 import java.util.Objects;
 
-public class QualifyingResultsRecyclerAdapter extends RecyclerView.Adapter<QualifyingResultsRecyclerAdapter.ResultViewHolder>{
+public class QualifyingResultsRecyclerAdapter extends RecyclerView.Adapter<QualifyingResultsRecyclerAdapter.ResultViewHolder> {
 
     private final List<QualifyingResult> qualifyingResultList;
     private final Context context;
-    public QualifyingResultsRecyclerAdapter(Context context, List<QualifyingResult> qualifyingResultList){
+
+    public QualifyingResultsRecyclerAdapter(Context context, List<QualifyingResult> qualifyingResultList) {
         this.context = context;
         this.qualifyingResultList = qualifyingResultList;
     }
@@ -30,9 +31,9 @@ public class QualifyingResultsRecyclerAdapter extends RecyclerView.Adapter<Quali
     @NonNull
     @Override
     public ResultViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-       View view = LayoutInflater.from(parent.getContext())
+        View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.qualifying_result_item, parent, false);
-       return new ResultViewHolder(view);
+        return new ResultViewHolder(view);
     }
 
     @Override
@@ -47,17 +48,17 @@ public class QualifyingResultsRecyclerAdapter extends RecyclerView.Adapter<Quali
                         holder.positionText,
                         holder.driverName});
 
-        UIUtils.setTextViewTextWithCondition(qualifyingResult.getQ1()!=null && !qualifyingResult.getQ1().isEmpty(),
+        UIUtils.setTextViewTextWithCondition(qualifyingResult.getQ1() != null && !qualifyingResult.getQ1().isEmpty(),
                 qualifyingResult.getQ1(),
                 context.getString(R.string.separator_high_dash),
                 holder.q1Time);
 
-        UIUtils.setTextViewTextWithCondition(qualifyingResult.getQ2()!=null && !qualifyingResult.getQ2().isEmpty(),
+        UIUtils.setTextViewTextWithCondition(qualifyingResult.getQ2() != null && !qualifyingResult.getQ2().isEmpty(),
                 qualifyingResult.getQ2(),
                 context.getString(R.string.separator_high_dash),
                 holder.q2Time);
 
-        UIUtils.setTextViewTextWithCondition(qualifyingResult.getQ3()!=null && !qualifyingResult.getQ3().isEmpty(),
+        UIUtils.setTextViewTextWithCondition(qualifyingResult.getQ3() != null && !qualifyingResult.getQ3().isEmpty(),
                 qualifyingResult.getQ3(),
                 context.getString(R.string.separator_high_dash),
                 holder.q3Time);
@@ -74,7 +75,7 @@ public class QualifyingResultsRecyclerAdapter extends RecyclerView.Adapter<Quali
         return qualifyingResultList.size();
     }
 
-    public static class ResultViewHolder extends RecyclerView.ViewHolder{
+    public static class ResultViewHolder extends RecyclerView.ViewHolder {
         final TextView positionText;
         final TextView driverName;
         final TextView q1Time;
@@ -82,7 +83,7 @@ public class QualifyingResultsRecyclerAdapter extends RecyclerView.Adapter<Quali
         final TextView q3Time;
         final View teamColorIndicator;
 
-        ResultViewHolder(View itemView){
+        ResultViewHolder(View itemView) {
             super(itemView);
             positionText = itemView.findViewById(R.id.position_text);
             driverName = itemView.findViewById(R.id.driver_name);

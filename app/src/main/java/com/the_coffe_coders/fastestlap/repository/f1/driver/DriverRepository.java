@@ -20,15 +20,14 @@ import java.util.Objects;
 public class DriverRepository {
     private static final String TAG = "DriverRepository";
     public static DriverRepository instance;
+    //Data sources
+    final FirebaseDriverDataSource firebaseDriverDataSource;
+    final LocalDriverDataSource localDriverDataSource;
     //Cache
     private final Map<String, MutableLiveData<Result>> driverCache;
     private final Map<String, Long> lastUpdateTimestamps;
-    //Data sources
-    final FirebaseDriverDataSource firebaseDriverDataSource;
-    JolpicaDriverDataSource jolpicaDriverDataSource;
-    final LocalDriverDataSource localDriverDataSource;
-
     private final NetworkUtils networkLiveData;
+    JolpicaDriverDataSource jolpicaDriverDataSource;
 
     private DriverRepository(AppRoomDatabase appRoomDatabase, Context context) {
         driverCache = new HashMap<>();

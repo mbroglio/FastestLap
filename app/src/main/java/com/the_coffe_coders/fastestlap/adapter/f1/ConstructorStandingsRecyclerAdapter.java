@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.adapter.f1;
+package com.the_coffe_coders.fastestlap.adapter;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -147,7 +147,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
     }
 
     private void processDriverOne(ConstructorViewHolder holder, Constructor constructor, int position) {
-        try{
+        try {
             driverViewModel.getDriver(constructor.getDriverOneId()).observe(lifecycleOwner, result -> {
                 if (result instanceof Result.Loading) {
                     return;
@@ -158,7 +158,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                     UIUtils.singleSetTextViewText(driverOne.getFullName(), holder.driverOneName);
                     UIUtils.loadImageWithGlide(context, driverOne.getDriver_pic_url(), holder.driverOneImage,
                             () -> processDriverTwo(holder, constructor, position));
-                }else{
+                } else {
                     setMissingDriver(holder, constructor.getDriverOneId(), constructor, position, 1);
                 }
             });
@@ -169,7 +169,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
     }
 
     private void processDriverTwo(ConstructorViewHolder holder, Constructor constructor, int position) {
-        try{
+        try {
             driverViewModel.getDriver(constructor.getDriverTwoId()).observe(lifecycleOwner, result -> {
                 if (result instanceof Result.Loading) {
                     return;
@@ -179,7 +179,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
 
                     UIUtils.singleSetTextViewText(driverTwo.getFullName(), holder.driverTwoName);
                     UIUtils.loadImageWithGlide(context, driverTwo.getDriver_pic_url(), holder.driverTwoImage, () -> endLoading(position));
-                }else{
+                } else {
                     setMissingDriver(holder, constructor.getDriverTwoId(), constructor, position, 2);
                 }
             });
@@ -190,24 +190,25 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
     }
 
     private void endLoading(int position) {
-        loadingScreen.updateProgress();
-
         Log.i("ConstructorsStanding", "onBindViewHolder " + position + "/" + getItemCount());
-        loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);
+        // Only hide loading screen when the last item is fully loaded
+        if (position == getItemCount() - 1) {
+            loadingScreen.hideLoadingScreen();
+        }
     }
 
     private void setMissingDriver(ConstructorViewHolder holder, String driverId, Constructor constructor, int position, int driverType) {
-        if(driverId.contains("_")) {
+        if (driverId.contains("_")) {
             driverId = driverId.split("_")[1];
         }
 
-        switch (driverType){
-            case 1 :
+        switch (driverType) {
+            case 1:
                 UIUtils.singleSetTextViewText(driverId.toUpperCase(), holder.driverOneName);
                 UIUtils.loadImageWithGlide(context, null, holder.driverOneImage,
                         () -> processDriverTwo(holder, constructor, position));
                 break;
-            case 2 :
+            case 2:
                 UIUtils.singleSetTextViewText(driverId.toUpperCase(), holder.driverTwoName);
                 UIUtils.loadImageWithGlide(context, null, holder.driverTwoImage, () -> endLoading(position));
         }
@@ -224,7 +225,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         holder.constructorNotFound.setVisibility(View.VISIBLE);
         Log.i("ConstructorsStandingAdapter", "Constructor not found id test: " + constructorId + " -> " + constructorId.contains("_"));
 
-        if(constructorId.contains("_")) {
+        if (constructorId.contains("_")) {
             constructorId = constructorId.split("_")[0] + " " + constructorId.split("_")[1];
         }
 

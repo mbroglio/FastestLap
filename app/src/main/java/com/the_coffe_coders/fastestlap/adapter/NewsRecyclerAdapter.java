@@ -12,21 +12,28 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.news.News;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
+
 import java.util.List;
 
 public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapter.NewsViewHolder> {
     private final List<News> newsList;
     private final Context context;
     private final SparseBooleanArray expandedPositions = new SparseBooleanArray();
+    private final Runnable onImageLoaded;
+    private final int itemsToWaitFor;
 
-    public NewsRecyclerAdapter(List<News> newsList, Context context) {
+    public NewsRecyclerAdapter(List<News> newsList, Context context, Runnable onImageLoaded, int itemsToWaitFor) {
         this.newsList = newsList;
         this.context = context;
+        this.onImageLoaded = onImageLoaded;
+        this.itemsToWaitFor = itemsToWaitFor;
     }
 
     @NonNull
@@ -37,23 +44,30 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
 
         return new NewsViewHolder(view);
     }
-    
+
     @Override
     public void onBindViewHolder(@NonNull NewsViewHolder holder, int position) {
         News news = newsList.get(position);
 
+        UIUtils.multipleSetTextViewText(
+                new String[]{
+                        news.getTitle(),
+                        UIUtils.getTimeAgo(news.getDate(), context)},
+                new TextView[]{
+                        holder.titleTextView,
+                        holder.dateTextView
+                });
+
+        Runnable imageCallback = null;
+        if (position < itemsToWaitFor && onImageLoaded != null) {
+            imageCallback = onImageLoaded;
+        }
+
         UIUtils.loadImageWithGlide(
-                context, 
-                news.getImageUrl(), 
+                context,
+                news.getImageUrl(),
                 holder.newsImageView,
-                ()-> UIUtils.multipleSetTextViewText(
-                        new String[]{
-                                news.getTitle(),
-                                UIUtils.getTimeAgo(news.getDate(), context)},
-                        new TextView[]{
-                                holder.titleTextView,
-                                holder.dateTextView
-                        }));
+                imageCallback);
 
         UIUtils.setTextViewTextWithCondition(news.getDescription() != null,
                 UIUtils.formatXmlText(news.getDescription()),
@@ -106,7 +120,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
         final RelativeLayout newsLayout, linkLayout;
         final TextView titleTextView, dateTextView, descriptionTextView;
         final ImageView newsImageView;
-        
+
         public NewsViewHolder(@NonNull View itemView) {
             super(itemView);
             newsLayout = itemView.findViewById(R.id.news_layout);

@@ -19,15 +19,15 @@ public class RaceMapper {
             for (ResultDTO resultDTO : raceDTO.getResults()) {
                 race.addResult(SessionMapper.toResult(resultDTO));
             }
-        }else{
+        } else {
             raceDTO.setResults(null);
         }
 
-        if(raceDTO.getQualifyingResults() != null && !raceDTO.getQualifyingResults().isEmpty()) {
+        if (raceDTO.getQualifyingResults() != null && !raceDTO.getQualifyingResults().isEmpty()) {
             for (QualifyingResultDTO qualifyingResultDTO : raceDTO.getQualifyingResults()) {
                 race.addQualifyingResult(SessionMapper.toQualifyingResult(qualifyingResultDTO));
             }
-        }else{
+        } else {
             raceDTO.setQualifyingResults(null);
         }
 
@@ -35,7 +35,7 @@ public class RaceMapper {
             for (ResultDTO sprintResultDTO : raceDTO.getSprintResults()) {
                 race.addSprintResult(SessionMapper.toResult(sprintResultDTO));
             }
-        }else{
+        } else {
             raceDTO.setSprintResults(null);
         }
 

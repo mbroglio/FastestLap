@@ -2,46 +2,51 @@ package com.the_coffe_coders.fastestlap.ui.home.fragment;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
-
-import androidx.appcompat.app.AppCompatDelegate;
-import androidx.core.os.LocaleListCompat;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.NewsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.news.News;
-import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.source.news.NewsFetcher;
+import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 
 import java.util.List;
-import java.util.Objects;
-
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class NewsFragment extends Fragment {
 
-
-
+    private static final String TAG = "NewsFragment";
     private final String currentLanguage = AppCompatDelegate.getApplicationLocales().toLanguageTags();
     private TextView newsMenu;
     private MaterialSwitch languageFeedSwitch;
     private Boolean languageFeed;
     private RecyclerView newsRecyclerView;
     private int defaultIndex;
-    private static final String TAG = "NewsFragment";
+    private int loadingCounter = 0;
+    private LoadingScreen loadingScreen;
+
+    // Cache news data to avoid re-fetching
+    private List<News> cachedEnglishNews = null;
+    private List<News> cachedItalianNews = null;
+    private int cachedEnglishSourceIndex = -1;
 
     public NewsFragment() {
         // Required empty public constructor
@@ -63,6 +68,8 @@ public class NewsFragment extends Fragment {
         newsRecyclerView = view.findViewById(R.id.news_recycler_view);
         TextView noConnectionText = view.findViewById(R.id.no_connection_text);
 
+        setupLoadingScreen(view);
+
         languageFeed = currentLanguage.equals("en-GB");
 
         NetworkUtils networkUtils = new NetworkUtils(requireContext());
@@ -77,10 +84,24 @@ public class NewsFragment extends Fragment {
             } else {
                 newsRecyclerView.setVisibility(View.GONE);
                 noConnectionText.setVisibility(View.VISIBLE);
+                // If offline, ensure loading screen is hidden
+                loadingScreen.hideLoadingScreen();
             }
         });
 
         return view;
+    }
+
+    private void setupLoadingScreen(View view) {
+        loadingScreen = new LoadingScreen(view, getContext(), null, newsRecyclerView);
+    }
+
+    private synchronized void decrementLoadingCounter() {
+        loadingCounter--;
+        if (loadingCounter <= 0) {
+            loadingCounter = 0;
+            loadingScreen.hideLoadingScreen();
+        }
     }
 
     private void newsMenuManagement() {
@@ -119,23 +140,89 @@ public class NewsFragment extends Fragment {
     }
 
     private void loadNews(boolean languageFeed, RecyclerView recyclerView, boolean defaultSource, int value) {
-        List<News> newsList;
+        // Check if we have cached data
+        boolean useCache = false;
+        List<News> cachedNews = null;
 
         if (languageFeed) {
-            if (defaultSource) {
-                newsList = NewsFetcher.fetchNewsEngSources(0);
-                defaultIndex = 0;
-            } else {
-                newsList = NewsFetcher.fetchNewsEngSources(value);
-                defaultIndex = value;
+            // English news
+            if (defaultSource && value == cachedEnglishSourceIndex && cachedEnglishNews != null) {
+                useCache = true;
+                cachedNews = cachedEnglishNews;
+            } else if (!defaultSource && value == cachedEnglishSourceIndex && cachedEnglishNews != null) {
+                useCache = true;
+                cachedNews = cachedEnglishNews;
             }
         } else {
-            newsList = NewsFetcher.fetchNewsItSources();
+            // Italian news
+            if (cachedItalianNews != null) {
+                useCache = true;
+                cachedNews = cachedItalianNews;
+            }
         }
 
-        NewsRecyclerAdapter adapter = new NewsRecyclerAdapter(newsList, getContext());
-        recyclerView.setAdapter(adapter);
+        if (useCache) {
+            // Use cached data - instant loading!
+            Log.d(TAG, "Using cached news data");
+            displayNews(cachedNews, recyclerView);
+            return;
+        }
 
+        // No cache available - fetch from network
+        loadingCounter = 1;
+        loadingScreen.showLoadingScreen(false);
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+
+        executor.execute(() -> {
+            List<News> newsList = null;
+            try {
+                if (languageFeed) {
+                    if (defaultSource) {
+                        newsList = NewsFetcher.fetchNewsEngSources(0);
+                        defaultIndex = 0;
+                    } else {
+                        newsList = NewsFetcher.fetchNewsEngSources(value);
+                        defaultIndex = value;
+                    }
+                    // Cache English news
+                    cachedEnglishNews = newsList;
+                    cachedEnglishSourceIndex = defaultSource ? 0 : value;
+                } else {
+                    newsList = NewsFetcher.fetchNewsItSources();
+                    // Cache Italian news
+                    cachedItalianNews = newsList;
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error fetching news", e);
+            }
+
+            List<News> finalNewsList = newsList;
+            handler.post(() -> {
+                if (finalNewsList != null && !finalNewsList.isEmpty()) {
+                    displayNews(finalNewsList, recyclerView);
+                } else {
+                    Toast.makeText(getContext(), R.string.feed_error, Toast.LENGTH_SHORT).show();
+                    decrementLoadingCounter();
+                }
+            });
+        });
+    }
+
+    private void displayNews(List<News> newsList, RecyclerView recyclerView) {
+        // Wait for first 3 images (or all if less than 3) to ensure above-the-fold content is loaded
+        int itemsToWait = Math.min(3, newsList.size());
+        loadingCounter += itemsToWait;
+        NewsRecyclerAdapter adapter = new NewsRecyclerAdapter(newsList, getContext(), this::decrementLoadingCounter, itemsToWait);
+        recyclerView.setAdapter(adapter);
+        recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new android.view.ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                decrementLoadingCounter();
+            }
+        });
     }
 
     private void showSourcesDialog(boolean isEnglish) {

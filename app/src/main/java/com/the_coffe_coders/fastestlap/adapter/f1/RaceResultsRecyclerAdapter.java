@@ -31,7 +31,6 @@ public class RaceResultsRecyclerAdapter extends RecyclerView.Adapter<RaceResults
     }
 
 
-
     @NonNull
     @Override
     public ResultViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

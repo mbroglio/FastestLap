@@ -32,9 +32,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.target.Target;
 import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
@@ -56,10 +61,10 @@ public class UIUtils {
 
 
     /*
-    * ----------------------------------------------------------------------------------------------
-    * WINDOW MANAGEMENT
-    * ----------------------------------------------------------------------------------------------
-    */
+     * ----------------------------------------------------------------------------------------------
+     * WINDOW MANAGEMENT
+     * ----------------------------------------------------------------------------------------------
+     */
 
     public static void applyWindowInsets(MaterialToolbar toolbar) {
         ViewCompat.setOnApplyWindowInsetsListener(toolbar, (v, insets) -> {
@@ -101,7 +106,6 @@ public class UIUtils {
             throw new IllegalArgumentException("The length of urls and imageViews must be the same");
         }
 
-
         for (int i = 0; i < urls.length; i++) {
             int nextIndex = i + 1;
             if (i == urls.length - 1) {
@@ -113,6 +117,39 @@ public class UIUtils {
         }
     }
 
+    /**
+     * Load multiple images in parallel (faster than sequence)
+     * All images load simultaneously, onSuccess called when all complete
+     */
+    public static void loadImagesInParallel(Context context, String[] urls, ImageView[] imageViews, Runnable onSuccess) {
+        if (urls.length != imageViews.length) {
+            throw new IllegalArgumentException("The length of urls and imageViews must be the same");
+        }
+
+        if (urls.length == 0) {
+            if (onSuccess != null) onSuccess.run();
+            return;
+        }
+
+        // Track how many images have loaded
+        final int[] loadedCount = {0};
+        final int totalImages = urls.length;
+
+        Runnable checkComplete = () -> {
+            synchronized (loadedCount) {
+                loadedCount[0]++;
+                if (loadedCount[0] == totalImages && onSuccess != null) {
+                    onSuccess.run();
+                }
+            }
+        };
+
+        // Load all images in parallel
+        for (int i = 0; i < urls.length; i++) {
+            loadImage(context, urls[i], imageViews[i], checkComplete, 0);
+        }
+    }
+
     private static void loadImage(Context context, String url, ImageView imageView, Runnable onSuccess, int retryCount) {
         Log.i("Glide", "Loading image: " + url);
 
@@ -121,28 +158,16 @@ public class UIUtils {
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
                     .load(url)
-                    .into(new CustomTarget<Drawable>() {
-
+                    .thumbnail(0.25f)  // Load 25% quality version first for instant display
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)  // Cache both original and resized
+                    .listener(new RequestListener<Drawable>() {
                         @Override
-                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                            Log.i("Glide", "Image loaded successfully: ");
-                            imageView.setImageDrawable(resource);
-                            if (onSuccess != null) {
-                                onSuccess.run();
-                            }
-                        }
-
-                        @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) {
-                            // Handle the case when the load is cleared
-                            Log.i("Glide", "Image load cleared: " + url);
-                        }
-
-                        @Override
-                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                             Log.e("Glide", "Image loading failed: " + url);
 
+                            // We handled the error
                             if (networkLiveData.isConnected()) {
+                                // We handled the error
                                 if (retryCount <= Constants.MAX_RETRY_COUNT) {
                                     Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
                                     new Handler(Looper.getMainLooper()).post(() -> loadImage(context, url, imageView, onSuccess, retryCount + 1));
@@ -153,8 +178,19 @@ public class UIUtils {
                             } else {
                                 manageContentLoadError(imageView, null, context, onSuccess, 0);
                             }
+                            return true; // Return true to prevent Glide from handling the error (since we retry)
                         }
-                    });
+
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            Log.i("Glide", "Image loaded successfully: ");
+                            if (onSuccess != null) {
+                                onSuccess.run();
+                            }
+                            return false; // Return false to allow Glide to handle setting the drawable on the target
+                        }
+                    })
+                    .into(imageView);
         } else {
             Log.e("Glide", "URL is null");
             manageContentLoadError(imageView, null, context, onSuccess, 0);

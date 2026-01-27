@@ -27,7 +27,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class JolpicaWeeklyRaceDataSource{
+public class JolpicaWeeklyRaceDataSource {
 
     private static final String TAG = "JolpicaWeeklyRaceDataSource";
     private static final int MAX_RETRIES = 3;

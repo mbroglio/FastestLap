@@ -39,10 +39,10 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
+import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
@@ -93,13 +93,13 @@ public class ConstructorBioActivity extends AppCompatActivity {
         Menu menu = toolbar.getMenu();
         MenuItem favoriteItem = menu.findItem(R.id.favourite_icon_outline);
 
-        if(networkLiveData.isConnected()){
+        if (networkLiveData.isConnected()) {
             favoriteItem.setOnMenuItemClickListener(v -> {
                 toggleFavoriteConstructor(teamId, favoriteItem);
                 return true;
             });
-        }else{
-            favoriteItem.setOnMenuItemClickListener(v-> {
+        } else {
+            favoriteItem.setOnMenuItemClickListener(v -> {
                 Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
                 return true;
             });
@@ -250,7 +250,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     public void getNationData(String nationId) {
-        try{
+        try {
             MutableLiveData<Result> data = nationViewModel.getNation(nationId);
             data.observe(this, result -> {
                 if (result instanceof Result.Loading) {
@@ -259,12 +259,12 @@ public class ConstructorBioActivity extends AppCompatActivity {
                 if (result.isSuccess()) {
                     nation = ((Result.NationSuccess) result).getData();
                     setTeamData(constructor, nation, driverOne, driverTwo);
-                }else{
+                } else {
                     Log.e(TAG, "Error getting nation data");
                     setTeamData(constructor, null, driverOne, driverTwo);
                 }
             });
-        }catch (RuntimeException e) {
+        } catch (RuntimeException e) {
             Log.e(TAG, "Error fetching nation data: " + e.getMessage());
             setTeamData(constructor, null, driverOne, driverTwo);
         }
@@ -279,7 +279,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
             nationFlagUrl = nation.getNation_flag_url();
         }
 
-        UIUtils.loadSequenceOfImagesWithGlide(this,
+        UIUtils.loadImagesInParallel(this,
                 new String[]{team.getTeam_logo_url(), nationFlagUrl, team.getCar_pic_url(), driverOne.getDriver_pic_url(), driverTwo.getDriver_pic_url()},
                 new ImageView[]{findViewById(R.id.team_logo_image), findViewById(R.id.team_flag), findViewById(R.id.team_car_image), findViewById(R.id.driver_1_image), findViewById(R.id.driver_2_image)},
                 () -> setTeamDataFinalStep(team));

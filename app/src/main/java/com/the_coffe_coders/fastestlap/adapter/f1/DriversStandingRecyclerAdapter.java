@@ -75,7 +75,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
             driverStandingsElement = driversStandingList.get(position);
         }
 
-        try{
+        try {
             driverViewModel.getDriver(driverStandingsElement.getDriver().getDriverId()).observe(lifecycleOwner, result -> {
                 if (result instanceof Result.Loading) {
                     return;
@@ -124,7 +124,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
                     UIUtils.loadImageWithGlide(context, driver.getDriver_pic_url(), holder.driverImage, () ->
                             generateForConstructor(holder, driver, position));
 
-                }else{
+                } else {
                     showDriverNotFound(holder, driverStandingsElement.getDriver().getDriverId());
                 }
             });
@@ -145,7 +145,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
         holder.driverNotFound.setVisibility(View.VISIBLE);
         Log.i("DriversStandingAdapter", "Driver not found id test: " + driverId + " -> " + driverId.contains("_"));
 
-        if(driverId.contains("_")) {
+        if (driverId.contains("_")) {
             driverId = driverId.split("_")[1];
         }
 
@@ -174,11 +174,11 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
                 Constructor constructor = ((Result.ConstructorSuccess) result).getData();
 
                 UIUtils.loadImageWithGlide(context, constructor.getTeam_logo_minimal_url(), holder.driverTeamImage, () -> {
-
-                    loadingScreen.updateProgress();
-
                     Log.i("DriversStanding", "onBindViewHolder " + position + "/" + getItemCount());
-                    loadingScreen.hideLoadingScreenWithCondition(position == getItemCount() - 1);
+                    // Only hide loading screen when the last item is fully loaded
+                    if (position == getItemCount() - 1) {
+                        loadingScreen.hideLoadingScreen();
+                    }
                 });
             }
         });

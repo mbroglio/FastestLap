@@ -101,7 +101,6 @@
 
     <!-- ERRORS WITH REDIRECTION -->
     <string name="no_map_app_found">No map app found</string>
-    <string name="no_browser_found">No browser found</string>
 
     <!-- PROFILE PAGE STRINGS -->
     <string name="remember_me">Remember Me</string>
@@ -113,8 +112,6 @@
     <string name="password">Password</string>
     <string name="missing_password">Forgot your password?</string>
     <string name="login">Login</string>
-    <string name="or">or</string>
-    <string name="login_with_google">Login with Google</string>
     <string name="not_registered">Not registered yet?</string>
     <string name="register">Register</string>
     <string name="registration">Registration</string>
@@ -142,8 +139,6 @@
     <string name="english_language_abbr_upper_case">ENG</string>
     <string name="language_set">Language successfully set to %1$s</string>
 
-    <string name="race_results">Race Results</string>
-    <string name="race_results_title">%1$s Results</string>
     <string name="close">Close</string>
     <string name="fastest_lap_upper_case">FASTEST LAP</string>
     <string name="lap">Lap %1$s</string>
@@ -161,7 +156,6 @@
     <string name="link_error">Failed to open link</string>
 
     <string name="just_now">just now</string>
-    <string name="no_internet_connection">no internet connection</string>
     <plurals name="minutes_ago">
         <item quantity="one">%d minute ago</item>
         <item quantity="other">%d minutes ago</item>
@@ -187,7 +181,6 @@
         <item quantity="other">%d years ago</item>
     </plurals>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="no_internet_connection_upper_case">NO INTERNET CONNECTION</string>
     <string name="sprint_upper_case">SPRINT</string>
     <string name="feature_upper_case">FEATURE</string>

@@ -1,9 +1,6 @@
 package com.the_coffe_coders.fastestlap.ui.profile;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.DialogFragment;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,13 +8,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
+import androidx.fragment.app.DialogFragment;
+
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
-import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.Objects;
 
@@ -68,11 +66,12 @@ public class LoginFragment extends DialogFragment {
     }
 
     private void manageLogin(String email, String password) {
-        if(networkLiveData.isConnected()){
+        if (networkLiveData.isConnected()) {
             if (password != null && isPasswordOk(password)) {
-                mAuth.signInWithEmailAndPassword(email,password)
+                mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(getActivity(), task -> {
-                            if (task.isSuccessful()) {Log.d("LoginFragment", "signInWithEmail:success");
+                            if (task.isSuccessful()) {
+                                Log.d("LoginFragment", "signInWithEmail:success");
                                 NavigationUtils.navigateToHomePage(getContext());
                             } else {
                                 Log.e("LoginFragment", "signInWithEmail:failure", task.getException());
@@ -80,10 +79,10 @@ public class LoginFragment extends DialogFragment {
                                         Toast.LENGTH_SHORT).show();
                             }
                         });
-            }else{
+            } else {
                 Toast.makeText(getContext(), "Invalid password", Toast.LENGTH_SHORT).show();
             }
-        }else{
+        } else {
             Toast.makeText(getContext(), "No internet connection", Toast.LENGTH_SHORT).show();
         }
 
