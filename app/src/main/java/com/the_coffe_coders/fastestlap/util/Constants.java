@@ -56,6 +56,7 @@ public class Constants {
         put("sauber", R.color.kick_f1);
         put("williams", R.color.williams_f1);
         put("rb", R.color.racing_bulls_f1); // Racing Bulls
+        put("audi", R.color.audi_f1);
     }};
 
     public static final Map<String, Integer> TEAM_GRADIENT_COLOR = new HashMap<>() {{
@@ -69,6 +70,21 @@ public class Constants {
         put("sauber", R.drawable.gradient_color_sauber);
         put("williams", R.drawable.gradient_color_williams);
         put("rb", R.drawable.gradient_color_rb); // Racing Bulls
+        put("audi", R.drawable.gradient_color_audi);
+    }};
+
+    public static final Map<String, Integer> JUNIOR_TEAM_GRADIENT_COLOR = new HashMap<>() {{
+        put("dams", R.drawable.gradient_color_dams);
+        put("prema", R.drawable.gradient_color_prema_racing);
+        put("trident", R.drawable.gradient_color_trident);
+        put("hitech", R.drawable.gradient_color_hitech);
+        put("campos", R.drawable.gradient_color_campos_racing);
+        put("aix", R.drawable.gradient_color_aix_racing);
+        put("van_amersfoort", R.drawable.gradient_color_van_amersfoort_racing);
+        put("rodin", R.drawable.gradient_color_rodin_motorsport);
+        put("invicta", R.drawable.gradient_color_invicta_racing);
+        put("art", R.drawable.gradient_color_art_grand_prix);
+        put("mp_motorsport", R.drawable.gradient_color_mp_motorsport);
     }};
 
     public static final String[] SESSIONS = {
@@ -276,5 +292,6 @@ public class Constants {
     public static final String FIREBASE_TEAMS_COLLECTION = "teams";
     public static final String FIREBASE_CIRCUITS_COLLECTION = "circuits";
     public static final String FIREBASE_NATIONS_COLLECTION = "nations";
-
+    public static final String FIREBASE_JUNIOR_COLLECTION = "junior_categories";
+    public static final String FIREBASE_CIRCUIT_MAP_COLLECTION="app_config/circuit_name_id_map";
 }

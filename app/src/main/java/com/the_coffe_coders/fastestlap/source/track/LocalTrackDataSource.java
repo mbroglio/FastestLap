@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.database.TrackDAO;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
+import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
 import com.the_coffe_coders.fastestlap.repository.track.TrackCallback;
 
 public class LocalTrackDataSource implements TrackDataSource {

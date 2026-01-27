@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.repository.weeklyrace.WeeklyRaceRepository;
+import com.the_coffe_coders.fastestlap.repository.f1.weeklyrace.WeeklyRaceRepository;
 
 public class WeeklyRaceViewModel extends ViewModel {
     private final MutableLiveData<String> errorLiveData = new MutableLiveData<>();

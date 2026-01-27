@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/newsFragment"
-        android:icon="@drawable/newspaper_2"
+        android:icon="@drawable/newspaper"
         android:title="@string/news_menu" />
 
     <item
@@ -23,6 +23,6 @@
 
     <item
         android:id="@+id/juniorCategoriesFragment"
-        android:icon="@drawable/formula_2_logo"
+        android:icon="@drawable/junior_icon"
         android:title="@string/junior_menu" />
 </menu>

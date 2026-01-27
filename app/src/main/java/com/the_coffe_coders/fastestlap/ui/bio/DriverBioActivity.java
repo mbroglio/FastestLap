@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,9 +24,9 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
-import com.the_coffe_coders.fastestlap.domain.driver.Driver;
-import com.the_coffe_coders.fastestlap.domain.driver.DriverHistory;
+import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
+import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
+import com.the_coffe_coders.fastestlap.domain.f1.driver.DriverHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
@@ -262,8 +263,15 @@ public class DriverBioActivity extends AppCompatActivity {
                 findViewById(R.id.topAppBarTitle));
 
         if (teamIdPresent) {
-            toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
-            appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+            int teamColor;
+            try{
+                teamColor = Constants.TEAM_COLOR.get(teamId);
+            }catch(Exception e){
+                teamColor = R.color.timer_gray;
+            }
+
+            toolbar.setBackgroundColor(ContextCompat.getColor(this, teamColor));
+            appBarLayout.setBackgroundColor(ContextCompat.getColor(this, teamColor));
 
             teamLogoCard.setOnClickListener(v ->
                     NavigationUtils.navigateToBioPage(this, team.getConstructorId(), 0));
@@ -275,8 +283,16 @@ public class DriverBioActivity extends AppCompatActivity {
 
     private void setDriverData(Driver driver, Nation nation, Constructor team, boolean teamIdPresent, String teamId) {
         if (teamIdPresent) {
-            teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
-            driverNumberCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+            int teamColor;
+            try{
+                teamColor = Constants.TEAM_COLOR.get(teamId);
+            }catch(Exception e){
+                teamColor = R.color.timer_gray;
+            }
+
+            teamLogoCard.setStrokeColor(ContextCompat.getColor(this, teamColor));
+            driverNumberCard.setStrokeColor(ContextCompat.getColor(this, teamColor));
+
             if (team.getConstructorId().equals("rb")) {
                 teamLogoCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white));
             }
@@ -337,11 +353,15 @@ public class DriverBioActivity extends AppCompatActivity {
     private void createHistoryTable() {
         loadingScreen.updateProgress();
 
+        LinearLayout driverHistoryLayout = findViewById(R.id.driver_history);
+
         TableLayout tableLayout = findViewById(R.id.history_table);
         tableLayout.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
 
         if (driver.getDriver_history() != null) {
+            driverHistoryLayout.setVisibility(View.VISIBLE);
+            tableLayout.setVisibility(View.VISIBLE);
 
             View tableHeader = inflater.inflate(R.layout.driver_bio_table_header, tableLayout, false);
             TableLayout.LayoutParams paramsHeader = (TableLayout.LayoutParams) tableHeader.getLayoutParams();
@@ -381,6 +401,10 @@ public class DriverBioActivity extends AppCompatActivity {
 
                 tableLayout.addView(tableRow);
             }
+        }else{
+            Log.e(TAG, "Driver history is null");
+            driverHistoryLayout.setVisibility(View.GONE);
+            tableLayout.setVisibility(View.GONE);
         }
         loadingScreen.hideLoadingScreen();
     }

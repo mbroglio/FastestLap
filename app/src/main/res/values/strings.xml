@@ -197,5 +197,16 @@
     <string name="news_menu">News</string>
     <string name="junior_menu">Junior</string>
     <string name="results_upper_case">RESULTS</string>
+    <string name="year">year</string>
+    <string name="pos" translatable="false">pos</string>
+    <string name="points">points</string>
+    <string name="wins_header">wins</string>
+    <string name="pod" translatable="false">pod</string>
+    <string name="calendar">calendar</string>
+    <string name="entry_list">entry list</string>
+    <string name="feature">feature</string>
+    <string name="drivers">drivers</string>
+    <string name="constructors">constructors</string>
+    <string name="content_not_available">content not available</string>
 
 </resources>

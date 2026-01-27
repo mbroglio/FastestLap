@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -21,8 +22,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.TrackHistory;
+import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
+import com.the_coffe_coders.fastestlap.domain.f1.track.TrackHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
@@ -140,9 +141,7 @@ public class TrackBioActivity extends AppCompatActivity {
                         track.getFirst_entry(),
                         track.getLaps(),
                         track.getLength(),
-                        track.getRace_distance(),
-                        track.getLap_record().split(" ")[0],
-                        track.getLap_record().substring(track.getLap_record().split(" ")[0].length() + 1)},
+                        track.getRace_distance()},
 
                 new TextView[]{
                         findViewById(R.id.circuit_name_value),
@@ -150,9 +149,23 @@ public class TrackBioActivity extends AppCompatActivity {
                         findViewById(R.id.circuit_first_entry_value),
                         findViewById(R.id.number_of_laps_value),
                         findViewById(R.id.circuit_length_value),
-                        findViewById(R.id.race_distance_value),
-                        findViewById(R.id.fastest_lap_value),
-                        findViewById(R.id.fastest_lap_driver)});
+                        findViewById(R.id.race_distance_value)});
+
+        if(track.getLap_record().equals("N/A")){
+            UIUtils.multipleSetTextViewText(
+                    new String[]{"N/A", "N/A"},
+                    new TextView[]{
+                            findViewById(R.id.fastest_lap_value),
+                            findViewById(R.id.fastest_lap_driver)});
+        }else{
+            UIUtils.multipleSetTextViewText(
+                    new String[]{
+                            track.getLap_record().split(" ")[0],
+                            track.getLap_record().substring(track.getLap_record().split(" ")[0].length() + 1)},
+                    new TextView[]{
+                            findViewById(R.id.fastest_lap_value),
+                            findViewById(R.id.fastest_lap_driver)});
+        }
 
         Button goToMapButton = findViewById(R.id.goToMapButton);
         goToMapButton.setOnClickListener(v ->
@@ -172,11 +185,16 @@ public class TrackBioActivity extends AppCompatActivity {
     private void createHistoryTable() {
         loadingScreen.updateProgress();
 
+        LinearLayout trackHistoryLayout = findViewById(R.id.track_history);
+
         TableLayout tableLayout = findViewById(R.id.history_table);
         tableLayout.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
 
         if (track.getTrack_history() != null) {
+            trackHistoryLayout.setVisibility(View.VISIBLE);
+            tableLayout.setVisibility(View.VISIBLE);
+
             View tableHeader = inflater.inflate(R.layout.track_bio_table_header, tableLayout, false);
             tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray_dark));
 
@@ -219,6 +237,10 @@ public class TrackBioActivity extends AppCompatActivity {
 
                 tableLayout.addView(tableRow);
             }
+        }else{
+            Log.e("TrackBioActivity", "Track history is null");
+            trackHistoryLayout.setVisibility(View.GONE);
+            tableLayout.setVisibility(View.GONE);
         }
         loadingScreen.hideLoadingScreen();
     }

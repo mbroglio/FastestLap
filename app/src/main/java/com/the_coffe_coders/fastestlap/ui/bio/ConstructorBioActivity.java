@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,9 +24,9 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
-import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorHistory;
-import com.the_coffe_coders.fastestlap.domain.driver.Driver;
+import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
+import com.the_coffe_coders.fastestlap.domain.f1.constructor.ConstructorHistory;
+import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
@@ -172,21 +173,28 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
                     UIUtils.singleSetTextViewText(constructor.getName().toUpperCase(), findViewById(R.id.topAppBarTitle));
 
-                    toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
-                    appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+                    int teamColor;
+                    try{
+                        teamColor = Constants.TEAM_COLOR.get(teamId);
+                    }catch (Exception e){
+                        teamColor = R.color.timer_gray;
+                    }
+
+                    toolbar.setBackgroundColor(ContextCompat.getColor(this, teamColor));
+                    appBarLayout.setBackgroundColor(ContextCompat.getColor(this, teamColor));
 
                     MaterialCardView teamLogoCard = findViewById(R.id.team_logo_card);
-                    teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+                    teamLogoCard.setStrokeColor(ContextCompat.getColor(this, teamColor));
 
                     if (teamId.equals("rb")) {
                         teamLogoCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white));
                     }
 
                     MaterialCardView driverCard = findViewById(R.id.driver_1_card);
-                    driverCard.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+                    driverCard.setCardBackgroundColor(ContextCompat.getColor(this, teamColor));
 
                     driverCard = findViewById(R.id.driver_2_card);
-                    driverCard.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+                    driverCard.setCardBackgroundColor(ContextCompat.getColor(this, teamColor));
 
                     // Check if this constructor is the favorite and update the icon
                     updateFavoriteIcon(teamId);
@@ -311,11 +319,16 @@ public class ConstructorBioActivity extends AppCompatActivity {
     private void createHistoryTable() {
         loadingScreen.updateProgress();
 
+        LinearLayout teamHistory = findViewById(R.id.team_history);
+
         TableLayout tableLayout = findViewById(R.id.history_table);
         tableLayout.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
 
-        if (constructor.getTeam_history() != null) {
+        if (constructor.getTeam_history() != null && !constructor.getTeam_history().isEmpty()) {
+            teamHistory.setVisibility(View.VISIBLE);
+            tableLayout.setVisibility(View.VISIBLE);
+
             View tableHeader = inflater.inflate(R.layout.constructor_bio_table_header, tableLayout, false);
             TableLayout.LayoutParams paramsHeader = (TableLayout.LayoutParams) tableHeader.getLayoutParams();
             paramsHeader.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
@@ -351,6 +364,10 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
                 tableLayout.addView(tableRow);
             }
+        }else{
+            Log.e(TAG, "Constructor history is null");
+            teamHistory.setVisibility(View.GONE);
+            tableLayout.setVisibility(View.GONE);
         }
 
         loadingScreen.hideLoadingScreen();

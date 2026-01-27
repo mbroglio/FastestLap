@@ -1,9 +1,9 @@
 package com.the_coffe_coders.fastestlap.mapper;
 
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRaceClassic;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRaceSprint;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRaceClassic;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRaceSprint;
 import com.the_coffe_coders.fastestlap.dto.RaceDTO;
 
 public class WeeklyRaceMapper {

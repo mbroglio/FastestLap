@@ -133,4 +133,8 @@
         <item quantity="other">%d anni fa</item>
         <item quantity="many" />
     </plurals>
+    <string name="year">anno</string>
+    <string name="points">punti</string>
+    <string name="wins_header">vittorie</string>
+    <string name="calendar">calendario</string>
 </resources>

@@ -23,7 +23,7 @@
             app:navigationIcon="@drawable/arrow_back_ios_style"
             app:title="@string/drivers_title_page_upper_case"
             app:titleCentered="true"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp" />
+            app:titleTextAppearance="@style/PageSuperTitleUpperCaseBlack" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -35,33 +35,34 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/top_bar_layout">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/drivers_standing_recycler_view"
+        <FrameLayout
+            android:id="@+id/drivers_standing_frame_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        </androidx.recyclerview.widget.RecyclerView>
-
-        <!--
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none">
-
-            <LinearLayout
-                android:id="@+id/driver_standing"
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/drivers_standing_recycler_view"
                 android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+            <TextView
+                android:id="@+id/drivers_standing_not_available"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginTop="@dimen/medium_margin"
+                android:text="DRIVERS STANDING NOT AVAILABLE"
+                style="@style/PageTitleUppercaseWhite"
+                android:gravity="center"
+                android:layout_gravity="center"
                 android:layout_marginEnd="@dimen/medium_margin"
-                android:orientation="vertical">
+                android:layout_marginStart="@dimen/medium_margin"
+                android:visibility="gone">
 
-            </LinearLayout>
+            </TextView>
 
-        </ScrollView>
-        -->
+        </FrameLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

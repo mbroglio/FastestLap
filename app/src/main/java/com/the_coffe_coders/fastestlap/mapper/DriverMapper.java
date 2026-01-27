@@ -1,7 +1,7 @@
 package com.the_coffe_coders.fastestlap.mapper;
 
-import com.the_coffe_coders.fastestlap.domain.driver.Driver;
-import com.the_coffe_coders.fastestlap.dto.DriverDTO;
+import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
+import com.the_coffe_coders.fastestlap.dto.standing.driver.DriverDTO;
 
 public class DriverMapper {
     public static Driver toDriver(DriverDTO driverDTO) {

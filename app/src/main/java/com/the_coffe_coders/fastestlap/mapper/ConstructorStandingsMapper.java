@@ -1,9 +1,12 @@
 package com.the_coffe_coders.fastestlap.mapper;
 
-import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
-import com.the_coffe_coders.fastestlap.dto.ConstructorStandingsDTO;
-import com.the_coffe_coders.fastestlap.dto.ConstructorStandingsElementDTO;
+import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandingsElement;
+import com.the_coffe_coders.fastestlap.dto.standing.constructor.ConstructorDTO;
+import com.the_coffe_coders.fastestlap.dto.standing.constructor.ConstructorStandingsDTO;
+import com.the_coffe_coders.fastestlap.dto.standing.constructor.ConstructorStandingsElementDTO;
+import com.the_coffe_coders.fastestlap.dto.standing.constructor.ConstructorTableDTO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,5 +32,15 @@ public class ConstructorStandingsMapper {
         constructorStandingsElement.setConstructor(ConstructorMapper.toConstructor(constructorStandingsElementDTO.getConstructor()));
         constructorStandingsElement.setWins(constructorStandingsElementDTO.getWins());
         return constructorStandingsElement;
+    }
+
+    public static List<Constructor> toConstructorList(ConstructorTableDTO constructorTable) {
+        List<Constructor> constructors = new ArrayList<>();
+
+        for (ConstructorDTO constructorDTO : constructorTable.getConstructorDTOList()) {
+            constructors.add(ConstructorMapper.toConstructor(constructorDTO));
+        }
+
+        return constructors;
     }
 }

@@ -5,6 +5,7 @@
     android:id="@+id/past_events_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/screen_background_color"
     tools:context=".ui.event.PastEventsActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -20,7 +21,7 @@
             app:navigationIcon="@drawable/arrow_back_ios_style"
             app:title="@string/results_upper_case"
             app:titleCentered="true"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp" />
+            app:titleTextAppearance="@style/PageSuperTitleUpperCaseBlack" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -32,12 +33,28 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/top_bar_layout">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/results_recycler_view"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-        </androidx.recyclerview.widget.RecyclerView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/results_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
+            <TextView
+                style="@style/PageTitleUppercaseWhite"
+                android:id="@+id/content_not_available_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="content not available">
+
+            </TextView>
+
+        </RelativeLayout>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

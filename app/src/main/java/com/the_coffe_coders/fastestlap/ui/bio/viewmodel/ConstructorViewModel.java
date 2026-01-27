@@ -4,8 +4,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
-import com.the_coffe_coders.fastestlap.repository.constructor.ConstructorRepository;
+import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
+import com.the_coffe_coders.fastestlap.repository.f1.constructor.ConstructorRepository;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

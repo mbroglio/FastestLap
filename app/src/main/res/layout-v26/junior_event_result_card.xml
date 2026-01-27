@@ -27,8 +27,26 @@
             android:layout_gravity="center"
             android:layout_marginStart="5dp">
 
+            <ImageView
+                android:id="@+id/event_nation_flag"
+                android:layout_width="45dp"
+                android:layout_height="35dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true">
+
+            </ImageView>
+
+            <View
+                android:id="@+id/empty_space_centering"
+                android:layout_width="45dp"
+                android:layout_height="35dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true">
+
+            </View>
+
             <TextView
-                android:id="@+id/past_round_number"
+                android:id="@+id/round_number"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -42,15 +60,19 @@
             </TextView>
 
             <TextView
-                android:id="@+id/past_gp_name"
+                android:id="@+id/gp_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/past_round_number"
+                android:layout_below="@id/round_number"
                 android:layout_centerInParent="true"
                 android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
                 android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                 android:autoSizeTextType="uniform"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
                 android:fontFamily="@font/orbitron_bold"
+                android:layout_toEndOf="@id/event_nation_flag"
+                android:layout_toStartOf="@id/empty_space_centering"
                 android:gravity="center"
                 android:maxLines="1"
                 android:text="@string/not_found"
@@ -65,7 +87,7 @@
                 android:layout_height="wrap_content"
                 android:baselineAligned="false"
                 android:orientation="horizontal"
-                android:layout_below="@id/past_gp_name"
+                android:layout_below="@id/gp_name"
                 android:layout_alignParentStart="true"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="8dp">
@@ -98,13 +120,13 @@
                         android:layout_height="wrap_content">
 
                         <include
-                            android:id="@+id/podium"
+                            android:id="@+id/sprint_podium"
                             layout="@layout/junior_race_podium_event_card"
                             android:visibility="visible"/>
 
                         <include
-                            android:id="@+id/feature_cancelled"
-                            layout="@layout/race_cancelled_layout_white"
+                            android:id="@+id/sprint_cancelled"
+                            layout="@layout/junior_race_cancelled_layout_white"
                             android:visibility="gone"/>
 
                     </FrameLayout>
@@ -123,7 +145,7 @@
                 <LinearLayout
                     android:id="@+id/feature_race_layout"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:orientation="vertical"
                     android:layout_marginStart="8dp"
                     android:layout_weight="1">
@@ -146,17 +168,17 @@
                     <FrameLayout
                         android:id="@+id/feature_race_podium_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="match_parent">
 
                         <include
-                            android:id="@+id/podium"
+                            android:id="@+id/feature_podium"
                             layout="@layout/junior_race_podium_event_card"
-                            android:visibility="visible"/>
+                            android:visibility="gone" />
 
                         <include
                             android:id="@+id/feature_cancelled"
-                            layout="@layout/race_cancelled_layout_white"
-                            android:visibility="gone"/>
+                            layout="@layout/junior_race_cancelled_layout_white"
+                            android:visibility="visible" />
 
                     </FrameLayout>
 
@@ -169,7 +191,7 @@
                 android:id="@+id/pending_results_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/past_gp_name"
+                android:layout_below="@id/gp_name"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="30dp"
                 android:fontFamily="@font/orbitron_bold"

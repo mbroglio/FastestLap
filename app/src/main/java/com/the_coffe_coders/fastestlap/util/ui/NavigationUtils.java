@@ -11,7 +11,10 @@ import android.widget.Toast;
 import androidx.fragment.app.FragmentManager;
 
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.junior.result.FeatureRace;
+import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorResultElement;
+import com.the_coffe_coders.fastestlap.domain.junior.result.SprintRace;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
@@ -128,26 +131,41 @@ public class NavigationUtils {
 
 
     public static void showEntryListDialog(FragmentManager fragmentManager, int categoryType) {
-        showJuniorDialog(fragmentManager, categoryType, 0);
+        showJuniorDialog(fragmentManager, categoryType, -1, 0, null, null, null);
     }
 
     public static void showCalendarDialog(FragmentManager fragmentManager, int categoryType) {
-        showJuniorDialog(fragmentManager, categoryType, 1);
+        showJuniorDialog(fragmentManager, categoryType, -1, 1, null, null, null);
     }
 
     public static void showDriversStandingDialog(FragmentManager fragmentManager, int categoryType) {
-        showJuniorDialog(fragmentManager, categoryType, 2);
+        showJuniorDialog(fragmentManager, categoryType, -1, 2, null, null, null);
     }
 
     public static void showConstructorsStandingDialog(FragmentManager fragmentManager, int categoryType) {
-        showJuniorDialog(fragmentManager, categoryType, 3);
+        showJuniorDialog(fragmentManager, categoryType, -1, 3, null, null, null);
     }
 
-    private static void showJuniorDialog(FragmentManager fragmentManager, int categoryType, int content){
+    public static void showFullResultsDialogFeature(String circuit, FeatureRace featureRace, FragmentManager fragmentManager, int categoryType, int raceType) {
+        showJuniorDialog(fragmentManager, categoryType, raceType, 4, featureRace, null, circuit);
+    }
+
+    public static void showFullResultsDialogSprint(String circuit, SprintRace sprintRace, FragmentManager fragmentManager, int categoryType, int raceType) {
+        showJuniorDialog(fragmentManager, categoryType, raceType, 4, null, sprintRace, circuit);
+    }
+
+
+    private static void showJuniorDialog(FragmentManager fragmentManager,
+                                         int categoryType, int raceType, int content,
+                                         FeatureRace featureRace, SprintRace sprintRace, String circuit){
         JuniorDialogFragment juniorDialogFragment = new JuniorDialogFragment();
         Bundle args = new Bundle();
         args.putInt("CATEGORY_TYPE", categoryType);
+        args.putInt("RACE_TYPE", raceType);
         args.putInt("CONTENT", content);
+        args.putParcelable("JUNIOR_SPRINT_RACE", sprintRace);
+        args.putParcelable("JUNIOR_FEATURE_RACE", featureRace);
+        args.putString("CIRCUIT", circuit);
         juniorDialogFragment.setArguments(args);
         juniorDialogFragment.show(fragmentManager, "JuniorDialogFragment");
     }

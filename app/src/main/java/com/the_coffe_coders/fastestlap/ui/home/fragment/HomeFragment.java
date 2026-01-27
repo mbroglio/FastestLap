@@ -24,17 +24,17 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
-import com.the_coffe_coders.fastestlap.domain.driver.Driver;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Practice;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
+import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandingsElement;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandings;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandingsElement;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Practice;
+import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResult;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Session;
+import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
@@ -89,6 +89,8 @@ public class HomeFragment extends Fragment {
     private NetworkUtils networkLiveData;
     private int loadingCounter = 0;
     private Boolean previousNetworkState = null;
+
+    private String nextRaceRound;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -187,8 +189,8 @@ public class HomeFragment extends Fragment {
         }
 
         setRefreshLayout(view);
-        setLastRaceCard(view);
         setNextSessionCard(view);
+        setLastRaceCard(view);
     }
 
     private void setRefreshLayout(View view) {
@@ -206,6 +208,169 @@ public class HomeFragment extends Fragment {
         }
     }
 
+    private void setNextSessionCard(View view) {
+        decrementLoadingCounter();
+
+        LiveData<Result> nextRaceLiveData = weeklyRaceViewModel.getNextRaceLiveData();
+        try {
+            nextRaceLiveData.observe(getViewLifecycleOwner(), result -> {
+
+                try {
+                    if (result instanceof Result.Loading) {
+                        return;
+                    }
+                    if (result.isSuccess()) {
+                        WeeklyRace nextRace = ((Result.NextRaceSuccess) result).getData();
+                        Log.i(TAG, "Next race: " + nextRace.getRound());
+                        nextRaceRound = nextRace.getRound();
+                        processNextRace(view, nextRace);
+                    } else {
+                        throw new Exception("Failed to fetch next race: " + result.getError());
+                    }
+                } catch (Exception e) {
+                    if(networkLiveData.isConnected()){
+                        Log.e(TAG, "Error in setNextSessionCard: " + e.getMessage());
+                        setSeasonEnded(view);
+                    }else{
+                        Log.e(TAG, "Error in setNextSessionCard: No internet connection");
+                        setUpdating(view);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            if(networkLiveData.isConnected()){
+                Log.e(TAG, "Error in setNextSessionCard: " + e.getMessage());
+                setSeasonEnded(view);
+            }else{
+                Log.e(TAG, "Error in setNextSessionCard: No internet connection");
+                setUpdating(view);
+            }
+        }
+
+        ImageView iconImageView = view.findViewById(R.id.live_icon);
+        Animation pulseAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.pulse_static);
+        iconImageView.startAnimation(pulseAnimation);
+    }
+
+    private void processNextRace(View view, WeeklyRace nextRace) {
+        decrementLoadingCounter();
+        try {
+            if (nextRace == null) throw new Exception("Next race is null");
+            if(!nextRace.getSeason().equals(ServiceLocator.currentYear)) throw new Exception("Season mismatch");
+            MutableLiveData<Result> trackData = trackViewModel.getTrack(nextRace.getTrack().getTrackId());
+            trackData.observe(getViewLifecycleOwner(), trackResult -> {
+                try {
+                    if (trackResult instanceof Result.Loading) {
+                        return;
+                    }
+                    if (trackResult.isSuccess()) {
+                        Track track = ((Result.TrackSuccess) trackResult).getData();
+                        nextRace.setTrack(track);
+                        fetchNationForNextRace(view, nextRace, track);
+                    } else {
+                        throw new Exception("Failed to fetch track data: " + trackResult.getError());
+                    }
+                } catch (Exception e) {
+                    if(networkLiveData.isConnected()){
+                        Log.e(TAG, "Error in processNextRace: " + e.getMessage());
+                        setSeasonEnded(view);
+                    }else{
+                        Log.e(TAG, "Error in processNextRace: No internet connection");
+                        setUpdating(view);
+                    }
+                }
+            });
+        } catch (Exception e) {
+            if(networkLiveData.isConnected()){
+                Log.e(TAG, "Error in processNextRace: " + e.getMessage());
+                setSeasonEnded(view);
+            }else{
+                if(Objects.equals(e.getMessage(), "Season mismatch")) setSeasonEnded(view);
+                Log.e(TAG, "Error in processNextRace: No internet connection");
+                setUpdating(view);
+            }
+        }
+    }
+
+    private void fetchNationForNextRace(View view, WeeklyRace nextRace, Track track) {
+        decrementLoadingCounter();
+        try{
+            MutableLiveData<Result> nationData = nationViewModel.getNation(track.getCountry());
+            nationData.observe(getViewLifecycleOwner(), nationResult -> {
+                try {
+                    if (nationResult instanceof Result.Loading) {
+                        return;
+                    }
+                    if (nationResult.isSuccess()) {
+                        Nation nation = ((Result.NationSuccess) nationResult).getData();
+                        setNextRaceCard(view, nextRace, nation);
+                    } else {
+                        throw new Exception("Failed to fetch nation data: " + nationResult.getError());
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error fetching nation: " + e.getMessage());
+                    setSeasonEnded(view);
+                }
+            });
+        }catch (RuntimeException e) {
+            Log.e(TAG, "Error fetching nation: " + e.getMessage());
+            setNextRaceCard(view, nextRace, null);
+        }
+
+    }
+
+    private void setNextRaceCard(View view, WeeklyRace nextRace, Nation nation) {
+        decrementLoadingCounter();
+        try {
+            UIUtils.singleSetTextViewText(nextRace.getRaceName(), view.findViewById(R.id.home_next_gp_name));
+
+            String nationFlagUrl = null;
+            if(nation != null) {
+                nationFlagUrl = nation.getNation_flag_url();
+            }
+
+            UIUtils.loadImageWithGlide(requireContext(), nationFlagUrl, view.findViewById(R.id.home_next_gp_flag), () -> {
+                try {
+                    setNextRaceCardFinalStep(nextRace, view);
+                } catch (Exception e) {
+                    setSeasonEnded(view);
+                }
+            });
+
+        } catch (Exception e) {
+            Log.i(TAG, "connected: " + networkLiveData.isConnected());
+            if(networkLiveData.isConnected()){
+                setSeasonEnded(view);
+                Log.e(TAG, "Error in setNextRaceCard: " + e.getMessage());
+            }else{
+                Log.e(TAG, "Error in setNextRaceCard: No internet connection");
+                loadPendingResultsLayout(view);
+            }
+
+        }
+    }
+
+    private void setNextRaceCardFinalStep(WeeklyRace nextRace, View view) throws Exception {
+        decrementLoadingCounter();
+        Log.i(TAG, "next race season: " + nextRace.getSeason());
+        if (!nextRace.getSeason().equals(ServiceLocator.currentYear)) {
+            throw new Exception("Season mismatch");
+        }
+
+        List<Session> sessions = nextRace.getSessions();
+        Session nextEvent = nextRace.findNextEvent(sessions);
+        if (nextEvent != null) {
+            startCountdown(view, nextEvent.getStartDateTime());
+            updateSessionType(view, nextEvent);
+        } else {
+            setUpdating(view);
+        }
+
+        FrameLayout nextSessionCard = view.findViewById(R.id.timer_card_countdown);
+        nextSessionCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), EventActivity.class).putExtra("CIRCUIT_ID", nextRace.getTrack().getTrackId())));
+
+    }
+
     private void setLastRaceCard(View view) {
         LiveData<Result> lastRace = weeklyRaceViewModel.getLastRace();
         lastRace.observe(getViewLifecycleOwner(), result -> {
@@ -216,6 +381,11 @@ public class HomeFragment extends Fragment {
                 if (result.isSuccess()) {
                     WeeklyRace raceResult = ((Result.NextRaceSuccess) result).getData();
                     Log.i(TAG, "Last Race: " + raceResult);
+
+                    if(raceResult.getRound().equals(nextRaceRound)){
+                        showLastRaceNotFound(view);
+                    }
+
                     showPodium(view, raceResult);
                 } else {
                     throw new Exception("Failed to fetch last race: " + result.getError());
@@ -311,164 +481,6 @@ public class HomeFragment extends Fragment {
         view.findViewById(R.id.last_race_results).setVisibility(View.GONE);
     }
 
-    private void setNextSessionCard(View view) {
-        decrementLoadingCounter();
-
-        LiveData<Result> nextRaceLiveData = weeklyRaceViewModel.getNextRaceLiveData();
-        try {
-            nextRaceLiveData.observe(getViewLifecycleOwner(), result -> {
-
-                try {
-                    if (result instanceof Result.Loading) {
-                        return;
-                    }
-                    if (result.isSuccess()) {
-                        WeeklyRace nextRace = ((Result.NextRaceSuccess) result).getData();
-                        processNextRace(view, nextRace);
-                    } else {
-                        throw new Exception("Failed to fetch next race: " + result.getError());
-                    }
-                } catch (Exception e) {
-                    if(networkLiveData.isConnected()){
-                        Log.e(TAG, "Error in setNextSessionCard: " + e.getMessage());
-                        setSeasonEnded(view);
-                    }else{
-                        Log.e(TAG, "Error in setNextSessionCard: No internet connection");
-                        setUpdating(view);
-                    }
-                }
-            });
-        } catch (Exception e) {
-            if(networkLiveData.isConnected()){
-                Log.e(TAG, "Error in setNextSessionCard: " + e.getMessage());
-                setSeasonEnded(view);
-            }else{
-                Log.e(TAG, "Error in setNextSessionCard: No internet connection");
-                setUpdating(view);
-            }
-        }
-
-        ImageView iconImageView = view.findViewById(R.id.live_icon);
-        Animation pulseAnimation = AnimationUtils.loadAnimation(getContext(), R.anim.pulse_static);
-        iconImageView.startAnimation(pulseAnimation);
-    }
-
-    private void processNextRace(View view, WeeklyRace nextRace) {
-        decrementLoadingCounter();
-        try {
-            if (nextRace == null) throw new Exception("Next race is null");
-            MutableLiveData<Result> trackData = trackViewModel.getTrack(nextRace.getTrack().getTrackId());
-            trackData.observe(getViewLifecycleOwner(), trackResult -> {
-                try {
-                    if (trackResult instanceof Result.Loading) {
-                        return;
-                    }
-                    if (trackResult.isSuccess()) {
-                        Track track = ((Result.TrackSuccess) trackResult).getData();
-                        nextRace.setTrack(track);
-                        fetchNationForNextRace(view, nextRace, track);
-                    } else {
-                        throw new Exception("Failed to fetch track data: " + trackResult.getError());
-                    }
-                } catch (Exception e) {
-                    if(networkLiveData.isConnected()){
-                        Log.e(TAG, "Error in processNextRace: " + e.getMessage());
-                        setSeasonEnded(view);
-                    }else{
-                        Log.e(TAG, "Error in processNextRace: No internet connection");
-                        setUpdating(view);
-                    }
-                }
-            });
-        } catch (Exception e) {
-            if(networkLiveData.isConnected()){
-                Log.e(TAG, "Error in processNextRace: " + e.getMessage());
-                setSeasonEnded(view);
-            }else{
-                Log.e(TAG, "Error in processNextRace: No internet connection");
-                setUpdating(view);
-            }
-        }
-    }
-
-    private void fetchNationForNextRace(View view, WeeklyRace nextRace, Track track) {
-        decrementLoadingCounter();
-        try{
-            MutableLiveData<Result> nationData = nationViewModel.getNation(track.getCountry());
-            nationData.observe(getViewLifecycleOwner(), nationResult -> {
-                try {
-                    if (nationResult instanceof Result.Loading) {
-                        return;
-                    }
-                    if (nationResult.isSuccess()) {
-                        Nation nation = ((Result.NationSuccess) nationResult).getData();
-                        setNextRaceCard(view, nextRace, nation);
-                    } else {
-                        throw new Exception("Failed to fetch nation data: " + nationResult.getError());
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, "Error fetching nation: " + e.getMessage());
-                    setSeasonEnded(view);
-                }
-            });
-        }catch (RuntimeException e) {
-            Log.e(TAG, "Error fetching nation: " + e.getMessage());
-            setNextRaceCard(view, nextRace, null);
-        }
-
-    }
-
-    private void setNextRaceCard(View view, WeeklyRace nextRace, Nation nation) {
-        decrementLoadingCounter();
-        try {
-            UIUtils.singleSetTextViewText(nextRace.getRaceName(), view.findViewById(R.id.home_next_gp_name));
-
-            String nationFlagUrl = null;
-            if(nation != null) {
-                nationFlagUrl = nation.getNation_flag_url();
-            }
-
-            UIUtils.loadImageWithGlide(requireContext(), nationFlagUrl, view.findViewById(R.id.home_next_gp_flag), () -> {
-                try {
-                    setNextRaceCardFinalStep(nextRace, view);
-                } catch (Exception e) {
-                    throw new RuntimeException(e);
-                }
-            });
-
-        } catch (Exception e) {
-            Log.i(TAG, "connected: " + networkLiveData.isConnected());
-            if(networkLiveData.isConnected()){
-                setSeasonEnded(view);
-                Log.e(TAG, "Error in setNextRaceCard: " + e.getMessage());
-            }else{
-                Log.e(TAG, "Error in setNextRaceCard: No internet connection");
-                loadPendingResultsLayout(view);
-            }
-
-        }
-    }
-
-    private void setNextRaceCardFinalStep(WeeklyRace nextRace, View view) throws Exception {
-        decrementLoadingCounter();
-        if (!nextRace.getSeason().equals(ServiceLocator.currentYear)) {
-            throw new Exception("Season mismatch");
-        }
-
-        List<Session> sessions = nextRace.getSessions();
-        Session nextEvent = nextRace.findNextEvent(sessions);
-        if (nextEvent != null) {
-            startCountdown(view, nextEvent.getStartDateTime());
-            updateSessionType(view, nextEvent);
-        } else {
-            setUpdating(view);
-        }
-
-        FrameLayout nextSessionCard = view.findViewById(R.id.timer_card_countdown);
-        nextSessionCard.setOnClickListener(v -> startActivity(new Intent(getActivity(), EventActivity.class).putExtra("CIRCUIT_ID", nextRace.getTrack().getTrackId())));
-
-    }
-
     private void updateSessionType(View view, Session nextEvent) {
         String sessionId = nextEvent.getClass().getSimpleName().equals("Practice") ? "Practice" + ((Practice) nextEvent).getNumber() : nextEvent.getClass().getSimpleName();
         TextView sessionTypeView = view.findViewById(R.id.next_session_type);
@@ -510,6 +522,15 @@ public class HomeFragment extends Fragment {
         }.start();
     }
 
+    private void showLastRaceNotFound(View view) {
+        decrementLoadingCounter();
+
+        view.findViewById(R.id.last_race_results).setVisibility(View.GONE);
+        view.findViewById(R.id.season_results).setVisibility(View.GONE);
+        view.findViewById(R.id.pending_last_race_results).setVisibility(View.GONE);
+        view.findViewById(R.id.last_race_not_found_layout).setVisibility(View.VISIBLE);
+    }
+    
     private void setSeasonEnded(View view) {
         decrementLoadingCounter();
 
@@ -518,6 +539,7 @@ public class HomeFragment extends Fragment {
         view.findViewById(R.id.season_ended).setVisibility(View.VISIBLE);
         view.findViewById(R.id.season_results).setVisibility(View.VISIBLE);
         view.findViewById(R.id.pending_last_race_results).setVisibility(View.GONE);
+        view.findViewById(R.id.last_race_not_found_layout).setVisibility(View.GONE);
 
         buildFinalDriversStanding(view.findViewById(R.id.season_results));
         buildFinalTeamsStanding(view.findViewById(R.id.season_results));

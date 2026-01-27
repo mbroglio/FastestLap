@@ -5,11 +5,6 @@ import android.widget.ScrollView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
@@ -17,7 +12,9 @@ import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 public class Formula3Activity extends AppCompatActivity {
+    private static final String TAG = "Formula3Activity";
 
+    private final String series = "f3";
     private int categoryType;
 
     @Override
@@ -42,7 +39,7 @@ public class Formula3Activity extends AppCompatActivity {
     }
 
     private void setupPage() {
-        ScrollView layout = findViewById(R.id.junior_layout);
+        ScrollView layout = findViewById(R.id.f3_layout);
         UIUtils.applyWindowInsets(layout);
 
         MaterialCardView entryListCard, calendarCard, resultsCard, driversStandingCard, constructorsStandingCard;
@@ -52,27 +49,25 @@ public class Formula3Activity extends AppCompatActivity {
         driversStandingCard = findViewById(R.id.f3_drivers_standing_card);
         constructorsStandingCard = findViewById(R.id.f3_constructors_standing_card);
 
-        entryListCard.setOnClickListener(v -> {}
-                //NavigationUtils.showEntryListDialog(getSupportFragmentManager(), categoryType)
-                //content = entryList
+        entryListCard.setOnClickListener(v ->
+                NavigationUtils.showEntryListDialog(getSupportFragmentManager(), categoryType)
         );
 
-        calendarCard.setOnClickListener(v -> {}
-                //NavigationUtils.showCalendarDialog(getSupportFragmentManager(), categoryType)
+        calendarCard.setOnClickListener(v ->
+                NavigationUtils.showCalendarDialog(getSupportFragmentManager(), categoryType)
         );
 
         resultsCard.setOnClickListener(v ->
                 NavigationUtils.navigateToJuniorResultsPage(this, categoryType)
         );
 
-        driversStandingCard.setOnClickListener(v -> {}
-                //NavigationUtils.showDriversStandingDialog(getSupportFragmentManager(this, categoryType)
+        driversStandingCard.setOnClickListener(v ->
+                NavigationUtils.showDriversStandingDialog(getSupportFragmentManager(), categoryType)
         );
 
-        constructorsStandingCard.setOnClickListener(v -> {}
-                //NavigationUtils.showConstructorsStandingDialog(getSupportFragmentManager(this, categoryType)
+        constructorsStandingCard.setOnClickListener(v ->
+                NavigationUtils.showConstructorsStandingDialog(getSupportFragmentManager(), categoryType)
         );
-
 
 
     }

@@ -49,25 +49,24 @@ public class Formula2Activity extends AppCompatActivity {
         driversStandingCard = findViewById(R.id.f2_drivers_standing_card);
         constructorsStandingCard = findViewById(R.id.f2_constructors_standing_card);
 
-        entryListCard.setOnClickListener(v -> {}
-                //NavigationUtils.showEntryListDialog(getSupportFragmentManager(), categoryType)
-                    //content = entryList
+        entryListCard.setOnClickListener(v ->
+                NavigationUtils.showEntryListDialog(getSupportFragmentManager(), categoryType)
         );
 
-        calendarCard.setOnClickListener(v -> {}
-                //NavigationUtils.showCalendarDialog(getSupportFragmentManager(), categoryType)
+        calendarCard.setOnClickListener(v ->
+                NavigationUtils.showCalendarDialog(getSupportFragmentManager(), categoryType)
         );
 
         resultsCard.setOnClickListener(v ->
                 NavigationUtils.navigateToJuniorResultsPage(this, categoryType)
         );
 
-        driversStandingCard.setOnClickListener(v -> {}
-                //NavigationUtils.showDriversStandingDialog(getSupportFragmentManager(this, categoryType)
+        driversStandingCard.setOnClickListener(v ->
+                NavigationUtils.showDriversStandingDialog(getSupportFragmentManager(), categoryType)
         );
 
-        constructorsStandingCard.setOnClickListener(v -> {}
-                //NavigationUtils.showConstructorsStandingDialog(getSupportFragmentManager(this, categoryType)
+        constructorsStandingCard.setOnClickListener(v ->
+                NavigationUtils.showConstructorsStandingDialog(getSupportFragmentManager(), categoryType)
         );
 
 

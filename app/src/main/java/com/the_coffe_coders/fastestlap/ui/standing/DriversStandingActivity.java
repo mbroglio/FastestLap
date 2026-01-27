@@ -2,6 +2,8 @@ package com.the_coffe_coders.fastestlap.ui.standing;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,10 +15,11 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.adapter.DriversStandingRecyclerAdapter;
+import com.the_coffe_coders.fastestlap.adapter.f1.DriversStandingRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
+import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandings;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
@@ -24,7 +27,6 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.viewmodel.DriverStandingsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
-import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.List;
@@ -32,12 +34,15 @@ import java.util.List;
 public class DriversStandingActivity extends AppCompatActivity {
 
     private static final String TAG = "DriverCardActivity";
-    private DriverStandings driverStandings;
     private LoadingScreen loadingScreen;
     private DriverViewModel driverViewModel;
     private DriverStandingsViewModel driverStandingsViewModel;
     private ConstructorViewModel constructorViewModel;
     private SwipeRefreshLayout driverStandingLayout;
+    private RecyclerView driversStandingRecyclerView;
+    private TextView standingsNotAvailableTextView;
+    private DriversStandingRecyclerAdapter driversStandingAdapter;
+
     private String driverId;
 
     @Override
@@ -48,6 +53,7 @@ public class DriversStandingActivity extends AppCompatActivity {
 
         driverId = getIntent().getStringExtra("DRIVER_ID");
         driverStandingLayout = findViewById(R.id.driver_standing_layout);
+        UIUtils.applyWindowInsets(driverStandingLayout);
 
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, driverStandingLayout, null);
 
@@ -56,19 +62,13 @@ public class DriversStandingActivity extends AppCompatActivity {
     }
 
     private void start() {
-        Log.i(TAG, "STARTING DRIVER STANDINGS ACTIVITY");
-
         loadingScreen.showLoadingScreen(false);
 
         initializeViewModels();
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-
         UIUtils.applyWindowInsets(toolbar);
-
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
-
-        UIUtils.applyWindowInsets(driverStandingLayout);
 
         driverStandingLayout.setOnRefreshListener(() -> {
             start();
@@ -85,6 +85,9 @@ public class DriversStandingActivity extends AppCompatActivity {
     }
 
     private void setupPage() {
+        driversStandingRecyclerView = findViewById(R.id.drivers_standing_recycler_view);
+        standingsNotAvailableTextView = findViewById(R.id.drivers_standing_not_available);
+
         MutableLiveData<Result> livedata = driverStandingsViewModel.getDriverStandingsLiveData();
 
         livedata.observe(this, result -> {
@@ -93,29 +96,67 @@ public class DriversStandingActivity extends AppCompatActivity {
             }
             if (result.isSuccess()) {
                 Log.i(TAG, "DRIVER STANDINGS SUCCESS");
-                driverStandings = ((Result.DriverStandingsSuccess) result).getData();
+                DriverStandings driverStandings;
+                try{
+                    driverStandings = ((Result.DriverStandingsSuccess) result).getData();
 
-                if (driverStandings == null) {
-                    Log.i(TAG, "DRIVER STANDINGS NULL");
-                    NavigationUtils.navigateToHomePage(this);
-                } else {
-                    List<DriverStandingsElement> driverList = driverStandings.getDriverStandingsElements();
+                    Log.i(TAG, driverStandings.toString());
 
-                    RecyclerView driversStandingRecyclerView = findViewById(R.id.drivers_standing_recycler_view);
+                    show(standingsNotAvailableTextView, driversStandingRecyclerView);
+                    List<DriverStandingsElement> driverStandingList = driverStandings.getDriverStandingsElements();
+
                     driversStandingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-                    DriversStandingRecyclerAdapter driversStandingAdapter = new DriversStandingRecyclerAdapter(this, driverList, null, driverId, driverViewModel, constructorViewModel, this, loadingScreen);
+                    driversStandingAdapter = new DriversStandingRecyclerAdapter(this, driverStandingList, null, driverId, driverViewModel, constructorViewModel, this, loadingScreen);
                     driversStandingRecyclerView.setAdapter(driversStandingAdapter);
 
                     for (int i = 0; i < driversStandingAdapter.getItemCount(); i++) {
                         driversStandingAdapter.onBindViewHolder(
                                 driversStandingAdapter.createViewHolder(driversStandingRecyclerView, driversStandingAdapter.getItemViewType(i)), i);
                     }
+                }catch (ClassCastException e){
+                    setupPageForDriverList();
                 }
             } else {
                 Log.i(TAG, "DRIVER STANDINGS ERROR");
-                NavigationUtils.navigateToHomePage(this);
+                setupPageForDriverList();
             }
         });
+    }
+
+    private void setupPageForDriverList() {
+        MutableLiveData<Result> livedata = driverStandingsViewModel.getDriverListLiveData();
+
+        livedata.observe(this, result -> {
+            if (result instanceof Result.Loading) {
+                return;
+            }
+            if (result.isSuccess()) {
+                Log.i(TAG, "DRIVER LIST SUCCESS");
+                List<Driver> driverList = ((Result.DriversSuccess) result).getData();
+
+                Log.i(TAG, driverList.toString());
+
+                show(standingsNotAvailableTextView, driversStandingRecyclerView);
+
+                driversStandingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+                driversStandingAdapter = new DriversStandingRecyclerAdapter(this, null, driverList, driverId, driverViewModel, constructorViewModel, this, loadingScreen);
+                driversStandingRecyclerView.setAdapter(driversStandingAdapter);
+
+                for (int i = 0; i < driversStandingAdapter.getItemCount(); i++){
+                    driversStandingAdapter.onBindViewHolder(
+                            driversStandingAdapter.createViewHolder(driversStandingRecyclerView, driversStandingAdapter.getItemViewType(i)), i);
+                }
+            }else{
+                Log.i(TAG, "DRIVER LIST ERROR");
+                show(driversStandingRecyclerView, standingsNotAvailableTextView);
+            }
+        });
+    }
+
+    private void show(View goneView, View visibleView){
+        goneView.setVisibility(View.GONE);
+        visibleView.setVisibility(View.VISIBLE);
     }
 }

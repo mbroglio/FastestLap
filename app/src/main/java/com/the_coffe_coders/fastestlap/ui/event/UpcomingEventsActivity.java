@@ -13,9 +13,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.adapter.UpcomingEventsRecyclerAdapter;
+import com.the_coffe_coders.fastestlap.adapter.f1.UpcomingEventsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
