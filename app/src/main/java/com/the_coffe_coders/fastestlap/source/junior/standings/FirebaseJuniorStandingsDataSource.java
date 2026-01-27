@@ -57,6 +57,7 @@ public class FirebaseJuniorStandingsDataSource implements JuniorStandingsDataSou
                         if (child.exists()) {
                             JuniorDriverStandingsElement element = child.getValue(JuniorDriverStandingsElement.class);
                             if (element != null) {
+                                Log.i(TAG, "element: " + element);
                                 elements.add(element);
                             }
                         }

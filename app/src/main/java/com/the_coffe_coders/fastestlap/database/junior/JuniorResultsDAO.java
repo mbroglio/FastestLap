@@ -13,4 +13,7 @@ public interface JuniorResultsDAO {
     void insert(JuniorResult juniorResult);
     @Query("SELECT * FROM JuniorResult WHERE series = :series")
     JuniorResult getBySeries(String series);
+
+    @Query("DELETE FROM JuniorResult WHERE series = :series")
+    void deleteBySeries(String series);
 }

@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.materialswitch.MaterialSwitch;
@@ -214,6 +215,7 @@ public class JuniorDialogFragment extends DialogFragment {
                 } else {
                     if(entryList.getTeams().isEmpty()){
                         Log.i(TAG, "ENTRY LIST EMPTY");
+                        Toast.makeText(requireContext(), ContextCompat.getString(requireContext(), R.string.content_not_available), Toast.LENGTH_SHORT).show();
                         dismiss();
                     }else{
                         juniorRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -222,6 +224,7 @@ public class JuniorDialogFragment extends DialogFragment {
                     }
                 }
             } else {
+                Toast.makeText(requireContext(), ContextCompat.getString(requireContext(), R.string.content_not_available), Toast.LENGTH_SHORT).show();
                 dismiss();
             }
         });
@@ -240,6 +243,8 @@ public class JuniorDialogFragment extends DialogFragment {
 
                 if (calendar == null) {
                     Log.i(TAG, "CALENDAR NULL");
+                    Toast.makeText(requireContext(), ContextCompat.getString(requireContext(), R.string.content_not_available), Toast.LENGTH_SHORT).show();
+                    dismiss();
                 } else {
                     juniorRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
                     JuniorCalendarRecyclerAdapter juniorCalendarRecyclerAdapter = new JuniorCalendarRecyclerAdapter(requireContext(), calendar);
@@ -247,6 +252,7 @@ public class JuniorDialogFragment extends DialogFragment {
 
                 }
             } else {
+                Toast.makeText(requireContext(), ContextCompat.getString(requireContext(), R.string.content_not_available), Toast.LENGTH_SHORT).show();
                 dismiss();
             }
         });
@@ -264,12 +270,15 @@ public class JuniorDialogFragment extends DialogFragment {
                 Log.i(TAG, "DRIVERS STANDINGS: " + driverStandings);
                 if (driverStandings == null) {
                     Log.i(TAG, "DRIVERS STANDINGS NULL");
+                    Toast.makeText(requireContext(), ContextCompat.getString(requireContext(), R.string.content_not_available), Toast.LENGTH_SHORT).show();
+                    dismiss();
                 } else {
                     juniorRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
                     JuniorStandingsRecyclerAdapter juniorStandingsRecyclerAdapter = new JuniorStandingsRecyclerAdapter(requireContext(), driverStandings);
                     juniorRecyclerView.setAdapter(juniorStandingsRecyclerAdapter);
                 }
             } else {
+                Toast.makeText(requireContext(), ContextCompat.getString(requireContext(), R.string.content_not_available), Toast.LENGTH_SHORT).show();
                 dismiss();
             }
         });
@@ -288,12 +297,15 @@ public class JuniorDialogFragment extends DialogFragment {
                 Log.i(TAG, "CONSTRUCTORS STANDINGS: " + constructorStandings);
                 if (constructorStandings == null) {
                     Log.i(TAG, "CONSTRUCTORS STANDINGS NULL");
+                    Toast.makeText(requireContext(), ContextCompat.getString(requireContext(), R.string.content_not_available), Toast.LENGTH_SHORT).show();
+                    dismiss();
                 } else {
                     juniorRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
                     JuniorStandingsRecyclerAdapter juniorStandingsRecyclerAdapter = new JuniorStandingsRecyclerAdapter(requireContext(), constructorStandings);
                     juniorRecyclerView.setAdapter(juniorStandingsRecyclerAdapter);
                 }
             } else {
+                Toast.makeText(requireContext(), ContextCompat.getString(requireContext(), R.string.content_not_available), Toast.LENGTH_SHORT).show();
                 dismiss();
             }
         });

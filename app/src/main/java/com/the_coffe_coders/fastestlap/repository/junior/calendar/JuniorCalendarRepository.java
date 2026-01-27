@@ -127,7 +127,9 @@ public class JuniorCalendarRepository {
                 @Override
                 public void onError(Exception e) {
                     Log.e(TAG, "Error loading junior calendar: " + e.getMessage());
-                    fetchFromLocal(cacheKey, series);
+                    localJuniorCalendarDataSource.deleteJuniorCalendar(series);
+                    Objects.requireNonNull(juniorCalendarCache.get(cacheKey))
+                            .postValue(new Result.Error("Junior calendar not available yet"));
                 }
             });
         } catch (Exception e) {

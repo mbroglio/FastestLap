@@ -2,6 +2,8 @@ package com.the_coffe_coders.fastestlap.ui.junior;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,6 +30,7 @@ public class JuniorResultsActivity extends AppCompatActivity {
     private JuniorCategoryViewModel juniorCategoryViewModel;
     private SwipeRefreshLayout resultsLayout;
     private RecyclerView resultsrRecyclerView;
+    private TextView contentNotAvailableLayout;
     private JuniorResultsRecyclerAdapter juniorResultsAdapter;
 
 
@@ -54,6 +57,7 @@ public class JuniorResultsActivity extends AppCompatActivity {
         UIUtils.applyWindowInsets(layout);
 
         resultsrRecyclerView = findViewById(R.id.results_recycler_view);
+        contentNotAvailableLayout = findViewById(R.id.content_not_available_layout);
 
         layout.setOnRefreshListener(() -> {
             setupPage();
@@ -94,6 +98,7 @@ public class JuniorResultsActivity extends AppCompatActivity {
                     return;
                 }
                 if (result.isSuccess()) {
+                    showResults();
                     Log.i(TAG, "Results fetched successfully");
 
                     JuniorResult juniorResult = ((Result.JuniorResultSuccess) result).getData();
@@ -112,14 +117,28 @@ public class JuniorResultsActivity extends AppCompatActivity {
                                     juniorResultsAdapter.createViewHolder(resultsrRecyclerView, juniorResultsAdapter.getItemViewType(i)), i);
                         }
                     } else {
+                        showContentNotAvailable();
                         Log.e(TAG, "Junior result is null");
-                        //displaysomethine
                     }
-
+                }else{
+                    Log.e(TAG, "1 Results fetch failed");
+                    showContentNotAvailable();
                 }
-
+            }else{
+                Log.e(TAG, "2 Results fetch failed");
+                showContentNotAvailable();
             }
         });
 
+    }
+
+    public void showResults(){
+        resultsrRecyclerView.setVisibility(View.VISIBLE);
+        contentNotAvailableLayout.setVisibility(View.GONE);
+    }
+
+    public void showContentNotAvailable(){
+        resultsrRecyclerView.setVisibility(View.GONE);
+        contentNotAvailableLayout.setVisibility(View.VISIBLE);
     }
 }

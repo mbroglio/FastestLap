@@ -13,4 +13,7 @@ public interface JuniorCalendarDAO {
     void insert(JuniorCalendar juniorCalendar);
     @Query("SELECT * FROM JuniorCalendar WHERE series = :series")
     JuniorCalendar getBySeries(String series);
+
+    @Query("DELETE FROM JuniorCalendar WHERE series = :series")
+    void deleteBySeries(String series);
 }

@@ -80,6 +80,9 @@ public class FirebaseJuniorCalendarDataSource implements JuniorCalendarDataSourc
                         calendar.setEvents(events);
                         callback.onCalendarLoaded(calendar);
                     }
+                }else{
+                    Log.w(TAG, "No events found for series: " + series);
+                    callback.onCalendarLoaded(null);
                 }
             }
 

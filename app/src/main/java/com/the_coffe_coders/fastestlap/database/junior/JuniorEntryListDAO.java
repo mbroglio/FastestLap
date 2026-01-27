@@ -13,4 +13,7 @@ public interface JuniorEntryListDAO {
     void insert(JuniorEntryList juniorEntryList);
     @Query("SELECT * FROM JuniorEntryList WHERE series = :series")
     JuniorEntryList getBySeries(String series);
+
+    @Query("DELETE FROM JuniorEntryList WHERE series = :series")
+    void deleteBySeries(String series);
 }

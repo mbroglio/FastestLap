@@ -69,6 +69,8 @@ public class FirebaseJuniorEntryListDataSource implements JuniorEntryListDataSou
                     entryList.setTeams(teams);
                     callback.onEntryListLoaded(entryList);
 
+                }else{
+                    callback.onError(new Exception("No entry list found in Firebase"));
                 }
             }
 

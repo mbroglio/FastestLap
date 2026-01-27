@@ -22,4 +22,10 @@ public interface JuniorStandingsDAO {
     @Query("SELECT * FROM JuniorDriverStandings WHERE series = :series")
     JuniorDriverStandings getDriverStandingsBySeries(String series);
 
+    @Query("DELETE FROM JuniorConstructorStandings WHERE series = :series")
+    void deleteConstructorStandingsBySeries(String series);
+
+    @Query("DELETE FROM JuniorDriverStandings WHERE series = :series")
+    void deleteDriverStandingsBySeries(String series);
+
 }

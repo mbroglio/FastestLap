@@ -28,7 +28,9 @@ public class LocalJuniorResultsDataSource implements JuniorResultsDataSource {
         Log.d(TAG, "Fetching junior results from local database");
         JuniorResult result = juniorResultsDAO.getBySeries(series);
 
-        if (result != null) {
+        Log.i(TAG, "Result: " + result);
+
+        if (result != null && result.getResults() != null && !result.getResults().isEmpty()) {
             callback.onResultLoaded(result);
         }else{
             callback.onError(new Exception("No junior results found in local database"));
@@ -38,5 +40,9 @@ public class LocalJuniorResultsDataSource implements JuniorResultsDataSource {
 
     public void insertJuniorResult(JuniorResult result) {
         AppRoomDatabase.databaseWriteExecutor.execute(() -> juniorResultsDAO.insert(result));
+    }
+
+    public void deleteJuniorResult(String series) {
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> juniorResultsDAO.deleteBySeries(series));
     }
 }

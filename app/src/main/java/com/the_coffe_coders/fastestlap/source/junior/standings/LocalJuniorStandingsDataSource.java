@@ -30,7 +30,7 @@ public class LocalJuniorStandingsDataSource implements JuniorStandingsDataSource
         Log.d(TAG, "Fetching junior driver standings from local database");
         JuniorDriverStandings result = juniorStandingsDAO.getDriverStandingsBySeries(series);
 
-        if (result != null) {
+        if (result != null && result.getDriverStandings()!= null && !result.getDriverStandings().isEmpty()) {
             callback.onDriverStandingsLoaded(result);
         }else{
             callback.onError(new Exception("No junior driver standings found in local database"));
@@ -42,7 +42,7 @@ public class LocalJuniorStandingsDataSource implements JuniorStandingsDataSource
         Log.d(TAG, "Fetching junior constructor standings from local database");
         JuniorConstructorStandings result = juniorStandingsDAO.getConstructorStandingsBySeries(series);
 
-        if (result != null) {
+        if (result != null && result.getConstructorStandings()!= null && !result.getConstructorStandings().isEmpty()) {
             callback.onConstructorStandingsLoaded(result);
         }else{
             callback.onError(new Exception("No junior constructor standings found in local database"));
@@ -56,5 +56,13 @@ public class LocalJuniorStandingsDataSource implements JuniorStandingsDataSource
 
     public void insertJuniorConstructorStandings(JuniorConstructorStandings standings) {
         AppRoomDatabase.databaseWriteExecutor.execute(() -> juniorStandingsDAO.insertConstructorStandings(standings));
+    }
+
+    public void deleteJuniorDriverStandings(String series) {
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> juniorStandingsDAO.deleteDriverStandingsBySeries(series));
+    }
+
+    public void deleteJuniorConstructorStandings(String series) {
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> juniorStandingsDAO.deleteConstructorStandingsBySeries(series));
     }
 }

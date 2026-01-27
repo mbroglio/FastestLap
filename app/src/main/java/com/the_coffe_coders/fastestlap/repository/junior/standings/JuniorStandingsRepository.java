@@ -105,7 +105,9 @@ public class JuniorStandingsRepository {
                 @Override
                 public void onError(Exception e) {
                     Log.e(TAG, "Error loading junior constructor standings: " + e.getMessage());
-                    fetchFromLocalConstructors(cacheKey, series);
+                    localJuniorStandingsDataSource.deleteJuniorConstructorStandings(series);
+                    Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
+                            .postValue(new Result.Error("Junior constructor standings not available yet"));
                 }
             });
         }catch (Exception e){
@@ -199,12 +201,14 @@ public class JuniorStandingsRepository {
 
                 @Override
                 public void onError(Exception e) {
-                    Log.e(TAG, "Error loading junior driver standings: " + e.getMessage());
-                    fetchFromLocalDrivers(cacheKey, series);
+                    Log.e(TAG, "1 Error loading junior driver standings: " + e.getMessage());
+                    localJuniorStandingsDataSource.deleteJuniorDriverStandings(series);
+                    Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
+                            .postValue(new Result.Error("Junior driver standings not available yet"));
                 }
             });
         }catch (Exception e){
-            Log.e(TAG, "Error loading junior driver standings: " + e.getMessage());
+            Log.e(TAG, "2 Error loading junior driver standings: " + e.getMessage());
             fetchFromLocalDrivers(cacheKey, series);
         }
 

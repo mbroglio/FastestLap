@@ -136,7 +136,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:layout_weight="0.7">
 
                 <LinearLayout
@@ -144,37 +144,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:layout_marginStart="@dimen/medium_margin"
-                    android:layout_marginBottom="@dimen/medium_margin"
                     android:layout_marginEnd="@dimen/medium_margin">
-
-                    <!--
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/f2_entry_list_card"
-                        style="@style/F2MenuCard"
-                        android:layout_width="match_parent"
-                        android:layout_height="120dp">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:scaleType="centerCrop"
-                            android:scrollY="20sp"
-                            android:src="@drawable/formula_2_grid_image"
-                            android:alpha="0.6"/>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@color/junior_card_overlay" />
-
-                        <TextView
-                            style="@style/JuniorCardTitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="Entry List" />
-                    </com.google.android.material.card.MaterialCardView>
-                    -->
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/f2_results_card"

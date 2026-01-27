@@ -32,13 +32,13 @@ public class JuniorTeam implements Parcelable {
 
     private String name;
     private List<JuniorDriver> drivers;
-    private String teamLogoUrl;
+    private String team_logo_url;
 
 
     protected JuniorTeam(Parcel in) {
         name = in.readString();
         drivers = in.createTypedArrayList(JuniorDriver.CREATOR);
-        teamLogoUrl = in.readString();
+        team_logo_url = in.readString();
     }
 
     @Override
@@ -50,6 +50,6 @@ public class JuniorTeam implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeTypedList(drivers);
-        dest.writeString(teamLogoUrl);
+        dest.writeString(team_logo_url);
     }
 }

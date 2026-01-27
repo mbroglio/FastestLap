@@ -28,7 +28,8 @@ public class LocalJuniorEntryListDataSource implements JuniorEntryListDataSource
     public void getJuniorEntryList(String series, JuniorEntryListCallback callback) {
         Log.d(TAG, "Fetching junior entry list from local database");
         JuniorEntryList entryList = juniorEntryListDAO.getBySeries(series);
-        if(entryList != null){
+
+        if(entryList != null && entryList.getTeams() != null && !entryList.getTeams().isEmpty()){
             callback.onEntryListLoaded(entryList);
         }else{
             callback.onError(new Exception("No junior entry list found in local database"));
@@ -37,5 +38,9 @@ public class LocalJuniorEntryListDataSource implements JuniorEntryListDataSource
 
     public void insertJuniorEntryList(JuniorEntryList entryList){
         AppRoomDatabase.databaseWriteExecutor.execute(() -> juniorEntryListDAO.insert(entryList));
+    }
+
+    public void deleteJuniorEntryList(String series){
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> juniorEntryListDAO.deleteBySeries(series));
     }
 }

@@ -39,7 +39,7 @@ public class JuniorCalendarRecyclerAdapter extends RecyclerView.Adapter<JuniorCa
         holder.eventRound.setText(context.getString(R.string.round_upper_case_plus_value, element.getRound()));
         holder.eventName.setText(element.getCircuit());
 
-        UIUtils.loadImageWithGlide(context, element.getNationFlagUrl(), holder.nationFlag,
+        UIUtils.loadImageWithGlide(context, element.getNation_flag_url(), holder.nationFlag,
                 () ->setDates(holder, element));
     }
 

@@ -207,5 +207,6 @@
     <string name="feature">feature</string>
     <string name="drivers">drivers</string>
     <string name="constructors">constructors</string>
+    <string name="content_not_available">content not available</string>
 
 </resources>

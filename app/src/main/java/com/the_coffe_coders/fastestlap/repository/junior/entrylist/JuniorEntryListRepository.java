@@ -115,8 +115,10 @@ public class JuniorEntryListRepository {
                         Objects.requireNonNull(juniorEntryListCache.get(cacheKey))
                                 .postValue(new Result.JuniorEntryListSuccess(entryList));
                     }else{
-                        Log.e(TAG, "Junior entry list not found");
-                        fetchFromLocal(cacheKey, series);
+                        Log.e(TAG, "Junior entry list not found - deleting old data from local DB");
+                        localJuniorEntryListDataSource.deleteJuniorEntryList(series);
+                        Objects.requireNonNull(juniorEntryListCache.get(cacheKey))
+                                .postValue(new Result.Error("Junior entry list not available yet"));
                     }
                 }
 

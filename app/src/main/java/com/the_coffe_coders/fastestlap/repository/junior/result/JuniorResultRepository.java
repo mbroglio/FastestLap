@@ -120,7 +120,9 @@ public class JuniorResultRepository {
                 @Override
                 public void onError(Exception e) {
                     Log.e(TAG, "Error loading junior result: " + e.getMessage());
-                    fetchFromLocal(cacheKey, series);
+                    localJuniorResultDataSource.deleteJuniorResult(series);
+                    Objects.requireNonNull(juniorResultCache.get(cacheKey))
+                            .postValue(new Result.Error("Junior result not available yet"));
                 }
             });
         }catch (Exception e){
