@@ -261,11 +261,10 @@ const juniorFunctions = {
     },
 
     scrapeDriverStandings: {
-        description: 'Scrape driver standings from Wikipedia page',
+        description: 'Scrape driver standings from Wikipedia page and update database',
         args: ['seriesId'],
         example: 'node test_individual_functions.js junior scrapeDriverStandings f2',
-        needsDb: false,
-        execute: async (seriesId = 'f2') => {
+        execute: async (db, seriesId = 'f2') => {
             const url = seriesId === 'f2' 
                 ? URLS.f2
                 : URLS.f3;
@@ -274,9 +273,29 @@ const juniorFunctions = {
                 headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' }
             });
             const $ = cheerio.load(data);
-            const result = juniorLogic.scrapeDriverStandings($);
+            
+            // First scrape entry list to get team information
+            const entryList = await juniorLogic.scrapeEntryList($, db, seriesId);
+            console.log(`\nEntry list scraped: ${Object.keys(entryList || {}).length} teams found`);
+            
+            const result = juniorLogic.scrapeDriverStandings($, entryList);
             console.log(`\nDriver standings found: ${result?.length || 0}`);
             console.log(JSON.stringify(result, null, 2));
+            
+            // Update database with scraped standings
+            if (result && result.length > 0) {
+                const updates = {};
+                const basePath = `junior_categories/${seriesId}`;
+                
+                result.forEach(d => {
+                    updates[`${basePath}/standings/drivers/${d.position}`] = d;
+                    console.log(`Updating DB for driver position ${d.position}...`);
+                });
+                
+                await db.ref().update(updates);
+                console.log(`\n✓ Database updated with ${result.length} driver standings for ${seriesId}`);
+            }
+            
             return result;
         }
     },

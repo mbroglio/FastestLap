@@ -61,69 +61,14 @@ public class Formula3Activity extends AppCompatActivity {
                 NavigationUtils.navigateToJuniorResultsPage(this, categoryType)
         );
 
-        driversStandingCard.setOnClickListener(v -> {}
-                //NavigationUtils.showDriversStandingDialog(getSupportFragmentManager(this, categoryType)
+        driversStandingCard.setOnClickListener(v ->
+                NavigationUtils.showDriversStandingDialog(getSupportFragmentManager(), categoryType)
         );
 
-        constructorsStandingCard.setOnClickListener(v -> {}
-                //NavigationUtils.showConstructorsStandingDialog(getSupportFragmentManager(this, categoryType)
+        constructorsStandingCard.setOnClickListener(v ->
+                NavigationUtils.showConstructorsStandingDialog(getSupportFragmentManager(), categoryType)
         );
 
 
-
     }
-    /*
-    private void executeOperation2() {
-        F3ViewModel f3ViewModel = new ViewModelProvider(this, new F3ViewModelFactory(getApplication())).get(F3ViewModel.class);
-
-        MutableLiveData<Result> livedata = f3ViewModel.getEntryList(series);
-
-        livedata.observe(this, result -> {
-            if (result instanceof Result.Loading) {
-                return;
-            }
-            if (result.isSuccess()) {
-                Log.i(TAG, "ENTRY LIST SUCCESS");
-                JuniorEntryList entryList = ((Result.JuniorEntryListSuccess) result).getData();
-
-                if (entryList == null){
-                    Log.i(TAG, "ENTRY LIST NULL");
-                }else {
-                    Log.i(TAG, "ENTRY LIST NOT NULL");
-                    //print entryList on console
-                    for (int i = 0; i < entryList.getTeams().size(); i++) {
-                        Log.i(TAG, "Entry: " + entryList.getTeams().get(i).toString());
-                    }
-                }
-            }
-        });
-    }
-
-    private void executeOperation1() {
-        F3ViewModel f3ViewModel = new ViewModelProvider(this, new F3ViewModelFactory(getApplication())).get(F3ViewModel.class);
-
-        MutableLiveData<Result> livedata = f3ViewModel.getCalendar(series);
-
-        livedata.observe(this, result -> {
-            if (result instanceof Result.Loading) {
-                return;
-            }
-            if (result.isSuccess()) {
-                Log.i(TAG, "CALENDAR SUCCESS");
-                JuniorCalendar calendar = ((Result.JuniorCalendarSuccess) result).getData();
-
-                if (calendar == null){
-                    Log.i(TAG, "CALENDAR NULL");
-                }else{
-                    Log.i(TAG, "CALENDAR NOT NULL");
-                    //print calendar on console
-                    for (int i = 0; i < calendar.getEvents().size(); i++) {
-                        Log.i(TAG, "Event: " + calendar.getEvents().get(i).toString());
-                    }
-                }
-            }
-        });
-    }
-
-     */
 }

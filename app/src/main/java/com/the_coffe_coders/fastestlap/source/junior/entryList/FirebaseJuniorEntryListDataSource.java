@@ -51,14 +51,19 @@ public class FirebaseJuniorEntryListDataSource implements JuniorEntryListDataSou
                     List<JuniorTeam> teams = new ArrayList<>();
 
                     for (DataSnapshot child : snapshot.getChildren()) {
-                        if (child.exists()) {
-                            JuniorTeam team = child.getValue(JuniorTeam.class);
-                            if(team != null){
-                                team.setName(child.getKey());
-                            }
-                            teams.add(team);
+                        try{
+                            if (child.exists()) {
+                                JuniorTeam team = child.getValue(JuniorTeam.class);
+                                if(team != null){
+                                    team.setName(child.getKey());
+                                }
+                                teams.add(team);
 
+                            }
+                        } catch (Exception e) {
+                            callback.onError(new Exception("Firebase error: " + e.getMessage()));
                         }
+
                     }
 
                     entryList.setTeams(teams);

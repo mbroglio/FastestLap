@@ -205,5 +205,7 @@
     <string name="calendar">calendar</string>
     <string name="entry_list">entry list</string>
     <string name="feature">feature</string>
+    <string name="drivers">drivers</string>
+    <string name="constructors">constructors</string>
 
 </resources>

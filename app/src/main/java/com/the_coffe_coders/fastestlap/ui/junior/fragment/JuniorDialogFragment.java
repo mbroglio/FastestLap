@@ -31,6 +31,8 @@ import com.the_coffe_coders.fastestlap.domain.junior.result.FeatureRace;
 import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorResult;
 import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorResultElement;
 import com.the_coffe_coders.fastestlap.domain.junior.result.SprintRace;
+import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorConstructorStandings;
+import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorDriverStandings;
 import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorEntryList;
 import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendar;
 import com.the_coffe_coders.fastestlap.ui.junior.viewmodel.JuniorCategoryViewModel;
@@ -106,7 +108,12 @@ public class JuniorDialogFragment extends DialogFragment {
                 break;
         }
 
-        executeFunctions();
+        try {
+            executeFunctions();
+        } catch (Exception e) {
+            dismiss();
+        }
+
 
         return view;
     }
@@ -114,19 +121,19 @@ public class JuniorDialogFragment extends DialogFragment {
     private void executeFunctions() {
         switch (content) {
             case 0: // Entry list
-                Log.i(TAG, "ENTRY LIST clicked");
                 setDialogForEntryList();
                 executeEntryList();
                 break;
             case 1: // Calendar
-                Log.i(TAG, "CALENDAR clicked");
                 setDialogForCalendar();
                 executeCalendar();
                 break;
             case 2: // Drivers standing
+                setDialogForDriversStanding();
                 executeDriversStanding();
                 break;
             case 3: // Constructors standing
+                setDialogForConstructorsStanding();
                 executeConstructorsStanding();
                 break;
             case 4:
@@ -149,12 +156,24 @@ public class JuniorDialogFragment extends DialogFragment {
         raceTypeTitle.setVisibility(View.GONE);
     }
 
+    private void setDialogForDriversStanding() {
+        UIUtils.singleSetTextViewText(ContextCompat.getString(requireContext(), R.string.drivers), dialogTitle);
+        raceInfoLayout.setVisibility(View.GONE);
+        raceTypeTitle.setVisibility(View.GONE);
+    }
+
+    private void setDialogForConstructorsStanding() {
+        UIUtils.singleSetTextViewText(ContextCompat.getString(requireContext(), R.string.constructors), dialogTitle);
+        raceInfoLayout.setVisibility(View.GONE);
+        raceTypeTitle.setVisibility(View.GONE);
+    }
+
     private void setDialogForResults() {
         UIUtils.singleSetTextViewText(circuit, dialogTitle);
         raceInfoLayout.setVisibility(View.VISIBLE);
         fastestLapLayout.setVisibility(View.VISIBLE);
 
-        if(featureRace == null){
+        if (featureRace == null) {
             polePositionLayout.setVisibility(View.GONE);
             UIUtils.multipleSetTextViewText(
                     new String[]{
@@ -164,7 +183,7 @@ public class JuniorDialogFragment extends DialogFragment {
                     new TextView[]{
                             raceTypeTitle,
                             driverNameFastestLap});
-        }else{
+        } else {
             polePositionLayout.setVisibility(View.VISIBLE);
             UIUtils.multipleSetTextViewText(
                     new String[]{
@@ -191,12 +210,19 @@ public class JuniorDialogFragment extends DialogFragment {
 
                 if (entryList == null) {
                     Log.i(TAG, "ENTRY LIST NULL");
+                    dismiss();
                 } else {
-                    juniorRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-                    JuniorEntryListRecyclerAdapter juniorEntryListRecyclerAdapter = new JuniorEntryListRecyclerAdapter(requireContext(), entryList, categoryType);
-                    juniorRecyclerView.setAdapter(juniorEntryListRecyclerAdapter);
-
+                    if(entryList.getTeams().isEmpty()){
+                        Log.i(TAG, "ENTRY LIST EMPTY");
+                        dismiss();
+                    }else{
+                        juniorRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+                        JuniorEntryListRecyclerAdapter juniorEntryListRecyclerAdapter = new JuniorEntryListRecyclerAdapter(requireContext(), entryList, categoryType);
+                        juniorRecyclerView.setAdapter(juniorEntryListRecyclerAdapter);
+                    }
                 }
+            } else {
+                dismiss();
             }
         });
     }
@@ -220,27 +246,71 @@ public class JuniorDialogFragment extends DialogFragment {
                     juniorRecyclerView.setAdapter(juniorCalendarRecyclerAdapter);
 
                 }
+            } else {
+                dismiss();
             }
         });
     }
 
     private void executeDriversStanding() {
+        MutableLiveData<Result> standingsLiveData = juniorCategoryViewModel.getDriverStandings(categoryType);
+        standingsLiveData.observe(getViewLifecycleOwner(), result -> {
+            if (result instanceof Result.Loading) {
+                return;
+            }
+            if (result.isSuccess()) {
+                Log.i(TAG, "DRIVERS STANDINGS SUCCESS");
+                JuniorDriverStandings driverStandings = ((Result.JuniorDriverStandingsSuccess) result).getData();
+                Log.i(TAG, "DRIVERS STANDINGS: " + driverStandings);
+                if (driverStandings == null) {
+                    Log.i(TAG, "DRIVERS STANDINGS NULL");
+                } else {
+                    juniorRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+                    JuniorStandingsRecyclerAdapter juniorStandingsRecyclerAdapter = new JuniorStandingsRecyclerAdapter(requireContext(), driverStandings);
+                    juniorRecyclerView.setAdapter(juniorStandingsRecyclerAdapter);
+                }
+            } else {
+                dismiss();
+            }
+        });
+
     }
 
     private void executeConstructorsStanding() {
+        MutableLiveData<Result> standingsLiveData = juniorCategoryViewModel.getConstructorStandings(categoryType);
+        standingsLiveData.observe(getViewLifecycleOwner(), result -> {
+            if (result instanceof Result.Loading) {
+                return;
+            }
+            if (result.isSuccess()) {
+                Log.i(TAG, "CONSTRUCTORS STANDINGS SUCCESS");
+                JuniorConstructorStandings constructorStandings = ((Result.JuniorConstructorStandingsSuccess) result).getData();
+                Log.i(TAG, "CONSTRUCTORS STANDINGS: " + constructorStandings);
+                if (constructorStandings == null) {
+                    Log.i(TAG, "CONSTRUCTORS STANDINGS NULL");
+                } else {
+                    juniorRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+                    JuniorStandingsRecyclerAdapter juniorStandingsRecyclerAdapter = new JuniorStandingsRecyclerAdapter(requireContext(), constructorStandings);
+                    juniorRecyclerView.setAdapter(juniorStandingsRecyclerAdapter);
+                }
+            } else {
+                dismiss();
+            }
+        });
+
     }
 
     private void executeFullResults() {
-       juniorRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        juniorRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         JuniorResultsRecyclerAdapter juniorResultsRecyclerAdapter;
 
-       if(featureRace != null) {
+        if (featureRace != null) {
             juniorResultsRecyclerAdapter = new JuniorResultsRecyclerAdapter(requireContext(), featureRace, getParentFragmentManager());
-       }else{
+        } else {
             juniorResultsRecyclerAdapter = new JuniorResultsRecyclerAdapter(requireContext(), sprintRace, getParentFragmentManager());
-       }
+        }
 
-       juniorRecyclerView.setAdapter(juniorResultsRecyclerAdapter);
+        juniorRecyclerView.setAdapter(juniorResultsRecyclerAdapter);
     }
 
     @Override

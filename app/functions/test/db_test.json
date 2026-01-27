@@ -8141,139 +8141,166 @@
         "drivers": [
           null,
           {
+            "position": "1",
             "driver": "Leonardo Fornaroli",
             "points": "211",
-            "position": "1"
+            "team": "Invicta Racing"
           },
           {
+            "position": "2",
             "driver": "Jak Crawford",
             "points": "175",
-            "position": "2"
+            "team": "DAMS Lucas Oil"
           },
           {
+            "position": "3",
             "driver": "Richard Verschoor",
             "points": "170",
-            "position": "3"
+            "team": "MP Motorsport"
           },
           {
+            "position": "4",
             "driver": "Luke Browning",
             "points": "162",
-            "position": "4"
+            "team": "Hitech TGR"
           },
           {
+            "position": "5",
             "driver": "Alex Dunne",
             "points": "150",
-            "position": "5"
+            "team": "Rodin Motorsport"
           },
           {
+            "position": "6",
             "driver": "Arvid Lindblad",
             "points": "134",
-            "position": "6"
+            "team": "Campos Racing"
           },
           {
+            "position": "7",
             "driver": "Dino Beganovic",
             "points": "116",
-            "position": "7"
+            "team": "Hitech TGR"
           },
           {
+            "position": "8",
             "driver": "Pepe Martí",
             "points": "112",
-            "position": "8"
+            "team": "Campos Racing"
           },
           {
+            "position": "9",
             "driver": "Joshua Dürksen",
             "points": "107",
-            "position": "9"
+            "team": "AIX Racing"
           },
           {
+            "position": "10",
             "driver": "Roman Staněk",
             "points": "105",
-            "position": "10"
+            "team": "Invicta Racing"
           },
           {
+            "position": "11",
             "driver": "Victor Martins",
             "points": "97",
-            "position": "11"
+            "team": "ART Grand Prix"
           },
           {
+            "position": "12",
             "driver": "Sebastián Montoya",
             "points": "91",
-            "position": "12"
+            "team": "Prema Racing"
           },
           {
+            "position": "13",
             "driver": "Gabriele Minì",
             "points": "72",
-            "position": "13"
+            "team": "Prema Racing"
           },
           {
+            "position": "14",
             "driver": "Rafael Villagómez",
             "points": "43",
-            "position": "14"
+            "team": "Van Amersfoort Racing"
           },
           {
+            "position": "15",
             "driver": "Oliver Goethe",
             "points": "37",
-            "position": "15"
+            "team": "MP Motorsport"
           },
           {
+            "position": "16",
             "driver": "Kush Maini",
             "points": "32",
-            "position": "16"
+            "team": "DAMS Lucas Oil"
           },
           {
+            "position": "17",
             "driver": "Ritomo Miyata",
             "points": "30",
-            "position": "17"
+            "team": "ART Grand Prix"
           },
           {
+            "position": "18",
             "driver": "Nikola Tsolov",
             "points": "12",
-            "position": "18"
+            "team": "Campos Racing"
           },
           {
+            "position": "19",
             "driver": "Amaury Cordeel",
             "points": "3",
-            "position": "19"
+            "team": "Rodin Motorsport"
           },
           {
+            "position": "20",
             "driver": "Martinius Stenshorne",
             "points": "2",
-            "position": "20"
+            "team": "Rodin Motorsport"
           },
           {
+            "position": "21",
             "driver": "Sami Meguetounif",
             "points": "2",
-            "position": "21"
+            "team": "Trident"
           },
           {
+            "position": "22",
             "driver": "John Bennett",
             "points": "1",
-            "position": "22"
+            "team": "Van Amersfoort Racing"
           },
           {
+            "position": "23",
             "driver": "Max Esterson",
             "points": "0",
-            "position": "23"
+            "team": "Trident"
           },
           {
+            "position": "24",
             "driver": "Cian Shields",
             "points": "0",
-            "position": "24"
+            "team": "AIX Racing"
           },
           {
+            "position": "25",
             "driver": "Laurens van Hoepen",
             "points": "0",
-            "position": "25"
+            "team": "Trident"
           },
           {
+            "position": "26",
             "driver": "Tasanapol Inthraphuvasak",
             "points": "0",
-            "position": "26"
+            "team": "Trident"
           },
           {
+            "position": "27",
             "driver": "James Wharton",
             "points": "0",
-            "position": "27"
+            "team": "Trident"
           }
         ]
       }
@@ -11073,189 +11100,226 @@
         "drivers": [
           null,
           {
+            "position": "1",
             "driver": "Rafael Câmara",
             "points": "166",
-            "position": "1"
+            "team": "Trident"
           },
           {
+            "position": "2",
             "driver": "Nikola Tsolov",
             "points": "124",
-            "position": "2"
+            "team": "Campos Racing"
           },
           {
+            "position": "3",
             "driver": "Mari Boya",
             "points": "116",
-            "position": "3"
+            "team": "Campos Racing"
           },
           {
+            "position": "4",
             "driver": "Tim Tramnitz",
             "points": "94",
-            "position": "4"
+            "team": "MP Motorsport"
           },
           {
+            "position": "5",
             "driver": "Martinius Stenshorne",
             "points": "89",
-            "position": "5"
+            "team": "Hitech TGR"
           },
           {
+            "position": "6",
             "driver": "Noah Strømsted",
             "points": "84",
-            "position": "6"
+            "team": "Trident"
           },
           {
+            "position": "7",
             "driver": "Tasanapol Inthraphuvasak",
             "points": "74",
-            "position": "7"
+            "team": "Campos Racing"
           },
           {
+            "position": "8",
             "driver": "Théophile Naël",
             "points": "72",
-            "position": "8"
+            "team": "Van Amersfoort Racing"
           },
           {
+            "position": "9",
             "driver": "Tuukka Taponen",
             "points": "67",
-            "position": "9"
+            "team": "ART Grand Prix"
           },
           {
+            "position": "10",
             "driver": "Alessandro Giusti",
             "points": "67",
-            "position": "10"
+            "team": "MP Motorsport"
           },
           {
+            "position": "11",
             "driver": "Roman Bilinski",
             "points": "65",
-            "position": "11"
+            "team": "Rodin Motorsport"
           },
           {
+            "position": "12",
             "driver": "Laurens van Hoepen",
             "points": "60",
-            "position": "12"
+            "team": "ART Grand Prix"
           },
           {
+            "position": "13",
             "driver": "Charlie Wurz",
             "points": "53",
-            "position": "13"
+            "team": "Trident"
           },
           {
+            "position": "14",
             "driver": "Callum Voisin",
             "points": "52",
-            "position": "14"
+            "team": "Rodin Motorsport"
           },
           {
+            "position": "15",
             "driver": "Santiago Ramos",
             "points": "48",
-            "position": "15"
+            "team": "Van Amersfoort Racing"
           },
           {
+            "position": "16",
             "driver": "Ugo Ugochukwu",
             "points": "43",
-            "position": "16"
+            "team": "Prema Racing"
           },
           {
+            "position": "17",
             "driver": "Noel León",
             "points": "36",
-            "position": "17"
+            "team": "Prema Racing"
           },
           {
+            "position": "18",
             "driver": "James Wharton",
             "points": "25",
-            "position": "18"
+            "team": "ART Grand Prix"
           },
           {
+            "position": "19",
             "driver": "Ivan Domingues",
             "points": "18",
-            "position": "19"
+            "team": "Van Amersfoort Racing"
           },
           {
+            "position": "20",
             "driver": "Brad Benavides",
             "points": "18",
-            "position": "20"
+            "team": "AIX Racing"
           },
           {
+            "position": "21",
             "driver": "Nikita Bedrin",
             "points": "17",
-            "position": "21"
+            "team": "AIX Racing"
           },
           {
+            "position": "22",
             "driver": "Christian Ho",
             "points": "17",
-            "position": "22"
+            "team": "DAMS Lucas Oil"
           },
           {
+            "position": "23",
             "driver": "Bruno del Pino",
             "points": "16",
-            "position": "23"
+            "team": "MP Motorsport"
           },
           {
+            "position": "24",
             "driver": "Matías Zagazeta",
             "points": "13",
-            "position": "24"
+            "team": "DAMS Lucas Oil"
           },
           {
+            "position": "25",
             "driver": "Brando Badoer",
             "points": "13",
-            "position": "25"
+            "team": "Prema Racing"
           },
           {
+            "position": "26",
             "driver": "Louis Sharp",
             "points": "11",
-            "position": "26"
+            "team": "Rodin Motorsport"
           },
           {
+            "position": "27",
             "driver": "Freddie Slater",
             "points": "10",
-            "position": "27"
+            "team": "Hitech TGR"
           },
           {
+            "position": "28",
             "driver": "James Hedley",
             "points": "7",
-            "position": "28"
+            "team": "Van Amersfoort Racing"
           },
           {
+            "position": "29",
             "driver": "Gerrard Xie",
             "points": "1",
-            "position": "29"
+            "team": "Hitech TGR"
           },
           {
+            "position": "30",
             "driver": "Joshua Dufek",
             "points": "0",
-            "position": "30"
+            "team": "Hitech TGR"
           },
           {
+            "position": "31",
             "driver": "Jesse Carrasquedo Jr.",
             "points": "0",
-            "position": "31"
+            "team": "Hitech TGR"
           },
           {
+            "position": "32",
             "driver": "Nikita Johnson",
             "points": "0",
-            "position": "32"
+            "team": "Hitech TGR"
           },
           {
+            "position": "33",
             "driver": "Nicola Lacorte",
             "points": "0",
-            "position": "33"
+            "team": "DAMS Lucas Oil"
           },
           {
+            "position": "34",
             "driver": "Javier Sagrera",
             "points": "0",
-            "position": "34"
+            "team": "AIX Racing"
           },
           {
+            "position": "35",
             "driver": "Fernando Barrichello",
             "points": "0",
-            "position": "35"
+            "team": "AIX Racing"
           },
           {
+            "position": "36",
             "driver": "Nicola Marinangeli",
             "points": "0",
-            "position": "36"
+            "team": "AIX Racing"
           },
           {
+            "position": "37",
             "driver": "José Garfias",
             "points": "0",
-            "position": "37"
+            "team": "AIX Racing"
           }
         ]
       }

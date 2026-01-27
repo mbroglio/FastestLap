@@ -179,7 +179,7 @@ async function processSeries(db, seriesId, url) {
         });
     }
 
-    const driverStandings = scrapeDriverStandings($);
+    const driverStandings = scrapeDriverStandings($, entryList);
     if (driverStandings) {
         driverStandings.forEach(d => updates[`${basePath}/standings/drivers/${d.position}`] = d);
     }
@@ -492,9 +492,26 @@ function scrapeRaceResults($, calendar = null) {
 }
 
 // scrapes the driver standings
-function scrapeDriverStandings($) {
+function scrapeDriverStandings($, entryList = null) {
     console.log("Scraping Driver Standings...");
     const standings = [];
+    
+    // Helper function to find team for a driver
+    const findTeamForDriver = (driverName) => {
+        if (!entryList) return null;
+        
+        for (const teamName in entryList) {
+            const team = entryList[teamName];
+            if (team.drivers && Array.isArray(team.drivers)) {
+                const driverFound = team.drivers.find(d => d.driver === driverName);
+                if (driverFound) {
+                    return teamName;
+                }
+            }
+        }
+        return null;
+    };
+    
     $('table.wikitable').each((i, table) => {
         const headers = $(table).find('th').text().toLowerCase();
         if (!headers.includes('driver') || !headers.includes('points') || !headers.includes('pos')) return;
@@ -511,7 +528,21 @@ function scrapeDriverStandings($) {
             if (!driverName) return;
 
             let pointsText = $row.children().last().text().trim();
-            standings.push({ position: posText, driver: cleanText(driverName), points: cleanText(pointsText) });
+            const cleanedDriverName = cleanText(driverName);
+            const team = findTeamForDriver(cleanedDriverName);
+            
+            const standingEntry = { 
+                position: posText, 
+                driver: cleanedDriverName, 
+                points: cleanText(pointsText) 
+            };
+            
+            // Add team if found
+            if (team) {
+                standingEntry.team = team;
+            }
+            
+            standings.push(standingEntry);
         });
     });
     return standings;

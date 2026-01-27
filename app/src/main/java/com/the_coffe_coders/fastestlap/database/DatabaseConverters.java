@@ -26,7 +26,9 @@ import com.the_coffe_coders.fastestlap.domain.f1.track.TrackHistory;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorResultElement;
 import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorSessionResultElement;
+import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorDriver;
+import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorDriverStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorTeam;
 import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendarElement;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
@@ -394,6 +396,30 @@ public class DatabaseConverters {
     @TypeConverter
     public static List<JuniorDriver> toJuniorDriversList(String json) {
         Type listType = new TypeToken<List<JuniorDriver>>() {
+        }.getType();
+        return gson.fromJson(json, listType);
+    }
+
+    @TypeConverter
+    public static String fromJuniorDriverStandings(List<JuniorDriverStandingsElement> list) {
+        return gson.toJson(list);
+    }
+
+    @TypeConverter
+    public static List<JuniorDriverStandingsElement> toJuniorDriverStandings(String json) {
+        Type listType = new TypeToken<List<JuniorDriverStandingsElement>>() {
+        }.getType();
+        return gson.fromJson(json, listType);
+    }
+
+    @TypeConverter
+    public static String fromJuniorConstructorStandings(List<JuniorConstructorStandingsElement> list) {
+        return gson.toJson(list);
+    }
+
+    @TypeConverter
+    public static List<JuniorConstructorStandingsElement> toJuniorConstructorStandings(String json) {
+        Type listType = new TypeToken<List<JuniorConstructorStandingsElement>>() {
         }.getType();
         return gson.fromJson(json, listType);
     }

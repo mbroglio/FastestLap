@@ -61,12 +61,12 @@ public class Formula2Activity extends AppCompatActivity {
                 NavigationUtils.navigateToJuniorResultsPage(this, categoryType)
         );
 
-        driversStandingCard.setOnClickListener(v -> {}
-                //NavigationUtils.showDriversStandingDialog(getSupportFragmentManager(this, categoryType)
+        driversStandingCard.setOnClickListener(v ->
+                NavigationUtils.showDriversStandingDialog(getSupportFragmentManager(), categoryType)
         );
 
-        constructorsStandingCard.setOnClickListener(v -> {}
-                //NavigationUtils.showConstructorsStandingDialog(getSupportFragmentManager(this, categoryType)
+        constructorsStandingCard.setOnClickListener(v ->
+                NavigationUtils.showConstructorsStandingDialog(getSupportFragmentManager(), categoryType)
         );
 
 

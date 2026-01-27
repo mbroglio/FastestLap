@@ -1,6 +1,7 @@
 package com.the_coffe_coders.fastestlap.adapter.junior;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -153,9 +154,10 @@ public class JuniorResultsRecyclerAdapter extends RecyclerView.Adapter<JuniorRes
                             holder.thirdDriverFeature});
 
             holder.featureRaceLayout.setOnClickListener(v -> NavigationUtils.showFullResultsDialogFeature(
-                    element.getCircuit(), element.getFeature(), fragmentManager, categoryType, 0));
+                   element.getCircuit(), element.getFeature(), fragmentManager, categoryType, 0));
         } else {
             showFeatureCancelled(holder);
+            holder.featureRaceLayout.setOnClickListener(null);
         }
 
         setSprintResults(holder, element);
@@ -182,6 +184,7 @@ public class JuniorResultsRecyclerAdapter extends RecyclerView.Adapter<JuniorRes
                     element.getCircuit(), element.getSprint(), fragmentManager, categoryType, 0));
         } else {
             showSprintCancelled(holder);
+            holder.sprintRaceLayout.setOnClickListener(null);
         }
     }
 
