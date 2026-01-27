@@ -484,7 +484,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void showPodium(View view, WeeklyRace race) {
-        decrementLoadingCounter();
         try {
             String circuitId = race.getTrack().getTrackId();
             MutableLiveData<Result> trackData = trackViewModel.getTrack(circuitId);
@@ -511,7 +510,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void updateLastRaceUI(View view, WeeklyRace race, Track track) {
-        decrementLoadingCounter();
         try {
             UIUtils.singleSetTextViewText(race.getRaceName(), view.findViewById(R.id.last_race_name));
             UIUtils.loadImageWithGlide(requireContext(), track.getTrack_minimal_layout_url(), view.findViewById(R.id.last_race_track_outline), () -> updateLastRaceUIFinalStep(race, view));
@@ -522,7 +520,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void updateLastRaceUIFinalStep(WeeklyRace race, View view) {
-        decrementLoadingCounter();
         LocalDateTime dateTime = race.getDateTime();
 
         UIUtils.multipleSetTextViewText(new String[]{String.valueOf(dateTime.getDayOfMonth()), requireContext().getString(R.string.round, race.getRound())}, new TextView[]{view.findViewById(R.id.last_race_date), view.findViewById(R.id.last_race_round)});
@@ -551,20 +548,21 @@ public class HomeFragment extends Fragment {
     }
 
     private void setDriverNames(View view, List<RaceResult> raceResults) {
-        decrementLoadingCounter();
         try {
             for (int i = 0; i < Math.min(3, raceResults.size()); i++) {
                 UIUtils.singleSetTextViewText(raceResults.get(i).getDriver().getFullName(), view.findViewById(Constants.LAST_RACE_DRIVER_NAME.get(i)));
             }
+            markCardLoaded("lastRace");
         } catch (Exception e) {
             Log.e(TAG, "Error setting driver names: " + e.getMessage());
+            markCardLoaded("lastRace");
         }
     }
 
     private void loadPendingResultsLayout(View view) {
-        decrementLoadingCounter();
         view.findViewById(R.id.pending_last_race_results).setVisibility(View.VISIBLE);
         view.findViewById(R.id.last_race_results).setVisibility(View.GONE);
+        markCardLoaded("lastRace");
     }
 
     private void updateSessionType(View view, Session nextEvent) {
@@ -610,8 +608,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void showLastRaceNotFound(View view) {
-        decrementLoadingCounter();
-
         view.findViewById(R.id.last_race_results).setVisibility(View.GONE);
         view.findViewById(R.id.season_results).setVisibility(View.GONE);
         view.findViewById(R.id.pending_last_race_results).setVisibility(View.GONE);
