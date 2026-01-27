@@ -725,23 +725,38 @@ public class HomeFragment extends Fragment {
             processDriverStandings(view, favoriteDriverId, cachedDriverStandings);
         } else {
             MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData(requireActivity().getApplication());
+
+            // Track if observer was called with final result
+            final boolean[] observerCalled = {false};
+
+            // Timeout: if no final result within 2 seconds, proceed without standings
+            new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+                if (!observerCalled[0] && !driverCardLoaded) {
+                    Log.w(TAG, "Driver standings timeout - proceeding with driver data only");
+                    processDriverStandings(view, favoriteDriverId, null);
+                }
+            }, 2000);
+
             driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
                 try {
                     if (result instanceof Result.Loading) {
                         return;
                     }
+
+                    observerCalled[0] = true;
+
                     if (result.isSuccess()) {
                         DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
                         cachedDriverStandings = driverStandings;
                         processDriverStandings(view, favoriteDriverId, driverStandings);
                     } else {
                         // Standings fetch failed - still try to create card with driver data only
-                        Log.w(TAG, "Failed to fetch driver standings, attempting to show driver data only: " + result.getError());
+                        Log.w(TAG, "Failed to fetch driver standings: " + result.getError());
                         processDriverStandings(view, favoriteDriverId, null);
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Error in setFavouriteDriverCard: " + e.getMessage());
-                    // Try to show driver data even if standings failed
+                    observerCalled[0] = true;
                     processDriverStandings(view, favoriteDriverId, null);
                 }
             });
@@ -880,23 +895,38 @@ public class HomeFragment extends Fragment {
             processConstructorStandings(view, favoriteTeamId, cachedConstructorStandings);
         } else {
             MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData(requireActivity().getApplication());
+
+            // Track if observer was called with final result
+            final boolean[] observerCalled = {false};
+
+            // Timeout: if no final result within 2 seconds, proceed without standings
+            new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+                if (!observerCalled[0] && !constructorCardLoaded) {
+                    Log.w(TAG, "Constructor standings timeout - proceeding with constructor data only");
+                    processConstructorStandings(view, favoriteTeamId, null);
+                }
+            }, 2000);
+
             constructorStandingsData.observe(getViewLifecycleOwner(), result -> {
                 try {
                     if (result instanceof Result.Loading) {
                         return;
                     }
+
+                    observerCalled[0] = true;
+
                     if (result.isSuccess()) {
                         ConstructorStandings standings = ((Result.ConstructorStandingsSuccess) result).getData();
                         cachedConstructorStandings = standings;
                         processConstructorStandings(view, favoriteTeamId, standings);
                     } else {
                         // Standings fetch failed - still try to create card with constructor data only
-                        Log.w(TAG, "Failed to fetch constructor standings, attempting to show constructor data only: " + result.getError());
+                        Log.w(TAG, "Failed to fetch constructor standings: " + result.getError());
                         processConstructorStandings(view, favoriteTeamId, null);
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Error in setFavouriteConstructorCard: " + e.getMessage());
-                    // Try to show constructor data even if standings failed
+                    observerCalled[0] = true;
                     processConstructorStandings(view, favoriteTeamId, null);
                 }
             });
