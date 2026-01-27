@@ -196,8 +196,8 @@ public class HomeFragment extends Fragment {
     private void setupUI(View view) {
         // Always start with the race cards (these are independent of user preferences)
         setRefreshLayout(view);
-        setLastRaceCard(view);
         setNextSessionCard(view);
+        setLastRaceCard(view);
 
         // Pre-fetch standings data once to be used by both cards
         prefetchStandingsData();
@@ -469,7 +469,9 @@ public class HomeFragment extends Fragment {
                     Log.i(TAG, "Last Race: " + raceResult);
 
                     if (raceResult.getRound().equals(nextRaceRound)) {
-                        showLastRaceNotFound(view);
+                        // Next race and last race are the same - we're at the beginning of the season
+                        setSeasonBeginning(view);
+                        return;
                     }
 
                     showPodium(view, raceResult);
@@ -481,6 +483,12 @@ public class HomeFragment extends Fragment {
                 loadPendingResultsLayout(view);
             }
         });
+    }
+
+    private void setSeasonBeginning(View view) {
+        Log.i(TAG, "Season beginning detected - next race equals last race");
+        showLastRaceNotFound(view);
+        markCardLoaded("lastRace");
     }
 
     private void showPodium(View view, WeeklyRace race) {
@@ -727,11 +735,14 @@ public class HomeFragment extends Fragment {
                         cachedDriverStandings = driverStandings;
                         processDriverStandings(view, favoriteDriverId, driverStandings);
                     } else {
-                        throw new Exception("Failed to fetch driver standings: " + result.getError());
+                        // Standings fetch failed - still try to create card with driver data only
+                        Log.w(TAG, "Failed to fetch driver standings, attempting to show driver data only: " + result.getError());
+                        processDriverStandings(view, favoriteDriverId, null);
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Error in setFavouriteDriverCard: " + e.getMessage());
-                    showDriverNotFound(view, 0);
+                    // Try to show driver data even if standings failed
+                    processDriverStandings(view, favoriteDriverId, null);
                 }
             });
         }
@@ -739,9 +750,16 @@ public class HomeFragment extends Fragment {
 
     private void processDriverStandings(View view, String favoriteDriverId, DriverStandings driverStandings) {
         try {
-            DriverStandingsElement favouriteDriver = homeViewModel.getDriverStandingsElement(driverStandings.getDriverStandingsElements(), favoriteDriverId);
+            DriverStandingsElement favouriteDriver = null;
+            if (driverStandings != null && driverStandings.getDriverStandingsElements() != null) {
+                favouriteDriver = homeViewModel.getDriverStandingsElement(driverStandings.getDriverStandingsElements(), favoriteDriverId);
+            }
+
             if (favouriteDriver == null) {
-                showSelectFavouriteDriver(view);
+                // No standing found - create a card with driver data only (no position/points)
+                Log.i(TAG, "No standing found for driver, fetching driver data only");
+                favouriteDriver = new DriverStandingsElement();
+                fetchDriverDataForCard(view, favoriteDriverId, favouriteDriver);
             } else {
                 Log.i(TAG, "Fetching driver data card");
                 fetchDriverDataForCard(view, favoriteDriverId, favouriteDriver);
@@ -872,11 +890,14 @@ public class HomeFragment extends Fragment {
                         cachedConstructorStandings = standings;
                         processConstructorStandings(view, favoriteTeamId, standings);
                     } else {
-                        throw new Exception("Failed to fetch constructor standings: " + result.getError());
+                        // Standings fetch failed - still try to create card with constructor data only
+                        Log.w(TAG, "Failed to fetch constructor standings, attempting to show constructor data only: " + result.getError());
+                        processConstructorStandings(view, favoriteTeamId, null);
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Error in setFavouriteConstructorCard: " + e.getMessage());
-                    showConstructorNotFound(view, 0);
+                    // Try to show constructor data even if standings failed
+                    processConstructorStandings(view, favoriteTeamId, null);
                 }
             });
         }
@@ -884,10 +905,16 @@ public class HomeFragment extends Fragment {
 
     private void processConstructorStandings(View view, String favoriteTeamId, ConstructorStandings standings) {
         try {
-            ConstructorStandingsElement favouriteConstructor = homeViewModel.getConstructorStandingsElement(standings.getConstructorStandings(), favoriteTeamId);
+            ConstructorStandingsElement favouriteConstructor = null;
+            if (standings != null && standings.getConstructorStandings() != null) {
+                favouriteConstructor = homeViewModel.getConstructorStandingsElement(standings.getConstructorStandings(), favoriteTeamId);
+            }
+
             if (favouriteConstructor == null) {
-                Log.i(TAG, "Showing select favourite constructor card");
-                showSelectFavouriteConstructor(view);
+                // No standing found - create a card with constructor data only (no position/points)
+                Log.i(TAG, "No standing found for constructor, fetching constructor data only");
+                favouriteConstructor = new ConstructorStandingsElement();
+                fetchConstructorDataForCard(view, favoriteTeamId, favouriteConstructor);
             } else {
                 Log.i(TAG, "Fetching constructor data card");
                 fetchConstructorDataForCard(view, favoriteTeamId, favouriteConstructor);
