@@ -234,30 +234,34 @@ public class HomeFragment extends Fragment {
     }
 
     private void prefetchStandingsData() {
-        // Pre-fetch driver standings
+        // Pre-fetch driver standings - only if not already cached
         if (cachedDriverStandings == null) {
             MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData(requireActivity().getApplication());
             driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
                 if (result instanceof Result.Loading) {
                     return;
                 }
-                if (result.isSuccess()) {
+                if (result instanceof Result.DriverStandingsSuccess) {
                     cachedDriverStandings = ((Result.DriverStandingsSuccess) result).getData();
-                    Log.d(TAG, "Driver standings cached");
+                    Log.d(TAG, "Driver standings cached from prefetch");
+                } else {
+                    Log.d(TAG, "Driver standings prefetch failed or no data available");
                 }
             });
         }
 
-        // Pre-fetch constructor standings
+        // Pre-fetch constructor standings - only if not already cached
         if (cachedConstructorStandings == null) {
             MutableLiveData<Result> constructorStandingsLiveData = homeViewModel.getConstructorStandingsLiveData(requireActivity().getApplication());
             constructorStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
                 if (result instanceof Result.Loading) {
                     return;
                 }
-                if (result.isSuccess()) {
+                if (result instanceof Result.ConstructorStandingsSuccess) {
                     cachedConstructorStandings = ((Result.ConstructorStandingsSuccess) result).getData();
-                    Log.d(TAG, "Constructor standings cached");
+                    Log.d(TAG, "Constructor standings cached from prefetch");
+                } else {
+                    Log.d(TAG, "Constructor standings prefetch failed or no data available");
                 }
             });
         }
@@ -723,44 +727,50 @@ public class HomeFragment extends Fragment {
         // Use cached data if available, otherwise fetch
         if (cachedDriverStandings != null) {
             processDriverStandings(view, favoriteDriverId, cachedDriverStandings);
-        } else {
-            MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData(requireActivity().getApplication());
-
-            // Track if observer was called with final result
-            final boolean[] observerCalled = {false};
-
-            // Timeout: if no final result within 2 seconds, proceed without standings
-            new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-                if (!observerCalled[0] && !driverCardLoaded) {
-                    Log.w(TAG, "Driver standings timeout - proceeding with driver data only");
-                    processDriverStandings(view, favoriteDriverId, null);
-                }
-            }, 2000);
-
-            driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
-                try {
-                    if (result instanceof Result.Loading) {
-                        return;
-                    }
-
-                    observerCalled[0] = true;
-
-                    if (result.isSuccess()) {
-                        DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
-                        cachedDriverStandings = driverStandings;
-                        processDriverStandings(view, favoriteDriverId, driverStandings);
-                    } else {
-                        // Standings fetch failed - still try to create card with driver data only
-                        Log.w(TAG, "Failed to fetch driver standings: " + result.getError());
-                        processDriverStandings(view, favoriteDriverId, null);
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, "Error in setFavouriteDriverCard: " + e.getMessage());
-                    observerCalled[0] = true;
-                    processDriverStandings(view, favoriteDriverId, null);
-                }
-            });
+            return;
         }
+
+        // Fetch standings - LiveData will handle multiple observers gracefully
+        MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData(requireActivity().getApplication());
+
+        // Track if observer was called with final result
+        final boolean[] observerCalled = {false};
+
+        // Timeout: if no final result within 2 seconds, proceed without standings
+        new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+            if (!observerCalled[0] && !driverCardLoaded) {
+                Log.w(TAG, "Driver standings timeout - proceeding with driver data only");
+                processDriverStandings(view, favoriteDriverId, null);
+            }
+        }, 2000);
+
+        driverStandingsLiveData.observe(getViewLifecycleOwner(), result -> {
+            try {
+                if (result instanceof Result.Loading) {
+                    return;
+                }
+
+                observerCalled[0] = true;
+
+                if (result instanceof Result.DriverStandingsSuccess) {
+                    DriverStandings driverStandings = ((Result.DriverStandingsSuccess) result).getData();
+                    cachedDriverStandings = driverStandings;
+                    processDriverStandings(view, favoriteDriverId, driverStandings);
+                } else {
+                    // Standings fetch failed - still try to create card with driver data only
+                    Log.w(TAG, "Failed to fetch driver standings: " + result.getError());
+                    processDriverStandings(view, favoriteDriverId, null);
+                }
+            } catch (ClassCastException e) {
+                Log.e(TAG, "Type mismatch in setFavouriteDriverCard - wrong result type received: " + e.getMessage());
+                observerCalled[0] = true;
+                processDriverStandings(view, favoriteDriverId, null);
+            } catch (Exception e) {
+                Log.e(TAG, "Error in setFavouriteDriverCard: " + e.getMessage());
+                observerCalled[0] = true;
+                processDriverStandings(view, favoriteDriverId, null);
+            }
+        });
     }
 
     private void processDriverStandings(View view, String favoriteDriverId, DriverStandings driverStandings) {
@@ -893,44 +903,50 @@ public class HomeFragment extends Fragment {
         // Use cached data if available, otherwise fetch
         if (cachedConstructorStandings != null) {
             processConstructorStandings(view, favoriteTeamId, cachedConstructorStandings);
-        } else {
-            MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData(requireActivity().getApplication());
-
-            // Track if observer was called with final result
-            final boolean[] observerCalled = {false};
-
-            // Timeout: if no final result within 2 seconds, proceed without standings
-            new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
-                if (!observerCalled[0] && !constructorCardLoaded) {
-                    Log.w(TAG, "Constructor standings timeout - proceeding with constructor data only");
-                    processConstructorStandings(view, favoriteTeamId, null);
-                }
-            }, 2000);
-
-            constructorStandingsData.observe(getViewLifecycleOwner(), result -> {
-                try {
-                    if (result instanceof Result.Loading) {
-                        return;
-                    }
-
-                    observerCalled[0] = true;
-
-                    if (result.isSuccess()) {
-                        ConstructorStandings standings = ((Result.ConstructorStandingsSuccess) result).getData();
-                        cachedConstructorStandings = standings;
-                        processConstructorStandings(view, favoriteTeamId, standings);
-                    } else {
-                        // Standings fetch failed - still try to create card with constructor data only
-                        Log.w(TAG, "Failed to fetch constructor standings: " + result.getError());
-                        processConstructorStandings(view, favoriteTeamId, null);
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, "Error in setFavouriteConstructorCard: " + e.getMessage());
-                    observerCalled[0] = true;
-                    processConstructorStandings(view, favoriteTeamId, null);
-                }
-            });
+            return;
         }
+
+        // Fetch standings - LiveData will handle multiple observers gracefully
+        MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData(requireActivity().getApplication());
+
+        // Track if observer was called with final result
+        final boolean[] observerCalled = {false};
+
+        // Timeout: if no final result within 2 seconds, proceed without standings
+        new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+            if (!observerCalled[0] && !constructorCardLoaded) {
+                Log.w(TAG, "Constructor standings timeout - proceeding with constructor data only");
+                processConstructorStandings(view, favoriteTeamId, null);
+            }
+        }, 2000);
+
+        constructorStandingsData.observe(getViewLifecycleOwner(), result -> {
+            try {
+                if (result instanceof Result.Loading) {
+                    return;
+                }
+
+                observerCalled[0] = true;
+
+                if (result instanceof Result.ConstructorStandingsSuccess) {
+                    ConstructorStandings standings = ((Result.ConstructorStandingsSuccess) result).getData();
+                    cachedConstructorStandings = standings;
+                    processConstructorStandings(view, favoriteTeamId, standings);
+                } else {
+                    // Standings fetch failed - still try to create card with constructor data only
+                    Log.w(TAG, "Failed to fetch constructor standings: " + result.getError());
+                    processConstructorStandings(view, favoriteTeamId, null);
+                }
+            } catch (ClassCastException e) {
+                Log.e(TAG, "Type mismatch in setFavouriteConstructorCard - wrong result type received: " + e.getMessage());
+                observerCalled[0] = true;
+                processConstructorStandings(view, favoriteTeamId, null);
+            } catch (Exception e) {
+                Log.e(TAG, "Error in setFavouriteConstructorCard: " + e.getMessage());
+                observerCalled[0] = true;
+                processConstructorStandings(view, favoriteTeamId, null);
+            }
+        });
     }
 
     private void processConstructorStandings(View view, String favoriteTeamId, ConstructorStandings standings) {
