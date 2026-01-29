@@ -21,9 +21,9 @@
             android:layout_height="@dimen/top_bar_height"
             android:background="@color/ferrari_secondary"
             app:navigationIcon="@drawable/arrow_back_ios_style"
-            app:title="@string/constructors_upper_case"
+            app:title="@string/constructors"
             app:titleCentered="true"
-            app:titleTextAppearance="@style/PageSuperTitleUpperCaseBlack" />
+            app:titleTextAppearance="@style/t25UpperCaseBoldBlack" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -50,14 +50,14 @@
 
             <TextView
                 android:id="@+id/constructors_standing_not_available"
-                style="@style/PageTitleUppercaseWhite"
+                style="@style/t20UpperCaseBoldWhite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginStart="@dimen/medium_margin"
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:gravity="center"
-                android:text="CONSTRUCTORS STANDING NOT AVAILABLE"
+                android:text="@string/constructors_std_not_available"
                 android:visibility="gone">
 
             </TextView>

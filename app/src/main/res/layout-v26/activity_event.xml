@@ -29,7 +29,7 @@
 
                 <TextView
                     android:id="@+id/topAppBarTitle"
-                    style="@style/PageSuperTitleUpperCaseBlack"
+                    style="@style/t25UpperCaseBoldBlack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
@@ -76,15 +76,13 @@
                         android:orientation="horizontal">
 
                         <TextView
+                            style="@style/t12RegularWhiteLineLimited"
                             android:id="@+id/round_number"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="15dp"
                             android:layout_weight="1"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/body_text_size">
+                            android:text="@string/not_found">
 
                         </TextView>
 
@@ -118,38 +116,32 @@
                         android:orientation="vertical">
 
                         <TextView
+                            style="@style/t14BoldWhiteLineLimited"
                             android:id="@+id/event_year"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/orbitron_bold"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/layout_subtitle_text_size">
+                            android:text="@string/not_found">
 
                         </TextView>
 
                         <TextView
+                            style="@style/t18UpperCaseBoldWhite"
                             android:id="@+id/gp_name"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:fontFamily="@font/orbitron_bold"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/layout_title_1_text_size">
+                            android:text="@string/not_found">
 
                         </TextView>
 
                         <TextView
+                            style="@style/t14BoldWhiteLineLimited"
                             android:id="@+id/event_date"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="end"
                             android:layout_marginTop="15dp"
                             android:layout_marginEnd="15dp"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/layout_subtitle_text_size">
+                            android:text="@string/not_found">
 
                         </TextView>
 

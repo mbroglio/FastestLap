@@ -27,7 +27,7 @@
 
                 <TextView
                     android:id="@+id/topAppBarTitle"
-                    style="@style/PageSuperTitleUpperCaseBlack"
+                    style="@style/t25UpperCaseBoldBlack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
@@ -146,10 +146,10 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/LayoutTitle1UppercaseWhite"
+                        style="@style/t18UpperCaseBoldWhite"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/drivers_upper_case">
+                        android:text="@string/drivers_index">
 
                     </TextView>
 
@@ -190,7 +190,7 @@
 
                             <TextView
                                 android:id="@+id/driver_1_name"
-                                style="@style/PageContentRegularWhite"
+                                style="@style/t12RegularWhiteLineLimited"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
@@ -232,7 +232,7 @@
 
                             <TextView
                                 android:id="@+id/driver_2_name"
-                                style="@style/PageContentRegularWhite"
+                                style="@style/t12RegularWhiteLineLimited"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:gravity="center"
@@ -245,13 +245,11 @@
                     </RelativeLayout>
 
                     <TextView
+                        style="@style/t18UpperCaseBoldWhite"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="20dp"
-                        android:fontFamily="@font/orbitron_bold"
-                        android:text="@string/team_info_upper_case"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/layout_title_1_text_size">
+                        android:text="@string/team_info_index">
 
                     </TextView>
 
@@ -271,17 +269,17 @@
 
                             <TextView
                                 android:id="@+id/team_full_name_text"
-                                style="@style/PageSubtitleContentIndexWhite"
+                                style="@style/t14BoldWhiteLineLimited"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentStart="true"
-                                android:text="@string/full_name">
+                                android:text="@string/full_name_index">
 
                             </TextView>
 
                             <TextView
                                 android:id="@+id/team_full_name_value"
-                                style="@style/PageContentRegularWhite"
+                                style="@style/t12RegularWhiteLineLimited"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
@@ -303,17 +301,17 @@
 
                             <TextView
                                 android:id="@+id/team_base_text"
-                                style="@style/PageSubtitleContentIndexWhite"
+                                style="@style/t14BoldWhiteLineLimited"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentStart="true"
-                                android:text="@string/base">
+                                android:text="@string/base_index">
 
                             </TextView>
 
                             <TextView
                                 android:id="@+id/team_base_value"
-                                style="@style/PageContentRegularWhite"
+                                style="@style/t12RegularWhiteLineLimited"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
@@ -335,17 +333,17 @@
 
                             <TextView
                                 android:id="@+id/team_principal_text"
-                                style="@style/PageSubtitleContentIndexWhite"
+                                style="@style/t14BoldWhiteLineLimited"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentStart="true"
-                                android:text="@string/team_principal">
+                                android:text="@string/team_principal_index">
 
                             </TextView>
 
                             <TextView
                                 android:id="@+id/team_principal_value"
-                                style="@style/PageContentRegularWhite"
+                                style="@style/t12RegularWhiteLineLimited"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
@@ -366,17 +364,17 @@
 
                             <TextView
                                 android:id="@+id/team_chassis_text"
-                                style="@style/PageSubtitleContentIndexWhite"
+                                style="@style/t14BoldWhiteLineLimited"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentStart="true"
-                                android:text="@string/chassis">
+                                android:text="@string/chassis_index">
 
                             </TextView>
 
                             <TextView
                                 android:id="@+id/team_chassis_value"
-                                style="@style/PageContentRegularWhite"
+                                style="@style/t12RegularWhiteLineLimited"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
@@ -397,17 +395,17 @@
 
                             <TextView
                                 android:id="@+id/team_power_unit_text"
-                                style="@style/PageSubtitleContentIndexWhite"
+                                style="@style/t14BoldWhiteLineLimited"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentStart="true"
-                                android:text="@string/power_unit">
+                                android:text="@string/power_unit_index">
 
                             </TextView>
 
                             <TextView
                                 android:id="@+id/team_power_unit_value"
-                                style="@style/PageContentRegularWhite"
+                                style="@style/t12RegularWhiteLineLimited"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
@@ -428,17 +426,17 @@
 
                             <TextView
                                 android:id="@+id/team_first_entry_text"
-                                style="@style/PageSubtitleContentIndexWhite"
+                                style="@style/t14BoldWhiteLineLimited"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentStart="true"
-                                android:text="@string/first_entry">
+                                android:text="@string/first_entry_index">
 
                             </TextView>
 
                             <TextView
                                 android:id="@+id/team_first_entry_value"
-                                style="@style/PageContentRegularWhite"
+                                style="@style/t12RegularWhiteLineLimited"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
@@ -459,17 +457,17 @@
 
                             <TextView
                                 android:id="@+id/team_championships_text"
-                                style="@style/PageSubtitleContentIndexWhite"
+                                style="@style/t14BoldWhiteLineLimited"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentStart="true"
-                                android:text="@string/world_championships">
+                                android:text="@string/world_championships_index">
 
                             </TextView>
 
                             <TextView
                                 android:id="@+id/team_championships_value"
-                                style="@style/PageContentRegularWhite"
+                                style="@style/t12RegularWhiteLineLimited"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
@@ -490,17 +488,17 @@
 
                             <TextView
                                 android:id="@+id/team_wins_text"
-                                style="@style/PageSubtitleContentIndexWhite"
+                                style="@style/t14BoldWhiteLineLimited"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentStart="true"
-                                android:text="@string/wins">
+                                android:text="@string/wins_index">
 
                             </TextView>
 
                             <TextView
                                 android:id="@+id/team_wins_value"
-                                style="@style/PageContentRegularWhite"
+                                style="@style/t12RegularWhiteLineLimited"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
@@ -521,17 +519,17 @@
 
                             <TextView
                                 android:id="@+id/team_podiums_text"
-                                style="@style/PageSubtitleContentIndexWhite"
+                                style="@style/t14BoldWhiteLineLimited"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_alignParentStart="true"
-                                android:text="@string/podiums">
+                                android:text="@string/podiums_index">
 
                             </TextView>
 
                             <TextView
                                 android:id="@+id/team_podiums_value"
-                                style="@style/PageContentRegularWhite"
+                                style="@style/t12RegularWhiteLineLimited"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_centerInParent="true"
@@ -555,10 +553,10 @@
                         android:orientation="vertical">
 
                         <TextView
-                            style="@style/LayoutTitle1UppercaseWhite"
+                            style="@style/t18UpperCaseBoldWhite"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="@string/team_history_upper_case" />
+                            android:text="@string/team_history_index" />
 
                         <TableLayout
                             android:id="@+id/history_table"

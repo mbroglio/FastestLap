@@ -18,6 +18,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
+            style="@style/t14UpperCaseBoldBlack"
             android:id="@+id/news_menu_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -28,14 +29,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_toStartOf="@id/language_choice_layout"
-            android:autoSizeMaxTextSize="@dimen/page_title_text_size"
-            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-            android:autoSizeTextType="uniform"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="@string/search_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/page_title_text_size">
+            android:text="@string/sources">
 
         </TextView>
 
@@ -57,13 +52,11 @@
             </ImageView>
 
             <TextView
+                style="@style/t14UpperCaseBoldBlack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:fontFamily="@font/orbitron_bold"
-                android:text="@string/italian_language_abbr_upper_case"
-                android:textColor="@color/black"
-                android:textSize="@dimen/layout_subtitle_text_size">
+                android:text="@string/italian_language_abbr">
 
             </TextView>
 
@@ -79,13 +72,11 @@
                 app:trackTint="@color/timer_gray" />
 
             <TextView
+                style="@style/t14UpperCaseBoldBlack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="5dp"
-                android:fontFamily="@font/orbitron_bold"
-                android:text="@string/english_language_abbr_upper_case"
-                android:textColor="@color/black"
-                android:textSize="@dimen/layout_subtitle_text_size">
+                android:text="@string/english_language_abbr">
 
             </TextView>
 
@@ -117,17 +108,15 @@
             android:visibility="visible" />
 
         <TextView
+            style="@style/t20UpperCaseBoldWhite"
             android:id="@+id/no_connection_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_marginStart="50dp"
             android:layout_marginEnd="50dp"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="@string/no_internet_connection_upper_case"
-            android:textColor="@color/white"
-            android:textSize="@dimen/page_title_text_size"
+            android:text="@string/no_internet_connection"
             android:visibility="gone">
 
         </TextView>

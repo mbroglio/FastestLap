@@ -25,7 +25,7 @@
 
             <TextView
                 android:id="@+id/dialog_title"
-                style="@style/PageSuperTitleUpperCaseBlack"
+                style="@style/t25UpperCaseBoldBlack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -39,7 +39,7 @@
 
             <TextView
                 android:id="@+id/race_type_title"
-                style="@style/PageTitleUppercaseBlack"
+                style="@style/t20UpperCaseBoldBlack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -49,51 +49,6 @@
                 android:gravity="center"
                 android:maxLines="1"
                 android:visibility="visible" />
-
-            <!--
-            <LinearLayout
-                android:id="@+id/race_choice_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:orientation="horizontal"
-                android:visibility="visible">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:fontFamily="@font/orbitron_bold"
-                    android:text="@string/sprint_upper_case"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/body_text_size">
-
-                </TextView>
-
-                <com.google.android.material.materialswitch.MaterialSwitch
-                    android:id="@+id/race_switch"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:checked="false"
-                    app:thumbTint="@color/ferrari_secondary"
-                    app:trackDecorationTint="@color/black"
-                    app:trackTint="@color/timer_gray" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/orbitron_bold"
-                    android:text="@string/feature_upper_case"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/body_text_size">
-
-                </TextView>
-
-            </LinearLayout>
-            -->
 
         </LinearLayout>
 
@@ -149,33 +104,26 @@
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/t14UpperCaseBoldBlack"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
                         android:fontFamily="@font/orbitron_bold"
                         android:gravity="center"
-                        android:text="@string/pole_position_upper_case"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/body_text_size">
+                        android:text="@string/pole_position">
 
                     </TextView>
 
                     <TextView
+                        style="@style/t12BoldBlackLineLimited"
                         android:id="@+id/driver_name_pole"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
                         android:layout_gravity="center"
                         android:layout_marginStart="5dp"
                         android:layout_marginEnd="5dp"
                         android:layout_weight="1"
-                        android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                        android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                        android:autoSizeTextType="uniform"
-                        android:fontFamily="@font/orbitron_bold"
-                        android:gravity="start|center"
-                        android:maxLines="1"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/layout_subtitle_text_size" />
+                        android:gravity="start|center" />
 
                 </LinearLayout>
 
@@ -212,33 +160,26 @@
                     android:orientation="vertical">
 
                     <TextView
+                        style="@style/t14UpperCaseBoldBlack"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
                         android:fontFamily="@font/orbitron_bold"
                         android:gravity="center"
-                        android:text="@string/fastest_lap_upper_case"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/body_text_size">
+                        android:text="@string/fastest_lap">
 
                     </TextView>
 
                     <TextView
+                        style="@style/t12BoldBlackLineLimited"
                         android:id="@+id/driver_name_fastest_lap"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="0dp"
                         android:layout_gravity="center"
                         android:layout_marginStart="5dp"
                         android:layout_marginEnd="5dp"
                         android:layout_weight="1"
-                        android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                        android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                        android:autoSizeTextType="uniform"
-                        android:fontFamily="@font/orbitron_bold"
-                        android:gravity="start|center"
-                        android:maxLines="1"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/layout_subtitle_text_size" />
+                        android:gravity="start|center" />
 
                 </LinearLayout>
 

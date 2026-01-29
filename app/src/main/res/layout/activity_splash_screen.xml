@@ -18,7 +18,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="300dp"
             android:importantForAccessibility="no"
-            app:srcCompat="@drawable/iconfl">
+            app:srcCompat="@drawable/app_icon">
 
         </ImageView>
 
@@ -37,18 +37,17 @@
         </TextView>
 
         <TextView
+            style="@style/t20UpperCaseBoldWhite"
             android:id="@+id/app_credits"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/app_name"
             android:layout_centerInParent="true"
             android:layout_marginTop="150dp"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
             android:lineSpacingExtra="10dp"
             android:text="@string/app_credits"
-            android:textColor="@color/white"
-            android:textSize="@dimen/page_title_text_size"
+            android:textAllCaps="false"
             android:visibility="invisible">
 
         </TextView>

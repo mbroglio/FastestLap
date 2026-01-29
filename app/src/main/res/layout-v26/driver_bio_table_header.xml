@@ -15,109 +15,79 @@
         android:orientation="horizontal">
 
         <TextView
+            style="@style/t14UpperCaseBoldBlack"
             android:id="@+id/season_year"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_weight="1"
-            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-            android:autoSizeTextType="uniform"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
             android:maxLines="1"
-            android:text="@string/year_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size" />
+            android:text="@string/year" />
 
         <TextView
+            style="@style/t14UpperCaseBoldBlack"
             android:id="@+id/driver_position"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_weight="1"
-            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-            android:autoSizeTextType="uniform"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
             android:maxLines="1"
-            android:text="@string/pos_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:text="@string/pos">
 
         </TextView>
 
         <TextView
+            style="@style/t14UpperCaseBoldBlack"
             android:id="@+id/team_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_weight="0.8"
-            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-            android:autoSizeTextType="uniform"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
             android:maxLines="1"
-            android:text="@string/team_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:text="@string/team">
 
         </TextView>
 
         <TextView
+            style="@style/t14UpperCaseBoldBlack"
             android:id="@+id/driver_points"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_weight="1"
-            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-            android:autoSizeTextType="uniform"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
             android:maxLines="1"
-            android:text="@string/pts_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:text="@string/points_abbr">
 
         </TextView>
 
         <TextView
+            style="@style/t14UpperCaseBoldBlack"
             android:id="@+id/driver_wins"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_weight="1.05"
-            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-            android:autoSizeTextType="uniform"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
             android:maxLines="1"
-            android:text="@string/wins_abbr_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:text="@string/wins_abbr">
 
         </TextView>
 
         <TextView
+            style="@style/t14UpperCaseBoldBlack"
             android:id="@+id/driver_podiums"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:layout_weight="1"
-            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-            android:autoSizeTextType="uniform"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
             android:maxLines="1"
-            android:text="@string/pod_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:text="@string/pod">
 
         </TextView>
 

@@ -16,95 +16,64 @@
         android:orientation="horizontal">
 
         <TextView
+            style="@style/t12RegularBlackLineLimited"
             android:id="@+id/season_year"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2.25"
-            android:autoSizeMaxTextSize="@dimen/body_text_size"
-            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-            android:autoSizeTextType="uniform"
-            android:fontFamily="@font/orbitron_regular"
             android:gravity="center"
-            android:maxLines="1"
-            android:text="@string/not_found"
-            android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size">
+            android:text="@string/not_found">
 
         </TextView>
 
         <TextView
+            style="@style/t12RegularBlackLineLimited"
             android:id="@+id/team_position"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2.3"
-            android:autoSizeMaxTextSize="@dimen/body_text_size"
-            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-            android:autoSizeTextType="uniform"
-            android:fontFamily="@font/orbitron_regular"
             android:gravity="center"
-            android:maxLines="1"
-            android:text="@string/not_found"
-            android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size">
+            android:text="@string/not_found">
 
         </TextView>
 
         <TextView
+            style="@style/t12RegularBlackLineLimited"
             android:id="@+id/team_points"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_weight="2.3"
-            android:autoSizeMaxTextSize="@dimen/body_text_size"
-            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-            android:autoSizeTextType="uniform"
-            android:fontFamily="@font/orbitron_regular"
             android:gravity="center"
-            android:maxLines="1"
-            android:text="@string/not_found"
-            android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size">
+            android:text="@string/not_found">
 
         </TextView>
 
         <TextView
+            style="@style/t12RegularBlackLineLimited"
             android:id="@+id/team_wins"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_weight="2.2"
-            android:autoSizeMaxTextSize="@dimen/body_text_size"
-            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-            android:autoSizeTextType="uniform"
-            android:fontFamily="@font/orbitron_regular"
             android:gravity="center"
-            android:maxLines="1"
-            android:text="@string/not_found"
-            android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size">
+            android:text="@string/not_found">
 
         </TextView>
 
         <TextView
+            style="@style/t12RegularBlackLineLimited"
             android:id="@+id/team_podiums"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:layout_weight="2.2"
-            android:autoSizeMaxTextSize="@dimen/body_text_size"
-            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-            android:autoSizeTextType="uniform"
-            android:fontFamily="@font/orbitron_regular"
             android:gravity="center"
-            android:maxLines="1"
-            android:text="@string/not_found"
-            android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size">
+            android:text="@string/not_found">
 
         </TextView>
 
     </LinearLayout>
-
 
 </com.google.android.material.card.MaterialCardView>

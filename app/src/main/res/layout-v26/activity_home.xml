@@ -21,9 +21,9 @@
             android:layout_height="@dimen/top_bar_height"
             android:background="@color/ferrari_secondary"
             app:menu="@menu/top_app_bar_menu"
-            app:title="@string/app_name_upper_case"
+            app:title="@string/app_name"
             app:titleCentered="true"
-            app:titleTextAppearance="@style/PageSuperTitleUpperCaseBlack">
+            app:titleTextAppearance="@style/t25UpperCaseBoldBlack">
 
         </com.google.android.material.appbar.MaterialToolbar>
 

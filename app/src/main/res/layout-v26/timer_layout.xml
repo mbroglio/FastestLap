@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:fontFamily="@font/orbitron_bold"
-        android:text="@string/next_session"
+        android:text="@string/next_session_index"
         android:textColor="@color/black"
         android:textSize="@dimen/layout_title_2_text_size">
 

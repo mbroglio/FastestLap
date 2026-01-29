@@ -23,22 +23,18 @@
             android:orientation="vertical">
 
             <TextView
+                style="@style/t20UpperCaseBoldBlack"
                 android:id="@+id/race_results_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="8dp"
-                android:autoSizeMaxTextSize="@dimen/page_title_text_size"
-                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                android:autoSizeTextType="uniform"
-                android:fontFamily="@font/orbitron_bold"
                 android:gravity="center"
-                android:maxLines="1"
-                android:textColor="@color/black"
-                android:textSize="@dimen/page_title_text_size" />
+                android:maxLines="1" />
 
             <TextView
+                style="@style/t14UpperCaseBoldBlack"
                 android:id="@+id/event_description_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -46,14 +42,8 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="5dp"
-                android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                android:autoSizeTextType="uniform"
-                android:fontFamily="@font/orbitron_bold"
                 android:gravity="center"
-                android:maxLines="1"
-                android:textColor="@color/black"
-                android:textSize="@dimen/layout_subtitle_text_size" />
+                android:maxLines="1" />
 
         </LinearLayout>
 
@@ -99,14 +89,12 @@
                 android:orientation="vertical">
 
                 <TextView
+                    style="@style/t14UpperCaseBoldBlack"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:fontFamily="@font/orbitron_bold"
                     android:gravity="center"
-                    android:text="@string/fastest_lap_upper_case"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/body_text_size">
+                    android:text="@string/fastest_lap">
 
                 </TextView>
 
@@ -123,6 +111,7 @@
                         android:layout_marginStart="4dp" />
 
                     <TextView
+                        style="@style/t12BoldBlackLineLimited"
                         android:id="@+id/driver_name"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -130,45 +119,26 @@
                         android:layout_marginStart="5dp"
                         android:layout_marginEnd="5dp"
                         android:layout_weight="1"
-                        android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                        android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                        android:autoSizeTextType="uniform"
-                        android:fontFamily="@font/orbitron_bold"
-                        android:gravity="start|center"
-                        android:maxLines="1"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/layout_subtitle_text_size" />
+                        android:gravity="start|center" />
 
                     <TextView
+                        style="@style/t12BoldBlackLineLimited"
                         android:id="@+id/fastest_lap"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_weight="0.6"
-                        android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                        android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                        android:autoSizeTextType="uniform"
-                        android:fontFamily="@font/orbitron_bold"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/layout_subtitle_text_size" />
+                        android:gravity="center" />
 
                     <TextView
+                        style="@style/t12RegularBlackLineLimited"
                         android:id="@+id/lap_value"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_marginStart="10dp"
                         android:layout_weight="0.4"
-                        android:autoSizeMaxTextSize="@dimen/body_text_size"
-                        android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                        android:autoSizeTextType="uniform"
-                        android:fontFamily="@font/orbitron_regular"
-                        android:gravity="center"
-                        android:maxLines="1"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/body_text_size">
+                        android:gravity="center">
 
                     </TextView>
 

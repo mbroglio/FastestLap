@@ -13,6 +13,7 @@
         android:layout_height="match_parent">
 
         <TextView
+            style="@style/t20BoldBlack"
             android:id="@+id/registration_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -20,7 +21,7 @@
             android:layout_marginStart="@dimen/medium_margin"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/orbitron_bold"
-            android:text="Login"
+            android:text="@string/login"
             android:textColor="@color/black"
             android:textSize="@dimen/page_title_text_size" />
 
@@ -42,14 +43,13 @@
             app:startIconTint="@color/black">
 
             <com.google.android.material.textfield.TextInputEditText
+                style="@style/t12RegularBlackLineLimited"
                 android:id="@+id/textInputEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_top_left_right_margins"
-                android:fontFamily="@font/orbitron_regular"
                 android:inputType="textEmailAddress"
-                android:textColor="@color/grey_card"
-                android:textSize="@dimen/body_text_size" />
+                android:textColor="@color/grey_card" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -73,18 +73,18 @@
             app:startIconTint="@color/black">
 
             <com.google.android.material.textfield.TextInputEditText
+                style="@style/t12RegularBlackLineLimited"
                 android:id="@+id/textInputPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_top_left_right_margins"
-                android:fontFamily="@font/orbitron_regular"
                 android:inputType="textPassword"
-                android:textColor="@color/grey_card"
-                android:textSize="@dimen/body_text_size" />
+                android:textColor="@color/grey_card" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
+            style="@style/t14UpperCaseBoldBlack"
             android:id="@+id/submit_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -94,10 +94,7 @@
             android:layout_marginEnd="@dimen/medium_margin"
             android:layout_marginBottom="10dp"
             android:backgroundTint="@color/ferrari_secondary"
-            android:fontFamily="@font/orbitron_bold"
-            android:text="@string/submit_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:text="@string/submit">
 
         </Button>
 

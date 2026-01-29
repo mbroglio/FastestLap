@@ -23,7 +23,7 @@
             app:navigationIcon="@drawable/arrow_back_ios_style"
             app:title="FORMULA 3"
             app:titleCentered="true"
-            app:titleTextAppearance="@style/PageSuperTitleUpperCaseBlack" />
+            app:titleTextAppearance="@style/t25UpperCaseBoldBlack" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <ScrollView
@@ -36,7 +36,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
             <LinearLayout
@@ -50,7 +50,6 @@
                     android:id="@+id/f3_calendar_card"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:layout_centerInParent="true"
                     android:layout_marginTop="@dimen/medium_margin"
                     android:layout_marginEnd="@dimen/medium_margin"
                     android:layout_marginBottom="@dimen/medium_margin"
@@ -65,15 +64,16 @@
                         android:layout_gravity="center"
                         android:layout_marginStart="@dimen/medium_margin"
                         android:layout_marginEnd="@dimen/medium_margin"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        tools:ignore="UseCompoundDrawables">
 
                         <TextView
-                            style="@style/LayoutSubtitleUppercaseBlack"
+                            style="@style/t14UpperCaseBoldBlack"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginEnd="@dimen/medium_margin"
-                            android:text="Calendar">
+                            android:text="@string/calendar">
 
                         </TextView>
 
@@ -81,6 +81,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
+                            android:importantForAccessibility="no"
                             android:src="@drawable/calendar_icon">
 
                         </ImageView>
@@ -93,7 +94,6 @@
                     android:id="@+id/f3_entry_list_card"
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
-                    android:layout_centerInParent="true"
                     android:layout_marginStart="@dimen/medium_margin"
                     android:layout_marginTop="@dimen/medium_margin"
                     android:layout_marginBottom="@dimen/medium_margin"
@@ -108,15 +108,16 @@
                         android:layout_gravity="center"
                         android:layout_marginStart="@dimen/medium_margin"
                         android:layout_marginEnd="@dimen/medium_margin"
-                        android:orientation="horizontal">
+                        android:orientation="horizontal"
+                        tools:ignore="UseCompoundDrawables">
 
                         <TextView
-                            style="@style/LayoutSubtitleUppercaseBlack"
+                            style="@style/t14UpperCaseBoldBlack"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
                             android:layout_marginEnd="@dimen/medium_margin"
-                            android:text="Entry List">
+                            android:text="@string/entry_list">
 
                         </TextView>
 
@@ -124,6 +125,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
+                            android:importantForAccessibility="no"
                             android:src="@drawable/list_icon">
 
                         </ImageView>
@@ -144,35 +146,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <!--
-                    <com.google.android.material.card.MaterialCardView
-                        android:id="@+id/f3_entry_list_card"
-                        style="@style/F3MenuCard"
-                        android:layout_width="match_parent"
-                        android:layout_height="120dp">
-
-                        <ImageView
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:alpha="0.6"
-                            android:scaleType="centerCrop"
-                            android:src="@drawable/f3_grid_image" />
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:background="@color/junior_card_overlay" />
-
-                        <TextView
-                            style="@style/JuniorCardTitle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="Entry List" />
-                    </com.google.android.material.card.MaterialCardView>
-                    -->
+                    android:orientation="vertical"
+                    tools:ignore="UselessParent">
 
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/f3_results_card"
@@ -184,6 +159,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:alpha="0.6"
+                            android:importantForAccessibility="no"
                             android:scaleType="centerCrop"
                             android:scrollY="25sp"
                             android:src="@drawable/f3_results_image" />
@@ -198,7 +174,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="Results" />
+                            android:text="@string/results" />
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
@@ -212,6 +188,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:alpha="0.6"
+                            android:importantForAccessibility="no"
                             android:scaleType="centerCrop"
                             android:scrollY="15sp"
                             android:src="@drawable/f3_drivers_image" />
@@ -230,7 +207,7 @@
                             android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                             android:autoSizeTextType="uniform"
                             android:maxLines="2"
-                            android:text="Drivers Standing" />
+                            android:text="@string/drivers_standing" />
                     </com.google.android.material.card.MaterialCardView>
 
                     <com.google.android.material.card.MaterialCardView
@@ -244,6 +221,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:alpha="0.6"
+                            android:importantForAccessibility="no"
                             android:scaleType="centerCrop"
                             android:scrollY="10sp"
                             android:src="@drawable/f3_overtake_image" />
@@ -258,7 +236,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="center"
-                            android:text="Constructors Standing" />
+                            android:text="@string/constructors_standing" />
                     </com.google.android.material.card.MaterialCardView>
 
                 </LinearLayout>

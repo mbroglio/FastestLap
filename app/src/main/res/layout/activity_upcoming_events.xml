@@ -21,9 +21,9 @@
             android:layout_height="@dimen/top_bar_height"
             android:background="@color/ferrari_secondary"
             app:navigationIcon="@drawable/arrow_back_ios_style"
-            app:title="@string/upcoming_upper_case"
+            app:title="@string/upcoming"
             app:titleCentered="true"
-            app:titleTextAppearance="@style/PageSuperTitleUpperCaseBlack" />
+            app:titleTextAppearance="@style/t25UpperCaseBoldBlack" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

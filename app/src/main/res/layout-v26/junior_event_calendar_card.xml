@@ -127,7 +127,7 @@
 
                     <TextView
                         android:id="@+id/sprint_month"
-                        style="@style/LayoutSubtitleUppercaseWhite"
+                        style="@style/t14UpperCaseBoldWhite"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
@@ -184,7 +184,7 @@
 
                     <TextView
                         android:id="@+id/feature_month"
-                        style="@style/LayoutSubtitleUppercaseWhite"
+                        style="@style/t14UpperCaseBoldWhite"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"

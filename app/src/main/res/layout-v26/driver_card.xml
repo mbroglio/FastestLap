@@ -40,18 +40,15 @@
         android:visibility="visible">
 
         <TextView
+            style="@style/t20UpperCaseBoldBlack"
             android:id="@+id/driver_position"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_centerInParent="true"
             android:layout_marginStart="5dp"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="@string/not_found"
-            android:textColor="@color/black"
-            android:textSize="@dimen/page_title_text_size">
-
+            android:text="@string/not_found">
 
         </TextView>
 
@@ -80,6 +77,7 @@
         </ImageView>
 
         <TextView
+            style="@style/t14BoldBlackLineLimited"
             android:id="@+id/driver_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -88,29 +86,20 @@
             android:layout_marginStart="5dp"
             android:layout_marginEnd="8dp"
             android:layout_toStartOf="@id/driver_points"
-            android:layout_toEndOf="@id/team_logo"
-            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
-            android:autoSizeTextType="uniform"
-            android:fontFamily="@font/orbitron_bold"
-            android:maxLines="1"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:layout_toEndOf="@id/team_logo">
 
         </TextView>
 
         <TextView
+            style="@style/t20UpperCaseBoldBlack"
             android:id="@+id/driver_points"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerInParent="true"
             android:layout_marginEnd="10dp"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="@string/not_found"
-            android:textColor="@color/black"
-            android:textSize="@dimen/page_title_text_size">
+            android:text="@string/not_found">
 
         </TextView>
 

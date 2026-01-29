@@ -19,9 +19,9 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
             app:navigationIcon="@drawable/arrow_back_ios_style"
-            app:title="@string/results_upper_case"
+            app:title="@string/results"
             app:titleCentered="true"
-            app:titleTextAppearance="@style/PageSuperTitleUpperCaseBlack" />
+            app:titleTextAppearance="@style/t25UpperCaseBoldBlack" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -46,11 +46,11 @@
 
             <TextView
                 android:id="@+id/content_not_available_layout"
-                style="@style/PageTitleUppercaseWhite"
+                style="@style/t20UpperCaseBoldWhite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="content not available">
+                android:text="@string/content_not_available">
 
             </TextView>
 

@@ -28,7 +28,7 @@
 
                 <TextView
                     android:id="@+id/topAppBarTitle"
-                    style="@style/PageSuperTitleUpperCaseBlack"
+                    style="@style/t25UpperCaseBoldBlack"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
@@ -184,18 +184,18 @@
                         android:orientation="vertical">
 
                         <TextView
-                            style="@style/PageSubtitleContentIndexWhite"
+                            style="@style/t14BoldWhiteLineLimited"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginEnd="5dp"
                             android:gravity="start"
                             android:maxLines="1"
-                            android:text="@string/place_of_birth" />
+                            android:text="@string/place_of_birth_index" />
 
                         <TextView
                             android:id="@+id/driver_birthplace"
-                            style="@style/PageContentRegularWhite"
+                            style="@style/t12RegularWhiteLineLimited"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
@@ -207,18 +207,18 @@
                             android:text="@string/not_found" />
 
                         <TextView
-                            style="@style/PageSubtitleContentIndexWhite"
+                            style="@style/t14BoldWhiteLineLimited"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="5dp"
                             android:gravity="start"
-                            android:text="@string/date_of_birth" />
+                            android:text="@string/date_of_birth_index" />
 
                         <TextView
                             android:id="@+id/driver_birthdate"
-                            style="@style/PageContentRegularWhite"
+                            style="@style/t12RegularWhiteLineLimited"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
@@ -228,17 +228,17 @@
                             android:text="@string/not_found" />
 
                         <TextView
-                            style="@style/PageSubtitleContentIndexWhite"
+                            style="@style/t14BoldWhiteLineLimited"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="5dp"
-                            android:text="@string/age" />
+                            android:text="@string/age_index" />
 
                         <TextView
                             android:id="@+id/driver_age"
-                            style="@style/PageContentRegularWhite"
+                            style="@style/t12RegularWhiteLineLimited"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
@@ -248,13 +248,13 @@
                             android:text="@string/not_found" />
 
                         <TextView
-                            style="@style/PageSubtitleContentIndexWhite"
+                            style="@style/t14BoldWhiteLineLimited"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="5dp"
-                            android:text="@string/weight_height" />
+                            android:text="@string/weight_height_index" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -265,7 +265,7 @@
 
                             <TextView
                                 android:id="@+id/driver_weight"
-                                style="@style/PageContentRegularWhite"
+                                style="@style/t12RegularWhiteLineLimited"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="start"
@@ -289,7 +289,7 @@
                             </TextView>
 
                             <TextView
-                                style="@style/PageContentRegularWhite"
+                                style="@style/t12RegularWhiteLineLimited"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="center"
@@ -300,7 +300,7 @@
 
                             <TextView
                                 android:id="@+id/driver_height"
-                                style="@style/PageContentRegularWhite"
+                                style="@style/t12RegularWhiteLineLimited"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_gravity="start"
@@ -326,17 +326,17 @@
                         </LinearLayout>
 
                         <TextView
-                            style="@style/PageSubtitleContentIndexWhite"
+                            style="@style/t14BoldWhiteLineLimited"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="5dp"
-                            android:text="@string/best_result" />
+                            android:text="@string/best_result_index" />
 
                         <TextView
                             android:id="@+id/driver_best_result"
-                            style="@style/PageContentRegularWhite"
+                            style="@style/t12RegularWhiteLineLimited"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
@@ -346,17 +346,17 @@
                             android:text="@string/not_found" />
 
                         <TextView
-                            style="@style/PageSubtitleContentIndexWhite"
+                            style="@style/t14BoldWhiteLineLimited"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="5dp"
-                            android:text="@string/podiums" />
+                            android:text="@string/podiums_index" />
 
                         <TextView
                             android:id="@+id/driver_podiums"
-                            style="@style/PageContentRegularWhite"
+                            style="@style/t12RegularWhiteLineLimited"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
@@ -366,17 +366,17 @@
                             android:text="@string/not_found" />
 
                         <TextView
-                            style="@style/PageSubtitleContentIndexWhite"
+                            style="@style/t14BoldWhiteLineLimited"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="5dp"
-                            android:text="@string/championships" />
+                            android:text="@string/championships_index" />
 
                         <TextView
                             android:id="@+id/driver_championships"
-                            style="@style/PageContentRegularWhite"
+                            style="@style/t12RegularWhiteLineLimited"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
@@ -386,17 +386,17 @@
                             android:text="@string/not_found" />
 
                         <TextView
-                            style="@style/PageSubtitleContentIndexWhite"
+                            style="@style/t14BoldWhiteLineLimited"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
                             android:layout_marginTop="10dp"
                             android:layout_marginEnd="5dp"
-                            android:text="@string/first_entry" />
+                            android:text="@string/first_entry_index" />
 
                         <TextView
                             android:id="@+id/driver_first_entry"
-                            style="@style/PageContentRegularWhite"
+                            style="@style/t12RegularWhiteLineLimited"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"
@@ -420,11 +420,10 @@
                     android:orientation="vertical">
 
                     <TextView
-                        style="@style/LayoutTitle1UppercaseWhite"
+                        style="@style/t18UpperCaseBoldWhite"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/orbitron_bold"
-                        android:text="driver history:" />
+                        android:text="@string/driver_history_index" />
 
                     <TableLayout
                         android:id="@+id/history_table"

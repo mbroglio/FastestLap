@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="120dp"
             android:importantForAccessibility="no"
-            app:srcCompat="@drawable/iconfl">
+            app:srcCompat="@drawable/app_icon">
 
         </ImageView>
 
@@ -34,15 +34,13 @@
         </TextView>
 
         <TextView
+            style="@style/t14BoldWhiteLineLimited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="start"
             android:layout_marginStart="@dimen/medium_margin"
             android:layout_marginTop="50dp"
-            android:fontFamily="@font/orbitron_bold"
-            android:text="@string/already_registered"
-            android:textColor="@color/white"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:text="@string/already_registered">
 
         </TextView>
 
@@ -63,15 +61,14 @@
             app:startIconTint="@color/black">
 
             <com.google.android.material.textfield.TextInputEditText
+                style="@style/t12RegularBlackLineLimited"
                 android:id="@+id/textInputEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/very_round_background"
-                android:fontFamily="@font/orbitron_regular"
                 android:inputType="textEmailAddress"
                 android:textColor="@color/grey_card"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/body_text_size" />
+                android:textColorHint="@color/black" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -94,15 +91,14 @@
             app:startIconTint="@color/black">
 
             <com.google.android.material.textfield.TextInputEditText
+                style="@style/t12RegularBlackLineLimited"
                 android:id="@+id/textInputPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/very_round_background"
-                android:fontFamily="@font/orbitron_regular"
                 android:inputType="textPassword"
                 android:textColor="@color/grey_card"
-                android:textColorHint="@color/black"
-                android:textSize="@dimen/body_text_size" />
+                android:textColorHint="@color/black" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -135,13 +131,12 @@
             android:textSize="@dimen/layout_subtitle_text_size" />
 
         <TextView
+            style="@style/t14BoldWhiteLineLimited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="70dp"
             android:fontFamily="@font/orbitron_bold"
-            android:text="@string/not_registered"
-            android:textColor="@color/white"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:text="@string/not_registered">
 
         </TextView>
 

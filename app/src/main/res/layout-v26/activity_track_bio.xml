@@ -29,18 +29,13 @@
                 android:layout_marginEnd="@dimen/medium_margin">
 
                 <TextView
+                    style="@style/t25UpperCaseBoldBlack"
                     android:id="@+id/topAppBarTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
-                    android:autoSizeMaxTextSize="25sp"
-                    android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                    android:autoSizeTextType="uniform"
-                    android:fontFamily="@font/orbitron_bold"
                     android:gravity="center"
-                    android:maxLines="1"
-                    android:textColor="@color/black"
-                    android:textSize="25sp">
+                    android:maxLines="1">
 
                 </TextView>
 
@@ -148,7 +143,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:fontFamily="@font/orbitron_bold"
-                            android:text="@string/track_name"
+                            android:text="@string/track_name_index"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -194,7 +189,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_centerInParent="true"
                             android:fontFamily="@font/orbitron_bold"
-                            android:text="@string/location"
+                            android:text="@string/location_index"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -235,7 +230,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_centerInParent="true"
                             android:fontFamily="@font/orbitron_bold"
-                            android:text="@string/first_entry"
+                            android:text="@string/first_entry_index"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -276,7 +271,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_centerInParent="true"
                             android:fontFamily="@font/orbitron_bold"
-                            android:text="@string/number_of_laps"
+                            android:text="@string/number_of_laps_index"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -316,7 +311,7 @@
                             android:layout_height="wrap_content"
                             android:layout_alignParentStart="true"
                             android:fontFamily="@font/orbitron_bold"
-                            android:text="@string/track_length"
+                            android:text="@string/track_length_index"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -370,7 +365,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_centerInParent="true"
                             android:fontFamily="@font/orbitron_bold"
-                            android:text="@string/race_distance"
+                            android:text="@string/race_distance_index"
                             android:textColor="@color/white"
                             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -418,7 +413,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_centerInParent="true"
                             android:fontFamily="@font/orbitron_bold"
-                            android:text="@string/fastest_lap"
+                            android:text="@string/fastest_lap_index"
                             android:textColor="@color/ferrari_secondary"
                             android:textSize="@dimen/layout_subtitle_text_size">
 
@@ -488,7 +483,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/orbitron_bold"
-                        android:text="@string/track_history_upper_case"
+                        android:text="@string/track_history_index"
                         android:textColor="@color/white"
                         android:textSize="@dimen/layout_title_1_text_size" />
 

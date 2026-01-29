@@ -7,6 +7,7 @@
     android:layout_height="wrap_content">
 
     <TextView
+        style="@style/t18BoldBlack"
         android:id="@+id/favourite_constructor_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,14 +16,8 @@
         android:layout_marginTop="5dp"
         android:layout_marginEnd="10dp"
         android:layout_toStartOf="@id/favourite_constructor_star"
-        android:autoSizeMaxTextSize="@dimen/layout_title_1_text_size"
-        android:autoSizeMinTextSize="10sp"
-        android:autoSizeTextType="uniform"
-        android:fontFamily="@font/orbitron_bold"
         android:maxLines="1"
-        android:text="@string/not_found"
-        android:textColor="@color/black"
-        android:textSize="@dimen/layout_title_1_text_size">
+        android:text="@string/not_found">
 
     </TextView>
 
@@ -79,17 +74,11 @@
                 </ImageView>
 
                 <TextView
+                    style="@style/t14BoldBlackLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="3dp"
-                    android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                    android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                    android:autoSizeTextType="uniform"
-                    android:fontFamily="@font/orbitron_bold"
-                    android:maxLines="1"
-                    android:text="@string/rank"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/layout_subtitle_text_size">
+                    android:text="@string/rank_index">
 
                 </TextView>
 
@@ -106,65 +95,42 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    style="@style/t12BoldBlackLineLimited"
                     android:id="@+id/favourite_constructor_position"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:autoSizeMaxTextSize="@dimen/body_text_size"
-                    android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                    android:autoSizeTextType="uniform"
-                    android:fontFamily="@font/orbitron_bold"
-                    android:maxLines="1"
-                    android:text="@string/not_found"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/body_text_size">
+                    android:text="@string/not_found">
 
                 </TextView>
 
                 <TextView
+                    style="@style/t12BoldBlackLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
-                    android:autoSizeMaxTextSize="@dimen/body_text_size"
-                    android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                    android:autoSizeTextType="uniform"
-                    android:fontFamily="@font/orbitron_bold"
-                    android:maxLines="1"
-                    android:text="@string/separator_high_dash"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/body_text_size">
+                    android:text="@string/separator_high_dash">
 
                 </TextView>
 
                 <TextView
+                    style="@style/t12BoldBlackLineLimited"
                     android:id="@+id/favourite_constructor_points"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:autoSizeMaxTextSize="@dimen/body_text_size"
-                    android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                    android:autoSizeTextType="uniform"
-                    android:fontFamily="@font/orbitron_bold"
                     android:gravity="center"
-                    android:maxLines="1"
-                    android:text="@string/not_found"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/body_text_size">
+                    android:text="@string/not_found">
 
                 </TextView>
 
                 <TextView
+                    style="@style/t10UpperCaseRegularBlackLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="3dp"
-                    android:autoSizeMaxTextSize="@dimen/text_minor_importance_size"
-                    android:autoSizeMinTextSize="@dimen/min_text_resize_2"
-                    android:autoSizeTextType="uniform"
-                    android:fontFamily="@font/orbitron_regular"
                     android:maxLines="1"
-                    android:text="@string/points_upper_case"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_minor_importance_size">
+                    android:text="@string/points_abbr">
 
                 </TextView>
 
@@ -195,20 +161,14 @@
         </ImageView>
 
         <TextView
+            style="@style/t12RegularBlackLineLimited"
             android:id="@+id/favourite_constructor_nationality"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="5dp"
-            android:autoSizeMaxTextSize="@dimen/body_text_size"
-            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-            android:autoSizeTextType="uniform"
-            android:fontFamily="@font/orbitron_regular"
-            android:maxLines="1"
-            android:text="@string/not_found"
-            android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size">
+            android:text="@string/not_found">
 
         </TextView>
 

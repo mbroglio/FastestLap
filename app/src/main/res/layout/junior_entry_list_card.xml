@@ -20,7 +20,7 @@
 
         <TextView
             android:id="@+id/team_name"
-            style="@style/LayoutTitle1Black"
+            style="@style/t18BoldBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -53,7 +53,7 @@
 
                     <TextView
                         android:id="@+id/driver_1_name"
-                        style="@style/PageContentRegularBlack"
+                        style="@style/t12RegularBlackLineLimited"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="start"
@@ -63,7 +63,7 @@
 
                     <TextView
                         android:id="@+id/driver_2_name"
-                        style="@style/PageContentRegularBlack"
+                        style="@style/t12RegularBlackLineLimited"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
@@ -74,7 +74,7 @@
 
                     <TextView
                         android:id="@+id/driver_3_name"
-                        style="@style/PageContentRegularBlack"
+                        style="@style/t12RegularBlackLineLimited"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
