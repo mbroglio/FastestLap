@@ -24,7 +24,7 @@ public class JuniorEntryListRecyclerAdapter extends RecyclerView.Adapter<JuniorE
 
     private final Context context;
     private final JuniorEntryList juniorEntryList;
-    private int series;
+    private final int series;
 
     public JuniorEntryListRecyclerAdapter(Context context, JuniorEntryList juniorEntryList, int series) {
         this.context = context;

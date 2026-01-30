@@ -149,7 +149,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
             driverId = driverId.split("_")[1];
         }
 
-        UIUtils.singleSetTextViewText(context.getString(R.string.driver_info_not_found_upper_case, driverId.toUpperCase()), holder.driverNotFound);
+        UIUtils.singleSetTextViewText(context.getString(R.string.driver_info_not_found, driverId.toUpperCase()), holder.driverNotFound);
 
     }
 

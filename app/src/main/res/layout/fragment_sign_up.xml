@@ -14,8 +14,8 @@
         android:layout_height="match_parent">
 
         <TextView
-            style="@style/t20BoldBlack"
             android:id="@+id/registration_text"
+            style="@style/t20BoldBlack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -41,8 +41,8 @@
             app:startIconTint="@color/black">
 
             <com.google.android.material.textfield.TextInputEditText
-                style="@style/t12RegularBlackLineLimited"
                 android:id="@+id/textInputEmail"
+                style="@style/t12RegularBlackLineLimited"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_top_left_right_margins"
@@ -71,8 +71,8 @@
             app:startIconTint="@color/black">
 
             <com.google.android.material.textfield.TextInputEditText
-                style="@style/t12RegularBlackLineLimited"
                 android:id="@+id/textInputPassword"
+                style="@style/t12RegularBlackLineLimited"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_top_left_right_margins"
@@ -82,8 +82,8 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            style="@style/t14UpperCaseBoldBlack"
             android:id="@+id/submit_button"
+            style="@style/t14UpperCaseBoldBlack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/password_field"

@@ -128,7 +128,7 @@ public class JuniorResultsRecyclerAdapter extends RecyclerView.Adapter<JuniorRes
     private void manageJuniorResult(JuniorResultsViewHolder holder, int position) {
         JuniorResultElement element = juniorResult.getResults().get(position);
 
-        UIUtils.singleSetTextViewText(context.getString(R.string.round_upper_case_plus_value, Integer.toString(element.getRound())), holder.roundNumber);
+        UIUtils.singleSetTextViewText(context.getString(R.string.round_plus_value, Integer.toString(element.getRound())), holder.roundNumber);
         UIUtils.singleSetTextViewText(element.getCircuit(), holder.gpName);
 
         UIUtils.loadImageWithGlide(context, element.getNationFlagUrl(), holder.eventNationFlag,

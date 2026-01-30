@@ -72,7 +72,7 @@ public class LoadingScreen {
                 for (int i = 0; i < dotCount; i++) {
                     dots.append(".");
                 }
-                loadingText.setText(context.getString(R.string.loading_upper_case, dots));
+                loadingText.setText(context.getString(R.string.loading, dots));
                 handler.postDelayed(this, 500);
             }
         };
@@ -96,7 +96,7 @@ public class LoadingScreen {
 
     public void updateProgress() {
         resetTimer();
-    }    private final Runnable timerRunnable = this::hide;
+    }
 
     public void hideLoadingScreenWithCondition(boolean condition) {
         if (condition) {
@@ -110,7 +110,7 @@ public class LoadingScreen {
 
     public void hideLoadingScreenImmediately() {
         handler.post(this::hide);
-    }
+    }    private final Runnable timerRunnable = this::hide;
 
     private void hide() {
         loadingScreen.setVisibility(View.GONE);

@@ -1,32 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="unknown">Sconosciuto</string>
-    <string name="raceResult">RISULTATO</string>
     <string name="rank_index">Posizione:</string>
     <string name="next_event">Prossimo Evento:</string>
     <string name="racing_menu">Gare</string>
     <string name="standings_menu">Classifiche</string>
-    <!--
-    <string name="standings_upper_case">CLASSIFICHE</string>
-    <string name="season_ended_upper_case">STAGIONE CONCLUSA</string>
-    <string name="pending_results_upper_case">IN ATTESA DEI RISULTATI</string>
-    <string name="past_upper_case">PASSATE</string>
-    <string name="save_upper_case">SALVA</string>
-    <string name="profile_upper_case">PROFILO</string>
-    <string name="loading_upper_case">CARICAMENTO%1$s</string>
-    <string name="updating_upper_case_with_dots">IN AGGIORNAMENTO…</string>
-    -->
+
+
     <string name="weather">Meteo a %1$s</string>
+    <string name="next_session_index">Prossima sessione:</string>
     <string name="pending_results">In attesa dei risultati…</string>
     <string name="podiums_index">Podi:</string>
     <string name="open_with_google_maps">Vedi sulla mappa</string>
     <string name="forgot_password_text">Fornisci l\'indirizzo email di cui vuoi reimpostare la tua password</string>
-    <string name="last_race_upper_case">GARA\nPASSATA</string>
-    <!--
-    <string name="racing_upper_case">GARE</string>
-    <string name="upcoming_upper_case">PROSSIME</string>
-    -->
-
     <string name="weather_forecast">Previsioni meteo</string>
 
     <string name="place_of_birth_index">Luogo di nascita:</string>
@@ -64,8 +50,6 @@
     <string name="results_not_available">Risultati non disponibili</string>
     <string name="language_set">Lingua impostata con successo a %1$s</string>
     <string name="close">Chiudi</string>
-    <string name="podium_upper_case">PODIO</string>
-    <string name="fastest_lap_upper_case">GIRO VELOCE</string>
     <string name="lap">Giro %1$s</string>
     <string name="full_event_results">Risultati %1$s completi</string>
     <string name="qualifying">Qualifiche</string>
@@ -108,4 +92,52 @@
     <string name="points">punti</string>
     <string name="wins_header">vittorie</string>
     <string name="calendar">calendario</string>
+    <string name="drivers">piloti</string>
+    <string name="constructors">costruttori</string>
+    <string name="content_not_available">contenuto non disponibile</string>
+    <string name="past">passate</string>
+    <string name="profile">profilo</string>
+    <string name="save">salva</string>
+    <string name="dismiss">scarta</string>
+    <string name="upcoming">prossime</string>
+    <string name="forgot_password">password dimenticata</string>
+    <string name="send_email">invia email</string>
+    <string name="updating_with_dots">aggiornamento...</string>
+    <string name="sources">fonti</string>
+    <string name="no_internet_connection">nessuna connessione internet</string>
+    <string name="drivers_index">Piloti:</string>
+    <string name="team_info_index">Info Scuderia:</string>
+    <string name="team_history_index">Storia Scuderia:</string>
+    <string name="driver_history_index">Storia Pilota:</string>
+    <string name="constructors_std_not_available">classifica costruttori non disponibile</string>
+    <string name="drivers_std_not_available">classifica piloti non disponibile</string>
+    <string name="results">risultati</string>
+    <string name="drivers_standing">classifica piloti</string>
+    <string name="constructors_standing">classifica costruttori</string>
+    <string name="wins">vittorie</string>
+    <string name="team">scuderia</string>
+    <string name="live_session">sessione live</string>
+    <string name="no_live_session">nessuna sessione live</string>
+    <string name="weekend_schedule_index">Programma Weekend:</string>
+    <string name="fastest_lap">giro veloce</string>
+    <string name="submit">invia</string>
+    <string name="track_history_index">Storia Circuito:</string>
+    <string name="last_race_not_found">gara passata non trovata</string>
+    <string name="last_race">gara passata</string>
+    <string name="result">risultato</string>
+    <string name="favourite_constructor_not_found">costruttore preferito non trovato</string>
+    <string name="favourite_driver_not_found">pilota preferito non trovato</string>
+    <string name="season_final_results">risultati finali stagione</string>
+    <string name="select_favourite_constructor">seleziona un costruttore preferito</string>
+    <string name="select_favourite_driver">selezione un pilota preferito</string>
+    <string name="season_ended">stagione conclusa</string>
+    <string name="race_cancelled">gara cancellata</string>
+    <string name="full_article">articolo completo</string>
+    <string name="race_result">risultato gara</string>
+    <string name="days">giorni</string>
+    <string name="podium">podio</string>
+    <string name="news_menu">Notizie</string>
+    <string name="constructor_info_not_found">info scuderia non trovate</string>
+    <string name="loading">caricamento%1$s</string>
+    <string name="driver_info_not_found">info pilota non trovate</string>
 </resources>

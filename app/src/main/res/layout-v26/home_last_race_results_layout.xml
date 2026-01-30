@@ -23,21 +23,16 @@
 
             <TextView
                 android:id="@+id/last_race_name"
+                style="@style/t20BoldWhite"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="5dp"
-                android:autoSizeMaxTextSize="@dimen/page_title_text_size"
-                android:autoSizeMinTextSize="9sp"
-                android:autoSizeTextType="uniform"
-                android:fontFamily="@font/orbitron_bold"
                 android:gravity="center"
                 android:maxLines="1"
-                android:text="@string/not_found"
-                android:textColor="@color/white"
-                android:textSize="20sp">
+                android:text="@string/not_found">
 
             </TextView>
 
@@ -45,20 +40,15 @@
 
         <TextView
             android:id="@+id/last_race"
+            style="@style/t12UpperCaseBoldWhiteLineLimited"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="5dp"
             android:layout_weight="0.8"
-            android:autoSizeMaxTextSize="@dimen/body_text_size"
-            android:autoSizeMinTextSize="9sp"
-            android:autoSizeTextType="uniform"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
             android:maxLines="2"
-            android:text="@string/last_race_upper_case"
-            android:textColor="@color/white"
-            android:textSize="@dimen/body_text_size" />
+            android:text="@string/last_race" />
 
     </LinearLayout>
 
@@ -82,28 +72,24 @@
 
         <TextView
             android:id="@+id/last_race_date"
+            style="@style/t12RegularWhiteLineLimited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/last_race_track_outline"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
-            android:fontFamily="@font/orbitron_regular"
-            android:text="@string/not_found"
-            android:textColor="@color/white"
-            android:textSize="@dimen/body_text_size">
+            android:text="@string/not_found">
 
         </TextView>
 
         <TextView
             android:id="@+id/last_race_month"
+            style="@style/t14BoldWhiteLineLimited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/last_race_date"
             android:layout_centerHorizontal="true"
-            android:fontFamily="@font/orbitron_bold"
-            android:text="@string/not_found"
-            android:textColor="@color/white"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:text="@string/not_found">
 
         </TextView>
 
@@ -132,15 +118,13 @@
 
         <TextView
             android:id="@+id/last_race_round"
+            style="@style/t12BoldWhiteLineLimited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerInParent="true"
             android:layout_marginTop="5dp"
-            android:fontFamily="@font/orbitron_bold"
-            android:text="@string/not_found"
-            android:textColor="@color/white"
-            android:textSize="@dimen/body_text_size">
+            android:text="@string/not_found">
 
         </TextView>
 
@@ -161,29 +145,21 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    style="@style/t12RegularWhiteLineLimited"
                     android:layout_width="10dp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/orbitron_regular"
                     android:gravity="center"
-                    android:text="@string/_1_numeric"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/body_text_size">
+                    android:text="@string/_1_numeric">
 
                 </TextView>
 
                 <TextView
                     android:id="@+id/last_race_first"
+                    style="@style/t12RegularWhiteLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:autoSizeMaxTextSize="@dimen/body_text_size"
-                    android:autoSizeMinTextSize="9sp"
-                    android:autoSizeTextType="uniform"
-                    android:fontFamily="@font/orbitron_regular"
-                    android:maxLines="1"
-                    android:text="@string/not_found"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/body_text_size">
+                    android:text="@string/not_found">
 
                 </TextView>
 
@@ -197,29 +173,21 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    style="@style/t12RegularWhiteLineLimited"
                     android:layout_width="10dp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/orbitron_regular"
                     android:gravity="center"
-                    android:text="@string/_2_numeric"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/body_text_size">
+                    android:text="@string/_2_numeric">
 
                 </TextView>
 
                 <TextView
                     android:id="@+id/last_race_second"
+                    style="@style/t12RegularWhiteLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:autoSizeMaxTextSize="@dimen/body_text_size"
-                    android:autoSizeMinTextSize="9sp"
-                    android:autoSizeTextType="uniform"
-                    android:fontFamily="@font/orbitron_regular"
-                    android:maxLines="1"
-                    android:text="@string/not_found"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/body_text_size">
+                    android:text="@string/not_found">
 
                 </TextView>
 
@@ -233,29 +201,21 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    style="@style/t12RegularWhiteLineLimited"
                     android:layout_width="10dp"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/orbitron_regular"
                     android:gravity="center"
-                    android:text="@string/_3_numeric"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/body_text_size">
+                    android:text="@string/_3_numeric">
 
                 </TextView>
 
                 <TextView
                     android:id="@+id/last_race_third"
+                    style="@style/t12RegularWhiteLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:autoSizeMaxTextSize="@dimen/body_text_size"
-                    android:autoSizeMinTextSize="9sp"
-                    android:autoSizeTextType="uniform"
-                    android:fontFamily="@font/orbitron_regular"
-                    android:maxLines="1"
-                    android:text="@string/not_found"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/body_text_size">
+                    android:text="@string/not_found">
 
                 </TextView>
 
@@ -284,18 +244,13 @@
 
                 <TextView
                     android:id="@+id/raceResult"
+                    style="@style/t12UpperCaseBoldBlackLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/medium_margin"
-                    android:autoSizeMaxTextSize="@dimen/body_text_size"
-                    android:autoSizeMinTextSize="9sp"
-                    android:autoSizeTextType="uniform"
-                    android:fontFamily="@font/orbitron_bold"
                     android:maxLines="1"
-                    android:text="@string/raceResult"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/body_text_size">
+                    android:text="@string/result">
 
                 </TextView>
 

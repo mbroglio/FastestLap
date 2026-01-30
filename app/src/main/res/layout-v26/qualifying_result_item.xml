@@ -7,13 +7,11 @@
 
     <TextView
         android:id="@+id/position_text"
+        style="@style/t14RegularWhiteLineLimited"
         android:layout_width="32dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:fontFamily="@font/orbitron_regular"
-        android:gravity="center"
-        android:textColor="@color/white"
-        android:textSize="14sp" />
+        android:gravity="center" />
 
     <View
         android:id="@+id/team_color_indicator"
@@ -24,66 +22,42 @@
 
     <TextView
         android:id="@+id/driver_name"
+        style="@style/t14BoldWhiteLineLimited"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
         android:layout_weight="1"
-        android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-        android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-        android:autoSizeTextType="uniform"
-        android:fontFamily="@font/orbitron_bold"
-        android:gravity="start|center"
-        android:maxLines="1"
-        android:textColor="@color/white"
-        android:textSize="@dimen/layout_subtitle_text_size" />
+        android:gravity="start|center" />
 
     <TextView
         android:id="@+id/q1_time"
+        style="@style/t12RegularWhiteLineLimited"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginEnd="5dp"
         android:layout_weight="0.8"
-        android:autoSizeMaxTextSize="@dimen/body_text_size"
-        android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-        android:autoSizeTextType="uniform"
-        android:fontFamily="@font/orbitron_regular"
-        android:gravity="center"
-        android:maxLines="1"
-        android:textColor="@color/white"
-        android:textSize="@dimen/body_text_size" />
+        android:gravity="center" />
 
     <TextView
         android:id="@+id/q2_time"
+        style="@style/t12RegularWhiteLineLimited"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginEnd="5dp"
         android:layout_weight="0.8"
-        android:autoSizeMaxTextSize="@dimen/body_text_size"
-        android:autoSizeMinTextSize="@dimen/min_text_resize_2"
-        android:autoSizeTextType="uniform"
-        android:fontFamily="@font/orbitron_regular"
-        android:gravity="center"
-        android:maxLines="1"
-        android:textColor="@color/white"
-        android:textSize="@dimen/body_text_size" />
+        android:gravity="center" />
 
     <TextView
         android:id="@+id/q3_time"
+        style="@style/t12RegularWhiteLineLimited"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="0.8"
-        android:autoSizeMaxTextSize="@dimen/body_text_size"
-        android:autoSizeMinTextSize="@dimen/min_text_resize_2"
-        android:autoSizeTextType="uniform"
-        android:fontFamily="@font/orbitron_regular"
-        android:gravity="center"
-        android:maxLines="1"
-        android:textColor="@color/white"
-        android:textSize="@dimen/body_text_size" />
+        android:gravity="center" />
 
 </LinearLayout>

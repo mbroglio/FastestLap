@@ -18,8 +18,8 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            style="@style/t14UpperCaseBoldBlack"
             android:id="@+id/news_menu_layout"
+            style="@style/t16UpperCaseBoldBlack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@id/language_choice_layout"
@@ -108,8 +108,8 @@
             android:visibility="visible" />
 
         <TextView
-            style="@style/t20UpperCaseBoldWhite"
             android:id="@+id/no_connection_text"
+            style="@style/t20UpperCaseBoldWhite"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"

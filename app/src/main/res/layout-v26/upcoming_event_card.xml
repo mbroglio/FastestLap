@@ -49,61 +49,47 @@
 
             <TextView
                 android:id="@+id/upcoming_round_number"
+                style="@style/t10UpperCaseRegularWhiteLineLimited"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerInParent="true"
-                android:fontFamily="@font/orbitron_bold"
-                android:text="@string/not_found"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_minor_importance_size">
+                android:text="@string/not_found">
 
             </TextView>
 
             <TextView
                 android:id="@+id/upcoming_gp_name"
-                android:layout_width="match_parent"
+                style="@style/t14BoldWhiteLineLimited"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@id/upcoming_date"
                 android:layout_below="@id/upcoming_round_number"
                 android:layout_centerInParent="true"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp"
-                android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-                android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-                android:autoSizeTextType="uniform"
-                android:fontFamily="@font/orbitron_bold"
                 android:gravity="center"
-                android:maxLines="1"
-                android:text="@string/not_found"
-                android:textColor="@color/white"
-                android:textSize="@dimen/layout_subtitle_text_size">
+                android:text="@string/not_found">
 
             </TextView>
 
             <TextView
                 android:id="@+id/upcoming_date"
+                style="@style/t12RegularWhiteLineLimited"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_above="@id/upcoming_month"
                 android:layout_centerInParent="true"
-                android:fontFamily="@font/orbitron_regular"
-                android:text="@string/not_found"
-                android:textColor="@color/white"
-                android:textSize="@dimen/body_text_size">
+                android:text="@string/not_found">
 
             </TextView>
 
             <TextView
                 android:id="@+id/upcoming_month"
+                style="@style/t14BoldWhiteLineLimited"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_centerInParent="true"
-                android:fontFamily="@font/orbitron_bold"
                 android:text="@string/not_found"
-                android:textColor="@color/white"
-                android:textSize="@dimen/layout_subtitle_text_size"
                 tools:ignore="RelativeOverlap">
 
             </TextView>

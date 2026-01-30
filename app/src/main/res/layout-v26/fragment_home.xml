@@ -81,8 +81,8 @@
                 </FrameLayout>
 
                 <TextView
-                    style="@style/t25UpperCaseBoldWhite"
                     android:id="@+id/timer_updating"
+                    style="@style/t25UpperCaseBoldWhite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
@@ -123,12 +123,12 @@
 
                         <include
                             android:id="@+id/missing_favorite_driver"
-                            layout="@layout/home_missing_favorite_driver_layout"
+                            layout="@layout/home_missing_favourite_driver_layout"
                             android:visibility="gone" />
 
                         <include
                             android:id="@+id/pending_favorite_driver"
-                            layout="@layout/home_select_favorite_driver_layout"
+                            layout="@layout/home_select_favourite_driver_layout"
                             android:visibility="gone" />
 
                     </FrameLayout>
@@ -158,12 +158,12 @@
 
                         <include
                             android:id="@+id/missing_favorite_constructor"
-                            layout="@layout/home_missing_favorite_constructor_layout"
+                            layout="@layout/home_missing_favourite_constructor_layout"
                             android:visibility="gone" />
 
                         <include
                             android:id="@+id/pending_favorite_constructor"
-                            layout="@layout/home_select_favorite_constructor_layout"
+                            layout="@layout/home_select_favourite_constructor_layout"
                             android:visibility="gone" />
 
                     </FrameLayout>

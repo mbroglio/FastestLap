@@ -61,8 +61,8 @@
             app:startIconTint="@color/black">
 
             <com.google.android.material.textfield.TextInputEditText
-                style="@style/t12RegularBlackLineLimited"
                 android:id="@+id/textInputEmail"
+                style="@style/t12RegularBlackLineLimited"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/very_round_background"
@@ -91,8 +91,8 @@
             app:startIconTint="@color/black">
 
             <com.google.android.material.textfield.TextInputEditText
-                style="@style/t12RegularBlackLineLimited"
                 android:id="@+id/textInputPassword"
+                style="@style/t12RegularBlackLineLimited"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/very_round_background"

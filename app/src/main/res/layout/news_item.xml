@@ -29,13 +29,11 @@
 
         <TextView
             android:id="@+id/title_layout"
+            style="@style/t14BoldWhiteLineLimited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="start"
-            android:maxLines="5"
-            android:textColor="@color/white"
-            android:textSize="@dimen/layout_subtitle_text_size" />
+            android:maxLines="5" />
 
         <TextView
             android:id="@+id/description_text_layout"
@@ -58,14 +56,11 @@
             android:visibility="visible">
 
             <TextView
+                style="@style/t12UpperCaseBoldBlackLineLimited"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/orbitron_bold"
                 android:padding="5dp"
-                android:text="@string/full_article_upper_case"
-                android:textColor="@color/black"
-                android:textSize="@dimen/body_text_size"
-                android:textStyle="bold" />
+                android:text="@string/full_article" />
 
         </RelativeLayout>
 

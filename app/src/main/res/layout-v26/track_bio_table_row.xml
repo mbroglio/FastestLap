@@ -19,14 +19,12 @@
 
         <TextView
             android:id="@+id/season_year"
+            style="@style/t12RegularBlackLineLimited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="0.8"
-            android:fontFamily="@font/orbitron_regular"
-            android:gravity="center"
-            android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size">
+            android:gravity="center">
 
         </TextView>
 
@@ -54,56 +52,40 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        style="@style/t12BoldBlackLineLimited"
                         android:layout_width="10dp"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/orbitron_bold"
                         android:gravity="center"
-                        android:text="@string/_1_numeric"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/body_text_size">
+                        android:text="@string/_1_numeric">
 
                     </TextView>
 
                     <TextView
                         android:id="@+id/first_driver"
+                        style="@style/t12RegularBlackLineLimited"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:autoSizeMaxTextSize="@dimen/body_text_size"
-                        android:autoSizeMinTextSize="9sp"
-                        android:autoSizeTextType="uniform"
-                        android:fontFamily="@font/orbitron_regular"
-                        android:maxLines="1"
-                        android:text="@string/not_found"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/body_text_size">
+                        android:text="@string/not_found">
 
                     </TextView>
 
                     <TextView
+                        style="@style/t12RegularBlackLineLimited"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:fontFamily="@font/orbitron_regular"
-                        android:text="@string/separator_high_dash"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/body_text_size">
+                        android:text="@string/separator_high_dash">
 
                     </TextView>
 
                     <TextView
                         android:id="@+id/first_driver_team"
+                        style="@style/t10RegularBlackLineLimited"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:autoSizeMaxTextSize="@dimen/text_minor_importance_size"
-                        android:autoSizeMinTextSize="8sp"
-                        android:autoSizeTextType="uniform"
-                        android:fontFamily="@font/orbitron_regular"
-                        android:maxLines="1"
-                        android:text="@string/not_found"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/text_minor_importance_size">
+                        android:text="@string/not_found">
 
                     </TextView>
 
@@ -116,56 +98,40 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        style="@style/t12BoldBlackLineLimited"
                         android:layout_width="10dp"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/orbitron_bold"
                         android:gravity="center"
-                        android:text="@string/_2_numeric"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/body_text_size">
+                        android:text="@string/_2_numeric">
 
                     </TextView>
 
                     <TextView
                         android:id="@+id/second_driver"
+                        style="@style/t12RegularBlackLineLimited"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:autoSizeMaxTextSize="@dimen/body_text_size"
-                        android:autoSizeMinTextSize="9sp"
-                        android:autoSizeTextType="uniform"
-                        android:fontFamily="@font/orbitron_regular"
-                        android:maxLines="1"
-                        android:text="@string/not_found"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/body_text_size">
+                        android:text="@string/not_found">
 
                     </TextView>
 
                     <TextView
+                        style="@style/t12RegularBlackLineLimited"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_marginStart="5dp"
-                        android:fontFamily="@font/orbitron_regular"
-                        android:text="@string/separator_high_dash"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/body_text_size">
+                        android:text="@string/separator_high_dash">
 
                     </TextView>
 
                     <TextView
                         android:id="@+id/second_driver_team"
+                        style="@style/t10RegularBlackLineLimited"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:autoSizeMaxTextSize="@dimen/text_minor_importance_size"
-                        android:autoSizeMinTextSize="8sp"
-                        android:autoSizeTextType="uniform"
-                        android:fontFamily="@font/orbitron_regular"
-                        android:maxLines="1"
-                        android:text="@string/not_found"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/text_minor_importance_size">
+                        android:text="@string/not_found">
 
                     </TextView>
 
@@ -178,56 +144,40 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        style="@style/t12BoldBlackLineLimited"
                         android:layout_width="10dp"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/orbitron_bold"
                         android:gravity="center"
-                        android:text="@string/_3_numeric"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/body_text_size">
+                        android:text="@string/_3_numeric">
 
                     </TextView>
 
                     <TextView
                         android:id="@+id/third_driver"
+                        style="@style/t12RegularBlackLineLimited"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:autoSizeMaxTextSize="@dimen/body_text_size"
-                        android:autoSizeMinTextSize="9sp"
-                        android:autoSizeTextType="uniform"
-                        android:fontFamily="@font/orbitron_regular"
-                        android:maxLines="1"
-                        android:text="@string/not_found"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/body_text_size">
+                        android:text="@string/not_found">
 
                     </TextView>
 
                     <TextView
+                        style="@style/t12RegularBlackLineLimited"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:fontFamily="@font/orbitron_regular"
-                        android:text="@string/separator_high_dash"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/body_text_size">
+                        android:text="@string/separator_high_dash">
 
                     </TextView>
 
                     <TextView
                         android:id="@+id/third_driver_team"
+                        style="@style/t10RegularBlackLineLimited"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:autoSizeMaxTextSize="@dimen/text_minor_importance_size"
-                        android:autoSizeMinTextSize="8sp"
-                        android:autoSizeTextType="uniform"
-                        android:fontFamily="@font/orbitron_regular"
-                        android:maxLines="1"
-                        android:text="@string/not_found"
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/text_minor_importance_size">
+                        android:text="@string/not_found">
 
                     </TextView>
 

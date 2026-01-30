@@ -534,7 +534,7 @@ public class HomeFragment extends Fragment {
     private void updateLastRaceUIFinalStep(WeeklyRace race, View view) {
         LocalDateTime dateTime = race.getDateTime();
 
-        UIUtils.multipleSetTextViewText(new String[]{String.valueOf(dateTime.getDayOfMonth()), requireContext().getString(R.string.round, race.getRound())}, new TextView[]{view.findViewById(R.id.last_race_date), view.findViewById(R.id.last_race_round)});
+        UIUtils.multipleSetTextViewText(new String[]{String.valueOf(dateTime.getDayOfMonth()), requireContext().getString(R.string.round_plus_value, race.getRound())}, new TextView[]{view.findViewById(R.id.last_race_date), view.findViewById(R.id.last_race_round)});
 
         UIUtils.translateMonth(dateTime.getMonth().toString().substring(0, 3).toUpperCase(), view.findViewById(R.id.last_race_month), true);
 

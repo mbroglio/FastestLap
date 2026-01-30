@@ -33,7 +33,7 @@ public class ConstructorStandingRepository {
 
     private final NetworkUtils networkLiveData;
 
-    private String currentYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+    private final String currentYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 
     private ConstructorStandingRepository(AppRoomDatabase appRoomDatabase, Context context) {
         constructorStandingCache = new HashMap<>();

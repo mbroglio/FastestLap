@@ -229,7 +229,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
             constructorId = constructorId.split("_")[0] + " " + constructorId.split("_")[1];
         }
 
-        UIUtils.singleSetTextViewText(context.getString(R.string.constructor_info_not_found_upper_case, constructorId.toUpperCase()), holder.constructorNotFound);
+        UIUtils.singleSetTextViewText(context.getString(R.string.constructor_info_not_found, constructorId.toUpperCase()), holder.constructorNotFound);
 
 
     }

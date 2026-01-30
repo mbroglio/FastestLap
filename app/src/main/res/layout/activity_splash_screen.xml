@@ -37,8 +37,8 @@
         </TextView>
 
         <TextView
-            style="@style/t20UpperCaseBoldWhite"
             android:id="@+id/app_credits"
+            style="@style/t20UpperCaseBoldWhite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/app_name"

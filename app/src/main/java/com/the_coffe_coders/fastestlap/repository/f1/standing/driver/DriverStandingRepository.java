@@ -33,7 +33,7 @@ public class DriverStandingRepository {
 
     private final NetworkUtils networkLiveData;
 
-    private String currentYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+    private final String currentYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 
     private DriverStandingRepository(AppRoomDatabase appRoomDatabase, Context context) {
         driverStandingCache = new HashMap<>();

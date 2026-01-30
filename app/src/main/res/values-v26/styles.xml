@@ -14,7 +14,7 @@
     <style name="JuniorCardTitle">
         <item name="android:textSize">@dimen/page_title_text_size</item>
         <item name="android:textColor">@color/white</item>
-        <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="android:fontFamily">@font/orbitron_regular</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:autoSizeMaxTextSize">@dimen/page_title_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
@@ -35,20 +35,20 @@
     <style name="t25UpperCaseBoldWhite">
         <item name="android:textSize">@dimen/page_supertitle_text_size</item>
         <item name="android:textColor">@color/white</item>
-        <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
         <item name="android:autoSizeMaxTextSize">@dimen/page_supertitle_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
-        <item name="autoSizeTextType">uniform</item>
+        <item name="android:autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
     </style>
 
     <style name="t25UpperCaseBoldBlack">
         <item name="android:textSize">@dimen/page_supertitle_text_size</item>
         <item name="android:textColor">@color/black</item>
-        <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
         <item name="android:autoSizeMaxTextSize">@dimen/page_supertitle_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
-        <item name="autoSizeTextType">uniform</item>
+        <item name="android:autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
     </style>
 
@@ -65,23 +65,21 @@
     <style name="t20UpperCaseBoldBlack">
         <item name="android:textSize">@dimen/page_title_text_size</item>
         <item name="android:textColor">@color/black</item>
-        <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:autoSizeMaxTextSize">@dimen/page_title_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
-        <item name="autoSizeTextType">uniform</item>
+        <item name="android:autoSizeTextType">uniform</item>
     </style>
 
     <style name="t20UpperCaseBoldWhite">
         <item name="android:textSize">@dimen/page_title_text_size</item>
         <item name="android:textColor">@color/white</item>
-        <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
         <item name="android:autoSizeMaxTextSize">@dimen/page_title_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
-        <item name="autoSizeTextType">uniform</item>
+        <item name="android:autoSizeTextType">uniform</item>
     </style>
-
-
 
 
     <!--
@@ -95,22 +93,20 @@
     <style name="t20BoldBlack">
         <item name="android:textSize">@dimen/page_title_text_size</item>
         <item name="android:textColor">@color/black</item>
-        <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
         <item name="android:autoSizeMaxTextSize">@dimen/page_title_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
-        <item name="autoSizeTextType">uniform</item>
+        <item name="android:autoSizeTextType">uniform</item>
     </style>
 
     <style name="t20BoldWhite">
         <item name="android:textSize">@dimen/page_title_text_size</item>
         <item name="android:textColor">@color/white</item>
-        <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
         <item name="android:autoSizeMaxTextSize">@dimen/page_title_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
-        <item name="autoSizeTextType">uniform</item>
+        <item name="android:autoSizeTextType">uniform</item>
     </style>
-
-
 
 
     <!--
@@ -125,20 +121,20 @@
     <style name="t18UpperCaseBoldBlack">
         <item name="android:textSize">@dimen/layout_title_1_text_size</item>
         <item name="android:textColor">@color/black</item>
-        <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:autoSizeMaxTextSize">@dimen/layout_title_1_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
-        <item name="autoSizeTextType">uniform</item>
+        <item name="android:autoSizeTextType">uniform</item>
     </style>
 
     <style name="t18UpperCaseBoldWhite">
         <item name="android:textSize">@dimen/layout_title_1_text_size</item>
         <item name="android:textColor">@color/white</item>
-        <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
         <item name="android:autoSizeMaxTextSize">@dimen/layout_title_1_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
-        <item name="autoSizeTextType">uniform</item>
+        <item name="android:autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
     </style>
 
@@ -154,19 +150,76 @@
     <style name="t18BoldBlack">
         <item name="android:textSize">@dimen/layout_title_1_text_size</item>
         <item name="android:textColor">@color/black</item>
-        <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
         <item name="android:autoSizeMaxTextSize">@dimen/layout_title_1_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
-        <item name="autoSizeTextType">uniform</item>
+        <item name="android:autoSizeTextType">uniform</item>
     </style>
 
     <style name="t18BoldWhite">
         <item name="android:textSize">@dimen/layout_title_1_text_size</item>
         <item name="android:textColor">@color/white</item>
-        <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
         <item name="android:autoSizeMaxTextSize">@dimen/layout_title_1_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
-        <item name="autoSizeTextType">uniform</item>
+        <item name="android:autoSizeTextType">uniform</item>
+    </style>
+
+
+    <!--
+   PAGE TITLE 2 STYLE UPPER CASE
+       -16 sp
+       -upper case
+       -bold
+       -autoresize -> 9sp
+       -black/white
+   -->
+
+    <style name="t16UpperCaseBoldBlack">
+        <item name="android:textSize">@dimen/layout_title_2_text_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
+        <item name="android:autoSizeMaxTextSize">@dimen/layout_title_2_text_size</item>
+        <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="t16UpperCaseBoldWhite">
+        <item name="android:textSize">@dimen/layout_title_2_text_size</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
+        <item name="android:autoSizeMaxTextSize">@dimen/layout_title_2_text_size</item>
+        <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+
+    <!--
+   PAGE TITLE 2 STYLE BOLD
+       -16 sp
+       -bold
+       -autoresize -> 9sp
+       -black/white
+   -->
+
+    <style name="t16BoldBlack">
+        <item name="android:textSize">@dimen/layout_title_2_text_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
+        <item name="android:autoSizeMaxTextSize">@dimen/layout_title_2_text_size</item>
+        <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
+        <item name="android:autoSizeTextType">uniform</item>
+    </style>
+
+    <style name="t16BoldWhite">
+        <item name="android:textSize">@dimen/layout_title_2_text_size</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
+        <item name="android:autoSizeMaxTextSize">@dimen/layout_title_2_text_size</item>
+        <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
+        <item name="android:autoSizeTextType">uniform</item>
     </style>
 
 
@@ -182,26 +235,56 @@
     <style name="t14UpperCaseBoldBlack">
         <item name="android:textSize">@dimen/layout_subtitle_text_size</item>
         <item name="android:textColor">@color/black</item>
-        <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
         <item name="android:autoSizeMaxTextSize">@dimen/layout_subtitle_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
-        <item name="autoSizeTextType">uniform</item>
+        <item name="android:autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
     </style>
 
     <style name="t14UpperCaseBoldWhite">
         <item name="android:textSize">@dimen/layout_subtitle_text_size</item>
         <item name="android:textColor">@color/white</item>
-        <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
         <item name="android:autoSizeMaxTextSize">@dimen/layout_subtitle_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
-        <item name="autoSizeTextType">uniform</item>
+        <item name="android:autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
     </style>
 
 
     <!--
-   PAGE SUBTITLE STYLE CONTENT INDEX
+  PAGE SUBTITLE STYLE UPPER CASE REGULAR
+      -14 sp
+      -upper case
+      -regular
+      -autoresize -> 9sp
+      -black/white
+  -->
+
+    <style name="t14UpperCaseRegularBlack">
+        <item name="android:textSize">@dimen/layout_subtitle_text_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/orbitron_regular</item>
+        <item name="android:autoSizeMaxTextSize">@dimen/layout_subtitle_text_size</item>
+        <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="t14UpperCaseRegularWhite">
+        <item name="android:textSize">@dimen/layout_subtitle_text_size</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/orbitron_regular</item>
+        <item name="android:autoSizeMaxTextSize">@dimen/layout_subtitle_text_size</item>
+        <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+
+    <!--
+   PAGE SUBTITLE STYLE CONTENT INDEX BOLD
        -14 sp
        -bold
        -autoresize -> 9sp
@@ -212,24 +295,52 @@
     <style name="t14BoldWhiteLineLimited">
         <item name="android:textSize">@dimen/layout_subtitle_text_size</item>
         <item name="android:textColor">@color/white</item>
-        <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
         <item name="android:autoSizeMaxTextSize">@dimen/layout_subtitle_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
-        <item name="autoSizeTextType">uniform</item>
-        <item name="maxLines">1</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:maxLines">1</item>
     </style>
 
     <style name="t14BoldBlackLineLimited">
         <item name="android:textSize">@dimen/layout_subtitle_text_size</item>
         <item name="android:textColor">@color/black</item>
-        <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
         <item name="android:autoSizeMaxTextSize">@dimen/layout_subtitle_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
-        <item name="autoSizeTextType">uniform</item>
-        <item name="maxLines">1</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:maxLines">1</item>
     </style>
 
 
+    <!--
+       PAGE SUBTITLE STYLE CONTENT INDEX REGULAR
+           -14 sp
+           -regular
+           -autoresize -> 9sp
+           -black/white
+           -maxLines 1
+       -->
+
+    <style name="t14RegularWhiteLineLimited">
+        <item name="android:textSize">@dimen/layout_subtitle_text_size</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/orbitron_regular</item>
+        <item name="android:autoSizeMaxTextSize">@dimen/layout_subtitle_text_size</item>
+        <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="t14RegularBlackLineLimited">
+        <item name="android:textSize">@dimen/layout_subtitle_text_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/orbitron_regular</item>
+        <item name="android:autoSizeMaxTextSize">@dimen/layout_subtitle_text_size</item>
+        <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:maxLines">1</item>
+    </style>
 
 
     <!--
@@ -244,24 +355,22 @@
     <style name="t12RegularWhiteLineLimited">
         <item name="android:textSize">@dimen/body_text_size</item>
         <item name="android:textColor">@color/white</item>
-        <item name="fontFamily">@font/orbitron_regular</item>
+        <item name="android:fontFamily">@font/orbitron_regular</item>
         <item name="android:autoSizeMaxTextSize">@dimen/body_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
-        <item name="autoSizeTextType">uniform</item>
-        <item name="maxLines">1</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:maxLines">1</item>
     </style>
 
     <style name="t12RegularBlackLineLimited">
         <item name="android:textSize">@dimen/body_text_size</item>
         <item name="android:textColor">@color/black</item>
-        <item name="fontFamily">@font/orbitron_regular</item>
+        <item name="android:fontFamily">@font/orbitron_regular</item>
         <item name="android:autoSizeMaxTextSize">@dimen/body_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
-        <item name="autoSizeTextType">uniform</item>
-        <item name="maxLines">1</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:maxLines">1</item>
     </style>
-
-
 
 
     <!--
@@ -276,24 +385,22 @@
     <style name="t12BoldWhiteLineLimited">
         <item name="android:textSize">@dimen/body_text_size</item>
         <item name="android:textColor">@color/white</item>
-        <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
         <item name="android:autoSizeMaxTextSize">@dimen/body_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
-        <item name="autoSizeTextType">uniform</item>
-        <item name="maxLines">1</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:maxLines">1</item>
     </style>
 
     <style name="t12BoldBlackLineLimited">
         <item name="android:textSize">@dimen/body_text_size</item>
         <item name="android:textColor">@color/black</item>
-        <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
         <item name="android:autoSizeMaxTextSize">@dimen/body_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
-        <item name="autoSizeTextType">uniform</item>
-        <item name="maxLines">1</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:maxLines">1</item>
     </style>
-
-
 
 
     <!--
@@ -306,29 +413,87 @@
       -maxLines 1
     -->
 
-    <style name="t12UpperCaseBoldWhite">
+    <style name="t12UpperCaseBoldWhiteLineLimited">
         <item name="android:textSize">@dimen/body_text_size</item>
         <item name="android:textColor">@color/white</item>
-        <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
         <item name="android:autoSizeMaxTextSize">@dimen/body_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
-        <item name="autoSizeTextType">uniform</item>
+        <item name="android:autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
-        <item name="maxLines">1</item>
+        <item name="android:maxLines">1</item>
     </style>
 
-    <style name="t12UpperCaseBoldBlack">
+    <style name="t12UpperCaseBoldBlackLineLimited">
         <item name="android:textSize">@dimen/body_text_size</item>
         <item name="android:textColor">@color/black</item>
-        <item name="fontFamily">@font/orbitron_bold</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
         <item name="android:autoSizeMaxTextSize">@dimen/body_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
-        <item name="autoSizeTextType">uniform</item>
+        <item name="android:autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
-        <item name="maxLines">1</item>
+        <item name="android:maxLines">1</item>
     </style>
 
 
+    <!--
+    PAGE SUB-CONTENT STYLE BOLD
+      -10 sp
+      -bold
+      -autoresize -> 9sp
+      -black/white
+      -maxLines 1
+    -->
+
+    <style name="t10BoldWhiteLineLimited">
+        <item name="android:textSize">@dimen/text_minor_importance_size</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
+        <item name="android:autoSizeMaxTextSize">@dimen/text_minor_importance_size</item>
+        <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_2</item>
+        <item name="android:autoSizeTextType">uniform</item>
+
+    </style>
+
+    <style name="t10BoldBlackLineLimited">
+        <item name="android:textSize">@dimen/text_minor_importance_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/orbitron_bold</item>
+        <item name="android:autoSizeMaxTextSize">@dimen/text_minor_importance_size</item>
+        <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_2</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+
+    <!--
+    PAGE SUB-CONTENT STYLE REGULAR
+      -10 sp
+      -regular
+      -autoresize -> 9sp
+      -black/white
+      -maxLines 1
+    -->
+
+    <style name="t10RegularWhiteLineLimited">
+        <item name="android:textSize">@dimen/text_minor_importance_size</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:fontFamily">@font/orbitron_regular</item>
+        <item name="android:autoSizeMaxTextSize">@dimen/text_minor_importance_size</item>
+        <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_2</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="t10RegularBlackLineLimited">
+        <item name="android:textSize">@dimen/text_minor_importance_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:fontFamily">@font/orbitron_regular</item>
+        <item name="android:autoSizeMaxTextSize">@dimen/text_minor_importance_size</item>
+        <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_2</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:maxLines">1</item>
+    </style>
 
 
     <!--
@@ -344,26 +509,54 @@
     <style name="t10UpperCaseRegularWhiteLineLimited">
         <item name="android:textSize">@dimen/text_minor_importance_size</item>
         <item name="android:textColor">@color/white</item>
-        <item name="fontFamily">@font/orbitron_regular</item>
+        <item name="android:fontFamily">@font/orbitron_regular</item>
         <item name="android:autoSizeMaxTextSize">@dimen/text_minor_importance_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_2</item>
-        <item name="autoSizeTextType">uniform</item>
+        <item name="android:autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
-        <item name="maxLines">1</item>
+        <item name="android:maxLines">1</item>
     </style>
 
     <style name="t10UpperCaseRegularBlackLineLimited">
         <item name="android:textSize">@dimen/text_minor_importance_size</item>
         <item name="android:textColor">@color/black</item>
-        <item name="fontFamily">@font/orbitron_regular</item>
+        <item name="android:fontFamily">@font/orbitron_regular</item>
         <item name="android:autoSizeMaxTextSize">@dimen/text_minor_importance_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_2</item>
-        <item name="autoSizeTextType">uniform</item>
+        <item name="android:autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
-        <item name="maxLines">1</item>
+        <item name="android:maxLines">1</item>
     </style>
 
 
+    <!--
+    TIMER DIGITS BIG
+        -standard font
+        -32sp
+        -bold
+        -max lines
+        -black/white
+    -->
+
+    <style name="timer32BoldBlackStandard">
+        <item name="android:textSize">@dimen/timer_text_size</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:autoSizeMaxTextSize">@dimen/timer_text_size</item>
+        <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="timer32BoldWhiteStandard">
+        <item name="android:textSize">@dimen/timer_text_size</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:autoSizeMaxTextSize">@dimen/timer_text_size</item>
+        <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
+        <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 
 
     <!--

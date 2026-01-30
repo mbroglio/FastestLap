@@ -19,27 +19,23 @@
         tools:ignore="UselessParent">
 
         <TextView
+            style="@style/t14UpperCaseBoldBlack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.2"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="@string/year_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:text="@string/year">
 
         </TextView>
 
 
         <TextView
+            style="@style/t14UpperCaseBoldBlack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="0.8"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="@string/podium_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:text="@string/podium">
 
         </TextView>
 

@@ -29,7 +29,7 @@ public class JolpicaConstructorStandingsDataSource implements ConstructorStandin
     private static JolpicaConstructorStandingsDataSource instance;
     private final ErgastAPIService ergastAPIService;
 
-    private String currentYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+    private final String currentYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 
     private JolpicaConstructorStandingsDataSource() {
         this.ergastAPIService = ServiceLocator.getInstance().getConcreteErgastAPIService();

@@ -19,33 +19,25 @@
 
         <TextView
             android:id="@+id/text_1"
+            style="@style/t12RegularBlackLineLimited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_marginStart="10dp"
-            android:fontFamily="@font/orbitron_regular"
-            android:text="@string/next_event"
-            android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size">
+            android:text="@string/next_event">
 
         </TextView>
 
         <TextView
             android:id="@+id/home_next_gp_name"
+            style="@style/t14BoldBlackLineLimited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="10dp"
             android:layout_toEndOf="@+id/text_1"
-            android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
-            android:autoSizeMinTextSize="@dimen/min_text_resize_1"
-            android:autoSizeTextType="uniform"
-            android:fontFamily="@font/orbitron_bold"
-            android:gravity="center"
-            android:maxLines="1"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:gravity="center">
 
         </TextView>
 
@@ -105,16 +97,14 @@
 
     <TextView
         android:id="@+id/next_session_type"
+        style="@style/t12BoldBlackLineLimited"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/timer_layout"
         android:layout_centerInParent="true"
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp"
-        android:fontFamily="@font/orbitron_bold"
-        android:text="@string/not_found"
-        android:textColor="@color/black"
-        android:textSize="@dimen/body_text_size">
+        android:text="@string/not_found">
 
     </TextView>
 
@@ -130,12 +120,10 @@
 
         <TextView
             android:id="@+id/live_now"
+            style="@style/t12UpperCaseBoldBlackLineLimited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/orbitron_bold"
-            android:text="@string/live_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size">
+            android:text="@string/live">
 
         </TextView>
 

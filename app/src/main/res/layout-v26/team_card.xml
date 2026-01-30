@@ -45,17 +45,16 @@
 
             <TextView
                 android:id="@+id/team_position"
+                style="@style/t18BoldBlack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:fontFamily="@font/orbitron_bold"
                 android:gravity="start"
-                android:text="@string/not_found"
-                android:textColor="@color/black"
-                android:textSize="@dimen/layout_title_1_text_size" />
+                android:text="@string/not_found" />
 
             <TextView
                 android:id="@+id/team_name"
+                style="@style/t18BoldBlack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -63,27 +62,19 @@
                 android:layout_marginEnd="10dp"
                 android:layout_toStartOf="@id/team_points"
                 android:layout_toEndOf="@id/team_position"
-                android:autoSizeMaxTextSize="@dimen/layout_title_1_text_size"
-                android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
-                android:autoSizeTextType="uniform"
-                android:fontFamily="@font/orbitron_bold"
                 android:gravity="center"
                 android:maxLines="2"
-                android:text="@string/not_found"
-                android:textColor="@color/black"
-                android:textSize="@dimen/layout_title_1_text_size" />
+                android:text="@string/not_found" />
 
             <TextView
                 android:id="@+id/team_points"
+                style="@style/t18BoldBlack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="10dp"
-                android:fontFamily="@font/orbitron_bold"
                 android:gravity="end"
-                android:text="@string/not_found"
-                android:textColor="@color/black"
-                android:textSize="@dimen/layout_title_1_text_size" />
+                android:text="@string/not_found" />
 
         </RelativeLayout>
 
@@ -124,20 +115,15 @@
 
                         <TextView
                             android:id="@+id/driver_1_name"
+                            style="@style/t12RegularBlackLineLimited"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:layout_marginStart="5dp"
                             android:layout_toEndOf="@id/driver_1_pic"
-                            android:autoSizeMaxTextSize="@dimen/body_text_size"
-                            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_regular"
                             android:gravity="start"
                             android:maxLines="2"
-                            android:text="@string/not_found"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/body_text_size" />
+                            android:text="@string/not_found" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -158,20 +144,15 @@
 
                         <TextView
                             android:id="@+id/driver_2_name"
+                            style="@style/t12RegularBlackLineLimited"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_centerInParent="true"
                             android:layout_marginStart="5dp"
                             android:layout_toEndOf="@id/driver_2_pic"
-                            android:autoSizeMaxTextSize="@dimen/body_text_size"
-                            android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
-                            android:autoSizeTextType="uniform"
-                            android:fontFamily="@font/orbitron_regular"
                             android:gravity="start"
                             android:maxLines="2"
-                            android:text="@string/not_found"
-                            android:textColor="@color/black"
-                            android:textSize="@dimen/body_text_size" />
+                            android:text="@string/not_found" />
                     </RelativeLayout>
 
                 </LinearLayout>

@@ -94,8 +94,8 @@
                 </CheckBox>
 
                 <Button
-                    style="@style/t14UpperCaseBoldBlack"
                     android:id="@+id/sign_out_button"
+                    style="@style/t14UpperCaseBoldBlack"
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:layout_alignParentEnd="true"
@@ -106,8 +106,8 @@
                 </Button>
 
                 <Button
-                    style="@style/t14BoldBlackLineLimited"
                     android:id="@+id/login_button"
+                    style="@style/t14BoldBlackLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:layout_alignParentEnd="true"
@@ -205,8 +205,8 @@
                         app:cursorColor="@color/timer_gray">
 
                         <com.google.android.material.textfield.TextInputEditText
-                            style="@style/t12RegularWhiteLineLimited"
                             android:id="@+id/email_text"
+                            style="@style/t12RegularWhiteLineLimited"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
@@ -221,8 +221,8 @@
             </LinearLayout>
 
             <Button
-                style="@style/t14UpperCaseBoldBlack"
                 android:id="@+id/save_button"
+                style="@style/t14UpperCaseBoldBlack"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_gravity="bottom|end"
@@ -237,8 +237,8 @@
             </Button>
 
             <Button
-                style="@style/t14UpperCaseBoldBlack"
                 android:id="@+id/dismiss_button"
+                style="@style/t14UpperCaseBoldBlack"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_gravity="bottom|end"

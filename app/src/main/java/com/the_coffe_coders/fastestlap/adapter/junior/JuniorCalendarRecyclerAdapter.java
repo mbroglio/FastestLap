@@ -19,7 +19,6 @@ import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 public class JuniorCalendarRecyclerAdapter extends RecyclerView.Adapter<JuniorCalendarRecyclerAdapter.JuniorCalendarViewHolder> {
 
     private final Context context;
-    ;
     private final JuniorCalendar calendar;
 
     public JuniorCalendarRecyclerAdapter(Context context, JuniorCalendar calendar) {
@@ -38,7 +37,7 @@ public class JuniorCalendarRecyclerAdapter extends RecyclerView.Adapter<JuniorCa
     public void onBindViewHolder(@NonNull JuniorCalendarRecyclerAdapter.JuniorCalendarViewHolder holder, int position) {
         Log.i("JuniorCalendarRecyclerAdapter", "calendar: " + calendar.getEvents());
         JuniorCalendarElement element = calendar.getEvents().get(position);
-        holder.eventRound.setText(context.getString(R.string.round_upper_case_plus_value, element.getRound()));
+        holder.eventRound.setText(context.getString(R.string.round_plus_value, element.getRound()));
         holder.eventName.setText(element.getCircuit());
 
         UIUtils.loadImageWithGlide(context, element.getNation_flag_url(), holder.nationFlag,

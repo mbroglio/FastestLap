@@ -65,7 +65,7 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
 
         UIUtils.multipleSetTextViewText(
                 new String[]{
-                        context.getString(R.string.round_upper_case_plus_value, race.getRound()),
+                        context.getString(R.string.round_plus_value, race.getRound()),
                         race.getRaceName()},
                 new TextView[]{
                         holder.pastRoundTextView,

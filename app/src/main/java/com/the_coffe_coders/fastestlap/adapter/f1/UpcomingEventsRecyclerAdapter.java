@@ -60,9 +60,16 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
 
         setupEventCardIcon(weeklyRace, holder);
 
-        holder.roundTextView.setText(context.getString(R.string.round_upper_case_plus_value, weeklyRace.getRound()));
-        holder.gpTextView.setText(weeklyRace.getRaceName());
-        holder.dateTextView.setText(weeklyRace.getFirstPractice().getStartDateTime().getDayOfMonth() + " - " + weeklyRace.getDateTime().getDayOfMonth());
+        UIUtils.multipleSetTextViewText(
+                new String[]{
+                        context.getString(R.string.round_plus_value, weeklyRace.getRound()),
+                        weeklyRace.getRaceName(),
+                        weeklyRace.getFirstPractice().getStartDateTime().getDayOfMonth() + " - " + weeklyRace.getDateTime().getDayOfMonth()},
+                new TextView[]{
+                        holder.roundTextView,
+                        holder.gpTextView,
+                        holder.dateTextView});
+
         UIUtils.translateMonth(weeklyRace.getDateTime().getMonth().toString().substring(0, 3).toUpperCase(),
                 holder.monthTextView, true);
 

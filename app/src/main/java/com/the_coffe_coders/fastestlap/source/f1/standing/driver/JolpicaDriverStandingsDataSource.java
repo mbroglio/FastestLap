@@ -28,7 +28,7 @@ public class JolpicaDriverStandingsDataSource implements DriverStandingDataSourc
     private static final String TAG = "DriverRemoteDataSource";
     private static JolpicaDriverStandingsDataSource instance;
     private final ErgastAPIService ergastAPIService;
-    private String currentYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+    private final String currentYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 
     public JolpicaDriverStandingsDataSource() {
         this.ergastAPIService = ServiceLocator.getInstance().getConcreteErgastAPIService();
