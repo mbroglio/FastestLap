@@ -11,8 +11,8 @@
     android:orientation="vertical">
 
     <TextView
-        style="@style/t18BoldWhite"
         android:id="@+id/text_view"
+        style="@style/t18BoldWhite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/weekend_schedule_index" />
@@ -37,8 +37,8 @@
             android:orientation="horizontal">
 
             <TextView
-                style="@style/t14BoldWhiteLineLimited"
                 android:id="@+id/session_1_name"
+                style="@style/t14BoldWhiteLineLimited"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
@@ -47,8 +47,8 @@
                 tools:ignore="RtlSymmetry" />
 
             <TextView
-                style="@style/t12RegularWhiteLineLimited"
                 android:id="@+id/session_1_day"
+                style="@style/t12RegularWhiteLineLimited"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.23"
@@ -57,8 +57,8 @@
                 tools:ignore="RtlSymmetry" />
 
             <TextView
-                style="@style/t12RegularWhiteLineLimited"
                 android:id="@+id/session_1_time"
+                style="@style/t12RegularWhiteLineLimited"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.27"
@@ -101,8 +101,8 @@
             android:orientation="horizontal">
 
             <TextView
-                style="@style/t14BoldWhiteLineLimited"
                 android:id="@+id/session_2_name"
+                style="@style/t14BoldWhiteLineLimited"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
@@ -111,8 +111,8 @@
                 tools:ignore="RtlSymmetry" />
 
             <TextView
-                style="@style/t12RegularWhiteLineLimited"
                 android:id="@+id/session_2_day"
+                style="@style/t12RegularWhiteLineLimited"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.23"
@@ -121,8 +121,8 @@
                 tools:ignore="RtlSymmetry" />
 
             <TextView
-                style="@style/t12RegularWhiteLineLimited"
                 android:id="@+id/session_2_time"
+                style="@style/t12RegularWhiteLineLimited"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.27"
@@ -165,8 +165,8 @@
             android:orientation="horizontal">
 
             <TextView
-                style="@style/t14BoldWhiteLineLimited"
                 android:id="@+id/session_3_name"
+                style="@style/t14BoldWhiteLineLimited"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
@@ -175,8 +175,8 @@
                 tools:ignore="RtlSymmetry" />
 
             <TextView
-                style="@style/t12RegularWhiteLineLimited"
                 android:id="@+id/session_3_day"
+                style="@style/t12RegularWhiteLineLimited"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.23"
@@ -185,8 +185,8 @@
                 tools:ignore="RtlSymmetry" />
 
             <TextView
-                style="@style/t12RegularWhiteLineLimited"
                 android:id="@+id/session_3_time"
+                style="@style/t12RegularWhiteLineLimited"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.27"
@@ -229,8 +229,8 @@
             android:orientation="horizontal">
 
             <TextView
-                style="@style/t14BoldWhiteLineLimited"
                 android:id="@+id/session_4_name"
+                style="@style/t14BoldWhiteLineLimited"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
@@ -239,8 +239,8 @@
                 tools:ignore="RtlSymmetry" />
 
             <TextView
-                style="@style/t12RegularWhiteLineLimited"
                 android:id="@+id/session_4_day"
+                style="@style/t12RegularWhiteLineLimited"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.23"
@@ -249,8 +249,8 @@
                 tools:ignore="RtlSymmetry" />
 
             <TextView
-                style="@style/t12RegularWhiteLineLimited"
                 android:id="@+id/session_4_time"
+                style="@style/t12RegularWhiteLineLimited"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.27"
@@ -292,8 +292,8 @@
             android:orientation="horizontal">
 
             <TextView
-                style="@style/t14BoldWhiteLineLimited"
                 android:id="@+id/session_5_name"
+                style="@style/t14BoldWhiteLineLimited"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.4"
@@ -302,8 +302,8 @@
                 tools:ignore="RtlSymmetry" />
 
             <TextView
-                style="@style/t12RegularWhiteLineLimited"
                 android:id="@+id/session_5_day"
+                style="@style/t12RegularWhiteLineLimited"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.23"
@@ -312,8 +312,8 @@
                 tools:ignore="RtlSymmetry" />
 
             <TextView
-                style="@style/t12RegularWhiteLineLimited"
                 android:id="@+id/session_5_time"
+                style="@style/t12RegularWhiteLineLimited"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.27"

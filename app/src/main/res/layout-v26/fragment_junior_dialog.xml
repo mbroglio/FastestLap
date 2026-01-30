@@ -115,8 +115,8 @@
                     </TextView>
 
                     <TextView
-                        style="@style/t12BoldBlackLineLimited"
                         android:id="@+id/driver_name_pole"
+                        style="@style/t12BoldBlackLineLimited"
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
                         android:layout_gravity="center"
@@ -171,8 +171,8 @@
                     </TextView>
 
                     <TextView
-                        style="@style/t12BoldBlackLineLimited"
                         android:id="@+id/driver_name_fastest_lap"
+                        style="@style/t12BoldBlackLineLimited"
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
                         android:layout_gravity="center"

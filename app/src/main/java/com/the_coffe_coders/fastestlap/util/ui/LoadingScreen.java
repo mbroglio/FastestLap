@@ -110,7 +110,7 @@ public class LoadingScreen {
 
     public void hideLoadingScreenImmediately() {
         handler.post(this::hide);
-    }    private final Runnable timerRunnable = this::hide;
+    }
 
     private void hide() {
         loadingScreen.setVisibility(View.GONE);
@@ -121,7 +121,7 @@ public class LoadingScreen {
         }
         handler.removeCallbacks(dotRunnable);
         timerHandler.removeCallbacks(timerRunnable);
-    }
+    }    private final Runnable timerRunnable = this::hide;
 
 
 

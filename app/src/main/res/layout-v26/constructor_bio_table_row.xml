@@ -16,8 +16,8 @@
         android:orientation="horizontal">
 
         <TextView
-            style="@style/t12RegularBlackLineLimited"
             android:id="@+id/season_year"
+            style="@style/t12RegularBlackLineLimited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2.25"
@@ -27,8 +27,8 @@
         </TextView>
 
         <TextView
-            style="@style/t12RegularBlackLineLimited"
             android:id="@+id/team_position"
+            style="@style/t12RegularBlackLineLimited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="2.3"
@@ -38,8 +38,8 @@
         </TextView>
 
         <TextView
-            style="@style/t12RegularBlackLineLimited"
             android:id="@+id/team_points"
+            style="@style/t12RegularBlackLineLimited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -50,8 +50,8 @@
         </TextView>
 
         <TextView
-            style="@style/t12RegularBlackLineLimited"
             android:id="@+id/team_wins"
+            style="@style/t12RegularBlackLineLimited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -62,8 +62,8 @@
         </TextView>
 
         <TextView
-            style="@style/t12RegularBlackLineLimited"
             android:id="@+id/team_podiums"
+            style="@style/t12RegularBlackLineLimited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"

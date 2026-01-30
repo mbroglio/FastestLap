@@ -40,8 +40,8 @@
         android:visibility="visible">
 
         <TextView
-            style="@style/t20UpperCaseBoldBlack"
             android:id="@+id/driver_position"
+            style="@style/t20UpperCaseBoldBlack"
             android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
@@ -77,8 +77,8 @@
         </ImageView>
 
         <TextView
-            style="@style/t14BoldBlackLineLimited"
             android:id="@+id/driver_name"
+            style="@style/t14BoldBlackLineLimited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -91,8 +91,8 @@
         </TextView>
 
         <TextView
-            style="@style/t20UpperCaseBoldBlack"
             android:id="@+id/driver_points"
+            style="@style/t20UpperCaseBoldBlack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"

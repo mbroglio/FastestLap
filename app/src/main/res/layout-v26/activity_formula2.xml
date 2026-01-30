@@ -159,8 +159,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:alpha="0.6"
-                            android:scaleType="centerCrop"
                             android:importantForAccessibility="no"
+                            android:scaleType="centerCrop"
                             android:src="@drawable/formula_2_result_image" />
 
                         <View
@@ -216,8 +216,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:alpha="0.6"
-                            android:scaleType="centerCrop"
                             android:importantForAccessibility="no"
+                            android:scaleType="centerCrop"
                             android:src="@drawable/formula_2_overtake_image" />
 
                         <View

@@ -15,8 +15,8 @@
         android:orientation="horizontal">
 
         <TextView
-            style="@style/t14UpperCaseBoldBlack"
             android:id="@+id/season_year"
+            style="@style/t14UpperCaseBoldBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -26,8 +26,8 @@
             android:text="@string/year" />
 
         <TextView
-            style="@style/t14UpperCaseBoldBlack"
             android:id="@+id/driver_position"
+            style="@style/t14UpperCaseBoldBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -39,8 +39,8 @@
         </TextView>
 
         <TextView
-            style="@style/t14UpperCaseBoldBlack"
             android:id="@+id/team_name"
+            style="@style/t14UpperCaseBoldBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -52,8 +52,8 @@
         </TextView>
 
         <TextView
-            style="@style/t14UpperCaseBoldBlack"
             android:id="@+id/driver_points"
+            style="@style/t14UpperCaseBoldBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -65,8 +65,8 @@
         </TextView>
 
         <TextView
-            style="@style/t14UpperCaseBoldBlack"
             android:id="@+id/driver_wins"
+            style="@style/t14UpperCaseBoldBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -78,8 +78,8 @@
         </TextView>
 
         <TextView
-            style="@style/t14UpperCaseBoldBlack"
             android:id="@+id/driver_podiums"
+            style="@style/t14UpperCaseBoldBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"

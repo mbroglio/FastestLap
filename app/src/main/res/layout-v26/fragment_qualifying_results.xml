@@ -23,8 +23,8 @@
             android:orientation="vertical">
 
             <TextView
-                style="@style/t20UpperCaseBoldBlack"
                 android:id="@+id/qualifying_results_title"
+                style="@style/t20UpperCaseBoldBlack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -34,8 +34,8 @@
                 android:maxLines="1" />
 
             <TextView
-                style="@style/t14UpperCaseBoldBlack"
                 android:id="@+id/event_description_title"
+                style="@style/t14UpperCaseBoldBlack"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"

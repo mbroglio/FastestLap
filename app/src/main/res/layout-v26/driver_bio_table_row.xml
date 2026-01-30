@@ -15,21 +15,21 @@
         android:orientation="horizontal">
 
         <TextView
-            style="@style/t12RegularBlackLineLimited"
             android:id="@+id/season_year"
+            style="@style/t12RegularBlackLineLimited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="5dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/not_found" >
+            android:text="@string/not_found">
 
         </TextView>
 
         <TextView
-            style="@style/t12RegularBlackLineLimited"
             android:id="@+id/driver_position"
+            style="@style/t12RegularBlackLineLimited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -41,22 +41,22 @@
         </TextView>
 
         <TextView
-            style="@style/t12RegularBlackLineLimited"
             android:id="@+id/team_name"
+            style="@style/t12RegularBlackLineLimited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="5dp"
             android:layout_weight="0.8"
-            android:maxLines="2"
             android:gravity="center"
+            android:maxLines="2"
             android:text="@string/not_found">
 
         </TextView>
 
         <TextView
-            style="@style/t12RegularBlackLineLimited"
             android:id="@+id/driver_points"
+            style="@style/t12RegularBlackLineLimited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -68,8 +68,8 @@
         </TextView>
 
         <TextView
-            style="@style/t12RegularBlackLineLimited"
             android:id="@+id/driver_wins"
+            style="@style/t12RegularBlackLineLimited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -81,8 +81,8 @@
         </TextView>
 
         <TextView
-            style="@style/t12RegularBlackLineLimited"
             android:id="@+id/driver_podiums"
+            style="@style/t12RegularBlackLineLimited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"

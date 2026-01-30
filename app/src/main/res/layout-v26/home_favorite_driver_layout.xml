@@ -7,8 +7,8 @@
     android:layout_height="wrap_content">
 
     <TextView
-        style="@style/t18BoldBlack"
         android:id="@+id/favourite_driver_name"
+        style="@style/t18BoldBlack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -41,8 +41,8 @@
         </ImageView>
 
         <TextView
-            style="@style/t12RegularBlackLineLimited"
             android:id="@+id/favourite_driver_nationality"
+            style="@style/t12RegularBlackLineLimited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
@@ -138,8 +138,8 @@
                 android:orientation="horizontal">
 
                 <TextView
-                    style="@style/t12BoldBlackLineLimited"
                     android:id="@+id/favourite_driver_position"
+                    style="@style/t12BoldBlackLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
@@ -158,8 +158,8 @@
                 </TextView>
 
                 <TextView
-                    style="@style/t12BoldBlackLineLimited"
                     android:id="@+id/favourite_driver_points"
+                    style="@style/t12BoldBlackLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
