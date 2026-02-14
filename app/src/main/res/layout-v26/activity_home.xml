@@ -42,6 +42,7 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navbar"
+        style="@style/Widget.Material3.BottomNavigationView.ActiveIndicator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottom_nav_height"
         android:background="@color/ferrari_secondary"

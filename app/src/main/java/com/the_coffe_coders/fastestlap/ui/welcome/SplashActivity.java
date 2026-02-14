@@ -11,6 +11,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -55,9 +56,6 @@ public class SplashActivity extends AppCompatActivity {
 
     private void start() {
         networkLiveData = new NetworkUtils(getApplicationContext());
-
-        ConstraintLayout introScreen = findViewById(R.id.intro_screen);
-        UIUtils.applyWindowInsets(introScreen);
 
         String season_year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
         Log.d("LaunchFlag", "Valore ricevuto: " + season_year);
