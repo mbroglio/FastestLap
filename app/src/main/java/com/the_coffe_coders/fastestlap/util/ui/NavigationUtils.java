@@ -6,9 +6,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.fragment.app.FragmentManager;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
@@ -25,7 +28,9 @@ import com.the_coffe_coders.fastestlap.ui.event.fragment.RaceAndSprintResultsFra
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.junior.Formula2Activity;
 import com.the_coffe_coders.fastestlap.ui.junior.Formula3Activity;
-import com.the_coffe_coders.fastestlap.ui.junior.JuniorResultsActivity;
+import com.the_coffe_coders.fastestlap.ui.junior.fragment.JuniorResultsFragment;
+import com.the_coffe_coders.fastestlap.ui.junior.fragment.F2CarBioFragment;
+import com.the_coffe_coders.fastestlap.ui.junior.fragment.F3CarBioFragment;
 import com.the_coffe_coders.fastestlap.ui.junior.fragment.JuniorDialogFragment;
 import com.the_coffe_coders.fastestlap.ui.profile.LoginFragment;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
@@ -122,12 +127,45 @@ public class NavigationUtils {
         context.startActivity(intent);
     }
 
-    public static void navigateToJuniorResultsPage(Context context, int categoryType) {
-        Intent intent = new Intent(context, JuniorResultsActivity.class);
-        intent.putExtra("CATEGORY_TYPE", categoryType);
-        context.startActivity(intent);
+    public static void navigateToFormula2Home(NavController navController, int categoryType) {
+        navigateToJuniorHome(navController, categoryType);
     }
 
+    public static void navigateToFormula3Home(NavController navController, int categoryType) {
+        navigateToJuniorHome(navController, categoryType);
+    }
+
+    private static void navigateToJuniorHome(NavController navController, int categoryType) {
+        Bundle args = new Bundle();
+        args.putInt("CATEGORY_TYPE", categoryType);
+        if(categoryType == 0){
+            navController.navigate(R.id.f2HomeFragment, args);
+        }else if(categoryType == 1){
+            navController.navigate(R.id.f3HomeFragment, args);
+        }
+    }
+
+    public static void navigateToJuniorResultsPage(View view, int categoryType){
+        NavController navController = Navigation.findNavController(view);
+        Bundle args = new Bundle();
+        args.putInt("CATEGORY_TYPE", categoryType);
+        if(categoryType == 0){
+            navController.navigate(R.id.to_juniorResults_formula2, args);
+        }else if(categoryType == 1){
+            navController.navigate(R.id.to_juniorResults_formula3, args);
+        }
+    }
+
+    public static void navigateToJuniorCarBioPage(View view, int categoryType) {
+        NavController navController = Navigation.findNavController(view);
+        Bundle args = new Bundle();
+        args.putInt("CATEGORY_TYPE", categoryType);
+        if(categoryType == 0){
+            navController.navigate(R.id.to_carBio_formula2, args);
+        }else if(categoryType == 1){
+            navController.navigate(R.id.to_carBio_formula3, args);
+        }
+    }
 
     public static void showEntryListDialog(FragmentManager fragmentManager, int categoryType) {
         showJuniorDialog(fragmentManager, categoryType, -1, 0, null, null, null);
@@ -240,6 +278,4 @@ public class NavigationUtils {
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
         context.startActivity(intent);
     }
-
-
 }

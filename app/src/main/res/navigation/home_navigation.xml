@@ -32,6 +32,10 @@
         android:id="@+id/juniorCategoriesFragment"
         android:name="com.the_coffe_coders.fastestlap.ui.home.fragment.JuniorCategoriesFragment"
         android:label="@string/junior_menu"
-        tools:layout="@layout/fragment_junior_categories" />
+        tools:layout="@layout/fragment_junior_categories" >
+        <action
+            android:id="@+id/action_juniorCategoriesFragment_self"
+            app:destination="@id/juniorCategoriesFragment" />
+    </fragment>
 
 </navigation>

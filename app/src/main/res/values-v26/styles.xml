@@ -76,6 +76,7 @@
         <item name="android:textSize">@dimen/page_title_text_size</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:fontFamily">@font/orbitron_bold</item>
+        <item name="android:textAllCaps">true</item>
         <item name="android:autoSizeMaxTextSize">@dimen/page_title_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>

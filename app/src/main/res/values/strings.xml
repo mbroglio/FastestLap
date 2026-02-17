@@ -198,5 +198,11 @@
     <string name="last_driver_position" translatable="false">22</string>
     <string name="driver_info_not_found">driver info not found</string>
     <string name="round_plus_value" translatable="false">round  %1$s</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="discover_the_car">discover the car</string>
+    <string name="formula_3" translatable="false">Formula 3</string>
+    <string name="the_formula_3_car">the F3 car</string>
+    <string name="formula_2" translatable="false">Formula 2</string>
+    <string name="the_formula_2_car">the F2 car</string>
 
 </resources>

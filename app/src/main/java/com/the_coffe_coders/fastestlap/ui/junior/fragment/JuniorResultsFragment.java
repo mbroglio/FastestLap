@@ -1,12 +1,14 @@
-package com.the_coffe_coders.fastestlap.ui.junior;
+package com.the_coffe_coders.fastestlap.ui.junior.fragment;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,8 +25,10 @@ import com.the_coffe_coders.fastestlap.ui.junior.viewmodel.JuniorCategoryViewMod
 import com.the_coffe_coders.fastestlap.ui.junior.viewmodel.JuniorCategoryViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
-public class JuniorResultsActivity extends AppCompatActivity {
+public class JuniorResultsFragment extends Fragment {
     private static final String TAG = "JuniorResultsActivity";
+
+    private View view;
 
     private int categoryType;
     private JuniorCategoryViewModel juniorCategoryViewModel;
@@ -34,32 +38,42 @@ public class JuniorResultsActivity extends AppCompatActivity {
     private JuniorResultsRecyclerAdapter juniorResultsAdapter;
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_junior_results);
-
-        categoryType = getIntent().getIntExtra("CATEGORY_TYPE", 0);
-
-        resultsLayout = findViewById(R.id.results_layout);
-        UIUtils.applyWindowInsets(resultsLayout);
-
-        setupPage();
+    public JuniorResultsFragment() {
     }
 
-    private void setupPage() {
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if(getArguments() != null){
+            categoryType = getArguments().getInt("CATEGORY_TYPE");
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        view = inflater.inflate(R.layout.fragment_junior_results, container, false);
+        /*
+        resultsLayout = view.findViewById(R.id.results_layout);
+        UIUtils.applyWindowInsets(resultsLayout);
+*/
+        setupFragment();
+
+        return view;
+    }
+
+    private void setupFragment() {
 
         setToolbar();
 
-        SwipeRefreshLayout layout = findViewById(R.id.results_layout);
+        SwipeRefreshLayout layout = view.findViewById(R.id.results_layout);
         UIUtils.applyWindowInsets(layout);
 
-        resultsrRecyclerView = findViewById(R.id.results_recycler_view);
-        contentNotAvailableLayout = findViewById(R.id.content_not_available_layout);
+        resultsrRecyclerView = view.findViewById(R.id.results_recycler_view);
+        contentNotAvailableLayout = view.findViewById(R.id.content_not_available_layout);
 
         layout.setOnRefreshListener(() -> {
-            setupPage();
+            setupFragment();
             layout.setRefreshing(false);
         });
 
@@ -69,29 +83,49 @@ public class JuniorResultsActivity extends AppCompatActivity {
     }
 
     private void setToolbar() {
-        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
-        AppBarLayout appBarLayout = findViewById(R.id.top_bar_layout);
+        MaterialToolbar toolbar = view.findViewById(R.id.topAppBar);
+        AppBarLayout appBarLayout = view.findViewById(R.id.top_bar_layout);
 
-        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+        // If fragment has its own toolbar (standalone mode)
+        if (toolbar != null && appBarLayout != null) {
+            toolbar.setNavigationOnClickListener(v -> requireActivity().getOnBackPressedDispatcher().onBackPressed());
 
-        if (categoryType == 0) {
-            toolbar.setBackgroundColor(getColor(R.color.formula_2));
-            appBarLayout.setBackgroundColor(getColor(R.color.formula_2));
-        } else {
-            toolbar.setBackgroundColor(getColor(R.color.ferrari_secondary));
-            appBarLayout.setBackgroundColor(getColor(R.color.ferrari_secondary));
+            if (categoryType == 0) {
+                toolbar.setBackgroundColor(requireActivity().getColor(R.color.formula_2));
+                appBarLayout.setBackgroundColor(requireActivity().getColor(R.color.formula_2));
+            } else {
+                toolbar.setBackgroundColor(requireActivity().getColor(R.color.ferrari_secondary));
+                appBarLayout.setBackgroundColor(requireActivity().getColor(R.color.ferrari_secondary));
+            }
+
+            UIUtils.applyWindowInsets(toolbar);
         }
+        // If using activity's toolbar (Navigation Component mode)
+        else if (requireActivity() instanceof AppCompatActivity) {
+            androidx.appcompat.widget.Toolbar activityToolbar =
+                    requireActivity().findViewById(R.id.topAppBar);
+            AppBarLayout activityAppBarLayout =
+                    requireActivity().findViewById(R.id.top_bar_layout);
 
-        UIUtils.applyWindowInsets(toolbar);
+            if (activityToolbar != null && activityAppBarLayout != null) {
+                if (categoryType == 0) {
+                    activityToolbar.setBackgroundColor(requireActivity().getColor(R.color.formula_2));
+                    activityAppBarLayout.setBackgroundColor(requireActivity().getColor(R.color.formula_2));
+                } else {
+                    activityToolbar.setBackgroundColor(requireActivity().getColor(R.color.ferrari_secondary));
+                    activityAppBarLayout.setBackgroundColor(requireActivity().getColor(R.color.ferrari_secondary));
+                }
+            }
+        }
     }
 
     private void initializeViewModels() {
-        juniorCategoryViewModel = new ViewModelProvider(this, new JuniorCategoryViewModelFactory(getApplication())).get(JuniorCategoryViewModel.class);
+        juniorCategoryViewModel = new ViewModelProvider(this, new JuniorCategoryViewModelFactory(requireActivity().getApplication())).get(JuniorCategoryViewModel.class);
     }
 
     private void fetchResults() {
         MutableLiveData<Result> resultsLiveData = juniorCategoryViewModel.getResults(categoryType);
-        resultsLiveData.observe(this, result -> {
+        resultsLiveData.observe(requireActivity(), result -> {
             if (result != null) {
                 if (result instanceof Result.Loading) {
                     return;
@@ -106,9 +140,9 @@ public class JuniorResultsActivity extends AppCompatActivity {
                         Log.i(TAG, "Junior result: " + juniorResult.getSeries());
                         Log.i(TAG, "Junior result: " + juniorResult);
 
-                        resultsrRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+                        resultsrRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-                        juniorResultsAdapter = new JuniorResultsRecyclerAdapter(this, juniorResult, getSupportFragmentManager(), categoryType);
+                        juniorResultsAdapter = new JuniorResultsRecyclerAdapter(requireContext(), juniorResult, requireActivity().getSupportFragmentManager(), categoryType);
                         resultsrRecyclerView.setAdapter(juniorResultsAdapter);
 
                         for (int i = 0; i < juniorResultsAdapter.getItemCount(); i++) {

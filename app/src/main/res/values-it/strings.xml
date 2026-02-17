@@ -140,4 +140,7 @@
     <string name="constructor_info_not_found">info scuderia non trovate</string>
     <string name="loading">caricamento%1$s</string>
     <string name="driver_info_not_found">info pilota non trovate</string>
+    <string name="discover_the_car">scopri l\'auto</string>
+    <string name="the_formula_3_car">l\'auto di F3</string>
+    <string name="the_formula_2_car">l\'auto di F2</string>
 </resources>
