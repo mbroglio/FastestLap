@@ -38,15 +38,7 @@ public class Formula3Activity extends AppCompatActivity {
         if (navHostFragment != null) {
             NavController navController = navHostFragment.getNavController();
 
-            // Manually update toolbar title based on current destination
-            navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
-                if (getSupportActionBar() != null) {
-                    CharSequence title = destination.getLabel();
-                    getSupportActionBar().setTitle(title);
-                    // Always show the navigation icon (back button)
-                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-                }
-            });
+            UIUtils.manualToolbarTitleUpdateWithNavigation(navController, this);
         }
     }
 }

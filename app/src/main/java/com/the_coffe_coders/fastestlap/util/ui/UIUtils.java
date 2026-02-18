@@ -5,6 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -23,6 +25,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
@@ -30,6 +33,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.os.LocaleListCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.navigation.NavController;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DataSource;
@@ -88,6 +92,24 @@ public class UIUtils {
 
             return insets;
         });
+    }
+
+    /*
+    * -----------------------------------------------------------------------------------------------
+    * NAVIGATION
+    * -----------------------------------------------------------------------------------------------
+     */
+
+    public static void manualToolbarTitleUpdateWithNavigation(NavController navController, AppCompatActivity activity){
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            if (activity.getSupportActionBar() != null) {
+                CharSequence title = destination.getLabel();
+                activity.getSupportActionBar().setTitle(title);
+                // Always show the navigation icon (back button)
+                activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            }
+        });
+
     }
 
 
