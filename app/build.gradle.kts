@@ -10,8 +10,8 @@ android {
 
     defaultConfig {
         applicationId = "com.the_coffe_coders.fastestlap"
-        minSdk = 26
-        targetSdk = 34
+        minSdk = 28
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 

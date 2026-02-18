@@ -204,5 +204,46 @@
     <string name="the_formula_3_car">the F3 car</string>
     <string name="formula_2" translatable="false">Formula 2</string>
     <string name="the_formula_2_car">the F2 car</string>
+    <string name="formula_3_bio_history_text">Officially began in 1950 and consolidated in 2019 by merging GP3 and European F3, it acts as a high-pressure filter for young talents graduating from regional series.</string>
+    <string name="f3_engine_spec_1">V6 – 3.4 liter naturally aspirated Mecachrome engine</string>
+    <string name="f3_engine_spec_2">Rated to 380 HP @ 8000 rpm</string>
+    <string name="maximum_torque_index">Maximum Torque:</string>
+    <string name="gearbox_index">Gearbox:</string>
+    <string name="fuel_tank_index">Fuel Tank:</string>
+    <string name="acceleration_index">Acceleration:</string>
+    <string name="maximum_speed_index">Maximum Speed:</string>
+    <string name="maximum_deceleration_index">Maximum Deceleration:</string>
+    <string name="acceleration_f3_100" translatable="false">0 - 100 km/h, 3.0 sec</string>
+    <string name="acceleration_f3_200" translatable="false">0 - 200 km/h, 7.70 sec</string>
+    <string name="max_speed_f3" translatable="false">300 km/h</string>
+    <string name="max_deceleration_f3" translatable="false">-1.9 G</string>
+    <string name="overall_length_index">Overall Length:</string>
+    <string name="overall_width_index">Overall Width:</string>
+    <string name="overall_height_index">Overall Height:</string>
+    <string name="overall_weight_index">Overall Weight:</string>
+    <string name="length_f3" translatable="false">5000 mm</string>
+    <string name="width_f3" translatable="false">1880 mm</string>
+    <string name="height_f3" translatable="false">1110 mm</string>
+    <string name="weight_f3">673 kg (with driver)</string>
+    <string name="dimensions">dimensions</string>
+    <string name="speed">speed</string>
+    <string name="fuel_tank_f3">65 liters</string>
+    <string name="gearbox_f3">6-speed sequential gearbox</string>
+    <string name="max_torque_f3" translatable="false">300 Nm @ 5000 rpm</string>
+    <string name="engine">Engine</string>
+    <string name="f2_engine_spec_1">V6 – 3.4 liter single turbocharged Mecachrome engine</string>
+    <string name="f2_engine_spec_2">Rated to 620 HP @ 8750 rpm</string>
+    <string name="length_f2" translatable="false">5285 mm</string>
+    <string name="width_f2" translatable="false">1900 mm</string>
+    <string name="height_f2" translatable="false">1097 mm</string>
+    <string name="weight_f2">795 kg (with driver)</string>
+    <string name="acceleration_f2_100" translatable="false">0 - 100 km/h, 2.90 sec</string>
+    <string name="acceleration_f2_200" translatable="false">0 - 200 km/h, 6.60 sec</string>
+    <string name="max_speed_f2" translatable="false">335 km/h</string>
+    <string name="max_deceleration_f2" translatable="false">-3.5 G</string>
+    <string name="max_torque_f2" translatable="false">570 Nm @ 6000 rpm</string>
+    <string name="gearbox_f2">6-speed sequential gearbox</string>
+    <string name="fuel_tank_f2">125 liters</string>
+    <string name="formula_2_bio_history_text">Born in 1948 and re-established in 2017 as the direct successor to the GP2 series, it serves as the ultimate youth category. Featuring identical cars and F1-style race weekends, F2 acts as the final test for aspiring drivers on their road to top category.</string>
 
 </resources>
