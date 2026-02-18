@@ -5,6 +5,7 @@ import android.util.Log;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.navigation.NavController;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -29,6 +30,9 @@ public class Formula3Activity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         UIUtils.applyWindowInsets(toolbar);
+
+        FragmentContainerView fragmentContainerView = findViewById(R.id.fragmentContainerView);
+        UIUtils.applyWindowInsets(fragmentContainerView);
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.fragmentContainerView);
         if (navHostFragment != null) {
