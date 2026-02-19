@@ -48,6 +48,7 @@ public class JuniorDialogFragment extends DialogFragment {
     private RelativeLayout fastestLapLayout, polePositionLayout;
     private JuniorCategoryViewModel juniorCategoryViewModel;
     private RecyclerView juniorRecyclerView;
+    private Button closeButton;
 
 
     public JuniorDialogFragment() {
@@ -84,22 +85,24 @@ public class JuniorDialogFragment extends DialogFragment {
         titleLayout = view.findViewById(R.id.title_layout);
         driverNameFastestLap = view.findViewById(R.id.driver_name_fastest_lap);
         driverNamePole = view.findViewById(R.id.driver_name_pole);
-
-        Button closeButton = view.findViewById(R.id.close_button);
-        closeButton.setOnClickListener(v -> dismiss());
+        closeButton = view.findViewById(R.id.close_button);
 
         switch (categoryType) {
             case 0: //F2
                 dialogPage.setStrokeColor(ContextCompat.getColor(requireContext(), R.color.formula_2));
                 dialogTitle.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.formula_2));
                 titleLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.formula_2));
+                closeButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.formula_2));
                 break;
             case 1: //F3
                 dialogPage.setStrokeColor(ContextCompat.getColor(requireContext(), R.color.ferrari_secondary));
                 dialogTitle.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.ferrari_secondary));
                 titleLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.ferrari_secondary));
+                closeButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.ferrari_secondary));
                 break;
         }
+
+        closeButton.setOnClickListener(v -> dismiss());
 
         try {
             executeFunctions();

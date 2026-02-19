@@ -23,15 +23,16 @@
                 android:id="@+id/car_image"
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
-                android:layout_marginBottom="16dp"
                 android:importantForAccessibility="no"
                 android:scaleType="centerCrop"
-                android:src="@drawable/f2_car_image" />
+                android:src="@drawable/f2_car_image_2" />
 
             <TextView
                 style="@style/t14RegularWhiteLineLimited"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
                 android:fontFamily="@font/roboto_regular"
                 android:lineHeight="18dp"
                 android:maxLines="4"
@@ -43,8 +44,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="4dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -56,13 +56,20 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="8dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="6dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
                     android:background="@color/formula_2">
 
                 </View>
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/engine_icon">
+
+                </ImageView>
 
             </LinearLayout>
 
@@ -215,7 +222,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"
                 android:gravity="center"
                 android:orientation="horizontal"
                 tools:ignore="UseCompoundDrawables">
@@ -256,8 +262,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="4dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -269,13 +275,20 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="8dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="6dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
                     android:background="@color/formula_2">
 
                 </View>
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/speed_icon">
+
+                </ImageView>
 
             </LinearLayout>
 
@@ -408,7 +421,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:layout_marginBottom="4dp"
                 android:gravity="center"
                 android:orientation="horizontal"
                 tools:ignore="UseCompoundDrawables">
@@ -449,8 +461,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="8dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="4dp"
                 android:gravity="center"
                 android:orientation="horizontal">
 
@@ -462,13 +474,20 @@
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="8dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="6dp"
-                    android:layout_marginBottom="6dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
                     android:background="@color/formula_2">
 
                 </View>
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/dimensions_icon">
+
+                </ImageView>
 
             </LinearLayout>
 

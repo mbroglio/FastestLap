@@ -34,7 +34,7 @@
                 app:strokeColor="@color/timer_gray">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_marginStart="@dimen/medium_margin"
@@ -47,14 +47,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginEnd="@dimen/medium_margin"
+                        android:layout_weight="1"
+                        android:gravity="start"
+                        android:maxLines="1"
+                        android:paddingEnd="8dp"
                         android:text="@string/calendar">
 
                     </TextView>
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center"
                         android:importantForAccessibility="no"
                         android:src="@drawable/calendar_icon">
@@ -78,7 +81,7 @@
                 app:strokeColor="@color/timer_gray">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_marginStart="@dimen/medium_margin"
@@ -91,14 +94,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_marginEnd="@dimen/medium_margin"
+                        android:layout_weight="1"
+                        android:gravity="start"
+                        android:maxLines="1"
+                        android:paddingEnd="8dp"
                         android:text="@string/entry_list">
 
                     </TextView>
 
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center"
                         android:importantForAccessibility="no"
                         android:src="@drawable/list_icon">
@@ -145,9 +151,12 @@
 
                     <TextView
                         style="@style/t20UpperCaseBoldWhite"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
                         android:text="@string/results" />
                 </com.google.android.material.card.MaterialCardView>
 
@@ -174,9 +183,12 @@
 
                     <TextView
                         style="@style/t20UpperCaseBoldWhite"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
                         android:text="@string/drivers_standing" />
                 </com.google.android.material.card.MaterialCardView>
 
@@ -202,9 +214,12 @@
 
                     <TextView
                         style="@style/t20UpperCaseBoldWhite"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
+                        android:gravity="center"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
                         android:text="@string/constructors_standing" />
                 </com.google.android.material.card.MaterialCardView>
 
@@ -221,10 +236,11 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_alignParentTop="true"
-                        android:layout_marginStart="16dp"
                         android:layout_marginTop="8dp"
-                        android:layout_marginEnd="16dp"
                         android:gravity="center"
+                        android:maxLines="1"
+                        android:paddingStart="8dp"
+                        android:paddingEnd="8dp"
                         android:text="@string/discover_the_car">
 
                     </TextView>
