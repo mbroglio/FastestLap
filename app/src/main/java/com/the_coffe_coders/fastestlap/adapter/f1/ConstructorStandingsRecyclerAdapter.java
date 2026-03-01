@@ -156,7 +156,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                     Driver driverOne = ((Result.DriverSuccess) result).getData();
 
                     UIUtils.singleSetTextViewText(driverOne.getFullName(), holder.driverOneName);
-                    UIUtils.loadImageWithGlide(context, driverOne.getDriver_pic_url(), holder.driverOneImage,
+                    UIUtils.loadImageWithGlide(context, driverOne.getDriver_half_pic_url(), holder.driverOneImage,
                             () -> processDriverTwo(holder, constructor, position));
                 } else {
                     setMissingDriver(holder, constructor.getDriverOneId(), constructor, position, 1);
@@ -178,7 +178,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                     Driver driverTwo = ((Result.DriverSuccess) result).getData();
 
                     UIUtils.singleSetTextViewText(driverTwo.getFullName(), holder.driverTwoName);
-                    UIUtils.loadImageWithGlide(context, driverTwo.getDriver_pic_url(), holder.driverTwoImage, () -> endLoading(position));
+                    UIUtils.loadImageWithGlide(context, driverTwo.getDriver_half_pic_url(), holder.driverTwoImage, () -> endLoading(position));
                 } else {
                     setMissingDriver(holder, constructor.getDriverTwoId(), constructor, position, 2);
                 }

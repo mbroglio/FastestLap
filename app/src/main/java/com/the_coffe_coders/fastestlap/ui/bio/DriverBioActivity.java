@@ -310,7 +310,7 @@ public class DriverBioActivity extends AppCompatActivity {
                 new String[]{
                         team.getTeam_logo_url(),
                         nationFlagUrl,
-                        driver.getDriver_pic_url(),
+                        driver.getDriver_full_pic_url(),
                         driver.getRacing_number_pic_url()},
 
                 new ImageView[]{

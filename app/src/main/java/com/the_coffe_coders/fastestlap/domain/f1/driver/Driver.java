@@ -56,7 +56,8 @@ public class Driver implements Parcelable {
     private String birth_place; // F
     private String championships; // F
     private List<DriverHistory> driver_history; // F
-    private String driver_pic_url; // F
+    private String driver_full_pic_url; // F
+    private String driver_half_pic_url;
     private String height; // F
     private String podiums; // F
     private String racing_number_pic_url; // F
@@ -77,7 +78,8 @@ public class Driver implements Parcelable {
         best_result = in.readString();
         birth_place = in.readString();
         championships = in.readString();
-        driver_pic_url = in.readString();
+        driver_full_pic_url = in.readString();
+        driver_half_pic_url = in.readString();
         height = in.readString();
         podiums = in.readString();
         racing_number_pic_url = in.readString();
@@ -120,7 +122,8 @@ public class Driver implements Parcelable {
         dest.writeString(best_result);
         dest.writeString(birth_place);
         dest.writeString(championships);
-        dest.writeString(driver_pic_url);
+        dest.writeString(driver_full_pic_url);
+        dest.writeString(driver_half_pic_url);
         dest.writeString(height);
         dest.writeString(podiums);
         dest.writeString(racing_number_pic_url);

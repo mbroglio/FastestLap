@@ -135,51 +135,21 @@
                     android:baselineAligned="false"
                     android:orientation="horizontal">
 
-                    <LinearLayout
+                    <ImageView
+                        android:id="@+id/driver_bio_pic"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginEnd="10dp"
                         android:layout_weight="1"
-                        android:gravity="center"
-                        android:orientation="vertical">
+                        android:importantForAccessibility="no">
 
-                        <ImageView
-                            android:id="@+id/driver_bio_pic"
-                            android:layout_width="match_parent"
-                            android:layout_height="250dp"
-                            android:layout_marginStart="10dp"
-                            android:layout_marginEnd="10dp"
-                            android:importantForAccessibility="no"
-                            android:scaleType="centerCrop">
-
-                        </ImageView>
-
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/driver_number_card"
-                            android:layout_width="@dimen/driver_photo_in_card"
-                            android:layout_height="@dimen/driver_photo_in_card"
-                            android:layout_marginTop="10dp"
-                            android:clickable="true"
-                            android:focusable="true"
-                            app:cardBackgroundColor="@color/timer_gray"
-                            app:strokeWidth="3dp">
-
-                            <ImageView
-                                android:id="@+id/driver_number_image"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_margin="5dp"
-                                android:importantForAccessibility="no">
-
-                            </ImageView>
-
-                        </com.google.android.material.card.MaterialCardView>
-
-                    </LinearLayout>
+                    </ImageView>
 
                     <LinearLayout
                         android:id="@+id/driver_stats"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:orientation="vertical">
 
@@ -409,12 +379,34 @@
 
                 </LinearLayout>
 
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/driver_number_card"
+                    android:layout_width="@dimen/driver_photo_in_card"
+                    android:layout_height="@dimen/driver_photo_in_card"
+                    android:layout_marginTop="16dp"
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="@color/timer_gray"
+                    app:strokeWidth="3dp">
+
+                    <ImageView
+                        android:id="@+id/driver_number_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="5dp"
+                        android:importantForAccessibility="no">
+
+                    </ImageView>
+
+                </com.google.android.material.card.MaterialCardView>
+
                 <LinearLayout
                     android:id="@+id/driver_history"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="16dp"
                     android:layout_marginEnd="5dp"
                     android:layout_marginBottom="5dp"
                     android:orientation="vertical">

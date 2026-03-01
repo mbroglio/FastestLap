@@ -226,7 +226,7 @@ public class FavoriteDriverHandler {
                 driverImage.setOnClickListener(v -> NavigationUtils.navigateToBioPage(context, driver.getDriverId(), 1));
 
                 UIUtils.loadImagesInParallel(context,
-                    new String[]{nationFlagUrl, driver.getDriver_pic_url()},
+                    new String[]{nationFlagUrl, driver.getDriver_half_pic_url()},
                     new ImageView[]{driverFlag, driverImage},
                     () -> buildDriverCardFinalStep(standingElement, driver));
             } catch (Exception e) {

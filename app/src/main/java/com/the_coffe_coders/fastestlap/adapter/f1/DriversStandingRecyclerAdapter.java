@@ -121,7 +121,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
                         holder.driverTeamImage.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.f1_car_icon_filled));
                     }
 
-                    UIUtils.loadImageWithGlide(context, driver.getDriver_pic_url(), holder.driverImage, () ->
+                    UIUtils.loadImageWithGlide(context, driver.getDriver_half_pic_url(), holder.driverImage, () ->
                             generateForConstructor(holder, driver, position));
 
                 } else {
