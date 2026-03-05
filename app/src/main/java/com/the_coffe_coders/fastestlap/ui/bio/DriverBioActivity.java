@@ -44,6 +44,7 @@ import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
+import com.the_coffe_coders.fastestlap.util.ui.TachometerView;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.List;
@@ -58,7 +59,6 @@ public class DriverBioActivity extends AppCompatActivity {
     private MaterialCardView teamLogoCard;
     private ImageView teamLogoImage;
     private MaterialCardView driverRank;
-    private MaterialCardView driverNumberCard;
     private MaterialToolbar toolbar;
     private AppBarLayout appBarLayout;
     private ImageView driverNumberImage;
@@ -68,6 +68,10 @@ public class DriverBioActivity extends AppCompatActivity {
     private DriverViewModel driverViewModel;
     private NationViewModel nationViewModel;
     private ConstructorViewModel constructorViewModel;
+
+    private TachometerView winPercentageTachometer;
+    private TachometerView podiumPercentageTachometer;
+
 
     private NetworkUtils networkLiveData;
 
@@ -121,8 +125,10 @@ public class DriverBioActivity extends AppCompatActivity {
         teamLogoCard = findViewById(R.id.team_logo_card);
         teamLogoImage = findViewById(R.id.team_logo_image);
 
-        driverNumberCard = findViewById(R.id.driver_number_card);
         driverNumberImage = findViewById(R.id.driver_number_image);
+
+        winPercentageTachometer = findViewById(R.id.win_percentage_tachometer);
+        podiumPercentageTachometer = findViewById(R.id.podium_percentage_tachometer);
 
         initializeViewModels();
     }
@@ -291,14 +297,12 @@ public class DriverBioActivity extends AppCompatActivity {
             }
 
             teamLogoCard.setStrokeColor(ContextCompat.getColor(this, teamColor));
-            driverNumberCard.setStrokeColor(ContextCompat.getColor(this, teamColor));
 
             if (team.getConstructorId().equals("rb")) {
                 teamLogoCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white));
             }
         } else {
             teamLogoCard.setStrokeColor(ContextCompat.getColor(this, R.color.timer_gray));
-            driverNumberCard.setStrokeColor(ContextCompat.getColor(this, R.color.timer_gray));
         }
 
         String nationFlagUrl = null;
@@ -346,6 +350,8 @@ public class DriverBioActivity extends AppCompatActivity {
                         findViewById(R.id.driver_first_entry)
                 }
         );
+
+        UIUtils.updateTachometers(this, driver, winPercentageTachometer, podiumPercentageTachometer);
 
         createHistoryTable();
     }

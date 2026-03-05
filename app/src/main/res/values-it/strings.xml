@@ -161,11 +161,13 @@
     <string name="maximum_speed_index">Velocità Massima:</string>
     <string name="maximum_deceleration_index">Decelerazione Massima:</string>
     <string name="formula_3_bio_history_text">Nata ufficialmente nel 1950 e consolidatasi nel 2019 con la fusione della GP3 e della F3 Europea, funge da trampolino di lancio per i giovani talenti provenienti dalle serie regionali.</string>
-    <string name="f3_engine_spec_1">Motore Mecachrome V6 - 3.4 litri naturalmente aspirato</string>
+    <string name="f3_engine_spec_1">Motore Mecachrome V6 – 3.4 litri naturalmente aspirato</string>
     <string name="gearbox_f2">Cambio sequenziale a 6 rapporti</string>
     <string name="weight_f2">795 kg (con il pilota)</string>
     <string name="fuel_tank_f2">125 litri</string>
-    <string name="f2_engine_spec_1">Motore Mecachrome V6 - 3.4 litri turbo singolo</string>
+    <string name="f2_engine_spec_1">Motore Mecachrome V6 – 3.4 litri turbo singolo</string>
     <string name="f2_engine_spec_2">Attestato a 620 CV @ 8750 rpm</string>
     <string name="formula_2_bio_history_text">Nata nel 1948 e rilanciata nel 2017 come erede direttta della serie GP2, è la categoria giovanile per eccellenza. Con vetture identiche e weekend di gara in stile F1, la F2 rappresenta l\'ultimo passo per gli aspiranti piloti sulla loro strava verso la massima categoria.</string>
+    <string name="driver_number_index_two_lines">numero\npilota</string>
+    <string name="podiums">podi</string>
 </resources>

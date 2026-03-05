@@ -94,8 +94,8 @@ public class JuniorResultsFragment extends Fragment {
                 toolbar.setBackgroundColor(requireActivity().getColor(R.color.formula_2));
                 appBarLayout.setBackgroundColor(requireActivity().getColor(R.color.formula_2));
             } else {
-                toolbar.setBackgroundColor(requireActivity().getColor(R.color.ferrari_secondary));
-                appBarLayout.setBackgroundColor(requireActivity().getColor(R.color.ferrari_secondary));
+                toolbar.setBackgroundColor(requireActivity().getColor(R.color.app_primary_red));
+                appBarLayout.setBackgroundColor(requireActivity().getColor(R.color.app_primary_red));
             }
 
             UIUtils.applyWindowInsets(toolbar);
@@ -112,8 +112,8 @@ public class JuniorResultsFragment extends Fragment {
                     activityToolbar.setBackgroundColor(requireActivity().getColor(R.color.formula_2));
                     activityAppBarLayout.setBackgroundColor(requireActivity().getColor(R.color.formula_2));
                 } else {
-                    activityToolbar.setBackgroundColor(requireActivity().getColor(R.color.ferrari_secondary));
-                    activityAppBarLayout.setBackgroundColor(requireActivity().getColor(R.color.ferrari_secondary));
+                    activityToolbar.setBackgroundColor(requireActivity().getColor(R.color.app_primary_red));
+                    activityAppBarLayout.setBackgroundColor(requireActivity().getColor(R.color.app_primary_red));
                 }
             }
         }

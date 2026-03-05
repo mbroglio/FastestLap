@@ -95,10 +95,10 @@ public class JuniorDialogFragment extends DialogFragment {
                 closeButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.formula_2));
                 break;
             case 1: //F3
-                dialogPage.setStrokeColor(ContextCompat.getColor(requireContext(), R.color.ferrari_secondary));
-                dialogTitle.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.ferrari_secondary));
-                titleLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.ferrari_secondary));
-                closeButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.ferrari_secondary));
+                dialogPage.setStrokeColor(ContextCompat.getColor(requireContext(), R.color.app_primary_red));
+                dialogTitle.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.app_primary_red));
+                titleLayout.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.app_primary_red));
+                closeButton.setBackgroundColor(ContextCompat.getColor(requireContext(), R.color.app_primary_red));
                 break;
         }
 

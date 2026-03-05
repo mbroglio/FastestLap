@@ -62,8 +62,9 @@ public class Driver implements Parcelable {
     private String podiums; // F
     private String racing_number_pic_url; // F
     private String team_id; // F
-    private String weight;// F
-    private String first_entry;//F
+    private String weight; // F
+    private String first_entry; //F
+    private String gps_entered; // F
 
     protected Driver(Parcel in) {
         uid = in.readLong();
@@ -86,6 +87,7 @@ public class Driver implements Parcelable {
         team_id = in.readString();
         weight = in.readString();
         first_entry = in.readString();
+        gps_entered = in.readString();
     }
 
     public int getDriverAge() {
@@ -130,5 +132,6 @@ public class Driver implements Parcelable {
         dest.writeString(team_id);
         dest.writeString(weight);
         dest.writeString(first_entry);
+        dest.writeString(gps_entered);
     }
 }

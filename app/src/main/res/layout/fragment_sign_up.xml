@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:backgroundTint="@color/white"
     app:cardCornerRadius="0dp"
-    app:strokeColor="@color/ferrari_secondary"
+    app:strokeColor="@color/app_primary_red"
     app:strokeWidth="3dp">
 
     <RelativeLayout
@@ -34,9 +34,9 @@
             android:layout_marginEnd="@dimen/medium_margin"
             android:hint="@string/email"
             android:textColorHint="@color/black"
-            app:boxStrokeErrorColor="@color/ferrari_secondary"
+            app:boxStrokeErrorColor="@color/app_primary_red"
             app:cursorColor="@color/black"
-            app:cursorErrorColor="@color/ferrari_secondary"
+            app:cursorErrorColor="@color/app_primary_red"
             app:startIconDrawable="@drawable/email_icon"
             app:startIconTint="@color/black">
 
@@ -62,9 +62,9 @@
             android:layout_marginEnd="@dimen/medium_margin"
             android:hint="@string/password"
             android:textColorHint="@color/black"
-            app:boxStrokeErrorColor="@color/ferrari_secondary"
+            app:boxStrokeErrorColor="@color/app_primary_red"
             app:cursorColor="@color/black"
-            app:cursorErrorColor="@color/ferrari_secondary"
+            app:cursorErrorColor="@color/app_primary_red"
             app:endIconMode="password_toggle"
             app:endIconTint="@color/black"
             app:startIconDrawable="@drawable/password_icon"
@@ -91,7 +91,7 @@
             android:layout_marginTop="@dimen/medium_margin"
             android:layout_marginEnd="@dimen/medium_margin"
             android:layout_marginBottom="10dp"
-            android:backgroundTint="@color/ferrari_secondary"
+            android:backgroundTint="@color/app_primary_red"
             android:text="@string/submit">
 
         </Button>

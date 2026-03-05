@@ -84,6 +84,9 @@ async function executeRaceStatsUpdate(db) { // post race stats update
         const constructorId = result.Constructor.constructorId;
         const position = parseInt(result.position);
 
+        const positionString = result.positionText;
+        const lapsCompleted = parseInt(result.laps);
+
         const driverRef = db.ref(`${PATHS.drivers}/${driverId}`);
         const driverSnapshot = await driverRef.once("value");
 
@@ -98,6 +101,11 @@ async function executeRaceStatsUpdate(db) { // post race stats update
                     const seasonWins = parseInt(driverData.season_wins) || 0;
                     multiPathUpdates[`${PATHS.drivers}/${driverId}/season_wins`] = (seasonWins + 1).toString();
                 }
+            }
+
+            if(positionString !== "R" && lapsCompleted !== 0) {
+                const gpsEntered = parseInt(driverData.gps_entered) || 0;
+                multiPathUpdates[`${PATHS.drivers}/${driverId}/gps_entered`] = (gpsEntered + 1).toString();
             }
 
             // Best Result logic

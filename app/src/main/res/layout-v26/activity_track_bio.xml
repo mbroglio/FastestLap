@@ -12,14 +12,14 @@
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/ferrari_secondary"
+        android:background="@color/app_primary_red"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:background="@color/ferrari_secondary"
+            android:background="@color/app_primary_red"
             app:navigationIcon="@drawable/arrow_back_ios_style"
             app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar">
 
@@ -97,8 +97,8 @@
                         android:layout_marginStart="15dp"
                         android:layout_marginTop="15dp"
                         android:layout_marginEnd="15dp"
-                        app:cardBackgroundColor="@color/ferrari_secondary"
-                        app:strokeColor="@color/ferrari_secondary"
+                        app:cardBackgroundColor="@color/app_primary_red"
+                        app:strokeColor="@color/app_primary_red"
                         app:strokeWidth="5dp">
 
                         <LinearLayout
@@ -375,7 +375,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_centerInParent="true"
                             android:text="@string/fastest_lap_index"
-                            android:textColor="@color/ferrari_secondary">
+                            android:textColor="@color/app_primary_red">
 
                         </TextView>
 

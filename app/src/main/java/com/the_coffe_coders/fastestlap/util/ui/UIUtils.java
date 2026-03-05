@@ -48,6 +48,7 @@ import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 
@@ -567,6 +568,128 @@ public class UIUtils {
             e.printStackTrace();
             return "Invalid date format";
         }
+    }
+
+
+
+    /*
+     * ----------------------------------------------------------------------------------------------
+     * TACHOMETER UTILITIES
+     * ----------------------------------------------------------------------------------------------
+     */
+
+    /**
+     * Updates tachometer views with driver statistics
+     * @param context The context (usually Activity)
+     * @param driver The driver object containing statistics
+     * @param winTachometer The tachometer view for win percentage
+     * @param podiumTachometer The tachometer view for podium percentage
+     */
+    public static void updateTachometers(Context context, Driver driver,
+                                          TachometerView winTachometer, TachometerView podiumTachometer) {
+        String TAG = "UIUtils.updateTachometers";
+
+        // Set tachometer colors based on team
+        int teamColor = R.color.app_primary_red; // Default color
+        if (driver.getTeam_id() != null) {
+            try {
+                Integer color = Constants.TEAM_COLOR.get(driver.getTeam_id());
+                if (color != null) {
+                    teamColor = color;
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error getting team color: " + e.getMessage());
+            }
+        }
+
+        int finalColor = ContextCompat.getColor(context, teamColor);
+        winTachometer.setColor(finalColor);
+        podiumTachometer.setColor(finalColor);
+
+        // Get total races from driver's gps_entered field
+        int totalRaces = 0;
+        try {
+            String gpsEnteredStr = driver.getGps_entered();
+            if (gpsEnteredStr != null && !gpsEnteredStr.equals("N/A") && !gpsEnteredStr.isEmpty()) {
+                totalRaces = Integer.parseInt(gpsEnteredStr);
+                Log.i(TAG, "Total GPs entered from driver data: " + totalRaces);
+            }
+        } catch (NumberFormatException e) {
+            Log.e(TAG, "Error parsing gps_entered: " + e.getMessage());
+        }
+
+        // If gps_entered is not available, fall back to estimation
+        if (totalRaces == 0 && driver.getDriver_history() != null && !driver.getDriver_history().isEmpty()) {
+            int seasonsCount = driver.getDriver_history().size();
+            totalRaces = seasonsCount * 20; // Estimate: 20 races per season
+            Log.i(TAG, "Estimated total races from history: " + totalRaces);
+        }
+
+        // If still no data, set to 0
+        if (totalRaces == 0) {
+            winTachometer.setPercentage(0f);
+            winTachometer.setLabel(ContextCompat.getString(context, R.string.wins));
+            podiumTachometer.setPercentage(0f);
+            podiumTachometer.setLabel(ContextCompat.getString(context, R.string.podiums));
+            Log.i(TAG, "No race data available");
+            return;
+        }
+
+        // Get total wins from best_result field
+        // Format: "3(x34)" means best result is 3rd, achieved 34 times
+        // If first number is 1, it means wins
+        int totalWins = 0;
+        try {
+            String bestResult = driver.getBest_result();
+            if (bestResult != null && !bestResult.equals("N/A") && !bestResult.isEmpty()) {
+                // Extract the position number (before the opening parenthesis)
+                int openParenIndex = bestResult.indexOf('(');
+                if (openParenIndex > 0) {
+                    String positionStr = bestResult.substring(0, openParenIndex).trim();
+                    int position = Integer.parseInt(positionStr);
+
+                    // If position is 1, extract the win count
+                    if (position == 1) {
+                        // Extract count from "(x34)" format
+                        int xIndex = bestResult.indexOf('x');
+                        int closeParenIndex = bestResult.indexOf(')');
+                        if (xIndex > 0 && closeParenIndex > xIndex) {
+                            String countStr = bestResult.substring(xIndex + 1, closeParenIndex).trim();
+                            totalWins = Integer.parseInt(countStr);
+                            Log.i(TAG, "Total wins from best_result: " + totalWins);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error parsing best_result: " + e.getMessage());
+        }
+
+        // Get total podiums from podiums field
+        int totalPodiums = 0;
+        try {
+            String podiumsStr = driver.getPodiums();
+            if (podiumsStr != null && !podiumsStr.equals("N/A") && !podiumsStr.isEmpty()) {
+                totalPodiums = Integer.parseInt(podiumsStr);
+                Log.i(TAG, "Total podiums from driver data: " + totalPodiums);
+            }
+        } catch (NumberFormatException e) {
+            Log.e(TAG, "Error parsing podiums: " + e.getMessage());
+        }
+
+        // Calculate percentages
+        float winPercentage = totalRaces > 0 ? (totalWins * 100f / totalRaces) : 0f;
+        float podiumPercentage = totalRaces > 0 ? (totalPodiums * 100f / totalRaces) : 0f;
+
+        // Update tachometers
+        winTachometer.setPercentage(winPercentage);
+        winTachometer.setLabel("Wins");
+
+        podiumTachometer.setPercentage(podiumPercentage);
+        podiumTachometer.setLabel("Podiums");
+
+        Log.i(TAG, "Win %: " + winPercentage + ", Podium %: " + podiumPercentage +
+              ", Total Races: " + totalRaces + ", Wins: " + totalWins + ", Podiums: " + totalPodiums);
     }
 
     // SYSTEM_UI_FLAG_FULLSCREEN: Hide the status bar

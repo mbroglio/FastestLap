@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:backgroundTint="@color/white"
     app:cardCornerRadius="0dp"
-    app:strokeColor="@color/ferrari_secondary"
+    app:strokeColor="@color/app_primary_red"
     app:strokeWidth="3dp">
 
     <RelativeLayout
@@ -19,7 +19,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:background="@color/ferrari_secondary"
+            android:background="@color/app_primary_red"
             android:orientation="vertical">
 
             <TextView

@@ -56,7 +56,7 @@
         android:layout_marginBottom="30dp"
         android:indeterminate="true"
         android:visibility="invisible"
-        app:indicatorColor="@color/ferrari_secondary" />
+        app:indicatorColor="@color/app_primary_red" />
 
 </RelativeLayout>
 

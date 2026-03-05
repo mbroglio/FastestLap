@@ -379,27 +379,42 @@
 
                 </LinearLayout>
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/driver_number_card"
-                    android:layout_width="@dimen/driver_photo_in_card"
-                    android:layout_height="@dimen/driver_photo_in_card"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:layout_gravity="center"
-                    android:clickable="true"
-                    android:focusable="true"
-                    app:cardBackgroundColor="@color/timer_gray"
-                    app:strokeWidth="3dp">
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:orientation="horizontal">
+
+                        <com.the_coffe_coders.fastestlap.util.ui.TachometerView
+                            android:id="@+id/win_percentage_tachometer"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:layout_marginEnd="28dp" />
+
+                        <com.the_coffe_coders.fastestlap.util.ui.TachometerView
+                            android:id="@+id/podium_percentage_tachometer"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp" />
+
+                    </LinearLayout>
 
                     <ImageView
                         android:id="@+id/driver_number_image"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="5dp"
+                        android:layout_width="@dimen/driver_photo_in_card"
+                        android:layout_height="@dimen/driver_photo_in_card"
                         android:importantForAccessibility="no">
 
                     </ImageView>
 
-                </com.google.android.material.card.MaterialCardView>
+                </LinearLayout>
+
 
                 <LinearLayout
                     android:id="@+id/driver_history"

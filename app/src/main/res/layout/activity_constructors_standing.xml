@@ -12,14 +12,14 @@
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/ferrari_secondary"
+        android:background="@color/app_primary_red"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:background="@color/ferrari_secondary"
+            android:background="@color/app_primary_red"
             app:navigationIcon="@drawable/arrow_back_ios_style"
             app:title="@string/constructors"
             app:titleCentered="true"

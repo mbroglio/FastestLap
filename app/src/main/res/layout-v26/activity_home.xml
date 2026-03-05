@@ -12,14 +12,14 @@
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/ferrari_secondary"
+        android:background="@color/app_primary_red"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/top_app_bar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:background="@color/ferrari_secondary"
+            android:background="@color/app_primary_red"
             app:menu="@menu/top_app_bar_menu"
             app:title="@string/app_name"
             app:titleCentered="true"
@@ -45,7 +45,7 @@
         style="@style/Widget.Material3.BottomNavigationView.ActiveIndicator"
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottom_nav_height"
-        android:background="@color/ferrari_secondary"
+        android:background="@color/app_primary_red"
         app:itemIconTint="@color/black"
         app:labelVisibilityMode="unlabeled"
         app:layout_constraintBottom_toBottomOf="parent"
