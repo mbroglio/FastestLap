@@ -98,7 +98,7 @@ public class TachometerView extends View {
 
         // Create animator from current percentage to target percentage
         animator = ValueAnimator.ofFloat(currentPercentage, targetPercentage);
-        animator.setDuration(5000); // 1.5 seconds animation
+        animator.setDuration(3000); // 1.5 seconds animation
         animator.setInterpolator(new DecelerateInterpolator());
 
         animator.addUpdateListener(animation -> {

@@ -545,6 +545,26 @@
                     </LinearLayout>
 
                     <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_marginTop="16dp"
+                        android:orientation="horizontal">
+
+                        <com.the_coffe_coders.fastestlap.util.ui.TachometerView
+                            android:id="@+id/win_percentage_tachometer_team"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp"
+                            android:layout_marginEnd="52dp" />
+
+                        <com.the_coffe_coders.fastestlap.util.ui.TachometerView
+                            android:id="@+id/podium_percentage_tachometer_team"
+                            android:layout_width="120dp"
+                            android:layout_height="120dp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
                         android:id="@+id/team_history"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

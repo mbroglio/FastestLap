@@ -124,14 +124,16 @@ async function executeRaceStatsUpdate(db) { // post race stats update
             }
         }
 
-        if (!constructorUpdates[constructorId]) constructorUpdates[constructorId] = { podiums: 0, wins: 0 };
+        if (!constructorUpdates[constructorId]) constructorUpdates[constructorId] = { podiums: 0, wins: 0, gps_entered: 0 };
         if (position === 1) constructorUpdates[constructorId].wins += 1;
         if (position <= 3) constructorUpdates[constructorId].podiums += 1;
+        if (positionString !== "R" && lapsCompleted !== 0) constructorUpdates[constructorId].gps_entered = 1;
+            
     }
 
     for (const constructorId in constructorUpdates) {
         const updates = constructorUpdates[constructorId];
-        if (updates.podiums > 0 || updates.wins > 0) {
+        if (updates.podiums > 0 || updates.wins > 0 || updates.gps_entered > 0) {
             const constructorRef = db.ref(`${PATHS.teams}/${constructorId}`);
             const constructorSnapshot = await constructorRef.once("value");
             if (constructorSnapshot.exists()) {
@@ -147,6 +149,10 @@ async function executeRaceStatsUpdate(db) { // post race stats update
                     multiPathUpdates[`${PATHS.teams}/${constructorId}/podiums`] = (currentPodiums + updates.podiums).toString();
                     const seasonPodiums = parseInt(constructorData.season_podiums) || 0;
                     multiPathUpdates[`${PATHS.teams}/${constructorId}/season_podiums`] = (seasonPodiums + updates.podiums).toString();
+                }
+                if (updates.gps_entered > 0) {
+                    const currentGpsEntered = parseInt(constructorData.gps_entered) || 0;
+                    multiPathUpdates[`${PATHS.teams}/${constructorId}/gps_entered`] = (currentGpsEntered + updates.gps_entered).toString();
                 }
             }
         }

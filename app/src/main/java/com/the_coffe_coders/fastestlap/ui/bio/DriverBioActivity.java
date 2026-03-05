@@ -69,8 +69,7 @@ public class DriverBioActivity extends AppCompatActivity {
     private NationViewModel nationViewModel;
     private ConstructorViewModel constructorViewModel;
 
-    private TachometerView winPercentageTachometer;
-    private TachometerView podiumPercentageTachometer;
+    private TachometerView winPercentageTachometer, podiumPercentageTachometer;
 
 
     private NetworkUtils networkLiveData;
@@ -127,8 +126,8 @@ public class DriverBioActivity extends AppCompatActivity {
 
         driverNumberImage = findViewById(R.id.driver_number_image);
 
-        winPercentageTachometer = findViewById(R.id.win_percentage_tachometer);
-        podiumPercentageTachometer = findViewById(R.id.podium_percentage_tachometer);
+        winPercentageTachometer = findViewById(R.id.win_percentage_tachometer_driver);
+        podiumPercentageTachometer = findViewById(R.id.podium_percentage_tachometer_driver);
 
         initializeViewModels();
     }

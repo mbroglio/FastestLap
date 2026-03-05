@@ -44,6 +44,7 @@ import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
+import com.the_coffe_coders.fastestlap.util.ui.TachometerView;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.List;
@@ -64,6 +65,8 @@ public class ConstructorBioActivity extends AppCompatActivity {
     private Nation nation;
     private Driver driverOne;
     private Driver driverTwo;
+
+    private TachometerView winPercentageTachometer, podiumPercentageTachometer;
 
     private NetworkUtils networkLiveData;
 
@@ -115,6 +118,9 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
         teamId = getIntent().getStringExtra("TEAM_ID");
         Log.i("ConstructorBioActivity", "Team ID: " + teamId);
+
+        winPercentageTachometer = findViewById(R.id.win_percentage_tachometer_team);
+        podiumPercentageTachometer = findViewById(R.id.podium_percentage_tachometer_team);
 
         initializeViewModels();
 
@@ -312,6 +318,8 @@ public class ConstructorBioActivity extends AppCompatActivity {
                         findViewById(R.id.team_championships_value),
                         findViewById(R.id.team_wins_value),
                         findViewById(R.id.team_podiums_value)});
+
+        UIUtils.updateTachometers(this, team, winPercentageTachometer, podiumPercentageTachometer);
 
         createHistoryTable();
     }
