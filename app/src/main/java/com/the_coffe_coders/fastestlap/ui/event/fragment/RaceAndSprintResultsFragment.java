@@ -1,6 +1,7 @@
 package com.the_coffe_coders.fastestlap.ui.event.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,7 +96,13 @@ public class RaceAndSprintResultsFragment extends DialogFragment {
 
     private void setupFastestLapLayout(View view, List<RaceResult> resultsList) {
         RaceResultFastestLap raceFastestLap = eventViewModel.extractFastestLap(resultsList);
+        Log.i("RaceAndSprintResultsFragment", "Fastest lap: " + raceFastestLap);
         RelativeLayout fastestLapLayout = view.findViewById(R.id.fastest_lap_layout);
+
+        if(raceFastestLap == null || raceFastestLap.isNull() ){
+            fastestLapLayout.setVisibility(View.GONE);
+            return;
+        }
 
         View teamColorIndicator = fastestLapLayout.findViewById(R.id.team_color_indicator);
         int teamColor = ContextCompat.getColor(requireContext(),

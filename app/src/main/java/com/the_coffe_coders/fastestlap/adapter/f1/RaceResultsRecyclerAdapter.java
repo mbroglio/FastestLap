@@ -45,13 +45,18 @@ public class RaceResultsRecyclerAdapter extends RecyclerView.Adapter<RaceResults
 
         Log.i("RaceResultsRecyclerAdapter", "onBindViewHolder: " + result);
 
-        int delta = Integer.parseInt(result.getGrid()) - (position + 1);
+        int delta;
+        if(result.getGrid() == null){
+            delta = 0;
+        } else{
+            delta = Integer.parseInt(result.getGrid()) - (position + 1);
+        }
 
         UIUtils.multipleSetTextViewText(
                 new String[]{
                         String.valueOf(position + 1),
                         result.getDriver().getFullName(),
-                        result.getConstructor().getName(),
+                        UIUtils.getFromMap(result.getConstructor().getConstructorId(), Constants.RESULT_CONSTRUCTOR_NAME).toString(),
                         String.valueOf(delta)},
                 new TextView[]{
                         holder.positionText,

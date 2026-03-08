@@ -232,7 +232,47 @@ public class Constants {
         put("disqualified", "DSQ");
         put("lapped", "LAP");
         put("finished", "END");
+        put("did not start", "DNS");
     }};
+
+    public static final Map<String, String> RESULT_CONSTRUCTOR_NAME = new HashMap<>() {{
+        put("mercedes", "Mercedes");
+        put("red_bull", "Red Bull");
+        put("mclaren", "McLaren");
+        put("ferrari", "Ferrari");
+        put("aston_martin", "Aston Martin");
+        put("alpine", "Alpine");
+        put("haas", "Haas");
+        put("audi", "Audi");
+        put("williams", "Williams");
+        put("cadillac", "Cadillac");
+        put("rb", "Racing Bulls");
+    }};
+
+    public static List<String> DRIVER_ID_LIST = List.of(
+            "hamilton",
+            "perez",
+            "bottas",
+            "norris",
+            "alonso",
+            "leclerc",
+            "gasly",
+            "ocon",
+            "max_verstappen",
+            "stroll",
+            "lindblad",
+            "bearman",
+            "colapinto",
+            "hulkemberg",
+            "bortoleto",
+            "hadjar",
+            "piastri",
+            "russell",
+            "antonelli",
+            "lawson",
+            "sainz",
+            "albon"
+    );
 
     public static final List<Integer> PODIUM_DRIVER_NAME = List.of(
             R.id.first_name,

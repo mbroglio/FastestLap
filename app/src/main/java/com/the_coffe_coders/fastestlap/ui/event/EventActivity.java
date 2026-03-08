@@ -316,9 +316,8 @@ public class EventActivity extends AppCompatActivity {
         countdownView.setVisibility(View.GONE);
         resultsView.setVisibility(View.VISIBLE);
 
-        UIUtils.loadImageWithGlide(this, track.getTrack_minimal_layout_url(),
-                findViewById(R.id.track_outline_image), () -> processRaceResults(weeklyRace));
-
+        // Track image is already loaded from loadSequenceOfImagesWithGlide, no need to reload
+        processRaceResults(weeklyRace);
     }
 
     private void processRaceResults(WeeklyRace weeklyRace) {

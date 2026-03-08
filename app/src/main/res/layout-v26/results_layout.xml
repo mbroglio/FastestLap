@@ -26,6 +26,7 @@
         android:layout_below="@id/race_text"
         android:layout_marginStart="@dimen/medium_margin"
         android:layout_marginTop="10dp"
+        android:layout_centerInParent="true"
         android:orientation="vertical">
 
         <LinearLayout
@@ -137,6 +138,7 @@
 
     </LinearLayout>
 
+    <!--
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -156,5 +158,6 @@
         </ImageView>
 
     </RelativeLayout>
+    -->
 
 </RelativeLayout>

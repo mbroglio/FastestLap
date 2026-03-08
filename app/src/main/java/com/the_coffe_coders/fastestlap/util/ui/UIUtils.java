@@ -50,6 +50,7 @@ import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
+import com.the_coffe_coders.fastestlap.domain.f1.result.QualifyingResult;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 
@@ -58,6 +59,8 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -130,15 +133,31 @@ public class UIUtils {
             throw new IllegalArgumentException("The length of urls and imageViews must be the same");
         }
 
-        for (int i = 0; i < urls.length; i++) {
-            int nextIndex = i + 1;
-            if (i == urls.length - 1) {
-                loadImage(context, urls[i], imageViews[i], onSuccess, 0);
-            } else {
-                loadImage(context, urls[i], imageViews[i], () ->
-                        loadImage(context, urls[nextIndex], imageViews[nextIndex], onSuccess, 0), 0);
+        if (urls.length == 0) {
+            if (onSuccess != null) {
+                new Handler(Looper.getMainLooper()).post(onSuccess);
             }
+            return;
         }
+
+        // Start the chain with the first image
+        loadImageSequentially(context, urls, imageViews, 0, onSuccess);
+    }
+
+    private static void loadImageSequentially(Context context, String[] urls, ImageView[] imageViews, int index, Runnable onSuccess) {
+        if (index >= urls.length) {
+            // All images loaded, call final callback
+            if (onSuccess != null) {
+                new Handler(Looper.getMainLooper()).post(onSuccess);
+            }
+            return;
+        }
+
+        // Load current image with callback to load next image
+        loadImage(context, urls[index], imageViews[index], () -> {
+            // Load next image in sequence
+            loadImageSequentially(context, urls, imageViews, index + 1, onSuccess);
+        }, 0);
     }
 
     /**
@@ -151,7 +170,9 @@ public class UIUtils {
         }
 
         if (urls.length == 0) {
-            if (onSuccess != null) onSuccess.run();
+            if (onSuccess != null) {
+                new Handler(Looper.getMainLooper()).post(onSuccess);
+            }
             return;
         }
 
@@ -163,7 +184,9 @@ public class UIUtils {
             synchronized (loadedCount) {
                 loadedCount[0]++;
                 if (loadedCount[0] == totalImages && onSuccess != null) {
-                    onSuccess.run();
+                    // Post to Handler to escape the callback context
+                    // This prevents IllegalStateException if onSuccess triggers another Glide load
+                    new Handler(Looper.getMainLooper()).post(onSuccess);
                 }
             }
         };
@@ -209,7 +232,9 @@ public class UIUtils {
                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
                             Log.i("Glide", "Image loaded successfully: ");
                             if (onSuccess != null) {
-                                onSuccess.run();
+                                // Post to Handler to escape the callback context
+                                // This prevents IllegalStateException if onSuccess triggers another Glide load
+                                new Handler(Looper.getMainLooper()).post(onSuccess);
                             }
                             return false; // Return false to allow Glide to handle setting the drawable on the target
                         }
@@ -256,7 +281,9 @@ public class UIUtils {
                         public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
                             card.setBackground(resource);
                             if (onSuccess != null) {
-                                onSuccess.run();
+                                // Post to Handler to escape the callback context
+                                // This prevents IllegalStateException if onSuccess triggers another Glide load
+                                new Handler(Looper.getMainLooper()).post(onSuccess);
                             }
                         }
 
@@ -269,7 +296,9 @@ public class UIUtils {
                             }
                             card.setBackground(defaultImage);
                             if (onSuccess != null) {
-                                onSuccess.run();
+                                // Post to Handler to escape the callback context
+                                // This prevents IllegalStateException if onSuccess triggers another Glide load
+                                new Handler(Looper.getMainLooper()).post(onSuccess);
                             }
                         }
 
@@ -440,6 +469,27 @@ public class UIUtils {
             }
         }
         return bestMatch;
+    }
+
+    public static Object getFromMap(String key, Map<String, ?> map){
+        if(!map.containsKey(key)) return "-";
+        return map.get(key);
+    }
+
+    public static List<String> checkForMissingDrivers(List<QualifyingResult> qualifyingResults){
+        List<String> missingDrivers = new ArrayList<>();
+        List<String> drivers = new ArrayList<>();
+        for(QualifyingResult result : qualifyingResults){
+            drivers.add(result.getDriver().getDriverId());
+        }
+
+        for(String driver : Constants.DRIVER_ID_LIST){
+            if(!drivers.contains(driver)) {
+                missingDrivers.add(driver);
+            }
+        }
+
+        return missingDrivers;
     }
 
 

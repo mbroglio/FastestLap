@@ -57,4 +57,8 @@ public class RaceResultFastestLap implements Parcelable {
         dest.writeString(constructorId);
         dest.writeParcelable(time, flags);
     }
+
+    public boolean isNull(){
+        return rank == null && lap == null && time == null && driverName == null && constructorId == null;
+    }
 }
