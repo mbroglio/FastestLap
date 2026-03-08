@@ -30,6 +30,7 @@ public class FeatureRace implements Parcelable {
         }
     };
 
+    private String status;
     private String fastest_lap;
     private String pole_position;
     private List<JuniorSessionResultElement> order;
@@ -54,5 +55,17 @@ public class FeatureRace implements Parcelable {
 
     public List<JuniorSessionResultElement> getPodium() {
         return order.subList(0, 3);
+    }
+
+    public boolean isCompleted(){
+        return status.equalsIgnoreCase("completed");
+    }
+
+    public boolean isCancelled() {
+        return status.equalsIgnoreCase("cancelled");
+    }
+
+    public boolean isYetToStart() {
+        return status.equalsIgnoreCase("not_started");
     }
 }

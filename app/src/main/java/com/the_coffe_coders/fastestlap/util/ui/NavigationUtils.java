@@ -28,9 +28,6 @@ import com.the_coffe_coders.fastestlap.ui.event.fragment.RaceAndSprintResultsFra
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.junior.Formula2Activity;
 import com.the_coffe_coders.fastestlap.ui.junior.Formula3Activity;
-import com.the_coffe_coders.fastestlap.ui.junior.fragment.JuniorResultsFragment;
-import com.the_coffe_coders.fastestlap.ui.junior.fragment.F2CarBioFragment;
-import com.the_coffe_coders.fastestlap.ui.junior.fragment.F3CarBioFragment;
 import com.the_coffe_coders.fastestlap.ui.junior.fragment.JuniorDialogFragment;
 import com.the_coffe_coders.fastestlap.ui.profile.LoginFragment;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;

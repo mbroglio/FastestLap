@@ -5,8 +5,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.app.ActionBar;
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -50,7 +48,6 @@ import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
-import com.the_coffe_coders.fastestlap.domain.f1.result.QualifyingResult;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 
@@ -59,8 +56,6 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -474,22 +469,6 @@ public class UIUtils {
     public static Object getFromMap(String key, Map<String, ?> map){
         if(!map.containsKey(key)) return "-";
         return map.get(key);
-    }
-
-    public static List<String> checkForMissingDrivers(List<QualifyingResult> qualifyingResults){
-        List<String> missingDrivers = new ArrayList<>();
-        List<String> drivers = new ArrayList<>();
-        for(QualifyingResult result : qualifyingResults){
-            drivers.add(result.getDriver().getDriverId());
-        }
-
-        for(String driver : Constants.DRIVER_ID_LIST){
-            if(!drivers.contains(driver)) {
-                missingDrivers.add(driver);
-            }
-        }
-
-        return missingDrivers;
     }
 
 

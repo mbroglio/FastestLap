@@ -47,7 +47,7 @@
 
             <TextView
                 android:id="@+id/round_number"
-                style="@style/t10BoldWhiteLineLimited"
+                style="@style/t10UpperCaseBoldWhiteLineLimited"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -115,6 +115,16 @@
                             layout="@layout/junior_race_cancelled_layout_white"
                             android:visibility="gone" />
 
+                        <include
+                            android:id="@+id/sprint_yet_to_start"
+                            layout="@layout/junior_race_yet_to_start_layout_white"
+                            android:visibility="gone" />
+
+                        <include
+                            android:id="@+id/sprint_error"
+                            layout="@layout/junior_race_error_layout_white"
+                            android:visibility="gone" />
+
                     </FrameLayout>
 
                 </LinearLayout>
@@ -161,10 +171,19 @@
                             layout="@layout/junior_race_cancelled_layout_white"
                             android:visibility="visible" />
 
+                        <include
+                            android:id="@+id/feature_yet_to_start"
+                            layout="@layout/junior_race_yet_to_start_layout_white"
+                            android:visibility="gone" />
+
+                        <include
+                            android:id="@+id/feature_error"
+                            layout="@layout/junior_race_error_layout_white"
+                            android:visibility="gone" />
+
                     </FrameLayout>
 
                 </LinearLayout>
-
 
             </LinearLayout>
 
@@ -181,23 +200,6 @@
                 android:visibility="gone">
 
             </TextView>
-
-            <!--
-            <ImageView
-                android:id="@+id/past_event_card_arrow"
-                android:layout_width="@dimen/icon_size"
-                android:layout_height="@dimen/icon_size"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="5dp"
-                android:importantForAccessibility="no"
-                android:visibility="visible"
-                android:layout_marginTop="5dp"
-                android:layout_below="@id/results_layout"
-                app:srcCompat="@drawable/play_icon_white">
-
-            </ImageView>
-            -->
 
         </RelativeLayout>
 

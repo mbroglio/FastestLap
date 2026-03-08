@@ -247,5 +247,6 @@
     <string name="formula_2_bio_history_text">Born in 1948 and re-established in 2017 as the direct successor to the GP2 series, it serves as the ultimate youth category. Featuring identical cars and F1-style race weekends, F2 acts as the final test for aspiring drivers on their road to top category.</string>
     <string name="driver_number_index_two_lines">driver\nnumber</string>
     <string name="podiums">podiums</string>
+    <string name="not_available">not available</string>
 
 </resources>

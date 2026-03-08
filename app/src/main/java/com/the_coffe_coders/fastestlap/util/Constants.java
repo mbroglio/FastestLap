@@ -89,6 +89,20 @@ public class Constants {
         put("mp_motorsport", R.drawable.gradient_color_mp_motorsport);
     }};
 
+    public static final Map<String, Integer> JUNIOR_TEAM_LOGO = new HashMap<>() {{
+        put("dams", R.drawable.dams_logo);
+        put("prema", R.drawable.prema_logo);
+        put("trident", R.drawable.trident_motorsport_logo);
+        put("hitech", R.drawable.hitech_logo);
+        put("campos", R.drawable.campos_racing_logo);
+        put("aix", R.drawable.aix_racing_logo);
+        put("van_amersfoort", R.drawable.van_amersfoort_logo);
+        put("rodin", R.drawable.rodin_motorsport_logo);
+        put("invicta", R.drawable.invicta_racing_logo);
+        put("art", R.drawable.art_grand_prix_logo);
+        put("mp_motorsport", R.drawable.mp_motorsport_logo);
+    }};
+
     public static final String[] SESSIONS = {
             "Practice1",
             "Practice2",
@@ -248,31 +262,6 @@ public class Constants {
         put("cadillac", "Cadillac");
         put("rb", "Racing Bulls");
     }};
-
-    public static List<String> DRIVER_ID_LIST = List.of(
-            "hamilton",
-            "perez",
-            "bottas",
-            "norris",
-            "alonso",
-            "leclerc",
-            "gasly",
-            "ocon",
-            "max_verstappen",
-            "stroll",
-            "lindblad",
-            "bearman",
-            "colapinto",
-            "hulkemberg",
-            "bortoleto",
-            "hadjar",
-            "piastri",
-            "russell",
-            "antonelli",
-            "lawson",
-            "sainz",
-            "albon"
-    );
 
     public static final List<Integer> PODIUM_DRIVER_NAME = List.of(
             R.id.first_name,

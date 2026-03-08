@@ -132,79 +132,130 @@ public class JuniorResultsRecyclerAdapter extends RecyclerView.Adapter<JuniorRes
         UIUtils.singleSetTextViewText(element.getCircuit(), holder.gpName);
 
         UIUtils.loadImageWithGlide(context, element.getNationFlagUrl(), holder.eventNationFlag,
-                () -> setResults(holder, element));
+                () -> setFeatureResults(holder, element));
     }
 
-    private void setResults(JuniorResultsViewHolder holder, JuniorResultElement element) {
-        if (element.getFeature() != null && element.getFeature().getOrder() != null &&
-                !element.getFeature().getOrder().isEmpty()) {
-            showFeatureResults(holder);
-            List<JuniorSessionResultElement> podium = element.getFeature().getPodium();
+    private void setFeatureResults(JuniorResultsViewHolder holder, JuniorResultElement element) {
+        if(element.getFeature() != null) {
+            if (element.getFeature().isCompleted()) {
+                showFeatureResults(holder);
+                List<JuniorSessionResultElement> podium = element.getFeature().getPodium();
 
-            UIUtils.multipleSetTextViewText(
-                    new String[]{
-                            podium.get(0).getDriver(),
-                            podium.get(1).getDriver(),
-                            podium.get(2).getDriver()
-                    },
-                    new TextView[]{
-                            holder.firstDriverFeature,
-                            holder.secondDriverFeature,
-                            holder.thirdDriverFeature});
+                UIUtils.multipleSetTextViewText(
+                        new String[]{
+                                podium.get(0).getDriver(),
+                                podium.get(1).getDriver(),
+                                podium.get(2).getDriver()
+                        },
+                        new TextView[]{
+                                holder.firstDriverFeature,
+                                holder.secondDriverFeature,
+                                holder.thirdDriverFeature});
 
-            holder.featureRaceLayout.setOnClickListener(v -> NavigationUtils.showFullResultsDialogFeature(
-                    element.getCircuit(), element.getFeature(), fragmentManager, categoryType, 0));
-        } else {
-            showFeatureCancelled(holder);
-            holder.featureRaceLayout.setOnClickListener(null);
+                holder.featureRaceLayout.setOnClickListener(v -> NavigationUtils.showFullResultsDialogFeature(
+                        element.getCircuit(), element.getFeature(), fragmentManager, categoryType, 0));
+            } else if (element.getFeature().isCancelled()) {
+                showFeatureCancelled(holder);
+                holder.featureRaceLayout.setOnClickListener(null);
+            } else if (element.getFeature().isYetToStart()){
+                showFeatureYetToStart(holder);
+                holder.featureRaceLayout.setOnClickListener(null);
+            }
+        }else{
+            showFeatureError(holder);
         }
+
 
         setSprintResults(holder, element);
     }
 
     private void setSprintResults(JuniorResultsViewHolder holder, JuniorResultElement element) {
-        if (element.getSprint() != null && element.getSprint().getOrder() != null &&
-                !element.getSprint().getOrder().isEmpty()) {
-            showSprintResults(holder);
-            List<JuniorSessionResultElement> podium = element.getSprint().getPodium();
+        if(element.getSprint() != null){
+            if (element.getSprint().isCompleted()) {
+                showSprintResults(holder);
+                List<JuniorSessionResultElement> podium = element.getSprint().getPodium();
 
-            UIUtils.multipleSetTextViewText(
-                    new String[]{
-                            podium.get(0).getDriver(),
-                            podium.get(1).getDriver(),
-                            podium.get(2).getDriver()
-                    },
-                    new TextView[]{
-                            holder.firstDriverSprint,
-                            holder.secondDriverSprint,
-                            holder.thirdDriverSprint});
+                UIUtils.multipleSetTextViewText(
+                        new String[]{
+                                podium.get(0).getDriver(),
+                                podium.get(1).getDriver(),
+                                podium.get(2).getDriver()
+                        },
+                        new TextView[]{
+                                holder.firstDriverSprint,
+                                holder.secondDriverSprint,
+                                holder.thirdDriverSprint});
 
-            holder.sprintRaceLayout.setOnClickListener(v -> NavigationUtils.showFullResultsDialogSprint(
-                    element.getCircuit(), element.getSprint(), fragmentManager, categoryType, 0));
-        } else {
-            showSprintCancelled(holder);
-            holder.sprintRaceLayout.setOnClickListener(null);
+                holder.sprintRaceLayout.setOnClickListener(v -> NavigationUtils.showFullResultsDialogSprint(
+                        element.getCircuit(), element.getSprint(), fragmentManager, categoryType, 0));
+            } else if(element.getSprint().isCancelled()){
+                showSprintCancelled(holder);
+                holder.sprintRaceLayout.setOnClickListener(null);
+            }else if(element.getSprint().isYetToStart()){
+                showSprintYetToStart(holder);
+                holder.sprintRaceLayout.setOnClickListener(null);
+            }
+        }else{
+            showSprintError(holder);
         }
+
     }
 
     private void showFeatureResults(JuniorResultsViewHolder holder) {
         holder.featureResultsLayout.setVisibility(View.VISIBLE);
         holder.featureCancelledLayout.setVisibility(View.GONE);
-    }
-
-    private void showSprintResults(JuniorResultsViewHolder holder) {
-        holder.sprintResultsLayout.setVisibility(View.VISIBLE);
-        holder.sprintCancelledLayout.setVisibility(View.GONE);
+        holder.featureYetToStartLayout.setVisibility(View.GONE);
+        holder.featureErrorLayout.setVisibility(View.GONE);
     }
 
     private void showFeatureCancelled(JuniorResultsViewHolder holder) {
         holder.featureCancelledLayout.setVisibility(View.VISIBLE);
         holder.featureResultsLayout.setVisibility(View.GONE);
+        holder.featureYetToStartLayout.setVisibility(View.GONE);
+        holder.featureErrorLayout.setVisibility(View.GONE);
+
+    }
+
+    private void showFeatureError(JuniorResultsViewHolder holder) {
+        holder.featureErrorLayout.setVisibility(View.VISIBLE);
+        holder.featureResultsLayout.setVisibility(View.GONE);
+        holder.featureCancelledLayout.setVisibility(View.GONE);
+        holder.featureYetToStartLayout.setVisibility(View.GONE);
+    }
+
+    private void showFeatureYetToStart(JuniorResultsViewHolder holder) {
+        holder.featureYetToStartLayout.setVisibility(View.VISIBLE);
+        holder.featureResultsLayout.setVisibility(View.GONE);
+        holder.featureCancelledLayout.setVisibility(View.GONE);
+        holder.featureErrorLayout.setVisibility(View.GONE);
+    }
+
+    private void showSprintResults(JuniorResultsViewHolder holder) {
+        holder.sprintResultsLayout.setVisibility(View.VISIBLE);
+        holder.sprintCancelledLayout.setVisibility(View.GONE);
+        holder.sprintYetToStartLayout.setVisibility(View.GONE);
+        holder.sprintErrorLayout.setVisibility(View.GONE);
     }
 
     private void showSprintCancelled(JuniorResultsViewHolder holder) {
         holder.sprintCancelledLayout.setVisibility(View.VISIBLE);
         holder.sprintResultsLayout.setVisibility(View.GONE);
+        holder.sprintYetToStartLayout.setVisibility(View.GONE);
+        holder.sprintErrorLayout.setVisibility(View.GONE);
+    }
+
+    private void showSprintError(JuniorResultsViewHolder holder) {
+        holder.sprintErrorLayout.setVisibility(View.VISIBLE);
+        holder.sprintResultsLayout.setVisibility(View.GONE);
+        holder.sprintCancelledLayout.setVisibility(View.GONE);
+        holder.sprintYetToStartLayout.setVisibility(View.GONE);
+    }
+
+    private void showSprintYetToStart(JuniorResultsViewHolder holder) {
+        holder.sprintYetToStartLayout.setVisibility(View.VISIBLE);
+        holder.sprintResultsLayout.setVisibility(View.GONE);
+        holder.sprintCancelledLayout.setVisibility(View.GONE);
+        holder.sprintErrorLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -225,11 +276,11 @@ public class JuniorResultsRecyclerAdapter extends RecyclerView.Adapter<JuniorRes
         private final TextView roundNumber, gpName,
                 firstDriverFeature, secondDriverFeature, thirdDriverFeature,
                 firstDriverSprint, secondDriverSprint, thirdDriverSprint,
-                featureCancelledLayout, sprintCancelledLayout;
+                featureCancelledLayout, sprintCancelledLayout, featureYetToStartLayout, featureErrorLayout,
+                sprintYetToStartLayout, sprintErrorLayout, position, driverName;
+
         private final LinearLayout sprintResultsLayout, featureResultsLayout, sprintRaceLayout, featureRaceLayout;
         private final ImageView eventNationFlag;
-
-        private final TextView position, driverName;
 
         public JuniorResultsViewHolder(@NonNull View itemView, int contentType) {
             super(itemView);
@@ -241,6 +292,10 @@ public class JuniorResultsRecyclerAdapter extends RecyclerView.Adapter<JuniorRes
                 sprintResultsLayout = itemView.findViewById(R.id.sprint_podium);
                 featureResultsLayout = itemView.findViewById(R.id.feature_podium);
                 featureCancelledLayout = itemView.findViewById(R.id.feature_cancelled);
+                featureYetToStartLayout = itemView.findViewById(R.id.feature_yet_to_start);
+                featureErrorLayout = itemView.findViewById(R.id.feature_error);
+                sprintYetToStartLayout = itemView.findViewById(R.id.sprint_yet_to_start);
+                sprintErrorLayout = itemView.findViewById(R.id.sprint_error);
                 sprintCancelledLayout = itemView.findViewById(R.id.sprint_cancelled);
                 sprintRaceLayout = itemView.findViewById(R.id.sprint_race_layout);
                 featureRaceLayout = itemView.findViewById(R.id.feature_race_layout);
@@ -269,6 +324,10 @@ public class JuniorResultsRecyclerAdapter extends RecyclerView.Adapter<JuniorRes
                 secondDriverSprint = null;
                 thirdDriverSprint = null;
                 eventNationFlag = null;
+                featureYetToStartLayout = null;
+                featureErrorLayout = null;
+                sprintYetToStartLayout = null;
+                sprintErrorLayout = null;
 
                 //junior_race_result_item
                 position = itemView.findViewById(R.id.position_text);

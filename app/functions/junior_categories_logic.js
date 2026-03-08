@@ -426,7 +426,7 @@ function scrapeRaceResults($, calendar = null) {
                 raceCounter++;
 
                 if (!rawText) continue;
-                if (!races[roundNum]) races[roundNum] = { round: roundNum, sprint: { fl: null, pl: null, results: [] }, feature: { fl: null, pl: null, results: [] } };
+                if (!races[roundNum]) races[roundNum] = { round: roundNum, sprint: { status: null, fl: null, pl: null, results: [] }, feature: { status: null, fl: null, pl: null, results: [] } };
 
                 // Cleaning and Logic
                 rawText = rawText.replace(/\[.*?\]/g, '');
@@ -437,7 +437,15 @@ function scrapeRaceResults($, calendar = null) {
                 if (rawText.includes('†')) rawText = "Ret";
                 rawText = rawText.trim();
 
-                if (["SR", "FR", "C"].includes(rawText) && rawText.length < 3) continue;
+                // Handle race status markers
+                if (rawText === "SR" || rawText === "FR") {
+                    races[roundNum][typeKey].status = "not_started";
+                    continue;
+                }
+                if (rawText === "C") {
+                    races[roundNum][typeKey].status = "cancelled";
+                    continue;
+                }
 
                 if (rawText) {
                     if (isFL) races[roundNum][typeKey].fl = driverName;
@@ -465,8 +473,18 @@ function scrapeRaceResults($, calendar = null) {
         const clean = (list) => list.map(({ driver, position }) => ({ driver, position }));
         const result = {
             round: parseInt(roundKey),
-            sprint_race: { fastest_lap: d.sprint.fl || "N/A", pole_position: d.sprint.pl || "N/A", order: clean(d.sprint.results) },
-            feature_race: { fastest_lap: d.feature.fl || "N/A", pole_position: d.feature.pl || "N/A", order: clean(d.feature.results) }
+            sprint_race: { 
+                status: d.sprint.status || (d.sprint.results.length > 0 ? "completed" : "not_started"),
+                fastest_lap: d.sprint.fl || "N/A", 
+                pole_position: d.sprint.pl || "N/A", 
+                order: clean(d.sprint.results) 
+            },
+            feature_race: { 
+                status: d.feature.status || (d.feature.results.length > 0 ? "completed" : "not_started"),
+                fastest_lap: d.feature.fl || "N/A", 
+                pole_position: d.feature.pl || "N/A", 
+                order: clean(d.feature.results) 
+            }
         };
 
         // Enrich with calendar data (circuit name and nation flag URL)

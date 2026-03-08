@@ -102,7 +102,7 @@ public class JuniorResultsFragment extends Fragment {
         }
         // If using activity's toolbar (Navigation Component mode)
         else if (requireActivity() instanceof AppCompatActivity) {
-            androidx.appcompat.widget.Toolbar activityToolbar =
+            MaterialToolbar activityToolbar =
                     requireActivity().findViewById(R.id.topAppBar);
             AppBarLayout activityAppBarLayout =
                     requireActivity().findViewById(R.id.top_bar_layout);

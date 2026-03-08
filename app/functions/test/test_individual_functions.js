@@ -30,7 +30,9 @@ const juniorLogic = require('../junior_categories_logic');
 // JSON Database path
 const DB_FILE = path.join(__dirname, 'db_test.json');
 
-const currentYear = new Date().getFullYear();
+//const currentYear = new Date().getFullYear();
+
+const currentYear = 2026;
 
 const URLS = {
     f2: `https://en.wikipedia.org/wiki/${currentYear}_Formula_2_Championship`,
