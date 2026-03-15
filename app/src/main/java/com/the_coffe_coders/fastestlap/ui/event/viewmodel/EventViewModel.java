@@ -27,7 +27,10 @@ public class EventViewModel extends ViewModel {
                 upcomingRaces.add(weeklyRace);
             }
         }
-        upcomingRaces.sort(Comparator.comparingInt(race -> Integer.parseInt(race.getRound())));
+        upcomingRaces.sort(Comparator.nullsLast(Comparator.comparingInt(race -> {
+            String round = race.getRound();
+            return round != null ? Integer.parseInt(round) : Integer.MAX_VALUE;
+        })));
         return upcomingRaces;
     }
 

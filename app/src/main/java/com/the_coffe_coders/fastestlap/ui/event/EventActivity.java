@@ -66,6 +66,9 @@ public class EventActivity extends AppCompatActivity {
     private SwipeRefreshLayout eventLayout;
     private Race currentRace;
 
+    private View countdownView, resultsView, raceCancelledView, pendingResultsView, eventScheduleView, liveSession, noLiveSession;
+    private Button openForecastButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,6 +134,8 @@ public class EventActivity extends AppCompatActivity {
 
     private void buildEventCard(WeeklyRace weeklyRace) {
 
+        initializeViews();
+
         UIUtils.singleSetTextViewText(weeklyRace.getRaceName().toUpperCase(), findViewById(R.id.topAppBarTitle));
 
         TrackViewModel trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(getApplication())).get(TrackViewModel.class);
@@ -171,6 +176,18 @@ public class EventActivity extends AppCompatActivity {
         });
     }
 
+    private void initializeViews() {
+        countdownView = findViewById(R.id.timer_card_countdown);
+        resultsView = findViewById(R.id.timer_card_results);
+        raceCancelledView = findViewById(R.id.timer_card_race_cancelled);
+        pendingResultsView = findViewById(R.id.timer_card_pending_results);
+        eventScheduleView = findViewById(R.id.event_schedule_table);
+        liveSession = findViewById(R.id.event_live_card);
+        noLiveSession = findViewById(R.id.event_not_live_card);
+
+        openForecastButton = findViewById(R.id.goToForecastButton);
+    }
+
     private void setEventImage(WeeklyRace weeklyRace, Track track, Nation nation) {
         loadingScreen.updateProgress();
 
@@ -184,14 +201,21 @@ public class EventActivity extends AppCompatActivity {
 
     private void buildEventCardStepTwo(WeeklyRace weeklyRace, Track track, Nation nation) {
 
+
+
+        UIUtils.setTextViewTextWithCondition(
+                weeklyRace.getRound() != null,
+                getString(R.string.round_plus_value, weeklyRace.getRound()),
+                getString(R.string.empty_space),
+                findViewById(R.id.round_number));
+
+
         UIUtils.multipleSetTextViewText(
                 new String[]{
-                        "Round " + weeklyRace.getRound(),
                         weeklyRace.getSeason(),
                         track.getGp_long_name()},
 
                 new TextView[]{
-                        findViewById(R.id.round_number),
                         findViewById(R.id.event_year),
                         findViewById(R.id.gp_name)});
 
@@ -199,10 +223,6 @@ public class EventActivity extends AppCompatActivity {
 
         LinearLayout trackLayout = findViewById(R.id.track_outline_layout);
         trackLayout.setOnClickListener(v -> NavigationUtils.navigateToBioPage(this, trackId + "&" + weeklyRace.getRaceName().toUpperCase(), 2));
-
-        Button openForecastButton = findViewById(R.id.goToForecastButton);
-        openForecastButton.setOnClickListener(v ->
-                NavigationUtils.openGoogleWeather(this, track.getLocation().getLocality()));
 
         String nationFlagUrl = null;
         if (nation != null) {
@@ -212,21 +232,35 @@ public class EventActivity extends AppCompatActivity {
         UIUtils.loadSequenceOfImagesWithGlide(this,
                 new String[]{nationFlagUrl, track.getTrack_minimal_layout_url()},
                 new ImageView[]{findViewById(R.id.country_flag), findViewById(R.id.track_outline_image)},
-                () -> buildEventCardFinalStep(weeklyRace));
+                () -> buildEventCardFinalStep(weeklyRace, track));
     }
 
-    private void buildEventCardFinalStep(WeeklyRace weeklyRace) {
+    private void buildEventCardFinalStep(WeeklyRace weeklyRace, Track track) {
         List<Session> sessions = weeklyRace.getSessions();
         Session nextEvent = weeklyRace.findNextEvent(sessions);
         boolean underway = weeklyRace.isUnderway(false) && !weeklyRace.isWeekFinished();
-        if (nextEvent != null && !underway) {
-            LocalDateTime eventDateTime = nextEvent.getStartDateTime();
-            startCountdown(eventDateTime);
-        } else if (!underway) {
-            showResults(weeklyRace);
-        }
 
-        createWeekSchedule(sessions, weeklyRace.getRound());
+        boolean nullRound = weeklyRace.getRound() == null;
+
+        if(nullRound){
+            showRaceCancelled();
+        }else{
+            if (nextEvent != null && !underway) {
+                LocalDateTime eventDateTime = nextEvent.getStartDateTime();
+                startCountdown(eventDateTime);
+            } else if (!underway) {
+                showResults(weeklyRace);
+            }
+
+            setForecast(track);
+
+            createWeekSchedule(sessions, weeklyRace.getRound());
+        }
+    }
+
+    private void setForecast(Track track) {
+        openForecastButton.setOnClickListener(v ->
+                NavigationUtils.openGoogleWeather(this, track.getLocation().getLocality()));
     }
 
     private void setLiveSession() {
@@ -305,16 +339,28 @@ public class EventActivity extends AppCompatActivity {
         }
     }
 
+    private void showRaceCancelled() {
+        loadingScreen.updateProgress();
+
+        countdownView.setVisibility(View.GONE);
+        resultsView.setVisibility(View.GONE);
+        pendingResultsView.setVisibility(View.GONE);
+        raceCancelledView.setVisibility(View.VISIBLE);
+
+        eventScheduleView.setVisibility(View.GONE);
+        noLiveSession.setVisibility(View.GONE);
+        liveSession.setVisibility(View.GONE);
+
+        openForecastButton.setVisibility(View.GONE);
+    }
+
     private void showResults(WeeklyRace weeklyRace) {
         loadingScreen.updateProgress();
 
-        View countdownView = findViewById(R.id.timer_card_countdown);
-        View resultsView = findViewById(R.id.timer_card_results);
-        View raceCancelledView = findViewById(R.id.timer_card_race_cancelled);
-
-        // Hide countdown view and show results view
         countdownView.setVisibility(View.GONE);
         resultsView.setVisibility(View.VISIBLE);
+        pendingResultsView.setVisibility(View.GONE);
+        raceCancelledView.setVisibility(View.GONE);
 
         // Track image is already loaded from loadSequenceOfImagesWithGlide, no need to reload
         processRaceResults(weeklyRace);
@@ -366,13 +412,10 @@ public class EventActivity extends AppCompatActivity {
         Log.i(TAG, "No results found");
         loadingScreen.updateProgress();
 
-        View pendingResultsView = findViewById(R.id.timer_card_pending_results);
-        View countdownView = findViewById(R.id.timer_card_countdown);
-        View resultsView = findViewById(R.id.timer_card_results);
-
         pendingResultsView.setVisibility(View.VISIBLE);
         countdownView.setVisibility(View.GONE);
         resultsView.setVisibility(View.GONE);
+        raceCancelledView.setVisibility(View.GONE);
     }
 
     private void createWeekSchedule(List<Session> sessions, String round) {

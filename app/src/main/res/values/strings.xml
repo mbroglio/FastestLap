@@ -248,5 +248,6 @@
     <string name="driver_number_index_two_lines">driver\nnumber</string>
     <string name="podiums">podiums</string>
     <string name="not_available">not available</string>
+    <string name="empty_space" translatable="false"> </string>
 
 </resources>
