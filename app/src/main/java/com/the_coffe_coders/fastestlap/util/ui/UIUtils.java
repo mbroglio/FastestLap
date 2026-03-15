@@ -285,7 +285,7 @@ public class UIUtils {
                         @Override
                         public void onLoadCleared(@Nullable Drawable placeholder) {
                             // Use default image if loading fails
-                            Drawable defaultImage = ContextCompat.getDrawable(context, R.drawable.constructors_image);
+                            Drawable defaultImage = ContextCompat.getDrawable(context, R.drawable.content_not_found_icon);
                             if (defaultImage != null) {
                                 defaultImage.setAlpha(76);
                             }
