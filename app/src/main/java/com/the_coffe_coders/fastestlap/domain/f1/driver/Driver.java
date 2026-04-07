@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import org.threeten.bp.LocalDate;
@@ -25,7 +26,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(onConstructor_ = @Ignore)
 @Entity(tableName = "Driver")
 public class Driver implements Parcelable {
     public static final Creator<Driver> CREATOR = new Creator<>() {

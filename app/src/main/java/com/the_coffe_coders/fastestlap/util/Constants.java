@@ -325,4 +325,9 @@ public class Constants {
     public static final String FIREBASE_NATIONS_COLLECTION = "nations";
     public static final String FIREBASE_JUNIOR_COLLECTION = "junior_categories";
     public static final String FIREBASE_CIRCUIT_MAP_COLLECTION = "app_config/circuit_name_id_map";
+
+    // Notification constants
+    public static final String NOTIFICATION_CHANNEL_NAME = "FastestLap Notifications";
+    public static final String NOTIFICATION_CHANNEL_DESCRIPTION = "Notifiche da FastestLap";
+    public static final String SHARED_PREFERENCES_FCM_TOKEN = "fcm_token";
 }

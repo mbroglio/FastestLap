@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.List;
@@ -20,7 +21,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(onConstructor_ = @Ignore)
 @Entity(tableName = "Constructor")
 public class Constructor implements Parcelable {
     public static final Creator<Constructor> CREATOR = new Creator<>() {
