@@ -6,10 +6,10 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 
 public interface ErgastAPIService {
-    @GET("constructorstandings")
+    @GET("constructorstandings/")
     Call<ResponseBody> getConstructorStandings();
 
-    @GET("driverstandings")
+    @GET("driverstandings/")
     Call<ResponseBody> getDriverStandings();
 
     @GET("races")
