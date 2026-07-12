@@ -41,6 +41,7 @@ import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModelFactory;
+import com.the_coffe_coders.fastestlap.util.CalendarUtils;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
@@ -213,6 +214,18 @@ public class EventActivity extends AppCompatActivity {
                 new String[]{nationFlagUrl, track.getTrack_minimal_layout_url()},
                 new ImageView[]{findViewById(R.id.country_flag), findViewById(R.id.track_outline_image)},
                 () -> buildEventCardFinalStep(weeklyRace));
+
+        // Calendar export button
+        Button addToCalendarButton = findViewById(R.id.addToCalendarButton);
+        addToCalendarButton.setOnClickListener(v -> {
+            try {
+                CalendarUtils.addWeekendToCalendar(this, weeklyRace);
+                Toast.makeText(this, R.string.add_to_calendar_success, Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Log.e(TAG, "Error opening calendar: " + e.getMessage());
+                Toast.makeText(this, R.string.calendar_not_found, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void buildEventCardFinalStep(WeeklyRace weeklyRace) {

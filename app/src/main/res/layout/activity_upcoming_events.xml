@@ -12,18 +12,38 @@
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/app_primary_red"
+        android:backgroundTint="@color/app_primary_red"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:background="@color/app_primary_red"
-            app:navigationIcon="@drawable/arrow_back_ios_style"
-            app:title="@string/upcoming"
-            app:titleCentered="true"
-            app:titleTextAppearance="@style/t25UpperCaseBoldBlack" />
+            android:backgroundTint="@color/app_primary_red"
+            app:menu="@menu/racing_menu"
+            app:navigationIcon="@drawable/arrow_back_ios_style">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:id="@+id/topAppBarTitle"
+                    style="@style/t25UpperCaseBoldBlack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:text="@string/upcoming"
+                    android:maxLines="1">
+
+                </TextView>
+
+            </RelativeLayout>
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout

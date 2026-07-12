@@ -249,4 +249,16 @@
     <string name="podiums">podiums</string>
     <string name="not_available">not available</string>
 
+    <!-- CALENDAR EXPORT -->
+    <string name="add_to_calendar">Add to Calendar</string>
+    <string name="add_to_calendar_success">Sessions added to calendar</string>
+    <string name="calendar_not_found">No calendar app found</string>
+
+    <!-- WIDGETS -->
+    <string name="widget_small_description">FastestLap compact widget</string>
+    <string name="widget_medium_description">FastestLap medium widget</string>
+    <string name="widget_large_description">FastestLap large widget</string>
+    <string name="widget_loading_title" translatable="false">FastestLap</string>
+    <string name="widget_loading_text" translatable="false">Loading…</string>
+
 </resources>

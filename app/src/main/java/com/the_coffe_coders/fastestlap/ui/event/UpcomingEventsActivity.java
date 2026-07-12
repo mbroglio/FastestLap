@@ -2,6 +2,7 @@ package com.the_coffe_coders.fastestlap.ui.event;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModelFactory;
+import com.the_coffe_coders.fastestlap.util.CalendarUtils;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
@@ -31,6 +33,8 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
     private static final String TAG = "UpcomingEventsActivity";
     private final boolean raceToProcess = true;
+
+    private MaterialToolbar toolbar;
     LoadingScreen loadingScreen;
     EventViewModel eventViewModel;
     TrackViewModel trackViewModel;
@@ -57,7 +61,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(getApplication())).get(TrackViewModel.class);
         weeklyRaceViewModel = new ViewModelProvider(this, new WeeklyRaceViewModelFactory(getApplication(), this)).get(WeeklyRaceViewModel.class);
 
-        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        toolbar = findViewById(R.id.topAppBar);
         UIUtils.applyWindowInsets(toolbar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
@@ -68,6 +72,14 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         });
 
         processEvents();
+    }
+
+    private void setMenu(List<WeeklyRace> upcomingRaces){
+        MenuItem addToCalendarItem = toolbar.getMenu().findItem(R.id.add_to_calendar);
+        addToCalendarItem.setOnMenuItemClickListener(v -> {
+            CalendarUtils.addRacesToCalendar(this, upcomingRaces);
+            return true;
+        });
     }
 
     private void processEvents() {
@@ -98,6 +110,8 @@ public class UpcomingEventsActivity extends AppCompatActivity {
                     upcomingEventsAdapter.onBindViewHolder(
                             upcomingEventsAdapter.createViewHolder(upcomingEventsRecyclerView, upcomingEventsAdapter.getItemViewType(i)), i);
                 }
+
+                setMenu(races);
             } else {
                 loadingScreen.hideLoadingScreen();
             }

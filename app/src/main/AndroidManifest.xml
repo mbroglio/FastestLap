@@ -10,6 +10,11 @@
 
             <data android:scheme="geo" />
         </intent>
+        <intent>
+            <action android:name="android.intent.action.INSERT" />
+
+            <data android:mimeType="vnd.android.cursor.dir/event" />
+        </intent>
     </queries>
 
     <application
@@ -46,6 +51,7 @@
         </activity>
         <activity
             android:name=".ui.home.HomePageActivity"
+            android:exported="true"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.event.UpcomingEventsActivity"
@@ -74,6 +80,66 @@
         <activity
             android:name=".ui.profile.ProfileActivity"
             android:screenOrientation="portrait" />
+        <!-- FileProvider for sharing generated .ics files with other apps -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
+        <!-- ══ WIDGETS ══ -->
+
+        <!-- Small widget (≈ 2×2) -->
+        <receiver
+            android:name=".widget.SmallWidgetProvider"
+            android:exported="true"
+            android:permission="android.permission.BIND_APPWIDGET"
+            android:label="@string/widget_small_description">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_small_info" />
+        </receiver>
+
+        <!-- Medium widget (≈ 3×2) -->
+        <receiver
+            android:name=".widget.MediumWidgetProvider"
+            android:exported="true"
+            android:permission="android.permission.BIND_APPWIDGET"
+            android:label="@string/widget_medium_description">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_medium_info" />
+        </receiver>
+
+        <!-- Large widget (≈ 4×3) -->
+        <receiver
+            android:name=".widget.LargeWidgetProvider"
+            android:exported="true"
+            android:permission="android.permission.BIND_APPWIDGET"
+            android:label="@string/widget_large_description">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_large_info" />
+        </receiver>
+
+        <!-- Background service that fetches data and pushes RemoteViews updates -->
+        <service
+            android:name=".widget.WidgetUpdateService"
+            android:exported="false" />
+
     </application>
 
 </manifest>

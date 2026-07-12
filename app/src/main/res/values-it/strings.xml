@@ -102,7 +102,7 @@
     <string name="upcoming">prossime</string>
     <string name="forgot_password">password dimenticata</string>
     <string name="send_email">invia email</string>
-    <string name="updating_with_dots">aggiornamento...</string>
+    <string name="updating_with_dots">aggiornamento…</string>
     <string name="sources">fonti</string>
     <string name="no_internet_connection">nessuna connessione internet</string>
     <string name="drivers_index">Piloti:</string>
@@ -170,4 +170,18 @@
     <string name="formula_2_bio_history_text">Nata nel 1948 e rilanciata nel 2017 come erede direttta della serie GP2, è la categoria giovanile per eccellenza. Con vetture identiche e weekend di gara in stile F1, la F2 rappresenta l\'ultimo passo per gli aspiranti piloti sulla loro strava verso la massima categoria.</string>
     <string name="driver_number_index_two_lines">numero\npilota</string>
     <string name="podiums">podi</string>
+    <string name="not_available">non disponibile</string>
+
+    <!-- CALENDAR EXPORT -->
+    <string name="add_to_calendar">Aggiungi al Calendario</string>
+    <string name="add_to_calendar_success">Sessioni aggiunte al calendario</string>
+    <string name="calendar_not_found">Nessuna app calendario trovata</string>
+
+    <!-- WIDGETS -->
+    <string name="widget_small_description">Widget FastestLap compatto</string>
+    <string name="widget_medium_description">Widget FastestLap medio</string>
+    <string name="widget_large_description">Widget FastestLap grande</string>
+    <string name="widget_loading_title">FastestLap</string>
+    <string name="widget_loading_text">Caricamento…</string>
+
 </resources>
