@@ -27,19 +27,32 @@ import com.the_coffe_coders.fastestlap.util.CalendarUtils;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class UpcomingEventsActivity extends AppCompatActivity {
 
     private static final String TAG = "UpcomingEventsActivity";
-    private final boolean raceToProcess = true;
 
-    private MaterialToolbar toolbar;
-    LoadingScreen loadingScreen;
+    // ── ViewModel fields ──────────────────────────────────────────────
     EventViewModel eventViewModel;
     TrackViewModel trackViewModel;
     WeeklyRaceViewModel weeklyRaceViewModel;
+
+    // ── UI fields ─────────────────────────────────────────────────────
+    private MaterialToolbar toolbar;
+    LoadingScreen loadingScreen;
     private SwipeRefreshLayout upcomingEventsLayout;
+    private UpcomingEventsRecyclerAdapter upcomingEventsAdapter;
+    private List<WeeklyRace> racesList;
+
+    // ── State ─────────────────────────────────────────────────────────
+    private boolean dataLoaded = false;
+    private LiveData<Result> currentWeeklyRaceObserver;
+
+    // ─────────────────────────────────────────────────────────────────
+    // Lifecycle
+    // ─────────────────────────────────────────────────────────────────
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,17 +61,45 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_upcoming_events);
 
         start();
-
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "onResume - dataLoaded: " + dataLoaded);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        Log.i(TAG, "onPause");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.i(TAG, "onDestroy - cleaning up observers");
+        if (currentWeeklyRaceObserver != null) {
+            currentWeeklyRaceObserver.removeObservers(this);
+            currentWeeklyRaceObserver = null;
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // Initialization
+    // ─────────────────────────────────────────────────────────────────
 
     private void start() {
         upcomingEventsLayout = findViewById(R.id.upcoming_events_layout);
         loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, upcomingEventsLayout, null);
 
-        loadingScreen.showLoadingScreen(true);
+        // Show loading only if data hasn't been loaded yet
+        if (!dataLoaded) {
+            loadingScreen.showLoadingScreen(true);
+        }
 
-        eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
-        trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(getApplication())).get(TrackViewModel.class);
+        eventViewModel      = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
+        trackViewModel      = new ViewModelProvider(this, new TrackViewModelFactory(getApplication())).get(TrackViewModel.class);
         weeklyRaceViewModel = new ViewModelProvider(this, new WeeklyRaceViewModelFactory(getApplication(), this)).get(WeeklyRaceViewModel.class);
 
         toolbar = findViewById(R.id.topAppBar);
@@ -67,61 +108,117 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
         UIUtils.applyWindowInsets(upcomingEventsLayout);
         upcomingEventsLayout.setOnRefreshListener(() -> {
-            start();
+            refreshData();
             upcomingEventsLayout.setRefreshing(false);
         });
 
+        setupRecyclerView();
+
+        // Load data only if not already loaded
+        if (!dataLoaded) {
+            processEvents();
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // Refresh / Clear
+    // ─────────────────────────────────────────────────────────────────
+
+    private void refreshData() {
+        Log.i(TAG, "Refreshing data...");
+        clearData();
+        dataLoaded = false;
         processEvents();
     }
 
-    private void setMenu(List<WeeklyRace> upcomingRaces){
-        MenuItem addToCalendarItem = toolbar.getMenu().findItem(R.id.add_to_calendar);
-        addToCalendarItem.setOnMenuItemClickListener(v -> {
-            CalendarUtils.addRacesToCalendar(this, upcomingRaces);
-            return true;
-        });
+    private void clearData() {
+        Log.i(TAG, "Clearing data...");
+
+        if (currentWeeklyRaceObserver != null) {
+            currentWeeklyRaceObserver.removeObservers(this);
+            currentWeeklyRaceObserver = null;
+        }
+
+        if (racesList != null) {
+            racesList.clear();
+        }
+        if (upcomingEventsAdapter != null) {
+            runOnUiThread(() -> upcomingEventsAdapter.notifyDataSetChanged());
+        }
+
+        loadingScreen.showLoadingScreen(true);
     }
 
-    private void processEvents() {
-        Log.i("UpcomingEvents", "Process Event");
+    // ─────────────────────────────────────────────────────────────────
+    // RecyclerView setup
+    // ─────────────────────────────────────────────────────────────────
 
-        LiveData<Result> data = weeklyRaceViewModel.getWeeklyRacesLiveData();
-        data.observe(this, result -> {
+    private void setupRecyclerView() {
+        if (racesList == null) {
+            racesList = new ArrayList<>();
+        }
+
+        RecyclerView upcomingEventsRecyclerView = findViewById(R.id.upcoming_events_recycler_view);
+        upcomingEventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        if (upcomingEventsAdapter == null) {
+            upcomingEventsAdapter = new UpcomingEventsRecyclerAdapter(
+                    this, racesList, trackViewModel, this, loadingScreen);
+            upcomingEventsRecyclerView.setAdapter(upcomingEventsAdapter);
+        }
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // Data loading
+    // ─────────────────────────────────────────────────────────────────
+
+    private void processEvents() {
+        Log.i(TAG, "Process Event");
+
+        // Remove any previous observer
+        if (currentWeeklyRaceObserver != null) {
+            currentWeeklyRaceObserver.removeObservers(this);
+        }
+
+        currentWeeklyRaceObserver = weeklyRaceViewModel.getWeeklyRacesLiveData();
+        currentWeeklyRaceObserver.observe(this, result -> {
             if (result instanceof Result.Loading) {
                 return;
             }
             if (result.isSuccess()) {
                 List<WeeklyRace> races = ((Result.WeeklyRaceSuccess) result).getData();
-                Log.i("UpcomingEvents", "SUCCESS");
-                int x = 1;
-                for (WeeklyRace w : races) {
-                    Log.i("UpcomingEventsDEBUG " + x, w.toString());
-                    x++;
-                }
+                Log.i(TAG, "SUCCESS – total races: " + races.size());
 
                 List<WeeklyRace> upcomingRaces = eventViewModel.extractUpcomingRaces(races);
 
-                RecyclerView upcomingEventsRecyclerView = findViewById(R.id.upcoming_events_recycler_view);
-                upcomingEventsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-                UpcomingEventsRecyclerAdapter upcomingEventsAdapter = new UpcomingEventsRecyclerAdapter(this, upcomingRaces, trackViewModel, this, loadingScreen);
-                upcomingEventsRecyclerView.setAdapter(upcomingEventsAdapter);
+                // Update the existing adapter's data instead of recreating it
+                racesList.clear();
+                racesList.addAll(upcomingRaces);
+                runOnUiThread(() -> upcomingEventsAdapter.notifyDataSetChanged());
 
-                for (int i = 0; i < upcomingEventsAdapter.getItemCount(); i++) {
-                    upcomingEventsAdapter.onBindViewHolder(
-                            upcomingEventsAdapter.createViewHolder(upcomingEventsRecyclerView, upcomingEventsAdapter.getItemViewType(i)), i);
-                }
+                dataLoaded = true;
+                setMenu(upcomingRaces);
 
-                setMenu(races);
             } else {
+                Log.e(TAG, "Failed to load weekly races");
                 loadingScreen.hideLoadingScreen();
             }
-
         });
-
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
+    // ─────────────────────────────────────────────────────────────────
+    // Menu
+    // ─────────────────────────────────────────────────────────────────
+
+    private void setMenu(List<WeeklyRace> upcomingRaces) {
+        MenuItem addToCalendarItem = toolbar.getMenu().findItem(R.id.add_to_calendar);
+        if (addToCalendarItem == null) return;
+
+        addToCalendarItem.setOnMenuItemClickListener(v -> {
+            for (WeeklyRace race : upcomingRaces) {
+                CalendarUtils.addWeekendToCalendar(this, race);
+            }
+            return true;
+        });
     }
 }

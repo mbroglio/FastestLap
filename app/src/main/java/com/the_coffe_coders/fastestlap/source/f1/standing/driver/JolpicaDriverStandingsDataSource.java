@@ -10,7 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.api.DriverStandingsAPIResponse;
 import com.the_coffe_coders.fastestlap.api.DriversAPIResponse;
-import com.the_coffe_coders.fastestlap.mapper.DriverStandingsMapper;
+import com.the_coffe_coders.fastestlap.repository.mapper.DriverStandingsMapper;
 import com.the_coffe_coders.fastestlap.repository.f1.standing.driver.DriverStandingCallback;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.util.JSONParserUtils;

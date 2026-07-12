@@ -11,7 +11,7 @@ import com.google.gson.JsonObject;
 import com.the_coffe_coders.fastestlap.api.RaceAPIResponse;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.dto.RaceDTO;
-import com.the_coffe_coders.fastestlap.mapper.WeeklyRaceMapper;
+import com.the_coffe_coders.fastestlap.repository.mapper.WeeklyRaceMapper;
 import com.the_coffe_coders.fastestlap.repository.f1.weeklyrace.SingleWeeklyRaceCallback;
 import com.the_coffe_coders.fastestlap.repository.f1.weeklyrace.WeeklyRacesCallback;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
