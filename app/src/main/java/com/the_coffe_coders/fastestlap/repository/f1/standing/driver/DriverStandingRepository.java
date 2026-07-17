@@ -26,6 +26,10 @@ public class DriverStandingRepository {
     // Cache
     private final Map<String, MutableLiveData<Result>> driverStandingCache;
     private final Map<String, Long> lastUpdateTimestamps;
+    // Prevents duplicate concurrent HTTP requests while a fetch is already in-flight.
+    // Without this, callers that arrive before the first response lands would each fire
+    // their own network request (since the timestamp is null until the callback completes).
+    private boolean isFetchInFlight = false;
 
     // Data Sources
     private final JolpicaDriverStandingsDataSource jolpicaDriverStandingsDataSource;
@@ -58,20 +62,33 @@ public class DriverStandingRepository {
         Log.d(TAG, "Fetching driver standing");
         String cacheKey = "driverStanding";
 
-        if (!driverStandingCache.containsKey(cacheKey) ||
-                !lastUpdateTimestamps.containsKey(cacheKey) ||
-                lastUpdateTimestamps.get(cacheKey) == null) {
+        if (!driverStandingCache.containsKey(cacheKey)) {
+            // First call ever: create the LiveData and start the fetch.
             driverStandingCache.put(cacheKey, new MutableLiveData<>());
-            if (isNetworkAvailable()) {
-                loadDriverStanding();
+            lastUpdateTimestamps.remove(cacheKey);
+        }
+
+        if (!lastUpdateTimestamps.containsKey(cacheKey) || lastUpdateTimestamps.get(cacheKey) == null) {
+            // No successful result yet. Only start a fetch if one isn't already in-flight.
+            if (!isFetchInFlight) {
+                isFetchInFlight = true;
+                if (isNetworkAvailable()) {
+                    loadDriverStanding();
+                } else {
+                    fetchFromLocal(cacheKey);
+                }
             } else {
-                fetchFromLocal(cacheKey);
+                Log.d(TAG, "Driver standing fetch already in-flight, returning shared LiveData");
             }
         } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(cacheKey) > 60000) {
-            if (isNetworkAvailable()) {
-                loadDriverStanding();
-            } else {
-                fetchFromLocal(cacheKey);
+            // Cache is stale — refresh.
+            if (!isFetchInFlight) {
+                isFetchInFlight = true;
+                if (isNetworkAvailable()) {
+                    loadDriverStanding();
+                } else {
+                    fetchFromLocal(cacheKey);
+                }
             }
         } else {
             Log.d(TAG, "Driver standing found in cache");
@@ -86,6 +103,7 @@ public class DriverStandingRepository {
             jolpicaDriverStandingsDataSource.getDriverStandings(new DriverStandingCallback() {
                 @Override
                 public void onDriverStandingsLoaded(DriverStandings driverStandings) {
+                    isFetchInFlight = false;
                     if (driverStandings != null) {
                         localDriverStandingsDataSource.insertDriverStandings(driverStandings);
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
@@ -99,6 +117,7 @@ public class DriverStandingRepository {
 
                 @Override
                 public void onDriverListLoaded(List<Driver> driverList) {
+                    isFetchInFlight = false;
                     if (driverList != null) {
                         localDriverStandingsDataSource.insertDriverList(driverList);
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
@@ -112,6 +131,7 @@ public class DriverStandingRepository {
 
                 @Override
                 public void onError(Exception e) {
+                    isFetchInFlight = false;
                     Log.e(TAG, "Error loading driver standing: " + e.getMessage());
                     fetchFromLocal(cacheKey);
                 }
@@ -119,6 +139,7 @@ public class DriverStandingRepository {
 
             });
         } catch (Exception e) {
+            isFetchInFlight = false;
             Log.e(TAG, "Error loading driver standing: " + e.getMessage());
             fetchFromLocal(cacheKey);
         }

@@ -58,6 +58,12 @@ public class HomeFragment extends Fragment {
     private View view;
     private NetworkUtils networkLiveData;
     private Boolean previousNetworkState = null;
+    // isInitialized: persists for the fragment's full lifetime.
+    // Prevents redundant re-initialization when the user navigates back to this fragment
+    // (which triggers a new onCreateView call and would otherwise re-fetch all data).
+    private boolean isInitialized = false;
+    // isSettingUp: guards against concurrent setup calls (e.g. network reconnect racing with
+    // a manual refresh). Cleared only after all 4 cards have finished loading.
     private boolean isSettingUp = false;
 
     // Track individual card loading states
@@ -89,17 +95,30 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(requireActivity().getApplication())).get(HomeViewModel.class);
         networkLiveData = new NetworkUtils(requireContext());
 
-        // Setup the fragment immediately. This ensures cached data is shown if offline.
-        setupFragment(view);
+        // Initialize ViewModels once per fragment instance (ViewModelProvider is idempotent
+        // but calling initializeViewModels on every setupFragment adds unnecessary overhead).
+        initializeViewModels();
+
+        if (!isInitialized) {
+            // First time setup: load all data from network / cache.
+            setupFragment(view);
+        } else {
+            // Fragment is returning from back-stack: data is already loaded in ViewModels / cache.
+            // Just re-attach the loading screen and handlers without triggering new network calls.
+            Log.d(TAG, "Fragment returning from back-stack, skipping re-initialization.");
+            setupLoadingScreen(view);
+            setupHandlers();
+            setupUI(view);
+        }
 
         // Observe network changes to refresh data upon reconnection.
         networkLiveData.observe(getViewLifecycleOwner(), isConnected -> {
             if (previousNetworkState != null && !previousNetworkState && isConnected) {
-                // If we transitioned from offline to online, refresh the data.
+                // Transitioned from offline to online: force a full refresh.
                 Log.d(TAG, "Network connection restored. Refreshing fragment.");
+                isInitialized = false; // allow setupFragment to run again
                 setupFragment(view);
             }
             previousNetworkState = isConnected;
@@ -109,39 +128,47 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupFragment(View view) {
-        // Prevent multiple simultaneous setups
+        // Prevent concurrent setups (e.g. swipe-refresh racing with a network-restore event).
         if (isSettingUp) {
             Log.d(TAG, "Setup already in progress, skipping...");
             return;
         }
         isSettingUp = true;
+        isInitialized = true;
 
-        // Reset loading states
+        // Reset individual card loading flags so markCardLoaded works correctly.
         lastRaceCardLoaded = false;
         nextSessionCardLoaded = false;
         driverCardLoaded = false;
         constructorCardLoaded = false;
 
-        // Clear cached standings for fresh data
+        // Clear cached standings so fresh data is fetched on a full refresh.
         cachedDriverStandings = null;
         cachedConstructorStandings = null;
 
-
-        // Remove all existing observers to prevent duplicates
+        // Remove existing LiveData observers to prevent duplicates when setupFragment
+        // is called a second time (e.g. swipe-refresh or network-restore).
         if (homeViewModel != null) {
             homeViewModel.getDriverStandingsLiveData(requireActivity().getApplication()).removeObservers(getViewLifecycleOwner());
             homeViewModel.getConstructorStandingsLiveData(requireActivity().getApplication()).removeObservers(getViewLifecycleOwner());
         }
 
-        initializeViewModels();
+        // NOTE: initializeViewModels() is NOT called here anymore — it is called once
+        // from onCreateView to avoid re-creating ViewModelProviders on every setup.
         setupLoadingScreen(view);
         setupHandlers();
         setupUI(view);
 
-        isSettingUp = false;
+        // isSettingUp is intentionally NOT cleared here.
+        // It is cleared in markCardLoaded() once all 4 cards have finished loading,
+        // which prevents a concurrent network-restore or swipe-refresh from interrupting
+        // an in-progress async load.
     }
 
     private void initializeViewModels() {
+        // ViewModelProvider.get() is idempotent — it returns the same ViewModel instance
+        // if one already exists for this scope. Calling this multiple times is safe but
+        // unnecessary; we call it once from onCreateView.
         homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(requireActivity().getApplication())).get(HomeViewModel.class);
         constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(requireActivity().getApplication())).get(ConstructorViewModel.class);
         driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(requireActivity().getApplication())).get(DriverViewModel.class);
@@ -292,11 +319,18 @@ public class HomeFragment extends Fragment {
                 " | Driver: " + driverCardLoaded +
                 " | Constructor: " + constructorCardLoaded);
 
-        // Hide loading screen early - as soon as the race cards are ready
-        // User can see something immediately, preference cards can load in background
+        // Hide loading screen as soon as the two primary race cards are ready.
+        // The user sees content immediately; preference cards finish loading in the background.
         if (lastRaceCardLoaded && nextSessionCardLoaded) {
             Log.d(TAG, "Critical cards loaded, hiding loading screen early");
             loadingScreen.hideLoadingScreen();
+        }
+
+        // All 4 cards done: clear the in-progress guard so a future swipe-refresh
+        // or network-restore event can trigger a new full setup.
+        if (lastRaceCardLoaded && nextSessionCardLoaded && driverCardLoaded && constructorCardLoaded) {
+            isSettingUp = false;
+            Log.d(TAG, "All cards loaded — setup complete.");
         }
     }
 }

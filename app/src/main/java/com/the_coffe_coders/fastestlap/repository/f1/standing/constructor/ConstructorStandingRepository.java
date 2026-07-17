@@ -26,6 +26,10 @@ public class ConstructorStandingRepository {
     // Cache
     private final Map<String, MutableLiveData<Result>> constructorStandingCache;
     private final Map<String, Long> lastUpdateTimestamps;
+    // Prevents duplicate concurrent HTTP requests while a fetch is already in-flight.
+    // Without this, callers that arrive before the first response lands would each fire
+    // their own network request (since the timestamp is null until the callback completes).
+    private boolean isFetchInFlight = false;
 
     // Data sources
     private final JolpicaConstructorStandingsDataSource jolpicaConstructorStandingsDataSource;
@@ -58,20 +62,33 @@ public class ConstructorStandingRepository {
         Log.d(TAG, "Fetching constructor standing");
         String cacheKey = "constructorStanding";
 
-        if (!constructorStandingCache.containsKey(cacheKey) ||
-                !lastUpdateTimestamps.containsKey(cacheKey) ||
-                lastUpdateTimestamps.get(cacheKey) == null) {
+        if (!constructorStandingCache.containsKey(cacheKey)) {
+            // First call ever: create the LiveData and start the fetch.
             constructorStandingCache.put(cacheKey, new MutableLiveData<>());
-            if (isNetworkAvailable()) {
-                loadConstructorStanding();
+            lastUpdateTimestamps.remove(cacheKey);
+        }
+
+        if (!lastUpdateTimestamps.containsKey(cacheKey) || lastUpdateTimestamps.get(cacheKey) == null) {
+            // No successful result yet. Only start a fetch if one isn't already in-flight.
+            if (!isFetchInFlight) {
+                isFetchInFlight = true;
+                if (isNetworkAvailable()) {
+                    loadConstructorStanding();
+                } else {
+                    fetchFromLocal(cacheKey);
+                }
             } else {
-                fetchFromLocal(cacheKey);
+                Log.d(TAG, "Constructor standing fetch already in-flight, returning shared LiveData");
             }
         } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(cacheKey) > 60000) {
-            if (isNetworkAvailable())
-                loadConstructorStanding();
-            else {
-                fetchFromLocal(cacheKey);
+            // Cache is stale — refresh.
+            if (!isFetchInFlight) {
+                isFetchInFlight = true;
+                if (isNetworkAvailable())
+                    loadConstructorStanding();
+                else {
+                    fetchFromLocal(cacheKey);
+                }
             }
         } else {
             Log.d(TAG, "Constructor standing found in cache");
@@ -86,6 +103,7 @@ public class ConstructorStandingRepository {
             jolpicaConstructorStandingsDataSource.getConstructorStandings(new ConstructorStandingCallback() {
                 @Override
                 public void onConstructorLoaded(ConstructorStandings constructorStandings) {
+                    isFetchInFlight = false;
                     if (constructorStandings != null) {
                         localConstructorStandingsDataSource.insertConstructorStandings(constructorStandings);
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
@@ -99,6 +117,7 @@ public class ConstructorStandingRepository {
 
                 @Override
                 public void onConstructorListLoaded(List<Constructor> constructorList) {
+                    isFetchInFlight = false;
                     if (constructorList != null) {
                         localConstructorStandingsDataSource.insertConstructorList(constructorList);
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
@@ -112,11 +131,13 @@ public class ConstructorStandingRepository {
 
                 @Override
                 public void onError(Exception e) {
+                    isFetchInFlight = false;
                     Log.e(TAG, "Error loading constructor standing: " + e.getMessage());
                     fetchFromLocal(cacheKey);
                 }
             });
         } catch (Exception e) {
+            isFetchInFlight = false;
             Log.e(TAG, "Error loading constructor standing: " + e.getMessage());
             fetchFromLocal(cacheKey);
         }

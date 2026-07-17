@@ -13,8 +13,10 @@ import com.the_coffe_coders.fastestlap.source.nation.LocalNationDataSource;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public class NationRepository {
     private static final String TAG = "NationRepository";
@@ -25,12 +27,17 @@ public class NationRepository {
     //Cache
     private final Map<String, MutableLiveData<Result>> nationCache;
     private final Map<String, Long> lastUpdateTimestamps;
+    // Tracks which nation IDs are currently being fetched from Firebase.
+    // Prevents duplicate Firebase reads when two callers request the same
+    // nation ID before the first callback has completed and set the timestamp.
+    private final Set<String> inFlightFetches;
     private final NetworkUtils networkLiveData;
 
 
     private NationRepository(AppRoomDatabase appRoomDatabase, Context context) {
         nationCache = new HashMap<>();
         lastUpdateTimestamps = new HashMap<>();
+        inFlightFetches = new HashSet<>();
         firebaseNationDataSource = FirebaseNationDataSource.getInstance();
         localNationDataSource = LocalNationDataSource.getInstance(appRoomDatabase);
         networkLiveData = new NetworkUtils(context);
@@ -49,19 +56,31 @@ public class NationRepository {
 
     public synchronized MutableLiveData<Result> getNation(String nationId) throws RuntimeException {
         Log.d(TAG, "Fetching nation with ID: " + nationId);
-        if (!nationCache.containsKey(nationId) || !lastUpdateTimestamps.containsKey(nationId) || lastUpdateTimestamps.get(nationId) == null) {
-            nationCache.put(nationId, new MutableLiveData<>());
 
-            if (isNetworkAvailable()) {
-                loadNation(nationId);
+        if (!nationCache.containsKey(nationId)) {
+            nationCache.put(nationId, new MutableLiveData<>());
+        }
+
+        if (!lastUpdateTimestamps.containsKey(nationId) || lastUpdateTimestamps.get(nationId) == null) {
+            // No result yet. Only start a fetch if this nationId isn't already in-flight.
+            if (!inFlightFetches.contains(nationId)) {
+                inFlightFetches.add(nationId);
+                if (isNetworkAvailable()) {
+                    loadNation(nationId);
+                } else {
+                    loadNationFromLocal(nationId);
+                }
             } else {
-                loadNationFromLocal(nationId);
+                Log.d(TAG, "Nation fetch already in-flight for: " + nationId);
             }
         } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(nationId) > 60000) {
-            if (isNetworkAvailable()) {
-                loadNation(nationId);
-            } else {
-                loadNationFromLocal(nationId);
+            if (!inFlightFetches.contains(nationId)) {
+                inFlightFetches.add(nationId);
+                if (isNetworkAvailable()) {
+                    loadNation(nationId);
+                } else {
+                    loadNationFromLocal(nationId);
+                }
             }
         } else {
             Log.d(TAG, "Nation found in cache: " + nationId);
@@ -98,6 +117,7 @@ public class NationRepository {
             firebaseNationDataSource.getNation(nationId, new NationCallback() {
                 @Override
                 public void onNationLoaded(Nation nation) {
+                    inFlightFetches.remove(nationId);
                     if (nation != null) {
                         nation.setNationId(nationId);
                         localNationDataSource.insertNation(nation);
@@ -110,12 +130,14 @@ public class NationRepository {
 
                 @Override
                 public void onError(Exception e) {
+                    inFlightFetches.remove(nationId);
                     Log.e(TAG, "Error loading nation: " + e.getMessage());
                     //fetch nation from local database
                     loadNationFromLocal(nationId);
                 }
             });
         } catch (Exception e) {
+            inFlightFetches.remove(nationId);
             Log.e(TAG, "Error loading nation: " + e.getMessage());
             loadNationFromLocal(nationId);
         }

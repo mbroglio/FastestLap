@@ -48,8 +48,10 @@ import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 
 import java.security.MessageDigest;
 import java.time.Duration;
@@ -171,7 +173,7 @@ public class UIUtils {
             return;
         }
 
-        // Track how many images have loaded
+        // Track how many images have fully loaded (full-quality, not thumbnail)
         final int[] loadedCount = {0};
         final int totalImages = urls.length;
 
@@ -195,9 +197,23 @@ public class UIUtils {
     private static void loadImage(Context context, String url, ImageView imageView, Runnable onSuccess, int retryCount) {
         Log.i("Glide", "Loading image: " + url);
 
-        NetworkUtils networkLiveData = new NetworkUtils(context);
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        Network activeNetwork = cm != null ? cm.getActiveNetwork() : null;
+        NetworkCapabilities nc = (activeNetwork != null) ? cm.getNetworkCapabilities(activeNetwork) : null;
+        final boolean isConnected = nc != null
+                && nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                && nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
+
 
         if (url != null && !url.isEmpty()) {
+            // Ensure the onSuccess callback fires exactly once per loadImage() call.
+            // .thumbnail(0.25f) causes Glide to invoke onResourceReady twice:
+            //   1st call: low-res thumbnail (isFirstResource = true)
+            //   2nd call: full-quality image  (isFirstResource = false)
+            // Without this guard, loadImagesInParallel's counter would be incremented
+            // twice per image, firing the completion callback before all images are ready.
+            final boolean[] callbackFired = {false};
+
             Glide.with(context)
                     .load(url)
                     .thumbnail(0.25f)  // Load 25% quality version first for instant display
@@ -205,11 +221,20 @@ public class UIUtils {
                     .listener(new RequestListener<Drawable>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            Log.e("Glide", "Image loading failed: " + url);
+                            Log.e("Glide", "Image loading failed (isFirstResource=" + isFirstResource + "): " + url);
 
-                            // We handled the error
-                            if (networkLiveData.isConnected()) {
-                                // We handled the error
+                            // If the thumbnail fails, do nothing and wait for the main image result.
+                            // If the main image fails, handle the error (but guard against double-fire).
+                            if (isFirstResource) {
+                                return false; // thumbnail failed; let Glide continue with main image
+                            }
+
+                            synchronized (callbackFired) {
+                                if (callbackFired[0]) return true;
+                                callbackFired[0] = true;
+                            }
+
+                            if (isConnected) {
                                 if (retryCount <= Constants.MAX_RETRY_COUNT) {
                                     Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
                                     new Handler(Looper.getMainLooper()).post(() -> loadImage(context, url, imageView, onSuccess, retryCount + 1));
@@ -220,18 +245,37 @@ public class UIUtils {
                             } else {
                                 manageContentLoadError(imageView, null, context, onSuccess, 0);
                             }
-                            return true; // Return true to prevent Glide from handling the error (since we retry)
+                            return true; // We handled the error
                         }
 
                         @Override
                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            Log.i("Glide", "Image loaded successfully: ");
+                            // .thumbnail(0.25f) fires this callback twice:
+                            //   isFirstResource=true  → thumbnail (low-res) is ready
+                            //   isFirstResource=false → full image is ready
+                            // We fire onSuccess only on the FIRST call that completes
+                            // (could be thumbnail from cache or full image — doesn’t matter)
+                            // and guard against double-fire using callbackFired.
+                            if (isFirstResource) {
+                                // Thumbnail delivered first. Display it but don't fire the callback yet;
+                                // wait for the full image so callers get the best-quality result.
+                                Log.i("Glide", "Thumbnail ready (waiting for full image): " + url);
+                                return false; // Let Glide display the thumbnail
+                            }
+
+                            // Full image is ready — fire the callback exactly once.
+                            Log.i("Glide", "Full image loaded successfully: " + url);
+                            synchronized (callbackFired) {
+                                if (callbackFired[0]) return false;
+                                callbackFired[0] = true;
+                            }
+
                             if (onSuccess != null) {
-                                // Post to Handler to escape the callback context
-                                // This prevents IllegalStateException if onSuccess triggers another Glide load
+                                // Post to Handler to escape the callback context.
+                                // This prevents IllegalStateException if onSuccess triggers another Glide load.
                                 new Handler(Looper.getMainLooper()).post(onSuccess);
                             }
-                            return false; // Return false to allow Glide to handle setting the drawable on the target
+                            return false; // Let Glide set the full-quality drawable on the target
                         }
                     })
                     .into(imageView);
