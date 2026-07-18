@@ -250,7 +250,7 @@ public class UIUtils {
                     .load(url)
                     .thumbnail(0.5f)  // Load 50% quality version first for faster, higher-quality preview
                     .diskCacheStrategy(DiskCacheStrategy.ALL)  // Cache both original and resized
-                    .listener(new RequestListener<Drawable>() {
+                    .listener(new RequestListener<>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                             Log.e("Glide", "Image loading failed (isFirstResource=" + isFirstResource + "): " + url);
@@ -297,7 +297,8 @@ public class UIUtils {
                                     : "Full image loaded (callback already fired): " + url);
 
                             synchronized (callbackFired) {
-                                if (callbackFired[0]) return false; // callback already fired (thumbnail was fast)
+                                if (callbackFired[0])
+                                    return false; // callback already fired (thumbnail was fast)
                                 callbackFired[0] = true;
                             }
 
@@ -516,22 +517,13 @@ public class UIUtils {
         return normalizedInput.contains(normalizedId);
     }
 
-    // check if a string (inputString) contains a substring (idString) and return the idString if it does
-    public static String getContainedIdString(String inputString, String idString) {
-        if (containsIdString(inputString, idString)) {
-            return idString;
-        }
-        return null;
-    }
-
     // normalize a string for matching
     private static String normalizeForMatch(String s) {
         if (s == null) return "";
-        String normalized = s.toLowerCase(Locale.ROOT)
+        return s.toLowerCase(Locale.ROOT)
                 .replaceAll("[^\\p{Alnum}]+", " ")
                 .replaceAll("\\s+", " ")
                 .trim();
-        return normalized;
     }
 
     // find the key in a map that matches the input string
@@ -682,7 +674,7 @@ public class UIUtils {
 
         } catch (DateTimeParseException e) {
             // Handle invalid date string
-            e.printStackTrace();
+            Log.e("UIUtils", "Error parsing date string: " + e.getMessage());
             return "Invalid date format";
         }
     }
@@ -806,7 +798,7 @@ public class UIUtils {
         podiumTachometer.setLabel("Podiums");
 
         Log.i(TAG, "Win %: " + winPercentage + ", Podium %: " + podiumPercentage +
-              ", Total Races: " + totalRaces + ", Wins: " + totalWins + ", Podiums: " + totalPodiums);
+                ", Total Races: " + totalRaces + ", Wins: " + totalWins + ", Podiums: " + totalPodiums);
     }
 
     /**
