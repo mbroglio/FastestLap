@@ -107,15 +107,24 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
                     List<ConstructorStandingsElement> constructorList = constructorStandings.getConstructorStandings();
 
+                    // Preload constructor data (and their images) for all constructors immediately
+                    // so that Firebase + Glide disk caches are warm when onBindViewHolder fires.
+                    for (ConstructorStandingsElement element : constructorList) {
+                        String id = element.getConstructor().getConstructorId();
+                        constructorViewModel.getSelectedConstructor(id).observe(this, cResult -> {
+                            if (cResult instanceof Result.Loading) return;
+                            if (cResult.isSuccess()) {
+                                Constructor c = ((Result.ConstructorSuccess) cResult).getData();
+                                UIUtils.preloadImage(this, c.getCar_pic_url());
+                                UIUtils.preloadImage(this, c.getTeam_logo_url());
+                            }
+                        });
+                    }
+
                     constructorsStandingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
                     constructorsStandingAdapter = new ConstructorStandingsRecyclerAdapter(this, constructorId, constructorList, null, driverViewModel, constructorViewModel, this, loadingScreen);
                     constructorsStandingRecyclerView.setAdapter(constructorsStandingAdapter);
-
-                    for (int i = 0; i < constructorsStandingAdapter.getItemCount(); i++) {
-                        constructorsStandingAdapter.onBindViewHolder(
-                                constructorsStandingAdapter.createViewHolder(constructorsStandingRecyclerView, constructorsStandingAdapter.getItemViewType(i)), i);
-                    }
                 } catch (ClassCastException e) {
                     setupPageForConstructorList();
                 }
@@ -145,11 +154,6 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
                 constructorsStandingAdapter = new ConstructorStandingsRecyclerAdapter(this, constructorId, null, constructorList, driverViewModel, constructorViewModel, this, loadingScreen);
                 constructorsStandingRecyclerView.setAdapter(constructorsStandingAdapter);
-
-                for (int i = 0; i < constructorsStandingAdapter.getItemCount(); i++) {
-                    constructorsStandingAdapter.onBindViewHolder(
-                            constructorsStandingAdapter.createViewHolder(constructorsStandingRecyclerView, constructorsStandingAdapter.getItemViewType(i)), i);
-                }
 
             } else {
                 Log.i(TAG, "CONSTRUCTORS LIST ERROR");

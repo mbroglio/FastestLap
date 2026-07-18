@@ -360,18 +360,11 @@ public class HomeFragment extends Fragment {
                 " | Driver: " + driverCardLoaded +
                 " | Constructor: " + constructorCardLoaded);
 
-        // Hide loading screen as soon as the two primary race cards are ready.
-        // The user sees content immediately; preference cards finish loading in the background.
-        if (lastRaceCardLoaded && nextSessionCardLoaded) {
-            Log.d(TAG, "Critical cards loaded, hiding loading screen early");
-            loadingScreen.hideLoadingScreen();
-        }
-
-        // All 4 cards done: clear the in-progress guard so a future swipe-refresh
-        // or network-restore event can trigger a new full setup.
+        // Hide loading screen only when all 4 cards are fully ready.
         if (lastRaceCardLoaded && nextSessionCardLoaded && driverCardLoaded && constructorCardLoaded) {
+            Log.d(TAG, "All cards loaded — hiding loading screen and setup complete.");
+            loadingScreen.hideLoadingScreen();
             isSettingUp = false;
-            Log.d(TAG, "All cards loaded — setup complete.");
         }
     }
 }
