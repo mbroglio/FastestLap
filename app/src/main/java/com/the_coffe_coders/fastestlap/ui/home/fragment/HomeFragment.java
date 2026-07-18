@@ -108,6 +108,14 @@ public class HomeFragment extends Fragment {
             // Fragment is returning from back-stack: data is already loaded in ViewModels / cache.
             // Just re-attach the loading screen and handlers without triggering new network calls.
             Log.d(TAG, "Fragment returning from back-stack, skipping re-initialization.");
+
+            // Reset flags so markCardLoaded can hide the loading screen again
+            lastRaceCardLoaded = false;
+            nextSessionCardLoaded = false;
+            driverCardLoaded = false;
+            constructorCardLoaded = false;
+            isSettingUp = true;
+
             setupLoadingScreen(view);
             setupHandlers();
             setupUI(view);
@@ -207,6 +215,16 @@ public class HomeFragment extends Fragment {
             this, view, homeViewModel, constructorViewModel, nationViewModel,
             userViewModel, networkLiveData, sharedPreferencesUtils, this::markCardLoaded
         );
+
+        // If standings data was already fetched in a previous setup (e.g. returning from
+        // back-stack), pass it directly to the new handlers so ranking/points are displayed
+        // immediately without waiting for the LiveData to re-emit.
+        if (cachedDriverStandings != null) {
+            favoriteDriverHandler.setCachedDriverStandings(cachedDriverStandings);
+        }
+        if (cachedConstructorStandings != null) {
+            favoriteConstructorHandler.setCachedConstructorStandings(cachedConstructorStandings);
+        }
     }
 
     private void setupUI(View view) {
@@ -226,21 +244,44 @@ public class HomeFragment extends Fragment {
         // Now handle the favorite cards based on login status
         if (networkLiveData.isConnected()) {
             if (userViewModel.getLoggedUser() != null) {
-                // Start loading favorite cards immediately from SharedPreferences
-                // Don't wait for getUserPreferences API call - it's just a sync operation
-                favoriteDriverHandler.setupFavoriteDriverCard();
-                favoriteConstructorHandler.setupFavoriteConstructorCard();
+                // Check if preferences are already available locally
+                String localDriverId = sharedPreferencesUtils.readStringData(
+                        com.the_coffe_coders.fastestlap.util.Constants.SHARED_PREFERENCES_FILENAME,
+                        com.the_coffe_coders.fastestlap.util.Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
+                boolean prefsAvailable = localDriverId != null && !localDriverId.isEmpty() && !localDriverId.equals("null");
 
-                // Sync preferences in background (for future loads)
-                userViewModel.getUserPreferences(userViewModel.getLoggedUser().getIdToken()).observe(getViewLifecycleOwner(), result -> {
-                    if (result != null) {
-                        if (result.isSuccess()) {
-                            Log.d(TAG, "User preferences synced successfully");
-                        } else {
-                            Log.e(TAG, "Failed to sync user preferences: " + result.getError());
+                if (prefsAvailable) {
+                    // Preferences already cached locally — start cards immediately
+                    favoriteDriverHandler.setupFavoriteDriverCard();
+                    favoriteConstructorHandler.setupFavoriteConstructorCard();
+
+                    // Sync in background (keep remote in sync for future sessions)
+                    userViewModel.getUserPreferences(userViewModel.getLoggedUser().getIdToken()).observe(getViewLifecycleOwner(), result -> {
+                        if (result != null) {
+                            if (result.isSuccess()) {
+                                Log.d(TAG, "User preferences synced successfully");
+                            } else {
+                                Log.e(TAG, "Failed to sync user preferences: " + result.getError());
+                            }
                         }
-                    }
-                });
+                    });
+                } else {
+                    // First login: preferences not yet in SharedPreferences.
+                    // Fetch from remote first, then build the cards once the data is available.
+                    Log.d(TAG, "Local preferences empty — fetching from remote before building cards");
+                    userViewModel.getUserPreferences(userViewModel.getLoggedUser().getIdToken()).observe(getViewLifecycleOwner(), result -> {
+                        if (result != null) {
+                            if (result.isSuccess()) {
+                                Log.d(TAG, "User preferences synced successfully");
+                            } else {
+                                Log.e(TAG, "Failed to sync user preferences: " + result.getError());
+                            }
+                            // Build cards regardless of success/failure so the UI isn't blocked
+                            favoriteDriverHandler.setupFavoriteDriverCard();
+                            favoriteConstructorHandler.setupFavoriteConstructorCard();
+                        }
+                    });
+                }
             } else {
                 // Not logged in - handlers will show selection prompts automatically
                 favoriteDriverHandler.setupFavoriteDriverCard();

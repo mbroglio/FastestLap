@@ -168,6 +168,12 @@ public class FavoriteConstructorHandler {
                 if (constructorResult.isSuccess()) {
                     Constructor constructor = ((Result.ConstructorSuccess) constructorResult).getData();
                     favouriteConstructor.setConstructor(constructor);
+
+                    // Preload the car image immediately so Glide's disk cache is warm
+                    // by the time buildConstructorCard calls loadImagesInParallel.
+                    // This download runs in parallel with the nation fetch below (~200ms ahead).
+                    UIUtils.preloadImage(context, constructor.getCar_pic_url());
+
                     Log.i(TAG, "Fetching nation data for constructor card");
                     fetchNationForConstructor(favouriteConstructor);
                 } else {
@@ -229,6 +235,10 @@ public class FavoriteConstructorHandler {
                 FrameLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
                 constructorCard.setOnClickListener(v -> NavigationUtils.navigateToBioPage(context, constructor.getConstructorId(), 0));
 
+                // Load flag and car image in parallel: the card is shown only when
+                // both are ready. The car image preload started earlier (in
+                // fetchConstructorDataForCard) so the disk cache should already be warm,
+                // significantly reducing the wait time here.
                 UIUtils.loadImagesInParallel(context,
                     new String[]{nationFlagUrl, constructor.getCar_pic_url()},
                     new ImageView[]{constructorFlag, constructorCar},

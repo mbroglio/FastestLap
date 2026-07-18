@@ -166,6 +166,11 @@ public class FavoriteDriverHandler {
                 if (driverResult.isSuccess()) {
                     Driver driver = ((Result.DriverSuccess) driverResult).getData();
                     favouriteDriver.setDriver(driver);
+
+                    // Preload the driver image immediately so Glide's disk cache is warm
+                    // by the time buildDriverCard calls loadImagesInParallel.
+                    UIUtils.preloadImage(context, driver.getDriver_half_pic_url());
+
                     Log.i(TAG, "Fetching nation data for driver card");
                     fetchNationForDriver(favouriteDriver);
                 } else {

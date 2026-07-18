@@ -125,6 +125,24 @@ public class UIUtils {
         loadImage(context, url, imageView, onSuccess, 0);
     }
 
+    /**
+     * Starts downloading the image at {@code url} into Glide's disk cache without
+     * displaying it anywhere. Call this as early as possible (e.g. when you first
+     * receive the URL) so the cache is warm by the time the real load starts.
+     */
+    public static void preloadImage(Context context, String url) {
+        if (url == null || url.isEmpty()) return;
+        // Guard against destroyed activities
+        if (context instanceof android.app.Activity) {
+            android.app.Activity activity = (android.app.Activity) context;
+            if (activity.isDestroyed() || activity.isFinishing()) return;
+        }
+        Glide.with(context)
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .preload();
+    }
+
     public static void loadSequenceOfImagesWithGlide(Context context, String[] urls, ImageView[] imageViews, Runnable onSuccess) {
         if (urls.length != imageViews.length) {
             throw new IllegalArgumentException("The length of urls and imageViews must be the same");
@@ -197,6 +215,20 @@ public class UIUtils {
     private static void loadImage(Context context, String url, ImageView imageView, Runnable onSuccess, int retryCount) {
         Log.i("Glide", "Loading image: " + url);
 
+        // Guard: if the context is a destroyed Activity, skip the load to avoid the
+        // "You cannot start a load for a destroyed activity" crash that occurs when an
+        // async callback (posted via Handler) fires after the user has navigated away.
+        if (context instanceof android.app.Activity) {
+            android.app.Activity activity = (android.app.Activity) context;
+            if (activity.isDestroyed() || activity.isFinishing()) {
+                Log.w("Glide", "Skipping image load — activity is destroyed: " + url);
+                if (onSuccess != null) {
+                    new Handler(Looper.getMainLooper()).post(onSuccess);
+                }
+                return;
+            }
+        }
+
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         Network activeNetwork = cm != null ? cm.getActiveNetwork() : null;
         NetworkCapabilities nc = (activeNetwork != null) ? cm.getNetworkCapabilities(activeNetwork) : null;
@@ -216,7 +248,7 @@ public class UIUtils {
 
             Glide.with(context)
                     .load(url)
-                    .thumbnail(0.25f)  // Load 25% quality version first for instant display
+                    .thumbnail(0.5f)  // Load 50% quality version first for faster, higher-quality preview
                     .diskCacheStrategy(DiskCacheStrategy.ALL)  // Cache both original and resized
                     .listener(new RequestListener<Drawable>() {
                         @Override
@@ -253,20 +285,19 @@ public class UIUtils {
                             // .thumbnail(0.25f) fires this callback twice:
                             //   isFirstResource=true  → thumbnail (low-res) is ready
                             //   isFirstResource=false → full image is ready
-                            // We fire onSuccess only on the FIRST call that completes
-                            // (could be thumbnail from cache or full image — doesn’t matter)
-                            // and guard against double-fire using callbackFired.
-                            if (isFirstResource) {
-                                // Thumbnail delivered first. Display it but don't fire the callback yet;
-                                // wait for the full image so callers get the best-quality result.
-                                Log.i("Glide", "Thumbnail ready (waiting for full image): " + url);
-                                return false; // Let Glide display the thumbnail
-                            }
+                            //
+                            // We fire onSuccess on the FIRST successful delivery (thumbnail).
+                            // This prevents the UI from blocking when the full-quality image
+                            // takes a long time to load (e.g. large images from Firebase Storage).
+                            // Glide will silently upgrade the displayed image to full-quality
+                            // when it finishes, without any extra callback needed.
 
-                            // Full image is ready — fire the callback exactly once.
-                            Log.i("Glide", "Full image loaded successfully: " + url);
+                            Log.i("Glide", isFirstResource
+                                    ? "Thumbnail ready (firing callback): " + url
+                                    : "Full image loaded (callback already fired): " + url);
+
                             synchronized (callbackFired) {
-                                if (callbackFired[0]) return false;
+                                if (callbackFired[0]) return false; // callback already fired (thumbnail was fast)
                                 callbackFired[0] = true;
                             }
 
@@ -275,7 +306,7 @@ public class UIUtils {
                                 // This prevents IllegalStateException if onSuccess triggers another Glide load.
                                 new Handler(Looper.getMainLooper()).post(onSuccess);
                             }
-                            return false; // Let Glide set the full-quality drawable on the target
+                            return false; // Let Glide display the resource
                         }
                     })
                     .into(imageView);
@@ -290,6 +321,18 @@ public class UIUtils {
     }
 
     private static void loadImageAlpha(Context context, String url, LinearLayout card, Runnable onSuccess, int alpha, int retryCount) {
+        // Guard: skip load if the associated Activity is already destroyed.
+        if (context instanceof android.app.Activity) {
+            android.app.Activity activity = (android.app.Activity) context;
+            if (activity.isDestroyed() || activity.isFinishing()) {
+                Log.w("Glide", "Skipping alpha image load — activity is destroyed: " + url);
+                if (onSuccess != null) {
+                    new Handler(Looper.getMainLooper()).post(onSuccess);
+                }
+                return;
+            }
+        }
+
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
                     .load(url)
