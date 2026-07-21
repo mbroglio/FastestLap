@@ -151,7 +151,7 @@ public class LastRaceHandler {
             }
         );
 
-        UIUtils.translateMonth(dateTime.getMonth().toString().substring(0, 3).toUpperCase(),
+        UIUtils.translateMonth(dateTime.getMonth().toString().substring(0, 3).toUpperCase(java.util.Locale.ROOT),
             view.findViewById(R.id.last_race_month), true);
 
         MutableLiveData<Result> raceResultData = raceResultViewModel.getRaceResults(race.getRound());

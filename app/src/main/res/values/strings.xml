@@ -259,6 +259,6 @@
     <string name="widget_medium_description">FastestLap medium widget</string>
     <string name="widget_large_description">FastestLap large widget</string>
     <string name="widget_loading_title" translatable="false">FastestLap</string>
-    <string name="widget_loading_text" translatable="false">Loading…</string>
+    <string name="widget_loading_text">Loading…</string>
 
 </resources>

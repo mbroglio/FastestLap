@@ -248,18 +248,11 @@ public class UIUtils {
 
             Glide.with(context)
                     .load(url)
-                    .thumbnail(0.5f)  // Load 50% quality version first for faster, higher-quality preview
                     .diskCacheStrategy(DiskCacheStrategy.ALL)  // Cache both original and resized
                     .listener(new RequestListener<>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            Log.e("Glide", "Image loading failed (isFirstResource=" + isFirstResource + "): " + url);
-
-                            // If the thumbnail fails, do nothing and wait for the main image result.
-                            // If the main image fails, handle the error (but guard against double-fire).
-                            if (isFirstResource) {
-                                return false; // thumbnail failed; let Glide continue with main image
-                            }
+                            Log.e("Glide", "Image loading failed: " + url);
 
                             synchronized (callbackFired) {
                                 if (callbackFired[0]) return true;
@@ -282,23 +275,11 @@ public class UIUtils {
 
                         @Override
                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            // .thumbnail(0.25f) fires this callback twice:
-                            //   isFirstResource=true  → thumbnail (low-res) is ready
-                            //   isFirstResource=false → full image is ready
-                            //
-                            // We fire onSuccess on the FIRST successful delivery (thumbnail).
-                            // This prevents the UI from blocking when the full-quality image
-                            // takes a long time to load (e.g. large images from Firebase Storage).
-                            // Glide will silently upgrade the displayed image to full-quality
-                            // when it finishes, without any extra callback needed.
-
-                            Log.i("Glide", isFirstResource
-                                    ? "Thumbnail ready (firing callback): " + url
-                                    : "Full image loaded (callback already fired): " + url);
+                            Log.i("Glide", "Full image loaded (firing callback): " + url);
 
                             synchronized (callbackFired) {
                                 if (callbackFired[0])
-                                    return false; // callback already fired (thumbnail was fast)
+                                    return false; // callback already fired
                                 callbackFired[0] = true;
                             }
 
@@ -586,9 +567,9 @@ public class UIUtils {
                 eventDate.split(" ")[2] + " ";
 
         if (AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("en-GB")) {
-            newEventDate += eventDate.split(" ")[3].toUpperCase();
+            newEventDate += eventDate.split(" ")[3].toUpperCase(Locale.ROOT);
         } else if (AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("it-IT")) {
-            newEventDate += Objects.requireNonNull(Constants.MONTH_ENG_TO_ITA.get(eventDate.split(" ")[3].toLowerCase())).toUpperCase();
+            newEventDate += Objects.requireNonNull(Constants.MONTH_ENG_TO_ITA.get(eventDate.split(" ")[3].toLowerCase(Locale.ROOT))).toUpperCase(Locale.ROOT);
         }
 
         UIUtils.singleSetTextViewText(newEventDate, eventDateTextView);
@@ -631,7 +612,6 @@ public class UIUtils {
      * ----------------------------------------------------------------------------------------------
      */
 
-    @RequiresApi(api = Build.VERSION_CODES.S)
     public static String getTimeAgo(String dateString, Context context) {
         long SECONDS_PER_MINUTE = 60;
         long SECONDS_PER_HOUR = 3600;
@@ -646,7 +626,7 @@ public class UIUtils {
             ZonedDateTime now = ZonedDateTime.now(pastTime.getZone());
             Duration duration = Duration.between(pastTime, now);
 
-            long seconds = duration.toSeconds();
+            long seconds = duration.getSeconds();
 
             if (seconds < 60) {
                 return context.getString(R.string.just_now);

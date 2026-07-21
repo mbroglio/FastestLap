@@ -264,7 +264,7 @@ public class DriverBioActivity extends AppCompatActivity {
 
     public void setToolbar(boolean teamIdPresent, String teamId) {
 
-        UIUtils.singleSetTextViewText((driver.getGivenName() + " " + driver.getFamilyName()).toUpperCase(),
+        UIUtils.singleSetTextViewText((driver.getGivenName() + " " + driver.getFamilyName()).toUpperCase(java.util.Locale.ROOT),
                 findViewById(R.id.topAppBarTitle));
 
         if (teamIdPresent) {

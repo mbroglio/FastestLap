@@ -1,5 +1,6 @@
 package com.the_coffe_coders.fastestlap.ui.event;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -251,6 +252,7 @@ public class PastEventsActivity extends AppCompatActivity {
         return racesList.size(); // Inserisci alla fine se ha il round più basso
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private void sortAndUpdateList() {
         // Ordina la lista finale per sicurezza
         racesList.sort(Comparator.comparingInt(Race::getRoundAsInt));

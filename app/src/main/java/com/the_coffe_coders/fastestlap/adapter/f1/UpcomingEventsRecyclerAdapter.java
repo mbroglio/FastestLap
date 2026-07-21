@@ -70,7 +70,7 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
                         holder.gpTextView,
                         holder.dateTextView});
 
-        UIUtils.translateMonth(weeklyRace.getDateTime().getMonth().toString().substring(0, 3).toUpperCase(),
+        UIUtils.translateMonth(weeklyRace.getDateTime().getMonth().toString().substring(0, 3).toUpperCase(java.util.Locale.ROOT),
                 holder.monthTextView, true);
 
         trackViewModel.getTrack(weeklyRace.getTrack().getTrackId()).observe(lifecycleOwner, result -> {

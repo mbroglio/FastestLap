@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.adapter;
+package com.the_coffe_coders.fastestlap.adapter.f1;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -42,10 +42,10 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
     private final List<Constructor> constructorList;
     private final LifecycleOwner lifecycleOwner;
     private final LoadingScreen loadingScreen;
-    // Counts how many cards still need to finish loading. Decremented by each card when
-    // its car image, logo, and both driver images are all ready. When it reaches 0 the
-    // loading screen is hidden.
-    private AtomicInteger pendingCards;
+    // Tracks which items have fully loaded (constructor + drivers) so we only count them once.
+    private final boolean[] loadedPositions;
+    private final int targetLoadCount;
+    private int currentLoadedCount = 0;
 
     public ConstructorStandingsRecyclerAdapter(Context context, String constructorId, List<ConstructorStandingsElement> constructorStandingsList,
                                                List<Constructor> constructorList, DriverViewModel driverViewModel, ConstructorViewModel constructorViewModel,
@@ -58,7 +58,8 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         this.constructorViewModel = constructorViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.loadingScreen = loadingScreen;
-        this.pendingCards = new AtomicInteger(getItemCount());
+        this.targetLoadCount = Math.min(getItemCount(), 3);
+        this.loadedPositions = new boolean[getItemCount()];
     }
 
     @NonNull
@@ -95,6 +96,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
             // Self-remove: fires at most once per bind regardless of how many times
             // the LiveData emits (cache + network).
             constructorLd.removeObserver(selfRef[0]);
+            loadingScreen.updateProgress();
 
             if (result.isSuccess()) {
                 showConstructorFound(holder);
@@ -128,7 +130,10 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                 UIUtils.loadImagesInParallel(context,
                         new String[]{constructor.getCar_pic_url(), constructor.getTeam_logo_url()},
                         new ImageView[]{holder.constructorCarImage, holder.constructorLogo},
-                        () -> loadBothDriversInParallel(holder, constructor, position));
+                        () -> {
+                            loadingScreen.updateProgress();
+                            loadBothDriversInParallel(holder, constructor, position);
+                        });
             } else {
                 showConstructorNotFound(holder, currentConstructorId);
                 // Ensure the latch is decremented even on error so the loading screen
@@ -166,6 +171,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
     private void loadBothDriversInParallel(ConstructorViewHolder holder, Constructor constructor, int position) {
         AtomicInteger driversReady = new AtomicInteger(2);
         Runnable onOneDriverReady = () -> {
+            loadingScreen.updateProgress();
             if (driversReady.decrementAndGet() == 0) {
                 endLoading(position);
             }
@@ -177,15 +183,20 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         d1Ref[0] = result -> {
             if (result instanceof Result.Loading) return;
             d1Ld.removeObserver(d1Ref[0]);
+            loadingScreen.updateProgress();
             if (result.isSuccess()) {
                 Driver d1 = ((Result.DriverSuccess) result).getData();
                 UIUtils.singleSetTextViewText(d1.getFullName(), holder.driverOneName);
                 UIUtils.loadImageWithGlide(context, d1.getDriver_half_pic_url(), holder.driverOneImage, onOneDriverReady);
             } else {
                 String id = constructor.getDriverOneId();
-                UIUtils.singleSetTextViewText(
-                        id.contains("_") ? id.split("_")[1].toUpperCase() : id.toUpperCase(),
-                        holder.driverOneName);
+                if (id != null) {
+                    UIUtils.singleSetTextViewText(
+                            id.contains("_") ? id.split("_")[1].toUpperCase(java.util.Locale.ROOT) : id.toUpperCase(java.util.Locale.ROOT),
+                            holder.driverOneName);
+                } else {
+                    UIUtils.singleSetTextViewText("N/A", holder.driverOneName);
+                }
                 UIUtils.loadImageWithGlide(context, null, holder.driverOneImage, onOneDriverReady);
             }
         };
@@ -201,15 +212,20 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         d2Ref[0] = result -> {
             if (result instanceof Result.Loading) return;
             d2Ld.removeObserver(d2Ref[0]);
+            loadingScreen.updateProgress();
             if (result.isSuccess()) {
                 Driver d2 = ((Result.DriverSuccess) result).getData();
                 UIUtils.singleSetTextViewText(d2.getFullName(), holder.driverTwoName);
                 UIUtils.loadImageWithGlide(context, d2.getDriver_half_pic_url(), holder.driverTwoImage, onOneDriverReady);
             } else {
                 String id = constructor.getDriverTwoId();
-                UIUtils.singleSetTextViewText(
-                        id.contains("_") ? id.split("_")[1].toUpperCase() : id.toUpperCase(),
-                        holder.driverTwoName);
+                if (id != null) {
+                    UIUtils.singleSetTextViewText(
+                            id.contains("_") ? id.split("_")[1].toUpperCase(java.util.Locale.ROOT) : id.toUpperCase(java.util.Locale.ROOT),
+                            holder.driverTwoName);
+                } else {
+                    UIUtils.singleSetTextViewText("N/A", holder.driverTwoName);
+                }
                 UIUtils.loadImageWithGlide(context, null, holder.driverTwoImage, onOneDriverReady);
             }
         };
@@ -221,9 +237,18 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
     }
 
     private void endLoading(int position) {
-        int remaining = pendingCards.decrementAndGet();
-        Log.i("ConstructorsStanding", "onBindViewHolder " + position + "/" + getItemCount() + " — remaining: " + remaining);
-        if (remaining <= 0) {
+        boolean shouldHide = false;
+        synchronized (this) {
+            if (position >= 0 && position < loadedPositions.length && !loadedPositions[position]) {
+                loadedPositions[position] = true;
+                currentLoadedCount++;
+                Log.i("ConstructorsStanding", "onBindViewHolder " + position + "/" + getItemCount() + " — loaded: " + currentLoadedCount + "/" + targetLoadCount);
+                if (currentLoadedCount >= targetLoadCount) {
+                    shouldHide = true;
+                }
+            }
+        }
+        if (shouldHide) {
             loadingScreen.hideLoadingScreen();
         }
     }
@@ -238,11 +263,14 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         holder.constructorNotFound.setVisibility(View.VISIBLE);
         Log.i("ConstructorsStandingAdapter", "Constructor not found id test: " + constructorId + " -> " + constructorId.contains("_"));
 
-        if (constructorId.contains("_")) {
-            constructorId = constructorId.split("_")[0] + " " + constructorId.split("_")[1];
+        if (constructorId != null) {
+            if (constructorId.contains("_")) {
+                constructorId = constructorId.split("_")[0] + " " + constructorId.split("_")[1];
+            }
+            UIUtils.singleSetTextViewText(constructorId.toUpperCase(java.util.Locale.ROOT) + " " + context.getString(R.string.constructor_info_not_found), holder.constructorNotFound);
+        } else {
+            UIUtils.singleSetTextViewText(context.getString(R.string.constructor_info_not_found), holder.constructorNotFound);
         }
-
-        UIUtils.singleSetTextViewText(context.getString(R.string.constructor_info_not_found, constructorId.toUpperCase()), holder.constructorNotFound);
 
 
     }

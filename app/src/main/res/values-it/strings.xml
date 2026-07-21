@@ -181,7 +181,6 @@
     <string name="widget_small_description">Widget FastestLap compatto</string>
     <string name="widget_medium_description">Widget FastestLap medio</string>
     <string name="widget_large_description">Widget FastestLap grande</string>
-    <string name="widget_loading_title">FastestLap</string>
     <string name="widget_loading_text">Caricamento…</string>
 
 </resources>

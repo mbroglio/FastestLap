@@ -17,6 +17,7 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.f1.DriversStandingRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandingsElement;
@@ -110,9 +111,24 @@ public class DriversStandingActivity extends AppCompatActivity {
                     driversStandingAdapter = new DriversStandingRecyclerAdapter(this, driverStandingList, null, driverId, driverViewModel, constructorViewModel, this, loadingScreen);
                     driversStandingRecyclerView.setAdapter(driversStandingAdapter);
 
-                    for (int i = 0; i < driversStandingAdapter.getItemCount(); i++) {
-                        driversStandingAdapter.onBindViewHolder(
-                                driversStandingAdapter.createViewHolder(driversStandingRecyclerView, driversStandingAdapter.getItemViewType(i)), i);
+                    for (DriverStandingsElement element : driverStandingList) {
+                        String id = element.getDriver().getDriverId();
+                        driverViewModel.getDriver(id).observe(this, dResult -> {
+                            if (dResult instanceof Result.Loading) return;
+                            if (dResult.isSuccess()) {
+                                Driver d = ((Result.DriverSuccess) dResult).getData();
+                                UIUtils.preloadImage(this, d.getDriver_half_pic_url());
+                                if (d.getTeam_id() != null) {
+                                    constructorViewModel.getSelectedConstructor(d.getTeam_id()).observe(this, cResult -> {
+                                        if (cResult instanceof Result.Loading) return;
+                                        if (cResult.isSuccess()) {
+                                            Constructor c = ((Result.ConstructorSuccess) cResult).getData();
+                                            UIUtils.preloadImage(this, c.getTeam_logo_minimal_url());
+                                        }
+                                    });
+                                }
+                            }
+                        });
                     }
                 } catch (ClassCastException e) {
                     setupPageForDriverList();
@@ -144,9 +160,17 @@ public class DriversStandingActivity extends AppCompatActivity {
                 driversStandingAdapter = new DriversStandingRecyclerAdapter(this, null, driverList, driverId, driverViewModel, constructorViewModel, this, loadingScreen);
                 driversStandingRecyclerView.setAdapter(driversStandingAdapter);
 
-                for (int i = 0; i < driversStandingAdapter.getItemCount(); i++) {
-                    driversStandingAdapter.onBindViewHolder(
-                            driversStandingAdapter.createViewHolder(driversStandingRecyclerView, driversStandingAdapter.getItemViewType(i)), i);
+                for (Driver d : driverList) {
+                    UIUtils.preloadImage(this, d.getDriver_half_pic_url());
+                    if (d.getTeam_id() != null) {
+                        constructorViewModel.getSelectedConstructor(d.getTeam_id()).observe(this, cResult -> {
+                            if (cResult instanceof Result.Loading) return;
+                            if (cResult.isSuccess()) {
+                                Constructor c = ((Result.ConstructorSuccess) cResult).getData();
+                                UIUtils.preloadImage(this, c.getTeam_logo_minimal_url());
+                            }
+                        });
+                    }
                 }
             } else {
                 Log.i(TAG, "DRIVER LIST ERROR");

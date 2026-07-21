@@ -15,9 +15,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.adapter.ConstructorStandingsRecyclerAdapter;
+import com.the_coffe_coders.fastestlap.adapter.f1.ConstructorStandingsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
+import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
@@ -117,6 +118,21 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                                 Constructor c = ((Result.ConstructorSuccess) cResult).getData();
                                 UIUtils.preloadImage(this, c.getCar_pic_url());
                                 UIUtils.preloadImage(this, c.getTeam_logo_url());
+                                
+                                driverViewModel.getDriver(c.getDriverOneId()).observe(this, d1Result -> {
+                                    if (d1Result instanceof Result.Loading) return;
+                                    if (d1Result.isSuccess()) {
+                                        Driver d1 = ((Result.DriverSuccess) d1Result).getData();
+                                        UIUtils.preloadImage(this, d1.getDriver_half_pic_url());
+                                    }
+                                });
+                                driverViewModel.getDriver(c.getDriverTwoId()).observe(this, d2Result -> {
+                                    if (d2Result instanceof Result.Loading) return;
+                                    if (d2Result.isSuccess()) {
+                                        Driver d2 = ((Result.DriverSuccess) d2Result).getData();
+                                        UIUtils.preloadImage(this, d2.getDriver_half_pic_url());
+                                    }
+                                });
                             }
                         });
                     }
@@ -147,6 +163,26 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                 List<Constructor> constructorList = ((Result.ConstructorsSuccess) result).getData();
 
                 Log.i(TAG, constructorList.toString());
+
+                for (Constructor c : constructorList) {
+                    UIUtils.preloadImage(this, c.getCar_pic_url());
+                    UIUtils.preloadImage(this, c.getTeam_logo_url());
+                    
+                    driverViewModel.getDriver(c.getDriverOneId()).observe(this, d1Result -> {
+                        if (d1Result instanceof Result.Loading) return;
+                        if (d1Result.isSuccess()) {
+                            Driver d1 = ((Result.DriverSuccess) d1Result).getData();
+                            UIUtils.preloadImage(this, d1.getDriver_half_pic_url());
+                        }
+                    });
+                    driverViewModel.getDriver(c.getDriverTwoId()).observe(this, d2Result -> {
+                        if (d2Result instanceof Result.Loading) return;
+                        if (d2Result.isSuccess()) {
+                            Driver d2 = ((Result.DriverSuccess) d2Result).getData();
+                            UIUtils.preloadImage(this, d2.getDriver_half_pic_url());
+                        }
+                    });
+                }
 
                 show(standingsNotAvailableTextView, constructorsStandingRecyclerView);
 
