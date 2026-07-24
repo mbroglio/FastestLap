@@ -108,35 +108,6 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
                     List<ConstructorStandingsElement> constructorList = constructorStandings.getConstructorStandings();
 
-                    // Preload constructor data (and their images) for all constructors immediately
-                    // so that Firebase + Glide disk caches are warm when onBindViewHolder fires.
-                    for (ConstructorStandingsElement element : constructorList) {
-                        String id = element.getConstructor().getConstructorId();
-                        constructorViewModel.getSelectedConstructor(id).observe(this, cResult -> {
-                            if (cResult instanceof Result.Loading) return;
-                            if (cResult.isSuccess()) {
-                                Constructor c = ((Result.ConstructorSuccess) cResult).getData();
-                                UIUtils.preloadImage(this, c.getCar_pic_url());
-                                UIUtils.preloadImage(this, c.getTeam_logo_url());
-                                
-                                driverViewModel.getDriver(c.getDriverOneId()).observe(this, d1Result -> {
-                                    if (d1Result instanceof Result.Loading) return;
-                                    if (d1Result.isSuccess()) {
-                                        Driver d1 = ((Result.DriverSuccess) d1Result).getData();
-                                        UIUtils.preloadImage(this, d1.getDriver_half_pic_url());
-                                    }
-                                });
-                                driverViewModel.getDriver(c.getDriverTwoId()).observe(this, d2Result -> {
-                                    if (d2Result instanceof Result.Loading) return;
-                                    if (d2Result.isSuccess()) {
-                                        Driver d2 = ((Result.DriverSuccess) d2Result).getData();
-                                        UIUtils.preloadImage(this, d2.getDriver_half_pic_url());
-                                    }
-                                });
-                            }
-                        });
-                    }
-
                     constructorsStandingRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
                     constructorsStandingAdapter = new ConstructorStandingsRecyclerAdapter(this, constructorId, constructorList, null, driverViewModel, constructorViewModel, this, loadingScreen);
@@ -163,26 +134,6 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                 List<Constructor> constructorList = ((Result.ConstructorsSuccess) result).getData();
 
                 Log.i(TAG, constructorList.toString());
-
-                for (Constructor c : constructorList) {
-                    UIUtils.preloadImage(this, c.getCar_pic_url());
-                    UIUtils.preloadImage(this, c.getTeam_logo_url());
-                    
-                    driverViewModel.getDriver(c.getDriverOneId()).observe(this, d1Result -> {
-                        if (d1Result instanceof Result.Loading) return;
-                        if (d1Result.isSuccess()) {
-                            Driver d1 = ((Result.DriverSuccess) d1Result).getData();
-                            UIUtils.preloadImage(this, d1.getDriver_half_pic_url());
-                        }
-                    });
-                    driverViewModel.getDriver(c.getDriverTwoId()).observe(this, d2Result -> {
-                        if (d2Result instanceof Result.Loading) return;
-                        if (d2Result.isSuccess()) {
-                            Driver d2 = ((Result.DriverSuccess) d2Result).getData();
-                            UIUtils.preloadImage(this, d2.getDriver_half_pic_url());
-                        }
-                    });
-                }
 
                 show(standingsNotAvailableTextView, constructorsStandingRecyclerView);
 

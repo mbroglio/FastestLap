@@ -35,9 +35,10 @@ public class Constructor implements Parcelable {
             return new Constructor[size];
         }
     };
-    @PrimaryKey(autoGenerate = true)
     private long uid;
-    private String constructorId;
+    @PrimaryKey
+    @NonNull
+    private String constructorId = "";
     private String url;
     private String name;
     private String nationality;

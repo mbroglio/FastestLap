@@ -30,6 +30,6 @@ public class LocalNationDataSource implements NationDataSource {
     }
 
     public void insertNation(Nation nation) {
-        nationDAO.insertNation(nation);
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> nationDAO.insertNation(nation));
     }
 }

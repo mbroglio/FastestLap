@@ -213,44 +213,35 @@ public class FavoriteConstructorHandler {
     }
 
     private void buildConstructorCard(ConstructorStandingsElement standingElement, Nation nation) {
-        if (networkLiveData.isConnected() && userViewModel.getLoggedUser() != null) {
-            try {
-                Constructor constructor = standingElement.getConstructor();
+        try {
+            Constructor constructor = standingElement.getConstructor();
 
-                String nationFlagUrl = null;
-                String nationAbbreviation = null;
-                if (nation != null) {
-                    nationFlagUrl = nation.getNation_flag_url();
-                    nationAbbreviation = nation.getAbbreviation();
-                }
-
-                UIUtils.multipleSetTextViewText(
-                    new String[]{constructor.getName(), nationAbbreviation},
-                    new TextView[]{view.findViewById(R.id.favourite_constructor_name), view.findViewById(R.id.favourite_constructor_nationality)}
-                );
-
-                ImageView constructorCar = view.findViewById(R.id.favourite_constructor_car);
-                ImageView constructorFlag = view.findViewById(R.id.favourite_constructor_flag);
-
-                FrameLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
-                constructorCard.setOnClickListener(v -> NavigationUtils.navigateToBioPage(context, constructor.getConstructorId(), 0));
-
-                // Load flag and car image in parallel: the card is shown only when
-                // both are ready. The car image preload started earlier (in
-                // fetchConstructorDataForCard) so the disk cache should already be warm,
-                // significantly reducing the wait time here.
-                UIUtils.loadImagesInParallel(context,
-                    new String[]{nationFlagUrl, constructor.getCar_pic_url()},
-                    new ImageView[]{constructorFlag, constructorCar},
-                    () -> buildConstructorCardFinalStep(standingElement, constructor));
-
-            } catch (Exception e) {
-                Log.e(TAG, "Error building constructor card: " + e.getMessage());
-                showConstructorNotFound(0);
+            String nationFlagUrl = null;
+            String nationAbbreviation = null;
+            if (nation != null) {
+                nationFlagUrl = nation.getNation_flag_url();
+                nationAbbreviation = nation.getAbbreviation();
             }
-        } else {
-            Log.e(TAG, "Error building constructor card: No internet connection");
-            showConstructorNotFound(1);
+
+            UIUtils.multipleSetTextViewText(
+                new String[]{constructor.getName(), nationAbbreviation},
+                new TextView[]{view.findViewById(R.id.favourite_constructor_name), view.findViewById(R.id.favourite_constructor_nationality)}
+            );
+
+            ImageView constructorCar = view.findViewById(R.id.favourite_constructor_car);
+            ImageView constructorFlag = view.findViewById(R.id.favourite_constructor_flag);
+
+            FrameLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
+            constructorCard.setOnClickListener(v -> NavigationUtils.navigateToBioPage(context, constructor.getConstructorId(), 0));
+
+            UIUtils.loadImagesInParallel(context,
+                new String[]{nationFlagUrl, constructor.getCar_pic_url()},
+                new ImageView[]{constructorFlag, constructorCar},
+                () -> buildConstructorCardFinalStep(standingElement, constructor));
+
+        } catch (Exception e) {
+            Log.e(TAG, "Error building constructor card: " + e.getMessage());
+            showConstructorNotFound(0);
         }
     }
 

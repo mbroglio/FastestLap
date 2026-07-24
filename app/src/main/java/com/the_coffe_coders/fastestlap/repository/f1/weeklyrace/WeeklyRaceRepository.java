@@ -90,6 +90,7 @@ public class WeeklyRaceRepository {
                     public void onSuccess(WeeklyRace weeklyRace) {
                         Log.d(TAG, "Next race loaded from remote: " + weeklyRace);
                         if (weeklyRace != null) {
+                            localWeeklyRaceDataSource.saveSingleWeeklyRace(weeklyRace);
                             lastUpdateTimestamps.put("next", System.currentTimeMillis());
                             Objects.requireNonNull(raceCache.get("next")).postValue(new Result.NextRaceSuccess(weeklyRace));
                         } else {
@@ -141,6 +142,7 @@ public class WeeklyRaceRepository {
                 @Override
                 public void onSuccess(WeeklyRace weeklyRace) {
                     if (weeklyRace != null) {
+                        localWeeklyRaceDataSource.saveSingleWeeklyRace(weeklyRace);
                         lastUpdateTimestamps.put("last", System.currentTimeMillis());
                         Objects.requireNonNull(raceCache.get("last")).postValue(new Result.NextRaceSuccess(weeklyRace));
                     } else {

@@ -48,51 +48,60 @@ public class TrackRepository {
 
     public synchronized MutableLiveData<Result> getTrack(String trackId) {
         Log.d(TAG, "Fetching track with ID: " + trackId);
-        if (!trackCache.containsKey(trackId) || !lastUpdateTimestamps.containsKey(trackId) || lastUpdateTimestamps.get(trackId) == null) {
+        if (!trackCache.containsKey(trackId)) {
             trackCache.put(trackId, new MutableLiveData<>());
-            if (isNetworkAvailable()) {
-                loadTrack(trackId);
-            } else {
-                Log.d(TAG, "No network connection");
-                loadTrackFromLocal(trackId);
-            }
-        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(trackId) > 6000) {
-            if (isNetworkAvailable()) {
-                loadTrack(trackId);
-            } else {
-                loadTrackFromLocal(trackId);
-            }
+            loadTrackCacheFirst(trackId);
         } else {
-            Log.d(TAG, "Track found in cache: " + trackId);
+            Long lastUpdate = lastUpdateTimestamps.get(trackId);
+            if (lastUpdate == null || System.currentTimeMillis() - lastUpdate > 300000) {
+                if (isNetworkAvailable()) {
+                    loadTrackFromRemote(trackId, true);
+                }
+            } else {
+                Log.d(TAG, "Track found in cache: " + trackId);
+            }
         }
         return trackCache.get(trackId);
     }
 
-    public void loadTrackFromLocal(String trackId) {
+    private void loadTrackCacheFirst(String trackId) {
         localTrackDataSource.getTrack(trackId, new TrackCallback() {
             @Override
             public void onTrackLoaded(Track track) {
                 if (track != null) {
+                    Log.d(TAG, "Track loaded from local database (cache hit): " + trackId);
                     track.setTrackId(trackId);
-                    trackCache.put(trackId, new MutableLiveData<>(new Result.TrackSuccess(track)));
                     lastUpdateTimestamps.put(trackId, System.currentTimeMillis());
                     Objects.requireNonNull(trackCache.get(trackId)).postValue(new Result.TrackSuccess(track));
-                    Log.d(TAG, "Track loaded from local cache: " + track);
+
+                    if (isNetworkAvailable()) {
+                        loadTrackFromRemote(trackId, true);
+                    }
                 } else {
-                    Log.e(TAG, "Track not found in local cache: " + trackId);
+                    Log.d(TAG, "Track cache miss in local database: " + trackId);
+                    if (isNetworkAvailable()) {
+                        loadTrackFromRemote(trackId, false);
+                    } else {
+                        Objects.requireNonNull(trackCache.get(trackId)).postValue(
+                                new Result.Error("Track not found locally and no network connection available"));
+                    }
                 }
             }
 
             @Override
             public void onError(Exception e) {
-                Log.e(TAG, "Error loading track from local cache: " + e.getMessage());
-                loadTrackFromLocal(trackId);
+                Log.e(TAG, "Error checking local database for track: " + e.getMessage());
+                if (isNetworkAvailable()) {
+                    loadTrackFromRemote(trackId, false);
+                }
             }
         });
     }
 
-    public void loadTrack(String trackId) {
-        trackCache.get(trackId).postValue(new Result.Loading("Fetching track from remote"));
+    private void loadTrackFromRemote(String trackId, boolean isBackgroundRefresh) {
+        if (!isBackgroundRefresh) {
+            trackCache.get(trackId).postValue(new Result.Loading("Fetching track from remote"));
+        }
         try {
             firebaseTrackDataSource.getTrack(trackId, new TrackCallback() {
                 @Override
@@ -103,15 +112,14 @@ public class TrackRepository {
                         localTrackDataSource.insertTrack(track);
                         lastUpdateTimestamps.put(trackId, System.currentTimeMillis());
                         Objects.requireNonNull(trackCache.get(trackId)).postValue(new Result.TrackSuccess(track));
-                    } else {
-                        Log.e(TAG, "Track not found in cache: " + trackId);
+                    } else if (!isBackgroundRefresh) {
+                        Log.e(TAG, "Track not found in remote: " + trackId);
                     }
                 }
 
                 @Override
                 public void onError(Exception exception) {
                     Log.e(TAG, "Error loading track: " + exception.getMessage());
-
                 }
             });
         } catch (Exception e) {

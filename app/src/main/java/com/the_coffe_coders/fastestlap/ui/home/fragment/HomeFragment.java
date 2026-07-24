@@ -13,9 +13,14 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
+import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandings;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;

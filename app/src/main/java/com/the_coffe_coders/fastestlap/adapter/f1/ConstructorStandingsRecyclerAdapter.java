@@ -58,8 +58,9 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         this.constructorViewModel = constructorViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.loadingScreen = loadingScreen;
-        this.targetLoadCount = Math.min(getItemCount(), 3);
+        this.targetLoadCount = getItemCount();
         this.loadedPositions = new boolean[getItemCount()];
+        preloadAllItems();
     }
 
     @NonNull
@@ -251,6 +252,76 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         if (shouldHide) {
             loadingScreen.hideLoadingScreen();
         }
+    }
+
+    private void preloadAllItems() {
+        for (int i = 0; i < getItemCount(); i++) {
+            final int pos = i;
+            String cId;
+            if (constructorStandingsList == null) {
+                cId = constructorList.get(pos).getConstructorId();
+            } else {
+                cId = constructorStandingsList.get(pos).getConstructor().getConstructorId();
+            }
+
+            androidx.lifecycle.LiveData<Result> cLd = constructorViewModel.getSelectedConstructor(cId);
+            androidx.lifecycle.Observer<Result>[] selfRef = new androidx.lifecycle.Observer[1];
+            selfRef[0] = result -> {
+                if (result instanceof Result.Loading) return;
+                cLd.removeObserver(selfRef[0]);
+                if (result.isSuccess()) {
+                    Constructor constructor = ((Result.ConstructorSuccess) result).getData();
+                    UIUtils.preloadImagesInParallel(context,
+                            new String[]{constructor.getCar_pic_url(), constructor.getTeam_logo_url()},
+                            () -> preloadDriversForConstructor(constructor, pos));
+                } else {
+                    endLoading(pos);
+                }
+            };
+            cLd.observe(lifecycleOwner, selfRef[0]);
+        }
+    }
+
+    private void preloadDriversForConstructor(Constructor constructor, int pos) {
+        if (constructor.getDrivers() == null || constructor.getDrivers().size() < 2) {
+            endLoading(pos);
+            return;
+        }
+        String driver1Id = constructor.getDrivers().get(0);
+        String driver2Id = constructor.getDrivers().get(1);
+
+        AtomicInteger driversReady = new AtomicInteger(2);
+        Runnable checkDriver = () -> {
+            if (driversReady.decrementAndGet() == 0) {
+                endLoading(pos);
+            }
+        };
+
+        androidx.lifecycle.LiveData<Result> d1Ld = driverViewModel.getDriver(driver1Id);
+        androidx.lifecycle.Observer<Result>[] d1Ref = new androidx.lifecycle.Observer[1];
+        d1Ref[0] = d1Res -> {
+            if (d1Res instanceof Result.Loading) return;
+            d1Ld.removeObserver(d1Ref[0]);
+            if (d1Res.isSuccess()) {
+                UIUtils.preloadImage(context, ((Result.DriverSuccess) d1Res).getData().getDriver_half_pic_url(), checkDriver);
+            } else {
+                checkDriver.run();
+            }
+        };
+        d1Ld.observe(lifecycleOwner, d1Ref[0]);
+
+        androidx.lifecycle.LiveData<Result> d2Ld = driverViewModel.getDriver(driver2Id);
+        androidx.lifecycle.Observer<Result>[] d2Ref = new androidx.lifecycle.Observer[1];
+        d2Ref[0] = d2Res -> {
+            if (d2Res instanceof Result.Loading) return;
+            d2Ld.removeObserver(d2Ref[0]);
+            if (d2Res.isSuccess()) {
+                UIUtils.preloadImage(context, ((Result.DriverSuccess) d2Res).getData().getDriver_half_pic_url(), checkDriver);
+            } else {
+                checkDriver.run();
+            }
+        };
+        d2Ld.observe(lifecycleOwner, d2Ref[0]);
     }
 
     private void showConstructorFound(ConstructorStandingsRecyclerAdapter.ConstructorViewHolder holder) {

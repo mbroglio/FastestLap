@@ -51,92 +51,63 @@ public class DriverRepository {
     public synchronized MutableLiveData<Result> getDriver(String driverId) {
         Log.d(TAG, "Fetching driver with ID: " + driverId);
 
-        if (!driverCache.containsKey(driverId) || !lastUpdateTimestamps.containsKey(driverId) || lastUpdateTimestamps.get(driverId) == null) {
+        if (!driverCache.containsKey(driverId)) {
             driverCache.put(driverId, new MutableLiveData<>());
-            loadDriver(driverId);
-        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(driverId) > 60000) {
-            // Se i dati sono vecchi, prova a caricare nuovi dati solo se c'è connessione
-            if (isNetworkAvailable()) {
-                loadDriver(driverId);
-            } else {
-                Log.d(TAG, "No network connection, using cached data for driver: " + driverId);
-                loadDriverFromLocal(driverId);
-            }
+            loadDriverCacheFirst(driverId);
         } else {
-            Log.d(TAG, "Driver found in cache: " + driverId);
+            Long lastUpdate = lastUpdateTimestamps.get(driverId);
+            if (lastUpdate == null || System.currentTimeMillis() - lastUpdate > 300000) { // 5 mins cache TTL
+                if (isNetworkAvailable()) {
+                    loadDriverFromRemote(driverId, false);
+                }
+            } else {
+                Log.d(TAG, "Driver found in cache: " + driverId);
+            }
         }
         return driverCache.get(driverId);
     }
 
-    private void loadDriverFromJolpica(String driverId) {
-        jolpicaDriverDataSource.getDriver(driverId, new DriverCallback() {
-            @Override
-            public void onDriverLoaded(Driver driver) {
-                if (driver != null) {
-                    if (driverCache.containsKey(driverId)) {
-                        Objects.requireNonNull(driverCache.get(driverId)).setValue(new Result.DriverSuccess(driver));
-                    } else {
-                        Log.e(TAG, "Driver not found in cache: " + driverId);
-                        driverCache.put(driverId, new MutableLiveData<>(new Result.DriverSuccess(driver)));
-                    }
-                    lastUpdateTimestamps.put(driverId, System.currentTimeMillis());
-                }
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.e(TAG, "Error loading driver from Jolpica: " + e.getMessage());
-                Objects.requireNonNull(driverCache.get(driverId)).postValue(new Result.Error("Error loading driver from Jolpica: " + e.getMessage()));
-            }
-        });
-    }
-
-    public void loadDriverFromLocal(String driverId) {
-        Log.d(TAG, "Loading driver from local database: " + driverId);
+    private void loadDriverCacheFirst(String driverId) {
+        // Step 1: Query local Room database first
         localDriverDataSource.getDriver(driverId, new DriverCallback() {
             @Override
             public void onDriverLoaded(Driver driver) {
                 if (driver != null) {
-                    Log.d(TAG, "Driver loaded from local database: " + driverId);
+                    Log.d(TAG, "Driver loaded from local database (cache hit): " + driverId);
                     driver.setDriverId(driverId);
-                    driverCache.put(driverId, new MutableLiveData<>(new Result.DriverSuccess(driver)));
                     lastUpdateTimestamps.put(driverId, System.currentTimeMillis());
                     Objects.requireNonNull(driverCache.get(driverId)).postValue(new Result.DriverSuccess(driver));
+
+                    // Step 2: Refresh from remote in background if network is available
+                    if (isNetworkAvailable()) {
+                        loadDriverFromRemote(driverId, true);
+                    }
                 } else {
-                    Log.e(TAG, "Driver not found in local database: " + driverId);
-                    // Se il driver non è trovato neanche localmente, prova con Jolpica se c'è connessione
-                    if (isNetworkAvailable() && jolpicaDriverDataSource != null) {
-                        Log.d(TAG, "Trying Jolpica as fallback for driver: " + driverId);
-                        loadDriverFromJolpica(driverId);
+                    Log.d(TAG, "Driver cache miss in local database: " + driverId);
+                    // Step 3: Fetch from remote if not present locally
+                    if (isNetworkAvailable()) {
+                        loadDriverFromRemote(driverId, false);
                     } else {
                         Objects.requireNonNull(driverCache.get(driverId)).postValue(
                                 new Result.Error("Driver not found locally and no network connection available"));
-
-                        throw new RuntimeException("Driver not found in local database: " + driverId);
                     }
                 }
             }
 
             @Override
             public void onError(Exception e) {
-                Log.e(TAG, "Error loading driver from local database: " + e.getMessage());
-                Objects.requireNonNull(driverCache.get(driverId)).postValue(
-                        new Result.Error("Error loading driver from local database: " + e.getMessage()));
+                Log.e(TAG, "Error checking local database for driver: " + e.getMessage());
+                if (isNetworkAvailable()) {
+                    loadDriverFromRemote(driverId, false);
+                }
             }
         });
     }
 
-    private void loadDriver(String driverId) {
-        // Controlla prima se c'è connessione di rete
-        if (!isNetworkAvailable()) {
-            Log.d(TAG, "No network connection available, loading from local database: " + driverId);
-            driverCache.get(driverId).postValue(new Result.Loading("Loading driver from local database"));
-            loadDriverFromLocal(driverId);
-            return;
+    private void loadDriverFromRemote(String driverId, boolean isBackgroundRefresh) {
+        if (!isBackgroundRefresh) {
+            driverCache.get(driverId).postValue(new Result.Loading("Fetching driver from remote"));
         }
-
-        Log.d(TAG, "Network available, fetching driver from Firebase: " + driverId);
-        driverCache.get(driverId).postValue(new Result.Loading("Fetching driver from remote"));
 
         try {
             firebaseDriverDataSource.getDriver(driverId, new DriverCallback() {
@@ -148,24 +119,18 @@ public class DriverRepository {
                         localDriverDataSource.insertDriver(driver);
                         lastUpdateTimestamps.put(driverId, System.currentTimeMillis());
                         Objects.requireNonNull(driverCache.get(driverId)).postValue(new Result.DriverSuccess(driver));
-                    } else {
+                    } else if (!isBackgroundRefresh) {
                         Log.e(TAG, "Driver not found in Firebase: " + driverId);
-                        loadDriverFromLocal(driverId);
                     }
                 }
 
                 @Override
                 public void onError(Exception e) {
                     Log.e(TAG, "Error loading driver from Firebase: " + e.getMessage());
-                    Log.d(TAG, "Falling back to local database for driver: " + driverId);
-                    loadDriverFromLocal(driverId);
                 }
             });
-
         } catch (Exception e) {
             Log.e(TAG, "Exception while loading driver from Firebase: " + e.getMessage());
-            Log.d(TAG, "Falling back to local database for driver: " + driverId);
-            loadDriverFromLocal(driverId);
         }
     }
 
@@ -178,6 +143,6 @@ public class DriverRepository {
             driverCache.put(driverId, new MutableLiveData<>());
         }
         driverCache.get(driverId).postValue(new Result.Loading("Loading driver from local database"));
-        loadDriverFromLocal(driverId);
+        loadDriverCacheFirst(driverId);
     }
 }

@@ -40,12 +40,10 @@ public class Driver implements Parcelable {
             return new Driver[size];
         }
     };
-    @PrimaryKey(autoGenerate = true)
     private long uid;
-    @Getter
-    // F = Firebase A = API
-
-    private String driverId; // A
+    @PrimaryKey
+    @NonNull
+    private String driverId = ""; // A
     private String permanentNumber; // A
     private String code; // A
     private String url;

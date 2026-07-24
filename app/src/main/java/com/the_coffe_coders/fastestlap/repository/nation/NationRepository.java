@@ -59,60 +59,62 @@ public class NationRepository {
 
         if (!nationCache.containsKey(nationId)) {
             nationCache.put(nationId, new MutableLiveData<>());
-        }
-
-        if (!lastUpdateTimestamps.containsKey(nationId) || lastUpdateTimestamps.get(nationId) == null) {
-            // No result yet. Only start a fetch if this nationId isn't already in-flight.
-            if (!inFlightFetches.contains(nationId)) {
-                inFlightFetches.add(nationId);
-                if (isNetworkAvailable()) {
-                    loadNation(nationId);
-                } else {
-                    loadNationFromLocal(nationId);
+            loadNationCacheFirst(nationId);
+        } else {
+            Long lastUpdate = lastUpdateTimestamps.get(nationId);
+            if (lastUpdate == null || System.currentTimeMillis() - lastUpdate > 300000) {
+                if (isNetworkAvailable() && !inFlightFetches.contains(nationId)) {
+                    inFlightFetches.add(nationId);
+                    loadNationFromRemote(nationId, true);
                 }
             } else {
-                Log.d(TAG, "Nation fetch already in-flight for: " + nationId);
+                Log.d(TAG, "Nation found in cache: " + nationId);
             }
-        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(nationId) > 60000) {
-            if (!inFlightFetches.contains(nationId)) {
-                inFlightFetches.add(nationId);
-                if (isNetworkAvailable()) {
-                    loadNation(nationId);
-                } else {
-                    loadNationFromLocal(nationId);
-                }
-            }
-        } else {
-            Log.d(TAG, "Nation found in cache: " + nationId);
         }
         return nationCache.get(nationId);
     }
 
-    public void loadNationFromLocal(String nationId) throws RuntimeException {
+    private void loadNationCacheFirst(String nationId) {
         localNationDataSource.getNation(nationId, new NationCallback() {
             @Override
             public void onNationLoaded(Nation nation) {
                 if (nation != null) {
+                    Log.d(TAG, "Nation loaded from local database (cache hit): " + nationId);
                     nation.setNationId(nationId);
-                    localNationDataSource.insertNation(nation);
-                    nationCache.put(nationId, new MutableLiveData<>(new Result.NationSuccess(nation)));
                     lastUpdateTimestamps.put(nationId, System.currentTimeMillis());
                     Objects.requireNonNull(nationCache.get(nationId)).postValue(new Result.NationSuccess(nation));
+
+                    if (isNetworkAvailable() && !inFlightFetches.contains(nationId)) {
+                        inFlightFetches.add(nationId);
+                        loadNationFromRemote(nationId, true);
+                    }
                 } else {
-                    Log.e(TAG, "Nation not found: " + nationId);
-                    throw new RuntimeException("Nation not found in local database: " + nationId);
+                    Log.d(TAG, "Nation cache miss in local database: " + nationId);
+                    if (isNetworkAvailable() && !inFlightFetches.contains(nationId)) {
+                        inFlightFetches.add(nationId);
+                        loadNationFromRemote(nationId, false);
+                    } else if (!inFlightFetches.contains(nationId)) {
+                        Objects.requireNonNull(nationCache.get(nationId)).postValue(
+                                new Result.Error("Nation not found locally and no network connection available"));
+                    }
                 }
             }
 
             @Override
             public void onError(Exception e) {
-                Log.e(TAG, "Error loading nation from local database: " + e.getMessage());
+                Log.e(TAG, "Error checking local database for nation: " + e.getMessage());
+                if (isNetworkAvailable() && !inFlightFetches.contains(nationId)) {
+                    inFlightFetches.add(nationId);
+                    loadNationFromRemote(nationId, false);
+                }
             }
         });
     }
 
-    private void loadNation(String nationId) {
-        nationCache.get(nationId).postValue(new Result.Loading("Fetching nation from remote"));
+    private void loadNationFromRemote(String nationId, boolean isBackgroundRefresh) {
+        if (!isBackgroundRefresh) {
+            nationCache.get(nationId).postValue(new Result.Loading("Fetching nation from remote"));
+        }
         try {
             firebaseNationDataSource.getNation(nationId, new NationCallback() {
                 @Override
@@ -123,7 +125,7 @@ public class NationRepository {
                         localNationDataSource.insertNation(nation);
                         lastUpdateTimestamps.put(nationId, System.currentTimeMillis());
                         Objects.requireNonNull(nationCache.get(nationId)).postValue(new Result.NationSuccess(nation));
-                    } else {
+                    } else if (!isBackgroundRefresh) {
                         Log.e(TAG, "Nation not found: " + nationId);
                     }
                 }
@@ -131,15 +133,12 @@ public class NationRepository {
                 @Override
                 public void onError(Exception e) {
                     inFlightFetches.remove(nationId);
-                    Log.e(TAG, "Error loading nation: " + e.getMessage());
-                    //fetch nation from local database
-                    loadNationFromLocal(nationId);
+                    Log.e(TAG, "Error loading nation from remote: " + e.getMessage());
                 }
             });
         } catch (Exception e) {
             inFlightFetches.remove(nationId);
-            Log.e(TAG, "Error loading nation: " + e.getMessage());
-            loadNationFromLocal(nationId);
+            Log.e(TAG, "Error loading nation from remote: " + e.getMessage());
         }
     }
 }

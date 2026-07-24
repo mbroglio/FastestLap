@@ -143,6 +143,72 @@ public class UIUtils {
                 .preload();
     }
 
+    public static void preloadImage(Context context, String url, Runnable onComplete) {
+        if (url == null || url.isEmpty()) {
+            if (onComplete != null) {
+                new Handler(Looper.getMainLooper()).post(onComplete);
+            }
+            return;
+        }
+
+        if (context instanceof android.app.Activity) {
+            android.app.Activity activity = (android.app.Activity) context;
+            if (activity.isDestroyed() || activity.isFinishing()) {
+                if (onComplete != null) {
+                    new Handler(Looper.getMainLooper()).post(onComplete);
+                }
+                return;
+            }
+        }
+
+        Glide.with(context)
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        if (onComplete != null) {
+                            new Handler(Looper.getMainLooper()).post(onComplete);
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        if (onComplete != null) {
+                            new Handler(Looper.getMainLooper()).post(onComplete);
+                        }
+                        return false;
+                    }
+                })
+                .preload();
+    }
+
+    public static void preloadImagesInParallel(Context context, String[] urls, Runnable onSuccess) {
+        if (urls == null || urls.length == 0) {
+            if (onSuccess != null) {
+                new Handler(Looper.getMainLooper()).post(onSuccess);
+            }
+            return;
+        }
+
+        final int[] loadedCount = {0};
+        final int total = urls.length;
+
+        Runnable check = () -> {
+            synchronized (loadedCount) {
+                loadedCount[0]++;
+                if (loadedCount[0] >= total && onSuccess != null) {
+                    new Handler(Looper.getMainLooper()).post(onSuccess);
+                }
+            }
+        };
+
+        for (String url : urls) {
+            preloadImage(context, url, check);
+        }
+    }
+
     public static void loadSequenceOfImagesWithGlide(Context context, String[] urls, ImageView[] imageViews, Runnable onSuccess) {
         if (urls.length != imageViews.length) {
             throw new IllegalArgumentException("The length of urls and imageViews must be the same");
@@ -544,20 +610,20 @@ public class UIUtils {
     }
 
     public static void translateSessionType(Context context, TextView sessionTypeTextView, String sessionId) {
-        if (AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("en-GB")) {
-            UIUtils.singleSetTextViewText(Constants.SESSION_NAMES_ENG.getOrDefault(sessionId, context.getString(R.string.unknown)), sessionTypeTextView);
-
-        } else if (AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("it-IT")) {
+        String langTags = AppCompatDelegate.getApplicationLocales().toLanguageTags();
+        if (langTags != null && langTags.toLowerCase(Locale.ROOT).startsWith("it")) {
             UIUtils.singleSetTextViewText(Constants.SESSION_NAMES_ITA.getOrDefault(sessionId, context.getString(R.string.unknown)), sessionTypeTextView);
+        } else {
+            UIUtils.singleSetTextViewText(Constants.SESSION_NAMES_ENG.getOrDefault(sessionId, context.getString(R.string.unknown)), sessionTypeTextView);
         }
     }
 
     public static void translateSessionDay(Context context, TextView sessionDayTextView, String sessionId) {
-        if (AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("en-GB")) {
-            UIUtils.singleSetTextViewText(Constants.SESSION_DAY_ENG.getOrDefault(sessionId, context.getString(R.string.unknown)), sessionDayTextView);
-
-        } else if (AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("it-IT")) {
+        String langTags = AppCompatDelegate.getApplicationLocales().toLanguageTags();
+        if (langTags != null && langTags.toLowerCase(Locale.ROOT).startsWith("it")) {
             UIUtils.singleSetTextViewText(Constants.SESSION_DAY_ITA.getOrDefault(sessionId, context.getString(R.string.unknown)), sessionDayTextView);
+        } else {
+            UIUtils.singleSetTextViewText(Constants.SESSION_DAY_ENG.getOrDefault(sessionId, context.getString(R.string.unknown)), sessionDayTextView);
         }
     }
 
@@ -566,10 +632,11 @@ public class UIUtils {
                 eventDate.split(" ")[1] + " " +
                 eventDate.split(" ")[2] + " ";
 
-        if (AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("en-GB")) {
-            newEventDate += eventDate.split(" ")[3].toUpperCase(Locale.ROOT);
-        } else if (AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("it-IT")) {
+        String langTags = AppCompatDelegate.getApplicationLocales().toLanguageTags();
+        if (langTags != null && langTags.toLowerCase(Locale.ROOT).startsWith("it")) {
             newEventDate += Objects.requireNonNull(Constants.MONTH_ENG_TO_ITA.get(eventDate.split(" ")[3].toLowerCase(Locale.ROOT))).toUpperCase(Locale.ROOT);
+        } else {
+            newEventDate += eventDate.split(" ")[3].toUpperCase(Locale.ROOT);
         }
 
         UIUtils.singleSetTextViewText(newEventDate, eventDateTextView);
@@ -597,12 +664,15 @@ public class UIUtils {
      */
 
     public static void setAppLocale() {
-        if (AppCompatDelegate.getApplicationLocales().get(0) == null) {
-            LocaleListCompat appLocale = LocaleListCompat.forLanguageTags(Constants.DEFAULT_LANGUAGE);
-            AppCompatDelegate.setApplicationLocales(appLocale);
+        LocaleListCompat currentLocales = AppCompatDelegate.getApplicationLocales();
+        if (currentLocales.isEmpty() || currentLocales.get(0) == null) {
+            java.util.Locale defaultLocale = java.util.Locale.forLanguageTag(Constants.DEFAULT_LANGUAGE);
+            java.util.Locale systemLocale = java.util.Locale.getDefault();
+            if (!systemLocale.getLanguage().equalsIgnoreCase(defaultLocale.getLanguage())) {
+                LocaleListCompat appLocale = LocaleListCompat.forLanguageTags(Constants.DEFAULT_LANGUAGE);
+                AppCompatDelegate.setApplicationLocales(appLocale);
+            }
         }
-
-        AppCompatDelegate.setApplicationLocales(AppCompatDelegate.getApplicationLocales());
     }
 
 

@@ -210,37 +210,32 @@ public class FavoriteDriverHandler {
     }
 
     private void buildDriverCard(DriverStandingsElement standingElement, Nation nation) {
-        if (networkLiveData.isConnected() && userViewModel.getLoggedUser() != null) {
-            try {
-                Driver driver = standingElement.getDriver();
+        try {
+            Driver driver = standingElement.getDriver();
 
-                String nationFlagUrl = null;
-                String nationAbbreviation = null;
-                if (nation != null) {
-                    nationFlagUrl = nation.getNation_flag_url();
-                    nationAbbreviation = nation.getAbbreviation();
-                }
-
-                UIUtils.multipleSetTextViewText(
-                    new String[]{driver.getGivenName() + " " + driver.getFamilyName(), nationAbbreviation},
-                    new TextView[]{view.findViewById(R.id.favourite_driver_name), view.findViewById(R.id.favourite_driver_nationality)}
-                );
-
-                ImageView driverFlag = view.findViewById(R.id.favourite_driver_flag);
-                ImageView driverImage = view.findViewById(R.id.favourite_driver_pic);
-                driverImage.setOnClickListener(v -> NavigationUtils.navigateToBioPage(context, driver.getDriverId(), 1));
-
-                UIUtils.loadImagesInParallel(context,
-                    new String[]{nationFlagUrl, driver.getDriver_half_pic_url()},
-                    new ImageView[]{driverFlag, driverImage},
-                    () -> buildDriverCardFinalStep(standingElement, driver));
-            } catch (Exception e) {
-                Log.e(TAG, "Error building driver card: " + e.getMessage());
-                showDriverNotFound(0);
+            String nationFlagUrl = null;
+            String nationAbbreviation = null;
+            if (nation != null) {
+                nationFlagUrl = nation.getNation_flag_url();
+                nationAbbreviation = nation.getAbbreviation();
             }
-        } else {
-            Log.e(TAG, "Error building driver card: No internet connection");
-            showDriverNotFound(1);
+
+            UIUtils.multipleSetTextViewText(
+                new String[]{driver.getGivenName() + " " + driver.getFamilyName(), nationAbbreviation},
+                new TextView[]{view.findViewById(R.id.favourite_driver_name), view.findViewById(R.id.favourite_driver_nationality)}
+            );
+
+            ImageView driverFlag = view.findViewById(R.id.favourite_driver_flag);
+            ImageView driverImage = view.findViewById(R.id.favourite_driver_pic);
+            driverImage.setOnClickListener(v -> NavigationUtils.navigateToBioPage(context, driver.getDriverId(), 1));
+
+            UIUtils.loadImagesInParallel(context,
+                new String[]{nationFlagUrl, driver.getDriver_half_pic_url()},
+                new ImageView[]{driverFlag, driverImage},
+                () -> buildDriverCardFinalStep(standingElement, driver));
+        } catch (Exception e) {
+            Log.e(TAG, "Error building driver card: " + e.getMessage());
+            showDriverNotFound(0);
         }
     }
 

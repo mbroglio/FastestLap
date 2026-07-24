@@ -51,199 +51,170 @@ public class JuniorStandingsRepository {
     public MutableLiveData<Result> getConstructorStandings(String series) {
         String cacheKey = "juniorConstructorStandings" + series;
 
-        if (!juniorStandingsCache.containsKey(cacheKey) ||
-                !lastUpdateTimestamps.containsKey(cacheKey) ||
-                lastUpdateTimestamps.get(cacheKey) == null) {
+        if (!juniorStandingsCache.containsKey(cacheKey)) {
             juniorStandingsCache.put(cacheKey, new MutableLiveData<>());
-            if (isNetworkAvailable()) {
-                loadConstructorStandings(series);
-            } else {
-                fetchFromLocalConstructors(cacheKey, series);
-            }
-
-        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(cacheKey) > 60000) {
-            if (isNetworkAvailable()) {
-                loadConstructorStandings(series);
-            } else {
-                fetchFromLocalConstructors(cacheKey, series);
-            }
+            loadConstructorStandingsCacheFirst(cacheKey, series);
         } else {
-            Log.i(TAG, "Junior constructor standings found in cache: " + cacheKey);
+            Long lastUpdate = lastUpdateTimestamps.get(cacheKey);
+            if (lastUpdate == null || System.currentTimeMillis() - lastUpdate > 300000) { // 5 min TTL
+                if (isNetworkAvailable()) {
+                    loadConstructorStandingsFromRemote(cacheKey, series, true);
+                }
+            } else {
+                Log.i(TAG, "Junior constructor standings found in cache: " + cacheKey);
+            }
         }
         return juniorStandingsCache.get(cacheKey);
-
     }
 
-    private void loadConstructorStandings(String series) {
-        String cacheKey = "juniorConstructorStandings" + series;
-        Log.i(TAG, "Loading junior constructor standings from remote: " + cacheKey);
-        Objects.requireNonNull(juniorStandingsCache.get(cacheKey)).postValue(new Result.Loading("Fetching junior constructor standings from remote"));
+    private void loadConstructorStandingsCacheFirst(String cacheKey, String series) {
+        localJuniorStandingsDataSource.getJuniorConstructorStandings(series, new JuniorStandingsCallback() {
+            @Override
+            public void onDriverStandingsLoaded(JuniorDriverStandings driverStandings) {}
 
+            @Override
+            public void onConstructorStandingsLoaded(JuniorConstructorStandings constructorStandings) {
+                if (constructorStandings != null) {
+                    Log.i(TAG, "Junior constructor standings loaded from local DB: " + cacheKey);
+                    lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
+                    Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
+                            .postValue(new Result.JuniorConstructorStandingsSuccess(constructorStandings));
+
+                    if (isNetworkAvailable()) {
+                        loadConstructorStandingsFromRemote(cacheKey, series, true);
+                    }
+                } else {
+                    Log.i(TAG, "Junior constructor standings cache miss in local DB");
+                    if (isNetworkAvailable()) {
+                        loadConstructorStandingsFromRemote(cacheKey, series, false);
+                    } else {
+                        Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
+                                .postValue(new Result.Error("Junior constructor standings not available offline"));
+                    }
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e(TAG, "Error reading local DB for junior constructor standings: " + e.getMessage());
+                if (isNetworkAvailable()) {
+                    loadConstructorStandingsFromRemote(cacheKey, series, false);
+                }
+            }
+        });
+    }
+
+    private void loadConstructorStandingsFromRemote(String cacheKey, String series, boolean isBackgroundRefresh) {
+        if (!isBackgroundRefresh) {
+            Objects.requireNonNull(juniorStandingsCache.get(cacheKey)).postValue(new Result.Loading("Fetching junior constructor standings from remote"));
+        }
         try {
             firebaseJuniorStandingsDataSource.getJuniorConstructorStandings(series, new JuniorStandingsCallback() {
-
                 @Override
-                public void onDriverStandingsLoaded(JuniorDriverStandings driverStandings) {
-
-                }
+                public void onDriverStandingsLoaded(JuniorDriverStandings driverStandings) {}
 
                 @Override
                 public void onConstructorStandingsLoaded(JuniorConstructorStandings constructorStandings) {
-                    Log.i(TAG, "Successfully retrieved junior constructor standings from Firebase: " + constructorStandings);
                     if (constructorStandings != null) {
                         localJuniorStandingsDataSource.insertJuniorConstructorStandings(constructorStandings);
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                         Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
                                 .postValue(new Result.JuniorConstructorStandingsSuccess(constructorStandings));
-                    } else {
-                        Log.e(TAG, "Junior constructor standings not found");
-                        fetchFromLocalConstructors(cacheKey, series);
                     }
-
                 }
 
                 @Override
                 public void onError(Exception e) {
-                    Log.e(TAG, "Error loading junior constructor standings: " + e.getMessage());
-                    localJuniorStandingsDataSource.deleteJuniorConstructorStandings(series);
-                    Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
-                            .postValue(new Result.Error("Junior constructor standings not available yet"));
+                    Log.e(TAG, "Error loading junior constructor standings from remote: " + e.getMessage());
                 }
             });
         } catch (Exception e) {
-            Log.e(TAG, "Error loading junior constructor standings: " + e.getMessage());
-            fetchFromLocalConstructors(cacheKey, series);
+            Log.e(TAG, "Error loading junior constructor standings from remote: " + e.getMessage());
         }
-    }
-
-
-    private void fetchFromLocalConstructors(String cacheKey, String series) {
-        Log.i(TAG, "Fetching junior constructor standings from local database: " + cacheKey);
-        localJuniorStandingsDataSource.getJuniorConstructorStandings(series, new JuniorStandingsCallback() {
-
-            @Override
-            public void onDriverStandingsLoaded(JuniorDriverStandings driverStandings) {
-
-            }
-
-            @Override
-            public void onConstructorStandingsLoaded(JuniorConstructorStandings constructorStandings) {
-                if (constructorStandings != null) {
-                    juniorStandingsCache.put(cacheKey, new MutableLiveData<>(
-                            new Result.JuniorConstructorStandingsSuccess(constructorStandings)));
-                    lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
-                    Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
-                            .postValue(new Result.JuniorConstructorStandingsSuccess(constructorStandings));
-                } else {
-                    Log.e(TAG, "Junior constructor standings not found in local database");
-                }
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.e(TAG, "Error loading junior constructor standings from local database: " + e.getMessage());
-                Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
-                        .postValue(new Result.Error("Error loading junior constructor standings: " + e.getMessage()));
-            }
-        });
     }
 
     public MutableLiveData<Result> getDriverStandings(String series) {
         String cacheKey = "juniorDriverStandings" + series;
 
-        if (!juniorStandingsCache.containsKey(cacheKey) ||
-                !lastUpdateTimestamps.containsKey(cacheKey) ||
-                lastUpdateTimestamps.get(cacheKey) == null) {
+        if (!juniorStandingsCache.containsKey(cacheKey)) {
             juniorStandingsCache.put(cacheKey, new MutableLiveData<>());
-            if (isNetworkAvailable()) {
-                loadDriverStandings(series);
-            } else {
-                fetchFromLocalDrivers(cacheKey, series);
-            }
-        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(cacheKey) > 60000) {
-            if (isNetworkAvailable()) {
-                loadDriverStandings(series);
-            } else {
-                fetchFromLocalDrivers(cacheKey, series);
-            }
+            loadDriverStandingsCacheFirst(cacheKey, series);
         } else {
-            Log.i(TAG, "Junior driver standings found in cache: " + cacheKey);
+            Long lastUpdate = lastUpdateTimestamps.get(cacheKey);
+            if (lastUpdate == null || System.currentTimeMillis() - lastUpdate > 300000) { // 5 min TTL
+                if (isNetworkAvailable()) {
+                    loadDriverStandingsFromRemote(cacheKey, series, true);
+                }
+            } else {
+                Log.i(TAG, "Junior driver standings found in cache: " + cacheKey);
+            }
         }
         return juniorStandingsCache.get(cacheKey);
     }
 
-    private void loadDriverStandings(String series) {
-        String cacheKey = "juniorDriverStandings" + series;
-        Log.i(TAG, "Loading junior driver standings from remote: " + cacheKey);
-        Objects.requireNonNull(juniorStandingsCache.get(cacheKey)).postValue(new Result.Loading("Fetching junior driver standings from remote"));
+    private void loadDriverStandingsCacheFirst(String cacheKey, String series) {
+        localJuniorStandingsDataSource.getJuniorDriverStandings(series, new JuniorStandingsCallback() {
+            @Override
+            public void onDriverStandingsLoaded(JuniorDriverStandings driverStandings) {
+                if (driverStandings != null) {
+                    Log.i(TAG, "Junior driver standings loaded from local DB: " + cacheKey);
+                    lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
+                    Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
+                            .postValue(new Result.JuniorDriverStandingsSuccess(driverStandings));
 
+                    if (isNetworkAvailable()) {
+                        loadDriverStandingsFromRemote(cacheKey, series, true);
+                    }
+                } else {
+                    Log.i(TAG, "Junior driver standings cache miss in local DB");
+                    if (isNetworkAvailable()) {
+                        loadDriverStandingsFromRemote(cacheKey, series, false);
+                    } else {
+                        Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
+                                .postValue(new Result.Error("Junior driver standings not available offline"));
+                    }
+                }
+            }
+
+            @Override
+            public void onConstructorStandingsLoaded(JuniorConstructorStandings constructorStandings) {}
+
+            @Override
+            public void onError(Exception e) {
+                Log.e(TAG, "Error reading local DB for junior driver standings: " + e.getMessage());
+                if (isNetworkAvailable()) {
+                    loadDriverStandingsFromRemote(cacheKey, series, false);
+                }
+            }
+        });
+    }
+
+    private void loadDriverStandingsFromRemote(String cacheKey, String series, boolean isBackgroundRefresh) {
+        if (!isBackgroundRefresh) {
+            Objects.requireNonNull(juniorStandingsCache.get(cacheKey)).postValue(new Result.Loading("Fetching junior driver standings from remote"));
+        }
         try {
             firebaseJuniorStandingsDataSource.getJuniorDriverStandings(series, new JuniorStandingsCallback() {
-
                 @Override
                 public void onDriverStandingsLoaded(JuniorDriverStandings driverStandings) {
-                    Log.i(TAG, "Successfully retrieved junior driver standings from Firebase: " + driverStandings);
                     if (driverStandings != null) {
                         localJuniorStandingsDataSource.insertJuniorDriverStandings(driverStandings);
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                         Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
                                 .postValue(new Result.JuniorDriverStandingsSuccess(driverStandings));
-                    } else {
-                        Log.e(TAG, "Junior driver standings not found");
-                        fetchFromLocalDrivers(cacheKey, series);
                     }
                 }
 
                 @Override
-                public void onConstructorStandingsLoaded(JuniorConstructorStandings constructorStandings) {
-
-                }
+                public void onConstructorStandingsLoaded(JuniorConstructorStandings constructorStandings) {}
 
                 @Override
                 public void onError(Exception e) {
-                    Log.e(TAG, "1 Error loading junior driver standings: " + e.getMessage());
-                    localJuniorStandingsDataSource.deleteJuniorDriverStandings(series);
-                    Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
-                            .postValue(new Result.Error("Junior driver standings not available yet"));
+                    Log.e(TAG, "Error loading junior driver standings from remote: " + e.getMessage());
                 }
             });
         } catch (Exception e) {
-            Log.e(TAG, "2 Error loading junior driver standings: " + e.getMessage());
-            fetchFromLocalDrivers(cacheKey, series);
+            Log.e(TAG, "Error loading junior driver standings from remote: " + e.getMessage());
         }
-
-    }
-
-    private void fetchFromLocalDrivers(String cacheKey, String series) {
-        Log.i(TAG, "Fetching junior driver standings from local database: " + cacheKey);
-        localJuniorStandingsDataSource.getJuniorDriverStandings(series, new JuniorStandingsCallback() {
-
-            @Override
-            public void onDriverStandingsLoaded(JuniorDriverStandings driverStandings) {
-                if (driverStandings != null) {
-                    juniorStandingsCache.put(cacheKey, new MutableLiveData<>(
-                            new Result.JuniorDriverStandingsSuccess(driverStandings)));
-                    lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
-                    Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
-                            .postValue(new Result.JuniorDriverStandingsSuccess(driverStandings));
-
-                } else {
-                    Log.e(TAG, "Junior driver standings not found in local database");
-                }
-            }
-
-            @Override
-            public void onConstructorStandingsLoaded(JuniorConstructorStandings constructorStandings) {
-
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.e(TAG, "Error loading junior driver standings from local database: " + e.getMessage());
-                Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
-                        .postValue(new Result.Error("Error loading junior driver standings: " + e.getMessage()));
-
-            }
-        });
     }
 }

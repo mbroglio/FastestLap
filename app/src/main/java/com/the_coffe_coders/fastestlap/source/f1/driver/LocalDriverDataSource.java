@@ -30,6 +30,6 @@ public class LocalDriverDataSource implements DriverDataSource {
     }
 
     public void insertDriver(Driver driver) {
-        driverDAO.insertDriver(driver);
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> driverDAO.insertDriver(driver));
     }
 }

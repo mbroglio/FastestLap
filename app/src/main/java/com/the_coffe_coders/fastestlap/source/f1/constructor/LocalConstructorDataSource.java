@@ -35,6 +35,6 @@ public class LocalConstructorDataSource implements ConstructorDataSource {
     }
 
     public void insertConstructor(Constructor constructor) {
-        constructorDAO.insertConstructor(constructor);
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> constructorDAO.insertConstructor(constructor));
     }
 }

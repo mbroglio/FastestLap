@@ -72,6 +72,20 @@ public class LocalWeeklyRaceDataSource {
         }
     }
 
+    public void saveSingleWeeklyRace(WeeklyRace weeklyRace) {
+        if (weeklyRace == null) return;
+        Log.d(TAG, "Saving single weekly race to local database: " + weeklyRace.getRound());
+        try {
+            if (weeklyRace instanceof WeeklyRaceClassic) {
+                weeklyRaceClassicDao.insert((WeeklyRaceClassic) weeklyRace);
+            } else if (weeklyRace instanceof WeeklyRaceSprint) {
+                weeklyRaceSprintDao.insert((WeeklyRaceSprint) weeklyRace);
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error saving single weekly race to database: " + e.getMessage());
+        }
+    }
+
     public void getNextRace(SingleWeeklyRaceCallback callback) {
         Log.d(TAG, "Fetching next weekly race from local database");
         try {
