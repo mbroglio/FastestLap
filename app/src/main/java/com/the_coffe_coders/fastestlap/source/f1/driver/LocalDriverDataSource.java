@@ -11,8 +11,10 @@ public class LocalDriverDataSource implements DriverDataSource {
     private static final String TAG = "DriverLocalDataSource";
     private static LocalDriverDataSource instance;
     private final DriverDAO driverDAO;
+    private final AppRoomDatabase appRoomDatabase;
 
     private LocalDriverDataSource(AppRoomDatabase appRoomDatabase) {
+        this.appRoomDatabase = appRoomDatabase;
         this.driverDAO = appRoomDatabase.driverDAO();
     }
 
@@ -26,7 +28,23 @@ public class LocalDriverDataSource implements DriverDataSource {
     @Override
     public void getDriver(String driverId, DriverCallback callback) {
         Log.d(TAG, "Fetching driver with ID: " + driverId);
-        callback.onDriverLoaded(driverDAO.getById(driverId));
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            try {
+                Driver driver = driverDAO.getById(driverId);
+                // A valid cached driver from Firebase must have picture URLs.
+                // If it is missing picture URLs, it is an incomplete DTO object and should be treated as a cache miss.
+                boolean isComplete = driver != null &&
+                        (driver.getDriver_half_pic_url() != null || driver.getDriver_full_pic_url() != null);
+
+                if (isComplete) {
+                    callback.onDriverLoaded(driver);
+                } else {
+                    callback.onDriverLoaded(null);
+                }
+            } catch (Exception e) {
+                callback.onError(e);
+            }
+        });
     }
 
     public void insertDriver(Driver driver) {

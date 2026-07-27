@@ -159,6 +159,13 @@ public class HomeFragment extends Fragment {
         cachedDriverStandings = null;
         cachedConstructorStandings = null;
 
+        if (favoriteDriverHandler != null) {
+            favoriteDriverHandler.resetCardLoaded();
+        }
+        if (favoriteConstructorHandler != null) {
+            favoriteConstructorHandler.resetCardLoaded();
+        }
+
         // Remove existing LiveData observers to prevent duplicates when setupFragment
         // is called a second time (e.g. swipe-refresh or network-restore).
         if (homeViewModel != null) {
@@ -200,29 +207,45 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupHandlers() {
-        // Initialize handlers
-        lastRaceHandler = new LastRaceHandler(
-            this, view, weeklyRaceViewModel, trackViewModel,
-            raceResultViewModel, networkLiveData, this::markCardLoaded
-        );
+        // Initialize handlers once or update view binding on back-stack return
+        if (lastRaceHandler == null) {
+            lastRaceHandler = new LastRaceHandler(
+                this, view, weeklyRaceViewModel, trackViewModel,
+                raceResultViewModel, networkLiveData, this::markCardLoaded
+            );
+        } else {
+            lastRaceHandler.updateView(view, getViewLifecycleOwner());
+        }
 
-        nextRaceHandler = new NextRaceHandler(
-            this, view, weeklyRaceViewModel, trackViewModel, nationViewModel,
-            homeViewModel, driverViewModel, networkLiveData, this::markCardLoaded
-        );
+        if (nextRaceHandler == null) {
+            nextRaceHandler = new NextRaceHandler(
+                this, view, weeklyRaceViewModel, trackViewModel, nationViewModel,
+                homeViewModel, driverViewModel, networkLiveData, this::markCardLoaded
+            );
+        } else {
+            nextRaceHandler.updateView(view, getViewLifecycleOwner());
+        }
 
-        favoriteDriverHandler = new FavoriteDriverHandler(
-            this, view, homeViewModel, driverViewModel, nationViewModel,
-            userViewModel, networkLiveData, sharedPreferencesUtils, this::markCardLoaded
-        );
+        if (favoriteDriverHandler == null) {
+            favoriteDriverHandler = new FavoriteDriverHandler(
+                this, view, homeViewModel, driverViewModel, nationViewModel,
+                userViewModel, networkLiveData, sharedPreferencesUtils, this::markCardLoaded
+            );
+        } else {
+            favoriteDriverHandler.updateView(view, getViewLifecycleOwner());
+        }
 
-        favoriteConstructorHandler = new FavoriteConstructorHandler(
-            this, view, homeViewModel, constructorViewModel, nationViewModel,
-            userViewModel, networkLiveData, sharedPreferencesUtils, this::markCardLoaded
-        );
+        if (favoriteConstructorHandler == null) {
+            favoriteConstructorHandler = new FavoriteConstructorHandler(
+                this, view, homeViewModel, constructorViewModel, nationViewModel,
+                userViewModel, networkLiveData, sharedPreferencesUtils, this::markCardLoaded
+            );
+        } else {
+            favoriteConstructorHandler.updateView(view, getViewLifecycleOwner());
+        }
 
         // If standings data was already fetched in a previous setup (e.g. returning from
-        // back-stack), pass it directly to the new handlers so ranking/points are displayed
+        // back-stack), pass it directly to the handlers so ranking/points are displayed
         // immediately without waiting for the LiveData to re-emit.
         if (cachedDriverStandings != null) {
             favoriteDriverHandler.setCachedDriverStandings(cachedDriverStandings);
@@ -365,7 +388,8 @@ public class HomeFragment extends Fragment {
                 " | Driver: " + driverCardLoaded +
                 " | Constructor: " + constructorCardLoaded);
 
-        // Hide loading screen only when all 4 cards are fully ready.
+        // Hide loading screen only when all 4 cards are fully ready so the page
+        // is completely populated before being shown to the user.
         if (lastRaceCardLoaded && nextSessionCardLoaded && driverCardLoaded && constructorCardLoaded) {
             Log.d(TAG, "All cards loaded — hiding loading screen and setup complete.");
             loadingScreen.hideLoadingScreen();

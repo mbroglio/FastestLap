@@ -57,6 +57,10 @@ public class Constructor implements Parcelable {
     private String wins;
     private String world_championships;
     private String gps_entered;
+    @Ignore
+    private String season_wins;
+    @Ignore
+    private String season_podiums;
 
     protected Constructor(Parcel in) {
         uid = in.readLong();
@@ -93,11 +97,11 @@ public class Constructor implements Parcelable {
     }
 
     public String getDriverOneId() {
-        return drivers.get(0);
+        return (drivers != null && !drivers.isEmpty()) ? drivers.get(0) : null;
     }
 
     public String getDriverTwoId() {
-        return drivers.get(1);
+        return (drivers != null && drivers.size() > 1) ? drivers.get(1) : null;
     }
 
     @Override

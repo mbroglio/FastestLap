@@ -26,7 +26,14 @@ public class LocalNationDataSource implements NationDataSource {
     @Override
     public void getNation(String nationId, NationCallback callback) {
         Log.d(TAG, "Fetching nation with ID: " + nationId);
-        callback.onNationLoaded(nationDAO.getById(nationId));
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            try {
+                Nation nation = nationDAO.getById(nationId);
+                callback.onNationLoaded(nation);
+            } catch (Exception e) {
+                callback.onNationLoaded(null);
+            }
+        });
     }
 
     public void insertNation(Nation nation) {

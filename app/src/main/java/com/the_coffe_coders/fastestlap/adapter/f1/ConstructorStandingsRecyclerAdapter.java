@@ -179,60 +179,62 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         };
 
         // Driver 1 — self-removing observer
-        androidx.lifecycle.LiveData<Result> d1Ld = driverViewModel.getDriver(constructor.getDriverOneId());
-        androidx.lifecycle.Observer<Result>[] d1Ref = new androidx.lifecycle.Observer[1];
-        d1Ref[0] = result -> {
-            if (result instanceof Result.Loading) return;
-            d1Ld.removeObserver(d1Ref[0]);
-            loadingScreen.updateProgress();
-            if (result.isSuccess()) {
-                Driver d1 = ((Result.DriverSuccess) result).getData();
-                UIUtils.singleSetTextViewText(d1.getFullName(), holder.driverOneName);
-                UIUtils.loadImageWithGlide(context, d1.getDriver_half_pic_url(), holder.driverOneImage, onOneDriverReady);
-            } else {
-                String id = constructor.getDriverOneId();
-                if (id != null) {
-                    UIUtils.singleSetTextViewText(
-                            id.contains("_") ? id.split("_")[1].toUpperCase(java.util.Locale.ROOT) : id.toUpperCase(java.util.Locale.ROOT),
-                            holder.driverOneName);
+        String driver1Id = constructor.getDriverOneId();
+        if (driver1Id != null) {
+            androidx.lifecycle.LiveData<Result> d1Ld = driverViewModel.getDriver(driver1Id);
+            androidx.lifecycle.Observer<Result>[] d1Ref = new androidx.lifecycle.Observer[1];
+            d1Ref[0] = result -> {
+                if (result instanceof Result.Loading) return;
+                d1Ld.removeObserver(d1Ref[0]);
+                loadingScreen.updateProgress();
+                if (result.isSuccess()) {
+                    Driver d1 = ((Result.DriverSuccess) result).getData();
+                    UIUtils.singleSetTextViewText(d1.getFullName(), holder.driverOneName);
+                    UIUtils.loadImageWithGlide(context, d1.getDriver_half_pic_url(), holder.driverOneImage, onOneDriverReady);
                 } else {
-                    UIUtils.singleSetTextViewText("N/A", holder.driverOneName);
+                    UIUtils.singleSetTextViewText(
+                            driver1Id.contains("_") ? driver1Id.split("_")[1].toUpperCase(java.util.Locale.ROOT) : driver1Id.toUpperCase(java.util.Locale.ROOT),
+                            holder.driverOneName);
+                    UIUtils.loadImageWithGlide(context, null, holder.driverOneImage, onOneDriverReady);
                 }
+            };
+            try {
+                d1Ld.observe(lifecycleOwner, d1Ref[0]);
+            } catch (RuntimeException e) {
                 UIUtils.loadImageWithGlide(context, null, holder.driverOneImage, onOneDriverReady);
             }
-        };
-        try {
-            d1Ld.observe(lifecycleOwner, d1Ref[0]);
-        } catch (RuntimeException e) {
+        } else {
+            UIUtils.singleSetTextViewText("N/A", holder.driverOneName);
             UIUtils.loadImageWithGlide(context, null, holder.driverOneImage, onOneDriverReady);
         }
 
         // Driver 2 — self-removing observer, starts immediately (does NOT wait for driver 1)
-        androidx.lifecycle.LiveData<Result> d2Ld = driverViewModel.getDriver(constructor.getDriverTwoId());
-        androidx.lifecycle.Observer<Result>[] d2Ref = new androidx.lifecycle.Observer[1];
-        d2Ref[0] = result -> {
-            if (result instanceof Result.Loading) return;
-            d2Ld.removeObserver(d2Ref[0]);
-            loadingScreen.updateProgress();
-            if (result.isSuccess()) {
-                Driver d2 = ((Result.DriverSuccess) result).getData();
-                UIUtils.singleSetTextViewText(d2.getFullName(), holder.driverTwoName);
-                UIUtils.loadImageWithGlide(context, d2.getDriver_half_pic_url(), holder.driverTwoImage, onOneDriverReady);
-            } else {
-                String id = constructor.getDriverTwoId();
-                if (id != null) {
-                    UIUtils.singleSetTextViewText(
-                            id.contains("_") ? id.split("_")[1].toUpperCase(java.util.Locale.ROOT) : id.toUpperCase(java.util.Locale.ROOT),
-                            holder.driverTwoName);
+        String driver2Id = constructor.getDriverTwoId();
+        if (driver2Id != null) {
+            androidx.lifecycle.LiveData<Result> d2Ld = driverViewModel.getDriver(driver2Id);
+            androidx.lifecycle.Observer<Result>[] d2Ref = new androidx.lifecycle.Observer[1];
+            d2Ref[0] = result -> {
+                if (result instanceof Result.Loading) return;
+                d2Ld.removeObserver(d2Ref[0]);
+                loadingScreen.updateProgress();
+                if (result.isSuccess()) {
+                    Driver d2 = ((Result.DriverSuccess) result).getData();
+                    UIUtils.singleSetTextViewText(d2.getFullName(), holder.driverTwoName);
+                    UIUtils.loadImageWithGlide(context, d2.getDriver_half_pic_url(), holder.driverTwoImage, onOneDriverReady);
                 } else {
-                    UIUtils.singleSetTextViewText("N/A", holder.driverTwoName);
+                    UIUtils.singleSetTextViewText(
+                            driver2Id.contains("_") ? driver2Id.split("_")[1].toUpperCase(java.util.Locale.ROOT) : driver2Id.toUpperCase(java.util.Locale.ROOT),
+                            holder.driverTwoName);
+                    UIUtils.loadImageWithGlide(context, null, holder.driverTwoImage, onOneDriverReady);
                 }
+            };
+            try {
+                d2Ld.observe(lifecycleOwner, d2Ref[0]);
+            } catch (RuntimeException e) {
                 UIUtils.loadImageWithGlide(context, null, holder.driverTwoImage, onOneDriverReady);
             }
-        };
-        try {
-            d2Ld.observe(lifecycleOwner, d2Ref[0]);
-        } catch (RuntimeException e) {
+        } else {
+            UIUtils.singleSetTextViewText("N/A", holder.driverTwoName);
             UIUtils.loadImageWithGlide(context, null, holder.driverTwoImage, onOneDriverReady);
         }
     }

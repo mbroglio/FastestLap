@@ -74,8 +74,16 @@ public class ConstructorRepository {
                     lastUpdateTimestamps.put(constructorId, System.currentTimeMillis());
                     Objects.requireNonNull(constructorCache.get(constructorId)).postValue(new Result.ConstructorSuccess(constructor));
 
-                    if (isNetworkAvailable()) {
+                    // Only refresh from remote if the cached data is actually stale.
+                    // Without this TTL guard, Firebase fires on every launch even when the
+                    // local data is fresh, causing the LiveData to re-emit and triggering
+                    // redundant card rebuilds in the UI.
+                    Long ts = lastUpdateTimestamps.get(constructorId);
+                    boolean isStale = ts == null || System.currentTimeMillis() - ts > 300_000L;
+                    if (isNetworkAvailable() && isStale) {
                         loadConstructorFromRemote(constructorId, true);
+                    } else {
+                        Log.d(TAG, "Constructor cache still fresh, skipping remote refresh: " + constructorId);
                     }
                 } else {
                     Log.d(TAG, "Constructor cache miss in local database: " + constructorId);

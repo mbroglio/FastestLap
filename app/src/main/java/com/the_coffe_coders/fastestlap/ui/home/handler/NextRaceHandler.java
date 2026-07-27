@@ -52,8 +52,8 @@ public class NextRaceHandler {
 
     private final Fragment fragment;
     private final Context context;
-    private final LifecycleOwner lifecycleOwner;
-    private final View view;
+    private LifecycleOwner lifecycleOwner;
+    private View view;
     private final WeeklyRaceViewModel weeklyRaceViewModel;
     private final TrackViewModel trackViewModel;
     private final NationViewModel nationViewModel;
@@ -95,14 +95,37 @@ public class NextRaceHandler {
         this.cardLoadedCallback = cardLoadedCallback;
     }
 
+    public void updateView(View view, LifecycleOwner lifecycleOwner) {
+        this.view = view;
+        this.lifecycleOwner = lifecycleOwner;
+    }
+
     public void setupNextSessionCard(NextRaceRoundCallback roundCallback) {
         LiveData<Result> nextRaceLiveData = weeklyRaceViewModel.getNextRaceLiveData();
         try {
-            nextRaceLiveData.observe(lifecycleOwner, result -> {
+            // One-shot observer: removes itself after the first non-Loading result.
+            // Without this, repeated setupNextSessionCard calls (e.g. swipe-refresh, network
+            // restore) pile up observers and fire the card logic multiple times per emission.
+            final boolean[] observerFired = {false};
+
+            new android.os.Handler(android.os.Looper.getMainLooper()).postDelayed(() -> {
+                if (!observerFired[0]) {
+                    Log.w(TAG, "Next race timeout — no result within 5 s");
+                    setUpdating();
+                    cardLoadedCallback.onCardLoaded("nextSession");
+                }
+            }, 5000);
+
+            androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
+            observerHolder[0] = result -> {
                 try {
                     if (result instanceof Result.Loading) {
                         return;
                     }
+                    // One-shot: remove before processing to avoid double-fire
+                    nextRaceLiveData.removeObserver(observerHolder[0]);
+                    observerFired[0] = true;
+
                     if (result.isSuccess()) {
                         WeeklyRace nextRace = ((Result.NextRaceSuccess) result).getData();
                         Log.i(TAG, "Next race: " + nextRace.getRound());
@@ -115,6 +138,8 @@ public class NextRaceHandler {
                         throw new Exception("Failed to fetch next race: " + result.getError());
                     }
                 } catch (Exception e) {
+                    nextRaceLiveData.removeObserver(observerHolder[0]);
+                    observerFired[0] = true;
                     if (networkLiveData.isConnected()) {
                         Log.e(TAG, "Error in setNextSessionCard: " + e.getMessage());
                         setSeasonEnded();
@@ -123,7 +148,8 @@ public class NextRaceHandler {
                         setUpdating();
                     }
                 }
-            });
+            };
+            nextRaceLiveData.observe(lifecycleOwner, observerHolder[0]);
         } catch (Exception e) {
             if (networkLiveData.isConnected()) {
                 Log.e(TAG, "Error in setNextSessionCard: " + e.getMessage());

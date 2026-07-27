@@ -14,8 +14,10 @@ public class LocalConstructorStandingsDataSource implements ConstructorStandingD
     private static final String TAG = "LocalConstructorStandingsDataSource";
     private static LocalConstructorStandingsDataSource instance;
     private final ConstructorStandingsDAO constructorStandingsDAO;
+    private final AppRoomDatabase appRoomDatabase;
 
     private LocalConstructorStandingsDataSource(AppRoomDatabase appRoomDatabase) {
+        this.appRoomDatabase = appRoomDatabase;
         this.constructorStandingsDAO = appRoomDatabase.constructorStandingsDao();
     }
 
@@ -29,12 +31,18 @@ public class LocalConstructorStandingsDataSource implements ConstructorStandingD
     @Override
     public void getConstructorStandings(ConstructorStandingCallback callback) {
         Log.d(TAG, "Fetching constructor standings from local database");
-        ConstructorStandings standings = constructorStandingsDAO.get();
-        if (standings != null) {
-            callback.onConstructorLoaded(standings);
-        } else {
-            callback.onError(new Exception("No constructor standings found in local database"));
-        }
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            try {
+                ConstructorStandings standings = constructorStandingsDAO.get();
+                if (standings != null) {
+                    callback.onConstructorLoaded(standings);
+                } else {
+                    callback.onError(new Exception("No constructor standings found in local database"));
+                }
+            } catch (Exception e) {
+                callback.onError(e);
+            }
+        });
     }
 
     public void insertConstructorStandings(ConstructorStandings constructorStandings) {

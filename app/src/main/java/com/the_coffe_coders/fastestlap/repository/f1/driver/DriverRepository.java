@@ -78,9 +78,16 @@ public class DriverRepository {
                     lastUpdateTimestamps.put(driverId, System.currentTimeMillis());
                     Objects.requireNonNull(driverCache.get(driverId)).postValue(new Result.DriverSuccess(driver));
 
-                    // Step 2: Refresh from remote in background if network is available
-                    if (isNetworkAvailable()) {
+                    // Step 2: Only refresh from remote if the cached data is actually stale.
+                    // Without this TTL guard, Firebase fires on every launch even when the
+                    // local data is fresh, causing the LiveData to re-emit and triggering
+                    // redundant card rebuilds in the UI.
+                    Long ts = lastUpdateTimestamps.get(driverId);
+                    boolean isStale = ts == null || System.currentTimeMillis() - ts > 300_000L;
+                    if (isNetworkAvailable() && isStale) {
                         loadDriverFromRemote(driverId, true);
+                    } else {
+                        Log.d(TAG, "Driver cache still fresh, skipping remote refresh: " + driverId);
                     }
                 } else {
                     Log.d(TAG, "Driver cache miss in local database: " + driverId);

@@ -89,7 +89,9 @@ public class DriverStandingRepository {
                     Objects.requireNonNull(driverStandingCache.get(cacheKey))
                             .postValue(new Result.DriverStandingsSuccess(driverStandings));
 
-                    if (isNetworkAvailable() && !isFetchInFlight) {
+                    Long ts = lastUpdateTimestamps.get(cacheKey);
+                    boolean isStale = ts == null || System.currentTimeMillis() - ts > 300_000L;
+                    if (isNetworkAvailable() && !isFetchInFlight && isStale) {
                         isFetchInFlight = true;
                         loadDriverStandingFromRemote(cacheKey, true);
                     }

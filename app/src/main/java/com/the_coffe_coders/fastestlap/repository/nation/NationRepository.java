@@ -84,9 +84,17 @@ public class NationRepository {
                     lastUpdateTimestamps.put(nationId, System.currentTimeMillis());
                     Objects.requireNonNull(nationCache.get(nationId)).postValue(new Result.NationSuccess(nation));
 
-                    if (isNetworkAvailable() && !inFlightFetches.contains(nationId)) {
+                    // Only refresh from remote if the cached data is actually stale.
+                    // Without this TTL guard, Firebase fires on every launch even when the
+                    // local data is fresh, causing the LiveData to re-emit and triggering
+                    // redundant card rebuilds in the UI.
+                    Long ts = lastUpdateTimestamps.get(nationId);
+                    boolean isStale = ts == null || System.currentTimeMillis() - ts > 300_000L;
+                    if (isNetworkAvailable() && isStale && !inFlightFetches.contains(nationId)) {
                         inFlightFetches.add(nationId);
                         loadNationFromRemote(nationId, true);
+                    } else {
+                        Log.d(TAG, "Nation cache still fresh, skipping remote refresh: " + nationId);
                     }
                 } else {
                     Log.d(TAG, "Nation cache miss in local database: " + nationId);

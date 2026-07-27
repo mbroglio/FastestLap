@@ -60,7 +60,7 @@ public abstract class AppRoomDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                                     AppRoomDatabase.class, Constants.SAVED_DRIVERS_STANDINGS_DATABASE)
                             .fallbackToDestructiveMigration()
-                            .allowMainThreadQueries().build();
+                            .build();
                 }
             }
         }

@@ -14,8 +14,10 @@ public class LocalDriverStandingsDataSource implements DriverStandingDataSource 
     private static final String TAG = "DriverLocalDataSource";
     private static LocalDriverStandingsDataSource instance;
     private final DriverStandingsDAO driverStandingsDAO;
+    private final AppRoomDatabase appRoomDatabase;
 
     public LocalDriverStandingsDataSource(AppRoomDatabase appRoomDatabase) {
+        this.appRoomDatabase = appRoomDatabase;
         this.driverStandingsDAO = appRoomDatabase.driverStandingsDao();
     }
 
@@ -29,23 +31,35 @@ public class LocalDriverStandingsDataSource implements DriverStandingDataSource 
     @Override
     public void getDriverStandings(DriverStandingCallback callback) {
         Log.d(TAG, "Fetching driver standings from local database");
-        DriverStandings standings = driverStandingsDAO.get();
-        if (standings != null) {
-            callback.onDriverStandingsLoaded(standings);
-        } else {
-            getDriversList(callback);
-        }
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            try {
+                DriverStandings standings = driverStandingsDAO.get();
+                if (standings != null) {
+                    callback.onDriverStandingsLoaded(standings);
+                } else {
+                    getDriversList(callback);
+                }
+            } catch (Exception e) {
+                callback.onError(e);
+            }
+        });
     }
 
     @Override
     public void getDriversList(DriverStandingCallback callback) {
         Log.d(TAG, "Fetching drivers list from local database");
-        List<Driver> drivers = driverStandingsDAO.getDrivers();
-        if (drivers != null) {
-            callback.onDriverListLoaded(drivers);
-        } else {
-            callback.onError(new Exception("No drivers found in local database"));
-        }
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            try {
+                List<Driver> drivers = driverStandingsDAO.getDrivers();
+                if (drivers != null) {
+                    callback.onDriverListLoaded(drivers);
+                } else {
+                    callback.onError(new Exception("No drivers found in local database"));
+                }
+            } catch (Exception e) {
+                callback.onError(e);
+            }
+        });
     }
 
     public void insertDriverStandings(DriverStandings driverStandings) {

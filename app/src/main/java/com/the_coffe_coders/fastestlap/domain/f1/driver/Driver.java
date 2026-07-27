@@ -64,6 +64,10 @@ public class Driver implements Parcelable {
     private String weight; // F
     private String first_entry; //F
     private String gps_entered; // F
+    @Ignore
+    private String season_wins;
+    @Ignore
+    private String season_podiums;
 
     protected Driver(Parcel in) {
         uid = in.readLong();

@@ -83,38 +83,6 @@ public class WeeklyRaceRepository {
     private void loadNextRace() {
         raceCache.get("next").postValue(new Result.Loading("Loading next race"));
 
-        if (networkUtils.isConnected()) {
-            try {
-                weeklyRaceRemoteDataSource.getNextRace(new SingleWeeklyRaceCallback() {
-                    @Override
-                    public void onSuccess(WeeklyRace weeklyRace) {
-                        Log.d(TAG, "Next race loaded from remote: " + weeklyRace);
-                        if (weeklyRace != null) {
-                            localWeeklyRaceDataSource.saveSingleWeeklyRace(weeklyRace);
-                            lastUpdateTimestamps.put("next", System.currentTimeMillis());
-                            Objects.requireNonNull(raceCache.get("next")).postValue(new Result.NextRaceSuccess(weeklyRace));
-                        } else {
-                            loadNextRaceFromLocal();
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Exception exception) {
-                        Log.e(TAG, "Error loading next race: " + exception.getMessage());
-                        loadNextRaceFromLocal();
-                    }
-                });
-            } catch (Exception e) {
-                Log.e(TAG, "Error fetching next race: " + e.getMessage());
-                loadNextRaceFromLocal();
-            }
-        } else {
-            Log.e(TAG, "Error loading next race: " + "No internet connection");
-            loadNextRaceFromLocal();
-        }
-    }
-
-    private void loadNextRaceFromLocal() {
         localWeeklyRaceDataSource.getNextRace(new SingleWeeklyRaceCallback() {
             @Override
             public void onSuccess(WeeklyRace weeklyRace) {
@@ -122,47 +90,67 @@ public class WeeklyRaceRepository {
                     lastUpdateTimestamps.put("next", System.currentTimeMillis());
                     Objects.requireNonNull(raceCache.get("next")).postValue(new Result.NextRaceSuccess(weeklyRace));
                     Log.d(TAG, "Next race loaded from local cache");
+
+                    Long lastUpdate = lastUpdateTimestamps.get("next");
+                    boolean isStale = lastUpdate == null || (System.currentTimeMillis() - lastUpdate > FRESH_TIMEOUT);
+                    if (networkUtils.isConnected() && isStale) {
+                        fetchNextRaceFromRemote(false);
+                    }
                 } else {
-                    Objects.requireNonNull(raceCache.get("next")).postValue(new Result.Error("Race not found in cache"));
+                    Log.d(TAG, "No next weekly race found in local database");
+                    if (networkUtils.isConnected()) {
+                        fetchNextRaceFromRemote(true);
+                    } else {
+                        Objects.requireNonNull(raceCache.get("next")).postValue(new Result.Error("No next weekly race found in local database"));
+                    }
                 }
             }
 
             @Override
             public void onFailure(Exception exception) {
-                Objects.requireNonNull(raceCache.get("next")).postValue(new Result.Error(exception.getMessage()));
+                if (networkUtils.isConnected()) {
+                    fetchNextRaceFromRemote(true);
+                } else {
+                    Objects.requireNonNull(raceCache.get("next")).postValue(new Result.Error(exception.getMessage()));
+                }
             }
         });
     }
 
-    private void loadLastRace() {
-        Objects.requireNonNull(raceCache.get("last")).postValue(new Result.Loading("Loading last race"));
-
-        if (networkUtils.isConnected()) {
-            weeklyRaceRemoteDataSource.getLastRace(new SingleWeeklyRaceCallback() {
+    private void fetchNextRaceFromRemote(boolean isInitialLoad) {
+        try {
+            weeklyRaceRemoteDataSource.getNextRace(new SingleWeeklyRaceCallback() {
                 @Override
                 public void onSuccess(WeeklyRace weeklyRace) {
+                    Log.d(TAG, "Next race loaded from remote: " + weeklyRace);
                     if (weeklyRace != null) {
                         localWeeklyRaceDataSource.saveSingleWeeklyRace(weeklyRace);
-                        lastUpdateTimestamps.put("last", System.currentTimeMillis());
-                        Objects.requireNonNull(raceCache.get("last")).postValue(new Result.NextRaceSuccess(weeklyRace));
-                    } else {
-                        loadLastRaceFromLocal();
+                        lastUpdateTimestamps.put("next", System.currentTimeMillis());
+                        Objects.requireNonNull(raceCache.get("next")).postValue(new Result.NextRaceSuccess(weeklyRace));
+                    } else if (isInitialLoad) {
+                        Objects.requireNonNull(raceCache.get("next")).postValue(new Result.Error("No next race found from remote"));
                     }
                 }
 
                 @Override
                 public void onFailure(Exception exception) {
-                    Log.e(TAG, "Error loading last race: " + exception.getMessage());
-                    loadLastRaceFromLocal();
+                    Log.e(TAG, "Error fetching next race from remote: " + exception.getMessage());
+                    if (isInitialLoad) {
+                        Objects.requireNonNull(raceCache.get("next")).postValue(new Result.Error(exception.getMessage()));
+                    }
                 }
             });
-        } else {
-            Log.e(TAG, "Error loading last race: " + "No internet connection");
-            loadLastRaceFromLocal();
+        } catch (Exception e) {
+            Log.e(TAG, "Error fetching next race from remote: " + e.getMessage());
+            if (isInitialLoad) {
+                Objects.requireNonNull(raceCache.get("next")).postValue(new Result.Error(e.getMessage()));
+            }
         }
     }
 
-    private void loadLastRaceFromLocal() {
+    private void loadLastRace() {
+        raceCache.get("last").postValue(new Result.Loading("Loading last race"));
+
         localWeeklyRaceDataSource.getLastRace(new SingleWeeklyRaceCallback() {
             @Override
             public void onSuccess(WeeklyRace weeklyRace) {
@@ -170,16 +158,62 @@ public class WeeklyRaceRepository {
                     lastUpdateTimestamps.put("last", System.currentTimeMillis());
                     Objects.requireNonNull(raceCache.get("last")).postValue(new Result.NextRaceSuccess(weeklyRace));
                     Log.d(TAG, "Last race loaded from local cache");
+
+                    Long lastUpdate = lastUpdateTimestamps.get("last");
+                    boolean isStale = lastUpdate == null || (System.currentTimeMillis() - lastUpdate > FRESH_TIMEOUT);
+                    if (networkUtils.isConnected() && isStale) {
+                        fetchLastRaceFromRemote(false);
+                    }
                 } else {
-                    Objects.requireNonNull(raceCache.get("last")).postValue(new Result.Error("Race not found in cache"));
+                    Log.d(TAG, "No last weekly race found in local database");
+                    if (networkUtils.isConnected()) {
+                        fetchLastRaceFromRemote(true);
+                    } else {
+                        Objects.requireNonNull(raceCache.get("last")).postValue(new Result.Error("No last weekly race found in local database"));
+                    }
                 }
             }
 
             @Override
             public void onFailure(Exception exception) {
-                Objects.requireNonNull(raceCache.get("last")).postValue(new Result.Error(exception.getMessage()));
+                if (networkUtils.isConnected()) {
+                    fetchLastRaceFromRemote(true);
+                } else {
+                    Objects.requireNonNull(raceCache.get("last")).postValue(new Result.Error(exception.getMessage()));
+                }
             }
         });
+    }
+
+    private void fetchLastRaceFromRemote(boolean isInitialLoad) {
+        try {
+            weeklyRaceRemoteDataSource.getLastRace(new SingleWeeklyRaceCallback() {
+                @Override
+                public void onSuccess(WeeklyRace weeklyRace) {
+                    Log.d(TAG, "Last race loaded from remote: " + weeklyRace);
+                    if (weeklyRace != null) {
+                        localWeeklyRaceDataSource.saveSingleWeeklyRace(weeklyRace);
+                        lastUpdateTimestamps.put("last", System.currentTimeMillis());
+                        Objects.requireNonNull(raceCache.get("last")).postValue(new Result.NextRaceSuccess(weeklyRace));
+                    } else if (isInitialLoad) {
+                        Objects.requireNonNull(raceCache.get("last")).postValue(new Result.Error("No last race found from remote"));
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception exception) {
+                    Log.e(TAG, "Error fetching last race from remote: " + exception.getMessage());
+                    if (isInitialLoad) {
+                        Objects.requireNonNull(raceCache.get("last")).postValue(new Result.Error(exception.getMessage()));
+                    }
+                }
+            });
+        } catch (Exception e) {
+            Log.e(TAG, "Error fetching last race from remote: " + e.getMessage());
+            if (isInitialLoad) {
+                Objects.requireNonNull(raceCache.get("last")).postValue(new Result.Error(e.getMessage()));
+            }
+        }
     }
 
     private void loadWeeklyRaces() {

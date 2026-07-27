@@ -36,145 +36,155 @@ public class LocalWeeklyRaceDataSource {
 
     public void getWeeklyRaces(WeeklyRacesCallback callback) {
         Log.d(TAG, "Fetching all weekly races from local database");
-        try {
-            List<WeeklyRace> weeklyRaceList = new ArrayList<>();
-            weeklyRaceList.addAll(weeklyRaceClassicDao.getAllRaces());
-            weeklyRaceList.addAll(weeklyRaceSprintDao.getAllRaces());
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            try {
+                List<WeeklyRace> weeklyRaceList = new ArrayList<>();
+                weeklyRaceList.addAll(weeklyRaceClassicDao.getAllRaces());
+                weeklyRaceList.addAll(weeklyRaceSprintDao.getAllRaces());
 
-            if (!weeklyRaceList.isEmpty()) {
-                Log.d(TAG, "Found " + weeklyRaceList.size() + " weekly races in local database");
-                callback.onSuccess(weeklyRaceList);
-            } else {
-                Log.d(TAG, "No weekly races found in local database");
-                callback.onFailure(new Exception("No weekly races found in local database"));
+                if (!weeklyRaceList.isEmpty()) {
+                    Log.d(TAG, "Found " + weeklyRaceList.size() + " weekly races in local database");
+                    callback.onSuccess(weeklyRaceList);
+                } else {
+                    Log.d(TAG, "No weekly races found in local database");
+                    callback.onFailure(new Exception("No weekly races found in local database"));
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error retrieving weekly races from database: " + e.getMessage());
+                callback.onFailure(e);
             }
-        } catch (Exception e) {
-            Log.e(TAG, "Error retrieving weekly races from database: " + e.getMessage());
-            callback.onFailure(e);
-        }
+        });
     }
 
     public void saveWeeklyRaces(List<WeeklyRace> weeklyRaces) {
         Log.d(TAG, "Saving weekly races to local database. Count: " + weeklyRaces.size());
-        try {
-            weeklyRaceClassicDao.deleteAll();
-            weeklyRaceSprintDao.deleteAll();
-            for (WeeklyRace weeklyRace : weeklyRaces) {
-                if (weeklyRace instanceof WeeklyRaceClassic) {
-                    weeklyRaceClassicDao.insert((WeeklyRaceClassic) weeklyRace);
-                } else if (weeklyRace instanceof WeeklyRaceSprint) {
-                    weeklyRaceSprintDao.insert((WeeklyRaceSprint) weeklyRace);
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            try {
+                weeklyRaceClassicDao.deleteAll();
+                weeklyRaceSprintDao.deleteAll();
+                for (WeeklyRace weeklyRace : weeklyRaces) {
+                    if (weeklyRace instanceof WeeklyRaceClassic) {
+                        weeklyRaceClassicDao.insert((WeeklyRaceClassic) weeklyRace);
+                    } else if (weeklyRace instanceof WeeklyRaceSprint) {
+                        weeklyRaceSprintDao.insert((WeeklyRaceSprint) weeklyRace);
+                    }
                 }
+                Log.d(TAG, "Weekly races successfully saved to local database");
+            } catch (Exception e) {
+                Log.e(TAG, "Error saving weekly races to database: " + e.getMessage());
             }
-            Log.d(TAG, "Weekly races successfully saved to local database");
-        } catch (Exception e) {
-            Log.e(TAG, "Error saving weekly races to database: " + e.getMessage());
-        }
+        });
     }
 
     public void saveSingleWeeklyRace(WeeklyRace weeklyRace) {
         if (weeklyRace == null) return;
         Log.d(TAG, "Saving single weekly race to local database: " + weeklyRace.getRound());
-        try {
-            if (weeklyRace instanceof WeeklyRaceClassic) {
-                weeklyRaceClassicDao.insert((WeeklyRaceClassic) weeklyRace);
-            } else if (weeklyRace instanceof WeeklyRaceSprint) {
-                weeklyRaceSprintDao.insert((WeeklyRaceSprint) weeklyRace);
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            try {
+                if (weeklyRace instanceof WeeklyRaceClassic) {
+                    weeklyRaceClassicDao.insert((WeeklyRaceClassic) weeklyRace);
+                } else if (weeklyRace instanceof WeeklyRaceSprint) {
+                    weeklyRaceSprintDao.insert((WeeklyRaceSprint) weeklyRace);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error saving single weekly race to database: " + e.getMessage());
             }
-        } catch (Exception e) {
-            Log.e(TAG, "Error saving single weekly race to database: " + e.getMessage());
-        }
+        });
     }
 
     public void getNextRace(SingleWeeklyRaceCallback callback) {
         Log.d(TAG, "Fetching next weekly race from local database");
-        try {
-            // Get all races and filter for the next one (upcoming race with earliest date)
-            List<WeeklyRaceClassic> classicRaces = weeklyRaceClassicDao.getAllRaces();
-            List<WeeklyRaceSprint> sprintRaces = weeklyRaceSprintDao.getAllRaces();
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            try {
+                // Get all races and filter for the next one (upcoming race with earliest date)
+                List<WeeklyRaceClassic> classicRaces = weeklyRaceClassicDao.getAllRaces();
+                List<WeeklyRaceSprint> sprintRaces = weeklyRaceSprintDao.getAllRaces();
 
-            WeeklyRace nextRace = null;
-            LocalDateTime currentDateTime = LocalDateTime.now();
-            LocalDateTime closestDateTime = null;
+                WeeklyRace nextRace = null;
+                LocalDateTime currentDateTime = LocalDateTime.now();
+                LocalDateTime closestDateTime = null;
 
-            // Find the next classic race
-            for (WeeklyRaceClassic race : classicRaces) {
-                LocalDateTime raceDateTime = race.getDateTime();
-                if (raceDateTime != null && raceDateTime.isAfter(currentDateTime)) {
-                    if (closestDateTime == null || raceDateTime.isBefore(closestDateTime)) {
-                        closestDateTime = raceDateTime;
-                        nextRace = race;
+                // Find the next classic race
+                for (WeeklyRaceClassic race : classicRaces) {
+                    LocalDateTime raceDateTime = race.getDateTime();
+                    if (raceDateTime != null && raceDateTime.isAfter(currentDateTime)) {
+                        if (closestDateTime == null || raceDateTime.isBefore(closestDateTime)) {
+                            closestDateTime = raceDateTime;
+                            nextRace = race;
+                        }
                     }
                 }
-            }
 
-            // Find the next sprint race
-            for (WeeklyRaceSprint race : sprintRaces) {
-                LocalDateTime raceDateTime = race.getDateTime();
-                if (raceDateTime != null && raceDateTime.isAfter(currentDateTime)) {
-                    if (closestDateTime == null || raceDateTime.isBefore(closestDateTime)) {
-                        closestDateTime = raceDateTime;
-                        nextRace = race;
+                // Find the next sprint race
+                for (WeeklyRaceSprint race : sprintRaces) {
+                    LocalDateTime raceDateTime = race.getDateTime();
+                    if (raceDateTime != null && raceDateTime.isAfter(currentDateTime)) {
+                        if (closestDateTime == null || raceDateTime.isBefore(closestDateTime)) {
+                            closestDateTime = raceDateTime;
+                            nextRace = race;
+                        }
                     }
                 }
-            }
 
-            if (nextRace != null) {
-                Log.d(TAG, "Next weekly race found in local database");
-                callback.onSuccess(nextRace);
-            } else {
-                Log.d(TAG, "No next weekly race found in local database");
-                callback.onFailure(new Exception("No next weekly race found in local database"));
+                if (nextRace != null) {
+                    Log.d(TAG, "Next weekly race found in local database");
+                    callback.onSuccess(nextRace);
+                } else {
+                    Log.d(TAG, "No next weekly race found in local database");
+                    callback.onFailure(new Exception("No next weekly race found in local database"));
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error retrieving next weekly race from database: " + e.getMessage());
+                callback.onFailure(e);
             }
-        } catch (Exception e) {
-            Log.e(TAG, "Error retrieving next weekly race from database: " + e.getMessage());
-            callback.onFailure(e);
-        }
+        });
     }
 
     public void getLastRace(SingleWeeklyRaceCallback callback) {
         Log.d(TAG, "Fetching last weekly race from local database");
-        try {
-            // Get all races and filter for the last one (most recent past race)
-            List<WeeklyRaceClassic> classicRaces = weeklyRaceClassicDao.getAllRaces();
-            List<WeeklyRaceSprint> sprintRaces = weeklyRaceSprintDao.getAllRaces();
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            try {
+                // Get all races and filter for the last one (most recent past race)
+                List<WeeklyRaceClassic> classicRaces = weeklyRaceClassicDao.getAllRaces();
+                List<WeeklyRaceSprint> sprintRaces = weeklyRaceSprintDao.getAllRaces();
 
-            WeeklyRace lastRace = null;
-            LocalDateTime currentDateTime = LocalDateTime.now();
-            LocalDateTime mostRecentDateTime = null;
+                WeeklyRace lastRace = null;
+                LocalDateTime currentDateTime = LocalDateTime.now();
+                LocalDateTime mostRecentDateTime = null;
 
-            // Find the most recent classic race
-            for (WeeklyRaceClassic race : classicRaces) {
-                LocalDateTime raceDateTime = race.getDateTime();
-                if (raceDateTime != null && raceDateTime.isBefore(currentDateTime)) {
-                    if (mostRecentDateTime == null || raceDateTime.isAfter(mostRecentDateTime)) {
-                        mostRecentDateTime = raceDateTime;
-                        lastRace = race;
+                // Find the most recent classic race
+                for (WeeklyRaceClassic race : classicRaces) {
+                    LocalDateTime raceDateTime = race.getDateTime();
+                    if (raceDateTime != null && raceDateTime.isBefore(currentDateTime)) {
+                        if (mostRecentDateTime == null || raceDateTime.isAfter(mostRecentDateTime)) {
+                            mostRecentDateTime = raceDateTime;
+                            lastRace = race;
+                        }
                     }
                 }
-            }
 
-            // Find the most recent sprint race
-            for (WeeklyRaceSprint race : sprintRaces) {
-                LocalDateTime raceDateTime = race.getDateTime();
-                if (raceDateTime != null && raceDateTime.isBefore(currentDateTime)) {
-                    if (mostRecentDateTime == null || raceDateTime.isAfter(mostRecentDateTime)) {
-                        mostRecentDateTime = raceDateTime;
-                        lastRace = race;
+                // Find the most recent sprint race
+                for (WeeklyRaceSprint race : sprintRaces) {
+                    LocalDateTime raceDateTime = race.getDateTime();
+                    if (raceDateTime != null && raceDateTime.isBefore(currentDateTime)) {
+                        if (mostRecentDateTime == null || raceDateTime.isAfter(mostRecentDateTime)) {
+                            mostRecentDateTime = raceDateTime;
+                            lastRace = race;
+                        }
                     }
                 }
-            }
 
-            if (lastRace != null) {
-                Log.d(TAG, "Last weekly race found in local database");
-                callback.onSuccess(lastRace);
-            } else {
-                Log.d(TAG, "No last weekly race found in local database");
-                callback.onFailure(new Exception("No last weekly race found in local database"));
+                if (lastRace != null) {
+                    Log.d(TAG, "Last weekly race found in local database");
+                    callback.onSuccess(lastRace);
+                } else {
+                    Log.d(TAG, "No last weekly race found in local database");
+                    callback.onFailure(new Exception("No last weekly race found in local database"));
+                }
+            } catch (Exception e) {
+                Log.e(TAG, "Error retrieving last weekly race from database: " + e.getMessage());
+                callback.onFailure(e);
             }
-        } catch (Exception e) {
-            Log.e(TAG, "Error retrieving last weekly race from database: " + e.getMessage());
-            callback.onFailure(e);
-        }
+        });
     }
 }

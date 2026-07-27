@@ -39,8 +39,8 @@ public class FavoriteDriverHandler {
 
     private final Fragment fragment;
     private final Context context;
-    private final LifecycleOwner lifecycleOwner;
-    private final View view;
+    private LifecycleOwner lifecycleOwner;
+    private View view;
     private final HomeViewModel homeViewModel;
     private final DriverViewModel driverViewModel;
     private final NationViewModel nationViewModel;
@@ -52,6 +52,9 @@ public class FavoriteDriverHandler {
     @Setter
     private DriverStandings cachedDriverStandings = null;
     private boolean driverCardLoaded = false;
+    // Cached last-built card data so back-stack returns can skip the entire ViewModel chain.
+    private DriverStandingsElement cachedStandingsElement = null;
+    private Nation cachedNation = null;
 
     @FunctionalInterface
     public interface CardLoadedCallback {
@@ -78,6 +81,17 @@ public class FavoriteDriverHandler {
         this.sharedPreferencesUtils = sharedPreferencesUtils;
         this.cardLoadedCallback = cardLoadedCallback;
     }
+    public void updateView(View view, LifecycleOwner lifecycleOwner) {
+        this.view = view;
+        this.lifecycleOwner = lifecycleOwner;
+    }
+
+    public void resetCardLoaded() {
+        this.driverCardLoaded = false;
+        this.cachedStandingsElement = null;
+        this.cachedNation = null;
+    }
+
     public void setupFavoriteDriverCard() {
         String favoriteDriverId = getFavoriteDriverId();
         if (favoriteDriverId == null || favoriteDriverId.isEmpty() || favoriteDriverId.equals("null")) {
@@ -85,13 +99,24 @@ public class FavoriteDriverHandler {
             return;
         }
 
-        // Use cached data if available, otherwise fetch
+        // Fast-path for back-stack returns: the card was already built and all data is cached
+        // in memory. Skip the entire ViewModel/observer chain and go straight to buildDriverCard.
+        // This avoids re-downloading the driver image on every back-stack return.
+        if (driverCardLoaded && cachedStandingsElement != null) {
+            Log.i(TAG, "Driver card already built — rebuilding from in-memory cache (fast path)");
+            buildDriverCard(cachedStandingsElement, cachedNation);
+            return;
+        }
+
+        // Use cached standings data if available, otherwise fetch
         if (cachedDriverStandings != null) {
             processDriverStandings(favoriteDriverId, cachedDriverStandings);
             return;
         }
 
-        // Fetch standings - LiveData will handle multiple observers gracefully
+        // Fetch standings using a one-shot observer that removes itself after the first
+        // non-Loading result. Without this, the background Firebase refresh re-emits the
+        // same LiveData and triggers a full card rebuild for every emission.
         MutableLiveData<Result> driverStandingsLiveData = homeViewModel.getDriverStandingsLiveData(fragment.requireActivity().getApplication());
 
         // Track if observer was called with final result
@@ -105,12 +130,16 @@ public class FavoriteDriverHandler {
             }
         }, 2000);
 
-        driverStandingsLiveData.observe(lifecycleOwner, result -> {
+        androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
+        observerHolder[0] = result -> {
             try {
                 if (result instanceof Result.Loading) {
                     return;
                 }
 
+                // One-shot: remove this observer so future re-emissions (e.g. background
+                // Firebase refresh) do not trigger another full card rebuild.
+                driverStandingsLiveData.removeObserver(observerHolder[0]);
                 observerCalled[0] = true;
 
                 if (result instanceof Result.DriverStandingsSuccess) {
@@ -124,14 +153,17 @@ public class FavoriteDriverHandler {
                 }
             } catch (ClassCastException e) {
                 Log.e(TAG, "Type mismatch in setFavouriteDriverCard - wrong result type received: " + e.getMessage());
+                driverStandingsLiveData.removeObserver(observerHolder[0]);
                 observerCalled[0] = true;
                 processDriverStandings(favoriteDriverId, null);
             } catch (Exception e) {
                 Log.e(TAG, "Error in setFavouriteDriverCard: " + e.getMessage());
+                driverStandingsLiveData.removeObserver(observerHolder[0]);
                 observerCalled[0] = true;
                 processDriverStandings(favoriteDriverId, null);
             }
-        });
+        };
+        driverStandingsLiveData.observe(lifecycleOwner, observerHolder[0]);
     }
 
     private void processDriverStandings(String favoriteDriverId, DriverStandings driverStandings) {
@@ -158,11 +190,15 @@ public class FavoriteDriverHandler {
 
     private void fetchDriverDataForCard(String driverId, DriverStandingsElement favouriteDriver) {
         MutableLiveData<Result> driverData = driverViewModel.getDriver(driverId);
-        driverData.observe(lifecycleOwner, driverResult -> {
+        // One-shot observer: removes itself after the first non-Loading result so that
+        // a subsequent background Firebase re-emission does not rebuild the card again.
+        androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
+        observerHolder[0] = driverResult -> {
             try {
                 if (driverResult instanceof Result.Loading) {
                     return;
                 }
+                driverData.removeObserver(observerHolder[0]);
                 if (driverResult.isSuccess()) {
                     Driver driver = ((Result.DriverSuccess) driverResult).getData();
                     favouriteDriver.setDriver(driver);
@@ -180,17 +216,22 @@ public class FavoriteDriverHandler {
                 Log.e(TAG, "Error fetching driver data: " + e.getMessage());
                 showDriverNotFound(0);
             }
-        });
+        };
+        driverData.observe(lifecycleOwner, observerHolder[0]);
     }
 
     private void fetchNationForDriver(DriverStandingsElement favouriteDriver) {
         try {
             MutableLiveData<Result> nationData = nationViewModel.getNation(favouriteDriver.getDriver().getNationality());
-            nationData.observe(lifecycleOwner, nationResult -> {
+            // One-shot observer: removes itself after the first non-Loading result so that
+            // a subsequent background Firebase re-emission does not rebuild the card again.
+            androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
+            observerHolder[0] = nationResult -> {
                 try {
                     if (nationResult instanceof Result.Loading) {
                         return;
                     }
+                    nationData.removeObserver(observerHolder[0]);
                     if (nationResult.isSuccess()) {
                         Nation nation = ((Result.NationSuccess) nationResult).getData();
                         Log.i(TAG, "Building driver card");
@@ -202,7 +243,8 @@ public class FavoriteDriverHandler {
                     Log.e(TAG, "Error fetching nation for driver: " + e.getMessage());
                     showDriverNotFound(0);
                 }
-            });
+            };
+            nationData.observe(lifecycleOwner, observerHolder[0]);
         } catch (RuntimeException e) {
             Log.e(TAG, "Error fetching nation for driver: " + e.getMessage());
             buildDriverCard(favouriteDriver, null);
@@ -212,6 +254,10 @@ public class FavoriteDriverHandler {
     private void buildDriverCard(DriverStandingsElement standingElement, Nation nation) {
         try {
             Driver driver = standingElement.getDriver();
+
+            // Cache the card data so back-stack returns can take the fast path.
+            cachedStandingsElement = standingElement;
+            cachedNation = nation;
 
             String nationFlagUrl = null;
             String nationAbbreviation = null;
@@ -229,10 +275,13 @@ public class FavoriteDriverHandler {
             ImageView driverImage = view.findViewById(R.id.favourite_driver_pic);
             driverImage.setOnClickListener(v -> NavigationUtils.navigateToBioPage(context, driver.getDriverId(), 1));
 
-            UIUtils.loadImagesInParallel(context,
-                new String[]{nationFlagUrl, driver.getDriver_half_pic_url()},
-                new ImageView[]{driverFlag, driverImage},
-                () -> buildDriverCardFinalStep(standingElement, driver));
+            // Populate text/standing data and make the card visible immediately.
+            // Images are loaded asynchronously — the user should NOT wait for them.
+            buildDriverCardFinalStep(standingElement, driver);
+
+            // Start image downloads in the background.
+            UIUtils.loadImageAsync(context, nationFlagUrl, driverFlag);
+            UIUtils.loadImageAsync(context, driver.getDriver_half_pic_url(), driverImage);
         } catch (Exception e) {
             Log.e(TAG, "Error building driver card: " + e.getMessage());
             showDriverNotFound(0);

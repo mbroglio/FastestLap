@@ -137,7 +137,11 @@ public class UIUtils {
             android.app.Activity activity = (android.app.Activity) context;
             if (activity.isDestroyed() || activity.isFinishing()) return;
         }
-        Glide.with(context)
+        // Use applicationContext so the decoded bitmap is pinned in the app-scoped
+        // Glide RequestManager and never evicted when a fragment/activity is destroyed.
+        // This makes every return visit to the home fragment an instant memory-cache hit
+        // instead of a fresh Firebase Storage fetch.
+        Glide.with(context.getApplicationContext())
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .preload();
@@ -161,7 +165,9 @@ public class UIUtils {
             }
         }
 
-        Glide.with(context)
+        // Use applicationContext so the decoded bitmap survives fragment/activity lifecycle
+        // changes and is available as a memory-cache hit on the next home fragment visit.
+        Glide.with(context.getApplicationContext())
                 .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .listener(new RequestListener<Drawable>() {
@@ -277,6 +283,24 @@ public class UIUtils {
             loadImage(context, urls[i], imageViews[i], checkComplete, 0);
         }
     }
+    /**
+     * Loads an image into an ImageView asynchronously without any completion callback.
+     * Use this when you want to display data immediately and let images fill in on their own.
+     * Unlike loadImagesInParallel(), this does NOT block any completion signal.
+     */
+    public static void loadImageAsync(Context context, String url, ImageView imageView) {
+        if (imageView == null) return;
+        if (url == null || url.isEmpty()) return;
+        if (context instanceof android.app.Activity) {
+            android.app.Activity activity = (android.app.Activity) context;
+            if (activity.isDestroyed() || activity.isFinishing()) return;
+        }
+        Glide.with(context)
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imageView);
+    }
+
 
     private static void loadImage(Context context, String url, ImageView imageView, Runnable onSuccess, int retryCount) {
         Log.i("Glide", "Loading image: " + url);

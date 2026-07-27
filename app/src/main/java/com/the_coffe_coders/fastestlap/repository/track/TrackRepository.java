@@ -74,8 +74,13 @@ public class TrackRepository {
                     lastUpdateTimestamps.put(trackId, System.currentTimeMillis());
                     Objects.requireNonNull(trackCache.get(trackId)).postValue(new Result.TrackSuccess(track));
 
-                    if (isNetworkAvailable()) {
+                    // Only refresh from Firebase if the cached data is actually stale.
+                    Long ts = lastUpdateTimestamps.get(trackId);
+                    boolean isStale = ts == null || System.currentTimeMillis() - ts > 300_000L;
+                    if (isNetworkAvailable() && isStale) {
                         loadTrackFromRemote(trackId, true);
+                    } else {
+                        Log.d(TAG, "Track cache still fresh, skipping remote refresh: " + trackId);
                     }
                 } else {
                     Log.d(TAG, "Track cache miss in local database: " + trackId);

@@ -26,10 +26,17 @@ public class LocalTrackDataSource implements TrackDataSource {
     @Override
     public void getTrack(String trackId, TrackCallback callback) {
         Log.d(TAG, "Fetching track with ID: " + trackId);
-        callback.onTrackLoaded(trackDAO.getById(trackId));
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            try {
+                Track track = trackDAO.getById(trackId);
+                callback.onTrackLoaded(track);
+            } catch (Exception e) {
+                callback.onError(e);
+            }
+        });
     }
 
     public void insertTrack(Track track) {
-        trackDAO.insertTrack(track);
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> trackDAO.insertTrack(track));
     }
 }

@@ -35,8 +35,8 @@ public class LastRaceHandler {
     private static final String TAG = LastRaceHandler.class.getSimpleName();
 
     private final Context context;
-    private final LifecycleOwner lifecycleOwner;
-    private final View view;
+    private LifecycleOwner lifecycleOwner;
+    private View view;
     private final WeeklyRaceViewModel weeklyRaceViewModel;
     private final TrackViewModel trackViewModel;
     private final RaceResultViewModel raceResultViewModel;
@@ -65,13 +65,22 @@ public class LastRaceHandler {
         this.cardLoadedCallback = cardLoadedCallback;
     }
 
+    public void updateView(View view, LifecycleOwner lifecycleOwner) {
+        this.view = view;
+        this.lifecycleOwner = lifecycleOwner;
+    }
+
     public void setupLastRaceCard() {
         LiveData<Result> lastRace = weeklyRaceViewModel.getLastRace();
-        lastRace.observe(lifecycleOwner, result -> {
+        // One-shot observer: removes itself after the first non-Loading result to prevent
+        // observer accumulation on repeated setupLastRaceCard() calls.
+        androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
+        observerHolder[0] = result -> {
             try {
                 if (result instanceof Result.Loading) {
                     return;
                 }
+                lastRace.removeObserver(observerHolder[0]);
                 if (result.isSuccess()) {
                     WeeklyRace raceResult = ((Result.NextRaceSuccess) result).getData();
                     Log.i(TAG, "Last Race: " + raceResult);
@@ -87,10 +96,12 @@ public class LastRaceHandler {
                     throw new Exception("Failed to fetch last race: " + result.getError());
                 }
             } catch (Exception e) {
+                lastRace.removeObserver(observerHolder[0]);
                 Log.e(TAG, "Error in setLastRaceCard: " + e.getMessage());
                 loadPendingResultsLayout();
             }
-        });
+        };
+        lastRace.observe(lifecycleOwner, observerHolder[0]);
     }
 
     private void setSeasonBeginning() {
