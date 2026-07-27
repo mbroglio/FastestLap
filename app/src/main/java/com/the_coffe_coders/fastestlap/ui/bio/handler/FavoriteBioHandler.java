@@ -10,11 +10,6 @@ import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 
 public class FavoriteBioHandler {
 
-    @FunctionalInterface
-    public interface FavoriteChangedCallback {
-        void onFavoriteChanged(String favoriteId);
-    }
-
     private final SharedPreferencesUtils sharedPreferencesUtils;
 
     public FavoriteBioHandler(Context context) {
@@ -73,5 +68,10 @@ public class FavoriteBioHandler {
 
     private boolean isFavorite(String itemId, String favoriteId) {
         return itemId != null && itemId.equals(favoriteId);
+    }
+
+    @FunctionalInterface
+    public interface FavoriteChangedCallback {
+        void onFavoriteChanged(String favoriteId);
     }
 }

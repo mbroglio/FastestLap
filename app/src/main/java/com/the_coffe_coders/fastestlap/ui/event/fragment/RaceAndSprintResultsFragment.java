@@ -41,7 +41,7 @@ public class RaceAndSprintResultsFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            race = getArguments().getParcelable("RACE");
+            race = androidx.core.os.BundleCompat.getParcelable(getArguments(), "RACE", Race.class);
         }
     }
 
@@ -99,7 +99,7 @@ public class RaceAndSprintResultsFragment extends DialogFragment {
         Log.i("RaceAndSprintResultsFragment", "Fastest lap: " + raceFastestLap);
         RelativeLayout fastestLapLayout = view.findViewById(R.id.fastest_lap_layout);
 
-        if(raceFastestLap == null || raceFastestLap.isNull() ){
+        if (raceFastestLap == null || raceFastestLap.isNull()) {
             fastestLapLayout.setVisibility(View.GONE);
             return;
         }

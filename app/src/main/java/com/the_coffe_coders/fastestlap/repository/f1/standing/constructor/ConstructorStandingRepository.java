@@ -26,18 +26,15 @@ public class ConstructorStandingRepository {
     // Cache
     private final Map<String, MutableLiveData<Result>> constructorStandingCache;
     private final Map<String, Long> lastUpdateTimestamps;
+    // Data sources
+    private final JolpicaConstructorStandingsDataSource jolpicaConstructorStandingsDataSource;
+    private final LocalConstructorStandingsDataSource localConstructorStandingsDataSource;
+    private final NetworkUtils networkLiveData;
+    private final String currentYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
     // Prevents duplicate concurrent HTTP requests while a fetch is already in-flight.
     // Without this, callers that arrive before the first response lands would each fire
     // their own network request (since the timestamp is null until the callback completes).
     private boolean isFetchInFlight = false;
-
-    // Data sources
-    private final JolpicaConstructorStandingsDataSource jolpicaConstructorStandingsDataSource;
-    private final LocalConstructorStandingsDataSource localConstructorStandingsDataSource;
-
-    private final NetworkUtils networkLiveData;
-
-    private final String currentYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 
     private ConstructorStandingRepository(AppRoomDatabase appRoomDatabase, Context context) {
         constructorStandingCache = new HashMap<>();

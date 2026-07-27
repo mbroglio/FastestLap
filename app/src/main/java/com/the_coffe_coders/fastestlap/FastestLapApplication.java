@@ -1,10 +1,11 @@
 package com.the_coffe_coders.fastestlap;
 
+import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
+
 import android.app.Application;
 import android.util.Log;
 
 import com.google.firebase.database.FirebaseDatabase;
-import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_DATABASE;
 
 public class FastestLapApplication extends Application {
     private static final String TAG = "FastestLapApplication";

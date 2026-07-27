@@ -70,7 +70,8 @@ public class JuniorStandingsRepository {
     private void loadConstructorStandingsCacheFirst(String cacheKey, String series) {
         localJuniorStandingsDataSource.getJuniorConstructorStandings(series, new JuniorStandingsCallback() {
             @Override
-            public void onDriverStandingsLoaded(JuniorDriverStandings driverStandings) {}
+            public void onDriverStandingsLoaded(JuniorDriverStandings driverStandings) {
+            }
 
             @Override
             public void onConstructorStandingsLoaded(JuniorConstructorStandings constructorStandings) {
@@ -111,7 +112,8 @@ public class JuniorStandingsRepository {
         try {
             firebaseJuniorStandingsDataSource.getJuniorConstructorStandings(series, new JuniorStandingsCallback() {
                 @Override
-                public void onDriverStandingsLoaded(JuniorDriverStandings driverStandings) {}
+                public void onDriverStandingsLoaded(JuniorDriverStandings driverStandings) {
+                }
 
                 @Override
                 public void onConstructorStandingsLoaded(JuniorConstructorStandings constructorStandings) {
@@ -177,7 +179,8 @@ public class JuniorStandingsRepository {
             }
 
             @Override
-            public void onConstructorStandingsLoaded(JuniorConstructorStandings constructorStandings) {}
+            public void onConstructorStandingsLoaded(JuniorConstructorStandings constructorStandings) {
+            }
 
             @Override
             public void onError(Exception e) {
@@ -206,7 +209,8 @@ public class JuniorStandingsRepository {
                 }
 
                 @Override
-                public void onConstructorStandingsLoaded(JuniorConstructorStandings constructorStandings) {}
+                public void onConstructorStandingsLoaded(JuniorConstructorStandings constructorStandings) {
+                }
 
                 @Override
                 public void onError(Exception e) {

@@ -24,7 +24,6 @@ import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 import java.util.List;
 
 public class JuniorResultsRecyclerAdapter extends RecyclerView.Adapter<JuniorResultsRecyclerAdapter.JuniorResultsViewHolder> {
-    private static final String TAG = "JuniorResultsRecyclerAdapter";
 
     private final Context context;
     private final JuniorResult juniorResult;
@@ -136,7 +135,7 @@ public class JuniorResultsRecyclerAdapter extends RecyclerView.Adapter<JuniorRes
     }
 
     private void setFeatureResults(JuniorResultsViewHolder holder, JuniorResultElement element) {
-        if(element.getFeature() != null) {
+        if (element.getFeature() != null) {
             if (element.getFeature().isCompleted()) {
                 showFeatureResults(holder);
                 List<JuniorSessionResultElement> podium = element.getFeature().getPodium();
@@ -157,11 +156,11 @@ public class JuniorResultsRecyclerAdapter extends RecyclerView.Adapter<JuniorRes
             } else if (element.getFeature().isCancelled()) {
                 showFeatureCancelled(holder);
                 holder.featureRaceLayout.setOnClickListener(null);
-            } else if (element.getFeature().isYetToStart()){
+            } else if (element.getFeature().isYetToStart()) {
                 showFeatureYetToStart(holder);
                 holder.featureRaceLayout.setOnClickListener(null);
             }
-        }else{
+        } else {
             showFeatureError(holder);
         }
 
@@ -170,7 +169,7 @@ public class JuniorResultsRecyclerAdapter extends RecyclerView.Adapter<JuniorRes
     }
 
     private void setSprintResults(JuniorResultsViewHolder holder, JuniorResultElement element) {
-        if(element.getSprint() != null){
+        if (element.getSprint() != null) {
             if (element.getSprint().isCompleted()) {
                 showSprintResults(holder);
                 List<JuniorSessionResultElement> podium = element.getSprint().getPodium();
@@ -188,14 +187,14 @@ public class JuniorResultsRecyclerAdapter extends RecyclerView.Adapter<JuniorRes
 
                 holder.sprintRaceLayout.setOnClickListener(v -> NavigationUtils.showFullResultsDialogSprint(
                         element.getCircuit(), element.getSprint(), fragmentManager, categoryType, 0));
-            } else if(element.getSprint().isCancelled()){
+            } else if (element.getSprint().isCancelled()) {
                 showSprintCancelled(holder);
                 holder.sprintRaceLayout.setOnClickListener(null);
-            }else if(element.getSprint().isYetToStart()){
+            } else if (element.getSprint().isYetToStart()) {
                 showSprintYetToStart(holder);
                 holder.sprintRaceLayout.setOnClickListener(null);
             }
-        }else{
+        } else {
             showSprintError(holder);
         }
 

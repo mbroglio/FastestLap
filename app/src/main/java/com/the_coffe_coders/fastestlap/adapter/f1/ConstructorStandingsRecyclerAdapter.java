@@ -91,6 +91,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         // would call endLoading twice per position and decrement pendingCards prematurely.
         androidx.lifecycle.LiveData<Result> constructorLd =
                 constructorViewModel.getSelectedConstructor(currentConstructorId);
+        @SuppressWarnings("unchecked")
         androidx.lifecycle.Observer<Result>[] selfRef = new androidx.lifecycle.Observer[1];
         selfRef[0] = result -> {
             if (result instanceof Result.Loading) return;
@@ -182,6 +183,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         String driver1Id = constructor.getDriverOneId();
         if (driver1Id != null) {
             androidx.lifecycle.LiveData<Result> d1Ld = driverViewModel.getDriver(driver1Id);
+            @SuppressWarnings("unchecked")
             androidx.lifecycle.Observer<Result>[] d1Ref = new androidx.lifecycle.Observer[1];
             d1Ref[0] = result -> {
                 if (result instanceof Result.Loading) return;
@@ -212,6 +214,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         String driver2Id = constructor.getDriverTwoId();
         if (driver2Id != null) {
             androidx.lifecycle.LiveData<Result> d2Ld = driverViewModel.getDriver(driver2Id);
+            @SuppressWarnings("unchecked")
             androidx.lifecycle.Observer<Result>[] d2Ref = new androidx.lifecycle.Observer[1];
             d2Ref[0] = result -> {
                 if (result instanceof Result.Loading) return;
@@ -267,6 +270,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
             }
 
             androidx.lifecycle.LiveData<Result> cLd = constructorViewModel.getSelectedConstructor(cId);
+            @SuppressWarnings("unchecked")
             androidx.lifecycle.Observer<Result>[] selfRef = new androidx.lifecycle.Observer[1];
             selfRef[0] = result -> {
                 if (result instanceof Result.Loading) return;
@@ -300,6 +304,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         };
 
         androidx.lifecycle.LiveData<Result> d1Ld = driverViewModel.getDriver(driver1Id);
+        @SuppressWarnings("unchecked")
         androidx.lifecycle.Observer<Result>[] d1Ref = new androidx.lifecycle.Observer[1];
         d1Ref[0] = d1Res -> {
             if (d1Res instanceof Result.Loading) return;
@@ -313,6 +318,7 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         d1Ld.observe(lifecycleOwner, d1Ref[0]);
 
         androidx.lifecycle.LiveData<Result> d2Ld = driverViewModel.getDriver(driver2Id);
+        @SuppressWarnings("unchecked")
         androidx.lifecycle.Observer<Result>[] d2Ref = new androidx.lifecycle.Observer[1];
         d2Ref[0] = d2Res -> {
             if (d2Res instanceof Result.Loading) return;

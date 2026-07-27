@@ -40,8 +40,6 @@ public class FavoriteConstructorHandler {
 
     private final Fragment fragment;
     private final Context context;
-    private LifecycleOwner lifecycleOwner;
-    private View view;
     private final HomeViewModel homeViewModel;
     private final ConstructorViewModel constructorViewModel;
     private final NationViewModel nationViewModel;
@@ -49,7 +47,8 @@ public class FavoriteConstructorHandler {
     private final NetworkUtils networkLiveData;
     private final SharedPreferencesUtils sharedPreferencesUtils;
     private final CardLoadedCallback cardLoadedCallback;
-
+    private LifecycleOwner lifecycleOwner;
+    private View view;
     @Setter
     private ConstructorStandings cachedConstructorStandings = null;
     private boolean constructorCardLoaded = false;
@@ -57,19 +56,14 @@ public class FavoriteConstructorHandler {
     private ConstructorStandingsElement cachedStandingsElement = null;
     private Nation cachedNation = null;
 
-    @FunctionalInterface
-    public interface CardLoadedCallback {
-        void onCardLoaded(String cardName);
-    }
-
     public FavoriteConstructorHandler(Fragment fragment, View view,
-                                     HomeViewModel homeViewModel,
-                                     ConstructorViewModel constructorViewModel,
-                                     NationViewModel nationViewModel,
-                                     UserViewModel userViewModel,
-                                     NetworkUtils networkLiveData,
-                                     SharedPreferencesUtils sharedPreferencesUtils,
-                                     CardLoadedCallback cardLoadedCallback) {
+                                      HomeViewModel homeViewModel,
+                                      ConstructorViewModel constructorViewModel,
+                                      NationViewModel nationViewModel,
+                                      UserViewModel userViewModel,
+                                      NetworkUtils networkLiveData,
+                                      SharedPreferencesUtils sharedPreferencesUtils,
+                                      CardLoadedCallback cardLoadedCallback) {
         this.fragment = fragment;
         this.context = fragment.requireContext();
         this.lifecycleOwner = fragment.getViewLifecycleOwner();
@@ -82,6 +76,7 @@ public class FavoriteConstructorHandler {
         this.sharedPreferencesUtils = sharedPreferencesUtils;
         this.cardLoadedCallback = cardLoadedCallback;
     }
+
     public void updateView(View view, LifecycleOwner lifecycleOwner) {
         this.view = view;
         this.lifecycleOwner = lifecycleOwner;
@@ -132,6 +127,7 @@ public class FavoriteConstructorHandler {
             }
         }, 2000);
 
+        @SuppressWarnings("unchecked")
         androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
         observerHolder[0] = result -> {
             try {
@@ -194,6 +190,7 @@ public class FavoriteConstructorHandler {
         MutableLiveData<Result> constructorData = constructorViewModel.getSelectedConstructor(teamId);
         // One-shot observer: removes itself after the first non-Loading result so that
         // a subsequent background Firebase re-emission does not rebuild the card again.
+        @SuppressWarnings("unchecked")
         androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
         observerHolder[0] = constructorResult -> {
             try {
@@ -228,6 +225,7 @@ public class FavoriteConstructorHandler {
             MutableLiveData<Result> nationData = nationViewModel.getNation(favouriteConstructor.getConstructor().getNationality());
             // One-shot observer: removes itself after the first non-Loading result so that
             // a subsequent background Firebase re-emission does not rebuild the card again.
+            @SuppressWarnings("unchecked")
             androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
             observerHolder[0] = nationResult -> {
                 try {
@@ -270,8 +268,8 @@ public class FavoriteConstructorHandler {
             }
 
             UIUtils.multipleSetTextViewText(
-                new String[]{constructor.getName(), nationAbbreviation},
-                new TextView[]{view.findViewById(R.id.favourite_constructor_name), view.findViewById(R.id.favourite_constructor_nationality)}
+                    new String[]{constructor.getName(), nationAbbreviation},
+                    new TextView[]{view.findViewById(R.id.favourite_constructor_name), view.findViewById(R.id.favourite_constructor_nationality)}
             );
 
             ImageView constructorCar = view.findViewById(R.id.favourite_constructor_car);
@@ -293,8 +291,8 @@ public class FavoriteConstructorHandler {
     private void buildConstructorCardFinalStep(ConstructorStandingsElement standingElement, Constructor constructor) {
         if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
             UIUtils.multipleSetTextViewText(
-                new String[]{standingElement.getPosition(), standingElement.getPoints()},
-                new TextView[]{view.findViewById(R.id.favourite_constructor_position), view.findViewById(R.id.favourite_constructor_points)}
+                    new String[]{standingElement.getPosition(), standingElement.getPoints()},
+                    new TextView[]{view.findViewById(R.id.favourite_constructor_position), view.findViewById(R.id.favourite_constructor_points)}
             );
 
             MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
@@ -318,7 +316,7 @@ public class FavoriteConstructorHandler {
         cardLoadedCallback.onCardLoaded("constructor");
         updateVisibility(R.id.pending_favorite_constructor, R.id.favorite_constructor, R.id.missing_favorite_constructor);
         view.findViewById(R.id.pending_favorite_constructor).setOnClickListener(v ->
-            context.startActivity(new Intent(context, ConstructorsStandingActivity.class)));
+                context.startActivity(new Intent(context, ConstructorsStandingActivity.class)));
     }
 
     private void showConstructorNotFound(int problem) {
@@ -328,12 +326,12 @@ public class FavoriteConstructorHandler {
         switch (problem) {
             case 0: //general error
                 view.findViewById(R.id.missing_favorite_constructor).setOnClickListener(v ->
-                    context.startActivity(new Intent(context, ConstructorsStandingActivity.class)));
+                        context.startActivity(new Intent(context, ConstructorsStandingActivity.class)));
                 break;
             case 1: //no internet connection
                 Log.e(TAG, "Constructor: No internet connection");
                 view.findViewById(R.id.missing_favorite_constructor).setOnClickListener(v ->
-                    Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show());
+                        Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show());
                 break;
             default:
                 Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
@@ -351,6 +349,11 @@ public class FavoriteConstructorHandler {
         String teamId = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
         Log.i(TAG, "Favorite Team ID: " + teamId);
         return teamId;
+    }
+
+    @FunctionalInterface
+    public interface CardLoadedCallback {
+        void onCardLoaded(String cardName);
     }
 }
 

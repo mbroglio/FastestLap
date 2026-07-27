@@ -35,27 +35,21 @@ public class LastRaceHandler {
     private static final String TAG = LastRaceHandler.class.getSimpleName();
 
     private final Context context;
-    private LifecycleOwner lifecycleOwner;
-    private View view;
     private final WeeklyRaceViewModel weeklyRaceViewModel;
     private final TrackViewModel trackViewModel;
     private final RaceResultViewModel raceResultViewModel;
     private final CardLoadedCallback cardLoadedCallback;
-
+    private LifecycleOwner lifecycleOwner;
+    private View view;
     @Setter
     private String nextRaceRound;
 
-    @FunctionalInterface
-    public interface CardLoadedCallback {
-        void onCardLoaded(String cardName);
-    }
-
     public LastRaceHandler(Fragment fragment, View view,
-                          WeeklyRaceViewModel weeklyRaceViewModel,
-                          TrackViewModel trackViewModel,
-                          RaceResultViewModel raceResultViewModel,
-                          NetworkUtils networkLiveData,
-                          CardLoadedCallback cardLoadedCallback) {
+                           WeeklyRaceViewModel weeklyRaceViewModel,
+                           TrackViewModel trackViewModel,
+                           RaceResultViewModel raceResultViewModel,
+                           NetworkUtils networkLiveData,
+                           CardLoadedCallback cardLoadedCallback) {
         this.context = fragment.requireContext();
         this.lifecycleOwner = fragment.getViewLifecycleOwner();
         this.view = view;
@@ -74,6 +68,7 @@ public class LastRaceHandler {
         LiveData<Result> lastRace = weeklyRaceViewModel.getLastRace();
         // One-shot observer: removes itself after the first non-Loading result to prevent
         // observer accumulation on repeated setupLastRaceCard() calls.
+        @SuppressWarnings("unchecked")
         androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
         observerHolder[0] = result -> {
             try {
@@ -140,8 +135,8 @@ public class LastRaceHandler {
         try {
             UIUtils.singleSetTextViewText(race.getRaceName(), view.findViewById(R.id.last_race_name));
             UIUtils.loadImageWithGlide(context, track.getTrack_minimal_layout_url(),
-                view.findViewById(R.id.last_race_track_outline),
-                () -> updateLastRaceUIFinalStep(race));
+                    view.findViewById(R.id.last_race_track_outline),
+                    () -> updateLastRaceUIFinalStep(race));
         } catch (Exception e) {
             Log.e(TAG, "Error updating last race UI: " + e.getMessage());
             loadPendingResultsLayout();
@@ -152,18 +147,18 @@ public class LastRaceHandler {
         LocalDateTime dateTime = race.getDateTime();
 
         UIUtils.multipleSetTextViewText(
-            new String[]{
-                String.valueOf(dateTime.getDayOfMonth()),
-                context.getString(R.string.round_plus_value, race.getRound())
-            },
-            new TextView[]{
-                view.findViewById(R.id.last_race_date),
-                view.findViewById(R.id.last_race_round)
-            }
+                new String[]{
+                        String.valueOf(dateTime.getDayOfMonth()),
+                        context.getString(R.string.round_plus_value, race.getRound())
+                },
+                new TextView[]{
+                        view.findViewById(R.id.last_race_date),
+                        view.findViewById(R.id.last_race_round)
+                }
         );
 
         UIUtils.translateMonth(dateTime.getMonth().toString().substring(0, 3).toUpperCase(java.util.Locale.ROOT),
-            view.findViewById(R.id.last_race_month), true);
+                view.findViewById(R.id.last_race_month), true);
 
         MutableLiveData<Result> raceResultData = raceResultViewModel.getRaceResults(race.getRound());
         raceResultData.observe(lifecycleOwner, result -> {
@@ -194,8 +189,8 @@ public class LastRaceHandler {
         try {
             for (int i = 0; i < Math.min(3, raceResults.size()); i++) {
                 UIUtils.singleSetTextViewText(
-                    raceResults.get(i).getDriver().getFullName(),
-                    view.findViewById(Constants.LAST_RACE_DRIVER_NAME.get(i))
+                        raceResults.get(i).getDriver().getFullName(),
+                        view.findViewById(Constants.LAST_RACE_DRIVER_NAME.get(i))
                 );
             }
             cardLoadedCallback.onCardLoaded("lastRace");
@@ -216,6 +211,11 @@ public class LastRaceHandler {
         view.findViewById(R.id.season_results).setVisibility(View.GONE);
         view.findViewById(R.id.pending_last_race_results).setVisibility(View.GONE);
         view.findViewById(R.id.last_race_not_found_layout).setVisibility(View.VISIBLE);
+    }
+
+    @FunctionalInterface
+    public interface CardLoadedCallback {
+        void onCardLoaded(String cardName);
     }
 }
 

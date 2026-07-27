@@ -1,17 +1,26 @@
 package com.the_coffe_coders.fastestlap.util;
 
+import android.app.DownloadManager;
+import android.content.ActivityNotFoundException;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
+import android.os.Environment;
 import android.provider.CalendarContract;
 import android.util.Log;
+
+import androidx.core.content.FileProvider;
 
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Practice;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
 
 import org.threeten.bp.ZoneId;
-import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.ZoneOffset;
+import org.threeten.bp.ZonedDateTime;
 import org.threeten.bp.format.DateTimeFormatter;
 
 import java.io.File;
@@ -23,16 +32,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
-
-import android.app.DownloadManager;
-import android.content.ActivityNotFoundException;
-import android.net.Uri;
-import android.os.Environment;
-import androidx.core.content.FileProvider;
-import android.content.ClipData;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.util.TimeUtils;
 
 /**
  * Utility class to export Grand Prix sessions into the device calendar app.
@@ -87,7 +86,8 @@ public class CalendarUtils {
         try {
             DownloadManager dm = (DownloadManager) context.getSystemService(Context.DOWNLOAD_SERVICE);
             if (dm != null) {
-                dm.addCompletedDownload(icsFile.getName(), "FastestLap calendar export",
+                @SuppressWarnings("deprecation")
+                long downloadId = dm.addCompletedDownload(icsFile.getName(), "FastestLap calendar export",
                         true, "text/calendar", icsFile.getAbsolutePath(), icsFile.length(), true);
             }
         } catch (Exception e) {
@@ -197,7 +197,8 @@ public class CalendarUtils {
                 sb.append("DTEND:").append(endZdt.format(fmt)).append("\r\n");
                 sb.append("SUMMARY:").append(escapeText(summary)).append("\r\n");
                 sb.append("DESCRIPTION:").append(escapeText(description)).append("\r\n");
-                if (!location.isEmpty()) sb.append("LOCATION:").append(escapeText(location)).append("\r\n");
+                if (!location.isEmpty())
+                    sb.append("LOCATION:").append(escapeText(location)).append("\r\n");
                 sb.append("END:VEVENT\r\n");
             }
         }
@@ -206,7 +207,9 @@ public class CalendarUtils {
         return sb.toString();
     }
 
-    /** Escape iCalendar text per simple rules (backslash, semicolon, comma, newline). */
+    /**
+     * Escape iCalendar text per simple rules (backslash, semicolon, comma, newline).
+     */
     private static String escapeText(String input) {
         if (input == null) return "";
         return input.replace("\\", "\\\\")

@@ -29,6 +29,9 @@ public class ServiceLocator {
     public static ServiceLocator instance;
     public static String currentYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
     public static String CURRENT_YEAR_BASE_URL = BASE_URL + currentYear + "/";
+    private OkHttpClient sharedOkHttpClient;
+    private ErgastAPIService ergastAPIService;
+    private Application applicationContext;
 
     public static synchronized ServiceLocator getInstance() {
         if (instance == null) {
@@ -41,10 +44,6 @@ public class ServiceLocator {
         currentYear = seasonYear;
         CURRENT_YEAR_BASE_URL = BASE_URL + seasonYear + "/";
     }
-
-    private OkHttpClient sharedOkHttpClient;
-    private ErgastAPIService ergastAPIService;
-    private Application applicationContext;
 
     public synchronized void setApplicationContext(Application application) {
         this.applicationContext = application;

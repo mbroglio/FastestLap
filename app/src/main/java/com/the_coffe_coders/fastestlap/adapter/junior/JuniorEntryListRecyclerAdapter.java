@@ -61,9 +61,9 @@ public class JuniorEntryListRecyclerAdapter extends RecyclerView.Adapter<JuniorE
         holder.juniorTeamCard.setBackground(AppCompatResources
                 .getDrawable(context, Objects.requireNonNull(Constants.JUNIOR_TEAM_GRADIENT_COLOR.get(matchedKey))));
 
-        if(juniorTeam.getTeam_logo_url() != null){
+        if (juniorTeam.getTeam_logo_url() != null) {
             UIUtils.loadImageWithGlide(context, juniorTeam.getTeam_logo_url(), holder.teamLogo, null);
-        }else{
+        } else {
             holder.teamLogo.setImageResource(Objects.requireNonNull(Constants.JUNIOR_TEAM_LOGO.get(matchedKey)));
         }
 

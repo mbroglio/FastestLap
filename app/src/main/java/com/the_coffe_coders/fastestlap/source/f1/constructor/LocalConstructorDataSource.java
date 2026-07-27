@@ -35,7 +35,7 @@ public class LocalConstructorDataSource implements ConstructorDataSource {
                 // If it is missing all of these, it is an incomplete DTO object and should be treated as a cache miss.
                 boolean isComplete = constructor != null &&
                         (constructor.getCar_pic_url() != null || constructor.getTeam_logo_url() != null ||
-                         constructor.getTeam_logo_minimal_url() != null || (constructor.getDrivers() != null && !constructor.getDrivers().isEmpty()));
+                                constructor.getTeam_logo_minimal_url() != null || (constructor.getDrivers() != null && !constructor.getDrivers().isEmpty()));
 
                 if (isComplete) {
                     callback.onConstructorLoaded(constructor);

@@ -30,7 +30,6 @@ import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<DriversStandingRecyclerAdapter.DriverViewHolder> {
 
@@ -81,11 +80,12 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
         } else { //use driversStandingList
             element = driversStandingList.get(position);
         }
-        
+
         final String currentDriverId = element.getDriver().getDriverId();
 
         try {
             androidx.lifecycle.LiveData<Result> driverLd = driverViewModel.getDriver(currentDriverId);
+            @SuppressWarnings("unchecked")
             androidx.lifecycle.Observer<Result>[] selfRef = new androidx.lifecycle.Observer[1];
             selfRef[0] = result -> {
                 if (result instanceof Result.Loading) {
@@ -190,9 +190,10 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
             endLoading(position);
             return;
         }
-        
+
         try {
             androidx.lifecycle.LiveData<Result> constLd = constructorViewModel.getSelectedConstructor(driver.getTeam_id());
+            @SuppressWarnings("unchecked")
             androidx.lifecycle.Observer<Result>[] selfRef = new androidx.lifecycle.Observer[1];
             selfRef[0] = result -> {
                 if (result instanceof Result.Loading) {
@@ -228,6 +229,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
             }
 
             androidx.lifecycle.LiveData<Result> dLd = driverViewModel.getDriver(dId);
+            @SuppressWarnings("unchecked")
             androidx.lifecycle.Observer<Result>[] selfRef = new androidx.lifecycle.Observer[1];
             selfRef[0] = result -> {
                 if (result instanceof Result.Loading) return;
@@ -239,6 +241,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
 
                     if (teamId != null) {
                         androidx.lifecycle.LiveData<Result> cLd = constructorViewModel.getSelectedConstructor(teamId);
+                        @SuppressWarnings("unchecked")
                         androidx.lifecycle.Observer<Result>[] cRef = new androidx.lifecycle.Observer[1];
                         cRef[0] = cRes -> {
                             if (cRes instanceof Result.Loading) return;

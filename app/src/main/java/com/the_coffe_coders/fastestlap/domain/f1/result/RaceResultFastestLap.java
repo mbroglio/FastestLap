@@ -41,7 +41,7 @@ public class RaceResultFastestLap implements Parcelable {
         lap = in.readString();
         driverName = in.readString();
         constructorId = in.readString();
-        time = in.readParcelable(RaceResultTime.class.getClassLoader());
+        time = androidx.core.os.ParcelCompat.readParcelable(in, RaceResultTime.class.getClassLoader(), RaceResultTime.class);
     }
 
     @Override
@@ -58,7 +58,7 @@ public class RaceResultFastestLap implements Parcelable {
         dest.writeParcelable(time, flags);
     }
 
-    public boolean isNull(){
+    public boolean isNull() {
         return rank == null && lap == null && time == null && driverName == null && constructorId == null;
     }
 }

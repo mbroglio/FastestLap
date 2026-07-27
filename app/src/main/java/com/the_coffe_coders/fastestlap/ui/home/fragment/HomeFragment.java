@@ -13,14 +13,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
-import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
-import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandings;
-import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
-import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
@@ -45,7 +40,6 @@ import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
-
 
 
 public class HomeFragment extends Fragment {
@@ -210,8 +204,8 @@ public class HomeFragment extends Fragment {
         // Initialize handlers once or update view binding on back-stack return
         if (lastRaceHandler == null) {
             lastRaceHandler = new LastRaceHandler(
-                this, view, weeklyRaceViewModel, trackViewModel,
-                raceResultViewModel, networkLiveData, this::markCardLoaded
+                    this, view, weeklyRaceViewModel, trackViewModel,
+                    raceResultViewModel, networkLiveData, this::markCardLoaded
             );
         } else {
             lastRaceHandler.updateView(view, getViewLifecycleOwner());
@@ -219,8 +213,8 @@ public class HomeFragment extends Fragment {
 
         if (nextRaceHandler == null) {
             nextRaceHandler = new NextRaceHandler(
-                this, view, weeklyRaceViewModel, trackViewModel, nationViewModel,
-                homeViewModel, driverViewModel, networkLiveData, this::markCardLoaded
+                    this, view, weeklyRaceViewModel, trackViewModel, nationViewModel,
+                    homeViewModel, driverViewModel, networkLiveData, this::markCardLoaded
             );
         } else {
             nextRaceHandler.updateView(view, getViewLifecycleOwner());
@@ -228,8 +222,8 @@ public class HomeFragment extends Fragment {
 
         if (favoriteDriverHandler == null) {
             favoriteDriverHandler = new FavoriteDriverHandler(
-                this, view, homeViewModel, driverViewModel, nationViewModel,
-                userViewModel, networkLiveData, sharedPreferencesUtils, this::markCardLoaded
+                    this, view, homeViewModel, driverViewModel, nationViewModel,
+                    userViewModel, networkLiveData, sharedPreferencesUtils, this::markCardLoaded
             );
         } else {
             favoriteDriverHandler.updateView(view, getViewLifecycleOwner());
@@ -237,8 +231,8 @@ public class HomeFragment extends Fragment {
 
         if (favoriteConstructorHandler == null) {
             favoriteConstructorHandler = new FavoriteConstructorHandler(
-                this, view, homeViewModel, constructorViewModel, nationViewModel,
-                userViewModel, networkLiveData, sharedPreferencesUtils, this::markCardLoaded
+                    this, view, homeViewModel, constructorViewModel, nationViewModel,
+                    userViewModel, networkLiveData, sharedPreferencesUtils, this::markCardLoaded
             );
         } else {
             favoriteConstructorHandler.updateView(view, getViewLifecycleOwner());

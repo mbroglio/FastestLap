@@ -52,8 +52,6 @@ public class NextRaceHandler {
 
     private final Fragment fragment;
     private final Context context;
-    private LifecycleOwner lifecycleOwner;
-    private View view;
     private final WeeklyRaceViewModel weeklyRaceViewModel;
     private final TrackViewModel trackViewModel;
     private final NationViewModel nationViewModel;
@@ -61,27 +59,18 @@ public class NextRaceHandler {
     private final DriverViewModel driverViewModel;
     private final NetworkUtils networkLiveData;
     private final CardLoadedCallback cardLoadedCallback;
-
+    private LifecycleOwner lifecycleOwner;
+    private View view;
     private String nextRaceRound;
 
-    @FunctionalInterface
-    public interface CardLoadedCallback {
-        void onCardLoaded(String cardName);
-    }
-
-    @FunctionalInterface
-    public interface NextRaceRoundCallback {
-        void onNextRaceRoundRetrieved(String round);
-    }
-
     public NextRaceHandler(Fragment fragment, View view,
-                          WeeklyRaceViewModel weeklyRaceViewModel,
-                          TrackViewModel trackViewModel,
-                          NationViewModel nationViewModel,
-                          HomeViewModel homeViewModel,
-                          DriverViewModel driverViewModel,
-                          NetworkUtils networkLiveData,
-                          CardLoadedCallback cardLoadedCallback) {
+                           WeeklyRaceViewModel weeklyRaceViewModel,
+                           TrackViewModel trackViewModel,
+                           NationViewModel nationViewModel,
+                           HomeViewModel homeViewModel,
+                           DriverViewModel driverViewModel,
+                           NetworkUtils networkLiveData,
+                           CardLoadedCallback cardLoadedCallback) {
         this.fragment = fragment;
         this.context = fragment.requireContext();
         this.lifecycleOwner = fragment.getViewLifecycleOwner();
@@ -116,6 +105,7 @@ public class NextRaceHandler {
                 }
             }, 5000);
 
+            @SuppressWarnings("unchecked")
             androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
             observerHolder[0] = result -> {
                 try {
@@ -283,8 +273,8 @@ public class NextRaceHandler {
 
     private void updateSessionType(Session nextEvent) {
         String sessionId = nextEvent.getClass().getSimpleName().equals("Practice")
-            ? "Practice" + ((Practice) nextEvent).getNumber()
-            : nextEvent.getClass().getSimpleName();
+                ? "Practice" + ((Practice) nextEvent).getNumber()
+                : nextEvent.getClass().getSimpleName();
         TextView sessionTypeView = view.findViewById(R.id.next_session_type);
 
         UIUtils.translateSessionType(context, sessionTypeView, sessionId);
@@ -309,21 +299,21 @@ public class NextRaceHandler {
             @Override
             public void onTick(long millisUntilFinished) {
                 UIUtils.multipleSetTextViewText(
-                    new String[]{
-                        String.valueOf(millisUntilFinished / 86400000),
-                        String.valueOf((millisUntilFinished % 86400000) / 3600000),
-                        String.valueOf(((millisUntilFinished % 86400000) % 3600000) / 60000),
-                        String.valueOf((((millisUntilFinished % 86400000) % 3600000) % 60000) / 1000)
-                    },
-                    new TextView[]{days, hours, minutes, seconds}
+                        new String[]{
+                                String.valueOf(millisUntilFinished / 86400000),
+                                String.valueOf((millisUntilFinished % 86400000) / 3600000),
+                                String.valueOf(((millisUntilFinished % 86400000) % 3600000) / 60000),
+                                String.valueOf((((millisUntilFinished % 86400000) % 3600000) % 60000) / 1000)
+                        },
+                        new TextView[]{days, hours, minutes, seconds}
                 );
             }
 
             @Override
             public void onFinish() {
                 UIUtils.multipleSetTextViewText(
-                    new String[]{"0", "0", "0", "0"},
-                    new TextView[]{days, hours, minutes, seconds}
+                        new String[]{"0", "0", "0", "0"},
+                        new TextView[]{days, hours, minutes, seconds}
                 );
                 liveIconLayout.setVisibility(View.VISIBLE);
             }
@@ -383,7 +373,7 @@ public class NextRaceHandler {
                     Driver driver = ((Result.DriverSuccess) result).getData();
 
                     UIUtils.singleSetTextViewText(driver.getFullName(),
-                        seasonEndedCard.findViewById(Constants.HOME_SEASON_DRIVER_STANDINGS_NAME_FIELD.get(position)));
+                            seasonEndedCard.findViewById(Constants.HOME_SEASON_DRIVER_STANDINGS_NAME_FIELD.get(position)));
 
                     View driverColor = seasonEndedCard.findViewById(Constants.HOME_SEASON_DRIVER_STANDINGS_COLOR_FIELD.get(position));
                     driverColor.setBackgroundResource(Constants.TEAM_COLOR.getOrDefault(driver.getTeam_id(), R.color.timer_gray));
@@ -410,11 +400,11 @@ public class NextRaceHandler {
                         ConstructorStandingsElement constructor = constructorsList.get(i);
 
                         UIUtils.singleSetTextViewText(constructor.getConstructor().getName(),
-                            seasonEndedCard.findViewById(Constants.HOME_SEASON_TEAM_STANDINGS_NAME_FIELD.get(i)));
+                                seasonEndedCard.findViewById(Constants.HOME_SEASON_TEAM_STANDINGS_NAME_FIELD.get(i)));
 
                         View constructorColor = seasonEndedCard.findViewById(Constants.HOME_SEASON_TEAM_STANDINGS_COLOR_FIELD.get(i));
                         constructorColor.setBackgroundResource(Constants.TEAM_COLOR.getOrDefault(
-                            constructor.getConstructor().getConstructorId(), R.color.timer_gray));
+                                constructor.getConstructor().getConstructorId(), R.color.timer_gray));
                     }
                 } else {
                     throw new Exception("Failed to fetch constructor standings: " + result.getError());
@@ -423,6 +413,16 @@ public class NextRaceHandler {
                 Log.e(TAG, "Error in buildFinalTeamsStanding: " + e.getMessage());
             }
         });
+    }
+
+    @FunctionalInterface
+    public interface CardLoadedCallback {
+        void onCardLoaded(String cardName);
+    }
+
+    @FunctionalInterface
+    public interface NextRaceRoundCallback {
+        void onNextRaceRoundRetrieved(String round);
     }
 }
 

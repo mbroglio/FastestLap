@@ -18,7 +18,6 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.f1.ConstructorStandingsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
-import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
@@ -34,7 +33,6 @@ import java.util.List;
 
 public class ConstructorsStandingActivity extends AppCompatActivity {
     private static final String TAG = "TeamCardActivity";
-    private final boolean constructorToProcess = true;
     LoadingScreen loadingScreen;
 
     private DriverViewModel driverViewModel;

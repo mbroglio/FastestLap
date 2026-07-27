@@ -38,10 +38,9 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     EventViewModel eventViewModel;
     TrackViewModel trackViewModel;
     WeeklyRaceViewModel weeklyRaceViewModel;
-
+    LoadingScreen loadingScreen;
     // ── UI fields ─────────────────────────────────────────────────────
     private MaterialToolbar toolbar;
-    LoadingScreen loadingScreen;
     private SwipeRefreshLayout upcomingEventsLayout;
     private UpcomingEventsRecyclerAdapter upcomingEventsAdapter;
     private List<WeeklyRace> racesList;
@@ -98,8 +97,8 @@ public class UpcomingEventsActivity extends AppCompatActivity {
             loadingScreen.showLoadingScreen(true);
         }
 
-        eventViewModel      = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
-        trackViewModel      = new ViewModelProvider(this, new TrackViewModelFactory(getApplication())).get(TrackViewModel.class);
+        eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
+        trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(getApplication())).get(TrackViewModel.class);
         weeklyRaceViewModel = new ViewModelProvider(this, new WeeklyRaceViewModelFactory(getApplication(), this)).get(WeeklyRaceViewModel.class);
 
         toolbar = findViewById(R.id.topAppBar);

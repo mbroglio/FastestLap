@@ -57,10 +57,12 @@ public abstract class AppRoomDatabase extends RoomDatabase {
         if (INSTANCE == null) {
             synchronized (AppRoomDatabase.class) {
                 if (INSTANCE == null) {
-                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
+                    @SuppressWarnings("deprecation")
+                    AppRoomDatabase instance = Room.databaseBuilder(context.getApplicationContext(),
                                     AppRoomDatabase.class, Constants.SAVED_DRIVERS_STANDINGS_DATABASE)
                             .fallbackToDestructiveMigration()
                             .build();
+                    INSTANCE = instance;
                 }
             }
         }

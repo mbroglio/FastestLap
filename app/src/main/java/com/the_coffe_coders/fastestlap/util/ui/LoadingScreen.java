@@ -121,9 +121,9 @@ public class LoadingScreen {
         }
         handler.removeCallbacks(dotRunnable);
         timerHandler.removeCallbacks(timerRunnable);
-    }    private final Runnable timerRunnable = this::hide;
+    }
 
-
+    private final Runnable timerRunnable = this::hide;
 
 
 }

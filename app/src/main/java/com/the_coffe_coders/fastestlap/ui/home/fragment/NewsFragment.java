@@ -250,11 +250,11 @@ public class NewsFragment extends Fragment {
             androidx.core.os.LocaleListCompat appLocales = AppCompatDelegate.getApplicationLocales();
             String langTag = appLocales.toLanguageTags();
             if (langTag != null && !langTag.isEmpty()) {
-                return langTag.toLowerCase().startsWith("en");
+                return langTag.toLowerCase(java.util.Locale.ROOT).startsWith("en");
             }
             if (getContext() != null) {
                 String systemLang = getContext().getResources().getConfiguration().getLocales().get(0).getLanguage();
-                return systemLang != null && systemLang.toLowerCase().startsWith("en");
+                return systemLang != null && systemLang.toLowerCase(java.util.Locale.ROOT).startsWith("en");
             }
         } catch (Exception e) {
             Log.e(TAG, "Error checking app language: " + e.getMessage());

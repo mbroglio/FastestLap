@@ -69,6 +69,7 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
                 UIUtils.preloadImage(context, race.getTrack().getTrack_minimal_layout_url(), () -> endLoading(pos));
             } else {
                 androidx.lifecycle.LiveData<Result> trackLd = trackViewModel.getTrack(race.getTrack().getTrackId());
+                @SuppressWarnings("unchecked")
                 androidx.lifecycle.Observer<Result>[] selfRef = new androidx.lifecycle.Observer[1];
                 selfRef[0] = result -> {
                     if (result instanceof Result.Loading) {
@@ -142,6 +143,7 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
                     NavigationUtils.navigateToEventPage(context, race.getTrack().getTrackId()));
         } else {
             androidx.lifecycle.LiveData<Result> trackLd = trackViewModel.getTrack(race.getTrack().getTrackId());
+            @SuppressWarnings("unchecked")
             androidx.lifecycle.Observer<Result>[] selfRef = new androidx.lifecycle.Observer[1];
             selfRef[0] = result -> {
                 if (result instanceof Result.Loading) {

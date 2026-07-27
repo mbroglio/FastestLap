@@ -39,8 +39,6 @@ public class FavoriteDriverHandler {
 
     private final Fragment fragment;
     private final Context context;
-    private LifecycleOwner lifecycleOwner;
-    private View view;
     private final HomeViewModel homeViewModel;
     private final DriverViewModel driverViewModel;
     private final NationViewModel nationViewModel;
@@ -48,18 +46,14 @@ public class FavoriteDriverHandler {
     private final NetworkUtils networkLiveData;
     private final SharedPreferencesUtils sharedPreferencesUtils;
     private final CardLoadedCallback cardLoadedCallback;
-
+    private LifecycleOwner lifecycleOwner;
+    private View view;
     @Setter
     private DriverStandings cachedDriverStandings = null;
     private boolean driverCardLoaded = false;
     // Cached last-built card data so back-stack returns can skip the entire ViewModel chain.
     private DriverStandingsElement cachedStandingsElement = null;
     private Nation cachedNation = null;
-
-    @FunctionalInterface
-    public interface CardLoadedCallback {
-        void onCardLoaded(String cardName);
-    }
 
     public FavoriteDriverHandler(Fragment fragment, View view,
                                  HomeViewModel homeViewModel,
@@ -81,6 +75,7 @@ public class FavoriteDriverHandler {
         this.sharedPreferencesUtils = sharedPreferencesUtils;
         this.cardLoadedCallback = cardLoadedCallback;
     }
+
     public void updateView(View view, LifecycleOwner lifecycleOwner) {
         this.view = view;
         this.lifecycleOwner = lifecycleOwner;
@@ -130,6 +125,7 @@ public class FavoriteDriverHandler {
             }
         }, 2000);
 
+        @SuppressWarnings("unchecked")
         androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
         observerHolder[0] = result -> {
             try {
@@ -192,6 +188,7 @@ public class FavoriteDriverHandler {
         MutableLiveData<Result> driverData = driverViewModel.getDriver(driverId);
         // One-shot observer: removes itself after the first non-Loading result so that
         // a subsequent background Firebase re-emission does not rebuild the card again.
+        @SuppressWarnings("unchecked")
         androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
         observerHolder[0] = driverResult -> {
             try {
@@ -225,6 +222,7 @@ public class FavoriteDriverHandler {
             MutableLiveData<Result> nationData = nationViewModel.getNation(favouriteDriver.getDriver().getNationality());
             // One-shot observer: removes itself after the first non-Loading result so that
             // a subsequent background Firebase re-emission does not rebuild the card again.
+            @SuppressWarnings("unchecked")
             androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
             observerHolder[0] = nationResult -> {
                 try {
@@ -267,8 +265,8 @@ public class FavoriteDriverHandler {
             }
 
             UIUtils.multipleSetTextViewText(
-                new String[]{driver.getGivenName() + " " + driver.getFamilyName(), nationAbbreviation},
-                new TextView[]{view.findViewById(R.id.favourite_driver_name), view.findViewById(R.id.favourite_driver_nationality)}
+                    new String[]{driver.getGivenName() + " " + driver.getFamilyName(), nationAbbreviation},
+                    new TextView[]{view.findViewById(R.id.favourite_driver_name), view.findViewById(R.id.favourite_driver_nationality)}
             );
 
             ImageView driverFlag = view.findViewById(R.id.favourite_driver_flag);
@@ -288,8 +286,8 @@ public class FavoriteDriverHandler {
     private void buildDriverCardFinalStep(DriverStandingsElement standingElement, Driver driver) {
         if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
             UIUtils.multipleSetTextViewText(
-                new String[]{standingElement.getPosition(), standingElement.getPoints()},
-                new TextView[]{view.findViewById(R.id.favourite_driver_position), view.findViewById(R.id.favourite_driver_points)}
+                    new String[]{standingElement.getPosition(), standingElement.getPoints()},
+                    new TextView[]{view.findViewById(R.id.favourite_driver_position), view.findViewById(R.id.favourite_driver_points)}
             );
 
             MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
@@ -309,7 +307,7 @@ public class FavoriteDriverHandler {
         cardLoadedCallback.onCardLoaded("driver");
         updateVisibility(R.id.pending_favorite_driver, R.id.favorite_driver, R.id.missing_favorite_driver);
         view.findViewById(R.id.pending_favorite_driver).setOnClickListener(v ->
-            context.startActivity(new Intent(context, DriversStandingActivity.class)));
+                context.startActivity(new Intent(context, DriversStandingActivity.class)));
         Log.e(TAG, "Showing select favourite driver card");
     }
 
@@ -320,12 +318,12 @@ public class FavoriteDriverHandler {
         switch (problem) {
             case 0: //general error
                 view.findViewById(R.id.missing_favorite_driver).setOnClickListener(v ->
-                    context.startActivity(new Intent(context, DriversStandingActivity.class)));
+                        context.startActivity(new Intent(context, DriversStandingActivity.class)));
                 break;
             case 1: //no internet connection
                 Log.e(TAG, "Driver: No internet connection");
                 view.findViewById(R.id.missing_favorite_driver).setOnClickListener(v ->
-                    Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show());
+                        Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show());
                 break;
             default:
                 Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
@@ -347,6 +345,11 @@ public class FavoriteDriverHandler {
         String driverId = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
         Log.i(TAG, "Favorite Driver ID: " + driverId);
         return driverId;
+    }
+
+    @FunctionalInterface
+    public interface CardLoadedCallback {
+        void onCardLoaded(String cardName);
     }
 }
 

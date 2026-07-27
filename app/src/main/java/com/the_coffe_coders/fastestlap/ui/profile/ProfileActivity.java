@@ -121,9 +121,9 @@ public class ProfileActivity extends AppCompatActivity {
 
         LocaleListCompat appLocales = AppCompatDelegate.getApplicationLocales();
         String currentLanguage = appLocales.toLanguageTags();
-        boolean isEnglish = currentLanguage.toLowerCase().startsWith("en");
+        boolean isEnglish = currentLanguage.toLowerCase(java.util.Locale.ROOT).startsWith("en");
         if (currentLanguage.isEmpty()) {
-            isEnglish = getResources().getConfiguration().getLocales().get(0).getLanguage().toLowerCase().startsWith("en");
+            isEnglish = getResources().getConfiguration().getLocales().get(0).getLanguage().toLowerCase(java.util.Locale.ROOT).startsWith("en");
         }
         MaterialSwitch languageSwitch = findViewById(R.id.language_switch);
         languageSwitch.setChecked(isEnglish);

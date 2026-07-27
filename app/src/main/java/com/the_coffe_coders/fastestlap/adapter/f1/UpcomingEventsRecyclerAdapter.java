@@ -68,6 +68,7 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
                 UIUtils.preloadImage(context, weeklyRace.getTrack().getTrack_minimal_layout_url(), () -> endLoading(pos));
             } else {
                 androidx.lifecycle.LiveData<Result> trackLd = trackViewModel.getTrack(weeklyRace.getTrack().getTrackId());
+                @SuppressWarnings("unchecked")
                 androidx.lifecycle.Observer<Result>[] selfRef = new androidx.lifecycle.Observer[1];
                 selfRef[0] = result -> {
                     if (result instanceof Result.Loading) {
@@ -141,6 +142,7 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
                     NavigationUtils.navigateToEventPage(context, weeklyRace.getTrack().getTrackId()));
         } else {
             androidx.lifecycle.LiveData<Result> trackLd = trackViewModel.getTrack(weeklyRace.getTrack().getTrackId());
+            @SuppressWarnings("unchecked")
             androidx.lifecycle.Observer<Result>[] selfRef = new androidx.lifecycle.Observer[1];
             selfRef[0] = result -> {
                 if (result instanceof Result.Loading) {

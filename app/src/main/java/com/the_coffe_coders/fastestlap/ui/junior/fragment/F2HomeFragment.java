@@ -15,9 +15,8 @@ import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 public class F2HomeFragment extends Fragment {
 
-    private View view;
-
     private final int categoryType = 0;
+    private View view;
 
     public F2HomeFragment() {
         // Required empty public constructor

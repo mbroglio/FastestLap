@@ -35,8 +35,8 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:gravity="center"
-                    android:text="@string/upcoming"
-                    android:maxLines="1">
+                    android:maxLines="1"
+                    android:text="@string/upcoming">
 
                 </TextView>
 

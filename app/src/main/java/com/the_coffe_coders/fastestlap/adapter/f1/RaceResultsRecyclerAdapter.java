@@ -46,9 +46,9 @@ public class RaceResultsRecyclerAdapter extends RecyclerView.Adapter<RaceResults
         Log.i("RaceResultsRecyclerAdapter", "onBindViewHolder: " + result);
 
         int delta;
-        if(result.getGrid() == null){
+        if (result.getGrid() == null) {
             delta = 0;
-        } else{
+        } else {
             delta = Integer.parseInt(result.getGrid()) - (position + 1);
         }
 

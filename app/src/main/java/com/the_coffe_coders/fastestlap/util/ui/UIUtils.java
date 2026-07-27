@@ -10,7 +10,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -22,7 +24,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.content.res.AppCompatResources;
@@ -48,9 +49,6 @@ import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
 import com.the_coffe_coders.fastestlap.util.Constants;
 
 import java.security.MessageDigest;
@@ -97,12 +95,12 @@ public class UIUtils {
     }
 
     /*
-    * -----------------------------------------------------------------------------------------------
-    * NAVIGATION
-    * -----------------------------------------------------------------------------------------------
+     * -----------------------------------------------------------------------------------------------
+     * NAVIGATION
+     * -----------------------------------------------------------------------------------------------
      */
 
-    public static void manualToolbarTitleUpdateWithNavigation(NavController navController, AppCompatActivity activity){
+    public static void manualToolbarTitleUpdateWithNavigation(NavController navController, AppCompatActivity activity) {
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (activity.getSupportActionBar() != null) {
                 CharSequence title = destination.getLabel();
@@ -283,6 +281,7 @@ public class UIUtils {
             loadImage(context, urls[i], imageViews[i], checkComplete, 0);
         }
     }
+
     /**
      * Loads an image into an ImageView asynchronously without any completion callback.
      * Use this when you want to display data immediately and let images fill in on their own.
@@ -624,8 +623,8 @@ public class UIUtils {
         return bestMatch;
     }
 
-    public static Object getFromMap(String key, Map<String, ?> map){
-        if(!map.containsKey(key)) return "-";
+    public static Object getFromMap(String key, Map<String, ?> map) {
+        if (!map.containsKey(key)) return "-";
         return map.get(key);
     }
 
@@ -771,13 +770,14 @@ public class UIUtils {
 
     /**
      * Updates tachometer views with driver statistics
-     * @param context The context (usually Activity)
-     * @param driver The driver object containing statistics
-     * @param winTachometer The tachometer view for win percentage
+     *
+     * @param context          The context (usually Activity)
+     * @param driver           The driver object containing statistics
+     * @param winTachometer    The tachometer view for win percentage
      * @param podiumTachometer The tachometer view for podium percentage
      */
     public static void updateTachometers(Context context, Driver driver,
-                                          TachometerView winTachometer, TachometerView podiumTachometer) {
+                                         TachometerView winTachometer, TachometerView podiumTachometer) {
         String TAG = "UIUtils.updateTachometers";
 
         // Set tachometer colors based on team
@@ -885,9 +885,10 @@ public class UIUtils {
 
     /**
      * Updates tachometer views with team statistics
-     * @param context The context (usually Activity)
-     * @param constructor The constructor object containing statistics
-     * @param winTachometer The tachometer view for win percentage
+     *
+     * @param context          The context (usually Activity)
+     * @param constructor      The constructor object containing statistics
+     * @param winTachometer    The tachometer view for win percentage
      * @param podiumTachometer The tachometer view for podium percentage
      */
     public static void updateTachometers(Context context, Constructor constructor,

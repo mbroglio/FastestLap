@@ -184,6 +184,7 @@ public class PastEventsActivity extends AppCompatActivity {
 
         for (WeeklyRace weeklyRace : pastRaces) {
             MutableLiveData<Result> singleRaceData = raceResultViewModel.getRaceResults(weeklyRace.getRound());
+            @SuppressWarnings("unchecked")
             androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
             observerHolder[0] = result -> {
                 if (result instanceof Result.Loading) {

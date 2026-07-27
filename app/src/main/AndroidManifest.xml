@@ -21,12 +21,12 @@
         android:name=".FastestLapApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
+        android:enableOnBackInvokedCallback="true"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/app_icon"
         android:label="@string/app_name"
         android:roundIcon="@drawable/app_icon"
         android:supportsRtl="true"
-        android:enableOnBackInvokedCallback="true"
         android:theme="@style/Theme.FastestLap"
         tools:targetApi="31">
         <activity
@@ -57,30 +57,39 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.event.UpcomingEventsActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.standing.ConstructorsStandingActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.standing.DriversStandingActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.event.EventActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.event.PastEventsActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.bio.TrackBioActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.bio.ConstructorBioActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.bio.DriverBioActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.profile.ProfileActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <!-- FileProvider for sharing generated .ics files with other apps -->
         <provider

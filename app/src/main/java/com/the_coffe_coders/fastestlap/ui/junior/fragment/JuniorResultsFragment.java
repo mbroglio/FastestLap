@@ -45,7 +45,7 @@ public class JuniorResultsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(getArguments() != null){
+        if (getArguments() != null) {
             categoryType = getArguments().getInt("CATEGORY_TYPE");
         }
     }

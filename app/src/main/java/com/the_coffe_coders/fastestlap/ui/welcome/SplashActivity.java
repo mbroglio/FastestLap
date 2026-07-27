@@ -5,6 +5,7 @@ import android.app.Application;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -32,7 +33,7 @@ import java.util.Calendar;
 public class SplashActivity extends AppCompatActivity {
 
     private static final String TAG = "IntroScreenActivity";
-    private final Handler handler = new Handler();
+    private final Handler handler = new Handler(Looper.getMainLooper());
     private TextView appName;
     private TextView appCredits;
     private ProgressBar progressIndicator;

@@ -1,7 +1,5 @@
 package com.the_coffe_coders.fastestlap.domain.f1.grand_prix;
 
-import android.util.Log;
-
 import com.the_coffe_coders.fastestlap.util.Constants;
 
 import org.threeten.bp.LocalDateTime;
