@@ -564,6 +564,14 @@ public class UIUtils {
         return normalizedInput.contains(normalizedId);
     }
 
+    // check if a string (inputString) contains a substring (idString) and return the idString if it does
+    public static String getContainedIdString(String inputString, String idString) {
+        if (containsIdString(inputString, idString)) {
+            return idString;
+        }
+        return null;
+    }
+
     // normalize a string for matching
     private static String normalizeForMatch(String s) {
         if (s == null) return "";

@@ -28,8 +28,8 @@ import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.DriverHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
-import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
+import com.the_coffe_coders.fastestlap.ui.bio.handler.FavoriteBioHandler;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
@@ -41,7 +41,6 @@ import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
-import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.TachometerView;
@@ -58,7 +57,6 @@ public class DriverBioActivity extends AppCompatActivity {
     private Constructor team;
     private MaterialCardView teamLogoCard;
     private ImageView teamLogoImage;
-    private MaterialCardView driverRank;
     private MaterialToolbar toolbar;
     private AppBarLayout appBarLayout;
     private ImageView driverNumberImage;
@@ -68,6 +66,8 @@ public class DriverBioActivity extends AppCompatActivity {
     private DriverViewModel driverViewModel;
     private NationViewModel nationViewModel;
     private ConstructorViewModel constructorViewModel;
+    private UserViewModel userViewModel;
+    private FavoriteBioHandler favoriteBioHandler;
 
     private TachometerView winPercentageTachometer, podiumPercentageTachometer;
 
@@ -81,6 +81,7 @@ public class DriverBioActivity extends AppCompatActivity {
         setContentView(R.layout.activity_driver_bio);
 
         networkLiveData = new NetworkUtils(this);
+        favoriteBioHandler = new FavoriteBioHandler(this);
 
         start();
     }
@@ -100,7 +101,22 @@ public class DriverBioActivity extends AppCompatActivity {
         MenuItem favoriteItem = menu.findItem(R.id.favourite_icon_outline);
         if (networkLiveData.isConnected()) {
             favoriteItem.setOnMenuItemClickListener(v -> {
-                toggleFavoriteDriver(driverId, favoriteItem);
+                String updatedFavoriteId = favoriteBioHandler.toggleFavorite(
+                        driverId,
+                        Constants.SHARED_PREFERENCES_FAVORITE_DRIVER,
+                        favoriteItem,
+                        favoriteId -> {
+                            String idToken = userViewModel.getLoggedUser() != null ? userViewModel.getLoggedUser().getIdToken() : null;
+                            if (idToken != null) {
+                                userViewModel.saveUserDriverPreferences(favoriteId, idToken);
+                            }
+                        });
+
+                if ("null".equals(updatedFavoriteId)) {
+                    Log.i(TAG, "Removed favorite driver: " + driverId);
+                } else {
+                    Log.i(TAG, "Set favorite driver to: " + driverId);
+                }
                 return true;
             });
         } else {
@@ -136,51 +152,10 @@ public class DriverBioActivity extends AppCompatActivity {
         driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(getApplication())).get(DriverViewModel.class);
         constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(getApplication())).get(ConstructorViewModel.class);
         nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(getApplication())).get(NationViewModel.class);
+        IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
+        userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
 
         createDriverBioPage(driverId);
-    }
-
-    private void toggleFavoriteDriver(String driverId, MenuItem menuItem) {
-        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
-        String currentFavoriteDriverId = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
-
-        IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
-        UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
-        User currentUser = userViewModel.getLoggedUser();
-
-        if (currentFavoriteDriverId.equals(driverId)) {
-            // Remove as favorite
-            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER, "null");
-            menuItem.setIcon(R.drawable.baseline_star_border_24);
-
-            // Update user preferences in backend
-            userViewModel.saveUserDriverPreferences("null", currentUser.getIdToken());
-
-            Log.i(TAG, "Removed favorite driver: " + driverId);
-        } else {
-            // Set as favorite
-            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER, driverId);
-            menuItem.setIcon(R.drawable.star_fav);
-
-            // Update user preferences in backend
-            userViewModel.saveUserDriverPreferences(driverId, currentUser.getIdToken());
-
-            Log.i(TAG, "Set favorite driver to: " + driverId);
-        }
-    }
-
-    private void updateFavoriteIcon(String driverId) {
-        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
-        String favoriteDriverId = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
-
-        Menu menu = toolbar.getMenu();
-        MenuItem favoriteItem = menu.findItem(R.id.favourite_icon_outline);
-
-        if (favoriteDriverId.equals(driverId)) {
-            favoriteItem.setIcon(R.drawable.star_fav);
-        } else {
-            favoriteItem.setIcon(R.drawable.baseline_star_border_24);
-        }
     }
 
     public void createDriverBioPage(String driverId) {
@@ -195,7 +170,7 @@ public class DriverBioActivity extends AppCompatActivity {
                 Log.i(TAG, "DRIVER: " + driver.toString());
 
                 // Update the favorite icon when driver data is loaded
-                updateFavoriteIcon(driverId);
+                favoriteBioHandler.updateFavoriteIcon(toolbar.getMenu(), R.id.favourite_icon_outline, driverId, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
                 getTeamInfo(driver.getTeam_id());
             } else {
                 Log.i(TAG, "DRIVER ERROR");
@@ -268,10 +243,13 @@ public class DriverBioActivity extends AppCompatActivity {
                 findViewById(R.id.topAppBarTitle));
 
         if (teamIdPresent) {
-            int teamColor;
+            Integer teamColor;
             try {
                 teamColor = Constants.TEAM_COLOR.get(teamId);
             } catch (Exception e) {
+                teamColor = R.color.timer_gray;
+            }
+            if (teamColor == null) {
                 teamColor = R.color.timer_gray;
             }
 
@@ -288,10 +266,13 @@ public class DriverBioActivity extends AppCompatActivity {
 
     private void setDriverData(Driver driver, Nation nation, Constructor team, boolean teamIdPresent, String teamId) {
         if (teamIdPresent) {
-            int teamColor;
+            Integer teamColor;
             try {
                 teamColor = Constants.TEAM_COLOR.get(teamId);
             } catch (Exception e) {
+                teamColor = R.color.timer_gray;
+            }
+            if (teamColor == null) {
                 teamColor = R.color.timer_gray;
             }
 

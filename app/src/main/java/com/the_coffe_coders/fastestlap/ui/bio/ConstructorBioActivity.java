@@ -28,8 +28,8 @@ import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.ConstructorHistory;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
-import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
+import com.the_coffe_coders.fastestlap.ui.bio.handler.FavoriteBioHandler;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
@@ -41,7 +41,6 @@ import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
-import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.TachometerView;
@@ -58,6 +57,8 @@ public class ConstructorBioActivity extends AppCompatActivity {
     private DriverViewModel driverViewModel;
     private NationViewModel nationViewModel;
     private ConstructorViewModel constructorViewModel;
+    private UserViewModel userViewModel;
+    private FavoriteBioHandler favoriteBioHandler;
 
     private SwipeRefreshLayout constructorBioLayout;
     private String teamId;
@@ -77,6 +78,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
         setContentView(R.layout.activity_constructor_bio);
 
         networkLiveData = new NetworkUtils(this);
+        favoriteBioHandler = new FavoriteBioHandler(this);
 
         start();
     }
@@ -98,7 +100,22 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
         if (networkLiveData.isConnected()) {
             favoriteItem.setOnMenuItemClickListener(v -> {
-                toggleFavoriteConstructor(teamId, favoriteItem);
+                String updatedFavoriteId = favoriteBioHandler.toggleFavorite(
+                        teamId,
+                        Constants.SHARED_PREFERENCES_FAVORITE_TEAM,
+                        favoriteItem,
+                        favoriteId -> {
+                            String idToken = userViewModel.getLoggedUser() != null ? userViewModel.getLoggedUser().getIdToken() : null;
+                            if (idToken != null) {
+                                userViewModel.saveUserConstructorPreferences(favoriteId, idToken);
+                            }
+                        });
+
+                if ("null".equals(updatedFavoriteId)) {
+                    Log.i(TAG, "Removed favorite constructor: " + teamId);
+                } else {
+                    Log.i(TAG, "Set favorite constructor to: " + teamId);
+                }
                 return true;
             });
         } else {
@@ -130,38 +147,12 @@ public class ConstructorBioActivity extends AppCompatActivity {
         driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(getApplication())).get(DriverViewModel.class);
         constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(getApplication())).get(ConstructorViewModel.class);
         nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(getApplication())).get(NationViewModel.class);
+        IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
+        userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
 
         createConstructorBioPage(teamId);
     }
 
-    private void toggleFavoriteConstructor(String teamId, MenuItem menuItem) {
-        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
-        String currentFavoriteTeamId = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
-
-        IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
-        UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
-        User currentUser = userViewModel.getLoggedUser();
-
-        if (currentFavoriteTeamId.equals(teamId)) {
-            // Remove as favorite
-            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM, "null");
-            menuItem.setIcon(R.drawable.baseline_star_border_24);
-
-            // Update user preferences in backend (if needed)
-            userViewModel.saveUserConstructorPreferences("null", currentUser.getIdToken());
-
-            Log.i(TAG, "Removed favorite constructor: " + teamId);
-        } else {
-            // Set as favorite
-            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM, teamId);
-            menuItem.setIcon(R.drawable.star_fav);
-
-            // Update user preferences in backend
-            userViewModel.saveUserConstructorPreferences(teamId, currentUser.getIdToken());
-
-            Log.i(TAG, "Set favorite constructor to: " + teamId);
-        }
-    }
 
     private void createConstructorBioPage(String teamId) {
         MutableLiveData<Result> data = constructorViewModel.getSelectedConstructor(teamId);
@@ -179,10 +170,8 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
                     UIUtils.singleSetTextViewText(constructor.getName().toUpperCase(), findViewById(R.id.topAppBarTitle));
 
-                    int teamColor;
-                    try {
-                        teamColor = Constants.TEAM_COLOR.get(teamId);
-                    } catch (Exception e) {
+                    Integer teamColor = Constants.TEAM_COLOR.get(teamId);
+                    if (teamColor == null) {
                         teamColor = R.color.timer_gray;
                     }
 
@@ -203,7 +192,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
                     driverCard.setCardBackgroundColor(ContextCompat.getColor(this, teamColor));
 
                     // Check if this constructor is the favorite and update the icon
-                    updateFavoriteIcon(teamId);
+                    favoriteBioHandler.updateFavoriteIcon(toolbar.getMenu(), R.id.favourite_icon_outline, teamId, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
 
                     getDriverData(constructor.getDriverOneId(), constructor);
                 }
@@ -211,19 +200,6 @@ public class ConstructorBioActivity extends AppCompatActivity {
         });
     }
 
-    private void updateFavoriteIcon(String teamId) {
-        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
-        String favoriteTeamId = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
-
-        Menu menu = toolbar.getMenu();
-        MenuItem favoriteItem = menu.findItem(R.id.favourite_icon_outline);
-
-        if (favoriteTeamId.equals(teamId)) {
-            favoriteItem.setIcon(R.drawable.star_fav);
-        } else {
-            favoriteItem.setIcon(R.drawable.baseline_star_border_24);
-        }
-    }
 
     public void getDriverData(String driverId, Constructor team) {
         MutableLiveData<Result> data = driverViewModel.getDriver(driverId);
