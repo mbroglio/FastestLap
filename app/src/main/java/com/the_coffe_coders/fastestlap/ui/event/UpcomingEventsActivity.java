@@ -194,7 +194,10 @@ public class UpcomingEventsActivity extends AppCompatActivity {
                 // Update the existing adapter's data instead of recreating it
                 racesList.clear();
                 racesList.addAll(upcomingRaces);
-                runOnUiThread(() -> upcomingEventsAdapter.notifyDataSetChanged());
+                runOnUiThread(() -> {
+                    upcomingEventsAdapter.updateTargetLoadCount();
+                    upcomingEventsAdapter.notifyDataSetChanged();
+                });
 
                 dataLoaded = true;
                 setMenu(upcomingRaces);

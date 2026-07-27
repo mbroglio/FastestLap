@@ -357,6 +357,13 @@ public class HomeFragment extends Fragment {
                 }
             });
         }
+
+        // Pre-fetch all weekly races to populate local Room DB with full season calendar
+        weeklyRaceViewModel.getWeeklyRacesLiveData().observe(getViewLifecycleOwner(), result -> {
+            if (result instanceof Result.WeeklyRaceSuccess) {
+                Log.d(TAG, "Full season races pre-fetched into Room DB: " + ((Result.WeeklyRaceSuccess) result).getData().size());
+            }
+        });
     }
 
     private void setRefreshLayout(View view) {

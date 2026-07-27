@@ -119,10 +119,14 @@ public class ProfileActivity extends AppCompatActivity {
         });
 
 
-        MaterialSwitch languageSwitch = findViewById(R.id.language_switch);
         LocaleListCompat appLocales = AppCompatDelegate.getApplicationLocales();
         String currentLanguage = appLocales.toLanguageTags();
-        languageSwitch.setChecked(currentLanguage.equals("en-GB"));
+        boolean isEnglish = currentLanguage.toLowerCase().startsWith("en");
+        if (currentLanguage.isEmpty()) {
+            isEnglish = getResources().getConfiguration().getLocales().get(0).getLanguage().toLowerCase().startsWith("en");
+        }
+        MaterialSwitch languageSwitch = findViewById(R.id.language_switch);
+        languageSwitch.setChecked(isEnglish);
 
         languageSwitch.setOnCheckedChangeListener(((buttonView, isChecked) -> {
             if (languageSwitch.isChecked()) {

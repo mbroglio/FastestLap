@@ -275,11 +275,8 @@ public class FavoriteDriverHandler {
             ImageView driverImage = view.findViewById(R.id.favourite_driver_pic);
             driverImage.setOnClickListener(v -> NavigationUtils.navigateToBioPage(context, driver.getDriverId(), 1));
 
-            // Populate text/standing data and make the card visible immediately.
-            // Images are loaded asynchronously — the user should NOT wait for them.
             buildDriverCardFinalStep(standingElement, driver);
 
-            // Start image downloads in the background.
             UIUtils.loadImageAsync(context, nationFlagUrl, driverFlag);
             UIUtils.loadImageAsync(context, driver.getDriver_half_pic_url(), driverImage);
         } catch (Exception e) {

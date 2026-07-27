@@ -28,6 +28,7 @@ public abstract class Session {
 
     public Session(String date, String time) {
         setStartDateTime(date, time);
+        setEndDateTime();
         setSessionStatus();
     }
 
@@ -42,15 +43,17 @@ public abstract class Session {
     }
 
     public void setEndDateTime() {
-        Log.i("Session", this.getClass().getSimpleName());
-        @SuppressWarnings("ConstantConditions")
-        int duration = Constants.SESSION_DURATION.get(this.getClass().getSimpleName());
+        if (getStartDateTime() == null) return;
+        Integer duration = Constants.SESSION_DURATION.get(this.getClass().getSimpleName());
+        if (duration == null) {
+            duration = 120;
+        }
         this.endDateTime = getStartDateTime().plusMinutes(duration);
     }
 
     public String getTime() {
         String start = startDateTime.toLocalTime().toString();
-        String end = endDateTime.toLocalTime().toString();
+        String end = endDateTime != null ? endDateTime.toLocalTime().toString() : "";
 
         return start + " - " + end;
     }
@@ -68,9 +71,14 @@ public abstract class Session {
     }
 
     public void setSessionStatus() {
-        if ((endDateTime != null) && endDateTime.isBefore(LocalDateTime.now())) {
+        if (this.startDateTime == null) return;
+        if (this.endDateTime == null) {
+            setEndDateTime();
+        }
+        LocalDateTime now = LocalDateTime.now();
+        if (this.endDateTime != null && this.endDateTime.isBefore(now)) {
             sessionStatus = SessionStatus.FINISHED;
-        } else if (this.startDateTime.isAfter(LocalDateTime.now())) {
+        } else if (this.startDateTime.isAfter(now)) {
             sessionStatus = SessionStatus.NOT_STARTED;
         } else {
             sessionStatus = SessionStatus.IN_PROGRESS;

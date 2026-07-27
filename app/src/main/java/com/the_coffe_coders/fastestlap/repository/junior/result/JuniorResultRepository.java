@@ -50,56 +50,64 @@ public class JuniorResultRepository {
     public synchronized MutableLiveData<Result> getResults(String series) {
         String cacheKey = "juniorResult" + series;
 
-        if (!juniorResultCache.containsKey(cacheKey) ||
-                !lastUpdateTimestamps.containsKey(cacheKey) ||
-                lastUpdateTimestamps.get(cacheKey) == null) {
+        if (!juniorResultCache.containsKey(cacheKey)) {
             juniorResultCache.put(cacheKey, new MutableLiveData<>());
-            if (isNetworkAvailable()) {
-                loadJuniorResult(series);
-            } else {
-                fetchFromLocal(cacheKey, series);
-            }
-        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(cacheKey) > 60000) {
-            if (isNetworkAvailable()) {
-                loadJuniorResult(series);
-            } else {
-                fetchFromLocal(cacheKey, series);
-            }
+            loadJuniorResultCacheFirst(cacheKey, series);
         } else {
-            Log.i(TAG, "Junior result found in cache: " + cacheKey);
+            Long lastUpdate = lastUpdateTimestamps.get(cacheKey);
+            if (lastUpdate == null || System.currentTimeMillis() - lastUpdate > 300000) {
+                if (isNetworkAvailable()) {
+                    loadJuniorResult(series, true);
+                }
+            } else {
+                Log.i(TAG, "Junior result found in cache: " + cacheKey);
+            }
         }
         return juniorResultCache.get(cacheKey);
     }
 
-    private void fetchFromLocal(String cacheKey, String series) {
-        Log.i(TAG, "Fetching junior result from local database: " + cacheKey);
+    private void loadJuniorResultCacheFirst(String cacheKey, String series) {
         localJuniorResultDataSource.getJuniorResults(series, new JuniorResultCallback() {
             @Override
             public void onResultLoaded(JuniorResult result) {
                 if (result != null) {
-                    juniorResultCache.put(cacheKey, new MutableLiveData<>(
-                            new Result.JuniorResultSuccess(result)));
+                    Log.i(TAG, "Junior result loaded from local DB: " + cacheKey);
                     lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                     Objects.requireNonNull(juniorResultCache.get(cacheKey))
                             .postValue(new Result.JuniorResultSuccess(result));
+
+                    Long ts = lastUpdateTimestamps.get(cacheKey);
+                    boolean isStale = ts == null || System.currentTimeMillis() - ts > 300_000L;
+                    if (isNetworkAvailable() && isStale) {
+                        loadJuniorResult(series, true);
+                    }
                 } else {
-                    Log.e(TAG, "Junior result not found in local database");
+                    Log.i(TAG, "Junior result cache miss in local DB");
+                    if (isNetworkAvailable()) {
+                        loadJuniorResult(series, false);
+                    } else {
+                        Objects.requireNonNull(juniorResultCache.get(cacheKey))
+                                .postValue(new Result.Error("Junior result not available offline"));
+                    }
                 }
             }
 
             @Override
             public void onError(Exception e) {
-                Log.e(TAG, "Error loading junior result from local database: " + e.getMessage());
-                Objects.requireNonNull(juniorResultCache.get(cacheKey))
-                        .postValue(new Result.Error("Error loading junior result: " + e.getMessage()));
+                Log.e(TAG, "Error loading junior result from local DB: " + e.getMessage());
+                if (isNetworkAvailable()) {
+                    loadJuniorResult(series, false);
+                }
             }
         });
     }
 
-    private void loadJuniorResult(String series) {
+    private void loadJuniorResult(String series, boolean isBackgroundRefresh) {
         String cacheKey = "juniorResult" + series;
         Log.i(TAG, "Loading junior result from remote: " + cacheKey);
-        Objects.requireNonNull(juniorResultCache.get(cacheKey)).postValue(new Result.Loading("Fetching junior result from remote"));
+        if (!isBackgroundRefresh) {
+            Objects.requireNonNull(juniorResultCache.get(cacheKey)).postValue(new Result.Loading("Fetching junior result from remote"));
+        }
 
         try {
             firebaseJuniorResultDataSource.getJuniorResults(series, new JuniorResultCallback() {
@@ -111,23 +119,16 @@ public class JuniorResultRepository {
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                         Objects.requireNonNull(juniorResultCache.get(cacheKey))
                                 .postValue(new Result.JuniorResultSuccess(result));
-                    } else {
-                        Log.e(TAG, "Junior result not found");
-                        fetchFromLocal(cacheKey, series);
                     }
                 }
 
                 @Override
                 public void onError(Exception e) {
                     Log.e(TAG, "Error loading junior result: " + e.getMessage());
-                    localJuniorResultDataSource.deleteJuniorResult(series);
-                    Objects.requireNonNull(juniorResultCache.get(cacheKey))
-                            .postValue(new Result.Error("Junior result not available yet"));
                 }
             });
         } catch (Exception e) {
             Log.e(TAG, "Error loading junior result: " + e.getMessage());
-            fetchFromLocal(cacheKey, series);
         }
     }
 

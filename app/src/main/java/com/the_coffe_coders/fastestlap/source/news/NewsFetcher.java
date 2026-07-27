@@ -47,40 +47,40 @@ public class NewsFetcher {
     }
 
     private static List<News> fetchF1News(String sourceUrl) {
-        Future<List<News>> future = executor.submit(() -> {
-            List<News> newsList = new ArrayList<>();
-
-            try (XmlReader reader = new XmlReader(new URL(sourceUrl))) {
-                SyndFeed feed = new SyndFeedInput().build(reader);
-                for (SyndEntry entry : feed.getEntries()) {
-                    String title = entry.getTitle();
-                    String link = entry.getLink();
-                    String description = (entry.getDescription() != null) ? entry.getDescription().getValue() : "";
-                    String date = (entry.getPublishedDate() != null) ? entry.getPublishedDate().toString() : "";
-                    String category = entry.getCategories().isEmpty() ? "" : entry.getCategories().get(0).getName();
-                    String imageUrl = null;
-
-                    if (entry.getEnclosures() != null && !entry.getEnclosures().isEmpty()) {
-                        imageUrl = entry.getEnclosures().get(0).getUrl();
-                    }
-
-                    newsList.add(new News(title, link, description, date, category, imageUrl));
-                    Log.i("NewsFetcher", "News fetched: " + title + " - " + link + " - " + description + " - " + date + " - " + category + " - " + imageUrl);
-                }
-            } catch (FeedException | IOException e) {
-                throw new RuntimeException(e);
-            }
-            return newsList;
-        });
-
+        List<News> newsList = new ArrayList<>();
         try {
-            List<News> newsList = future.get();
-            Log.i("NewsFetcher", "News fetched: " + newsList.size() + " items");
-            return newsList;
-        } catch (ExecutionException | InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException(e);
+            okhttp3.OkHttpClient client = com.the_coffe_coders.fastestlap.util.ServiceLocator.getInstance().getOkHttpClient();
+            okhttp3.Request request = new okhttp3.Request.Builder()
+                    .url(sourceUrl)
+                    .header("User-Agent", "Mozilla/5.0 FastestLapApp")
+                    .build();
+
+            try (okhttp3.Response response = client.newCall(request).execute()) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try (java.io.InputStream is = response.body().byteStream();
+                         XmlReader reader = new XmlReader(is)) {
+                        SyndFeed feed = new SyndFeedInput().build(reader);
+                        for (SyndEntry entry : feed.getEntries()) {
+                            String title = entry.getTitle();
+                            String link = entry.getLink();
+                            String description = (entry.getDescription() != null) ? entry.getDescription().getValue() : "";
+                            String date = (entry.getPublishedDate() != null) ? entry.getPublishedDate().toString() : "";
+                            String category = entry.getCategories().isEmpty() ? "" : entry.getCategories().get(0).getName();
+                            String imageUrl = null;
+
+                            if (entry.getEnclosures() != null && !entry.getEnclosures().isEmpty()) {
+                                imageUrl = entry.getEnclosures().get(0).getUrl();
+                            }
+
+                            newsList.add(new News(title, link, description, date, category, imageUrl));
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Log.e("NewsFetcher", "Error fetching news from " + sourceUrl + ": " + e.getMessage());
         }
+        return newsList;
     }
 
 }

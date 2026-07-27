@@ -36,12 +36,73 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
     private final LifecycleOwner lifecycleOwner;
     private final LoadingScreen loadingScreen;
 
+    private boolean[] loadedPositions;
+    private int targetLoadCount = 0;
+    private int currentLoadedCount = 0;
+
     public PastEventsRecyclerAdapter(Context context, List<Race> races, TrackViewModel trackViewModel, LifecycleOwner lifecycleOwner, LoadingScreen loadingScreen) {
         this.context = context;
         this.races = races;
         this.trackViewModel = trackViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.loadingScreen = loadingScreen;
+        updateTargetLoadCount();
+    }
+
+    public void updateTargetLoadCount() {
+        synchronized (this) {
+            this.targetLoadCount = getItemCount();
+            this.loadedPositions = new boolean[getItemCount()];
+            this.currentLoadedCount = 0;
+        }
+        preloadAllItems();
+    }
+
+    private void preloadAllItems() {
+        if (races == null || races.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < races.size(); i++) {
+            final int pos = i;
+            Race race = races.get(pos);
+            if (race.getTrack() != null && race.getTrack().getTrack_minimal_layout_url() != null) {
+                UIUtils.preloadImage(context, race.getTrack().getTrack_minimal_layout_url(), () -> endLoading(pos));
+            } else {
+                androidx.lifecycle.LiveData<Result> trackLd = trackViewModel.getTrack(race.getTrack().getTrackId());
+                androidx.lifecycle.Observer<Result>[] selfRef = new androidx.lifecycle.Observer[1];
+                selfRef[0] = result -> {
+                    if (result instanceof Result.Loading) {
+                        return;
+                    }
+                    trackLd.removeObserver(selfRef[0]);
+                    if (result.isSuccess()) {
+                        Track track = ((Result.TrackSuccess) result).getData();
+                        race.setTrack(track);
+                        UIUtils.preloadImage(context, track.getTrack_minimal_layout_url(), () -> endLoading(pos));
+                    } else {
+                        endLoading(pos);
+                    }
+                };
+                trackLd.observe(lifecycleOwner, selfRef[0]);
+            }
+        }
+    }
+
+    private void endLoading(int position) {
+        boolean shouldHide = false;
+        synchronized (this) {
+            if (targetLoadCount > 0 && position >= 0 && position < loadedPositions.length && !loadedPositions[position]) {
+                loadedPositions[position] = true;
+                currentLoadedCount++;
+                Log.i("PastEventsAdapter", "Item " + position + " loaded (" + currentLoadedCount + "/" + targetLoadCount + ")");
+                if (currentLoadedCount >= targetLoadCount) {
+                    shouldHide = true;
+                }
+            }
+        }
+        if (shouldHide && loadingScreen != null) {
+            loadingScreen.hideLoadingScreen();
+        }
     }
 
     @NonNull
@@ -74,34 +135,32 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
         // Prepara il podium subito
         generatePodium(holder, race, position);
 
-        // Carica il track in modo asincrono
-        trackViewModel.getTrack(race.getTrack().getTrackId()).observe(lifecycleOwner, result -> {
-            if (result instanceof Result.Loading) {
-                return;
-            }
-
-            if (result.isSuccess()) {
-                Track track = ((Result.TrackSuccess) result).getData();
-
-                // Carica l'immagine del circuito
-                UIUtils.loadImageWithGlide(context, track.getTrack_minimal_layout_url(), holder.trackOutline, () -> {
-                    // Callback quando l'immagine è caricata
-                    Log.i("PastEventsAdapter", "Image loaded for position: " + position);
-                    // Only hide loading screen when the last item's image is loaded
-                    if (position == getItemCount() - 1) {
-                        loadingScreen.hideLoadingScreen();
-                    }
-                });
-
-                // Imposta il click listener
-                holder.pastEventCard.setOnClickListener(v ->
-                        NavigationUtils.navigateToEventPage(context, race.getTrack().getTrackId()));
-
-            } else {
-                // Gestisci il caso di errore nel caricamento del track
-                Log.e("PastEventsAdapter", "Failed to load track for position: " + position);
-            }
-        });
+        // Carica il track subito se già disponibile (da preloadAllItems) oppure osserva il LiveData
+        if (race.getTrack() != null && race.getTrack().getTrack_minimal_layout_url() != null) {
+            UIUtils.loadImageWithGlide(context, race.getTrack().getTrack_minimal_layout_url(), holder.trackOutline, () -> endLoading(position));
+            holder.pastEventCard.setOnClickListener(v ->
+                    NavigationUtils.navigateToEventPage(context, race.getTrack().getTrackId()));
+        } else {
+            androidx.lifecycle.LiveData<Result> trackLd = trackViewModel.getTrack(race.getTrack().getTrackId());
+            androidx.lifecycle.Observer<Result>[] selfRef = new androidx.lifecycle.Observer[1];
+            selfRef[0] = result -> {
+                if (result instanceof Result.Loading) {
+                    return;
+                }
+                trackLd.removeObserver(selfRef[0]);
+                if (result.isSuccess()) {
+                    Track track = ((Result.TrackSuccess) result).getData();
+                    race.setTrack(track);
+                    UIUtils.loadImageWithGlide(context, track.getTrack_minimal_layout_url(), holder.trackOutline, () -> endLoading(position));
+                    holder.pastEventCard.setOnClickListener(v ->
+                            NavigationUtils.navigateToEventPage(context, race.getTrack().getTrackId()));
+                } else {
+                    Log.e("PastEventsAdapter", "Failed to load track for position: " + position);
+                    endLoading(position);
+                }
+            };
+            trackLd.observe(lifecycleOwner, selfRef[0]);
+        }
     }
 
     private void generatePodium(@NonNull PastEventsRecyclerAdapter.PastEventViewHolder holder, Race race, int position) {

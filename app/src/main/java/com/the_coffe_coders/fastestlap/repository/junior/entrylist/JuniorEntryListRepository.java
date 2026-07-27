@@ -51,58 +51,64 @@ public class JuniorEntryListRepository {
         Log.i(TAG, "Fetching junior entry list with series: " + series);
         String cacheKey = "juniorEntryList" + series;
 
-        if (!juniorEntryListCache.containsKey(cacheKey) ||
-                !lastUpdateTimestamps.containsKey(cacheKey) ||
-                lastUpdateTimestamps.get(cacheKey) == null) {
+        if (!juniorEntryListCache.containsKey(cacheKey)) {
             juniorEntryListCache.put(cacheKey, new MutableLiveData<>());
-            if (isNetworkAvailable()) {
-                loadJuniorEntryList(series);
-            } else {
-                fetchFromLocal(cacheKey, series);
-            }
-        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(cacheKey) > 60000) {
-            if (isNetworkAvailable()) {
-                loadJuniorEntryList(series);
-            } else {
-                fetchFromLocal(cacheKey, series);
-            }
+            loadJuniorEntryListCacheFirst(cacheKey, series);
         } else {
-            Log.i(TAG, "Junior entry list found in cache: " + cacheKey);
+            Long lastUpdate = lastUpdateTimestamps.get(cacheKey);
+            if (lastUpdate == null || System.currentTimeMillis() - lastUpdate > 300000) {
+                if (isNetworkAvailable()) {
+                    loadJuniorEntryList(series, true);
+                }
+            } else {
+                Log.i(TAG, "Junior entry list found in cache: " + cacheKey);
+            }
         }
         return juniorEntryListCache.get(cacheKey);
     }
 
-    private void fetchFromLocal(String cacheKey, String series) {
-        Log.i(TAG, "Fetching junior entry list from local database: " + cacheKey);
+    private void loadJuniorEntryListCacheFirst(String cacheKey, String series) {
         localJuniorEntryListDataSource.getJuniorEntryList(series, new JuniorEntryListCallback() {
             @Override
             public void onEntryListLoaded(JuniorEntryList entryList) {
                 if (entryList != null) {
-                    juniorEntryListCache.put(cacheKey, new MutableLiveData<>(
-                            new Result.JuniorEntryListSuccess(entryList)));
+                    Log.i(TAG, "Junior entry list loaded from local DB: " + cacheKey);
                     lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                     Objects.requireNonNull(juniorEntryListCache.get(cacheKey))
                             .postValue(new Result.JuniorEntryListSuccess(entryList));
+
+                    Long ts = lastUpdateTimestamps.get(cacheKey);
+                    boolean isStale = ts == null || System.currentTimeMillis() - ts > 300_000L;
+                    if (isNetworkAvailable() && isStale) {
+                        loadJuniorEntryList(series, true);
+                    }
                 } else {
-                    Log.e(TAG, "Junior entry list not found in local database");
-                    Objects.requireNonNull(juniorEntryListCache.get(cacheKey))
-                            .postValue(new Result.Error("Junior entry list not found"));
+                    Log.i(TAG, "Junior entry list cache miss in local DB");
+                    if (isNetworkAvailable()) {
+                        loadJuniorEntryList(series, false);
+                    } else {
+                        Objects.requireNonNull(juniorEntryListCache.get(cacheKey))
+                                .postValue(new Result.Error("Junior entry list not available offline"));
+                    }
                 }
             }
 
             @Override
             public void onError(Exception e) {
-                Log.e(TAG, "Error loading junior entry list from local database: " + e.getMessage());
-                Objects.requireNonNull(juniorEntryListCache.get(cacheKey))
-                        .postValue(new Result.Error("Error loading junior entry list: " + e.getMessage()));
+                Log.e(TAG, "Error loading junior entry list from local DB: " + e.getMessage());
+                if (isNetworkAvailable()) {
+                    loadJuniorEntryList(series, false);
+                }
             }
         });
     }
 
-    private void loadJuniorEntryList(String series) {
+    private void loadJuniorEntryList(String series, boolean isBackgroundRefresh) {
         String cacheKey = "juniorEntryList" + series;
         Log.i(TAG, "Loading junior entry list from remote: " + cacheKey);
-        Objects.requireNonNull(juniorEntryListCache.get(cacheKey)).postValue(new Result.Loading("Fetching junior entry list from remote"));
+        if (!isBackgroundRefresh) {
+            Objects.requireNonNull(juniorEntryListCache.get(cacheKey)).postValue(new Result.Loading("Fetching junior entry list from remote"));
+        }
 
         try {
             firebaseJuniorEntryListDataSource.getJuniorEntryList(series, new JuniorEntryListCallback() {
@@ -114,23 +120,16 @@ public class JuniorEntryListRepository {
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                         Objects.requireNonNull(juniorEntryListCache.get(cacheKey))
                                 .postValue(new Result.JuniorEntryListSuccess(entryList));
-                    } else {
-                        Log.e(TAG, "Junior entry list not found - deleting old data from local DB");
-                        localJuniorEntryListDataSource.deleteJuniorEntryList(series);
-                        Objects.requireNonNull(juniorEntryListCache.get(cacheKey))
-                                .postValue(new Result.Error("Junior entry list not available yet"));
                     }
                 }
 
                 @Override
                 public void onError(Exception e) {
                     Log.e(TAG, "Error loading junior entry list: " + e.getMessage());
-                    fetchFromLocal(cacheKey, series);
                 }
             });
         } catch (Exception e) {
             Log.e(TAG, "Error loading junior entry list: " + e.getMessage());
-            fetchFromLocal(cacheKey, series);
         }
     }
 

@@ -280,15 +280,10 @@ public class FavoriteConstructorHandler {
             FrameLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
             constructorCard.setOnClickListener(v -> NavigationUtils.navigateToBioPage(context, constructor.getConstructorId(), 0));
 
-            // Apply standing text (position/points) and make the card visible immediately.
-            // Images are loaded asynchronously below — the user should NOT wait for them.
             buildConstructorCardFinalStep(standingElement, constructor);
 
-            // Start image downloads in the background. Glide will update the ImageViews
-            // once the downloads complete — no callback needed here.
             UIUtils.loadImageAsync(context, nationFlagUrl, constructorFlag);
             UIUtils.loadImageAsync(context, constructor.getCar_pic_url(), constructorCar);
-
         } catch (Exception e) {
             Log.e(TAG, "Error building constructor card: " + e.getMessage());
             showConstructorNotFound(0);

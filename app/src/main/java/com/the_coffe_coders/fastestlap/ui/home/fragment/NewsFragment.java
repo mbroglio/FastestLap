@@ -26,6 +26,7 @@ import com.the_coffe_coders.fastestlap.source.news.NewsFetcher;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -70,7 +71,7 @@ public class NewsFragment extends Fragment {
 
         setupLoadingScreen(view);
 
-        languageFeed = currentLanguage.equals("en-GB");
+        languageFeed = isAppLanguageEnglish();
 
         NetworkUtils networkUtils = new NetworkUtils(requireContext());
         networkUtils.observe(getViewLifecycleOwner(), isConnected -> {
@@ -164,7 +165,7 @@ public class NewsFragment extends Fragment {
         if (useCache) {
             // Use cached data - instant loading!
             Log.d(TAG, "Using cached news data");
-            displayNews(cachedNews, recyclerView);
+            preloadNewsImagesAndDisplay(cachedNews, recyclerView);
             return;
         }
 
@@ -201,7 +202,7 @@ public class NewsFragment extends Fragment {
             List<News> finalNewsList = newsList;
             handler.post(() -> {
                 if (finalNewsList != null && !finalNewsList.isEmpty()) {
-                    displayNews(finalNewsList, recyclerView);
+                    preloadNewsImagesAndDisplay(finalNewsList, recyclerView);
                 } else {
                     Toast.makeText(getContext(), R.string.feed_error, Toast.LENGTH_SHORT).show();
                     decrementLoadingCounter();
@@ -210,19 +211,61 @@ public class NewsFragment extends Fragment {
         });
     }
 
-    private void displayNews(List<News> newsList, RecyclerView recyclerView) {
-        // Wait for first 3 images (or all if less than 3) to ensure above-the-fold content is loaded
-        int itemsToWait = Math.min(3, newsList.size());
-        loadingCounter += itemsToWait;
-        NewsRecyclerAdapter adapter = new NewsRecyclerAdapter(newsList, getContext(), this::decrementLoadingCounter, itemsToWait);
-        recyclerView.setAdapter(adapter);
-        recyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new android.view.ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                recyclerView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                decrementLoadingCounter();
+    private void preloadNewsImagesAndDisplay(List<News> newsList, RecyclerView recyclerView) {
+        if (newsList == null || newsList.isEmpty()) {
+            return;
+        }
+
+        java.util.List<String> imageUrls = new java.util.ArrayList<>();
+        for (int i = 0; i < Math.min(7, newsList.size()); i++) {
+            String img = newsList.get(i).getImageUrl();
+            if (img != null && !img.isEmpty()) {
+                imageUrls.add(img);
             }
+        }
+        if (imageUrls.isEmpty() || getContext() == null) {
+            displayNews(newsList, recyclerView);
+            return;
+        }
+
+        final boolean[] displayed = {false};
+        Handler mainHandler = new Handler(Looper.getMainLooper());
+        Runnable showNewsRunnable = () -> {
+            if (!displayed[0]) {
+                displayed[0] = true;
+                displayNews(newsList, recyclerView);
+            }
+        };
+
+        mainHandler.postDelayed(showNewsRunnable, 1500);
+
+        UIUtils.preloadImagesInParallel(getContext(), imageUrls.toArray(new String[0]), () -> {
+            mainHandler.removeCallbacks(showNewsRunnable);
+            showNewsRunnable.run();
         });
+    }
+
+    private boolean isAppLanguageEnglish() {
+        try {
+            androidx.core.os.LocaleListCompat appLocales = AppCompatDelegate.getApplicationLocales();
+            String langTag = appLocales.toLanguageTags();
+            if (langTag != null && !langTag.isEmpty()) {
+                return langTag.toLowerCase().startsWith("en");
+            }
+            if (getContext() != null) {
+                String systemLang = getContext().getResources().getConfiguration().getLocales().get(0).getLanguage();
+                return systemLang != null && systemLang.toLowerCase().startsWith("en");
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Error checking app language: " + e.getMessage());
+        }
+        return false;
+    }
+
+    private void displayNews(List<News> newsList, RecyclerView recyclerView) {
+        NewsRecyclerAdapter adapter = new NewsRecyclerAdapter(newsList, getContext(), null, 0);
+        recyclerView.setAdapter(adapter);
+        loadingScreen.hideLoadingScreen();
     }
 
     private void showSourcesDialog(boolean isEnglish) {
