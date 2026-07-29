@@ -63,7 +63,7 @@ public class DriversStandingActivity extends AppCompatActivity {
     }
 
     private void start() {
-        loadingScreen.showLoadingScreen(false);
+        loadingScreen.showLoadingScreen(true);
 
         initializeViewModels();
 

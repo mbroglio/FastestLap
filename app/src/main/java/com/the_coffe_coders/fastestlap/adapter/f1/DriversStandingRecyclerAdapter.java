@@ -57,7 +57,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
         this.constructorViewModel = constructorViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.loadingScreen = loadingScreen;
-        this.targetLoadCount = getItemCount();
+        this.targetLoadCount = Math.min(getItemCount(), 3);
         this.loadedPositions = new boolean[getItemCount()];
         preloadAllItems();
     }
