@@ -50,13 +50,13 @@ public class RaceResult implements Parcelable {
         uid = in.readInt();
         position = in.readString();
         points = in.readString();
-        driver = in.readParcelable(Driver.class.getClassLoader());
-        constructor = in.readParcelable(Constructor.class.getClassLoader());
+        driver = androidx.core.os.ParcelCompat.readParcelable(in, Driver.class.getClassLoader(), Driver.class);
+        constructor = androidx.core.os.ParcelCompat.readParcelable(in, Constructor.class.getClassLoader(), Constructor.class);
         grid = in.readString();
         laps = in.readString();
         status = in.readString();
-        time = in.readParcelable(RaceResultTime.class.getClassLoader());
-        fastestLap = in.readParcelable(RaceResultFastestLap.class.getClassLoader());
+        time = androidx.core.os.ParcelCompat.readParcelable(in, RaceResultTime.class.getClassLoader(), RaceResultTime.class);
+        fastestLap = androidx.core.os.ParcelCompat.readParcelable(in, RaceResultFastestLap.class.getClassLoader(), RaceResultFastestLap.class);
     }
 
     @Override

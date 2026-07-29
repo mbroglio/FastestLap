@@ -15,7 +15,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.adapter.ConstructorStandingsRecyclerAdapter;
+import com.the_coffe_coders.fastestlap.adapter.f1.ConstructorStandingsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
@@ -33,7 +33,6 @@ import java.util.List;
 
 public class ConstructorsStandingActivity extends AppCompatActivity {
     private static final String TAG = "TeamCardActivity";
-    private final boolean constructorToProcess = true;
     LoadingScreen loadingScreen;
 
     private DriverViewModel driverViewModel;
@@ -111,11 +110,6 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
                     constructorsStandingAdapter = new ConstructorStandingsRecyclerAdapter(this, constructorId, constructorList, null, driverViewModel, constructorViewModel, this, loadingScreen);
                     constructorsStandingRecyclerView.setAdapter(constructorsStandingAdapter);
-
-                    for (int i = 0; i < constructorsStandingAdapter.getItemCount(); i++) {
-                        constructorsStandingAdapter.onBindViewHolder(
-                                constructorsStandingAdapter.createViewHolder(constructorsStandingRecyclerView, constructorsStandingAdapter.getItemViewType(i)), i);
-                    }
                 } catch (ClassCastException e) {
                     setupPageForConstructorList();
                 }
@@ -145,11 +139,6 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
 
                 constructorsStandingAdapter = new ConstructorStandingsRecyclerAdapter(this, constructorId, null, constructorList, driverViewModel, constructorViewModel, this, loadingScreen);
                 constructorsStandingRecyclerView.setAdapter(constructorsStandingAdapter);
-
-                for (int i = 0; i < constructorsStandingAdapter.getItemCount(); i++) {
-                    constructorsStandingAdapter.onBindViewHolder(
-                            constructorsStandingAdapter.createViewHolder(constructorsStandingRecyclerView, constructorsStandingAdapter.getItemViewType(i)), i);
-                }
 
             } else {
                 Log.i(TAG, "CONSTRUCTORS LIST ERROR");

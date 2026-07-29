@@ -40,6 +40,7 @@ public class FirebaseConstructorDataSource implements ConstructorDataSource {
                         if (snapshot.exists()) {
                             Constructor constructor = snapshot.getValue(Constructor.class);
                             if (constructor != null) {
+                                constructor.setConstructorId(constructorId);
                                 callback.onConstructorLoaded(constructor);
                             } else {
                                 callback.onError(new Exception("Constructor data is null"));

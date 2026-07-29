@@ -41,6 +41,7 @@ public class FirebaseDriverDataSource implements DriverDataSource {
                 if (snapshot.exists()) {
                     Driver driver = snapshot.getValue(Driver.class);
                     if (driver != null) {
+                        driver.setDriverId(driverId);
                         Log.i(TAG, "Successfully retrieved driver from Firebase: " + driver);
                         callback.onDriverLoaded(driver);
                     } else {

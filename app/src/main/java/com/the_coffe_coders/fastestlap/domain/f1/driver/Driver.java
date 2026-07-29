@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import org.threeten.bp.LocalDate;
@@ -25,7 +26,7 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(onConstructor_ = @Ignore)
 @Entity(tableName = "Driver")
 public class Driver implements Parcelable {
     public static final Creator<Driver> CREATOR = new Creator<>() {
@@ -39,12 +40,10 @@ public class Driver implements Parcelable {
             return new Driver[size];
         }
     };
-    @PrimaryKey(autoGenerate = true)
     private long uid;
-    @Getter
-    // F = Firebase A = API
-
-    private String driverId; // A
+    @PrimaryKey
+    @NonNull
+    private String driverId = ""; // A
     private String permanentNumber; // A
     private String code; // A
     private String url;
@@ -65,6 +64,10 @@ public class Driver implements Parcelable {
     private String weight; // F
     private String first_entry; //F
     private String gps_entered; // F
+    @Ignore
+    private String season_wins;
+    @Ignore
+    private String season_podiums;
 
     protected Driver(Parcel in) {
         uid = in.readLong();

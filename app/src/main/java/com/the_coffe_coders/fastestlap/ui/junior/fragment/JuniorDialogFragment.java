@@ -63,8 +63,8 @@ public class JuniorDialogFragment extends DialogFragment {
             content = getArguments().getInt("CONTENT");
             raceType = getArguments().getInt("RACE_TYPE"); //0: sprint; 1: feature
             circuit = getArguments().getString("CIRCUIT");
-            featureRace = getArguments().getParcelable("JUNIOR_FEATURE_RACE");
-            sprintRace = getArguments().getParcelable("JUNIOR_SPRINT_RACE");
+            featureRace = androidx.core.os.BundleCompat.getParcelable(getArguments(), "JUNIOR_FEATURE_RACE", FeatureRace.class);
+            sprintRace = androidx.core.os.BundleCompat.getParcelable(getArguments(), "JUNIOR_SPRINT_RACE", SprintRace.class);
         }
     }
 

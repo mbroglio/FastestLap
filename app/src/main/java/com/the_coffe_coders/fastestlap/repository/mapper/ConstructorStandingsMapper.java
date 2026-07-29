@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.mapper;
+package com.the_coffe_coders.fastestlap.repository.mapper;
 
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;

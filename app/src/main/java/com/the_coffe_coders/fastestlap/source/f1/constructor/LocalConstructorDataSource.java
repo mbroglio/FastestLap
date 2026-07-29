@@ -10,8 +10,10 @@ public class LocalConstructorDataSource implements ConstructorDataSource {
     private static final String TAG = "ConstructorLocalDataSource";
     private static LocalConstructorDataSource instance;
     private final ConstructorDAO constructorDAO;
+    private final AppRoomDatabase appRoomDatabase;
 
     private LocalConstructorDataSource(AppRoomDatabase appRoomDatabase) {
+        this.appRoomDatabase = appRoomDatabase;
         this.constructorDAO = appRoomDatabase.constructorDAO();
     }
 
@@ -26,15 +28,27 @@ public class LocalConstructorDataSource implements ConstructorDataSource {
 
     @Override
     public void getConstructor(String constructorId, ConstructorCallback callback) {
-        try {
-            Constructor constructor = constructorDAO.getById(constructorId);
-            callback.onConstructorLoaded(constructor);
-        } catch (Exception e) {
-            callback.onError(e);
-        }
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            try {
+                Constructor constructor = constructorDAO.getById(constructorId);
+                // A valid cached constructor from Firebase must have rich details like car_pic_url, team_logo_url, or drivers list.
+                // If it is missing all of these, it is an incomplete DTO object and should be treated as a cache miss.
+                boolean isComplete = constructor != null &&
+                        (constructor.getCar_pic_url() != null || constructor.getTeam_logo_url() != null ||
+                                constructor.getTeam_logo_minimal_url() != null || (constructor.getDrivers() != null && !constructor.getDrivers().isEmpty()));
+
+                if (isComplete) {
+                    callback.onConstructorLoaded(constructor);
+                } else {
+                    callback.onConstructorLoaded(null);
+                }
+            } catch (Exception e) {
+                callback.onError(e);
+            }
+        });
     }
 
     public void insertConstructor(Constructor constructor) {
-        constructorDAO.insertConstructor(constructor);
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> constructorDAO.insertConstructor(constructor));
     }
 }

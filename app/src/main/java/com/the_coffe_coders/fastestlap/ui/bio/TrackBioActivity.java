@@ -94,21 +94,27 @@ public class TrackBioActivity extends AppCompatActivity {
 
     private void fetchTrack() {
         MutableLiveData<Result> trackLiveData = trackViewModel.getTrack(trackId);
-        try {
-            trackLiveData.observe(this, trackResult -> {
-                if (trackResult instanceof Result.Loading) {
-                    return;
-                }
-                if (trackResult.isSuccess()) {
-                    track = ((Result.TrackSuccess) trackResult).getData();
-                    Log.i("TrackBioActivity", "Circuit from DB: " + track);
+        @SuppressWarnings("unchecked")
+        androidx.lifecycle.Observer<Result>[] observerTrack = new androidx.lifecycle.Observer[1];
+        observerTrack[0] = trackResult -> {
+            if (trackResult instanceof Result.Loading) {
+                return;
+            }
+            trackLiveData.removeObserver(observerTrack[0]);
+            if (trackResult.isSuccess()) {
+                track = ((Result.TrackSuccess) trackResult).getData();
+                Log.i("TrackBioActivity", "Circuit from DB: " + track);
 
+                if (track != null && track.getCountry() != null) {
                     try {
                         MutableLiveData<Result> nationLiveData = nationViewModel.getNation(track.getCountry());
-                        nationLiveData.observe(this, nationResult -> {
+                        @SuppressWarnings("unchecked")
+                        androidx.lifecycle.Observer<Result>[] observerNation = new androidx.lifecycle.Observer[1];
+                        observerNation[0] = nationResult -> {
                             if (nationResult instanceof Result.Loading) {
                                 return;
                             }
+                            nationLiveData.removeObserver(observerNation[0]);
                             if (nationResult.isSuccess()) {
                                 nation = ((Result.NationSuccess) nationResult).getData();
                                 setCircuitData(track, nation);
@@ -116,19 +122,21 @@ public class TrackBioActivity extends AppCompatActivity {
                                 Log.e("TrackBioActivity", "Error getting nation data");
                                 setCircuitData(track, null);
                             }
-                        });
+                        };
+                        nationLiveData.observe(this, observerNation[0]);
                     } catch (RuntimeException e) {
                         Log.e("TrackBioActivity", "Error fetching nation data: " + e.getMessage());
                         setCircuitData(track, null);
                     }
-
                 } else {
-                    Log.e("TrackBioActivity", "Error getting data");
+                    setCircuitData(track, null);
                 }
-            });
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+            } else {
+                Log.e("TrackBioActivity", "Error getting track data");
+                loadingScreen.hideLoadingScreen();
+            }
+        };
+        trackLiveData.observe(this, observerTrack[0]);
     }
 
     private void setCircuitData(Track track, Nation nation) {
@@ -242,6 +250,7 @@ public class TrackBioActivity extends AppCompatActivity {
             trackHistoryLayout.setVisibility(View.GONE);
             tableLayout.setVisibility(View.GONE);
         }
+        Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: TrackBioActivity at " + System.currentTimeMillis());
         loadingScreen.hideLoadingScreen();
     }
 

@@ -26,14 +26,15 @@ public class ConstructorStandingRepository {
     // Cache
     private final Map<String, MutableLiveData<Result>> constructorStandingCache;
     private final Map<String, Long> lastUpdateTimestamps;
-
     // Data sources
     private final JolpicaConstructorStandingsDataSource jolpicaConstructorStandingsDataSource;
     private final LocalConstructorStandingsDataSource localConstructorStandingsDataSource;
-
     private final NetworkUtils networkLiveData;
-
     private final String currentYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+    // Prevents duplicate concurrent HTTP requests while a fetch is already in-flight.
+    // Without this, callers that arrive before the first response lands would each fire
+    // their own network request (since the timestamp is null until the callback completes).
+    private boolean isFetchInFlight = false;
 
     private ConstructorStandingRepository(AppRoomDatabase appRoomDatabase, Context context) {
         constructorStandingCache = new HashMap<>();
@@ -58,108 +59,112 @@ public class ConstructorStandingRepository {
         Log.d(TAG, "Fetching constructor standing");
         String cacheKey = "constructorStanding";
 
-        if (!constructorStandingCache.containsKey(cacheKey) ||
-                !lastUpdateTimestamps.containsKey(cacheKey) ||
-                lastUpdateTimestamps.get(cacheKey) == null) {
+        if (!constructorStandingCache.containsKey(cacheKey)) {
             constructorStandingCache.put(cacheKey, new MutableLiveData<>());
-            if (isNetworkAvailable()) {
-                loadConstructorStanding();
-            } else {
-                fetchFromLocal(cacheKey);
-            }
-        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(cacheKey) > 60000) {
-            if (isNetworkAvailable())
-                loadConstructorStanding();
-            else {
-                fetchFromLocal(cacheKey);
-            }
+            loadConstructorStandingsCacheFirst(cacheKey);
         } else {
-            Log.d(TAG, "Constructor standing found in cache");
+            Long lastUpdate = lastUpdateTimestamps.get(cacheKey);
+            if (lastUpdate == null || System.currentTimeMillis() - lastUpdate > 300000) { // 5 min TTL
+                if (isNetworkAvailable() && !isFetchInFlight) {
+                    isFetchInFlight = true;
+                    loadConstructorStandingFromRemote(cacheKey, true);
+                }
+            } else {
+                Log.d(TAG, "Constructor standing found in cache");
+            }
         }
         return constructorStandingCache.get(cacheKey);
     }
 
-    private void loadConstructorStanding() {
-        String cacheKey = "constructorStanding";
-        Objects.requireNonNull(constructorStandingCache.get(cacheKey)).postValue(new Result.Loading("Fetching constructor standing from remote"));
-        try {
-            jolpicaConstructorStandingsDataSource.getConstructorStandings(new ConstructorStandingCallback() {
-                @Override
-                public void onConstructorLoaded(ConstructorStandings constructorStandings) {
-                    if (constructorStandings != null) {
-                        localConstructorStandingsDataSource.insertConstructorStandings(constructorStandings);
-                        lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
-                        Objects.requireNonNull(constructorStandingCache.get(cacheKey))
-                                .postValue(new Result.ConstructorStandingsSuccess(constructorStandings));
-                    } else {
-                        Log.e(TAG, "Constructor standing not found");
-                        fetchFromLocal(cacheKey);
-                    }
-                }
-
-                @Override
-                public void onConstructorListLoaded(List<Constructor> constructorList) {
-                    if (constructorList != null) {
-                        localConstructorStandingsDataSource.insertConstructorList(constructorList);
-                        lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
-                        Objects.requireNonNull(constructorStandingCache.get(cacheKey))
-                                .postValue(new Result.ConstructorsSuccess(constructorList));
-                    } else {
-                        Log.e(TAG, "Constructor list not found");
-                        fetchFromLocal(cacheKey);
-                    }
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    Log.e(TAG, "Error loading constructor standing: " + e.getMessage());
-                    fetchFromLocal(cacheKey);
-                }
-            });
-        } catch (Exception e) {
-            Log.e(TAG, "Error loading constructor standing: " + e.getMessage());
-            fetchFromLocal(cacheKey);
-        }
-    }
-
-    private void fetchFromLocal(String cacheKey) {
+    private void loadConstructorStandingsCacheFirst(String cacheKey) {
         localConstructorStandingsDataSource.getConstructorStandings(new ConstructorStandingCallback() {
             @Override
             public void onConstructorLoaded(ConstructorStandings constructorStandings) {
-                if (constructorStandings != null && constructorStandings.getSeason().equals(currentYear)) {
-                    constructorStandingCache.put(cacheKey, new MutableLiveData<>(
-                            new Result.ConstructorStandingsSuccess(constructorStandings)));
+                if (constructorStandings != null && currentYear.equals(constructorStandings.getSeason())) {
+                    Log.d(TAG, "Constructor standings loaded from local database (cache hit)");
                     lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                     Objects.requireNonNull(constructorStandingCache.get(cacheKey))
                             .postValue(new Result.ConstructorStandingsSuccess(constructorStandings));
+
+                    Long ts = lastUpdateTimestamps.get(cacheKey);
+                    boolean isStale = ts == null || System.currentTimeMillis() - ts > 300_000L;
+                    if (isNetworkAvailable() && !isFetchInFlight && isStale) {
+                        isFetchInFlight = true;
+                        loadConstructorStandingFromRemote(cacheKey, true);
+                    }
                 } else {
-                    Log.e(TAG, "Constructor standing not found in local database");
-                    Objects.requireNonNull(constructorStandingCache.get(cacheKey))
-                            .postValue(new Result.Error("Constructor standing not found"));
+                    Log.d(TAG, "Constructor standings cache miss in local database");
+                    if (isNetworkAvailable() && !isFetchInFlight) {
+                        isFetchInFlight = true;
+                        loadConstructorStandingFromRemote(cacheKey, false);
+                    } else if (!isFetchInFlight) {
+                        Objects.requireNonNull(constructorStandingCache.get(cacheKey))
+                                .postValue(new Result.Error("Constructor standing not found locally and no network connection"));
+                    }
                 }
             }
 
             @Override
             public void onConstructorListLoaded(List<Constructor> constructorList) {
-                if (constructorList != null) {
-                    constructorStandingCache.put(cacheKey, new MutableLiveData<>(
-                            new Result.ConstructorsSuccess(constructorList)));
-                    lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
+                Log.d(TAG, "Constructor list only in local DB — fetching full standings from remote");
+                if (isNetworkAvailable() && !isFetchInFlight) {
+                    isFetchInFlight = true;
+                    loadConstructorStandingFromRemote(cacheKey, false);
+                } else if (!isFetchInFlight) {
                     Objects.requireNonNull(constructorStandingCache.get(cacheKey))
-                            .postValue(new Result.ConstructorsSuccess(constructorList));
-                } else {
-                    Log.e(TAG, "Constructor list not found in local database");
-                    Objects.requireNonNull(constructorStandingCache.get(cacheKey))
-                            .postValue(new Result.Error("Constructor list not found"));
+                            .postValue(new Result.Error("Constructor standing not found locally and no network connection"));
                 }
             }
 
             @Override
             public void onError(Exception e) {
-                Log.e(TAG, "Error loading constructor standing from local database: " + e.getMessage());
-                Objects.requireNonNull(constructorStandingCache.get(cacheKey))
-                        .postValue(new Result.Error("Error loading constructor standing: " + e.getMessage()));
+                Log.e(TAG, "Error checking local database for standings: " + e.getMessage());
+                if (isNetworkAvailable() && !isFetchInFlight) {
+                    isFetchInFlight = true;
+                    loadConstructorStandingFromRemote(cacheKey, false);
+                }
             }
         });
+    }
+
+    private void loadConstructorStandingFromRemote(String cacheKey, boolean isBackgroundRefresh) {
+        if (!isBackgroundRefresh) {
+            Objects.requireNonNull(constructorStandingCache.get(cacheKey))
+                    .postValue(new Result.Loading("Fetching constructor standing from remote"));
+        }
+        try {
+            jolpicaConstructorStandingsDataSource.getConstructorStandings(new ConstructorStandingCallback() {
+                @Override
+                public void onConstructorLoaded(ConstructorStandings constructorStandings) {
+                    isFetchInFlight = false;
+                    if (constructorStandings != null) {
+                        localConstructorStandingsDataSource.insertConstructorStandings(constructorStandings);
+                        lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
+                        Objects.requireNonNull(constructorStandingCache.get(cacheKey))
+                                .postValue(new Result.ConstructorStandingsSuccess(constructorStandings));
+                    }
+                }
+
+                @Override
+                public void onConstructorListLoaded(List<Constructor> constructorList) {
+                    isFetchInFlight = false;
+                    if (constructorList != null) {
+                        localConstructorStandingsDataSource.insertConstructorList(constructorList);
+                        lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
+                        Objects.requireNonNull(constructorStandingCache.get(cacheKey))
+                                .postValue(new Result.ConstructorsSuccess(constructorList));
+                    }
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    isFetchInFlight = false;
+                    Log.e(TAG, "Error loading constructor standing from remote: " + e.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            isFetchInFlight = false;
+            Log.e(TAG, "Error loading constructor standing from remote: " + e.getMessage());
+        }
     }
 }

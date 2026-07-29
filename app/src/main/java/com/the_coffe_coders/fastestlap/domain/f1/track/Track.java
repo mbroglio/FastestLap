@@ -1,6 +1,8 @@
 package com.the_coffe_coders.fastestlap.domain.f1.track;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.gson.annotations.SerializedName;
@@ -19,12 +21,13 @@ import lombok.ToString;
 @EqualsAndHashCode
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(onConstructor_ = @Ignore)
 @Entity(tableName = "Track")
 public class Track {
-    @PrimaryKey(autoGenerate = true)
     private long uid;
-    private String trackId;
+    @PrimaryKey
+    @NonNull
+    private String trackId = "";
     private String url;
     private String trackName;
     private Location location;

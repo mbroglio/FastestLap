@@ -89,10 +89,8 @@
     <color name="audi_transparent">#5CFF2F1E</color>
 
 
-
     <color name="app_primary_red">#CA3131</color>
     <color name="screen_background_color">#1E1E24</color>
-
 
 
     <color name="mclaren_secondary">#E67A1F</color>
@@ -105,7 +103,6 @@
     <color name="alpine_secondary">#0B82B2</color>
     <color name="kick_secondary">#01E526</color>
     <color name="audi_secondary">#E70C27</color>
-
 
 
     <color name="yellow">#FFD700</color>

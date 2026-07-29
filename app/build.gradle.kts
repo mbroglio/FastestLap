@@ -6,12 +6,12 @@ plugins {
 
 android {
     namespace = "com.the_coffe_coders.fastestlap"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.the_coffe_coders.fastestlap"
         minSdk = 28
-        targetSdk = 36
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -19,7 +19,7 @@ android {
     }
 
     sourceSets {
-        getByName("androidTest").assets.srcDirs("$projectDir/schemas")
+        getByName("androidTest").assets.directories.add("$projectDir/schemas")
     }
 
     buildTypes {
@@ -34,6 +34,9 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+    tasks.withType<JavaCompile> {
+        options.compilerArgs.addAll(listOf("-Xlint:deprecation", "-Xlint:unchecked"))
     }
 }
 

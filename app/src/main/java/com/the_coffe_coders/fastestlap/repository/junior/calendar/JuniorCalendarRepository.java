@@ -53,60 +53,65 @@ public class JuniorCalendarRepository {
         Log.i(TAG, "Fetching junior calendar with series: " + series);
         String cacheKey = "juniorCalendar" + series;
 
-        if (!juniorCalendarCache.containsKey(cacheKey) ||
-                !lastUpdateTimestamps.containsKey(cacheKey) ||
-                lastUpdateTimestamps.get(cacheKey) == null) {
+        if (!juniorCalendarCache.containsKey(cacheKey)) {
             juniorCalendarCache.put(cacheKey, new MutableLiveData<>());
-            if (isNetworkAvailable()) {
-                loadJuniorCalendar(series);
-            } else {
-                fetchFromLocal(cacheKey, series);
-            }
-        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(cacheKey) > 60000) {
-            if (isNetworkAvailable()) {
-                loadJuniorCalendar(series);
-            } else {
-                fetchFromLocal(cacheKey, series);
-            }
+            loadJuniorCalendarCacheFirst(cacheKey, series);
         } else {
-            Log.i(TAG, "Junior calendar found in cache: " + cacheKey);
+            Long lastUpdate = lastUpdateTimestamps.get(cacheKey);
+            if (lastUpdate == null || System.currentTimeMillis() - lastUpdate > 300000) {
+                if (isNetworkAvailable()) {
+                    loadJuniorCalendar(series, true);
+                }
+            } else {
+                Log.i(TAG, "Junior calendar found in cache: " + cacheKey);
+            }
         }
 
         return juniorCalendarCache.get(cacheKey);
     }
 
-    private void fetchFromLocal(String cacheKey, String series) {
-        Log.i(TAG, "Fetching junior calendar from local database: " + cacheKey);
+    private void loadJuniorCalendarCacheFirst(String cacheKey, String series) {
         localJuniorCalendarDataSource.getJuniorCalendar(series, new JuniorCalendarCallback() {
             @Override
             public void onCalendarLoaded(JuniorCalendar calendar) {
                 if (calendar != null) {
-                    juniorCalendarCache.put(cacheKey, new MutableLiveData<>(
-                            new Result.JuniorCalendarSuccess(calendar)));
+                    Log.i(TAG, "Junior calendar loaded from local DB: " + cacheKey);
                     lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                     Objects.requireNonNull(juniorCalendarCache.get(cacheKey))
                             .postValue(new Result.JuniorCalendarSuccess(calendar));
+
+                    Long ts = lastUpdateTimestamps.get(cacheKey);
+                    boolean isStale = ts == null || System.currentTimeMillis() - ts > 300_000L;
+                    if (isNetworkAvailable() && isStale) {
+                        loadJuniorCalendar(series, true);
+                    }
                 } else {
-                    Log.e(TAG, "Junior calendar not found in local database");
-                    Objects.requireNonNull(juniorCalendarCache.get(cacheKey))
-                            .postValue(new Result.Error("Junior calendar not found"));
+                    Log.i(TAG, "Junior calendar cache miss in local DB");
+                    if (isNetworkAvailable()) {
+                        loadJuniorCalendar(series, false);
+                    } else {
+                        Objects.requireNonNull(juniorCalendarCache.get(cacheKey))
+                                .postValue(new Result.Error("Junior calendar not available offline"));
+                    }
                 }
             }
 
             @Override
             public void onError(Exception e) {
-                Log.e(TAG, "Error loading junior calendar from local database: " + e.getMessage());
-                Objects.requireNonNull(juniorCalendarCache.get(cacheKey))
-                        .postValue(new Result.Error("Error loading junior calendar: " + e.getMessage()));
+                Log.e(TAG, "Error loading junior calendar from local DB: " + e.getMessage());
+                if (isNetworkAvailable()) {
+                    loadJuniorCalendar(series, false);
+                }
             }
         });
-
     }
 
-    private void loadJuniorCalendar(String series) {
+    private void loadJuniorCalendar(String series, boolean isBackgroundRefresh) {
         String cacheKey = "juniorCalendar" + series;
         Log.i(TAG, "Loading junior calendar from remote: " + cacheKey);
-        Objects.requireNonNull(juniorCalendarCache.get(cacheKey)).postValue(new Result.Loading("Fetching junior calendar from remote"));
+        if (!isBackgroundRefresh) {
+            Objects.requireNonNull(juniorCalendarCache.get(cacheKey)).postValue(new Result.Loading("Fetching junior calendar from remote"));
+        }
 
         try {
             firebaseJuniorCalendarDataSource.getJuniorCalendar(series, new JuniorCalendarCallback() {
@@ -118,23 +123,16 @@ public class JuniorCalendarRepository {
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                         Objects.requireNonNull(juniorCalendarCache.get(cacheKey))
                                 .postValue(new Result.JuniorCalendarSuccess(calendar));
-                    } else {
-                        Log.e(TAG, "Junior calendar not found");
-                        fetchFromLocal(cacheKey, series);
                     }
                 }
 
                 @Override
                 public void onError(Exception e) {
                     Log.e(TAG, "Error loading junior calendar: " + e.getMessage());
-                    localJuniorCalendarDataSource.deleteJuniorCalendar(series);
-                    Objects.requireNonNull(juniorCalendarCache.get(cacheKey))
-                            .postValue(new Result.Error("Junior calendar not available yet"));
                 }
             });
         } catch (Exception e) {
             Log.e(TAG, "Error loading junior calendar: " + e.getMessage());
-            fetchFromLocal(cacheKey, series);
         }
     }
 }

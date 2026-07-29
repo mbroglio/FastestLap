@@ -36,12 +36,74 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
     private final LifecycleOwner lifecycleOwner;
     private final LoadingScreen loadingScreen;
 
+    private boolean[] loadedPositions;
+    private int targetLoadCount = 0;
+    private int currentLoadedCount = 0;
+
     public UpcomingEventsRecyclerAdapter(Context context, List<WeeklyRace> races, TrackViewModel trackViewModel, LifecycleOwner lifecycleOwner, LoadingScreen loadingScreen) {
         this.context = context;
         this.races = races;
         this.trackViewModel = trackViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.loadingScreen = loadingScreen;
+        updateTargetLoadCount();
+    }
+
+    public void updateTargetLoadCount() {
+        synchronized (this) {
+            this.targetLoadCount = getItemCount();
+            this.loadedPositions = new boolean[getItemCount()];
+            this.currentLoadedCount = 0;
+        }
+        preloadAllItems();
+    }
+
+    private void preloadAllItems() {
+        if (races == null || races.isEmpty()) {
+            return;
+        }
+        for (int i = 0; i < races.size(); i++) {
+            final int pos = i;
+            WeeklyRace weeklyRace = races.get(pos);
+            if (weeklyRace.getTrack() != null && weeklyRace.getTrack().getTrack_minimal_layout_url() != null) {
+                UIUtils.preloadImage(context, weeklyRace.getTrack().getTrack_minimal_layout_url(), () -> endLoading(pos));
+            } else {
+                androidx.lifecycle.LiveData<Result> trackLd = trackViewModel.getTrack(weeklyRace.getTrack().getTrackId());
+                @SuppressWarnings("unchecked")
+                androidx.lifecycle.Observer<Result>[] selfRef = new androidx.lifecycle.Observer[1];
+                selfRef[0] = result -> {
+                    if (result instanceof Result.Loading) {
+                        return;
+                    }
+                    trackLd.removeObserver(selfRef[0]);
+                    if (result.isSuccess()) {
+                        Track track = ((Result.TrackSuccess) result).getData();
+                        weeklyRace.setTrack(track);
+                        UIUtils.preloadImage(context, track.getTrack_minimal_layout_url(), () -> endLoading(pos));
+                    } else {
+                        endLoading(pos);
+                    }
+                };
+                trackLd.observe(lifecycleOwner, selfRef[0]);
+            }
+        }
+    }
+
+    private void endLoading(int position) {
+        boolean shouldHide = false;
+        synchronized (this) {
+            if (targetLoadCount > 0 && position >= 0 && position < loadedPositions.length && !loadedPositions[position]) {
+                loadedPositions[position] = true;
+                currentLoadedCount++;
+                Log.i("UpcomingEventsAdapter", "Item " + position + " loaded (" + currentLoadedCount + "/" + targetLoadCount + ")");
+                if (currentLoadedCount >= targetLoadCount) {
+                    shouldHide = true;
+                }
+            }
+        }
+        if (shouldHide && loadingScreen != null) {
+            loadingScreen.hideLoadingScreen();
+        }
     }
 
     @NonNull
@@ -61,37 +123,39 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
 
         setupEventCardIcon(weeklyRace, holder);
 
-        if(weeklyRace.getRound() != null){
+        if (weeklyRace.getRound() != null) {
             showEventConfirmed(holder, weeklyRace);
         } else {
             showEventCancelled(holder, weeklyRace);
         }
 
-        trackViewModel.getTrack(weeklyRace.getTrack().getTrackId()).observe(lifecycleOwner, result -> {
-            if (result instanceof Result.Loading) {
-                return;
-            }
-            if (result.isSuccess()) {
-                Track track = ((Result.TrackSuccess) result).getData();
-
-                UIUtils.loadImageWithGlide(context, track.getTrack_minimal_layout_url(), holder.trackOutline, () -> {
-                    Log.i("UpcomingEventsAdapter", "Image loaded for position: " + position);
-
-                    if (position == getItemCount() - 1) {
-                        loadingScreen.hideLoadingScreen();
-                    }
-                });
-
-                holder.upcomingEventCard.setOnClickListener(v ->
-                        NavigationUtils.navigateToEventPage(context, weeklyRace.getTrack().getTrackId()));
-            } else {
-                Log.e("UpcomingEventsAdapter", "Failed to load track for position: " + position);
-
-                if (position == getItemCount() - 1) {
-                    loadingScreen.hideLoadingScreen();
+        // Carica il track subito se già disponibile (da preloadAllItems) oppure osserva il LiveData
+        if (weeklyRace.getTrack() != null && weeklyRace.getTrack().getTrack_minimal_layout_url() != null) {
+            UIUtils.loadImageWithGlide(context, weeklyRace.getTrack().getTrack_minimal_layout_url(), holder.trackOutline, () -> endLoading(position));
+            holder.upcomingEventCard.setOnClickListener(v ->
+                    NavigationUtils.navigateToEventPage(context, weeklyRace.getTrack().getTrackId()));
+        } else {
+            androidx.lifecycle.LiveData<Result> trackLd = trackViewModel.getTrack(weeklyRace.getTrack().getTrackId());
+            @SuppressWarnings("unchecked")
+            androidx.lifecycle.Observer<Result>[] selfRef = new androidx.lifecycle.Observer[1];
+            selfRef[0] = result -> {
+                if (result instanceof Result.Loading) {
+                    return;
                 }
-            }
-        });
+                trackLd.removeObserver(selfRef[0]);
+                if (result.isSuccess()) {
+                    Track track = ((Result.TrackSuccess) result).getData();
+                    weeklyRace.setTrack(track);
+                    UIUtils.loadImageWithGlide(context, track.getTrack_minimal_layout_url(), holder.trackOutline, () -> endLoading(position));
+                    holder.upcomingEventCard.setOnClickListener(v ->
+                            NavigationUtils.navigateToEventPage(context, weeklyRace.getTrack().getTrackId()));
+                } else {
+                    Log.e("UpcomingEventsAdapter", "Failed to load track for position: " + position);
+                    endLoading(position);
+                }
+            };
+            trackLd.observe(lifecycleOwner, selfRef[0]);
+        }
     }
 
     private void showEventCancelled(UpcomingEventViewHolder holder, WeeklyRace weeklyRace) {

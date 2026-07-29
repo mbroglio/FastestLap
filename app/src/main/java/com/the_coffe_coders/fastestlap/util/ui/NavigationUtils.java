@@ -135,20 +135,20 @@ public class NavigationUtils {
     private static void navigateToJuniorHome(NavController navController, int categoryType) {
         Bundle args = new Bundle();
         args.putInt("CATEGORY_TYPE", categoryType);
-        if(categoryType == 0){
+        if (categoryType == 0) {
             navController.navigate(R.id.f2HomeFragment, args);
-        }else if(categoryType == 1){
+        } else if (categoryType == 1) {
             navController.navigate(R.id.f3HomeFragment, args);
         }
     }
 
-    public static void navigateToJuniorResultsPage(View view, int categoryType){
+    public static void navigateToJuniorResultsPage(View view, int categoryType) {
         NavController navController = Navigation.findNavController(view);
         Bundle args = new Bundle();
         args.putInt("CATEGORY_TYPE", categoryType);
-        if(categoryType == 0){
+        if (categoryType == 0) {
             navController.navigate(R.id.to_juniorResults_formula2, args);
-        }else if(categoryType == 1){
+        } else if (categoryType == 1) {
             navController.navigate(R.id.to_juniorResults_formula3, args);
         }
     }
@@ -157,9 +157,9 @@ public class NavigationUtils {
         NavController navController = Navigation.findNavController(view);
         Bundle args = new Bundle();
         args.putInt("CATEGORY_TYPE", categoryType);
-        if(categoryType == 0){
+        if (categoryType == 0) {
             navController.navigate(R.id.to_carBio_formula2, args);
-        }else if(categoryType == 1){
+        } else if (categoryType == 1) {
             navController.navigate(R.id.to_carBio_formula3, args);
         }
     }

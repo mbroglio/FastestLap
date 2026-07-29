@@ -41,7 +41,9 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
     private final DriverViewModel driverViewModel;
     private final ConstructorViewModel constructorViewModel;
     private final LifecycleOwner lifecycleOwner;
-    private DriverStandingsElement driverStandingsElement;
+    private final boolean[] loadedPositions;
+    private final int targetLoadCount;
+    private int currentLoadedCount = 0;
 
     public DriversStandingRecyclerAdapter(Context context, List<DriverStandingsElement> driversStandingList,
                                           List<Driver> driversList, String driverId, DriverViewModel driverViewModel,
@@ -55,6 +57,9 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
         this.constructorViewModel = constructorViewModel;
         this.lifecycleOwner = lifecycleOwner;
         this.loadingScreen = loadingScreen;
+        this.targetLoadCount = getItemCount();
+        this.loadedPositions = new boolean[getItemCount()];
+        preloadAllItems();
     }
 
     @NonNull
@@ -66,20 +71,28 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
 
     @Override
     public void onBindViewHolder(@NonNull DriverViewHolder holder, int position) {
-        driverStandingsElement = new DriverStandingsElement();
+        final DriverStandingsElement element;
         if (driversStandingList == null) { //use driversList
-            driverStandingsElement.setDriver(driversList.get(position));
-            driverStandingsElement.setPoints("0");
-            driverStandingsElement.setPosition(String.valueOf(position + 1));
+            element = new DriverStandingsElement();
+            element.setDriver(driversList.get(position));
+            element.setPoints("0");
+            element.setPosition(String.valueOf(position + 1));
         } else { //use driversStandingList
-            driverStandingsElement = driversStandingList.get(position);
+            element = driversStandingList.get(position);
         }
 
+        final String currentDriverId = element.getDriver().getDriverId();
+
         try {
-            driverViewModel.getDriver(driverStandingsElement.getDriver().getDriverId()).observe(lifecycleOwner, result -> {
+            androidx.lifecycle.LiveData<Result> driverLd = driverViewModel.getDriver(currentDriverId);
+            @SuppressWarnings("unchecked")
+            androidx.lifecycle.Observer<Result>[] selfRef = new androidx.lifecycle.Observer[1];
+            selfRef[0] = result -> {
                 if (result instanceof Result.Loading) {
                     return;
                 }
+                driverLd.removeObserver(selfRef[0]);
+                loadingScreen.updateProgress();
                 if (result.isSuccess()) {
                     showDriverFound(holder);
                     Driver driver = ((Result.DriverSuccess) result).getData();
@@ -87,7 +100,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
                     UIUtils.multipleSetTextViewText(
                             new String[]{
                                     driver.getFullName(),
-                                    driverStandingsElement.getPoints(),
+                                    element.getPoints(),
                             },
                             new TextView[]{
                                     holder.driverName,
@@ -95,19 +108,19 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
 
                             });
 
-                    UIUtils.setTextViewTextWithCondition(driverStandingsElement.getPosition() == null || driverStandingsElement.getPosition().equals("-"),
+                    UIUtils.setTextViewTextWithCondition(element.getPosition() == null || element.getPosition().equals("-"),
                             ContextCompat.getString(context, R.string.last_driver_position), //if true
-                            driverStandingsElement.getPosition(), //if false
+                            element.getPosition(), //if false
                             holder.driverPosition);
 
                     if (driverId != null) {
-                        if (driverStandingsElement.getDriver().getDriverId().equals(driverId)) {
+                        if (currentDriverId.equals(driverId)) {
                             UIUtils.animateCardBackgroundColor(context, holder.driverCard.findViewById(R.id.driver_card_view), R.color.yellow, Color.TRANSPARENT, 1000, 10);
                         }
                     }
 
                     holder.driverCard.setOnClickListener(v -> goToBioPage(position));
-                    Log.i("DriversStanding", driver.getDriverId() + "driver.getTeam_id()");
+                    Log.i("DriversStanding", driver.getDriverId() + " driver.getTeam_id()");
 
                     if (driver.getTeam_id() != null) {
                         try {
@@ -121,16 +134,21 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
                         holder.driverTeamImage.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.f1_car_icon_filled));
                     }
 
-                    UIUtils.loadImageWithGlide(context, driver.getDriver_half_pic_url(), holder.driverImage, () ->
-                            generateForConstructor(holder, driver, position));
+                    UIUtils.loadImageWithGlide(context, driver.getDriver_half_pic_url(), holder.driverImage, () -> {
+                        loadingScreen.updateProgress();
+                        generateForConstructor(holder, driver, position);
+                    });
 
                 } else {
-                    showDriverNotFound(holder, driverStandingsElement.getDriver().getDriverId());
+                    showDriverNotFound(holder, currentDriverId);
+                    endLoading(position);
                 }
-            });
+            };
+            driverLd.observe(lifecycleOwner, selfRef[0]);
         } catch (RuntimeException e) {
             Log.e("DriversStandingAdapter", "driver error: " + e.getMessage());
-            showDriverNotFound(holder, driverStandingsElement.getDriver().getDriverId());
+            showDriverNotFound(holder, currentDriverId);
+            endLoading(position);
         }
 
     }
@@ -145,11 +163,14 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
         holder.driverNotFound.setVisibility(View.VISIBLE);
         Log.i("DriversStandingAdapter", "Driver not found id test: " + driverId + " -> " + driverId.contains("_"));
 
-        if (driverId.contains("_")) {
-            driverId = driverId.split("_")[1];
+        if (driverId != null) {
+            if (driverId.contains("_")) {
+                driverId = driverId.split("_")[1];
+            }
+            UIUtils.singleSetTextViewText(driverId.toUpperCase(java.util.Locale.ROOT) + " " + context.getString(R.string.driver_info_not_found), holder.driverNotFound);
+        } else {
+            UIUtils.singleSetTextViewText(context.getString(R.string.driver_info_not_found), holder.driverNotFound);
         }
-
-        UIUtils.singleSetTextViewText(context.getString(R.string.driver_info_not_found, driverId.toUpperCase()), holder.driverNotFound);
 
     }
 
@@ -160,28 +181,107 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
         } else {
             driverIdToShow = driversStandingList.get(position).getDriver().getDriverId();
         }
-        //
 
         NavigationUtils.navigateToBioPage(context, driverIdToShow, 1);
     }
 
     private void generateForConstructor(DriverViewHolder holder, Driver driver, int position) {
-        constructorViewModel.getSelectedConstructor(driver.getTeam_id()).observe(lifecycleOwner, result -> {
-            if (result instanceof Result.Loading) {
-                return;
-            }
-            if (result.isSuccess()) {
-                Constructor constructor = ((Result.ConstructorSuccess) result).getData();
+        if (driver.getTeam_id() == null) {
+            endLoading(position);
+            return;
+        }
 
-                UIUtils.loadImageWithGlide(context, constructor.getTeam_logo_minimal_url(), holder.driverTeamImage, () -> {
-                    Log.i("DriversStanding", "onBindViewHolder " + position + "/" + getItemCount());
-                    // Only hide loading screen when the last item is fully loaded
-                    if (position == getItemCount() - 1) {
-                        loadingScreen.hideLoadingScreen();
-                    }
-                });
+        try {
+            androidx.lifecycle.LiveData<Result> constLd = constructorViewModel.getSelectedConstructor(driver.getTeam_id());
+            @SuppressWarnings("unchecked")
+            androidx.lifecycle.Observer<Result>[] selfRef = new androidx.lifecycle.Observer[1];
+            selfRef[0] = result -> {
+                if (result instanceof Result.Loading) {
+                    return;
+                }
+                constLd.removeObserver(selfRef[0]);
+                loadingScreen.updateProgress();
+                if (result.isSuccess()) {
+                    Constructor constructor = ((Result.ConstructorSuccess) result).getData();
+
+                    UIUtils.loadImageWithGlide(context, constructor.getTeam_logo_minimal_url(), holder.driverTeamImage, () -> {
+                        loadingScreen.updateProgress();
+                        endLoading(position);
+                    });
+                } else {
+                    endLoading(position);
+                }
+            };
+            constLd.observe(lifecycleOwner, selfRef[0]);
+        } catch (Exception e) {
+            endLoading(position);
+        }
+    }
+
+    private void preloadAllItems() {
+        for (int i = 0; i < getItemCount(); i++) {
+            final int pos = i;
+            String dId;
+            if (driversStandingList == null) {
+                dId = driversList.get(pos).getDriverId();
+            } else {
+                dId = driversStandingList.get(pos).getDriver().getDriverId();
             }
-        });
+
+            androidx.lifecycle.LiveData<Result> dLd = driverViewModel.getDriver(dId);
+            @SuppressWarnings("unchecked")
+            androidx.lifecycle.Observer<Result>[] selfRef = new androidx.lifecycle.Observer[1];
+            selfRef[0] = result -> {
+                if (result instanceof Result.Loading) return;
+                dLd.removeObserver(selfRef[0]);
+                if (result.isSuccess()) {
+                    Driver driver = ((Result.DriverSuccess) result).getData();
+                    String driverImgUrl = driver.getDriver_half_pic_url();
+                    String teamId = driver.getTeam_id();
+
+                    if (teamId != null) {
+                        androidx.lifecycle.LiveData<Result> cLd = constructorViewModel.getSelectedConstructor(teamId);
+                        @SuppressWarnings("unchecked")
+                        androidx.lifecycle.Observer<Result>[] cRef = new androidx.lifecycle.Observer[1];
+                        cRef[0] = cRes -> {
+                            if (cRes instanceof Result.Loading) return;
+                            cLd.removeObserver(cRef[0]);
+                            if (cRes.isSuccess()) {
+                                Constructor c = ((Result.ConstructorSuccess) cRes).getData();
+                                UIUtils.preloadImagesInParallel(context,
+                                        new String[]{driverImgUrl, c.getTeam_logo_minimal_url()},
+                                        () -> endLoading(pos));
+                            } else {
+                                UIUtils.preloadImage(context, driverImgUrl, () -> endLoading(pos));
+                            }
+                        };
+                        cLd.observe(lifecycleOwner, cRef[0]);
+                    } else {
+                        UIUtils.preloadImage(context, driverImgUrl, () -> endLoading(pos));
+                    }
+                } else {
+                    endLoading(pos);
+                }
+            };
+            dLd.observe(lifecycleOwner, selfRef[0]);
+        }
+    }
+
+    private void endLoading(int position) {
+        boolean shouldHide = false;
+        synchronized (this) {
+            if (position >= 0 && position < loadedPositions.length && !loadedPositions[position]) {
+                loadedPositions[position] = true;
+                currentLoadedCount++;
+                Log.i("DriversStanding", "onBindViewHolder " + position + "/" + getItemCount() + " - loaded: " + currentLoadedCount + "/" + targetLoadCount);
+                if (currentLoadedCount >= targetLoadCount) {
+                    shouldHide = true;
+                }
+            }
+        }
+        if (shouldHide) {
+            loadingScreen.hideLoadingScreen();
+        }
     }
 
     @Override

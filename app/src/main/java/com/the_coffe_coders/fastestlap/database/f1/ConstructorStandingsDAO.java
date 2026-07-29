@@ -27,7 +27,7 @@ public interface ConstructorStandingsDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     List<Long> insertConstructorStandingsList(List<ConstructorStandings> constructorStandingsList);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertConstructorList(List<Constructor> constructorList);
 
     @Query("SELECT * FROM Constructor")

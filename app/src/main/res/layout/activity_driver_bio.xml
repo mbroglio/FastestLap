@@ -413,10 +413,10 @@
                         <View
                             android:layout_width="0dp"
                             android:layout_height="8dp"
+                            android:layout_gravity="center"
                             android:layout_marginStart="24dp"
                             android:layout_marginEnd="24dp"
                             android:layout_weight="1"
-                            android:layout_gravity="center"
                             android:background="@color/timer_gray_dark">
 
                         </View>
@@ -432,16 +432,15 @@
                         <View
                             android:layout_width="0dp"
                             android:layout_height="8dp"
+                            android:layout_gravity="center"
                             android:layout_marginStart="24dp"
                             android:layout_marginEnd="24dp"
                             android:layout_weight="1"
-                            android:layout_gravity="center"
                             android:background="@color/timer_gray_dark">
 
                         </View>
 
                     </LinearLayout>
-
 
 
                 </LinearLayout>

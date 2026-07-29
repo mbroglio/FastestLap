@@ -26,7 +26,7 @@ public interface ConstructorDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertConstructor(Constructor constructor);//TAXI DRIVER
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     List<Long> insertConstructorsList(List<Constructor> newsList);
 
 }

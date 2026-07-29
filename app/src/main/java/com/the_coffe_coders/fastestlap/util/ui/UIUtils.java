@@ -10,7 +10,9 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -22,7 +24,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.content.res.AppCompatResources;
@@ -49,7 +50,6 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 
 import java.security.MessageDigest;
 import java.time.Duration;
@@ -95,12 +95,12 @@ public class UIUtils {
     }
 
     /*
-    * -----------------------------------------------------------------------------------------------
-    * NAVIGATION
-    * -----------------------------------------------------------------------------------------------
+     * -----------------------------------------------------------------------------------------------
+     * NAVIGATION
+     * -----------------------------------------------------------------------------------------------
      */
 
-    public static void manualToolbarTitleUpdateWithNavigation(NavController navController, AppCompatActivity activity){
+    public static void manualToolbarTitleUpdateWithNavigation(NavController navController, AppCompatActivity activity) {
         navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
             if (activity.getSupportActionBar() != null) {
                 CharSequence title = destination.getLabel();
@@ -121,6 +121,96 @@ public class UIUtils {
 
     public static void loadImageWithGlide(Context context, String url, ImageView imageView, Runnable onSuccess) {
         loadImage(context, url, imageView, onSuccess, 0);
+    }
+
+    /**
+     * Starts downloading the image at {@code url} into Glide's disk cache without
+     * displaying it anywhere. Call this as early as possible (e.g. when you first
+     * receive the URL) so the cache is warm by the time the real load starts.
+     */
+    public static void preloadImage(Context context, String url) {
+        if (url == null || url.isEmpty()) return;
+        // Guard against destroyed activities
+        if (context instanceof android.app.Activity) {
+            android.app.Activity activity = (android.app.Activity) context;
+            if (activity.isDestroyed() || activity.isFinishing()) return;
+        }
+        // Use applicationContext so the decoded bitmap is pinned in the app-scoped
+        // Glide RequestManager and never evicted when a fragment/activity is destroyed.
+        // This makes every return visit to the home fragment an instant memory-cache hit
+        // instead of a fresh Firebase Storage fetch.
+        Glide.with(context.getApplicationContext())
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .preload();
+    }
+
+    public static void preloadImage(Context context, String url, Runnable onComplete) {
+        if (url == null || url.isEmpty()) {
+            if (onComplete != null) {
+                new Handler(Looper.getMainLooper()).post(onComplete);
+            }
+            return;
+        }
+
+        if (context instanceof android.app.Activity) {
+            android.app.Activity activity = (android.app.Activity) context;
+            if (activity.isDestroyed() || activity.isFinishing()) {
+                if (onComplete != null) {
+                    new Handler(Looper.getMainLooper()).post(onComplete);
+                }
+                return;
+            }
+        }
+
+        // Use applicationContext so the decoded bitmap survives fragment/activity lifecycle
+        // changes and is available as a memory-cache hit on the next home fragment visit.
+        Glide.with(context.getApplicationContext())
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                        if (onComplete != null) {
+                            new Handler(Looper.getMainLooper()).post(onComplete);
+                        }
+                        return false;
+                    }
+
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        if (onComplete != null) {
+                            new Handler(Looper.getMainLooper()).post(onComplete);
+                        }
+                        return false;
+                    }
+                })
+                .preload();
+    }
+
+    public static void preloadImagesInParallel(Context context, String[] urls, Runnable onSuccess) {
+        if (urls == null || urls.length == 0) {
+            if (onSuccess != null) {
+                new Handler(Looper.getMainLooper()).post(onSuccess);
+            }
+            return;
+        }
+
+        final int[] loadedCount = {0};
+        final int total = urls.length;
+
+        Runnable check = () -> {
+            synchronized (loadedCount) {
+                loadedCount[0]++;
+                if (loadedCount[0] >= total && onSuccess != null) {
+                    new Handler(Looper.getMainLooper()).post(onSuccess);
+                }
+            }
+        };
+
+        for (String url : urls) {
+            preloadImage(context, url, check);
+        }
     }
 
     public static void loadSequenceOfImagesWithGlide(Context context, String[] urls, ImageView[] imageViews, Runnable onSuccess) {
@@ -171,7 +261,7 @@ public class UIUtils {
             return;
         }
 
-        // Track how many images have loaded
+        // Track how many images have fully loaded (full-quality, not thumbnail)
         final int[] loadedCount = {0};
         final int totalImages = urls.length;
 
@@ -192,24 +282,73 @@ public class UIUtils {
         }
     }
 
+    /**
+     * Loads an image into an ImageView asynchronously without any completion callback.
+     * Use this when you want to display data immediately and let images fill in on their own.
+     * Unlike loadImagesInParallel(), this does NOT block any completion signal.
+     */
+    public static void loadImageAsync(Context context, String url, ImageView imageView) {
+        if (imageView == null) return;
+        if (url == null || url.isEmpty()) return;
+        if (context instanceof android.app.Activity) {
+            android.app.Activity activity = (android.app.Activity) context;
+            if (activity.isDestroyed() || activity.isFinishing()) return;
+        }
+        Glide.with(context)
+                .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imageView);
+    }
+
+
     private static void loadImage(Context context, String url, ImageView imageView, Runnable onSuccess, int retryCount) {
         Log.i("Glide", "Loading image: " + url);
 
-        NetworkUtils networkLiveData = new NetworkUtils(context);
+        // Guard: if the context is a destroyed Activity, skip the load to avoid the
+        // "You cannot start a load for a destroyed activity" crash that occurs when an
+        // async callback (posted via Handler) fires after the user has navigated away.
+        if (context instanceof android.app.Activity) {
+            android.app.Activity activity = (android.app.Activity) context;
+            if (activity.isDestroyed() || activity.isFinishing()) {
+                Log.w("Glide", "Skipping image load — activity is destroyed: " + url);
+                if (onSuccess != null) {
+                    new Handler(Looper.getMainLooper()).post(onSuccess);
+                }
+                return;
+            }
+        }
+
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        Network activeNetwork = cm != null ? cm.getActiveNetwork() : null;
+        NetworkCapabilities nc = (activeNetwork != null) ? cm.getNetworkCapabilities(activeNetwork) : null;
+        final boolean isConnected = nc != null
+                && nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+                && nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
+
 
         if (url != null && !url.isEmpty()) {
+            // Ensure the onSuccess callback fires exactly once per loadImage() call.
+            // .thumbnail(0.25f) causes Glide to invoke onResourceReady twice:
+            //   1st call: low-res thumbnail (isFirstResource = true)
+            //   2nd call: full-quality image  (isFirstResource = false)
+            // Without this guard, loadImagesInParallel's counter would be incremented
+            // twice per image, firing the completion callback before all images are ready.
+            final boolean[] callbackFired = {false};
+
             Glide.with(context)
                     .load(url)
-                    .thumbnail(0.25f)  // Load 25% quality version first for instant display
                     .diskCacheStrategy(DiskCacheStrategy.ALL)  // Cache both original and resized
-                    .listener(new RequestListener<Drawable>() {
+                    .listener(new RequestListener<>() {
                         @Override
                         public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                             Log.e("Glide", "Image loading failed: " + url);
 
-                            // We handled the error
-                            if (networkLiveData.isConnected()) {
-                                // We handled the error
+                            synchronized (callbackFired) {
+                                if (callbackFired[0]) return true;
+                                callbackFired[0] = true;
+                            }
+
+                            if (isConnected) {
                                 if (retryCount <= Constants.MAX_RETRY_COUNT) {
                                     Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
                                     new Handler(Looper.getMainLooper()).post(() -> loadImage(context, url, imageView, onSuccess, retryCount + 1));
@@ -220,18 +359,25 @@ public class UIUtils {
                             } else {
                                 manageContentLoadError(imageView, null, context, onSuccess, 0);
                             }
-                            return true; // Return true to prevent Glide from handling the error (since we retry)
+                            return true; // We handled the error
                         }
 
                         @Override
                         public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            Log.i("Glide", "Image loaded successfully: ");
+                            Log.i("Glide", "Full image loaded (firing callback): " + url);
+
+                            synchronized (callbackFired) {
+                                if (callbackFired[0])
+                                    return false; // callback already fired
+                                callbackFired[0] = true;
+                            }
+
                             if (onSuccess != null) {
-                                // Post to Handler to escape the callback context
-                                // This prevents IllegalStateException if onSuccess triggers another Glide load
+                                // Post to Handler to escape the callback context.
+                                // This prevents IllegalStateException if onSuccess triggers another Glide load.
                                 new Handler(Looper.getMainLooper()).post(onSuccess);
                             }
-                            return false; // Return false to allow Glide to handle setting the drawable on the target
+                            return false; // Let Glide display the resource
                         }
                     })
                     .into(imageView);
@@ -246,6 +392,18 @@ public class UIUtils {
     }
 
     private static void loadImageAlpha(Context context, String url, LinearLayout card, Runnable onSuccess, int alpha, int retryCount) {
+        // Guard: skip load if the associated Activity is already destroyed.
+        if (context instanceof android.app.Activity) {
+            android.app.Activity activity = (android.app.Activity) context;
+            if (activity.isDestroyed() || activity.isFinishing()) {
+                Log.w("Glide", "Skipping alpha image load — activity is destroyed: " + url);
+                if (onSuccess != null) {
+                    new Handler(Looper.getMainLooper()).post(onSuccess);
+                }
+                return;
+            }
+        }
+
         if (url != null && !url.isEmpty()) {
             Glide.with(context)
                     .load(url)
@@ -440,11 +598,10 @@ public class UIUtils {
     // normalize a string for matching
     private static String normalizeForMatch(String s) {
         if (s == null) return "";
-        String normalized = s.toLowerCase(Locale.ROOT)
+        return s.toLowerCase(Locale.ROOT)
                 .replaceAll("[^\\p{Alnum}]+", " ")
                 .replaceAll("\\s+", " ")
                 .trim();
-        return normalized;
     }
 
     // find the key in a map that matches the input string
@@ -466,8 +623,8 @@ public class UIUtils {
         return bestMatch;
     }
 
-    public static Object getFromMap(String key, Map<String, ?> map){
-        if(!map.containsKey(key)) return "-";
+    public static Object getFromMap(String key, Map<String, ?> map) {
+        if (!map.containsKey(key)) return "-";
         return map.get(key);
     }
 
@@ -484,20 +641,20 @@ public class UIUtils {
     }
 
     public static void translateSessionType(Context context, TextView sessionTypeTextView, String sessionId) {
-        if (AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("en-GB")) {
-            UIUtils.singleSetTextViewText(Constants.SESSION_NAMES_ENG.getOrDefault(sessionId, context.getString(R.string.unknown)), sessionTypeTextView);
-
-        } else if (AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("it-IT")) {
+        String langTags = AppCompatDelegate.getApplicationLocales().toLanguageTags();
+        if (langTags != null && langTags.toLowerCase(Locale.ROOT).startsWith("it")) {
             UIUtils.singleSetTextViewText(Constants.SESSION_NAMES_ITA.getOrDefault(sessionId, context.getString(R.string.unknown)), sessionTypeTextView);
+        } else {
+            UIUtils.singleSetTextViewText(Constants.SESSION_NAMES_ENG.getOrDefault(sessionId, context.getString(R.string.unknown)), sessionTypeTextView);
         }
     }
 
     public static void translateSessionDay(Context context, TextView sessionDayTextView, String sessionId) {
-        if (AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("en-GB")) {
-            UIUtils.singleSetTextViewText(Constants.SESSION_DAY_ENG.getOrDefault(sessionId, context.getString(R.string.unknown)), sessionDayTextView);
-
-        } else if (AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("it-IT")) {
+        String langTags = AppCompatDelegate.getApplicationLocales().toLanguageTags();
+        if (langTags != null && langTags.toLowerCase(Locale.ROOT).startsWith("it")) {
             UIUtils.singleSetTextViewText(Constants.SESSION_DAY_ITA.getOrDefault(sessionId, context.getString(R.string.unknown)), sessionDayTextView);
+        } else {
+            UIUtils.singleSetTextViewText(Constants.SESSION_DAY_ENG.getOrDefault(sessionId, context.getString(R.string.unknown)), sessionDayTextView);
         }
     }
 
@@ -506,10 +663,11 @@ public class UIUtils {
                 eventDate.split(" ")[1] + " " +
                 eventDate.split(" ")[2] + " ";
 
-        if (AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("en-GB")) {
-            newEventDate += eventDate.split(" ")[3].toUpperCase();
-        } else if (AppCompatDelegate.getApplicationLocales().toLanguageTags().equalsIgnoreCase("it-IT")) {
-            newEventDate += Objects.requireNonNull(Constants.MONTH_ENG_TO_ITA.get(eventDate.split(" ")[3].toLowerCase())).toUpperCase();
+        String langTags = AppCompatDelegate.getApplicationLocales().toLanguageTags();
+        if (langTags != null && langTags.toLowerCase(Locale.ROOT).startsWith("it")) {
+            newEventDate += Objects.requireNonNull(Constants.MONTH_ENG_TO_ITA.get(eventDate.split(" ")[3].toLowerCase(Locale.ROOT))).toUpperCase(Locale.ROOT);
+        } else {
+            newEventDate += eventDate.split(" ")[3].toUpperCase(Locale.ROOT);
         }
 
         UIUtils.singleSetTextViewText(newEventDate, eventDateTextView);
@@ -537,12 +695,15 @@ public class UIUtils {
      */
 
     public static void setAppLocale() {
-        if (AppCompatDelegate.getApplicationLocales().get(0) == null) {
-            LocaleListCompat appLocale = LocaleListCompat.forLanguageTags(Constants.DEFAULT_LANGUAGE);
-            AppCompatDelegate.setApplicationLocales(appLocale);
+        LocaleListCompat currentLocales = AppCompatDelegate.getApplicationLocales();
+        if (currentLocales.isEmpty() || currentLocales.get(0) == null) {
+            java.util.Locale defaultLocale = java.util.Locale.forLanguageTag(Constants.DEFAULT_LANGUAGE);
+            java.util.Locale systemLocale = java.util.Locale.getDefault();
+            if (!systemLocale.getLanguage().equalsIgnoreCase(defaultLocale.getLanguage())) {
+                LocaleListCompat appLocale = LocaleListCompat.forLanguageTags(Constants.DEFAULT_LANGUAGE);
+                AppCompatDelegate.setApplicationLocales(appLocale);
+            }
         }
-
-        AppCompatDelegate.setApplicationLocales(AppCompatDelegate.getApplicationLocales());
     }
 
 
@@ -552,7 +713,6 @@ public class UIUtils {
      * ----------------------------------------------------------------------------------------------
      */
 
-    @RequiresApi(api = Build.VERSION_CODES.S)
     public static String getTimeAgo(String dateString, Context context) {
         long SECONDS_PER_MINUTE = 60;
         long SECONDS_PER_HOUR = 3600;
@@ -567,7 +727,7 @@ public class UIUtils {
             ZonedDateTime now = ZonedDateTime.now(pastTime.getZone());
             Duration duration = Duration.between(pastTime, now);
 
-            long seconds = duration.toSeconds();
+            long seconds = duration.getSeconds();
 
             if (seconds < 60) {
                 return context.getString(R.string.just_now);
@@ -595,7 +755,7 @@ public class UIUtils {
 
         } catch (DateTimeParseException e) {
             // Handle invalid date string
-            e.printStackTrace();
+            Log.e("UIUtils", "Error parsing date string: " + e.getMessage());
             return "Invalid date format";
         }
     }
@@ -610,13 +770,14 @@ public class UIUtils {
 
     /**
      * Updates tachometer views with driver statistics
-     * @param context The context (usually Activity)
-     * @param driver The driver object containing statistics
-     * @param winTachometer The tachometer view for win percentage
+     *
+     * @param context          The context (usually Activity)
+     * @param driver           The driver object containing statistics
+     * @param winTachometer    The tachometer view for win percentage
      * @param podiumTachometer The tachometer view for podium percentage
      */
     public static void updateTachometers(Context context, Driver driver,
-                                          TachometerView winTachometer, TachometerView podiumTachometer) {
+                                         TachometerView winTachometer, TachometerView podiumTachometer) {
         String TAG = "UIUtils.updateTachometers";
 
         // Set tachometer colors based on team
@@ -719,14 +880,15 @@ public class UIUtils {
         podiumTachometer.setLabel("Podiums");
 
         Log.i(TAG, "Win %: " + winPercentage + ", Podium %: " + podiumPercentage +
-              ", Total Races: " + totalRaces + ", Wins: " + totalWins + ", Podiums: " + totalPodiums);
+                ", Total Races: " + totalRaces + ", Wins: " + totalWins + ", Podiums: " + totalPodiums);
     }
 
     /**
      * Updates tachometer views with team statistics
-     * @param context The context (usually Activity)
-     * @param constructor The constructor object containing statistics
-     * @param winTachometer The tachometer view for win percentage
+     *
+     * @param context          The context (usually Activity)
+     * @param constructor      The constructor object containing statistics
+     * @param winTachometer    The tachometer view for win percentage
      * @param podiumTachometer The tachometer view for podium percentage
      */
     public static void updateTachometers(Context context, Constructor constructor,

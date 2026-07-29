@@ -40,8 +40,6 @@ public class FavoriteConstructorHandler {
 
     private final Fragment fragment;
     private final Context context;
-    private final LifecycleOwner lifecycleOwner;
-    private final View view;
     private final HomeViewModel homeViewModel;
     private final ConstructorViewModel constructorViewModel;
     private final NationViewModel nationViewModel;
@@ -49,24 +47,23 @@ public class FavoriteConstructorHandler {
     private final NetworkUtils networkLiveData;
     private final SharedPreferencesUtils sharedPreferencesUtils;
     private final CardLoadedCallback cardLoadedCallback;
-
+    private LifecycleOwner lifecycleOwner;
+    private View view;
     @Setter
     private ConstructorStandings cachedConstructorStandings = null;
     private boolean constructorCardLoaded = false;
-
-    @FunctionalInterface
-    public interface CardLoadedCallback {
-        void onCardLoaded(String cardName);
-    }
+    // Cached last-built card data so back-stack returns can skip the entire ViewModel chain.
+    private ConstructorStandingsElement cachedStandingsElement = null;
+    private Nation cachedNation = null;
 
     public FavoriteConstructorHandler(Fragment fragment, View view,
-                                     HomeViewModel homeViewModel,
-                                     ConstructorViewModel constructorViewModel,
-                                     NationViewModel nationViewModel,
-                                     UserViewModel userViewModel,
-                                     NetworkUtils networkLiveData,
-                                     SharedPreferencesUtils sharedPreferencesUtils,
-                                     CardLoadedCallback cardLoadedCallback) {
+                                      HomeViewModel homeViewModel,
+                                      ConstructorViewModel constructorViewModel,
+                                      NationViewModel nationViewModel,
+                                      UserViewModel userViewModel,
+                                      NetworkUtils networkLiveData,
+                                      SharedPreferencesUtils sharedPreferencesUtils,
+                                      CardLoadedCallback cardLoadedCallback) {
         this.fragment = fragment;
         this.context = fragment.requireContext();
         this.lifecycleOwner = fragment.getViewLifecycleOwner();
@@ -79,6 +76,18 @@ public class FavoriteConstructorHandler {
         this.sharedPreferencesUtils = sharedPreferencesUtils;
         this.cardLoadedCallback = cardLoadedCallback;
     }
+
+    public void updateView(View view, LifecycleOwner lifecycleOwner) {
+        this.view = view;
+        this.lifecycleOwner = lifecycleOwner;
+    }
+
+    public void resetCardLoaded() {
+        this.constructorCardLoaded = false;
+        this.cachedStandingsElement = null;
+        this.cachedNation = null;
+    }
+
     public void setupFavoriteConstructorCard() {
         String favoriteTeamId = getFavoriteTeamId();
         if (favoriteTeamId == null || favoriteTeamId.isEmpty() || favoriteTeamId.equals("null")) {
@@ -87,13 +96,24 @@ public class FavoriteConstructorHandler {
             return;
         }
 
-        // Use cached data if available, otherwise fetch
+        // Fast-path for back-stack returns: the card was already built and all data is cached
+        // in memory. Skip the entire ViewModel/observer chain and go straight to buildConstructorCard.
+        // This avoids re-downloading the car image on every back-stack return.
+        if (constructorCardLoaded && cachedStandingsElement != null) {
+            Log.i(TAG, "Constructor card already built — rebuilding from in-memory cache (fast path)");
+            buildConstructorCard(cachedStandingsElement, cachedNation);
+            return;
+        }
+
+        // Use cached standings data if available, otherwise fetch
         if (cachedConstructorStandings != null) {
             processConstructorStandings(favoriteTeamId, cachedConstructorStandings);
             return;
         }
 
-        // Fetch standings - LiveData will handle multiple observers gracefully
+        // Fetch standings using a one-shot observer that removes itself after the first
+        // non-Loading result. Without this, the background Firebase refresh re-emits the
+        // same LiveData and triggers a full card rebuild for every emission.
         MutableLiveData<Result> constructorStandingsData = homeViewModel.getConstructorStandingsLiveData(fragment.requireActivity().getApplication());
 
         // Track if observer was called with final result
@@ -107,12 +127,17 @@ public class FavoriteConstructorHandler {
             }
         }, 2000);
 
-        constructorStandingsData.observe(lifecycleOwner, result -> {
+        @SuppressWarnings("unchecked")
+        androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
+        observerHolder[0] = result -> {
             try {
                 if (result instanceof Result.Loading) {
                     return;
                 }
 
+                // One-shot: remove this observer so future re-emissions (e.g. background
+                // Firebase refresh) do not trigger another full card rebuild.
+                constructorStandingsData.removeObserver(observerHolder[0]);
                 observerCalled[0] = true;
 
                 if (result instanceof Result.ConstructorStandingsSuccess) {
@@ -126,14 +151,17 @@ public class FavoriteConstructorHandler {
                 }
             } catch (ClassCastException e) {
                 Log.e(TAG, "Type mismatch in setFavouriteConstructorCard - wrong result type received: " + e.getMessage());
+                constructorStandingsData.removeObserver(observerHolder[0]);
                 observerCalled[0] = true;
                 processConstructorStandings(favoriteTeamId, null);
             } catch (Exception e) {
                 Log.e(TAG, "Error in setFavouriteConstructorCard: " + e.getMessage());
+                constructorStandingsData.removeObserver(observerHolder[0]);
                 observerCalled[0] = true;
                 processConstructorStandings(favoriteTeamId, null);
             }
-        });
+        };
+        constructorStandingsData.observe(lifecycleOwner, observerHolder[0]);
     }
 
     private void processConstructorStandings(String favoriteTeamId, ConstructorStandings standings) {
@@ -160,14 +188,25 @@ public class FavoriteConstructorHandler {
 
     private void fetchConstructorDataForCard(String teamId, ConstructorStandingsElement favouriteConstructor) {
         MutableLiveData<Result> constructorData = constructorViewModel.getSelectedConstructor(teamId);
-        constructorData.observe(lifecycleOwner, constructorResult -> {
+        // One-shot observer: removes itself after the first non-Loading result so that
+        // a subsequent background Firebase re-emission does not rebuild the card again.
+        @SuppressWarnings("unchecked")
+        androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
+        observerHolder[0] = constructorResult -> {
             try {
                 if (constructorResult instanceof Result.Loading) {
                     return;
                 }
+                constructorData.removeObserver(observerHolder[0]);
                 if (constructorResult.isSuccess()) {
                     Constructor constructor = ((Result.ConstructorSuccess) constructorResult).getData();
                     favouriteConstructor.setConstructor(constructor);
+
+                    // Preload the car image immediately so Glide's disk cache is warm
+                    // by the time buildConstructorCard calls loadImagesInParallel.
+                    // This download runs in parallel with the nation fetch below (~200ms ahead).
+                    UIUtils.preloadImage(context, constructor.getCar_pic_url());
+
                     Log.i(TAG, "Fetching nation data for constructor card");
                     fetchNationForConstructor(favouriteConstructor);
                 } else {
@@ -177,17 +216,23 @@ public class FavoriteConstructorHandler {
                 Log.e(TAG, "Error fetching constructor data: " + e.getMessage());
                 showConstructorNotFound(0);
             }
-        });
+        };
+        constructorData.observe(lifecycleOwner, observerHolder[0]);
     }
 
     private void fetchNationForConstructor(ConstructorStandingsElement favouriteConstructor) {
         try {
             MutableLiveData<Result> nationData = nationViewModel.getNation(favouriteConstructor.getConstructor().getNationality());
-            nationData.observe(lifecycleOwner, nationResult -> {
+            // One-shot observer: removes itself after the first non-Loading result so that
+            // a subsequent background Firebase re-emission does not rebuild the card again.
+            @SuppressWarnings("unchecked")
+            androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
+            observerHolder[0] = nationResult -> {
                 try {
                     if (nationResult instanceof Result.Loading) {
                         return;
                     }
+                    nationData.removeObserver(observerHolder[0]);
                     if (nationResult.isSuccess()) {
                         Nation nation = ((Result.NationSuccess) nationResult).getData();
                         Log.i(TAG, "Building constructor card");
@@ -199,7 +244,8 @@ public class FavoriteConstructorHandler {
                     Log.e(TAG, "Error fetching nation for constructor: " + e.getMessage());
                     showConstructorNotFound(0);
                 }
-            });
+            };
+            nationData.observe(lifecycleOwner, observerHolder[0]);
         } catch (RuntimeException e) {
             Log.e(TAG, "Error fetching nation for constructor: " + e.getMessage());
             buildConstructorCard(favouriteConstructor, null);
@@ -207,48 +253,46 @@ public class FavoriteConstructorHandler {
     }
 
     private void buildConstructorCard(ConstructorStandingsElement standingElement, Nation nation) {
-        if (networkLiveData.isConnected() && userViewModel.getLoggedUser() != null) {
-            try {
-                Constructor constructor = standingElement.getConstructor();
+        try {
+            Constructor constructor = standingElement.getConstructor();
 
-                String nationFlagUrl = null;
-                String nationAbbreviation = null;
-                if (nation != null) {
-                    nationFlagUrl = nation.getNation_flag_url();
-                    nationAbbreviation = nation.getAbbreviation();
-                }
+            // Cache the card data so back-stack returns can take the fast path.
+            cachedStandingsElement = standingElement;
+            cachedNation = nation;
 
-                UIUtils.multipleSetTextViewText(
+            String nationFlagUrl = null;
+            String nationAbbreviation = null;
+            if (nation != null) {
+                nationFlagUrl = nation.getNation_flag_url();
+                nationAbbreviation = nation.getAbbreviation();
+            }
+
+            UIUtils.multipleSetTextViewText(
                     new String[]{constructor.getName(), nationAbbreviation},
                     new TextView[]{view.findViewById(R.id.favourite_constructor_name), view.findViewById(R.id.favourite_constructor_nationality)}
-                );
+            );
 
-                ImageView constructorCar = view.findViewById(R.id.favourite_constructor_car);
-                ImageView constructorFlag = view.findViewById(R.id.favourite_constructor_flag);
+            ImageView constructorCar = view.findViewById(R.id.favourite_constructor_car);
+            ImageView constructorFlag = view.findViewById(R.id.favourite_constructor_flag);
 
-                FrameLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
-                constructorCard.setOnClickListener(v -> NavigationUtils.navigateToBioPage(context, constructor.getConstructorId(), 0));
+            FrameLayout constructorCard = view.findViewById(R.id.favourite_constructor_layout);
+            constructorCard.setOnClickListener(v -> NavigationUtils.navigateToBioPage(context, constructor.getConstructorId(), 0));
 
-                UIUtils.loadImagesInParallel(context,
-                    new String[]{nationFlagUrl, constructor.getCar_pic_url()},
-                    new ImageView[]{constructorFlag, constructorCar},
-                    () -> buildConstructorCardFinalStep(standingElement, constructor));
+            buildConstructorCardFinalStep(standingElement, constructor);
 
-            } catch (Exception e) {
-                Log.e(TAG, "Error building constructor card: " + e.getMessage());
-                showConstructorNotFound(0);
-            }
-        } else {
-            Log.e(TAG, "Error building constructor card: No internet connection");
-            showConstructorNotFound(1);
+            UIUtils.loadImageAsync(context, nationFlagUrl, constructorFlag);
+            UIUtils.loadImageAsync(context, constructor.getCar_pic_url(), constructorCar);
+        } catch (Exception e) {
+            Log.e(TAG, "Error building constructor card: " + e.getMessage());
+            showConstructorNotFound(0);
         }
     }
 
     private void buildConstructorCardFinalStep(ConstructorStandingsElement standingElement, Constructor constructor) {
         if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
             UIUtils.multipleSetTextViewText(
-                new String[]{standingElement.getPosition(), standingElement.getPoints()},
-                new TextView[]{view.findViewById(R.id.favourite_constructor_position), view.findViewById(R.id.favourite_constructor_points)}
+                    new String[]{standingElement.getPosition(), standingElement.getPoints()},
+                    new TextView[]{view.findViewById(R.id.favourite_constructor_position), view.findViewById(R.id.favourite_constructor_points)}
             );
 
             MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
@@ -272,7 +316,7 @@ public class FavoriteConstructorHandler {
         cardLoadedCallback.onCardLoaded("constructor");
         updateVisibility(R.id.pending_favorite_constructor, R.id.favorite_constructor, R.id.missing_favorite_constructor);
         view.findViewById(R.id.pending_favorite_constructor).setOnClickListener(v ->
-            context.startActivity(new Intent(context, ConstructorsStandingActivity.class)));
+                context.startActivity(new Intent(context, ConstructorsStandingActivity.class)));
     }
 
     private void showConstructorNotFound(int problem) {
@@ -282,12 +326,12 @@ public class FavoriteConstructorHandler {
         switch (problem) {
             case 0: //general error
                 view.findViewById(R.id.missing_favorite_constructor).setOnClickListener(v ->
-                    context.startActivity(new Intent(context, ConstructorsStandingActivity.class)));
+                        context.startActivity(new Intent(context, ConstructorsStandingActivity.class)));
                 break;
             case 1: //no internet connection
                 Log.e(TAG, "Constructor: No internet connection");
                 view.findViewById(R.id.missing_favorite_constructor).setOnClickListener(v ->
-                    Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show());
+                        Toast.makeText(context, "No internet connection", Toast.LENGTH_SHORT).show());
                 break;
             default:
                 Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show();
@@ -305,6 +349,11 @@ public class FavoriteConstructorHandler {
         String teamId = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
         Log.i(TAG, "Favorite Team ID: " + teamId);
         return teamId;
+    }
+
+    @FunctionalInterface
+    public interface CardLoadedCallback {
+        void onCardLoaded(String cardName);
     }
 }
 

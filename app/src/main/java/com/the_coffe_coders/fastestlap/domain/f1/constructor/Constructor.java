@@ -5,6 +5,7 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.List;
@@ -20,7 +21,7 @@ import lombok.ToString;
 @Setter
 @ToString
 @NoArgsConstructor
-@AllArgsConstructor
+@AllArgsConstructor(onConstructor_ = @Ignore)
 @Entity(tableName = "Constructor")
 public class Constructor implements Parcelable {
     public static final Creator<Constructor> CREATOR = new Creator<>() {
@@ -34,9 +35,10 @@ public class Constructor implements Parcelable {
             return new Constructor[size];
         }
     };
-    @PrimaryKey(autoGenerate = true)
     private long uid;
-    private String constructorId;
+    @PrimaryKey
+    @NonNull
+    private String constructorId = "";
     private String url;
     private String name;
     private String nationality;
@@ -55,6 +57,10 @@ public class Constructor implements Parcelable {
     private String wins;
     private String world_championships;
     private String gps_entered;
+    @Ignore
+    private String season_wins;
+    @Ignore
+    private String season_podiums;
 
     protected Constructor(Parcel in) {
         uid = in.readLong();
@@ -91,11 +97,11 @@ public class Constructor implements Parcelable {
     }
 
     public String getDriverOneId() {
-        return drivers.get(0);
+        return (drivers != null && !drivers.isEmpty()) ? drivers.get(0) : null;
     }
 
     public String getDriverTwoId() {
-        return drivers.get(1);
+        return (drivers != null && drivers.size() > 1) ? drivers.get(1) : null;
     }
 
     @Override

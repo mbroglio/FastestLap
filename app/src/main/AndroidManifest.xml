@@ -10,11 +10,18 @@
 
             <data android:scheme="geo" />
         </intent>
+        <intent>
+            <action android:name="android.intent.action.INSERT" />
+
+            <data android:mimeType="vnd.android.cursor.dir/event" />
+        </intent>
     </queries>
 
     <application
+        android:name=".FastestLapApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
+        android:enableOnBackInvokedCallback="true"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@drawable/app_icon"
         android:label="@string/app_name"
@@ -46,34 +53,55 @@
         </activity>
         <activity
             android:name=".ui.home.HomePageActivity"
+            android:exported="true"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.event.UpcomingEventsActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.standing.ConstructorsStandingActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.standing.DriversStandingActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.event.EventActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.event.PastEventsActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.bio.TrackBioActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.bio.ConstructorBioActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.bio.DriverBioActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".ui.profile.ProfileActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
+        <!-- FileProvider for sharing generated .ics files with other apps -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
+
     </application>
 
 </manifest>

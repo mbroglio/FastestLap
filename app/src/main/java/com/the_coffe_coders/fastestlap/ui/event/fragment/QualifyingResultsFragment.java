@@ -32,7 +32,7 @@ public class QualifyingResultsFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            race = getArguments().getParcelable("RACE");
+            race = androidx.core.os.BundleCompat.getParcelable(getArguments(), "RACE", Race.class);
         }
     }
 

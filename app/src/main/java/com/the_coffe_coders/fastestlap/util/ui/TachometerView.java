@@ -118,6 +118,7 @@ public class TachometerView extends View {
         this.color = color;
         arcPaint.setColor(color);
         dotPaint.setColor(color);
+        textPaint.setColor(color);
         invalidate();
     }
 

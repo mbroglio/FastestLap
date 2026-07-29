@@ -15,7 +15,7 @@ public class Constants {
     public static final String SHARED_PREFERENCES_FAVORITE_TEAM = "team_favorite";
     public static final String SHARED_PREFERENCES_AUTO_LOGIN = "auto_login";
     public static final String SHARED_PREFERENCES_LAST_UPDATE = "last_update";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String SAVED_DRIVERS_STANDINGS_DATABASE = "saved_drivers_standings";
     public static final int FRESH_TIMEOUT = 1000 * 60; // 1 minute in milliseconds
     public static final String RETROFIT_ERROR = "retrofit_error";
@@ -325,4 +325,9 @@ public class Constants {
     public static final String FIREBASE_NATIONS_COLLECTION = "nations";
     public static final String FIREBASE_JUNIOR_COLLECTION = "junior_categories";
     public static final String FIREBASE_CIRCUIT_MAP_COLLECTION = "app_config/circuit_name_id_map";
+
+    // Notification constants
+    public static final String NOTIFICATION_CHANNEL_NAME = "FastestLap Notifications";
+    public static final String NOTIFICATION_CHANNEL_DESCRIPTION = "Notifiche da FastestLap";
+    public static final String SHARED_PREFERENCES_FCM_TOKEN = "fcm_token";
 }

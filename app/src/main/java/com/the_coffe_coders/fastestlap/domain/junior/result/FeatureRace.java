@@ -57,7 +57,7 @@ public class FeatureRace implements Parcelable {
         return order.subList(0, 3);
     }
 
-    public boolean isCompleted(){
+    public boolean isCompleted() {
         return status.equalsIgnoreCase("completed");
     }
 

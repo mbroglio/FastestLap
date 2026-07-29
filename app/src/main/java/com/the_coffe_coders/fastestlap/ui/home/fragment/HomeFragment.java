@@ -42,7 +42,6 @@ import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 
 
-
 public class HomeFragment extends Fragment {
     private static final String TAG = HomeFragment.class.getSimpleName();
     private SharedPreferencesUtils sharedPreferencesUtils;
@@ -58,6 +57,12 @@ public class HomeFragment extends Fragment {
     private View view;
     private NetworkUtils networkLiveData;
     private Boolean previousNetworkState = null;
+    // isInitialized: persists for the fragment's full lifetime.
+    // Prevents redundant re-initialization when the user navigates back to this fragment
+    // (which triggers a new onCreateView call and would otherwise re-fetch all data).
+    private boolean isInitialized = false;
+    // isSettingUp: guards against concurrent setup calls (e.g. network reconnect racing with
+    // a manual refresh). Cleared only after all 4 cards have finished loading.
     private boolean isSettingUp = false;
 
     // Track individual card loading states
@@ -89,17 +94,38 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(requireActivity().getApplication())).get(HomeViewModel.class);
         networkLiveData = new NetworkUtils(requireContext());
 
-        // Setup the fragment immediately. This ensures cached data is shown if offline.
-        setupFragment(view);
+        // Initialize ViewModels once per fragment instance (ViewModelProvider is idempotent
+        // but calling initializeViewModels on every setupFragment adds unnecessary overhead).
+        initializeViewModels();
+
+        if (!isInitialized) {
+            // First time setup: load all data from network / cache.
+            setupFragment(view);
+        } else {
+            // Fragment is returning from back-stack: data is already loaded in ViewModels / cache.
+            // Just re-attach the loading screen and handlers without triggering new network calls.
+            Log.d(TAG, "Fragment returning from back-stack, skipping re-initialization.");
+
+            // Reset flags so markCardLoaded can hide the loading screen again
+            lastRaceCardLoaded = false;
+            nextSessionCardLoaded = false;
+            driverCardLoaded = false;
+            constructorCardLoaded = false;
+            isSettingUp = true;
+
+            setupLoadingScreen(view);
+            setupHandlers();
+            setupUI(view);
+        }
 
         // Observe network changes to refresh data upon reconnection.
         networkLiveData.observe(getViewLifecycleOwner(), isConnected -> {
             if (previousNetworkState != null && !previousNetworkState && isConnected) {
-                // If we transitioned from offline to online, refresh the data.
+                // Transitioned from offline to online: force a full refresh.
                 Log.d(TAG, "Network connection restored. Refreshing fragment.");
+                isInitialized = false; // allow setupFragment to run again
                 setupFragment(view);
             }
             previousNetworkState = isConnected;
@@ -109,39 +135,54 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupFragment(View view) {
-        // Prevent multiple simultaneous setups
+        // Prevent concurrent setups (e.g. swipe-refresh racing with a network-restore event).
         if (isSettingUp) {
             Log.d(TAG, "Setup already in progress, skipping...");
             return;
         }
         isSettingUp = true;
+        isInitialized = true;
 
-        // Reset loading states
+        // Reset individual card loading flags so markCardLoaded works correctly.
         lastRaceCardLoaded = false;
         nextSessionCardLoaded = false;
         driverCardLoaded = false;
         constructorCardLoaded = false;
 
-        // Clear cached standings for fresh data
+        // Clear cached standings so fresh data is fetched on a full refresh.
         cachedDriverStandings = null;
         cachedConstructorStandings = null;
 
+        if (favoriteDriverHandler != null) {
+            favoriteDriverHandler.resetCardLoaded();
+        }
+        if (favoriteConstructorHandler != null) {
+            favoriteConstructorHandler.resetCardLoaded();
+        }
 
-        // Remove all existing observers to prevent duplicates
+        // Remove existing LiveData observers to prevent duplicates when setupFragment
+        // is called a second time (e.g. swipe-refresh or network-restore).
         if (homeViewModel != null) {
             homeViewModel.getDriverStandingsLiveData(requireActivity().getApplication()).removeObservers(getViewLifecycleOwner());
             homeViewModel.getConstructorStandingsLiveData(requireActivity().getApplication()).removeObservers(getViewLifecycleOwner());
         }
 
-        initializeViewModels();
+        // NOTE: initializeViewModels() is NOT called here anymore — it is called once
+        // from onCreateView to avoid re-creating ViewModelProviders on every setup.
         setupLoadingScreen(view);
         setupHandlers();
         setupUI(view);
 
-        isSettingUp = false;
+        // isSettingUp is intentionally NOT cleared here.
+        // It is cleared in markCardLoaded() once all 4 cards have finished loading,
+        // which prevents a concurrent network-restore or swipe-refresh from interrupting
+        // an in-progress async load.
     }
 
     private void initializeViewModels() {
+        // ViewModelProvider.get() is idempotent — it returns the same ViewModel instance
+        // if one already exists for this scope. Calling this multiple times is safe but
+        // unnecessary; we call it once from onCreateView.
         homeViewModel = new ViewModelProvider(this, new HomeViewModelFactory(requireActivity().getApplication())).get(HomeViewModel.class);
         constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(requireActivity().getApplication())).get(ConstructorViewModel.class);
         driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(requireActivity().getApplication())).get(DriverViewModel.class);
@@ -160,26 +201,52 @@ public class HomeFragment extends Fragment {
     }
 
     private void setupHandlers() {
-        // Initialize handlers
-        lastRaceHandler = new LastRaceHandler(
-            this, view, weeklyRaceViewModel, trackViewModel,
-            raceResultViewModel, networkLiveData, this::markCardLoaded
-        );
+        // Initialize handlers once or update view binding on back-stack return
+        if (lastRaceHandler == null) {
+            lastRaceHandler = new LastRaceHandler(
+                    this, view, weeklyRaceViewModel, trackViewModel,
+                    raceResultViewModel, networkLiveData, this::markCardLoaded
+            );
+        } else {
+            lastRaceHandler.updateView(view, getViewLifecycleOwner());
+        }
 
-        nextRaceHandler = new NextRaceHandler(
-            this, view, weeklyRaceViewModel, trackViewModel, nationViewModel,
-            homeViewModel, driverViewModel, networkLiveData, this::markCardLoaded
-        );
+        if (nextRaceHandler == null) {
+            nextRaceHandler = new NextRaceHandler(
+                    this, view, weeklyRaceViewModel, trackViewModel, nationViewModel,
+                    homeViewModel, driverViewModel, networkLiveData, this::markCardLoaded
+            );
+        } else {
+            nextRaceHandler.updateView(view, getViewLifecycleOwner());
+        }
 
-        favoriteDriverHandler = new FavoriteDriverHandler(
-            this, view, homeViewModel, driverViewModel, nationViewModel,
-            userViewModel, networkLiveData, sharedPreferencesUtils, this::markCardLoaded
-        );
+        if (favoriteDriverHandler == null) {
+            favoriteDriverHandler = new FavoriteDriverHandler(
+                    this, view, homeViewModel, driverViewModel, nationViewModel,
+                    userViewModel, networkLiveData, sharedPreferencesUtils, this::markCardLoaded
+            );
+        } else {
+            favoriteDriverHandler.updateView(view, getViewLifecycleOwner());
+        }
 
-        favoriteConstructorHandler = new FavoriteConstructorHandler(
-            this, view, homeViewModel, constructorViewModel, nationViewModel,
-            userViewModel, networkLiveData, sharedPreferencesUtils, this::markCardLoaded
-        );
+        if (favoriteConstructorHandler == null) {
+            favoriteConstructorHandler = new FavoriteConstructorHandler(
+                    this, view, homeViewModel, constructorViewModel, nationViewModel,
+                    userViewModel, networkLiveData, sharedPreferencesUtils, this::markCardLoaded
+            );
+        } else {
+            favoriteConstructorHandler.updateView(view, getViewLifecycleOwner());
+        }
+
+        // If standings data was already fetched in a previous setup (e.g. returning from
+        // back-stack), pass it directly to the handlers so ranking/points are displayed
+        // immediately without waiting for the LiveData to re-emit.
+        if (cachedDriverStandings != null) {
+            favoriteDriverHandler.setCachedDriverStandings(cachedDriverStandings);
+        }
+        if (cachedConstructorStandings != null) {
+            favoriteConstructorHandler.setCachedConstructorStandings(cachedConstructorStandings);
+        }
     }
 
     private void setupUI(View view) {
@@ -199,21 +266,44 @@ public class HomeFragment extends Fragment {
         // Now handle the favorite cards based on login status
         if (networkLiveData.isConnected()) {
             if (userViewModel.getLoggedUser() != null) {
-                // Start loading favorite cards immediately from SharedPreferences
-                // Don't wait for getUserPreferences API call - it's just a sync operation
-                favoriteDriverHandler.setupFavoriteDriverCard();
-                favoriteConstructorHandler.setupFavoriteConstructorCard();
+                // Check if preferences are already available locally
+                String localDriverId = sharedPreferencesUtils.readStringData(
+                        com.the_coffe_coders.fastestlap.util.Constants.SHARED_PREFERENCES_FILENAME,
+                        com.the_coffe_coders.fastestlap.util.Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
+                boolean prefsAvailable = localDriverId != null && !localDriverId.isEmpty() && !localDriverId.equals("null");
 
-                // Sync preferences in background (for future loads)
-                userViewModel.getUserPreferences(userViewModel.getLoggedUser().getIdToken()).observe(getViewLifecycleOwner(), result -> {
-                    if (result != null) {
-                        if (result.isSuccess()) {
-                            Log.d(TAG, "User preferences synced successfully");
-                        } else {
-                            Log.e(TAG, "Failed to sync user preferences: " + result.getError());
+                if (prefsAvailable) {
+                    // Preferences already cached locally — start cards immediately
+                    favoriteDriverHandler.setupFavoriteDriverCard();
+                    favoriteConstructorHandler.setupFavoriteConstructorCard();
+
+                    // Sync in background (keep remote in sync for future sessions)
+                    userViewModel.getUserPreferences(userViewModel.getLoggedUser().getIdToken()).observe(getViewLifecycleOwner(), result -> {
+                        if (result != null) {
+                            if (result.isSuccess()) {
+                                Log.d(TAG, "User preferences synced successfully");
+                            } else {
+                                Log.e(TAG, "Failed to sync user preferences: " + result.getError());
+                            }
                         }
-                    }
-                });
+                    });
+                } else {
+                    // First login: preferences not yet in SharedPreferences.
+                    // Fetch from remote first, then build the cards once the data is available.
+                    Log.d(TAG, "Local preferences empty — fetching from remote before building cards");
+                    userViewModel.getUserPreferences(userViewModel.getLoggedUser().getIdToken()).observe(getViewLifecycleOwner(), result -> {
+                        if (result != null) {
+                            if (result.isSuccess()) {
+                                Log.d(TAG, "User preferences synced successfully");
+                            } else {
+                                Log.e(TAG, "Failed to sync user preferences: " + result.getError());
+                            }
+                            // Build cards regardless of success/failure so the UI isn't blocked
+                            favoriteDriverHandler.setupFavoriteDriverCard();
+                            favoriteConstructorHandler.setupFavoriteConstructorCard();
+                        }
+                    });
+                }
             } else {
                 // Not logged in - handlers will show selection prompts automatically
                 favoriteDriverHandler.setupFavoriteDriverCard();
@@ -261,6 +351,13 @@ public class HomeFragment extends Fragment {
                 }
             });
         }
+
+        // Pre-fetch all weekly races to populate local Room DB with full season calendar
+        weeklyRaceViewModel.getWeeklyRacesLiveData().observe(getViewLifecycleOwner(), result -> {
+            if (result instanceof Result.WeeklyRaceSuccess) {
+                Log.d(TAG, "Full season races pre-fetched into Room DB: " + ((Result.WeeklyRaceSuccess) result).getData().size());
+            }
+        });
     }
 
     private void setRefreshLayout(View view) {
@@ -292,11 +389,12 @@ public class HomeFragment extends Fragment {
                 " | Driver: " + driverCardLoaded +
                 " | Constructor: " + constructorCardLoaded);
 
-        // Hide loading screen early - as soon as the race cards are ready
-        // User can see something immediately, preference cards can load in background
-        if (lastRaceCardLoaded && nextSessionCardLoaded) {
-            Log.d(TAG, "Critical cards loaded, hiding loading screen early");
+        // Hide loading screen only when all 4 cards are fully ready so the page
+        // is completely populated before being shown to the user.
+        if (lastRaceCardLoaded && nextSessionCardLoaded && driverCardLoaded && constructorCardLoaded) {
+            Log.d(TAG, "All cards loaded — hiding loading screen and setup complete.");
             loadingScreen.hideLoadingScreen();
+            isSettingUp = false;
         }
     }
 }

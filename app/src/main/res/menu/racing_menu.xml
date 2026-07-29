@@ -3,11 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/favourite_icon_outline"
-        android:icon="@drawable/baseline_star_border_24"
+        android:id="@+id/add_to_calendar"
+        android:icon="@drawable/calendar_icon"
         android:iconTint="@color/black"
-        android:title="Favorite"
+        android:title="@string/add_to_calendar"
         app:showAsAction="always">
 
     </item>
+
 </menu>

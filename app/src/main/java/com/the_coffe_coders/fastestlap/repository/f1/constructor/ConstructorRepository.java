@@ -48,29 +48,68 @@ public class ConstructorRepository {
     }
 
     public synchronized MutableLiveData<Result> getConstructor(String constructorId) {
-        if (!constructorCache.containsKey(constructorId) || !lastUpdateTimestamps.containsKey(constructorId) || lastUpdateTimestamps.get(constructorId) == null) {
+        if (!constructorCache.containsKey(constructorId)) {
             constructorCache.put(constructorId, new MutableLiveData<>());
-            if (isNetworkAvailable()) {
-                loadConstructor(constructorId);
-            } else {
-                Log.i(TAG, "No network connection");
-                loadConstructorFromLocal(constructorId);
-            }
-        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(constructorId) > 60000) {
-            if (isNetworkAvailable()) {
-                loadConstructor(constructorId);
-            } else {
-                Log.d(TAG, "No network connection");
-                loadConstructorFromLocal(constructorId);
-            }
+            loadConstructorCacheFirst(constructorId);
         } else {
-            Log.i(TAG, "Constructor found in cache: " + constructorId);
+            Long lastUpdate = lastUpdateTimestamps.get(constructorId);
+            if (lastUpdate == null || System.currentTimeMillis() - lastUpdate > 300000) {
+                if (isNetworkAvailable()) {
+                    loadConstructorFromRemote(constructorId, true);
+                }
+            } else {
+                Log.i(TAG, "Constructor found in cache: " + constructorId);
+            }
         }
         return constructorCache.get(constructorId);
     }
 
-    private void loadConstructor(String constructorId) {
-        constructorCache.get(constructorId).postValue(new Result.Loading("Fetching constructor from remote"));
+    private void loadConstructorCacheFirst(String constructorId) {
+        localConstructorDataSource.getConstructor(constructorId, new ConstructorCallback() {
+            @Override
+            public void onConstructorLoaded(Constructor constructor) {
+                if (constructor != null) {
+                    Log.d(TAG, "Constructor loaded from local database (cache hit): " + constructorId);
+                    constructor.setConstructorId(constructorId);
+                    lastUpdateTimestamps.put(constructorId, System.currentTimeMillis());
+                    Objects.requireNonNull(constructorCache.get(constructorId)).postValue(new Result.ConstructorSuccess(constructor));
+
+                    // Only refresh from remote if the cached data is actually stale.
+                    // Without this TTL guard, Firebase fires on every launch even when the
+                    // local data is fresh, causing the LiveData to re-emit and triggering
+                    // redundant card rebuilds in the UI.
+                    Long ts = lastUpdateTimestamps.get(constructorId);
+                    boolean isStale = ts == null || System.currentTimeMillis() - ts > 300_000L;
+                    if (isNetworkAvailable() && isStale) {
+                        loadConstructorFromRemote(constructorId, true);
+                    } else {
+                        Log.d(TAG, "Constructor cache still fresh, skipping remote refresh: " + constructorId);
+                    }
+                } else {
+                    Log.d(TAG, "Constructor cache miss in local database: " + constructorId);
+                    if (isNetworkAvailable()) {
+                        loadConstructorFromRemote(constructorId, false);
+                    } else {
+                        Objects.requireNonNull(constructorCache.get(constructorId)).postValue(
+                                new Result.Error("Constructor not found locally and no network connection available"));
+                    }
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e(TAG, "Error checking local database for constructor: " + e.getMessage());
+                if (isNetworkAvailable()) {
+                    loadConstructorFromRemote(constructorId, false);
+                }
+            }
+        });
+    }
+
+    private void loadConstructorFromRemote(String constructorId, boolean isBackgroundRefresh) {
+        if (!isBackgroundRefresh) {
+            constructorCache.get(constructorId).postValue(new Result.Loading("Fetching constructor from remote"));
+        }
         try {
             firebaseConstructorDataSource.getConstructor(constructorId, new ConstructorCallback() {
                 @Override
@@ -80,44 +119,18 @@ public class ConstructorRepository {
                         localConstructorDataSource.insertConstructor(constructor);
                         lastUpdateTimestamps.put(constructorId, System.currentTimeMillis());
                         Objects.requireNonNull(constructorCache.get(constructorId)).postValue(new Result.ConstructorSuccess(constructor));
-                    } else {
+                    } else if (!isBackgroundRefresh) {
                         Log.e(TAG, "Constructor not found: " + constructorId);
                     }
                 }
 
                 @Override
                 public void onError(Exception e) {
-                    Log.e(TAG, "Error loading constructor: " + e.getMessage());
-                    loadConstructorFromLocal(constructorId);
+                    Log.e(TAG, "Error loading constructor from remote: " + e.getMessage());
                 }
             });
         } catch (Exception e) {
-            Log.e(TAG, "Error loading constructor: " + e.getMessage());
-            loadConstructorFromLocal(constructorId);
+            Log.e(TAG, "Error loading constructor from remote: " + e.getMessage());
         }
-    }
-
-    private void loadConstructorFromLocal(String constructorId) {
-        localConstructorDataSource.getConstructor(constructorId, new ConstructorCallback() {
-            @Override
-            public void onConstructorLoaded(Constructor constructor) {
-                if (constructor != null) {
-                    constructor.setConstructorId(constructorId);
-                    constructorCache.put(constructorId, new MutableLiveData<>(new Result.ConstructorSuccess(constructor)));
-                    lastUpdateTimestamps.put(constructorId, System.currentTimeMillis());
-                    Objects.requireNonNull(constructorCache.get(constructorId)).postValue(new Result.ConstructorSuccess(constructor));
-                } else {
-                    Log.e(TAG, "Constructor not found: " + constructorId);
-                    throw new RuntimeException("Constructor not found in local database: " + constructorId);
-                }
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.e(TAG, "Error loading constructor from local database: " + e.getMessage());
-                Objects.requireNonNull(constructorCache.get(constructorId)).postValue(
-                        new Result.Error("Error loading constructor from local database: " + e.getMessage()));
-            }
-        });
     }
 }

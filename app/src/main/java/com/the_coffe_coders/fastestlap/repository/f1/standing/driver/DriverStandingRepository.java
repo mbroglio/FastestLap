@@ -26,14 +26,15 @@ public class DriverStandingRepository {
     // Cache
     private final Map<String, MutableLiveData<Result>> driverStandingCache;
     private final Map<String, Long> lastUpdateTimestamps;
-
     // Data Sources
     private final JolpicaDriverStandingsDataSource jolpicaDriverStandingsDataSource;
     private final LocalDriverStandingsDataSource localDriverStandingsDataSource;
-
     private final NetworkUtils networkLiveData;
-
     private final String currentYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
+    // Prevents duplicate concurrent HTTP requests while a fetch is already in-flight.
+    // Without this, callers that arrive before the first response lands would each fire
+    // their own network request (since the timestamp is null until the callback completes).
+    private boolean isFetchInFlight = false;
 
     private DriverStandingRepository(AppRoomDatabase appRoomDatabase, Context context) {
         driverStandingCache = new HashMap<>();
@@ -58,110 +59,112 @@ public class DriverStandingRepository {
         Log.d(TAG, "Fetching driver standing");
         String cacheKey = "driverStanding";
 
-        if (!driverStandingCache.containsKey(cacheKey) ||
-                !lastUpdateTimestamps.containsKey(cacheKey) ||
-                lastUpdateTimestamps.get(cacheKey) == null) {
+        if (!driverStandingCache.containsKey(cacheKey)) {
             driverStandingCache.put(cacheKey, new MutableLiveData<>());
-            if (isNetworkAvailable()) {
-                loadDriverStanding();
-            } else {
-                fetchFromLocal(cacheKey);
-            }
-        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(cacheKey) > 60000) {
-            if (isNetworkAvailable()) {
-                loadDriverStanding();
-            } else {
-                fetchFromLocal(cacheKey);
-            }
+            loadDriverStandingsCacheFirst(cacheKey);
         } else {
-            Log.d(TAG, "Driver standing found in cache");
+            Long lastUpdate = lastUpdateTimestamps.get(cacheKey);
+            if (lastUpdate == null || System.currentTimeMillis() - lastUpdate > 300000) { // 5 min TTL
+                if (isNetworkAvailable() && !isFetchInFlight) {
+                    isFetchInFlight = true;
+                    loadDriverStandingFromRemote(cacheKey, true);
+                }
+            } else {
+                Log.d(TAG, "Driver standing found in cache");
+            }
         }
         return driverStandingCache.get(cacheKey);
     }
 
-    private void loadDriverStanding() {
-        String cacheKey = "driverStanding";
-        Objects.requireNonNull(driverStandingCache.get(cacheKey)).postValue(new Result.Loading("Fetching driver standing from remote"));
-        try {
-            jolpicaDriverStandingsDataSource.getDriverStandings(new DriverStandingCallback() {
-                @Override
-                public void onDriverStandingsLoaded(DriverStandings driverStandings) {
-                    if (driverStandings != null) {
-                        localDriverStandingsDataSource.insertDriverStandings(driverStandings);
-                        lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
-                        Objects.requireNonNull(driverStandingCache.get(cacheKey))
-                                .postValue(new Result.DriverStandingsSuccess(driverStandings));
-                    } else {
-                        Log.e(TAG, "Driver standing not found");
-                        fetchFromLocal(cacheKey);
-                    }
-                }
-
-                @Override
-                public void onDriverListLoaded(List<Driver> driverList) {
-                    if (driverList != null) {
-                        localDriverStandingsDataSource.insertDriverList(driverList);
-                        lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
-                        Objects.requireNonNull(driverStandingCache.get(cacheKey))
-                                .postValue(new Result.DriversSuccess(driverList));
-                    } else {
-                        Log.e(TAG, "Driver list not found");
-                        fetchFromLocal(cacheKey);
-                    }
-                }
-
-                @Override
-                public void onError(Exception e) {
-                    Log.e(TAG, "Error loading driver standing: " + e.getMessage());
-                    fetchFromLocal(cacheKey);
-                }
-
-
-            });
-        } catch (Exception e) {
-            Log.e(TAG, "Error loading driver standing: " + e.getMessage());
-            fetchFromLocal(cacheKey);
-        }
-    }
-
-    private void fetchFromLocal(String cacheKey) {
+    private void loadDriverStandingsCacheFirst(String cacheKey) {
         localDriverStandingsDataSource.getDriverStandings(new DriverStandingCallback() {
             @Override
             public void onDriverStandingsLoaded(DriverStandings driverStandings) {
-                if (driverStandings != null && driverStandings.getSeason().equals(currentYear)) {
-                    driverStandingCache.put(cacheKey, new MutableLiveData<>(
-                            new Result.DriverStandingsSuccess(driverStandings)));
+                if (driverStandings != null && currentYear.equals(driverStandings.getSeason())) {
+                    Log.d(TAG, "Driver standings loaded from local database (cache hit)");
                     lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                     Objects.requireNonNull(driverStandingCache.get(cacheKey))
                             .postValue(new Result.DriverStandingsSuccess(driverStandings));
+
+                    Long ts = lastUpdateTimestamps.get(cacheKey);
+                    boolean isStale = ts == null || System.currentTimeMillis() - ts > 300_000L;
+                    if (isNetworkAvailable() && !isFetchInFlight && isStale) {
+                        isFetchInFlight = true;
+                        loadDriverStandingFromRemote(cacheKey, true);
+                    }
                 } else {
-                    Log.e(TAG, "Driver standing not found in local database");
-                    Objects.requireNonNull(driverStandingCache.get(cacheKey))
-                            .postValue(new Result.Error("Driver standing not found"));
+                    Log.d(TAG, "Driver standings cache miss in local database");
+                    if (isNetworkAvailable() && !isFetchInFlight) {
+                        isFetchInFlight = true;
+                        loadDriverStandingFromRemote(cacheKey, false);
+                    } else if (!isFetchInFlight) {
+                        Objects.requireNonNull(driverStandingCache.get(cacheKey))
+                                .postValue(new Result.Error("Driver standing not found locally and no network connection"));
+                    }
                 }
             }
 
             @Override
             public void onDriverListLoaded(List<Driver> driverList) {
-                if (driverList != null) {
-                    driverStandingCache.put(cacheKey, new MutableLiveData<>(
-                            new Result.DriversSuccess(driverList)));
-                    lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
+                Log.d(TAG, "Driver list only in local DB — fetching full standings from remote");
+                if (isNetworkAvailable() && !isFetchInFlight) {
+                    isFetchInFlight = true;
+                    loadDriverStandingFromRemote(cacheKey, false);
+                } else if (!isFetchInFlight) {
                     Objects.requireNonNull(driverStandingCache.get(cacheKey))
-                            .postValue(new Result.DriversSuccess(driverList));
-                } else {
-                    Log.e(TAG, "Driver list not found in local database");
-                    Objects.requireNonNull(driverStandingCache.get(cacheKey))
-                            .postValue(new Result.Error("Driver list not found"));
+                            .postValue(new Result.Error("Driver standing not found locally and no network connection"));
                 }
             }
 
             @Override
             public void onError(Exception e) {
-                Log.e(TAG, "Error loading driver standing from local database: " + e.getMessage());
-                Objects.requireNonNull(driverStandingCache.get(cacheKey))
-                        .postValue(new Result.Error("Error loading driver standing: " + e.getMessage()));
+                Log.e(TAG, "Error checking local database for driver standings: " + e.getMessage());
+                if (isNetworkAvailable() && !isFetchInFlight) {
+                    isFetchInFlight = true;
+                    loadDriverStandingFromRemote(cacheKey, false);
+                }
             }
         });
+    }
+
+    private void loadDriverStandingFromRemote(String cacheKey, boolean isBackgroundRefresh) {
+        if (!isBackgroundRefresh) {
+            Objects.requireNonNull(driverStandingCache.get(cacheKey))
+                    .postValue(new Result.Loading("Fetching driver standing from remote"));
+        }
+        try {
+            jolpicaDriverStandingsDataSource.getDriverStandings(new DriverStandingCallback() {
+                @Override
+                public void onDriverStandingsLoaded(DriverStandings driverStandings) {
+                    isFetchInFlight = false;
+                    if (driverStandings != null) {
+                        localDriverStandingsDataSource.insertDriverStandings(driverStandings);
+                        lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
+                        Objects.requireNonNull(driverStandingCache.get(cacheKey))
+                                .postValue(new Result.DriverStandingsSuccess(driverStandings));
+                    }
+                }
+
+                @Override
+                public void onDriverListLoaded(List<Driver> driverList) {
+                    isFetchInFlight = false;
+                    if (driverList != null) {
+                        localDriverStandingsDataSource.insertDriverList(driverList);
+                        lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
+                        Objects.requireNonNull(driverStandingCache.get(cacheKey))
+                                .postValue(new Result.DriversSuccess(driverList));
+                    }
+                }
+
+                @Override
+                public void onError(Exception e) {
+                    isFetchInFlight = false;
+                    Log.e(TAG, "Error loading driver standing from remote: " + e.getMessage());
+                }
+            });
+        } catch (Exception e) {
+            isFetchInFlight = false;
+            Log.e(TAG, "Error loading driver standing from remote: " + e.getMessage());
+        }
     }
 }
