@@ -42,9 +42,9 @@ public class LoadingScreen {
         timerHandler.removeCallbacks(timerRunnable);
         resetTimer();
         if (fragmentView != null) {
-            fragmentView.setVisibility(invisible ? View.INVISIBLE : View.GONE);
-        } else {
-            activityView.setVisibility(invisible ? View.INVISIBLE : View.GONE);
+            fragmentView.setVisibility(View.INVISIBLE);
+        } else if (activityView != null) {
+            activityView.setVisibility(View.INVISIBLE);
         }
 
         loadingScreen.setVisibility(View.VISIBLE);
