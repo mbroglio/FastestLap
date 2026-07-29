@@ -4,6 +4,8 @@ import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.f1.livetiming.RaceControlMessage;
+import com.the_coffe_coders.fastestlap.domain.f1.livetiming.TeamRadioMessage;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
@@ -236,6 +238,30 @@ public abstract class Result {
 
         public JuniorConstructorStandings getData() {
             return constructorStandings;
+        }
+    }
+
+    public static class RaceControlSuccess extends Result {
+        private final List<RaceControlMessage> messages;
+
+        public RaceControlSuccess(List<RaceControlMessage> messages) {
+            this.messages = messages;
+        }
+
+        public List<RaceControlMessage> getData() {
+            return messages;
+        }
+    }
+
+    public static class TeamRadioSuccess extends Result {
+        private final List<TeamRadioMessage> messages;
+
+        public TeamRadioSuccess(List<TeamRadioMessage> messages) {
+            this.messages = messages;
+        }
+
+        public List<TeamRadioMessage> getData() {
+            return messages;
         }
     }
 

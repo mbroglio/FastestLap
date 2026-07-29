@@ -6,7 +6,7 @@
     android:background="@drawable/round_background_grey"
     android:orientation="vertical"
     android:padding="5dp">
-
+<!--
     <TextView
         android:id="@+id/select_drivers_text_title"
         android:layout_width="wrap_content"
@@ -233,5 +233,5 @@
         </Button>
 
     </LinearLayout>
-
+-->
 </RelativeLayout>

@@ -69,8 +69,8 @@
             android:layout_height="match_parent"
             android:layout_marginTop="3sp"
             android:layout_marginBottom="3dp"
-            android:backgroundTint="@color/dark_grey"
-            app:strokeColor="@color/dark_grey">
+            android:backgroundTint="@color/white"
+            app:strokeColor="@color/white">
 
             <TextView
                 android:id="@+id/best_lap_time"
@@ -80,7 +80,7 @@
                 android:fontFamily="@font/orbitron_bold"
                 android:gravity="center"
                 android:text="1:23.456"
-                android:textColor="@color/green"
+                android:textColor="@color/white"
                 android:textSize="13sp">
 
             </TextView>
@@ -102,8 +102,8 @@
             android:layout_height="match_parent"
             android:layout_marginTop="3sp"
             android:layout_marginBottom="3dp"
-            android:backgroundTint="@color/dark_grey"
-            app:strokeColor="@color/dark_grey">
+            android:backgroundTint="@color/white"
+            app:strokeColor="@color/white">
 
             <TextView
                 android:id="@+id/last_lap_time"
@@ -182,7 +182,7 @@
             android:layout_marginTop="3dp"
             android:layout_marginBottom="3dp"
             android:src="@drawable/equals_icon"
-            app:tint="@color/green">
+            app:tint="@color/white">
 
         </ImageView>
 

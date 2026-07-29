@@ -6,7 +6,7 @@
     android:paddingTop="3dp"
     android:paddingBottom="3dp"
     android:background="@color/screen_background_color">
-
+<!--
     <LinearLayout
         android:id="@+id/position_layout"
         android:layout_width="0dp"
@@ -80,7 +80,7 @@
                 android:fontFamily="@font/orbitron_bold"
                 android:gravity="center"
                 android:text="1:23.456"
-                android:textColor="@color/white"
+                android:textColor="@color/black"
                 android:textSize="13sp">
 
             </TextView>
@@ -175,6 +175,6 @@
         </TextView>
 
     </LinearLayout>
-
+-->
 </TableRow>
 

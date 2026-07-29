@@ -6,6 +6,7 @@
     app:cardBackgroundColor="@color/timer_gray"
     app:strokeColor="@color/black">
 
+    <!--
     <RelativeLayout
         android:id="@+id/general_layout"
         android:layout_width="wrap_content"
@@ -85,7 +86,7 @@
         </FrameLayout>
 
     </RelativeLayout>
-
+-->
 </com.google.android.material.card.MaterialCardView>
 
 

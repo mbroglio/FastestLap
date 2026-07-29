@@ -7,6 +7,7 @@ import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.repository.user.UserRepository;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
+import com.the_coffe_coders.fastestlap.service.OpenF1APIService;
 import com.the_coffe_coders.fastestlap.source.user.BaseUserAuthenticationRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.user.BaseUserDataRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.user.UserAuthenticationFirebaseDataSource;
@@ -26,11 +27,13 @@ import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class ServiceLocator {
     public static final String BASE_URL = "https://api.jolpi.ca/ergast/f1/";
+    public static final String OPENF1_BASE_URL = "https://api.openf1.org/v1/";
     public static ServiceLocator instance;
     public static String currentYear = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
     public static String CURRENT_YEAR_BASE_URL = BASE_URL + currentYear + "/";
     private OkHttpClient sharedOkHttpClient;
     private ErgastAPIService ergastAPIService;
+    private OpenF1APIService openF1APIService;
     private Application applicationContext;
 
     public static synchronized ServiceLocator getInstance() {
@@ -172,6 +175,35 @@ public class ServiceLocator {
     public AppRoomDatabase getRoomDatabase(Application application) {
         setApplicationContext(application);
         return AppRoomDatabase.getDatabase(application);
+    }
+
+    /**
+     * Returns a Retrofit-backed {@link OpenF1APIService} configured for
+     * the OpenF1 API (base URL: {@value #OPENF1_BASE_URL}).
+     *
+     * <p>The underlying {@link OkHttpClient} is derived from the shared client
+     * via {@code newBuilder()} so that the thread pool, interceptors and settings
+     * are inherited. The HTTP disk cache is explicitly disabled ({@code cache(null)})
+     * because live-timing data must always be fetched fresh from the network.</p>
+     */
+    public synchronized OpenF1APIService getOpenF1APIService() {
+        if (openF1APIService == null) {
+            // Derive from the shared client: inherit thread pool, logging and
+            // RetryInterceptor, but strip the HTTP cache so responses are never stale.
+            OkHttpClient openF1Client = getOkHttpClient()
+                    .newBuilder()
+                    .cache(null)
+                    .build();
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(OPENF1_BASE_URL)
+                    .addConverterFactory(ScalarsConverterFactory.create())
+                    .client(openF1Client)
+                    .build();
+
+            openF1APIService = retrofit.create(OpenF1APIService.class);
+        }
+        return openF1APIService;
     }
 
     public IUserRepository getUserRepository(Application application) {

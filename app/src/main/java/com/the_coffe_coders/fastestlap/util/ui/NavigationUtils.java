@@ -29,6 +29,7 @@ import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.junior.Formula2Activity;
 import com.the_coffe_coders.fastestlap.ui.junior.Formula3Activity;
 import com.the_coffe_coders.fastestlap.ui.junior.fragment.JuniorDialogFragment;
+import com.the_coffe_coders.fastestlap.ui.live.LiveActivity;
 import com.the_coffe_coders.fastestlap.ui.profile.LoginFragment;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
@@ -105,6 +106,25 @@ public class NavigationUtils {
     public static void navigateToEventPage(Context context, String circuitId) {
         Intent intent = new Intent(context, EventActivity.class);
         intent.putExtra("CIRCUIT_ID", circuitId);
+        context.startActivity(intent);
+    }
+
+    public static void navigateToLivePage(Context context) {
+        navigateToLivePage(context, null, null);
+    }
+
+    public static void navigateToLivePage(Context context, String eventTitle) {
+        navigateToLivePage(context, eventTitle, null);
+    }
+
+    public static void navigateToLivePage(Context context, String eventTitle, String totalLaps) {
+        Intent intent = new Intent(context, com.the_coffe_coders.fastestlap.ui.live.LiveActivity.class);
+        if (eventTitle != null) {
+            intent.putExtra("EVENT_TITLE", eventTitle);
+        }
+        if (totalLaps != null) {
+            intent.putExtra("TOTAL_LAPS", totalLaps);
+        }
         context.startActivity(intent);
     }
 

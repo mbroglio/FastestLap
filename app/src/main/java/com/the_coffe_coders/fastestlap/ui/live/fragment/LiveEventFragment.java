@@ -46,12 +46,12 @@ public class LiveEventFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_live_event, container, false);
 
 
-        fullTelemetryCheckbox = requireActivity().findViewById(R.id.full_telemetry_checkbox);
+        //fullTelemetryCheckbox = requireActivity().findViewById(R.id.full_telemetry_checkbox);
         tableLayout = view.findViewById(R.id.live_table);
         liveTableHeaderShort = view.findViewById(R.id.race_header_short);
         liveTableHeaderFull = view.findViewById(R.id.race_header_full);
 
-        fullTelemetryCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+        /*fullTelemetryCheckbox.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             } else {
@@ -61,9 +61,9 @@ public class LiveEventFragment extends Fragment {
                 ((LiveActivity) requireActivity()).setFullTelemetryMode(isChecked);
             }
             updateTableHeaderAndRows(isChecked);
-        });
+        });*/
 
-        updateTableHeaderAndRows(fullTelemetryCheckbox.isChecked());
+        //updateTableHeaderAndRows(fullTelemetryCheckbox.isChecked());
 
         return view;
     }
@@ -116,9 +116,9 @@ public class LiveEventFragment extends Fragment {
             ImageView positionChangeArrow = tableRow.findViewById(R.id.position_change_icon);
             if (positionChangeValue.getText().charAt(0) == '-') {
                 positionChangeArrow.setImageResource(R.drawable.down_arrow);
-                positionChangeArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red));
+                //positionChangeArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red));
             } else if (Integer.parseInt(positionChangeValue.getText().toString()) > 0) {
-                positionChangeArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.green));
+                //positionChangeArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.green));
             } else {
                 positionChangeArrow.setImageResource(R.drawable.equals_icon);
                 positionChangeArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.grey_card));
@@ -194,9 +194,9 @@ public class LiveEventFragment extends Fragment {
             ImageView positionChangeArrow = tableRow.findViewById(R.id.position_change_icon);
             if (positionChangeValue.getText().charAt(0) == '-') {
                 positionChangeArrow.setImageResource(R.drawable.down_arrow);
-                positionChangeArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red));
+                //positionChangeArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.red));
             } else if (Integer.parseInt(positionChangeValue.getText().toString()) > 0) {
-                positionChangeArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.green));
+                //positionChangeArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.green));
             } else {
                 positionChangeArrow.setImageResource(R.drawable.equals_icon);
                 positionChangeArrow.setColorFilter(ContextCompat.getColor(requireContext(), R.color.grey_card));

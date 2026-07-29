@@ -31,6 +31,9 @@ import com.the_coffe_coders.fastestlap.domain.f1.result.QualifyingResult;
 import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
+import com.the_coffe_coders.fastestlap.domain.f1.livetiming.RaceControlMessage;
+import com.the_coffe_coders.fastestlap.domain.f1.livetiming.TeamRadioMessage;
+import com.the_coffe_coders.fastestlap.repository.f1.livetiming.LiveTimingRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
@@ -255,17 +258,27 @@ public class EventActivity extends AppCompatActivity {
 
         createWeekSchedule(sessions, weeklyRace.getRound());
 
+        String eventTitle = weeklyRace != null && weeklyRace.getRaceName() != null
+                ? weeklyRace.getRaceName().toUpperCase()
+                : null;
+        String totalLaps = (track != null && track.getLaps() != null) ? track.getLaps() : null;
+
+        // TEST ONLY – decommentare per forzare la live card e testare OpenF1 senza GP in corso:
+        setLiveSession(eventTitle, totalLaps);
+
         if (nextEvent != null && !underway) {
             LocalDateTime eventDateTime = nextEvent.getStartDateTime();
             startCountdown(eventDateTime);
         } else if (!underway) {
             showResults(weeklyRace);
         } else {
-            setLiveSession();
+            setLiveSession(eventTitle, totalLaps);
         }
+
+
     }
 
-    private void setLiveSession() {
+    private void setLiveSession(String eventTitle, String totalLaps) {
         View liveSession = findViewById(R.id.event_live_card);
         View noLiveSession = findViewById(R.id.event_not_live_card);
 
@@ -276,8 +289,61 @@ public class EventActivity extends AppCompatActivity {
         Animation pulse = AnimationUtils.loadAnimation(this, R.anim.pulse_dynamic);
         liveIcon.startAnimation(pulse);
 
+        // Al click apre la LiveActivity passando il titolo dell'evento e i giri totali
+        liveSession.setOnClickListener(v -> NavigationUtils.navigateToLivePage(this, eventTitle, totalLaps));
+
         Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: EventActivity at " + System.currentTimeMillis());
         loadingScreen.hideLoadingScreen();
+    }
+
+    /**
+     * Fetches Race Control and Team Radio data from OpenF1 and logs every
+     * entry to the console under the tag {@code LiveTimingTest}.
+     */
+    private void fetchAndLogLiveTimingData() {
+        Log.d("LiveTimingTest", "──────────────────────────────────────────────");
+        Log.d("LiveTimingTest", "Fetching live timing data from OpenF1 API…");
+
+        LiveTimingRepository repo = LiveTimingRepository.getInstance(getApplicationContext());
+
+        // Race Control
+        repo.fetchRaceControlMessages().observe(this, result -> {
+            if (result instanceof Result.Loading) {
+                Log.d("LiveTimingTest", "[RaceControl] Loading…");
+                return;
+            }
+            if (result instanceof Result.RaceControlSuccess) {
+                List<RaceControlMessage> messages = ((Result.RaceControlSuccess) result).getData();
+                Log.d("LiveTimingTest", "[RaceControl] " + messages.size() + " messages received:");
+                for (RaceControlMessage msg : messages) {
+                    Log.d("LiveTimingTest", "  [" + msg.getDate() + "] "
+                            + "[" + msg.getCategory() + "] "
+                            + (msg.getFlag() != null ? "[" + msg.getFlag() + "] " : "")
+                            + msg.getMessage());
+                }
+            } else if (result instanceof Result.Error) {
+                Log.e("LiveTimingTest", "[RaceControl] Error: " + result.getError());
+            }
+        });
+
+        // Team Radio
+        repo.fetchTeamRadioMessages().observe(this, result -> {
+            if (result instanceof Result.Loading) {
+                Log.d("LiveTimingTest", "[TeamRadio] Loading…");
+                return;
+            }
+            if (result instanceof Result.TeamRadioSuccess) {
+                List<TeamRadioMessage> messages = ((Result.TeamRadioSuccess) result).getData();
+                Log.d("LiveTimingTest", "[TeamRadio] " + messages.size() + " recordings received:");
+                for (TeamRadioMessage msg : messages) {
+                    Log.d("LiveTimingTest", "  [" + msg.getDate() + "] "
+                            + "Driver #" + msg.getDriverNumber() + " → "
+                            + msg.getRecordingUrl());
+                }
+            } else if (result instanceof Result.Error) {
+                Log.e("LiveTimingTest", "[TeamRadio] Error: " + result.getError());
+            }
+        });
     }
 
     private void startCountdown(LocalDateTime eventDate) {

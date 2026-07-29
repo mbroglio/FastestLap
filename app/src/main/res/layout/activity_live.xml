@@ -51,8 +51,8 @@
         app:tabIndicatorColor="@color/white"
         app:tabMode="fixed"
         app:tabRippleColor="@android:color/transparent"
-        app:tabSelectedTextAppearance="@style/TextAppearance.OrbitronBold_15sp_black"
-        app:tabTextAppearance="@style/TextAppearance.OrbitronRegular_13sp_black"
+        app:tabSelectedTextAppearance="@style/t16UpperCaseBoldWhite"
+        app:tabTextAppearance="@style/t14UpperCaseRegularWhite"
         app:tabTextColor="@color/white">
 
         <com.google.android.material.tabs.TabItem
@@ -77,22 +77,22 @@
         android:id="@+id/separator_1"
         android:layout_width="match_parent"
         android:layout_height="3dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="20dp"
+        android:layout_marginTop="5dp"
         android:background="@color/white"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@id/tab_layout">
 
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/session_situation_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        app:layout_constraintTop_toBottomOf="@id/separator_1">
+        app:layout_constraintTop_toBottomOf="@id/separator_1"
+        android:orientation="horizontal">
 
+        <!--
         <CheckBox
             android:id="@+id/full_telemetry_checkbox"
             android:layout_width="wrap_content"
@@ -109,22 +109,23 @@
             app:buttonIconTint="@color/black">
 
         </CheckBox>
+        -->
 
         <RelativeLayout
             android:id="@+id/event_situation_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerInParent="true">
+            android:gravity="center"
+            android:layout_weight="1">
 
             <View
                 android:id="@+id/event_situation_light_1"
-                android:layout_width="@dimen/icon_24_dp"
-                android:layout_height="@dimen/icon_24_dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_alignParentStart="true"
                 android:layout_centerInParent="true"
                 android:background="@drawable/circle_background_black"
-                android:backgroundTint="@color/white">
+                android:backgroundTint="#2E7D32">
 
             </View>
 
@@ -134,7 +135,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
                 android:layout_toEndOf="@id/event_situation_light_1"
-                android:background="@drawable/background_all_margins_filled_white">
+                android:background="@drawable/background_all_margins_filled_green">
 
                 <TextView
                     android:id="@+id/event_situation_text"
@@ -143,7 +144,7 @@
                     android:layout_margin="5dp"
                     android:fontFamily="@font/orbitron_bold"
                     android:gravity="center"
-                    android:text="YELLOW\nFLAG"
+                    android:text="GREEN\nFLAG"
                     android:textColor="@color/black">
 
                 </TextView>
@@ -152,31 +153,33 @@
 
             <View
                 android:id="@+id/event_situation_light_2"
-                android:layout_width="@dimen/icon_24_dp"
-                android:layout_height="@dimen/icon_24_dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_centerInParent="true"
                 android:layout_marginStart="5dp"
                 android:layout_toEndOf="@id/event_situation_text_layout"
                 android:background="@drawable/circle_background_black"
-                android:backgroundTint="@color/white">
+                android:backgroundTint="#2E7D32">
 
             </View>
 
         </RelativeLayout>
 
         <TextView
-            android:layout_width="wrap_content"
+            android:id="@+id/current_lap_text"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:gravity="center"
             android:layout_marginEnd="10dp"
             android:layout_marginTop="15dp"
-            android:text="LAP: 10/53"
+            android:text="LAP: --"
             android:fontFamily="@font/orbitron_bold"
-            android:textColor="@color/white">
+            android:textColor="@color/white"
+            android:layout_weight="1">
 
         </TextView>
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/separator_2"

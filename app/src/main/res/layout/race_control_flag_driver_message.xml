@@ -21,8 +21,8 @@
 
             <ImageView
                 android:id="@+id/flag_1"
-                android:layout_width="@dimen/icon_24_dp"
-                android:layout_height="@dimen/icon_24_dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@drawable/black_and_white_flag_panel_icon">
 
             </ImageView>
@@ -42,8 +42,8 @@
 
             <ImageView
                 android:id="@+id/flag_2"
-                android:layout_width="@dimen/icon_24_dp"
-                android:layout_height="@dimen/icon_24_dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:src="@drawable/black_and_white_flag_panel_icon">
 
             </ImageView>
@@ -89,7 +89,7 @@
                     android:textColor="@color/black">
 
                 </TextView>
-
+<!--
                 <ImageView
                     android:layout_width="@dimen/icon_24_dp"
                     android:layout_height="@dimen/icon_24_dp"
@@ -97,10 +97,12 @@
                     android:src="@drawable/mercedeslogo">
 
                 </ImageView>
+                -->
 
             </LinearLayout>
 
             <TextView
+                android:id="@+id/message_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/driver_involved_layout"

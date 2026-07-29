@@ -19,7 +19,7 @@ public class WeatherActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_weather);
 
-        MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        /*MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         VideoView videoView = findViewById(R.id.video_view);
@@ -29,6 +29,6 @@ public class WeatherActivity extends AppCompatActivity {
         videoView.setVideoURI(uri);
         videoView.start();
         //loop video
-        videoView.setOnCompletionListener(mp -> videoView.start());
+        videoView.setOnCompletionListener(mp -> videoView.start());*/
     }
 }
