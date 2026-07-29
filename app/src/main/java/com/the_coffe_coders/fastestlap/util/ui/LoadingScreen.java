@@ -1,8 +1,8 @@
 package com.the_coffe_coders.fastestlap.util.ui;
 
 import android.content.Context;
-import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -19,13 +19,13 @@ public class LoadingScreen {
     private final Context context;
     private final TextView loadingText;
     private final View activityView, fragmentView;
-    private final Handler timerHandler = new Handler();
+    private final Handler timerHandler = new Handler(Looper.getMainLooper());
     private int dotCount = 0;
     private boolean addingDots = true;
     private Runnable dotRunnable;
 
     public LoadingScreen(View view, Context context, View activityView, View fragmentView) {
-        this.handler = new Handler();
+        this.handler = new Handler(Looper.getMainLooper());
         this.loadingScreen = view.findViewById(R.id.loading_screen);
         this.context = context;
         this.loadingText = view.findViewById(R.id.loading_text);
@@ -38,11 +38,13 @@ public class LoadingScreen {
     }
 
     public void showLoadingScreen(boolean invisible) {
+        handler.removeCallbacks(hideRunnable);
+        timerHandler.removeCallbacks(timerRunnable);
         resetTimer();
         if (fragmentView != null) {
-            fragmentView.setVisibility(View.INVISIBLE);
+            fragmentView.setVisibility(invisible ? View.INVISIBLE : View.GONE);
         } else {
-            activityView.setVisibility(View.INVISIBLE);
+            activityView.setVisibility(invisible ? View.INVISIBLE : View.GONE);
         }
 
         loadingScreen.setVisibility(View.VISIBLE);
@@ -73,17 +75,7 @@ public class LoadingScreen {
 
     private void resetTimer() {
         timerHandler.removeCallbacks(timerRunnable);
-        new CountDownTimer(Constants.LOADING_SLEEP_TIMER_DURATION, 1000) {
-
-            @Override
-            public void onTick(long millisUntilFinished) {
-            }
-
-            @Override
-            public void onFinish() {
-                timerRunnable.run();
-            }
-        }.start();
+        timerHandler.postDelayed(timerRunnable, Constants.LOADING_SLEEP_TIMER_DURATION);
     }
 
     public void updateProgress() {
@@ -92,6 +84,7 @@ public class LoadingScreen {
 
     private final Runnable hideRunnable = this::hide;
 
+    @SuppressWarnings("unused")
     public void hideLoadingScreenWithCondition(boolean condition) {
         if (condition) {
             hideLoadingScreen();
@@ -103,14 +96,17 @@ public class LoadingScreen {
             return;
         }
         handler.removeCallbacks(hideRunnable);
-        handler.postDelayed(hideRunnable, 1000);
+        timerHandler.removeCallbacks(timerRunnable);
+        timerHandler.postDelayed(timerRunnable, 1000);
     }
 
+    @SuppressWarnings("unused")
     public void hideLoadingScreenImmediately() {
         if (loadingScreen != null && loadingScreen.getVisibility() == View.GONE) {
             return;
         }
         handler.removeCallbacks(hideRunnable);
+        timerHandler.removeCallbacks(timerRunnable);
         handler.post(hideRunnable);
     }
 
