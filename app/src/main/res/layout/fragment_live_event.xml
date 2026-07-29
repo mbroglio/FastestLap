@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/screen_background_color"
+    tools:context=".ui.live.fragment.LiveEventFragment">
+
+    <FrameLayout
+        android:id="@+id/live_table_rows"
+        android:layout_width="match_parent"
+        android:layout_marginTop="0dp"
+        android:layout_height="25dp">
+
+        <include
+            android:id="@+id/race_header_short"
+            layout="@layout/live_race_table_header_short"
+            android:visibility="visible"/>
+
+        <include
+            android:id="@+id/race_header_full"
+            layout="@layout/live_race_table_header_full"
+            android:visibility="gone"/>
+
+        <include
+            android:id="@+id/qualifying_header_full"
+            layout="@layout/live_qualifying_table_header_full"
+            android:visibility="gone"/>
+
+        <include
+            android:id="@+id/qualifying_header_short"
+            layout="@layout/live_qualifying_table_header_short"
+            android:visibility="gone"/>
+    </FrameLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:scrollbars="none"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_height="0dp"
+        android:layout_below="@id/live_table_rows"
+        android:layout_alignParentBottom="true">
+
+        <TableLayout
+            android:id="@+id/live_table"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </TableLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

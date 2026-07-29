@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableRow xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/screen_background_color">
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.27"
+        android:text="POSITION"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:fontFamily="@font/orbitron_bold" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.265"
+        android:text="BEST"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:fontFamily="@font/orbitron_bold" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.25"
+        android:text="LEADER"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:fontFamily="@font/orbitron_bold" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.20"
+        android:text="S1"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:fontFamily="@font/orbitron_bold" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.20"
+        android:text="S2"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:fontFamily="@font/orbitron_bold" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.20"
+        android:text="S3"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:fontFamily="@font/orbitron_bold" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.265"
+        android:text="LAST"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:fontFamily="@font/orbitron_bold" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.205"
+        android:text="TYRE"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:fontFamily="@font/orbitron_bold" />
+
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.1"
+        android:text="LAP"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:fontFamily="@font/orbitron_bold" />
+
+</TableRow>
+
