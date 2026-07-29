@@ -4,7 +4,7 @@ import android.util.Log;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.database.TrackDAO;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
+import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
 import com.the_coffe_coders.fastestlap.repository.track.TrackCallback;
 
 public class LocalTrackDataSource implements TrackDataSource {
@@ -26,10 +26,17 @@ public class LocalTrackDataSource implements TrackDataSource {
     @Override
     public void getTrack(String trackId, TrackCallback callback) {
         Log.d(TAG, "Fetching track with ID: " + trackId);
-        callback.onTrackLoaded(trackDAO.getById(trackId));
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            try {
+                Track track = trackDAO.getById(trackId);
+                callback.onTrackLoaded(track);
+            } catch (Exception e) {
+                callback.onError(e);
+            }
+        });
     }
 
     public void insertTrack(Track track) {
-        trackDAO.insertTrack(track);
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> trackDAO.insertTrack(track));
     }
 }

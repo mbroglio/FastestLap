@@ -26,9 +26,11 @@ import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
-import com.the_coffe_coders.fastestlap.util.UIUtils;
+import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 public class ProfileActivity extends AppCompatActivity {
     private static final String TAG = "ProfileActivity";
@@ -42,6 +44,7 @@ public class ProfileActivity extends AppCompatActivity {
     private boolean isFromLogin;
 
     private UserViewModel userViewModel;
+    private NetworkUtils networkLiveData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,8 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_profile);
+
+        networkLiveData = new NetworkUtils(this);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         UIUtils.applyWindowInsets(toolbar);
@@ -80,7 +85,9 @@ public class ProfileActivity extends AppCompatActivity {
         autoLoginCheckBox = findViewById(R.id.remember_me_checkbox);
         saveButton = findViewById(R.id.save_button);
         dismissButton = findViewById(R.id.dismiss_button);
-        Button signOutButton = findViewById(R.id.sign_out_button);
+
+        profileAccessButtons();
+
         TextInputEditText emailText = findViewById(R.id.email_text);
 
         // Set email from current user
@@ -105,24 +112,21 @@ public class ProfileActivity extends AppCompatActivity {
             checkForChanges();
 
             if (isFromLogin) {
-                UIUtils.navigateToHomePage(this);
+                NavigationUtils.navigateToHomePage(this);
             } else {
                 getOnBackPressedDispatcher().onBackPressed();
             }
         });
 
-        signOutButton.setOnClickListener(v -> {
-            userViewModel.logout();
-            SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_FILENAME, MODE_PRIVATE);
-            sharedPreferences.edit().clear().apply();
-            UIUtils.navigateToWelcomePage(this);
-            finish();
-        });
 
-        MaterialSwitch languageSwitch = findViewById(R.id.language_switch);
         LocaleListCompat appLocales = AppCompatDelegate.getApplicationLocales();
         String currentLanguage = appLocales.toLanguageTags();
-        languageSwitch.setChecked(currentLanguage.equals("en-GB"));
+        boolean isEnglish = currentLanguage.toLowerCase(java.util.Locale.ROOT).startsWith("en");
+        if (currentLanguage.isEmpty()) {
+            isEnglish = getResources().getConfiguration().getLocales().get(0).getLanguage().toLowerCase(java.util.Locale.ROOT).startsWith("en");
+        }
+        MaterialSwitch languageSwitch = findViewById(R.id.language_switch);
+        languageSwitch.setChecked(isEnglish);
 
         languageSwitch.setOnCheckedChangeListener(((buttonView, isChecked) -> {
             if (languageSwitch.isChecked()) {
@@ -135,6 +139,33 @@ public class ProfileActivity extends AppCompatActivity {
         // Hide action buttons initially
         saveButton.setVisibility(View.INVISIBLE);
         dismissButton.setVisibility(View.INVISIBLE);
+    }
+
+    private void profileAccessButtons() {
+        Button signOutButton = findViewById(R.id.sign_out_button);
+        Button loginButton = findViewById(R.id.login_button);
+
+        if (networkLiveData.isConnected() && userViewModel.getLoggedUser() != null) {
+            signOutButton.setVisibility(View.VISIBLE);
+            loginButton.setVisibility(View.GONE);
+
+            signOutButton.setOnClickListener(v -> {
+                userViewModel.logout();
+                SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFERENCES_FILENAME, MODE_PRIVATE);
+                sharedPreferences.edit().clear().apply();
+                NavigationUtils.navigateToWelcomePage(this);
+                finish();
+            });
+        } else {
+            signOutButton.setVisibility(View.GONE);
+            autoLoginCheckBox.setVisibility(View.GONE);
+            loginButton.setVisibility(View.VISIBLE);
+            loginButton.setOnClickListener(v ->
+                    NavigationUtils.showProfileManageDialogs(getSupportFragmentManager(), 2, currentUser.getEmail()));
+
+        }
+
+
     }
 
     private void setLocale(String languageCode) {
@@ -207,7 +238,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         // Return to previous screen
         if (isFromLogin) {
-            UIUtils.navigateToHomePage(this);
+            NavigationUtils.navigateToHomePage(this);
         } else {
             getOnBackPressedDispatcher().onBackPressed();
         }

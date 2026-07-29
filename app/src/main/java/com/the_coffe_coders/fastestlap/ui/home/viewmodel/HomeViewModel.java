@@ -8,10 +8,10 @@ import androidx.lifecycle.ViewModel;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
-import com.the_coffe_coders.fastestlap.repository.standing.constructor.ConstructorStandingRepository;
-import com.the_coffe_coders.fastestlap.repository.standing.driver.DriverStandingRepository;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandingsElement;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandingsElement;
+import com.the_coffe_coders.fastestlap.repository.f1.standing.constructor.ConstructorStandingRepository;
+import com.the_coffe_coders.fastestlap.repository.f1.standing.driver.DriverStandingRepository;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 

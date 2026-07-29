@@ -15,7 +15,7 @@ public class Constants {
     public static final String SHARED_PREFERENCES_FAVORITE_TEAM = "team_favorite";
     public static final String SHARED_PREFERENCES_AUTO_LOGIN = "auto_login";
     public static final String SHARED_PREFERENCES_LAST_UPDATE = "last_update";
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String SAVED_DRIVERS_STANDINGS_DATABASE = "saved_drivers_standings";
     public static final int FRESH_TIMEOUT = 1000 * 60; // 1 minute in milliseconds
     public static final String RETROFIT_ERROR = "retrofit_error";
@@ -28,6 +28,23 @@ public class Constants {
     public static final String WEATHER_ACCESS_PACKAGE = "com.weather.Weather";
     public static final String GOOGLE_WEATHER_ACCESS = "https://www.google.com/search?q=weather+in+%s";
 
+    public static final List<String> ENGLISH_NEWS_SOURCES = List.of(
+            "Autosport",
+            "Crash.net"
+    );
+
+    public static final List<String> ITALIAN_NEWS_SOURCES = List.of(
+            "Motorsport"
+    );
+
+
+    public static final String DEFAULT_ENG_SOURCE = "Autosport";
+    public static final String DEFAULT_ITA_SOURCE = "Motorsport";
+
+    public static final String AUTOSPORT_RSS_URL = "https://www.autosport.com/rss/f1/news/";
+    public static final String MOTORSPORT_RSS_URL = "https://it.motorsport.com/rss/f1/news/";
+    public static final String CRASH_RSS_URL = "https://www.crash.net/rss/f1";
+
     public static final Map<String, Integer> TEAM_COLOR = new HashMap<>() {{
         put("mercedes", R.color.mercedes_f1);
         put("red_bull", R.color.redbull_f1);
@@ -39,6 +56,8 @@ public class Constants {
         put("sauber", R.color.kick_f1);
         put("williams", R.color.williams_f1);
         put("rb", R.color.racing_bulls_f1); // Racing Bulls
+        put("audi", R.color.audi_f1);
+        put("cadillac", R.color.cadillac_f1);
     }};
 
     public static final Map<String, Integer> TEAM_GRADIENT_COLOR = new HashMap<>() {{
@@ -52,6 +71,36 @@ public class Constants {
         put("sauber", R.drawable.gradient_color_sauber);
         put("williams", R.drawable.gradient_color_williams);
         put("rb", R.drawable.gradient_color_rb); // Racing Bulls
+        put("audi", R.drawable.gradient_color_audi);
+        put("cadillac", R.drawable.gradient_color_cadillac);
+    }};
+
+    public static final Map<String, Integer> JUNIOR_TEAM_GRADIENT_COLOR = new HashMap<>() {{
+        put("dams", R.drawable.gradient_color_dams);
+        put("prema", R.drawable.gradient_color_prema_racing);
+        put("trident", R.drawable.gradient_color_trident);
+        put("hitech", R.drawable.gradient_color_hitech);
+        put("campos", R.drawable.gradient_color_campos_racing);
+        put("aix", R.drawable.gradient_color_aix_racing);
+        put("van_amersfoort", R.drawable.gradient_color_van_amersfoort_racing);
+        put("rodin", R.drawable.gradient_color_rodin_motorsport);
+        put("invicta", R.drawable.gradient_color_invicta_racing);
+        put("art", R.drawable.gradient_color_art_grand_prix);
+        put("mp_motorsport", R.drawable.gradient_color_mp_motorsport);
+    }};
+
+    public static final Map<String, Integer> JUNIOR_TEAM_LOGO = new HashMap<>() {{
+        put("dams", R.drawable.dams_logo);
+        put("prema", R.drawable.prema_logo);
+        put("trident", R.drawable.trident_motorsport_logo);
+        put("hitech", R.drawable.hitech_logo);
+        put("campos", R.drawable.campos_racing_logo);
+        put("aix", R.drawable.aix_racing_logo);
+        put("van_amersfoort", R.drawable.van_amersfoort_logo);
+        put("rodin", R.drawable.rodin_motorsport_logo);
+        put("invicta", R.drawable.invicta_racing_logo);
+        put("art", R.drawable.art_grand_prix_logo);
+        put("mp_motorsport", R.drawable.mp_motorsport_logo);
     }};
 
     public static final String[] SESSIONS = {
@@ -197,6 +246,21 @@ public class Constants {
         put("disqualified", "DSQ");
         put("lapped", "LAP");
         put("finished", "END");
+        put("did not start", "DNS");
+    }};
+
+    public static final Map<String, String> RESULT_CONSTRUCTOR_NAME = new HashMap<>() {{
+        put("mercedes", "Mercedes");
+        put("red_bull", "Red Bull");
+        put("mclaren", "McLaren");
+        put("ferrari", "Ferrari");
+        put("aston_martin", "Aston Martin");
+        put("alpine", "Alpine");
+        put("haas", "Haas");
+        put("audi", "Audi");
+        put("williams", "Williams");
+        put("cadillac", "Cadillac");
+        put("rb", "Racing Bulls");
     }};
 
     public static final List<Integer> PODIUM_DRIVER_NAME = List.of(
@@ -259,5 +323,11 @@ public class Constants {
     public static final String FIREBASE_TEAMS_COLLECTION = "teams";
     public static final String FIREBASE_CIRCUITS_COLLECTION = "circuits";
     public static final String FIREBASE_NATIONS_COLLECTION = "nations";
+    public static final String FIREBASE_JUNIOR_COLLECTION = "junior_categories";
+    public static final String FIREBASE_CIRCUIT_MAP_COLLECTION = "app_config/circuit_name_id_map";
 
+    // Notification constants
+    public static final String NOTIFICATION_CHANNEL_NAME = "FastestLap Notifications";
+    public static final String NOTIFICATION_CHANNEL_DESCRIPTION = "Notifiche da FastestLap";
+    public static final String SHARED_PREFERENCES_FCM_TOKEN = "fcm_token";
 }

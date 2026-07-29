@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/f2_navigation"
+    app:startDestination="@id/f2HomeFragment">
+
+    <fragment
+        android:id="@+id/f2HomeFragment"
+        android:name="com.the_coffe_coders.fastestlap.ui.junior.fragment.F2HomeFragment"
+        android:label="@string/formula_2"
+        tools:layout="@layout/fragment_f2_home">
+        <action
+            android:id="@+id/to_carBio_formula2"
+            app:destination="@id/f2CarBioFragment" />
+        <action
+            android:id="@+id/to_juniorResults_formula2"
+            app:destination="@id/juniorResultsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/f2CarBioFragment"
+        android:name="com.the_coffe_coders.fastestlap.ui.junior.fragment.F2CarBioFragment"
+        android:label="@string/the_formula_2_car"
+        tools:layout="@layout/fragment_f2_car_bio"></fragment>
+
+    <fragment
+        android:id="@+id/juniorResultsFragment"
+        android:name="com.the_coffe_coders.fastestlap.ui.junior.fragment.JuniorResultsFragment"
+        android:label="@string/results"
+        tools:layout="@layout/fragment_junior_results">
+
+    </fragment>
+
+</navigation>
+

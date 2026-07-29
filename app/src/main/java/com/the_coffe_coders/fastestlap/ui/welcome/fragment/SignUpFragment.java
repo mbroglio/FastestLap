@@ -29,7 +29,7 @@ import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
-import com.the_coffe_coders.fastestlap.util.UIUtils;
+import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 
 import org.apache.commons.validator.routines.EmailValidator;
 
@@ -86,7 +86,7 @@ public class SignUpFragment extends DialogFragment {
                                 userViewModel.setAuthenticationError(false);
                                 Log.i(TAG, "User: " + user);
 
-                                UIUtils.navigateToHomePage(getContext());
+                                NavigationUtils.navigateToHomePage(getContext());
                             } else {
                                 userViewModel.setAuthenticationError(true);
                                 Toast.makeText(getContext(), "Email already registered", Toast.LENGTH_SHORT).show();

@@ -5,6 +5,7 @@ import android.app.Application;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
@@ -16,20 +17,23 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
+import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
-import com.the_coffe_coders.fastestlap.util.UIUtils;
+import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
+
+import java.util.Calendar;
 
 @SuppressLint("CustomSplashScreen")
 public class SplashActivity extends AppCompatActivity {
 
     private static final String TAG = "IntroScreenActivity";
-    private final Handler handler = new Handler();
+    private final Handler handler = new Handler(Looper.getMainLooper());
     private TextView appName;
     private TextView appCredits;
     private ProgressBar progressIndicator;
@@ -37,6 +41,8 @@ public class SplashActivity extends AppCompatActivity {
     private MediaPlayer mediaPlayer;
     private MediaPlayer logoMediaPlayer;
     private UserViewModel userViewModel;
+
+    private NetworkUtils networkLiveData;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,17 +54,11 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void start() {
-        ConstraintLayout introScreen = findViewById(R.id.intro_screen);
-        UIUtils.applyWindowInsets(introScreen);
+        networkLiveData = new NetworkUtils(getApplicationContext());
 
-        String season_year = getIntent().getStringExtra("season_year");
+        String season_year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
         Log.d("LaunchFlag", "Valore ricevuto: " + season_year);
-        if (season_year != null) {
-            ServiceLocator.setCurrentYearBaseUrl(season_year);
-        } else {
-            Log.d("LaunchFlag", "Using default year (current)");
-            ServiceLocator.setCurrentYearBaseUrl("2025");
-        }
+        ServiceLocator.setCurrentYearBaseUrl(season_year);
 
 
         userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(ServiceLocator.getInstance().getUserRepository((Application) getApplicationContext()))).get(UserViewModel.class);
@@ -83,15 +83,15 @@ public class SplashActivity extends AppCompatActivity {
 
         appLogo.startAnimation(logoAnimation);
         appLogo.setVisibility(View.VISIBLE);
-        mediaPlayer.start();
-        logoMediaPlayer.start();
+        if (mediaPlayer != null) mediaPlayer.start();
+        if (logoMediaPlayer != null) logoMediaPlayer.start();
+
         handler.postDelayed(() -> {
             appName.startAnimation(nameAnimation);
             appName.setVisibility(View.VISIBLE);
             handler.postDelayed(() -> {
-
                 String creditsText = getString(R.string.app_credits);
-                int delay = 100;
+                int delay = 30; // Faster, smooth typewriter effect
                 for (int i = 0; i < creditsText.length(); i++) {
                     final int index = i;
                     handler.postDelayed(() -> {
@@ -101,20 +101,18 @@ public class SplashActivity extends AppCompatActivity {
                         } catch (IllegalStateException e) {
                             Log.e(TAG, "MediaPlayer error: " + e.getMessage());
                         }
-
                     }, (long) delay * i);
                 }
 
                 handler.postDelayed(() -> {
                     progressIndicator.setVisibility(View.VISIBLE);
-
                     handler.postDelayed(() -> {
-                        UIUtils.navigateToWelcomePage(this);
+                        NavigationUtils.navigateToWelcomePage(this);
                         finish();
-                    }, 5000); // 5 seconds delay
+                    }, 500); // 500ms delay instead of 5 seconds
                 }, (long) creditsText.length() * delay);
-            }, 1000);
-        }, 2000);
+            }, 500);
+        }, 800);
     }
 
     public void showForAutoLogin() {
@@ -128,7 +126,6 @@ public class SplashActivity extends AppCompatActivity {
         appName.setVisibility(View.GONE);
         appCredits.setVisibility(View.GONE);
         progressIndicator.setVisibility(View.GONE);
-        //findViewById(R.id.intro_screen).setVisibility(View.GONE);
     }
 
     @Override
@@ -143,26 +140,27 @@ public class SplashActivity extends AppCompatActivity {
         }
     }
 
-
     protected void setupIntro() {
-
         Log.d(TAG, "Setting up intro screen");
         Log.d(TAG, "Logged user: " + userViewModel.getLoggedUser());
         if (userViewModel.getLoggedUser() != null) {
-            showForAutoLogin();
-
-            userViewModel.isAutoLoginEnabled(userViewModel.getLoggedUser().getIdToken()).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    boolean isEnabled = task.getResult();
-                    Log.d(TAG, "Auto login is enabled: " + isEnabled);
-                    if (isEnabled) {
-                        UIUtils.navigateToHomePage(this);
+            Log.d(TAG, "Logged user is not null");
+            if (networkLiveData.isConnected()) {
+                userViewModel.isAutoLoginEnabled(userViewModel.getLoggedUser().getIdToken()).addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && Boolean.TRUE.equals(task.getResult())) {
+                        Log.d(TAG, "Auto login is enabled");
+                        NavigationUtils.navigateToHomePage(this);
+                        finish();
                     } else {
-                        hideIntroScreen();
-                        new Handler().postDelayed(this::showIntroScreen, 500);
+                        Log.d(TAG, "Auto login is not enabled");
+                        showIntroScreen();
                     }
-                }
-            });
+                });
+            } else {
+                Log.e(TAG, "No internet connection");
+                NavigationUtils.navigateToHomePage(this);
+                finish();
+            }
         } else {
             showIntroScreen();
         }

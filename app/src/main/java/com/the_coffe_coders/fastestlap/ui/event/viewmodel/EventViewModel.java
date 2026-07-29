@@ -1,10 +1,12 @@
 package com.the_coffe_coders.fastestlap.ui.event.viewmodel;
 
+import android.util.Log;
+
 import androidx.lifecycle.ViewModel;
 
-import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResultFastestLap;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResult;
+import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResultFastestLap;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -25,7 +27,10 @@ public class EventViewModel extends ViewModel {
                 upcomingRaces.add(weeklyRace);
             }
         }
-        upcomingRaces.sort(Comparator.comparingInt(race -> Integer.parseInt(race.getRound())));
+        upcomingRaces.sort(Comparator.nullsLast(Comparator.comparingInt(race -> {
+            String round = race.getRound();
+            return round != null ? Integer.parseInt(round) : Integer.MAX_VALUE;
+        })));
         return upcomingRaces;
     }
 
@@ -45,11 +50,15 @@ public class EventViewModel extends ViewModel {
     public RaceResultFastestLap extractFastestLap(List<RaceResult> results) {
         RaceResultFastestLap fastestLap = new RaceResultFastestLap();
         for (RaceResult result : results) {
-            if (result.getFastestLap().getRank().equals("1")) {
-                fastestLap = result.getFastestLap();
-                fastestLap.setDriverName(result.getDriver().getFullName());
-                fastestLap.setConstructorId(result.getConstructor().getConstructorId());
-                break;
+            if (result.getFastestLap() != null) {
+                if (result.getFastestLap().getRank().equals("1")) {
+                    fastestLap = result.getFastestLap();
+                    fastestLap.setDriverName(result.getDriver().getFullName());
+                    fastestLap.setConstructorId(result.getConstructor().getConstructorId());
+                    break;
+                }
+            } else {
+                Log.e(TAG, "Fastest lap not found for " + result.getDriver().getFullName());
             }
         }
         return fastestLap;

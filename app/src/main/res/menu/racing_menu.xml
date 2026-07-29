@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/add_to_calendar"
+        android:icon="@drawable/calendar_icon"
+        android:iconTint="@color/black"
+        android:title="@string/add_to_calendar"
+        app:showAsAction="always">
+
+    </item>
+
+</menu>

@@ -1,0 +1,46 @@
+package com.the_coffe_coders.fastestlap.repository.mapper;
+
+import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandingsElement;
+import com.the_coffe_coders.fastestlap.dto.standing.constructor.ConstructorDTO;
+import com.the_coffe_coders.fastestlap.dto.standing.constructor.ConstructorStandingsDTO;
+import com.the_coffe_coders.fastestlap.dto.standing.constructor.ConstructorStandingsElementDTO;
+import com.the_coffe_coders.fastestlap.dto.standing.constructor.ConstructorTableDTO;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ConstructorStandingsMapper {
+    public static ConstructorStandings toConstructorStandings(ConstructorStandingsDTO constructorStandingsDTO) {
+        ConstructorStandings constructorStandings = new ConstructorStandings();
+        constructorStandings.setSeason(constructorStandingsDTO.getSeason());
+        constructorStandings.setRound(constructorStandingsDTO.getRound());
+        List<ConstructorStandingsElement> constructorStandingsElements = new ArrayList<>();
+        for (ConstructorStandingsElementDTO constructorStandingElementDTO : constructorStandingsDTO.getConstructorStandings()) {
+            constructorStandingsElements.add(toConstructorStandingsElement(constructorStandingElementDTO));
+        }
+        constructorStandings.setConstructorStandings(constructorStandingsElements);
+        return constructorStandings;
+    }
+
+    private static ConstructorStandingsElement toConstructorStandingsElement(ConstructorStandingsElementDTO constructorStandingsElementDTO) {
+        ConstructorStandingsElement constructorStandingsElement = new ConstructorStandingsElement();
+        constructorStandingsElement.setPosition(constructorStandingsElementDTO.getPosition());
+        constructorStandingsElement.setPositionText(constructorStandingsElementDTO.getPositionText());
+        constructorStandingsElement.setPoints(constructorStandingsElementDTO.getPoints());
+        constructorStandingsElement.setConstructor(ConstructorMapper.toConstructor(constructorStandingsElementDTO.getConstructor()));
+        constructorStandingsElement.setWins(constructorStandingsElementDTO.getWins());
+        return constructorStandingsElement;
+    }
+
+    public static List<Constructor> toConstructorList(ConstructorTableDTO constructorTable) {
+        List<Constructor> constructors = new ArrayList<>();
+
+        for (ConstructorDTO constructorDTO : constructorTable.getConstructorDTOList()) {
+            constructors.add(ConstructorMapper.toConstructor(constructorDTO));
+        }
+
+        return constructors;
+    }
+}

@@ -2,7 +2,6 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     style="?materialCardViewElevatedStyle"
-
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="10dp"
@@ -17,85 +16,78 @@
 
         <TextView
             android:id="@+id/season_year"
+            style="@style/t14UpperCaseBoldBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_weight="1"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
             android:maxLines="1"
-            android:text="@string/year_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size" />
+            android:text="@string/year" />
 
         <TextView
             android:id="@+id/driver_position"
+            style="@style/t14UpperCaseBoldBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_weight="1"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="@string/pos_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:maxLines="1"
+            android:text="@string/pos">
 
         </TextView>
 
         <TextView
             android:id="@+id/team_name"
+            style="@style/t14UpperCaseBoldBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_weight="0.8"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="@string/team_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:maxLines="1"
+            android:text="@string/team">
 
         </TextView>
 
         <TextView
             android:id="@+id/driver_points"
+            style="@style/t14UpperCaseBoldBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_weight="1"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="@string/pts_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:maxLines="1"
+            android:text="@string/points_abbr">
 
         </TextView>
 
         <TextView
             android:id="@+id/driver_wins"
+            style="@style/t14UpperCaseBoldBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_weight="1.05"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="@string/wins_abbr_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:maxLines="1"
+            android:text="@string/wins_abbr">
 
         </TextView>
 
         <TextView
             android:id="@+id/driver_podiums"
+            style="@style/t14UpperCaseBoldBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:layout_weight="1"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="@string/pod_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:maxLines="1"
+            android:text="@string/pod">
 
         </TextView>
 

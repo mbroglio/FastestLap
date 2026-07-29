@@ -1,6 +1,7 @@
 package com.the_coffe_coders.fastestlap.ui.event.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,14 +17,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.adapter.RaceResultsRecyclerAdapter;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResultFastestLap;
+import com.the_coffe_coders.fastestlap.adapter.f1.RaceResultsRecyclerAdapter;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResult;
+import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResultFastestLap;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.UIUtils;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.List;
 import java.util.Objects;
@@ -40,7 +41,7 @@ public class RaceAndSprintResultsFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            race = getArguments().getParcelable("RACE");
+            race = androidx.core.os.BundleCompat.getParcelable(getArguments(), "RACE", Race.class);
         }
     }
 
@@ -75,12 +76,12 @@ public class RaceAndSprintResultsFragment extends DialogFragment {
 
         TextView eventDescriptionTitle = view.findViewById(R.id.event_description_title);
 
-        if(raceResultsList != null && !raceResultsList.isEmpty()) {
+        if (raceResultsList != null && !raceResultsList.isEmpty()) {
             UIUtils.singleSetTextViewText(requireContext().getString(
                     R.string.full_event_results, requireContext().getString(R.string.race)), eventDescriptionTitle);
             setupFastestLapLayout(view, raceResultsList);
             adapter = new RaceResultsRecyclerAdapter(requireContext(), raceResultsList);
-        }else if(sprintResultsList != null && !sprintResultsList.isEmpty()) {
+        } else if (sprintResultsList != null && !sprintResultsList.isEmpty()) {
             UIUtils.singleSetTextViewText(requireContext().getString(
                     R.string.full_event_results, requireContext().getString(R.string.sprint)), eventDescriptionTitle);
             setupFastestLapLayout(view, sprintResultsList);
@@ -95,7 +96,13 @@ public class RaceAndSprintResultsFragment extends DialogFragment {
 
     private void setupFastestLapLayout(View view, List<RaceResult> resultsList) {
         RaceResultFastestLap raceFastestLap = eventViewModel.extractFastestLap(resultsList);
+        Log.i("RaceAndSprintResultsFragment", "Fastest lap: " + raceFastestLap);
         RelativeLayout fastestLapLayout = view.findViewById(R.id.fastest_lap_layout);
+
+        if (raceFastestLap == null || raceFastestLap.isNull()) {
+            fastestLapLayout.setVisibility(View.GONE);
+            return;
+        }
 
         View teamColorIndicator = fastestLapLayout.findViewById(R.id.team_color_indicator);
         int teamColor = ContextCompat.getColor(requireContext(),

@@ -1,13 +1,6 @@
 package com.the_coffe_coders.fastestlap.ui.event.fragment;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-import java.util.List;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +8,17 @@ import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.adapter.QualifyingResultsRecyclerAdapter;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.QualifyingResult;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
-import com.the_coffe_coders.fastestlap.util.UIUtils;
+import com.the_coffe_coders.fastestlap.adapter.f1.QualifyingResultsRecyclerAdapter;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.f1.result.QualifyingResult;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
+
+import java.util.List;
 
 public class QualifyingResultsFragment extends DialogFragment {
 
@@ -33,7 +32,7 @@ public class QualifyingResultsFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            race = getArguments().getParcelable("RACE");
+            race = androidx.core.os.BundleCompat.getParcelable(getArguments(), "RACE", Race.class);
         }
     }
 

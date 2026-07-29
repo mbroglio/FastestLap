@@ -1,7 +1,7 @@
 package com.the_coffe_coders.fastestlap.api;
 
 import com.google.gson.annotations.SerializedName;
-import com.the_coffe_coders.fastestlap.dto.DriverStandingsTableDTO;
+import com.the_coffe_coders.fastestlap.dto.standing.driver.DriverStandingsTableDTO;
 
 import lombok.Getter;
 import lombok.Setter;

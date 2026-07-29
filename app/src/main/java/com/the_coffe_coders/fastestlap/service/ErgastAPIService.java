@@ -6,10 +6,10 @@ import retrofit2.http.GET;
 import retrofit2.http.Path;
 
 public interface ErgastAPIService {
-    @GET("constructorstandings")
+    @GET("constructorstandings/")
     Call<ResponseBody> getConstructorStandings();
 
-    @GET("driverstandings")
+    @GET("driverstandings/")
     Call<ResponseBody> getDriverStandings();
 
     @GET("races")
@@ -36,12 +36,14 @@ public interface ErgastAPIService {
     @GET("next")
     Call<ResponseBody> getNextRace();
 
-
     @GET("drivers/{driverId}")
     Call<ResponseBody> getDriver(@Path("driverId") String driverId);
 
     @GET("drivers")
     Call<ResponseBody> getDrivers();
+
+    @GET("constructors")
+    Call<ResponseBody> getConstructors();
 
     @GET("constructors/{constructorId}")
     Call<ResponseBody> getConstructor(@Path("constructorId") String constructorId);

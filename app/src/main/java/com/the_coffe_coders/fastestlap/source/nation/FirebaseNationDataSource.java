@@ -42,6 +42,7 @@ public class FirebaseNationDataSource implements NationDataSource {
                 if (snapshot.exists()) {
                     Nation nation = snapshot.getValue(Nation.class);
                     if (nation != null) {
+                        nation.setNationId(nationId);
                         Log.i(TAG, "Successfully retrieved nation from Firebase: " + nation);
                         callback.onNationLoaded(nation);
                     } else {

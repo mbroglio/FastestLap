@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/card_view"
+    style="?materialCardViewElevatedStyle"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginBottom="4dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardCornerRadius="5dp"
+    tools:context=".ui.standing.DriversStandingActivity">
+
+    <RelativeLayout
+        android:id="@+id/small_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/element_position"
+            style="@style/t20BoldBlack"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="5dp"
+            android:gravity="center"
+            android:text="@string/not_found">
+
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/element_name"
+            style="@style/t14BoldBlackLineLimited"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="8dp"
+            android:layout_toStartOf="@id/element_points"
+            android:layout_toEndOf="@id/element_position"
+            android:text="@string/not_found">
+
+        </TextView>
+
+        <TextView
+            android:id="@+id/element_points"
+            style="@style/t20BoldBlack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:layout_marginEnd="10dp"
+            android:gravity="center"
+            android:text="@string/not_found">
+
+        </TextView>
+
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>
+

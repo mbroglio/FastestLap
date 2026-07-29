@@ -1,20 +1,21 @@
 package com.the_coffe_coders.fastestlap.ui.event.viewmodel;
 
 import android.app.Application;
+import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
-import com.the_coffe_coders.fastestlap.repository.weeklyrace.WeeklyRaceRepository;
+import com.the_coffe_coders.fastestlap.repository.f1.weeklyrace.WeeklyRaceRepository;
 
 public class WeeklyRaceViewModelFactory implements ViewModelProvider.Factory {
     private final WeeklyRaceRepository weeklyRaceRepository;
 
-    public WeeklyRaceViewModelFactory(Application application) {
+    public WeeklyRaceViewModelFactory(Application application, Context context) {
         AppRoomDatabase appRoomDatabase = AppRoomDatabase.getDatabase(application);
-        this.weeklyRaceRepository = WeeklyRaceRepository.getInstance(appRoomDatabase);
+        this.weeklyRaceRepository = WeeklyRaceRepository.getInstance(appRoomDatabase, context);
     }
 
     @NonNull

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/race_result"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -11,13 +10,11 @@
 
     <TextView
         android:id="@+id/race_text"
+        style="@style/t16UpperCaseBoldBlack"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:fontFamily="@font/orbitron_bold"
-        android:text="@string/race_result_upper_case"
-        android:textColor="@color/black"
-        android:textSize="@dimen/layout_title_2_text_size">
+        android:text="@string/race_result">
 
     </TextView>
 
@@ -26,6 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/race_text"
+        android:layout_centerInParent="true"
         android:layout_marginStart="@dimen/medium_margin"
         android:layout_marginTop="10dp"
         android:orientation="vertical">
@@ -36,13 +34,11 @@
             android:orientation="horizontal">
 
             <TextView
+                style="@style/t14BoldBlackLineLimited"
                 android:layout_width="13dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/orbitron_bold"
                 android:gravity="center"
-                android:text="@string/_1_numeric"
-                android:textColor="@color/black"
-                android:textSize="@dimen/layout_subtitle_text_size">
+                android:text="@string/_1_numeric">
 
             </TextView>
 
@@ -57,14 +53,11 @@
 
             <TextView
                 android:id="@+id/first_name"
+                style="@style/t12RegularBlackLineLimited"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:fontFamily="@font/orbitron_bold"
-                android:maxLines="1"
-                android:text="@string/not_found"
-                android:textColor="@color/black"
-                android:textSize="@dimen/body_text_size">
+                android:text="@string/not_found">
 
             </TextView>
 
@@ -77,13 +70,11 @@
             android:orientation="horizontal">
 
             <TextView
+                style="@style/t14BoldBlackLineLimited"
                 android:layout_width="13dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/orbitron_bold"
                 android:gravity="center"
-                android:text="@string/_2_numeric"
-                android:textColor="@color/black"
-                android:textSize="@dimen/layout_subtitle_text_size">
+                android:text="@string/_2_numeric">
 
             </TextView>
 
@@ -98,13 +89,11 @@
 
             <TextView
                 android:id="@+id/second_name"
+                style="@style/t12RegularBlackLineLimited"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:fontFamily="@font/orbitron_regular"
-                android:text="@string/not_found"
-                android:textColor="@color/black"
-                android:textSize="@dimen/body_text_size">
+                android:text="@string/not_found">
 
             </TextView>
 
@@ -117,13 +106,11 @@
             android:orientation="horizontal">
 
             <TextView
+                style="@style/t14BoldBlackLineLimited"
                 android:layout_width="13dp"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/orbitron_bold"
                 android:gravity="center"
-                android:text="@string/_3_numeric"
-                android:textColor="@color/black"
-                android:textSize="@dimen/layout_subtitle_text_size">
+                android:text="@string/_3_numeric">
 
             </TextView>
 
@@ -138,13 +125,11 @@
 
             <TextView
                 android:id="@+id/third_name"
+                style="@style/t12RegularBlackLineLimited"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="5dp"
-                android:fontFamily="@font/orbitron_regular"
-                android:text="@string/not_found"
-                android:textColor="@color/black"
-                android:textSize="@dimen/body_text_size">
+                android:text="@string/not_found">
 
             </TextView>
 
@@ -152,6 +137,7 @@
 
     </LinearLayout>
 
+    <!--
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -171,5 +157,6 @@
         </ImageView>
 
     </RelativeLayout>
+    -->
 
 </RelativeLayout>

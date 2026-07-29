@@ -1,17 +1,17 @@
 plugins {
     alias(libs.plugins.android.application)
-    id("io.freefair.lombok") version "8.11"
+    id("io.freefair.lombok") version "9.1.0"
     id("com.google.gms.google-services")
 }
 
 android {
     namespace = "com.the_coffe_coders.fastestlap"
-    compileSdk = 35
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.the_coffe_coders.fastestlap"
-        minSdk = 24
-        targetSdk = 34
+        minSdk = 28
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
@@ -19,7 +19,7 @@ android {
     }
 
     sourceSets {
-        getByName("androidTest").assets.srcDirs("$projectDir/schemas")
+        getByName("androidTest").assets.directories.add("$projectDir/schemas")
     }
 
     buildTypes {
@@ -35,6 +35,9 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+    tasks.withType<JavaCompile> {
+        options.compilerArgs.addAll(listOf("-Xlint:deprecation", "-Xlint:unchecked"))
+    }
 }
 
 dependencies {
@@ -47,7 +50,7 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.scalars)
     implementation(libs.threetenbp)
-    implementation (libs.fragment.ktx)
+    implementation(libs.fragment.ktx)
     implementation(libs.logging.interceptor)
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
@@ -61,8 +64,8 @@ dependencies {
     implementation(libs.swiperefreshlayout)
     compileOnly(libs.lombok.v11830)
     annotationProcessor(libs.lombok.v11830)
-    testCompileOnly (libs.lombok.v11830)
-    testAnnotationProcessor (libs.lombok.v11830)
+    testCompileOnly(libs.lombok.v11830)
+    testAnnotationProcessor(libs.lombok.v11830)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -71,5 +74,7 @@ dependencies {
     implementation(libs.firebase.analytics)
     implementation(libs.commons.validator)
     implementation(libs.glide)
+    implementation(libs.rome)
     annotationProcessor(libs.compiler)
+
 }

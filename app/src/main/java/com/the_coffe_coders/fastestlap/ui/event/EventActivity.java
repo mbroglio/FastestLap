@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,13 +23,13 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Practice;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.QualifyingResult;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.RaceResult;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Session;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Practice;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Session;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.f1.result.QualifyingResult;
+import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResult;
+import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
@@ -40,9 +41,11 @@ import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModelFactory;
+import com.the_coffe_coders.fastestlap.util.CalendarUtils;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.LoadingScreen;
-import com.the_coffe_coders.fastestlap.util.UIUtils;
+import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
@@ -98,75 +101,95 @@ public class EventActivity extends AppCompatActivity {
 
     private void initializeViewModels() {
         eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
-        raceResultViewModel = new ViewModelProvider(this, new RaceResultViewModelFactory(getApplication())).get(RaceResultViewModel.class);
-        weeklyRaceViewModel = new ViewModelProvider(this, new WeeklyRaceViewModelFactory(getApplication())).get(WeeklyRaceViewModel.class);
+        raceResultViewModel = new ViewModelProvider(this, new RaceResultViewModelFactory(getApplication(), this)).get(RaceResultViewModel.class);
+        weeklyRaceViewModel = new ViewModelProvider(this, new WeeklyRaceViewModelFactory(getApplication(), this)).get(WeeklyRaceViewModel.class);
         processRaceData();
     }
 
     private void processRaceData() {
         List<WeeklyRace> races = new ArrayList<>();
         LiveData<Result> data = weeklyRaceViewModel.getWeeklyRacesLiveData();
-        data.observe(this, result -> {
+        @SuppressWarnings("unchecked")
+        androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
+        observerHolder[0] = result -> {
             if (result instanceof Result.Loading) {
                 return;
             }
+            data.removeObserver(observerHolder[0]);
             if (result.isSuccess()) {
-                Log.i("PastEvent", "SUCCESS");
+                Log.i("EventActivity", "Weekly races loaded successfully");
                 races.addAll(((Result.WeeklyRaceSuccess) result).getData());
 
                 WeeklyRace weeklyRace = null;
                 for (WeeklyRace race : races) {
                     if (race.getTrack().getTrackId().equals(trackId)) {
                         weeklyRace = race;
+                        break;
                     }
                 }
 
-                assert weeklyRace != null;
-                buildEventCard(weeklyRace);
+                if (weeklyRace != null) {
+                    buildEventCard(weeklyRace);
+                } else {
+                    Log.e("EventActivity", "Weekly race not found for trackId: " + trackId);
+                    loadingScreen.hideLoadingScreen();
+                }
+            } else {
+                Log.e("EventActivity", "Error loading weekly races: " + result.getError());
+                loadingScreen.hideLoadingScreen();
             }
-        });
+        };
+        data.observe(this, observerHolder[0]);
     }
 
     private void buildEventCard(WeeklyRace weeklyRace) {
-
         UIUtils.singleSetTextViewText(weeklyRace.getRaceName().toUpperCase(), findViewById(R.id.topAppBarTitle));
 
         TrackViewModel trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(getApplication())).get(TrackViewModel.class);
         MutableLiveData<Result> trackData = trackViewModel.getTrack(trackId);
-
-        trackData.observe(this, result -> {
+        @SuppressWarnings("unchecked")
+        androidx.lifecycle.Observer<Result>[] observerTrack = new androidx.lifecycle.Observer[1];
+        observerTrack[0] = result -> {
             if (result instanceof Result.Loading) {
                 return;
             }
+            trackData.removeObserver(observerTrack[0]);
             if (result.isSuccess()) {
                 track = ((Result.TrackSuccess) result).getData();
-                Log.i(TAG, "Track: " + track.toString());
+                Log.i(TAG, "Track: " + track);
 
-                NationViewModel nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(getApplication())).get(NationViewModel.class);
-                try{
-                    MutableLiveData<Result> nationData = nationViewModel.getNation(track.getCountry());
-
-                    nationData.observe(this, result1 -> {
-                        if (result1 instanceof Result.Loading) {
-                            return;
-                        }
-                        if (result1.isSuccess()) {
-                            nation = ((Result.NationSuccess) result1).getData();
-                            Log.i(TAG, "Nation: " + nation.toString());
-
-                            setEventImage(weeklyRace, track, nation);
-                        }else{
-                            Log.e(TAG, "Error getting nation data");
-                            setEventImage(weeklyRace, track, null);
-                        }
-                    });
-                }catch (RuntimeException e){
-                    Log.e(TAG, "Error getting nation data: " + e.getMessage());
+                if (track != null && track.getCountry() != null) {
+                    NationViewModel nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(getApplication())).get(NationViewModel.class);
+                    try {
+                        MutableLiveData<Result> nationData = nationViewModel.getNation(track.getCountry());
+                        @SuppressWarnings("unchecked")
+                        androidx.lifecycle.Observer<Result>[] observerNation = new androidx.lifecycle.Observer[1];
+                        observerNation[0] = result1 -> {
+                            if (result1 instanceof Result.Loading) {
+                                return;
+                            }
+                            nationData.removeObserver(observerNation[0]);
+                            if (result1.isSuccess()) {
+                                nation = ((Result.NationSuccess) result1).getData();
+                                setEventImage(weeklyRace, track, nation);
+                            } else {
+                                setEventImage(weeklyRace, track, null);
+                            }
+                        };
+                        nationData.observe(this, observerNation[0]);
+                    } catch (RuntimeException e) {
+                        Log.e(TAG, "Error getting nation data: " + e.getMessage());
+                        setEventImage(weeklyRace, track, null);
+                    }
+                } else {
                     setEventImage(weeklyRace, track, null);
                 }
-
+            } else {
+                Log.e(TAG, "Error getting track data");
+                loadingScreen.hideLoadingScreen();
             }
-        });
+        };
+        trackData.observe(this, observerTrack[0]);
     }
 
     private void setEventImage(WeeklyRace weeklyRace, Track track, Nation nation) {
@@ -196,14 +219,14 @@ public class EventActivity extends AppCompatActivity {
         UIUtils.translateEventDateInterval(weeklyRace.getDateInterval(), findViewById(R.id.event_date));
 
         LinearLayout trackLayout = findViewById(R.id.track_outline_layout);
-        trackLayout.setOnClickListener(v -> UIUtils.navigateToBioPage(this, trackId + "&" + weeklyRace.getRaceName().toUpperCase(), 2));
+        trackLayout.setOnClickListener(v -> NavigationUtils.navigateToBioPage(this, trackId + "&" + weeklyRace.getRaceName().toUpperCase(), 2));
 
         Button openForecastButton = findViewById(R.id.goToForecastButton);
         openForecastButton.setOnClickListener(v ->
-                UIUtils.openGoogleWeather(this, track.getLocation().getLocality()));
+                NavigationUtils.openGoogleWeather(this, track.getLocation().getLocality()));
 
         String nationFlagUrl = null;
-        if(nation != null) {
+        if (nation != null) {
             nationFlagUrl = nation.getNation_flag_url();
         }
 
@@ -211,33 +234,50 @@ public class EventActivity extends AppCompatActivity {
                 new String[]{nationFlagUrl, track.getTrack_minimal_layout_url()},
                 new ImageView[]{findViewById(R.id.country_flag), findViewById(R.id.track_outline_image)},
                 () -> buildEventCardFinalStep(weeklyRace));
+
+        // Calendar export button
+        Button addToCalendarButton = findViewById(R.id.addToCalendarButton);
+        addToCalendarButton.setOnClickListener(v -> {
+            try {
+                CalendarUtils.addWeekendToCalendar(this, weeklyRace);
+                Toast.makeText(this, R.string.add_to_calendar_success, Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Log.e(TAG, "Error opening calendar: " + e.getMessage());
+                Toast.makeText(this, R.string.calendar_not_found, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void buildEventCardFinalStep(WeeklyRace weeklyRace) {
         List<Session> sessions = weeklyRace.getSessions();
         Session nextEvent = weeklyRace.findNextEvent(sessions);
         boolean underway = weeklyRace.isUnderway(false) && !weeklyRace.isWeekFinished();
+
+        createWeekSchedule(sessions, weeklyRace.getRound());
+
         if (nextEvent != null && !underway) {
             LocalDateTime eventDateTime = nextEvent.getStartDateTime();
             startCountdown(eventDateTime);
         } else if (!underway) {
             showResults(weeklyRace);
+        } else {
+            setLiveSession();
         }
-
-        createWeekSchedule(sessions, weeklyRace.getRound());
     }
 
     private void setLiveSession() {
         View liveSession = findViewById(R.id.event_live_card);
         View noLiveSession = findViewById(R.id.event_not_live_card);
 
-        // Hide countdown view and show results view
         liveSession.setVisibility(View.VISIBLE);
         noLiveSession.setVisibility(View.GONE);
 
         ImageView liveIcon = findViewById(R.id.live_icon);
         Animation pulse = AnimationUtils.loadAnimation(this, R.anim.pulse_dynamic);
         liveIcon.startAnimation(pulse);
+
+        Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: EventActivity at " + System.currentTimeMillis());
+        loadingScreen.hideLoadingScreen();
     }
 
     private void startCountdown(LocalDateTime eventDate) {
@@ -269,36 +309,39 @@ public class EventActivity extends AppCompatActivity {
                 seconds_counter.setText("0");
             }
         }.start();
+
+        Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: EventActivity at " + System.currentTimeMillis());
+        loadingScreen.hideLoadingScreen();
     }
 
     private void showRaceResultsDialog(Race race) {
-        if(race != null){
-            if(race.getRaceResults() == null || race.getRaceResults().isEmpty()){
+        if (race != null) {
+            if (race.getRaceResults() == null || race.getRaceResults().isEmpty()) {
                 Log.e(TAG, "race results not found");
-                if(race.getSprintResults() == null || race.getSprintResults().isEmpty()){
+                if (race.getSprintResults() == null || race.getSprintResults().isEmpty()) {
                     Log.e(TAG, "sprint results not found");
-                }else{
+                } else {
                     Log.i(TAG, "Showing sprint results");
-                    UIUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 0);
+                    NavigationUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 0);
                 }
-            }else{
+            } else {
                 Log.i(TAG, "Showing race results");
-                UIUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 0);
+                NavigationUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 0);
             }
-        }else{
+        } else {
             Log.e(TAG, "race is null, cannot show results");
         }
     }
 
-    private void showQualifyingResultsDialog(Race race){
-        if(race!=null){
-            if(race.getQualifyingResults() != null && !race.getQualifyingResults().isEmpty()){
+    private void showQualifyingResultsDialog(Race race) {
+        if (race != null) {
+            if (race.getQualifyingResults() != null && !race.getQualifyingResults().isEmpty()) {
                 Log.i(TAG, "Showing qualifying results");
-                UIUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 1);
-            }else{
+                NavigationUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 1);
+            } else {
                 Log.e(TAG, "qualifying results not found");
             }
-        }else{
+        } else {
             Log.e(TAG, "race is null, cannot show qualifying results");
         }
     }
@@ -308,37 +351,36 @@ public class EventActivity extends AppCompatActivity {
 
         View countdownView = findViewById(R.id.timer_card_countdown);
         View resultsView = findViewById(R.id.timer_card_results);
-        View raceCancelledView = findViewById(R.id.timer_card_race_cancelled);
 
-        // Hide countdown view and show results view
         countdownView.setVisibility(View.GONE);
         resultsView.setVisibility(View.VISIBLE);
 
-        UIUtils.loadImageWithGlide(this, track.getTrack_minimal_layout_url(),
-                findViewById(R.id.track_outline_image), () -> processRaceResults(weeklyRace));
-
+        processRaceResults(weeklyRace);
     }
 
     private void processRaceResults(WeeklyRace weeklyRace) {
-        Log.i(TAG, "Processing race results" + " " + weeklyRace.getRound());
+        Log.i(TAG, "Processing race results for round: " + weeklyRace.getRound());
 
         MutableLiveData<Result> resultMutableLiveData = raceResultViewModel.getRaceResults(weeklyRace.getRound());
-        resultMutableLiveData.observe(this, result -> {
+        @SuppressWarnings("unchecked")
+        androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
+        observerHolder[0] = result -> {
             if (result instanceof Result.Loading) {
                 return;
             }
+            resultMutableLiveData.removeObserver(observerHolder[0]);
 
-            try{
+            try {
                 Race race = ((Result.RaceResultsSuccess) result).getData();
-                List<RaceResult> podium = race.getRaceResults();
+                List<RaceResult> podium = race != null ? race.getRaceResults() : null;
 
                 if (podium == null || podium.isEmpty()) {
                     showPendingResults();
                 } else {
                     this.currentRace = race;
 
-                    Log.i(TAG, "Podium found" + podium.size());
-                    for (int i = 0; i < 3; i++) {
+                    Log.i(TAG, "Podium found, size: " + podium.size());
+                    for (int i = 0; i < 3 && i < podium.size(); i++) {
                         String teamId = podium.get(i).getConstructor().getConstructorId();
 
                         UIUtils.singleSetTextViewText(podium.get(i).getDriver().getFullName(),
@@ -353,18 +395,18 @@ public class EventActivity extends AppCompatActivity {
                     resultsView.setOnClickListener(v -> showRaceResultsDialog(currentRace));
                 }
             } catch (Exception e) {
-                Log.i(TAG, "catch");
+                Log.e(TAG, "Error processing race results: " + e.getMessage());
                 showPendingResults();
+            } finally {
+                Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: EventActivity at " + System.currentTimeMillis());
+                loadingScreen.hideLoadingScreen();
             }
-        });
-
-
+        };
+        resultMutableLiveData.observe(this, observerHolder[0]);
     }
 
     private void showPendingResults() {
         Log.i(TAG, "No results found");
-        loadingScreen.updateProgress();
-
         View pendingResultsView = findViewById(R.id.timer_card_pending_results);
         View countdownView = findViewById(R.id.timer_card_countdown);
         View resultsView = findViewById(R.id.timer_card_results);
@@ -393,13 +435,12 @@ public class EventActivity extends AppCompatActivity {
                     sessionId);
 
             UIUtils.setTextViewTextWithCondition(sessionId.equals("Race"),
-                    session.getStartingTime(), //if true
-                    session.getTime(), //if false
+                    session.getStartingTime(),
+                    session.getTime(),
                     eventSchedule.findViewById(Constants.SESSION_TIME_FIELD.get(sessionId)));
 
             setChequeredFlag(eventSchedule, session, round);
         }
-        loadingScreen.hideLoadingScreen();
     }
 
     private void setChequeredFlag(View view, Session session, String round) {
@@ -423,13 +464,13 @@ public class EventActivity extends AppCompatActivity {
     private void manageSessionScheduleClick(Session session, String round) {
 
         Log.i(TAG, "session id clicked: " + session.getClass().getSimpleName());
-        if(session.isRace()) {
+        if (session.isRace()) {
             showRaceResultsDialog(currentRace);
         }
-        if(session.isQualifying()){
+        if (session.isQualifying()) {
             processQualifyingData(round);
         }
-        if(session.isSprint()){
+        if (session.isSprint()) {
             processSprintData(round);
         }
 
@@ -450,13 +491,14 @@ public class EventActivity extends AppCompatActivity {
 
                 if (qualifyingResults == null || qualifyingResults.isEmpty()) {
                     Log.i(TAG, "No qualifying results found");
+                    Toast.makeText(this, "No qualifying results found", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.i(TAG, "Qualifying results found: " + qualifyingResults.size());
 
                     showQualifyingResultsDialog(race);
 
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
                 Log.e(TAG, "Error processing qualifying data: " + e.getMessage());
             }
         });
@@ -477,6 +519,7 @@ public class EventActivity extends AppCompatActivity {
 
                 if (sprintResults == null || sprintResults.isEmpty()) {
                     Log.i(TAG, "No sprint results found");
+                    Toast.makeText(this, "No sprint results found", Toast.LENGTH_SHORT).show();
                 } else {
                     Log.i(TAG, "Sprint results found: " + sprintResults.size());
 

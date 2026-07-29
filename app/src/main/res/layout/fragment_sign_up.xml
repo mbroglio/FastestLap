@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:backgroundTint="@color/white"
     app:cardCornerRadius="0dp"
-    app:strokeColor="@color/ferrari_secondary"
+    app:strokeColor="@color/app_primary_red"
     app:strokeWidth="3dp">
 
     <RelativeLayout
@@ -15,15 +15,13 @@
 
         <TextView
             android:id="@+id/registration_text"
+            style="@style/t20BoldBlack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_marginStart="@dimen/medium_margin"
             android:layout_marginTop="10dp"
-            android:fontFamily="@font/orbitron_bold"
-            android:text="@string/registration"
-            android:textColor="@color/black"
-            android:textSize="@dimen/page_title_text_size" />
+            android:text="@string/registration" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/email_field"
@@ -36,21 +34,20 @@
             android:layout_marginEnd="@dimen/medium_margin"
             android:hint="@string/email"
             android:textColorHint="@color/black"
-            app:boxStrokeErrorColor="@color/ferrari_secondary"
+            app:boxStrokeErrorColor="@color/app_primary_red"
             app:cursorColor="@color/black"
-            app:cursorErrorColor="@color/ferrari_secondary"
+            app:cursorErrorColor="@color/app_primary_red"
             app:startIconDrawable="@drawable/email_icon"
             app:startIconTint="@color/black">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/textInputEmail"
+                style="@style/t12RegularBlackLineLimited"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_top_left_right_margins"
-                android:fontFamily="@font/orbitron_regular"
                 android:inputType="textEmailAddress"
-                android:textColor="@color/grey_card"
-                android:textSize="@dimen/body_text_size" />
+                android:textColor="@color/grey_card" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -65,9 +62,9 @@
             android:layout_marginEnd="@dimen/medium_margin"
             android:hint="@string/password"
             android:textColorHint="@color/black"
-            app:boxStrokeErrorColor="@color/ferrari_secondary"
+            app:boxStrokeErrorColor="@color/app_primary_red"
             app:cursorColor="@color/black"
-            app:cursorErrorColor="@color/ferrari_secondary"
+            app:cursorErrorColor="@color/app_primary_red"
             app:endIconMode="password_toggle"
             app:endIconTint="@color/black"
             app:startIconDrawable="@drawable/password_icon"
@@ -75,18 +72,18 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/textInputPassword"
+                style="@style/t12RegularBlackLineLimited"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/background_top_left_right_margins"
-                android:fontFamily="@font/orbitron_regular"
                 android:inputType="textPassword"
-                android:textColor="@color/grey_card"
-                android:textSize="@dimen/body_text_size" />
+                android:textColor="@color/grey_card" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
             android:id="@+id/submit_button"
+            style="@style/t14UpperCaseBoldBlack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/password_field"
@@ -94,11 +91,8 @@
             android:layout_marginTop="@dimen/medium_margin"
             android:layout_marginEnd="@dimen/medium_margin"
             android:layout_marginBottom="10dp"
-            android:backgroundTint="@color/ferrari_secondary"
-            android:fontFamily="@font/orbitron_bold"
-            android:text="@string/submit_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:backgroundTint="@color/app_primary_red"
+            android:text="@string/submit">
 
         </Button>
 

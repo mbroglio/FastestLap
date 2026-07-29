@@ -1,5 +1,6 @@
 package com.the_coffe_coders.fastestlap.ui.event;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -14,10 +15,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.adapter.PastEventsRecyclerAdapter;
+import com.the_coffe_coders.fastestlap.adapter.f1.PastEventsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
@@ -26,8 +27,8 @@ import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModelFactory;
-import com.the_coffe_coders.fastestlap.util.LoadingScreen;
-import com.the_coffe_coders.fastestlap.util.UIUtils;
+import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -74,8 +75,8 @@ public class PastEventsActivity extends AppCompatActivity {
 
         eventViewModel = new ViewModelProvider(this, new EventViewModelFactory(getApplication())).get(EventViewModel.class);
         trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(getApplication())).get(TrackViewModel.class);
-        raceResultViewModel = new ViewModelProvider(this, new RaceResultViewModelFactory(getApplication())).get(RaceResultViewModel.class);
-        weeklyRaceViewModel = new ViewModelProvider(this, new WeeklyRaceViewModelFactory(getApplication())).get(WeeklyRaceViewModel.class);
+        raceResultViewModel = new ViewModelProvider(this, new RaceResultViewModelFactory(getApplication(), this)).get(RaceResultViewModel.class);
+        weeklyRaceViewModel = new ViewModelProvider(this, new WeeklyRaceViewModelFactory(getApplication(), this)).get(WeeklyRaceViewModel.class);
 
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
         UIUtils.applyWindowInsets(toolbar);
@@ -159,10 +160,9 @@ public class PastEventsActivity extends AppCompatActivity {
                 totalRaces = pastRaces.size();
                 loadedRaces = 0;
 
-                Log.i("PastEvent", "Starting to load " + totalRaces + " races");
+                Log.i("PastEvent", "Starting to load " + totalRaces + " races in parallel");
 
-                // Carica le gare una alla volta
-                loadRacesSequentially(pastRaces, 0);
+                loadRacesInParallel(pastRaces);
             } else {
                 Log.e("PastEvent", "Failed to load weekly races");
                 loadingScreen.hideLoadingScreen();
@@ -170,93 +170,53 @@ public class PastEventsActivity extends AppCompatActivity {
         });
     }
 
-    private void loadRacesSequentially(List<WeeklyRace> pastRaces, int index) {
-        if (index >= pastRaces.size()) {
-            // Tutte le gare sono state caricate
-            Log.i("PastEvent", "All races loaded, sorting and updating UI");
+    private void loadRacesInParallel(List<WeeklyRace> pastRaces) {
+        if (pastRaces == null || pastRaces.isEmpty()) {
             sortAndUpdateList();
             loadingScreen.hideLoadingScreen();
-            dataLoaded = true; // Segna i dati come caricati
+            dataLoaded = true;
             return;
         }
 
-        WeeklyRace weeklyRace = pastRaces.get(index);
-        Log.i("PastEvent", "Loading race " + (index + 1) + "/" + totalRaces);
+        totalRaces = pastRaces.size();
+        List<Race> fetchedRaces = java.util.Collections.synchronizedList(new ArrayList<>());
+        final int[] completedCount = {0};
 
-        // Carica la singola gara
-        MutableLiveData<Result> singleRaceData = raceResultViewModel.getRaceResults(weeklyRace.getRound());
-        singleRaceData.observe(this, result -> {
-            if (result instanceof Result.Loading) {
-                return;
-            }
-
-            if (result.isSuccess()) {
-                Race race = ((Result.RaceResultsSuccess) result).getData();
-                Log.i("PastEvent", "Successfully loaded race: " + race.toString());
-
-                // Verifica che la gara non sia già presente nella lista
-                if (!isRaceAlreadyInList(race)) {
-                    // Aggiungi la gara alla lista e aggiorna l'adapter
-                    addRaceToList(race);
-                } else {
-                    Log.w("PastEvent", "Race already in list, skipping: " + race.getRound());
+        for (WeeklyRace weeklyRace : pastRaces) {
+            MutableLiveData<Result> singleRaceData = raceResultViewModel.getRaceResults(weeklyRace.getRound());
+            @SuppressWarnings("unchecked")
+            androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
+            observerHolder[0] = result -> {
+                if (result instanceof Result.Loading) {
+                    return;
                 }
-
-                loadedRaces++;
-
-                // Rimuovi l'observer per evitare multiple chiamate
-                singleRaceData.removeObservers(this);
-
-                // Carica la prossima gara
-                loadRacesSequentially(pastRaces, index + 1);
-            } else {
-                Log.e("PastEvent", "Failed to load race at index " + index);
-                loadedRaces++;
-
-                // Rimuovi l'observer e continua con la prossima gara
-                singleRaceData.removeObservers(this);
-                loadRacesSequentially(pastRaces, index + 1);
-            }
-        });
-    }
-
-    private boolean isRaceAlreadyInList(Race race) {
-        for (Race existingRace : racesList) {
-            if (existingRace.getRound().equals(race.getRound())) {
-                return true;
-            }
+                singleRaceData.removeObserver(observerHolder[0]);
+                if (result.isSuccess()) {
+                    Race race = ((Result.RaceResultsSuccess) result).getData();
+                    fetchedRaces.add(race);
+                }
+                synchronized (completedCount) {
+                    completedCount[0]++;
+                    if (completedCount[0] >= totalRaces) {
+                        racesList.clear();
+                        racesList.addAll(fetchedRaces);
+                        sortAndUpdateList();
+                        dataLoaded = true;
+                    }
+                }
+            };
+            singleRaceData.observe(this, observerHolder[0]);
         }
-        return false;
     }
 
-    private void addRaceToList(Race race) {
-        // Inserisci la gara nella posizione corretta mantenendo l'ordine
-        int insertPosition = findInsertPosition(race);
-        racesList.add(insertPosition, race);
-
-        // Notifica l'adapter dell'inserimento
-        runOnUiThread(() -> {
-            pastEventsAdapter.notifyItemInserted(insertPosition);
-            Log.i("PastEvent", "Race added at position " + insertPosition + ", total races: " + racesList.size());
-        });
-    }
-
-    private int findInsertPosition(Race newRace) {
-        // Trova la posizione corretta per inserire la gara mantenendo l'ordine decrescente per round
-        for (int i = 0; i < racesList.size(); i++) {
-            if (newRace.getRoundAsInt() > racesList.get(i).getRoundAsInt()) {
-                return i;
-            }
-        }
-        return racesList.size(); // Inserisci alla fine se ha il round più basso
-    }
-
+    @SuppressLint("NotifyDataSetChanged")
     private void sortAndUpdateList() {
-        // Ordina la lista finale per sicurezza
+        // Ordina la lista finale per sicurezza (dalla più recente alla meno recente)
         racesList.sort(Comparator.comparingInt(Race::getRoundAsInt));
         Collections.reverse(racesList);
 
         runOnUiThread(() -> {
+            pastEventsAdapter.updateTargetLoadCount();
             pastEventsAdapter.notifyDataSetChanged();
             Log.i("PastEvent", "Final sort completed, total races: " + racesList.size());
         });

@@ -2,9 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="5dp"
-    android:layout_marginTop="10dp"
-    android:layout_marginEnd="5dp"
     android:baselineAligned="false"
     android:orientation="horizontal">
 
@@ -15,29 +12,24 @@
         android:orientation="vertical">
 
         <TextView
+            style="@style/t14UpperCaseRegularBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
-            android:fontFamily="@font/orbitron_regular"
             android:gravity="center"
             android:maxLines="1"
-            android:text="@string/days_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:text="@string/days">
 
         </TextView>
 
         <TextView
             android:id="@+id/next_days_counter"
+            style="@style/timer32BoldBlackStandard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="5dp"
             android:gravity="center"
-            android:maxLines="1"
-            android:text="@string/base_countdown"
-            android:textColor="@color/black"
-            android:textSize="@dimen/timer_text_size"
-            android:textStyle="bold">
+            android:text="@string/base_countdown">
 
         </TextView>
 
@@ -50,30 +42,26 @@
         android:orientation="vertical">
 
         <TextView
+            style="@style/t14UpperCaseRegularBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
-            android:fontFamily="@font/orbitron_regular"
             android:gravity="center"
             android:maxLines="1"
-            android:text="@string/hours_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:text="@string/hours_abbr">
 
         </TextView>
 
         <TextView
             android:id="@+id/next_hours_counter"
+            style="@style/timer32BoldBlackStandard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:gravity="center"
-            android:text="@string/base_countdown"
-            android:textColor="@color/black"
-            android:textSize="@dimen/timer_text_size"
-            android:textStyle="bold">
+            android:text="@string/base_countdown">
 
         </TextView>
 
@@ -86,30 +74,26 @@
         android:orientation="vertical">
 
         <TextView
+            style="@style/t14UpperCaseRegularBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
-            android:fontFamily="@font/orbitron_regular"
             android:gravity="center"
             android:maxLines="1"
-            android:text="@string/minutes_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:text="@string/minutes_abbr">
 
         </TextView>
 
         <TextView
             android:id="@+id/next_minutes_counter"
+            style="@style/timer32BoldBlackStandard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:gravity="center"
-            android:text="@string/base_countdown"
-            android:textColor="@color/black"
-            android:textSize="@dimen/timer_text_size"
-            android:textStyle="bold">
+            android:text="@string/base_countdown">
 
         </TextView>
 
@@ -122,33 +106,28 @@
         android:orientation="vertical">
 
         <TextView
+            style="@style/t14UpperCaseRegularBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:fontFamily="@font/orbitron_regular"
             android:gravity="center"
             android:maxLines="1"
-            android:text="@string/seconds_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:text="@string/seconds_abbr">
 
         </TextView>
 
         <TextView
             android:id="@+id/next_seconds_counter"
+            style="@style/timer32BoldBlackStandard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:gravity="center"
-            android:text="@string/base_countdown"
-            android:textColor="@color/black"
-            android:textSize="@dimen/timer_text_size"
-            android:textStyle="bold">
+            android:text="@string/base_countdown">
 
         </TextView>
 
     </LinearLayout>
-
 
 </LinearLayout>

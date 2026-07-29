@@ -7,8 +7,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,12 +24,12 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
-import com.the_coffe_coders.fastestlap.domain.constructor.ConstructorHistory;
-import com.the_coffe_coders.fastestlap.domain.driver.Driver;
+import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
+import com.the_coffe_coders.fastestlap.domain.f1.constructor.ConstructorHistory;
+import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
-import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
+import com.the_coffe_coders.fastestlap.ui.bio.handler.FavoriteBioHandler;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
@@ -37,10 +39,12 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ServiceLocator;
-import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
-import com.the_coffe_coders.fastestlap.util.UIUtils;
+import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
+import com.the_coffe_coders.fastestlap.util.ui.TachometerView;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.List;
 
@@ -53,6 +57,8 @@ public class ConstructorBioActivity extends AppCompatActivity {
     private DriverViewModel driverViewModel;
     private NationViewModel nationViewModel;
     private ConstructorViewModel constructorViewModel;
+    private UserViewModel userViewModel;
+    private FavoriteBioHandler favoriteBioHandler;
 
     private SwipeRefreshLayout constructorBioLayout;
     private String teamId;
@@ -61,11 +67,18 @@ public class ConstructorBioActivity extends AppCompatActivity {
     private Driver driverOne;
     private Driver driverTwo;
 
+    private TachometerView winPercentageTachometer, podiumPercentageTachometer;
+
+    private NetworkUtils networkLiveData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_constructor_bio);
+
+        networkLiveData = new NetworkUtils(this);
+        favoriteBioHandler = new FavoriteBioHandler(this);
 
         start();
     }
@@ -84,10 +97,33 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
         Menu menu = toolbar.getMenu();
         MenuItem favoriteItem = menu.findItem(R.id.favourite_icon_outline);
-        favoriteItem.setOnMenuItemClickListener(v -> {
-            toggleFavoriteConstructor(teamId, favoriteItem);
-            return true;
-        });
+
+        if (networkLiveData.isConnected()) {
+            favoriteItem.setOnMenuItemClickListener(v -> {
+                String updatedFavoriteId = favoriteBioHandler.toggleFavorite(
+                        teamId,
+                        Constants.SHARED_PREFERENCES_FAVORITE_TEAM,
+                        favoriteItem,
+                        favoriteId -> {
+                            String idToken = userViewModel.getLoggedUser() != null ? userViewModel.getLoggedUser().getIdToken() : null;
+                            if (idToken != null) {
+                                userViewModel.saveUserConstructorPreferences(favoriteId, idToken);
+                            }
+                        });
+
+                if ("null".equals(updatedFavoriteId)) {
+                    Log.i(TAG, "Removed favorite constructor: " + teamId);
+                } else {
+                    Log.i(TAG, "Set favorite constructor to: " + teamId);
+                }
+                return true;
+            });
+        } else {
+            favoriteItem.setOnMenuItemClickListener(v -> {
+                Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
+                return true;
+            });
+        }
 
         appBarLayout = findViewById(R.id.top_bar_layout);
 
@@ -100,6 +136,9 @@ public class ConstructorBioActivity extends AppCompatActivity {
         teamId = getIntent().getStringExtra("TEAM_ID");
         Log.i("ConstructorBioActivity", "Team ID: " + teamId);
 
+        winPercentageTachometer = findViewById(R.id.win_percentage_tachometer_team);
+        podiumPercentageTachometer = findViewById(R.id.podium_percentage_tachometer_team);
+
         initializeViewModels();
 
     }
@@ -108,144 +147,138 @@ public class ConstructorBioActivity extends AppCompatActivity {
         driverViewModel = new ViewModelProvider(this, new DriverViewModelFactory(getApplication())).get(DriverViewModel.class);
         constructorViewModel = new ViewModelProvider(this, new ConstructorViewModelFactory(getApplication())).get(ConstructorViewModel.class);
         nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(getApplication())).get(NationViewModel.class);
+        IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
+        userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
 
         createConstructorBioPage(teamId);
     }
 
-    private void toggleFavoriteConstructor(String teamId, MenuItem menuItem) {
-        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
-        String currentFavoriteTeamId = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
-
-        IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
-        UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
-        User currentUser = userViewModel.getLoggedUser();
-
-        if (currentFavoriteTeamId.equals(teamId)) {
-            // Remove as favorite
-            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM, "null");
-            menuItem.setIcon(R.drawable.baseline_star_border_24);
-
-            // Update user preferences in backend (if needed)
-            userViewModel.saveUserConstructorPreferences("null", currentUser.getIdToken());
-
-            Log.i(TAG, "Removed favorite constructor: " + teamId);
-        } else {
-            // Set as favorite
-            sharedPreferencesUtils.writeStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM, teamId);
-            menuItem.setIcon(R.drawable.star_fav);
-
-            // Update user preferences in backend
-            userViewModel.saveUserConstructorPreferences(teamId, currentUser.getIdToken());
-
-            Log.i(TAG, "Set favorite constructor to: " + teamId);
-        }
-    }
 
     private void createConstructorBioPage(String teamId) {
         MutableLiveData<Result> data = constructorViewModel.getSelectedConstructor(teamId);
-        data.observe(this, result -> {
+        @SuppressWarnings("unchecked")
+        androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
+        observerHolder[0] = result -> {
             if (result instanceof Result.Loading) {
                 return;
             }
+            data.removeObserver(observerHolder[0]);
             if (result.isSuccess()) {
                 constructor = ((Result.ConstructorSuccess) result).getData();
 
                 if (constructor == null) {
-                    UIUtils.navigateToHomePage(this);
+                    NavigationUtils.navigateToHomePage(this);
                 } else {
-                    Log.i(TAG, "Constructor: " + constructor);
+                    Log.i(TAG, "Constructor loaded: " + constructor);
 
                     UIUtils.singleSetTextViewText(constructor.getName().toUpperCase(), findViewById(R.id.topAppBarTitle));
 
-                    toolbar.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
-                    appBarLayout.setBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+                    Integer teamColor = Constants.TEAM_COLOR.get(teamId);
+                    if (teamColor == null) {
+                        teamColor = R.color.timer_gray;
+                    }
+
+                    toolbar.setBackgroundColor(ContextCompat.getColor(this, teamColor));
+                    appBarLayout.setBackgroundColor(ContextCompat.getColor(this, teamColor));
 
                     MaterialCardView teamLogoCard = findViewById(R.id.team_logo_card);
-                    teamLogoCard.setStrokeColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+                    teamLogoCard.setStrokeColor(ContextCompat.getColor(this, teamColor));
 
                     if (teamId.equals("rb")) {
                         teamLogoCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white));
                     }
 
                     MaterialCardView driverCard = findViewById(R.id.driver_1_card);
-                    driverCard.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+                    driverCard.setCardBackgroundColor(ContextCompat.getColor(this, teamColor));
 
                     driverCard = findViewById(R.id.driver_2_card);
-                    driverCard.setCardBackgroundColor(ContextCompat.getColor(this, Constants.TEAM_COLOR.get(teamId)));
+                    driverCard.setCardBackgroundColor(ContextCompat.getColor(this, teamColor));
 
-                    // Check if this constructor is the favorite and update the icon
-                    updateFavoriteIcon(teamId);
+                    favoriteBioHandler.updateFavoriteIcon(toolbar.getMenu(), R.id.favourite_icon_outline, teamId, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
 
-                    getDriverData(constructor.getDriverOneId(), constructor);
+                    fetchAllTeamDependencies(constructor);
                 }
+            } else {
+                Log.e(TAG, "Error fetching constructor: " + result.getError());
+                loadingScreen.hideLoadingScreen();
             }
-        });
+        };
+        data.observe(this, observerHolder[0]);
     }
 
-    private void updateFavoriteIcon(String teamId) {
-        SharedPreferencesUtils sharedPreferencesUtils = new SharedPreferencesUtils(this);
-        String favoriteTeamId = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
+    private void fetchAllTeamDependencies(Constructor team) {
+        java.util.concurrent.atomic.AtomicInteger pendingCount = new java.util.concurrent.atomic.AtomicInteger(3);
 
-        Menu menu = toolbar.getMenu();
-        MenuItem favoriteItem = menu.findItem(R.id.favourite_icon_outline);
-
-        if (favoriteTeamId.equals(teamId)) {
-            favoriteItem.setIcon(R.drawable.star_fav);
-        } else {
-            favoriteItem.setIcon(R.drawable.baseline_star_border_24);
-        }
-    }
-
-    public void getDriverData(String driverId, Constructor team) {
-        MutableLiveData<Result> data = driverViewModel.getDriver(driverId);
-
-        data.observe(this, result -> {
-            if (result instanceof Result.Loading) {
-                return;
+        Runnable checkComplete = () -> {
+            if (pendingCount.decrementAndGet() == 0) {
+                setTeamData(constructor, nation, driverOne, driverTwo);
             }
-            if (result.isSuccess()) {
-                if (driverId.equals(team.getDriverOneId())) {
+        };
+
+        // Fetch Driver 1 in parallel
+        if (team.getDriverOneId() != null) {
+            MutableLiveData<Result> driver1Data = driverViewModel.getDriver(team.getDriverOneId());
+            @SuppressWarnings("unchecked")
+            androidx.lifecycle.Observer<Result>[] observer1 = new androidx.lifecycle.Observer[1];
+            observer1[0] = result -> {
+                if (result instanceof Result.Loading) return;
+                driver1Data.removeObserver(observer1[0]);
+                if (result.isSuccess()) {
                     driverOne = ((Result.DriverSuccess) result).getData();
-
                     MaterialCardView driverOneCard = findViewById(R.id.driver_1_card);
                     driverOneCard.setOnClickListener(v ->
-                            UIUtils.navigateToBioPage(this, driverOne.getDriverId(), 1));
-
-                    getDriverData(team.getDriverTwoId(), team);
-
-                } else {
-                    driverTwo = ((Result.DriverSuccess) result).getData();
-
-                    MaterialCardView driverTwoCard = findViewById(R.id.driver_2_card);
-                    driverTwoCard.setOnClickListener(v ->
-                            UIUtils.navigateToBioPage(this, driverTwo.getDriverId(), 1));
-
-                    getNationData(team.getNationality());
+                            NavigationUtils.navigateToBioPage(this, driverOne.getDriverId(), 1));
                 }
-            }
-        });
-    }
-
-    public void getNationData(String nationId) {
-        try{
-            MutableLiveData<Result> data = nationViewModel.getNation(nationId);
-            data.observe(this, result -> {
-                if (result instanceof Result.Loading) {
-                    return;
-                }
-                if (result.isSuccess()) {
-                    nation = ((Result.NationSuccess) result).getData();
-                    setTeamData(constructor, nation, driverOne, driverTwo);
-                }else{
-                    Log.e(TAG, "Error getting nation data");
-                    setTeamData(constructor, null, driverOne, driverTwo);
-                }
-            });
-        }catch (RuntimeException e) {
-            Log.e(TAG, "Error fetching nation data: " + e.getMessage());
-            setTeamData(constructor, null, driverOne, driverTwo);
+                checkComplete.run();
+            };
+            driver1Data.observe(this, observer1[0]);
+        } else {
+            checkComplete.run();
         }
 
+        // Fetch Driver 2 in parallel
+        if (team.getDriverTwoId() != null) {
+            MutableLiveData<Result> driver2Data = driverViewModel.getDriver(team.getDriverTwoId());
+            @SuppressWarnings("unchecked")
+            androidx.lifecycle.Observer<Result>[] observer2 = new androidx.lifecycle.Observer[1];
+            observer2[0] = result -> {
+                if (result instanceof Result.Loading) return;
+                driver2Data.removeObserver(observer2[0]);
+                if (result.isSuccess()) {
+                    driverTwo = ((Result.DriverSuccess) result).getData();
+                    MaterialCardView driverTwoCard = findViewById(R.id.driver_2_card);
+                    driverTwoCard.setOnClickListener(v ->
+                            NavigationUtils.navigateToBioPage(this, driverTwo.getDriverId(), 1));
+                }
+                checkComplete.run();
+            };
+            driver2Data.observe(this, observer2[0]);
+        } else {
+            checkComplete.run();
+        }
+
+        // Fetch Nation in parallel
+        if (team.getNationality() != null) {
+            try {
+                MutableLiveData<Result> nationData = nationViewModel.getNation(team.getNationality());
+                @SuppressWarnings("unchecked")
+                androidx.lifecycle.Observer<Result>[] observerNation = new androidx.lifecycle.Observer[1];
+                observerNation[0] = result -> {
+                    if (result instanceof Result.Loading) return;
+                    nationData.removeObserver(observerNation[0]);
+                    if (result.isSuccess()) {
+                        nation = ((Result.NationSuccess) result).getData();
+                    }
+                    checkComplete.run();
+                };
+                nationData.observe(this, observerNation[0]);
+            } catch (Exception e) {
+                Log.e(TAG, "Error fetching nation: " + e.getMessage());
+                checkComplete.run();
+            }
+        } else {
+            checkComplete.run();
+        }
     }
 
     private void setTeamData(Constructor team, Nation nation, Driver driverOne, Driver driverTwo) {
@@ -256,8 +289,11 @@ public class ConstructorBioActivity extends AppCompatActivity {
             nationFlagUrl = nation.getNation_flag_url();
         }
 
-        UIUtils.loadSequenceOfImagesWithGlide(this,
-                new String[]{team.getTeam_logo_url(), nationFlagUrl, team.getCar_pic_url(), driverOne.getDriver_pic_url(), driverTwo.getDriver_pic_url()},
+        String d1HalfPic = driverOne != null ? driverOne.getDriver_half_pic_url() : null;
+        String d2HalfPic = driverTwo != null ? driverTwo.getDriver_half_pic_url() : null;
+
+        UIUtils.loadImagesInParallel(this,
+                new String[]{team.getTeam_logo_url(), nationFlagUrl, team.getCar_pic_url(), d1HalfPic, d2HalfPic},
                 new ImageView[]{findViewById(R.id.team_logo_image), findViewById(R.id.team_flag), findViewById(R.id.team_car_image), findViewById(R.id.driver_1_image), findViewById(R.id.driver_2_image)},
                 () -> setTeamDataFinalStep(team));
 
@@ -265,9 +301,12 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
     private void setTeamDataFinalStep(Constructor team) {
 
+        String d1Name = driverOne != null ? driverOne.getGivenName() + " " + driverOne.getFamilyName() : "TBA";
+        String d2Name = driverTwo != null ? driverTwo.getGivenName() + " " + driverTwo.getFamilyName() : "TBA";
+
         UIUtils.multipleSetTextViewText(
-                new String[]{driverOne.getGivenName() + " " + driverOne.getFamilyName(),
-                        driverTwo.getGivenName() + " " + driverTwo.getFamilyName(),
+                new String[]{d1Name,
+                        d2Name,
                         team.getFull_name(),
                         team.getHq(),
                         team.getTeam_principal(),
@@ -290,17 +329,26 @@ public class ConstructorBioActivity extends AppCompatActivity {
                         findViewById(R.id.team_wins_value),
                         findViewById(R.id.team_podiums_value)});
 
+        UIUtils.updateTachometers(this, team, winPercentageTachometer, podiumPercentageTachometer);
+
         createHistoryTable();
+        Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: ConstructorBioActivity at " + System.currentTimeMillis());
+        loadingScreen.hideLoadingScreen();
     }
 
     private void createHistoryTable() {
         loadingScreen.updateProgress();
 
+        LinearLayout teamHistory = findViewById(R.id.team_history);
+
         TableLayout tableLayout = findViewById(R.id.history_table);
         tableLayout.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
 
-        if (constructor.getTeam_history() != null) {
+        if (constructor.getTeam_history() != null && !constructor.getTeam_history().isEmpty()) {
+            teamHistory.setVisibility(View.VISIBLE);
+            tableLayout.setVisibility(View.VISIBLE);
+
             View tableHeader = inflater.inflate(R.layout.constructor_bio_table_header, tableLayout, false);
             TableLayout.LayoutParams paramsHeader = (TableLayout.LayoutParams) tableHeader.getLayoutParams();
             paramsHeader.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
@@ -336,9 +384,11 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
                 tableLayout.addView(tableRow);
             }
+        } else {
+            Log.e(TAG, "Constructor history is null");
+            teamHistory.setVisibility(View.GONE);
+            tableLayout.setVisibility(View.GONE);
         }
-
-        loadingScreen.hideLoadingScreen();
     }
 
     @Override

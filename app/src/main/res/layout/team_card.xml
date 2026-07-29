@@ -1,56 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/team_card_view"
     style="?materialCardViewElevatedStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="10dp"
+    android:layout_marginTop="4dp"
     android:layout_marginEnd="10dp"
+    android:layout_marginBottom="4dp"
     android:clickable="true"
     android:focusable="true"
     tools:context=".ui.standing.ConstructorsStandingActivity">
+
+    <TextView
+        android:id="@+id/constructor_not_found"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
+        android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
+        android:autoSizeTextType="uniform"
+        android:background="@color/timer_gray"
+        android:fontFamily="@font/orbitron_bold"
+        android:gravity="center"
+        android:maxLines="2"
+        android:paddingStart="@dimen/medium_margin"
+        android:paddingEnd="@dimen/medium_margin"
+        android:textColor="@color/black"
+        android:textSize="@dimen/layout_subtitle_text_size"
+        android:visibility="gone">
+
+    </TextView>
 
     <LinearLayout
         android:id="@+id/team_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-
         android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp">
 
             <TextView
                 android:id="@+id/team_position"
+                style="@style/t18BoldBlack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:fontFamily="@font/orbitron_bold"
                 android:gravity="start"
-                android:text="@string/not_found"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:text="@string/not_found" />
 
             <TextView
                 android:id="@+id/team_name"
+                style="@style/t18BoldBlack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:fontFamily="@font/orbitron_bold"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_toStartOf="@id/team_points"
+                android:layout_toEndOf="@id/team_position"
                 android:gravity="center"
-                android:text="@string/not_found"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:maxLines="2"
+                android:text="@string/not_found" />
 
             <TextView
                 android:id="@+id/team_points"
+                style="@style/t18BoldBlack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
                 android:layout_marginEnd="10dp"
-                android:fontFamily="@font/orbitron_bold"
                 android:gravity="end"
-                android:text="@string/not_found"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+                android:text="@string/not_found" />
+
         </RelativeLayout>
 
         <LinearLayout
@@ -59,70 +84,85 @@
             android:baselineAligned="false"
             android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_weight="0.5"
                 android:orientation="vertical"
                 android:padding="10dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="5dp"
-                    tools:ignore="UseCompoundDrawables">
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical"
+                    tools:ignore="UselessParent">
 
-                    <ImageView
-                        android:id="@+id/driver_1_pic"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:importantForAccessibility="no"
-                        android:layout_gravity="fill" />
-
-                    <TextView
-                        android:id="@+id/driver_1_name"
-                        android:layout_width="wrap_content"
+                    <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
+                        android:orientation="horizontal"
+                        android:padding="5dp">
+
+                        <ImageView
+                            android:id="@+id/driver_1_pic"
+                            android:layout_width="@dimen/image_size_30dp"
+                            android:layout_height="@dimen/image_size_30dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="fill"
+                            android:importantForAccessibility="no" />
+
+                        <TextView
+                            android:id="@+id/driver_1_name"
+                            style="@style/t12RegularBlackLineLimited"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_marginStart="5dp"
+                            android:layout_toEndOf="@id/driver_1_pic"
+                            android:gravity="start"
+                            android:maxLines="2"
+                            android:text="@string/not_found" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_marginTop="5dp"
-                        android:fontFamily="@font/orbitron_regular"
-                        android:maxWidth="150dp"
-                        android:text="@string/not_found"
-                        android:textAppearance="?attr/textAppearanceBodyLarge"
-                        android:textColor="@color/screen_background_color" />
+                        android:orientation="horizontal"
+                        android:padding="5dp">
+
+                        <ImageView
+                            android:id="@+id/driver_2_pic"
+                            android:layout_width="@dimen/image_size_30dp"
+                            android:layout_height="@dimen/image_size_30dp"
+                            android:layout_alignParentStart="true"
+                            android:layout_centerInParent="true"
+                            android:layout_gravity="fill"
+                            android:importantForAccessibility="no" />
+
+                        <TextView
+                            android:id="@+id/driver_2_name"
+                            style="@style/t12RegularBlackLineLimited"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:layout_marginStart="5dp"
+                            android:layout_toEndOf="@id/driver_2_pic"
+                            android:gravity="start"
+                            android:maxLines="2"
+                            android:text="@string/not_found" />
+                    </RelativeLayout>
+
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:padding="5dp"
-                    tools:ignore="UseCompoundDrawables">
-
-                    <ImageView
-                        android:id="@+id/driver_2_pic"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:importantForAccessibility="no"
-                        android:layout_gravity="fill" />
-
-                    <TextView
-                        android:id="@+id/driver_2_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="6dp"
-                        android:layout_marginTop="5dp"
-                        android:fontFamily="@font/orbitron_regular"
-                        android:text="@string/not_found"
-                        android:textAppearance="?attr/textAppearanceBodyLarge"
-                        android:textColor="@color/screen_background_color" />
-                </LinearLayout>
-            </LinearLayout>
+            </RelativeLayout>
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="50"
+                android:layout_weight="0.5"
                 android:orientation="vertical">
 
                 <ImageView
@@ -130,7 +170,7 @@
                     android:layout_width="100dp"
                     android:layout_height="40dp"
                     android:layout_gravity="center"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="10dp"
                     android:importantForAccessibility="no"
                     android:scaleType="fitCenter" />
 
@@ -138,11 +178,15 @@
                     android:id="@+id/car_image"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
+                    android:layout_gravity="center"
                     android:layout_margin="5dp"
                     android:importantForAccessibility="no"
                     android:scaleType="fitCenter" />
+
             </LinearLayout>
+
         </LinearLayout>
+
     </LinearLayout>
 
     <androidx.constraintlayout.widget.Guideline
@@ -150,6 +194,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal" />
-
 
 </com.google.android.material.card.MaterialCardView>

@@ -1,0 +1,64 @@
+package com.the_coffe_coders.fastestlap.repository.mapper;
+
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Practice;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Qualifying;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Sprint;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.SprintQualifying;
+import com.the_coffe_coders.fastestlap.domain.f1.result.QualifyingResult;
+import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResult;
+import com.the_coffe_coders.fastestlap.dto.PracticeDTO;
+import com.the_coffe_coders.fastestlap.dto.QualifyingDTO;
+import com.the_coffe_coders.fastestlap.dto.QualifyingResultDTO;
+import com.the_coffe_coders.fastestlap.dto.ResultDTO;
+import com.the_coffe_coders.fastestlap.dto.SprintDTO;
+import com.the_coffe_coders.fastestlap.dto.SprintQualifyingDTO;
+
+public class SessionMapper {
+    public static Practice toPractice(PracticeDTO practiceDTO, int number) {
+        if (practiceDTO != null) {
+            return new Practice(practiceDTO.getDate(), practiceDTO.getTime(), number);
+        } else {
+            return new Practice();
+        }
+
+    }
+
+    public static Qualifying toQualifying(QualifyingDTO qualifyingDTO) {
+        return new Qualifying(qualifyingDTO.getDate(), qualifyingDTO.getTime());
+    }
+
+    public static SprintQualifying toSprintQualifying(SprintQualifyingDTO qualifyingDTO) {
+        return new SprintQualifying(qualifyingDTO.getDate(), qualifyingDTO.getTime());
+    }
+
+    public static Sprint toSprint(SprintDTO sprintDTO) {
+        return new Sprint(sprintDTO.getDate(), sprintDTO.getTime());
+    }
+
+
+    public static RaceResult toResult(ResultDTO resultDTO) {
+        RaceResult raceResult = new RaceResult();
+        raceResult.setPosition(resultDTO.getPosition());
+        raceResult.setPoints(resultDTO.getPoints());
+        raceResult.setConstructor(ConstructorMapper.toConstructor(resultDTO.getConstructor()));
+        raceResult.setDriver(DriverMapper.toDriver(resultDTO.getDriver()));
+        raceResult.setLaps(resultDTO.getLaps());
+        raceResult.setGrid(resultDTO.getGrid());
+        raceResult.setStatus(resultDTO.getStatus());
+        raceResult.setPoints(resultDTO.getPoints());
+        raceResult.setTime(ResultTimeMapper.toResultTime(resultDTO.getTime()));
+        raceResult.setFastestLap(ResultFastestLapMapper.toResultFastestLap(resultDTO.getFastestLap()));
+        return raceResult;
+    }
+
+    public static QualifyingResult toQualifyingResult(QualifyingResultDTO qualifyingResultDTO) {
+        QualifyingResult qualifyingResult = new QualifyingResult();
+        qualifyingResult.setPosition(qualifyingResultDTO.getPosition());
+        qualifyingResult.setDriver(DriverMapper.toDriver(qualifyingResultDTO.getDriver()));
+        qualifyingResult.setConstructor(ConstructorMapper.toConstructor(qualifyingResultDTO.getConstructor()));
+        qualifyingResult.setQ1(qualifyingResultDTO.getQ1());
+        qualifyingResult.setQ2(qualifyingResultDTO.getQ2());
+        qualifyingResult.setQ3(qualifyingResultDTO.getQ3());
+        return qualifyingResult;
+    }
+}

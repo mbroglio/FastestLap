@@ -1,0 +1,669 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/f2_car_bio_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/screen_background_color"
+    tools:context=".ui.junior.fragment.F2CarBioFragment">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/screen_background_color"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <ImageView
+                android:id="@+id/car_image"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                android:src="@drawable/f2_car_image_2" />
+
+            <TextView
+                style="@style/t14RegularWhiteLineLimited"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:fontFamily="@font/roboto_regular"
+                android:lineHeight="18dp"
+                android:maxLines="4"
+                android:text="@string/formula_2_bio_history_text"
+                android:textColor="@color/timer_gray">
+
+            </TextView>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/t18UpperCaseBoldWhite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/engine" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@color/formula_2">
+
+                </View>
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/engine_icon">
+
+                </ImageView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/stripes_bluef2">
+
+                </ImageView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:maxLines="2"
+                    android:paddingStart="8dp"
+                    android:text="@string/f2_engine_spec_1"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/stripes_bluef2">
+
+                </ImageView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:maxLines="2"
+                    android:paddingStart="8dp"
+                    android:text="@string/f2_engine_spec_2"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/stripes_bluef2">
+
+                </ImageView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_semi_bold"
+                    android:paddingStart="8dp"
+                    android:text="@string/maximum_torque_index"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:maxLines="2"
+                    android:paddingStart="4dp"
+                    android:text="@string/max_torque_f2"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/stripes_bluef2">
+
+                </ImageView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_semi_bold"
+                    android:paddingStart="8dp"
+                    android:text="@string/gearbox_index"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:maxLines="2"
+                    android:paddingStart="4dp"
+                    android:text="@string/gearbox_f2"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/stripes_bluef2">
+
+                </ImageView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_semi_bold"
+                    android:paddingStart="8dp"
+                    android:text="@string/fuel_tank_index"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:maxLines="2"
+                    android:paddingStart="4dp"
+                    android:text="@string/fuel_tank_f2"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="4dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/t18UpperCaseBoldWhite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/speed" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@color/formula_2">
+
+                </View>
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/speed_icon">
+
+                </ImageView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/stripes_bluef2">
+
+                </ImageView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_semi_bold"
+                    android:paddingStart="8dp"
+                    android:text="@string/acceleration_index"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:maxLines="2"
+                    android:paddingStart="4dp"
+                    android:text="@string/acceleration_f2_100"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/stripes_bluef2">
+
+                </ImageView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_semi_bold"
+                    android:paddingStart="8dp"
+                    android:text="@string/acceleration_index"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:maxLines="2"
+                    android:paddingStart="4dp"
+                    android:text="@string/acceleration_f2_200"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/stripes_bluef2">
+
+                </ImageView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_semi_bold"
+                    android:paddingStart="8dp"
+                    android:text="@string/maximum_speed_index"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:maxLines="2"
+                    android:paddingStart="4dp"
+                    android:text="@string/max_speed_f2"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/stripes_bluef2">
+
+                </ImageView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_semi_bold"
+                    android:paddingStart="8dp"
+                    android:text="@string/maximum_deceleration_index"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:maxLines="2"
+                    android:paddingStart="4dp"
+                    android:text="@string/max_deceleration_f2"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="4dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/t18UpperCaseBoldWhite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dimensions" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="8dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="1"
+                    android:background="@color/formula_2">
+
+                </View>
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/dimensions_icon">
+
+                </ImageView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/stripes_bluef2">
+
+                </ImageView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_semi_bold"
+                    android:paddingStart="8dp"
+                    android:text="@string/overall_length_index"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:maxLines="2"
+                    android:paddingStart="4dp"
+                    android:text="@string/length_f2"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/stripes_bluef2">
+
+                </ImageView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_semi_bold"
+                    android:paddingStart="8dp"
+                    android:text="@string/overall_width_index"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:maxLines="2"
+                    android:paddingStart="4dp"
+                    android:text="@string/width_f2"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/stripes_bluef2">
+
+                </ImageView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_semi_bold"
+                    android:paddingStart="8dp"
+                    android:text="@string/overall_height_index"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:maxLines="2"
+                    android:paddingStart="4dp"
+                    android:text="@string/height_f2"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:layout_marginBottom="4dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                tools:ignore="UseCompoundDrawables">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:importantForAccessibility="no"
+                    android:src="@drawable/stripes_bluef2">
+
+                </ImageView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_semi_bold"
+                    android:paddingStart="8dp"
+                    android:text="@string/overall_weight_index"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+                <TextView
+                    style="@style/t14RegularWhiteLineLimited"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_regular"
+                    android:maxLines="2"
+                    android:paddingStart="4dp"
+                    android:text="@string/weight_f2"
+                    tools:ignore="RtlSymmetry">
+
+                </TextView>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+

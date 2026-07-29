@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/junior_event_result_card_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="@dimen/medium_margin"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="@dimen/medium_margin"
+    android:layout_marginBottom="8dp"
+    app:cardBackgroundColor="@color/grey_card"
+    app:strokeColor="@color/black"
+    app:strokeWidth="3dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="8dp"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginStart="5dp">
+
+            <ImageView
+                android:id="@+id/event_nation_flag"
+                android:layout_width="45dp"
+                android:layout_height="35dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true">
+
+            </ImageView>
+
+            <View
+                android:id="@+id/empty_space_centering"
+                android:layout_width="45dp"
+                android:layout_height="35dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true">
+
+            </View>
+
+            <TextView
+                android:id="@+id/round_number"
+                style="@style/t10UpperCaseBoldWhiteLineLimited"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerInParent="true"
+                android:text="@string/not_found">
+
+            </TextView>
+
+            <TextView
+                android:id="@+id/gp_name"
+                style="@style/t14BoldWhiteLineLimited"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/round_number"
+                android:layout_centerInParent="true"
+                android:layout_toStartOf="@id/empty_space_centering"
+                android:layout_toEndOf="@id/event_nation_flag"
+                android:gravity="center"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                android:text="@string/not_found">
+
+            </TextView>
+
+            <LinearLayout
+                android:id="@+id/results_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/gp_name"
+                android:layout_alignParentStart="true"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="8dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:id="@+id/sprint_race_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/t12UpperCaseBoldWhiteLineLimited"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:text="@string/sprint">
+
+                    </TextView>
+
+                    <FrameLayout
+                        android:id="@+id/sprint_race_podium_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <include
+                            android:id="@+id/sprint_podium"
+                            layout="@layout/junior_race_podium_event_card"
+                            android:visibility="visible" />
+
+                        <include
+                            android:id="@+id/sprint_cancelled"
+                            layout="@layout/junior_race_cancelled_layout_white"
+                            android:visibility="gone" />
+
+                        <include
+                            android:id="@+id/sprint_yet_to_start"
+                            layout="@layout/junior_race_yet_to_start_layout_white"
+                            android:visibility="gone" />
+
+                        <include
+                            android:id="@+id/sprint_error"
+                            layout="@layout/junior_race_error_layout_white"
+                            android:visibility="gone" />
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@color/white">
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/feature_race_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="8dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/t12UpperCaseBoldWhiteLineLimited"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:maxLines="1"
+                        android:text="@string/feature">
+
+                    </TextView>
+
+                    <FrameLayout
+                        android:id="@+id/feature_race_podium_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+
+                        <include
+                            android:id="@+id/feature_podium"
+                            layout="@layout/junior_race_podium_event_card"
+                            android:visibility="gone" />
+
+                        <include
+                            android:id="@+id/feature_cancelled"
+                            layout="@layout/junior_race_cancelled_layout_white"
+                            android:visibility="visible" />
+
+                        <include
+                            android:id="@+id/feature_yet_to_start"
+                            layout="@layout/junior_race_yet_to_start_layout_white"
+                            android:visibility="gone" />
+
+                        <include
+                            android:id="@+id/feature_error"
+                            layout="@layout/junior_race_error_layout_white"
+                            android:visibility="gone" />
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/pending_results_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/gp_name"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="30dp"
+                android:fontFamily="@font/orbitron_bold"
+                android:text="@string/pending_results"
+                android:textColor="@color/white"
+                android:visibility="gone">
+
+            </TextView>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
+

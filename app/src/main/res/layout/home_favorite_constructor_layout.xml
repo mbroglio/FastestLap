@@ -2,21 +2,22 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/favourite_constructor_layout"
+    android:id="@+id/favourite_constructor_inner_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <TextView
         android:id="@+id/favourite_constructor_name"
-        android:layout_width="wrap_content"
+        style="@style/t18BoldBlack"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_marginStart="@dimen/medium_margin"
         android:layout_marginTop="5dp"
-        android:fontFamily="@font/orbitron_bold"
-        android:text="@string/not_found"
-        android:textColor="@color/black"
-        android:textSize="@dimen/layout_title_1_text_size">
+        android:layout_marginEnd="10dp"
+        android:layout_toStartOf="@id/favourite_constructor_star"
+        android:maxLines="1"
+        android:text="@string/not_found">
 
     </TextView>
 
@@ -25,10 +26,10 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_below="@id/favourite_constructor_name"
-        android:importantForAccessibility="no"
         android:layout_marginStart="@dimen/medium_margin"
         android:layout_marginTop="5dp"
-        android:layout_marginEnd="@dimen/medium_margin">
+        android:layout_marginEnd="@dimen/medium_margin"
+        android:importantForAccessibility="no">
 
     </ImageView>
 
@@ -73,70 +74,63 @@
                 </ImageView>
 
                 <TextView
+                    style="@style/t14BoldBlackLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="3dp"
-                    android:fontFamily="@font/orbitron_bold"
-                    android:maxLines="1"
-                    android:text="@string/rank"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/layout_subtitle_text_size">
+                    android:text="@string/rank_index">
 
                 </TextView>
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/constructor_rank_layout"
                 android:layout_centerInParent="true"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/favourite_constructor_position"
+                    style="@style/t12BoldBlackLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:fontFamily="@font/orbitron_bold"
-                    android:text="@string/not_found"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/body_text_size">
+                    android:text="@string/not_found">
 
                 </TextView>
 
                 <TextView
+                    style="@style/t12BoldBlackLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/orbitron_bold"
-                    android:text="@string/separator_high_dash"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/body_text_size">
+                    android:text="@string/separator_high_dash">
 
                 </TextView>
 
                 <TextView
                     android:id="@+id/favourite_constructor_points"
+                    style="@style/t12BoldBlackLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/orbitron_bold"
                     android:gravity="center"
-                    android:text="@string/not_found"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/body_text_size">
+                    android:text="@string/not_found">
 
                 </TextView>
 
                 <TextView
+                    style="@style/t10UpperCaseRegularBlackLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="3dp"
-                    android:fontFamily="@font/orbitron_regular"
-                    android:text="@string/points_upper_case"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/text_minor_importance_size">
+                    android:maxLines="1"
+                    android:text="@string/points_abbr">
 
                 </TextView>
 
@@ -154,41 +148,41 @@
         android:layout_alignParentEnd="true"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="42dp"
-        android:layout_marginBottom="5dp">
+        android:layout_toEndOf="@id/favourite_constructor_rank">
 
         <ImageView
             android:id="@+id/favourite_constructor_flag"
             android:layout_width="50dp"
             android:layout_height="45dp"
-            android:importantForAccessibility="no"
-            android:layout_alignParentStart="true"
-            android:layout_centerHorizontal="true">
+            android:layout_centerHorizontal="true"
+            android:layout_toStartOf="@id/favourite_constructor_nationality"
+            android:importantForAccessibility="no">
 
         </ImageView>
 
         <TextView
             android:id="@+id/favourite_constructor_nationality"
+            style="@style/t12RegularBlackLineLimited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_marginStart="5dp"
-            android:layout_toEndOf="@id/favourite_constructor_flag"
-            android:fontFamily="@font/orbitron_regular"
-            android:text="@string/not_found"
-            android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size">
+            android:text="@string/not_found">
 
         </TextView>
 
     </RelativeLayout>
 
     <ImageView
+        android:id="@+id/favourite_constructor_star"
         android:layout_width="@dimen/icon_size"
         android:layout_height="@dimen/icon_size"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="5dp"
+        android:importantForAccessibility="no"
         app:srcCompat="@drawable/star_fav">
 
     </ImageView>

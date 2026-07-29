@@ -4,8 +4,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandingsElement;
-import com.the_coffe_coders.fastestlap.repository.standing.constructor.ConstructorStandingRepository;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandingsElement;
+import com.the_coffe_coders.fastestlap.repository.f1.standing.constructor.ConstructorStandingRepository;
 
 public class ConstructorStandingsViewModel extends ViewModel {
     private final MutableLiveData<ConstructorStandingsElement> selectedConstructorLiveData = new MutableLiveData<>();
@@ -18,6 +18,10 @@ public class ConstructorStandingsViewModel extends ViewModel {
     }
 
     public MutableLiveData<Result> getConstructorStandings() {
+        return constructorStandingRepository.getConstructorStandings();
+    }
+
+    public MutableLiveData<Result> getConstructorListLiveData() {
         return constructorStandingRepository.getConstructorStandings();
     }
 }

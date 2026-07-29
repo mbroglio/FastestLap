@@ -16,90 +16,80 @@
 
         <TextView
             android:id="@+id/season_year"
+            style="@style/t12RegularBlackLineLimited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="5dp"
             android:layout_weight="1"
-            android:fontFamily="@font/orbitron_regular"
             android:gravity="center"
-            android:maxLines="1"
-            android:text="2025"
-            android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size" />
+            android:text="@string/not_found">
+
+        </TextView>
 
         <TextView
             android:id="@+id/driver_position"
+            style="@style/t12RegularBlackLineLimited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="10dp"
             android:layout_weight="1"
-            android:fontFamily="@font/orbitron_regular"
             android:gravity="center"
-            android:text="23"
-            android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size">
+            android:text="@string/not_found">
 
         </TextView>
 
         <TextView
             android:id="@+id/team_name"
+            style="@style/t12RegularBlackLineLimited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="5dp"
             android:layout_weight="0.8"
-            android:fontFamily="@font/orbitron_regular"
             android:gravity="center"
-            android:text="Aston\nMartin"
-            android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size">
+            android:maxLines="2"
+            android:text="@string/not_found">
 
         </TextView>
 
         <TextView
             android:id="@+id/driver_points"
+            style="@style/t12RegularBlackLineLimited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="5dp"
             android:layout_weight="1"
-            android:fontFamily="@font/orbitron_regular"
             android:gravity="center"
-            android:text="400"
-            android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size">
+            android:text="@string/not_found">
 
         </TextView>
 
         <TextView
             android:id="@+id/driver_wins"
+            style="@style/t12RegularBlackLineLimited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="5dp"
             android:layout_weight="1.05"
-            android:fontFamily="@font/orbitron_regular"
             android:gravity="center"
-            android:text="15"
-            android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size">
+            android:text="@string/not_found">
 
         </TextView>
 
         <TextView
             android:id="@+id/driver_podiums"
+            style="@style/t12RegularBlackLineLimited"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="5dp"
             android:layout_weight="1"
-            android:fontFamily="@font/orbitron_regular"
             android:gravity="center"
-            android:text="20"
-            android:textColor="@color/black"
-            android:textSize="@dimen/body_text_size">
+            android:text="@string/not_found">
 
         </TextView>
 

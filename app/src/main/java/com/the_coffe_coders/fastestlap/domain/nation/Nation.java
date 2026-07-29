@@ -1,6 +1,8 @@
 package com.the_coffe_coders.fastestlap.domain.nation;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Objects;
@@ -14,13 +16,14 @@ import lombok.ToString;
 @ToString
 @Getter
 @Setter
-@AllArgsConstructor
+@AllArgsConstructor(onConstructor_ = @Ignore)
 @NoArgsConstructor
 @Entity(tableName = "Nation")
 public class Nation {
-    @PrimaryKey(autoGenerate = true)
     private long uid;
-    private String nationId;
+    @PrimaryKey
+    @NonNull
+    private String nationId = "";
     private String abbreviation;
     private String nation_flag_url;
 

@@ -12,18 +12,18 @@
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/ferrari_secondary"
+        android:background="@color/app_primary_red"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:background="@color/ferrari_secondary"
+            android:background="@color/app_primary_red"
             app:navigationIcon="@drawable/arrow_back_ios_style"
-            app:title="@string/past_upper_case"
+            app:title="@string/past"
             app:titleCentered="true"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp" />
+            app:titleTextAppearance="@style/t25UpperCaseBoldBlack" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -41,26 +41,6 @@
             android:layout_height="match_parent">
 
         </androidx.recyclerview.widget.RecyclerView>
-
-        <!--
-        <ScrollView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:scrollbars="none">
-
-            <LinearLayout
-                android:id="@+id/past_events_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginTop="@dimen/medium_margin"
-                android:layout_marginEnd="@dimen/medium_margin"
-                android:orientation="vertical">
-
-            </LinearLayout>
-
-        </ScrollView>
-        -->
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

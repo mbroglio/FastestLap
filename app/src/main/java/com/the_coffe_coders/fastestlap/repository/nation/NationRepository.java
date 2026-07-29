@@ -1,8 +1,6 @@
 package com.the_coffe_coders.fastestlap.repository.nation;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -12,30 +10,37 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.source.nation.FirebaseNationDataSource;
 import com.the_coffe_coders.fastestlap.source.nation.LocalNationDataSource;
+import com.the_coffe_coders.fastestlap.util.NetworkUtils;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public class NationRepository {
     private static final String TAG = "NationRepository";
     public static NationRepository instance;
-    //Cache
-    private final Map<String, MutableLiveData<Result>> nationCache;
-    private final Map<String, Long> lastUpdateTimestamps;
     //Data sources
     final FirebaseNationDataSource firebaseNationDataSource;
     final LocalNationDataSource localNationDataSource;
-    AppRoomDatabase appRoomDatabase;
+    //Cache
+    private final Map<String, MutableLiveData<Result>> nationCache;
+    private final Map<String, Long> lastUpdateTimestamps;
+    // Tracks which nation IDs are currently being fetched from Firebase.
+    // Prevents duplicate Firebase reads when two callers request the same
+    // nation ID before the first callback has completed and set the timestamp.
+    private final Set<String> inFlightFetches;
+    private final NetworkUtils networkLiveData;
 
-    private final Context context;
 
     private NationRepository(AppRoomDatabase appRoomDatabase, Context context) {
         nationCache = new HashMap<>();
         lastUpdateTimestamps = new HashMap<>();
+        inFlightFetches = new HashSet<>();
         firebaseNationDataSource = FirebaseNationDataSource.getInstance();
         localNationDataSource = LocalNationDataSource.getInstance(appRoomDatabase);
-        this.context = context;
+        networkLiveData = new NetworkUtils(context);
     }
 
     public static NationRepository getInstance(AppRoomDatabase appRoomDatabase, Context context) {
@@ -46,88 +51,102 @@ public class NationRepository {
     }
 
     private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager =
-                (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        if (connectivityManager != null) {
-            NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-            return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-        }
-        return false;
+        return networkLiveData.isConnected();
     }
 
-
-    public synchronized MutableLiveData<Result> getNation(String nationId) throws RuntimeException{
+    public synchronized MutableLiveData<Result> getNation(String nationId) throws RuntimeException {
         Log.d(TAG, "Fetching nation with ID: " + nationId);
-        if (!nationCache.containsKey(nationId) || !lastUpdateTimestamps.containsKey(nationId) || lastUpdateTimestamps.get(nationId) == null) {
-            nationCache.put(nationId, new MutableLiveData<>());
 
-            if(isNetworkAvailable()) {
-                loadNation(nationId);
-            }else {
-                loadNationFromLocal(nationId);
-            }
-        } else if (System.currentTimeMillis() - lastUpdateTimestamps.get(nationId) > 60000) {
-            if(isNetworkAvailable()) {
-                loadNation(nationId);
-            }else {
-                loadNationFromLocal(nationId);
-            }
+        if (!nationCache.containsKey(nationId)) {
+            nationCache.put(nationId, new MutableLiveData<>());
+            loadNationCacheFirst(nationId);
         } else {
-            Log.d(TAG, "Nation found in cache: " + nationId);
+            Long lastUpdate = lastUpdateTimestamps.get(nationId);
+            if (lastUpdate == null || System.currentTimeMillis() - lastUpdate > 300000) {
+                if (isNetworkAvailable() && !inFlightFetches.contains(nationId)) {
+                    inFlightFetches.add(nationId);
+                    loadNationFromRemote(nationId, true);
+                }
+            } else {
+                Log.d(TAG, "Nation found in cache: " + nationId);
+            }
         }
         return nationCache.get(nationId);
     }
 
-    public void loadNationFromLocal(String nationId) throws RuntimeException {
+    private void loadNationCacheFirst(String nationId) {
         localNationDataSource.getNation(nationId, new NationCallback() {
             @Override
             public void onNationLoaded(Nation nation) {
                 if (nation != null) {
+                    Log.d(TAG, "Nation loaded from local database (cache hit): " + nationId);
                     nation.setNationId(nationId);
-                    localNationDataSource.insertNation(nation);
-                    nationCache.put(nationId, new MutableLiveData<>(new Result.NationSuccess(nation)));
                     lastUpdateTimestamps.put(nationId, System.currentTimeMillis());
                     Objects.requireNonNull(nationCache.get(nationId)).postValue(new Result.NationSuccess(nation));
+
+                    // Only refresh from remote if the cached data is actually stale.
+                    // Without this TTL guard, Firebase fires on every launch even when the
+                    // local data is fresh, causing the LiveData to re-emit and triggering
+                    // redundant card rebuilds in the UI.
+                    Long ts = lastUpdateTimestamps.get(nationId);
+                    boolean isStale = ts == null || System.currentTimeMillis() - ts > 300_000L;
+                    if (isNetworkAvailable() && isStale && !inFlightFetches.contains(nationId)) {
+                        inFlightFetches.add(nationId);
+                        loadNationFromRemote(nationId, true);
+                    } else {
+                        Log.d(TAG, "Nation cache still fresh, skipping remote refresh: " + nationId);
+                    }
                 } else {
-                    Log.e(TAG, "Nation not found: " + nationId);
-                    throw new RuntimeException("Nation not found in local database: " + nationId);
+                    Log.d(TAG, "Nation cache miss in local database: " + nationId);
+                    if (isNetworkAvailable() && !inFlightFetches.contains(nationId)) {
+                        inFlightFetches.add(nationId);
+                        loadNationFromRemote(nationId, false);
+                    } else if (!inFlightFetches.contains(nationId)) {
+                        Objects.requireNonNull(nationCache.get(nationId)).postValue(
+                                new Result.Error("Nation not found locally and no network connection available"));
+                    }
                 }
             }
 
             @Override
             public void onError(Exception e) {
-                Log.e(TAG, "Error loading nation from local database: " + e.getMessage());
+                Log.e(TAG, "Error checking local database for nation: " + e.getMessage());
+                if (isNetworkAvailable() && !inFlightFetches.contains(nationId)) {
+                    inFlightFetches.add(nationId);
+                    loadNationFromRemote(nationId, false);
+                }
             }
         });
     }
 
-    private void loadNation(String nationId) {
-        nationCache.get(nationId).postValue(new Result.Loading("Fetching nation from remote"));
+    private void loadNationFromRemote(String nationId, boolean isBackgroundRefresh) {
+        if (!isBackgroundRefresh) {
+            nationCache.get(nationId).postValue(new Result.Loading("Fetching nation from remote"));
+        }
         try {
             firebaseNationDataSource.getNation(nationId, new NationCallback() {
                 @Override
                 public void onNationLoaded(Nation nation) {
+                    inFlightFetches.remove(nationId);
                     if (nation != null) {
                         nation.setNationId(nationId);
                         localNationDataSource.insertNation(nation);
                         lastUpdateTimestamps.put(nationId, System.currentTimeMillis());
                         Objects.requireNonNull(nationCache.get(nationId)).postValue(new Result.NationSuccess(nation));
-                    } else {
+                    } else if (!isBackgroundRefresh) {
                         Log.e(TAG, "Nation not found: " + nationId);
                     }
                 }
 
                 @Override
                 public void onError(Exception e) {
-                    Log.e(TAG, "Error loading nation: " + e.getMessage());
-                    //fetch nation from local database
-                    loadNationFromLocal(nationId);
+                    inFlightFetches.remove(nationId);
+                    Log.e(TAG, "Error loading nation from remote: " + e.getMessage());
                 }
             });
         } catch (Exception e) {
-            Log.e(TAG, "Error loading nation: " + e.getMessage());
-            loadNationFromLocal(nationId);
+            inFlightFetches.remove(nationId);
+            Log.e(TAG, "Error loading nation from remote: " + e.getMessage());
         }
     }
 }

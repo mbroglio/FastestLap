@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 
@@ -21,15 +22,16 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.TrackHistory;
+import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
+import com.the_coffe_coders.fastestlap.domain.f1.track.TrackHistory;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
-import com.the_coffe_coders.fastestlap.util.LoadingScreen;
-import com.the_coffe_coders.fastestlap.util.UIUtils;
+import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.List;
 
@@ -92,21 +94,27 @@ public class TrackBioActivity extends AppCompatActivity {
 
     private void fetchTrack() {
         MutableLiveData<Result> trackLiveData = trackViewModel.getTrack(trackId);
-        try {
-            trackLiveData.observe(this, trackResult -> {
-                if (trackResult instanceof Result.Loading) {
-                    return;
-                }
-                if (trackResult.isSuccess()) {
-                    track = ((Result.TrackSuccess) trackResult).getData();
-                    Log.i("TrackBioActivity", "Circuit from DB: " + track);
+        @SuppressWarnings("unchecked")
+        androidx.lifecycle.Observer<Result>[] observerTrack = new androidx.lifecycle.Observer[1];
+        observerTrack[0] = trackResult -> {
+            if (trackResult instanceof Result.Loading) {
+                return;
+            }
+            trackLiveData.removeObserver(observerTrack[0]);
+            if (trackResult.isSuccess()) {
+                track = ((Result.TrackSuccess) trackResult).getData();
+                Log.i("TrackBioActivity", "Circuit from DB: " + track);
 
-                    try{
+                if (track != null && track.getCountry() != null) {
+                    try {
                         MutableLiveData<Result> nationLiveData = nationViewModel.getNation(track.getCountry());
-                        nationLiveData.observe(this, nationResult -> {
+                        @SuppressWarnings("unchecked")
+                        androidx.lifecycle.Observer<Result>[] observerNation = new androidx.lifecycle.Observer[1];
+                        observerNation[0] = nationResult -> {
                             if (nationResult instanceof Result.Loading) {
                                 return;
                             }
+                            nationLiveData.removeObserver(observerNation[0]);
                             if (nationResult.isSuccess()) {
                                 nation = ((Result.NationSuccess) nationResult).getData();
                                 setCircuitData(track, nation);
@@ -114,19 +122,21 @@ public class TrackBioActivity extends AppCompatActivity {
                                 Log.e("TrackBioActivity", "Error getting nation data");
                                 setCircuitData(track, null);
                             }
-                        });
-                    }catch (RuntimeException e) {
+                        };
+                        nationLiveData.observe(this, observerNation[0]);
+                    } catch (RuntimeException e) {
                         Log.e("TrackBioActivity", "Error fetching nation data: " + e.getMessage());
                         setCircuitData(track, null);
                     }
-
                 } else {
-                    Log.e("TrackBioActivity", "Error getting data");
+                    setCircuitData(track, null);
                 }
-            });
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+            } else {
+                Log.e("TrackBioActivity", "Error getting track data");
+                loadingScreen.hideLoadingScreen();
+            }
+        };
+        trackLiveData.observe(this, observerTrack[0]);
     }
 
     private void setCircuitData(Track track, Nation nation) {
@@ -139,9 +149,7 @@ public class TrackBioActivity extends AppCompatActivity {
                         track.getFirst_entry(),
                         track.getLaps(),
                         track.getLength(),
-                        track.getRace_distance(),
-                        track.getLap_record().split(" ")[0],
-                        track.getLap_record().substring(track.getLap_record().split(" ")[0].length() + 1)},
+                        track.getRace_distance()},
 
                 new TextView[]{
                         findViewById(R.id.circuit_name_value),
@@ -149,20 +157,34 @@ public class TrackBioActivity extends AppCompatActivity {
                         findViewById(R.id.circuit_first_entry_value),
                         findViewById(R.id.number_of_laps_value),
                         findViewById(R.id.circuit_length_value),
-                        findViewById(R.id.race_distance_value),
-                        findViewById(R.id.fastest_lap_value),
-                        findViewById(R.id.fastest_lap_driver)});
+                        findViewById(R.id.race_distance_value)});
+
+        if (track.getLap_record().equals("N/A")) {
+            UIUtils.multipleSetTextViewText(
+                    new String[]{"N/A", "N/A"},
+                    new TextView[]{
+                            findViewById(R.id.fastest_lap_value),
+                            findViewById(R.id.fastest_lap_driver)});
+        } else {
+            UIUtils.multipleSetTextViewText(
+                    new String[]{
+                            track.getLap_record().split(" ")[0],
+                            track.getLap_record().substring(track.getLap_record().split(" ")[0].length() + 1)},
+                    new TextView[]{
+                            findViewById(R.id.fastest_lap_value),
+                            findViewById(R.id.fastest_lap_driver)});
+        }
 
         Button goToMapButton = findViewById(R.id.goToMapButton);
         goToMapButton.setOnClickListener(v ->
-                UIUtils.openLocation(this, track.getLocation().getLatitude(), track.getLocation().getLongitude()));
+                NavigationUtils.openLocation(this, track.getLocation().getLatitude(), track.getLocation().getLongitude()));
 
         String nationFlag_Url = null;
-        if(nation != null) {
+        if (nation != null) {
             nationFlag_Url = nation.getNation_flag_url();
         }
 
-        UIUtils.loadSequenceOfImagesWithGlide(this,
+        UIUtils.loadImagesInParallel(this,
                 new String[]{track.getTrack_full_layout_url(), nationFlag_Url},
                 new ImageView[]{circuitImage, countryFlag},
                 this::createHistoryTable);
@@ -171,11 +193,16 @@ public class TrackBioActivity extends AppCompatActivity {
     private void createHistoryTable() {
         loadingScreen.updateProgress();
 
+        LinearLayout trackHistoryLayout = findViewById(R.id.track_history);
+
         TableLayout tableLayout = findViewById(R.id.history_table);
         tableLayout.removeAllViews();
         LayoutInflater inflater = LayoutInflater.from(this);
 
         if (track.getTrack_history() != null) {
+            trackHistoryLayout.setVisibility(View.VISIBLE);
+            tableLayout.setVisibility(View.VISIBLE);
+
             View tableHeader = inflater.inflate(R.layout.track_bio_table_header, tableLayout, false);
             tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray_dark));
 
@@ -218,7 +245,12 @@ public class TrackBioActivity extends AppCompatActivity {
 
                 tableLayout.addView(tableRow);
             }
+        } else {
+            Log.e("TrackBioActivity", "Track history is null");
+            trackHistoryLayout.setVisibility(View.GONE);
+            tableLayout.setVisibility(View.GONE);
         }
+        Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: TrackBioActivity at " + System.currentTimeMillis());
         loadingScreen.hideLoadingScreen();
     }
 

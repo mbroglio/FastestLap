@@ -12,18 +12,38 @@
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/ferrari_secondary"
+        android:backgroundTint="@color/app_primary_red"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:background="@color/ferrari_secondary"
-            app:navigationIcon="@drawable/arrow_back_ios_style"
-            app:title="@string/upcoming_upper_case"
-            app:titleCentered="true"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp" />
+            android:backgroundTint="@color/app_primary_red"
+            app:menu="@menu/racing_menu"
+            app:navigationIcon="@drawable/arrow_back_ios_style">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center">
+
+                <TextView
+                    android:id="@+id/topAppBarTitle"
+                    style="@style/t25UpperCaseBoldBlack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="@string/upcoming">
+
+                </TextView>
+
+            </RelativeLayout>
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -42,26 +62,6 @@
             android:layout_height="match_parent">
 
         </androidx.recyclerview.widget.RecyclerView>
-
-        <!--
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="none">
-
-            <LinearLayout
-                android:id="@+id/upcoming_events_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/medium_margin"
-                android:layout_marginTop="@dimen/medium_margin"
-                android:layout_marginEnd="@dimen/medium_margin"
-                android:orientation="vertical">
-
-            </LinearLayout>
-
-        </ScrollView>
-        -->
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

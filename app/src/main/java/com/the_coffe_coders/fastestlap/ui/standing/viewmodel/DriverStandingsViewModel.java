@@ -4,8 +4,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandingsElement;
-import com.the_coffe_coders.fastestlap.repository.standing.driver.DriverStandingRepository;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandingsElement;
+import com.the_coffe_coders.fastestlap.repository.f1.standing.driver.DriverStandingRepository;
 
 public class DriverStandingsViewModel extends ViewModel {
     private final MutableLiveData<DriverStandingsElement> selectedDriverLiveData = new MutableLiveData<>();
@@ -18,6 +18,10 @@ public class DriverStandingsViewModel extends ViewModel {
     }
 
     public MutableLiveData<Result> getDriverStandingsLiveData() {
+        return driverStandingRepository.getDriverStandings();
+    }
+
+    public MutableLiveData<Result> getDriverListLiveData() {
         return driverStandingRepository.getDriverStandings();
     }
 }

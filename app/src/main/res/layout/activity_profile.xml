@@ -5,24 +5,25 @@
     android:id="@+id/activity_user_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/screen_background_color"
     tools:context=".ui.profile.ProfileActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/ferrari_secondary"
+        android:background="@color/app_primary_red"
         app:layout_constraintTop_toTopOf="parent">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/topAppBar"
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
-            android:background="@color/ferrari_secondary"
+            android:background="@color/app_primary_red"
             app:navigationIcon="@drawable/arrow_back_ios_style"
-            app:title="@string/profile_upper_case"
+            app:title="@string/profile"
             app:titleCentered="true"
-            app:titleTextAppearance="@style/TextAppearance.OrbitronBold_25sp" />
+            app:titleTextAppearance="@style/t25UpperCaseBoldBlack" />
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.Guideline
@@ -95,14 +96,25 @@
 
                 <Button
                     android:id="@+id/sign_out_button"
+                    style="@style/t14UpperCaseBoldBlack"
                     android:layout_width="wrap_content"
                     android:layout_height="48dp"
                     android:layout_alignParentEnd="true"
                     android:backgroundTint="@color/timer_gray"
-                    android:fontFamily="@font/orbitron_bold"
-                    android:text="@string/sign_out_upper_case"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/layout_subtitle_text_size"
+                    android:text="@string/sign_out"
+                    tools:ignore="RelativeOverlap">
+
+                </Button>
+
+                <Button
+                    android:id="@+id/login_button"
+                    style="@style/t14BoldBlackLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:layout_alignParentEnd="true"
+                    android:backgroundTint="@color/timer_gray"
+                    android:text="@string/login"
+                    android:visibility="gone"
                     tools:ignore="RelativeOverlap">
 
                 </Button>
@@ -128,13 +140,11 @@
                 </ImageView>
 
                 <TextView
+                    style="@style/t14UpperCaseBoldWhite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
-                    android:fontFamily="@font/orbitron_bold"
-                    android:text="@string/italian_language_abbr_upper_case"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/layout_subtitle_text_size">
+                    android:text="@string/italian_language_abbr">
 
                 </TextView>
 
@@ -147,13 +157,11 @@
                     android:checked="false" />
 
                 <TextView
+                    style="@style/t14UpperCaseBoldWhite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="5dp"
-                    android:fontFamily="@font/orbitron_bold"
-                    android:text="@string/english_language_abbr_upper_case"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/layout_subtitle_text_size">
+                    android:text="@string/english_language_abbr">
 
                 </TextView>
 
@@ -178,13 +186,11 @@
                 android:orientation="vertical">
 
                 <TextView
+                    style="@style/t14BoldWhiteLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
-                    android:fontFamily="@font/orbitron_bold"
-                    android:text="@string/email_with_dots"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/layout_subtitle_text_size">
+                    android:text="@string/email_index">
 
                 </TextView>
 
@@ -201,18 +207,15 @@
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/email_text"
+                            style="@style/t12RegularWhiteLineLimited"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:background="@android:color/transparent"
                             android:cursorVisible="true"
-                            android:fontFamily="@font/orbitron_regular"
                             android:inputType="textEmailAddress"
-                            android:text="@string/not_found"
-                            android:textColor="@color/timer_gray"
-                            android:textSize="@dimen/body_text_size" />
+                            android:text="@string/not_found" />
 
                     </com.google.android.material.textfield.TextInputLayout>
-
 
                 </RelativeLayout>
 
@@ -220,16 +223,14 @@
 
             <Button
                 android:id="@+id/save_button"
+                style="@style/t14UpperCaseBoldBlack"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_gravity="bottom|end"
                 android:layout_marginTop="30dp"
                 android:layout_marginEnd="30dp"
                 android:backgroundTint="@color/timer_gray"
-                android:fontFamily="@font/orbitron_bold"
-                android:text="@string/save_upper_case"
-                android:textColor="@color/black"
-                android:textSize="@dimen/layout_subtitle_text_size"
+                android:text="@string/save"
                 android:visibility="invisible"
                 app:icon="@drawable/check_icon_black"
                 app:iconTint="@color/black">
@@ -238,16 +239,14 @@
 
             <Button
                 android:id="@+id/dismiss_button"
+                style="@style/t14UpperCaseBoldBlack"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_gravity="bottom|end"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="30dp"
                 android:backgroundTint="@color/timer_gray"
-                android:fontFamily="@font/orbitron_bold"
-                android:text="@string/dismiss_upper_case"
-                android:textColor="@color/black"
-                android:textSize="@dimen/layout_subtitle_text_size"
+                android:text="@string/dismiss"
                 android:visibility="invisible"
                 app:icon="@drawable/x_icon_black"
                 app:iconTint="@color/black">

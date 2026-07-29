@@ -2,16 +2,12 @@
     <string name="app_name" translatable="false">Fastest Lap</string>
     <string name="app_credits" translatable="false">By\nThe Coffee Coders</string>
 
-
     <string name="not_found" translatable="false">-!-</string>
     <string name="unknown">Unknown</string>
-
-    <string name="raceResult">RESULT</string>
-    <string name="rank">Rank:</string>
+    <string name="rank_index">Rank:</string>
     <string name="separator_high_dash" translatable="false">-</string>
     <string name="points_upper_case" translatable="false">PTS</string>
     <string name="next_event">Next Event :</string>
-
     <string name="_1_numeric" translatable="false">1</string>
     <string name="_2_numeric" translatable="false">2</string>
     <string name="_3_numeric" translatable="false">3</string>
@@ -20,103 +16,59 @@
     <string name="racing_menu">Racing</string>
     <string name="home_menu" translatable="false">Home</string>
     <string name="standings_menu">Standings</string>
-    <string name="racing_upper_case">RACING</string>
-    <string name="standings_upper_case">STANDINGS</string>
-    <string name="season_ended_upper_case">SEASON ENDED</string>
-    <string name="pending_results_upper_case">PENDING RESULTS</string>
-    <string name="upcoming_upper_case">UPCOMING</string>
-    <string name="past_upper_case">PAST</string>
-
-
-    <string name="save_upper_case">SAVE</string>
-    <string name="profile_upper_case">PROFILE</string>
-    <string name="sign_out_upper_case" translatable="false">SIGN OUT</string>
-
-    <string name="last_driver_position" translatable="false">20</string>
-    <string name="last_constructor_position" translatable="false">10</string>
-
-
-    <string name="loading_upper_case">LOADING%1$s</string>
-
-
-    <string name="live_upper_case" translatable="false">LIVE</string>
-
-
-    <string name="round" translatable="false">Round %1$s</string>
-    <string name="round_upper_case_plus_value" translatable="false">ROUND %1$s</string>
-    <string name="updating_upper_case_with_dots">UPDATING…</string>
-
 
     <!-- EVENT PAGE STRINGS -->
     <string name="weather_forecast">Weather forecast</string>
     <string name="weather">weather in %1$s</string> <!-- text in browser's search bar -->
-    <string name="weekend_schedule_upper_case">WEEKEND SCHEDULE:</string>
-    <string name="next_session">Next Session in:</string>
-    <string name="race_result_upper_case">RACE RESULT:</string>
-    <string name="pending_results">Pending\nresults…</string>
-    <string name="race_cancelled_upper_case">RACE\nCANCELLED</string>
-    <string name="live_session_upper_case">LIVE SESSION</string>
-    <string name="no_live_session_available_upper_case">NO LIVE SESSION\nAVAILABLE</string>
 
-    <!-- TIMER STRINGS -->
-    <string name="days_upper_case">DAYS</string>
-    <string name="hours_upper_case">HRS</string>
-    <string name="minutes_upper_case" translatable="false">MIN</string>
-    <string name="seconds_upper_case" translatable="false">SEC</string>
+    <string name="next_session_index">Next Session In:</string>
+
+    <string name="pending_results">Pending\nresults…</string>
+
     <string name="base_countdown" translatable="false">00</string>
 
     <!-- DRIVER BIO STRINGS -->
-    <string name="place_of_birth">Place of Birth:</string>
-    <string name="date_of_birth">Date of Birth:</string>
-    <string name="age">Age:</string>
-    <string name="weight_height">Weight - Height:</string>
+    <string name="place_of_birth_index">Place of Birth:</string>
+    <string name="date_of_birth_index">Date of Birth:</string>
+    <string name="age_index">Age:</string>
+    <string name="weight_height_index">Weight - Height:</string>
     <string name="kg" translatable="false">kg</string>
-    <string name="best_result">Best Result:</string>
+    <string name="best_result_index">Best Result:</string>
     <string name="m" translatable="false">m</string>
-    <string name="championships">Championships:</string>
-    <string name="driver_history_upper_case">DRIVER HISTORY:</string>
-    <string name="wins_abbr_upper_case">W</string>
-    <string name="team_upper_case">TEAM</string>
+    <string name="championships_index">Championships:</string>
 
     <!-- CONSTRUCTOR BIO STRINGS -->
-    <string name="drivers_upper_case">DRIVERS:</string>
-    <string name="team_history_upper_case">TEAM HISTORY:</string>
-    <string name="team_info_upper_case">TEAM INFO:</string>
-    <string name="full_name">Full Name:</string>
-    <string name="base">Base:</string>
-    <string name="team_principal">Team Principal:</string>
-    <string name="chassis">Chassis:</string>
-    <string name="power_unit">Power Unit:</string>
-    <string name="world_championships">World Championships:</string>
-    <string name="wins">Wins:</string>
-    <string name="podiums">Podiums:</string>
-    <string name="wins_upper_case">WINS</string>
+
+    <string name="full_name_index">Full Name:</string>
+    <string name="base_index">Base:</string>
+    <string name="team_principal_index">Team Principal:</string>
+    <string name="chassis_index">Chassis:</string>
+    <string name="power_unit_index">Power Unit:</string>
+    <string name="world_championships_index">World Championships:</string>
+    <string name="wins_index">Wins:</string>
+    <string name="podiums_index">Podiums:</string>
 
     <!-- TRACK BIO STRINGS -->
-    <string name="track_name">Track Name:</string>
-    <string name="location">Location:</string>
-    <string name="first_entry">First Entry:</string>
-    <string name="number_of_laps">Number of Laps:</string>
-    <string name="track_length">Track Length:</string>
+    <string name="track_name_index">Track Name:</string>
+    <string name="location_index">Location:</string>
+    <string name="first_entry_index">First Entry:</string>
+    <string name="number_of_laps_index">Number of Laps:</string>
+    <string name="track_length_index">Track Length:</string>
     <string name="km" translatable="false">km</string>
-    <string name="race_distance">Race Distance:</string>
-    <string name="fastest_lap">Fastest Lap:</string>
+    <string name="race_distance_index">Race Distance:</string>
+    <string name="fastest_lap_index">Fastest Lap:</string>
+    <!--
     <string name="track_history_upper_case">TRACK HISTORY:</string>
+    -->
     <string name="open_with_google_maps">See on the map</string>
 
-    <!-- COMMON BIO HISTORY STRINGS -->
-    <string name="year_upper_case">YEAR</string>
-    <string name="pos_upper_case" translatable="false">POS</string>
-    <string name="pts_upper_case">POINTS</string>
-    <string name="pod_upper_case">POD</string>
 
     <!-- ERRORS WITH REDIRECTION -->
     <string name="no_map_app_found">No map app found</string>
-    <string name="no_browser_found">No browser found</string>
 
     <!-- PROFILE PAGE STRINGS -->
     <string name="remember_me">Remember Me</string>
-    <string name="email_with_dots">Email:</string>
+    <string name="email_index">Email:</string>
 
     <!-- WELCOME PAGE STRINGS -->
     <string name="already_registered">Already registered?</string>
@@ -124,46 +76,190 @@
     <string name="password">Password</string>
     <string name="missing_password">Forgot your password?</string>
     <string name="login">Login</string>
-    <string name="or">or</string>
-    <string name="login_with_google">Login with Google</string>
     <string name="not_registered">Not registered yet?</string>
     <string name="register">Register</string>
     <string name="registration">Registration</string>
-    <string name="forgot_password_upper_case">FORGOT\nPASSWORD</string>
     <string name="forgot_password_text">Provide your account\'s email for which you want to reset your password</string>
 
-    <!-- HOME PAGE STRINGS -->
-    <!-- last race -->
-    <string name="last_race_upper_case">LAST\nRACE</string>
-    <!-- season final results -->
-    <string name="season_final_results">SEASON FINAL RESULTS</string>
-    <string name="constructors_upper_case">CONSTRUCTORS</string>
-    <string name="drivers_title_page_upper_case">DRIVERS</string>
+
     <!-- missing results -->
     <string name="results_not_available">Results not available</string>
-    <string name="driver_info_not_found_upper_case">DRIVER INFO NOT FOUND (%1$s)</string>
-    <string name="constructor_info_not_found_upper_case">CONSTRUCTOR INFO NOT FOUND\n(%1$s)</string>
 
 
     <!--BUTTONS STRINGS -->
-    <string name="send_email_upper_case">SEND EMAIL</string>
-    <string name="submit_upper_case">SUBMIT</string>
-    <string name="dismiss_upper_case">DISMISS</string>
-    <string name="italian_language_abbr_upper_case">ITA</string>
-    <string name="english_language_abbr_upper_case">ENG</string>
+
     <string name="language_set">Language successfully set to %1$s</string>
 
-    <!-- LOREEEEEEEEE -->
-    <string name="race_results">Race Results</string>
-    <string name="race_results_title">%1$s Results</string>
     <string name="close">Close</string>
-    <string name="fastest_lap_upper_case">FASTEST LAP</string>
     <string name="lap">Lap %1$s</string>
-    <string name="podium_upper_case">PODIUM</string>
     <string name="full_event_results">Full %1$s results</string>
     <string name="race">Race</string>
     <string name="sprint" translatable="false">Sprint</string>
     <string name="qualifying">Qualifying</string>
     <string name="favorite_text">Favorite</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="feed_error">Error while fetching news feed</string>
+    <string name="link_error">Failed to open link</string>
+
+    <string name="just_now">just now</string>
+    <plurals name="minutes_ago">
+        <item quantity="one">%d minute ago</item>
+        <item quantity="other">%d minutes ago</item>
+    </plurals>
+
+    <plurals name="hours_ago">
+        <item quantity="one">%d hour ago</item>
+        <item quantity="other">%d hours ago</item>
+    </plurals>
+
+    <plurals name="days_ago">
+        <item quantity="one">%d day ago</item>
+        <item quantity="other">%d days ago</item>
+    </plurals>
+
+    <plurals name="months_ago">
+        <item quantity="one">%d month ago</item>
+        <item quantity="other">%d months ago</item>
+    </plurals>
+
+    <plurals name="years_ago">
+        <item quantity="one">%d year ago</item>
+        <item quantity="other">%d years ago</item>
+    </plurals>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="year">year</string>
+    <string name="pos" translatable="false">pos</string>
+    <string name="points">points</string>
+    <string name="wins_header">wins</string>
+    <string name="pod" translatable="false">pod</string>
+    <string name="calendar">calendar</string>
+    <string name="entry_list" translatable="false">entry list</string>
+    <string name="feature" translatable="false">feature</string>
+    <string name="drivers">drivers</string>
+    <string name="constructors">constructors</string>
+    <string name="content_not_available">content not available</string>
+    <string name="past">past</string>
+    <string name="profile">profile</string>
+    <string name="sign_out" translatable="false">sign out</string>
+    <string name="italian_language_abbr" translatable="false">ita</string>
+    <string name="english_language_abbr" translatable="false">eng</string>
+    <string name="save">save</string>
+    <string name="dismiss">dismiss</string>
+    <string name="upcoming">upcoming</string>
+    <string name="forgot_password">forgot password</string>
+    <string name="send_email">send email</string>
+    <string name="updating_with_dots">updating…</string>
+    <string name="sources">sources</string>
+    <string name="no_internet_connection">no internet connection</string>
+    <string name="drivers_index">Drivers:</string>
+    <string name="team_info_index">Team Info:</string>
+    <string name="team_history_index">Team History:</string>
+    <string name="driver_history_index">Driver History:</string>
+    <string name="constructors_std_not_available">constructors standing not available</string>
+    <string name="drivers_std_not_available">drivers standing not available</string>
+    <string name="results">results</string>
+    <string name="drivers_standing">drivers standing</string>
+    <string name="constructors_standing">constructors standing</string>
+    <string name="wins">wins</string>
+    <string name="team">team</string>
+    <string name="points_abbr" translatable="false">pts</string>
+    <string name="wins_abbr" translatable="false">w</string>
+    <string name="live_session">live session</string>
+    <string name="no_live_session">no live session</string>
+    <string name="weekend_schedule_index">Weekend Schedule:</string>
+    <string name="pole_position" translatable="false">pole position</string>
+    <string name="fastest_lap">fastest lap</string>
+    <string name="submit">submit</string>
+    <string name="track_history_index">Track History:</string>
+    <string name="last_race_not_found">last race not found</string>
+    <string name="last_race">last race</string>
+    <string name="result">result</string>
+    <string name="favourite_constructor_not_found">favourite constructor not found</string>
+    <string name="favourite_driver_not_found">favourite driver not found</string>
+    <string name="season_final_results">season final results</string>
+    <string name="select_favourite_constructor">select favourite constructor</string>
+    <string name="select_favourite_driver">select favourite driver</string>
+    <string name="live" translatable="false">live</string>
+    <string name="season_ended">season ended</string>
+    <string name="race_cancelled">race cancelled</string>
+    <string name="full_article">full article</string>
+    <string name="race_result">race result</string>
+    <string name="days">days</string>
+    <string name="hours_abbr" translatable="false">hrs</string>
+    <string name="minutes_abbr" translatable="false">min</string>
+    <string name="seconds_abbr" translatable="false">sec</string>
+    <string name="podium">podium</string>
+    <string name="news_menu">News</string>
+    <string name="junior_menu" translatable="false">Junior</string>
+    <string name="last_constructor_position" translatable="false">11</string>
+    <string name="constructor_info_not_found">constructor info not found</string>
+    <string name="loading">loading%1$s</string>
+    <string name="last_driver_position" translatable="false">22</string>
+    <string name="driver_info_not_found">driver info not found</string>
+    <string name="round_plus_value" translatable="false">round  %1$s</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="discover_the_car">discover the car</string>
+    <string name="formula_3" translatable="false">Formula 3</string>
+    <string name="the_formula_3_car">the F3 car</string>
+    <string name="formula_2" translatable="false">Formula 2</string>
+    <string name="the_formula_2_car">the F2 car</string>
+    <string name="formula_3_bio_history_text">Officially began in 1950 and consolidated in 2019 by merging GP3 and European F3, it acts as a high-pressure filter for young talents graduating from regional series.</string>
+    <string name="f3_engine_spec_1">V6 – 3.4 liter naturally aspirated Mecachrome engine</string>
+    <string name="f3_engine_spec_2">Rated to 380 HP @ 8000 rpm</string>
+    <string name="maximum_torque_index">Maximum Torque:</string>
+    <string name="gearbox_index">Gearbox:</string>
+    <string name="fuel_tank_index">Fuel Tank:</string>
+    <string name="acceleration_index">Acceleration:</string>
+    <string name="maximum_speed_index">Maximum Speed:</string>
+    <string name="maximum_deceleration_index">Maximum Deceleration:</string>
+    <string name="acceleration_f3_100" translatable="false">0 - 100 km/h, 3.0 sec</string>
+    <string name="acceleration_f3_200" translatable="false">0 - 200 km/h, 7.70 sec</string>
+    <string name="max_speed_f3" translatable="false">300 km/h</string>
+    <string name="max_deceleration_f3" translatable="false">-1.9 G</string>
+    <string name="overall_length_index">Overall Length:</string>
+    <string name="overall_width_index">Overall Width:</string>
+    <string name="overall_height_index">Overall Height:</string>
+    <string name="overall_weight_index">Overall Weight:</string>
+    <string name="length_f3" translatable="false">5000 mm</string>
+    <string name="width_f3" translatable="false">1880 mm</string>
+    <string name="height_f3" translatable="false">1110 mm</string>
+    <string name="weight_f3">673 kg (with driver)</string>
+    <string name="dimensions">dimensions</string>
+    <string name="speed">speed</string>
+    <string name="fuel_tank_f3">65 liters</string>
+    <string name="gearbox_f3">6-speed sequential gearbox</string>
+    <string name="max_torque_f3" translatable="false">300 Nm @ 5000 rpm</string>
+    <string name="engine">Engine</string>
+    <string name="f2_engine_spec_1">V6 – 3.4 liter single turbocharged Mecachrome engine</string>
+    <string name="f2_engine_spec_2">Rated to 620 HP @ 8750 rpm</string>
+    <string name="length_f2" translatable="false">5285 mm</string>
+    <string name="width_f2" translatable="false">1900 mm</string>
+    <string name="height_f2" translatable="false">1097 mm</string>
+    <string name="weight_f2">795 kg (with driver)</string>
+    <string name="acceleration_f2_100" translatable="false">0 - 100 km/h, 2.90 sec</string>
+    <string name="acceleration_f2_200" translatable="false">0 - 200 km/h, 6.60 sec</string>
+    <string name="max_speed_f2" translatable="false">335 km/h</string>
+    <string name="max_deceleration_f2" translatable="false">-3.5 G</string>
+    <string name="max_torque_f2" translatable="false">570 Nm @ 6000 rpm</string>
+    <string name="gearbox_f2">6-speed sequential gearbox</string>
+    <string name="fuel_tank_f2">125 liters</string>
+    <string name="formula_2_bio_history_text">Born in 1948 and re-established in 2017 as the direct successor to the GP2 series, it serves as the ultimate youth category. Featuring identical cars and F1-style race weekends, F2 acts as the final test for aspiring drivers on their road to top category.</string>
+    <string name="driver_number_index_two_lines">driver\nnumber</string>
+    <string name="podiums">podiums</string>
+    <string name="not_available">not available</string>
+    <string name="empty_space" translatable="false"> </string>
+
+    <!-- CALENDAR EXPORT -->
+    <string name="add_to_calendar">Add to Calendar</string>
+    <string name="add_to_calendar_success">Sessions added to calendar</string>
+    <string name="calendar_not_found">No calendar app found</string>
+
+    <!-- WIDGETS -->
+    <string name="widget_small_description">FastestLap compact widget</string>
+    <string name="widget_medium_description">FastestLap medium widget</string>
+    <string name="widget_large_description">FastestLap large widget</string>
+    <string name="widget_loading_title" translatable="false">FastestLap</string>
+    <string name="widget_loading_text">Loading…</string>
 
 </resources>

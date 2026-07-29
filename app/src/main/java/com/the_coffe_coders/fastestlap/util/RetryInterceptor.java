@@ -15,7 +15,9 @@ public class RetryInterceptor implements Interceptor {
     private static final int MAX_RETRIES = 3;
     private static final long INITIAL_DELAY_MS = 1000; // 1 second
 
-    /** @noinspection ConstantValue*/
+    /**
+     * @noinspection ConstantValue
+     */
     @NonNull
     @Override
     public Response intercept(Chain chain) throws IOException {

@@ -1,12 +1,17 @@
 package com.the_coffe_coders.fastestlap.domain;
 
-import com.the_coffe_coders.fastestlap.domain.constructor.Constructor;
-import com.the_coffe_coders.fastestlap.domain.driver.Driver;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.ConstructorStandings;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.DriverStandings;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Race;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.Track;
-import com.the_coffe_coders.fastestlap.domain.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
+import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
+import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandings;
+import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
+import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendar;
+import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorResult;
+import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorConstructorStandings;
+import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorDriverStandings;
+import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorEntryList;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 
@@ -137,16 +142,6 @@ public abstract class Result {
         }
     }
 
-    @Getter
-    public static final class Error extends Result {
-        private final String message;
-
-        public Error(String message) {
-            this.message = message;
-        }
-
-    }
-
     public static class RaceResultsSuccess extends Result {
         private final Race race;
 
@@ -171,6 +166,88 @@ public abstract class Result {
         }
     }
 
+    public static class ConstructorsSuccess extends Result {
+        private final List<Constructor> constructors;
+
+        public ConstructorsSuccess(List<Constructor> constructors) {
+            this.constructors = constructors;
+        }
+
+        public List<Constructor> getData() {
+            return constructors;
+        }
+
+    }
+
+    public static class JuniorCalendarSuccess extends Result {
+        private final JuniorCalendar calendar;
+
+        public JuniorCalendarSuccess(JuniorCalendar calendar) {
+            this.calendar = calendar;
+        }
+
+        public JuniorCalendar getData() {
+            return calendar;
+        }
+    }
+
+    public static class JuniorEntryListSuccess extends Result {
+        private final JuniorEntryList juniorEntryList;
+
+        public JuniorEntryListSuccess(JuniorEntryList juniorEntryList) {
+            this.juniorEntryList = juniorEntryList;
+        }
+
+        public JuniorEntryList getData() {
+            return juniorEntryList;
+        }
+    }
+
+    public static class JuniorResultSuccess extends Result {
+        private final JuniorResult juniorResult;
+
+        public JuniorResultSuccess(JuniorResult juniorResult) {
+            this.juniorResult = juniorResult;
+        }
+
+        public JuniorResult getData() {
+            return juniorResult;
+        }
+    }
+
+    public static class JuniorDriverStandingsSuccess extends Result {
+        private final JuniorDriverStandings driverStandings;
+
+        public JuniorDriverStandingsSuccess(JuniorDriverStandings driverStandings) {
+            this.driverStandings = driverStandings;
+        }
+
+        public JuniorDriverStandings getData() {
+            return driverStandings;
+        }
+    }
+
+    public static class JuniorConstructorStandingsSuccess extends Result {
+        private final JuniorConstructorStandings constructorStandings;
+
+        public JuniorConstructorStandingsSuccess(JuniorConstructorStandings constructorStandings) {
+            this.constructorStandings = constructorStandings;
+        }
+
+        public JuniorConstructorStandings getData() {
+            return constructorStandings;
+        }
+    }
+
+    @Getter
+    public static final class Error extends Result {
+        private final String message;
+
+        public Error(String message) {
+            this.message = message;
+        }
+    }
+
     @Getter
     public static class Loading extends Result {
         private final String message;
@@ -178,6 +255,6 @@ public abstract class Result {
         public Loading(String message) {
             this.message = message;
         }
-
     }
+
 }

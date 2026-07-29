@@ -14,15 +14,14 @@
         android:background="@drawable/bottom_right_left_stroke">
 
         <TextView
-            android:layout_width="wrap_content"
+            style="@style/t18UpperCaseBoldWhite"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:layout_marginBottom="5dp"
-            android:fontFamily="@font/orbitron_bold"
-            android:text="@string/season_final_results"
-            android:textColor="@color/white"
-            android:textSize="@dimen/layout_title_1_text_size">
+            android:maxLines="1"
+            android:text="@string/season_final_results">
 
         </TextView>
 
@@ -44,19 +43,21 @@
 
             <TextView
                 android:id="@+id/drivers_title"
-                android:layout_width="wrap_content"
+                style="@style/t14UpperCaseBoldWhite"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerInParent="true"
-                android:fontFamily="@font/orbitron_bold"
-                android:text="@string/drivers_title_page_upper_case"
-                android:textColor="@color/white"
-                android:textSize="@dimen/layout_subtitle_text_size">
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/drivers">
 
             </TextView>
 
             <LinearLayout
-                android:id="@+id/race_podium"
+                android:id="@+id/season_final_podium"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/drivers_title"
@@ -65,22 +66,20 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="@dimen/medium_margin"
                 android:layout_marginBottom="10dp"
-                android:gravity="center"
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <TextView
+                        style="@style/t12RegularWhiteLineLimited"
                         android:layout_width="10dp"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/orbitron_regular"
                         android:gravity="center"
-                        android:text="@string/_1_numeric"
-                        android:textColor="@color/white"
-                        android:textSize="12sp">
+                        android:text="@string/_1_numeric">
 
                     </TextView>
 
@@ -95,23 +94,21 @@
 
                     <TextView
                         android:id="@+id/first_driver"
-                        android:layout_width="wrap_content"
+                        style="@style/t12RegularWhiteLineLimited"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:fontFamily="@font/orbitron_regular"
-                        android:maxLines="1"
-                        android:text="@string/not_found"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/body_text_size">
+                        android:text="@string/not_found">
 
                     </TextView>
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <TextView
@@ -136,22 +133,21 @@
 
                     <TextView
                         android:id="@+id/second_driver"
-                        android:layout_width="wrap_content"
+                        style="@style/t12RegularWhiteLineLimited"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:fontFamily="@font/orbitron_regular"
-                        android:text="@string/not_found"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/body_text_size">
+                        android:text="@string/not_found">
 
                     </TextView>
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <TextView
@@ -176,13 +172,11 @@
 
                     <TextView
                         android:id="@+id/third_driver"
-                        android:layout_width="wrap_content"
+                        style="@style/t12RegularWhiteLineLimited"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:fontFamily="@font/orbitron_regular"
-                        android:text="@string/not_found"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/body_text_size">
+                        android:text="@string/not_found">
 
                     </TextView>
 
@@ -200,40 +194,43 @@
 
             <TextView
                 android:id="@+id/constructors_title"
-                android:layout_width="wrap_content"
+                style="@style/t14UpperCaseBoldWhite"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerInParent="true"
-                android:fontFamily="@font/orbitron_bold"
-                android:text="@string/constructors_upper_case"
-                android:textColor="@color/white"
-                android:textSize="@dimen/layout_subtitle_text_size">
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="@string/constructors">
 
             </TextView>
 
             <LinearLayout
                 android:id="@+id/constructors_podium"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/constructors_title"
                 android:layout_centerInParent="true"
+                android:layout_marginStart="@dimen/medium_margin"
                 android:layout_marginTop="5dp"
+                android:layout_marginEnd="@dimen/medium_margin"
                 android:layout_marginBottom="10dp"
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <TextView
+                        style="@style/t12RegularWhiteLineLimited"
                         android:layout_width="10dp"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/orbitron_regular"
                         android:gravity="center"
-                        android:text="@string/_1_numeric"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/body_text_size">
+                        android:text="@string/_1_numeric">
 
                     </TextView>
 
@@ -248,32 +245,29 @@
 
                     <TextView
                         android:id="@+id/first_team"
-                        android:layout_width="wrap_content"
+                        style="@style/t12RegularWhiteLineLimited"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:fontFamily="@font/orbitron_regular"
-                        android:text="@string/not_found"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/body_text_size">
+                        android:text="@string/not_found">
 
                     </TextView>
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <TextView
+                        style="@style/t12RegularWhiteLineLimited"
                         android:layout_width="10dp"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/orbitron_regular"
                         android:gravity="center"
-                        android:text="@string/_2_numeric"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/body_text_size">
+                        android:text="@string/_2_numeric">
 
                     </TextView>
 
@@ -288,32 +282,29 @@
 
                     <TextView
                         android:id="@+id/second_team"
-                        android:layout_width="wrap_content"
+                        style="@style/t12RegularWhiteLineLimited"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:fontFamily="@font/orbitron_regular"
-                        android:text="@string/not_found"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/body_text_size">
+                        android:text="@string/not_found">
 
                     </TextView>
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
                     <TextView
+                        style="@style/t12RegularWhiteLineLimited"
                         android:layout_width="10dp"
                         android:layout_height="wrap_content"
-                        android:fontFamily="@font/orbitron_regular"
                         android:gravity="center"
-                        android:text="@string/_3_numeric"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/body_text_size">
+                        android:text="@string/_3_numeric">
 
                     </TextView>
 
@@ -328,13 +319,11 @@
 
                     <TextView
                         android:id="@+id/third_team"
-                        android:layout_width="wrap_content"
+                        style="@style/t12RegularWhiteLineLimited"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
-                        android:fontFamily="@font/orbitron_regular"
-                        android:text="@string/not_found"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/body_text_size">
+                        android:text="@string/not_found">
 
                     </TextView>
 

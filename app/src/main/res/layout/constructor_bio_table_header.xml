@@ -17,69 +17,63 @@
         tools:ignore="UselessParent">
 
         <TextView
+            style="@style/t14UpperCaseBoldBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_weight="2.25"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
             android:maxLines="1"
-            android:text="@string/year_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:text="@string/year">
 
         </TextView>
 
         <TextView
+            style="@style/t14UpperCaseBoldBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_weight="2.3"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="@string/pos_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:maxLines="1"
+            android:text="@string/pos">
 
         </TextView>
 
         <TextView
+            style="@style/t14UpperCaseBoldBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_weight="2.3"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="@string/points_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:maxLines="1"
+            android:text="@string/points">
 
         </TextView>
 
         <TextView
+            style="@style/t14UpperCaseBoldBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_weight="2.2"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="@string/wins_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:maxLines="1"
+            android:text="@string/wins">
 
         </TextView>
 
         <TextView
+            style="@style/t14UpperCaseBoldBlack"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:layout_weight="2.2"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:text="@string/pod_upper_case"
-            android:textColor="@color/black"
-            android:textSize="@dimen/layout_subtitle_text_size">
+            android:maxLines="1"
+            android:text="@string/pod">
 
         </TextView>
 

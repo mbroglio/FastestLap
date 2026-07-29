@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Allow FileProvider to serve files from the app-specific external files directory -->
+    <external-files-path
+        name="external_files"
+        path="." />
+</paths>
+
