@@ -6,7 +6,7 @@
 
 **Your Ultimate Formula 1 Companion App**
 
-[![Version](https://img.shields.io/badge/version-1.0-blue.svg)](https://github.com/mbroglio/fastestlap)
+[![Version](https://img.shields.io/badge/version-1.1.1-blue.svg)](https://github.com/mbroglio/fastestlap)
 [![API](https://img.shields.io/badge/API-26%2B-brightgreen.svg)](https://android-arsenal.com/api?level=26)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE)
 
@@ -340,6 +340,12 @@ The project uses Lombok for reducing boilerplate code:
 ## 📋 TODO & Roadmap
 
 Check out our [TODO.md](TODO.md) for a comprehensive list of planned improvements and features.
+
+### 🏎️ Next Up: Live Data Suite
+- [ ] **Team Radios** (Live driver & pit wall audio feed & transcriptions)
+- [ ] **Live Car Position** (Real-time track positioning and driver maps)
+- [ ] **Live Intervals** (Dynamic gaps to leader, gaps ahead, and sector deltas)
+- [ ] **Live Race Direction Messages** (Steward decisions, flags, safety car, penalties)
 
 ### High Priority
 - [ ] Add comprehensive unit tests

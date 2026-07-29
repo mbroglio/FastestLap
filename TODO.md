@@ -34,6 +34,12 @@ FastestLap is an Android application for Formula 1 enthusiasts, providing race r
 
 ## 🟡 High Priority Improvements
 
+### 🏎️ Live Data Implementation (Next Up - Next Release Target)
+- [ ] **Team Radios**: Live audio streaming and transcription of driver-pit team communications
+- [ ] **Live Car Position**: Real-time track positioning and interactive driver map location
+- [ ] **Live Intervals**: Dynamic gaps to leader, gaps ahead, and sector delta times
+- [ ] **Live Race Direction Messages**: Real-time steward decisions, flags (yellow/red/green), safety car announcements, and penalties
+
 ### Testing & Quality Assurance
 
 #### 4. Unit Testing Coverage
@@ -461,12 +467,12 @@ FastestLap is an Android application for Formula 1 enthusiasts, providing race r
 
 ## 🔄 Future Enhancements
 
-### 53. Live Race Features
-- [ ] Add live race functionality
-  - Live timing data (if API available)
-  - Live position tracking
-  - Push notifications for key events
-  - Live commentary integration
+### 53. Live Race Features 🔥 *(High Priority - Next Up)*
+- [ ] Implement live data suite:
+  - [ ] **Team Radios**: Live driver & pit wall audio feed & transcriptions
+  - [ ] **Live Car Position**: Real-time track positioning and driver maps
+  - [ ] **Live Intervals**: Dynamic gaps to leader, gaps ahead, and sector delta times
+  - [ ] **Live Race Direction Messages**: Steward decisions, flags (yellow/red/green), safety car announcements, and track limits/penalties
 
 ### 54. Social Features
 - [ ] Add community features
@@ -705,6 +711,7 @@ These can be implemented quickly for immediate benefits:
 ## 📊 Priority Matrix
 
 ### Must Have (P0)
+- **Live Data Suite** (Team Radios, Live Car Position, Live Intervals, Live Race Direction Messages)
 - Remove allowMainThreadQueries
 - Enable schema export
 - Security: API key management
@@ -726,7 +733,6 @@ These can be implemented quickly for immediate benefits:
 - AR features
 - Wear OS
 - Advanced analytics
-- Live timing
 
 ---
 
@@ -739,15 +745,15 @@ These can be implemented quickly for immediate benefits:
 - Good use of Lombok for reducing boilerplate
 
 **Recommended Next Steps:**
-1. Address critical issues (database main thread, schema export)
-2. Add comprehensive testing
-3. Set up CI/CD
-4. Consider Kotlin migration for long-term maintainability
+1. Implement Live Data suite (Team Radios, Live Car Position, Live Intervals, Live Race Direction Messages)
+2. Address critical issues (database main thread, schema export)
+3. Add comprehensive testing
+4. Set up CI/CD
 5. Implement proper error tracking (Crashlytics)
 
 ---
 
-**Last Updated:** December 7, 2025  
-**Project Version:** 1.0  
+**Last Updated:** July 29, 2026  
+**Project Version:** 1.1.1  
 **Maintained by:** The Coffee Coders
 
