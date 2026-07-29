@@ -249,7 +249,14 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                 loadedPositions[position] = true;
                 currentLoadedCount++;
                 Log.i("ConstructorsStanding", "onBindViewHolder " + position + "/" + getItemCount() + " — loaded: " + currentLoadedCount + "/" + targetLoadCount);
-                if (currentLoadedCount >= targetLoadCount) {
+                boolean allTopItemsLoaded = true;
+                for (int i = 0; i < targetLoadCount; i++) {
+                    if (i < loadedPositions.length && !loadedPositions[i]) {
+                        allTopItemsLoaded = false;
+                        break;
+                    }
+                }
+                if (allTopItemsLoaded) {
                     shouldHide = true;
                 }
             }
