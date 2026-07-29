@@ -39,6 +39,8 @@ Built with modern Android development practices, FastestLap provides an intuitiv
 - **Event Schedule** - View complete weekend schedules with session times
 - **Countdown Timers** - Never miss a race with live countdown to upcoming events
 - **Past Events** - Browse historical race results and standings
+- **Calendar Export** - Add full weekend session schedules directly to your device calendar
+- **Home Screen Widgets** - Quick access to race info and countdowns from your home screen
 
 ### 🏆 Standings & Statistics
 - **Driver Standings** - Real-time driver championship rankings
