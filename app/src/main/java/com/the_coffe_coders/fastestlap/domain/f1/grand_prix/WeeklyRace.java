@@ -31,7 +31,7 @@ public abstract class WeeklyRace {
     private Race finalRace;
 
     public LocalDateTime getDateTime() {
-        return finalRace.getStartDateTime();
+        return finalRace != null ? finalRace.getStartDateTime() : null;
     }
 
     public String getDateInterval() {

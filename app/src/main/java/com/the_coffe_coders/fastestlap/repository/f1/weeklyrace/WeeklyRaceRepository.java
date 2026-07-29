@@ -90,20 +90,11 @@ public class WeeklyRaceRepository {
                     lastUpdateTimestamps.put("next", System.currentTimeMillis());
                     Objects.requireNonNull(raceCache.get("next")).postValue(new Result.NextRaceSuccess(weeklyRace));
                     Log.d(TAG, "Next race loaded from local cache");
-
-                    Long lastUpdate = lastUpdateTimestamps.get("next");
-                    boolean isStale = lastUpdate == null || (System.currentTimeMillis() - lastUpdate > FRESH_TIMEOUT);
-                    if (networkUtils.isConnected() && isStale) {
-                        fetchNextRaceFromRemote(false);
-                    }
-                } else {
-                    Log.d(TAG, "No next weekly race found in local database");
-                    if (networkUtils.isConnected()) {
-                        fetchNextRaceFromRemote(true);
-                        fetchWeeklyRacesFromRemote(false);
-                    } else {
-                        Objects.requireNonNull(raceCache.get("next")).postValue(new Result.Error("No next weekly race found in local database"));
-                    }
+                }
+                if (networkUtils.isConnected()) {
+                    fetchNextRaceFromRemote(weeklyRace == null);
+                } else if (weeklyRace == null) {
+                    Objects.requireNonNull(raceCache.get("next")).postValue(new Result.Error("No next weekly race found in local database"));
                 }
             }
 
@@ -111,7 +102,6 @@ public class WeeklyRaceRepository {
             public void onFailure(Exception exception) {
                 if (networkUtils.isConnected()) {
                     fetchNextRaceFromRemote(true);
-                    fetchWeeklyRacesFromRemote(false);
                 } else {
                     Objects.requireNonNull(raceCache.get("next")).postValue(new Result.Error(exception.getMessage()));
                 }
@@ -160,20 +150,11 @@ public class WeeklyRaceRepository {
                     lastUpdateTimestamps.put("last", System.currentTimeMillis());
                     Objects.requireNonNull(raceCache.get("last")).postValue(new Result.NextRaceSuccess(weeklyRace));
                     Log.d(TAG, "Last race loaded from local cache");
-
-                    Long lastUpdate = lastUpdateTimestamps.get("last");
-                    boolean isStale = lastUpdate == null || (System.currentTimeMillis() - lastUpdate > FRESH_TIMEOUT);
-                    if (networkUtils.isConnected() && isStale) {
-                        fetchLastRaceFromRemote(false);
-                    }
-                } else {
-                    Log.d(TAG, "No last weekly race found in local database");
-                    if (networkUtils.isConnected()) {
-                        fetchLastRaceFromRemote(true);
-                        fetchWeeklyRacesFromRemote(false);
-                    } else {
-                        Objects.requireNonNull(raceCache.get("last")).postValue(new Result.Error("No last weekly race found in local database"));
-                    }
+                }
+                if (networkUtils.isConnected()) {
+                    fetchLastRaceFromRemote(weeklyRace == null);
+                } else if (weeklyRace == null) {
+                    Objects.requireNonNull(raceCache.get("last")).postValue(new Result.Error("No last weekly race found in local database"));
                 }
             }
 
@@ -181,7 +162,6 @@ public class WeeklyRaceRepository {
             public void onFailure(Exception exception) {
                 if (networkUtils.isConnected()) {
                     fetchLastRaceFromRemote(true);
-                    fetchWeeklyRacesFromRemote(false);
                 } else {
                     Objects.requireNonNull(raceCache.get("last")).postValue(new Result.Error(exception.getMessage()));
                 }

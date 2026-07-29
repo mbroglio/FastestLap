@@ -96,27 +96,18 @@ public class LocalWeeklyRaceDataSource {
         Log.d(TAG, "Fetching next weekly race from local database");
         AppRoomDatabase.databaseWriteExecutor.execute(() -> {
             try {
-                // Get all races and filter for the next one (upcoming race with earliest date)
                 List<WeeklyRaceClassic> classicRaces = weeklyRaceClassicDao.getAllRaces();
                 List<WeeklyRaceSprint> sprintRaces = weeklyRaceSprintDao.getAllRaces();
+
+                List<WeeklyRace> allRaces = new ArrayList<>();
+                allRaces.addAll(classicRaces);
+                allRaces.addAll(sprintRaces);
 
                 WeeklyRace nextRace = null;
                 LocalDateTime currentDateTime = LocalDateTime.now();
                 LocalDateTime closestDateTime = null;
 
-                // Find the next classic race
-                for (WeeklyRaceClassic race : classicRaces) {
-                    LocalDateTime raceDateTime = race.getDateTime();
-                    if (raceDateTime != null && raceDateTime.isAfter(currentDateTime)) {
-                        if (closestDateTime == null || raceDateTime.isBefore(closestDateTime)) {
-                            closestDateTime = raceDateTime;
-                            nextRace = race;
-                        }
-                    }
-                }
-
-                // Find the next sprint race
-                for (WeeklyRaceSprint race : sprintRaces) {
+                for (WeeklyRace race : allRaces) {
                     LocalDateTime raceDateTime = race.getDateTime();
                     if (raceDateTime != null && raceDateTime.isAfter(currentDateTime)) {
                         if (closestDateTime == null || raceDateTime.isBefore(closestDateTime)) {
@@ -144,27 +135,18 @@ public class LocalWeeklyRaceDataSource {
         Log.d(TAG, "Fetching last weekly race from local database");
         AppRoomDatabase.databaseWriteExecutor.execute(() -> {
             try {
-                // Get all races and filter for the last one (most recent past race)
                 List<WeeklyRaceClassic> classicRaces = weeklyRaceClassicDao.getAllRaces();
                 List<WeeklyRaceSprint> sprintRaces = weeklyRaceSprintDao.getAllRaces();
+
+                List<WeeklyRace> allRaces = new ArrayList<>();
+                allRaces.addAll(classicRaces);
+                allRaces.addAll(sprintRaces);
 
                 WeeklyRace lastRace = null;
                 LocalDateTime currentDateTime = LocalDateTime.now();
                 LocalDateTime mostRecentDateTime = null;
 
-                // Find the most recent classic race
-                for (WeeklyRaceClassic race : classicRaces) {
-                    LocalDateTime raceDateTime = race.getDateTime();
-                    if (raceDateTime != null && raceDateTime.isBefore(currentDateTime)) {
-                        if (mostRecentDateTime == null || raceDateTime.isAfter(mostRecentDateTime)) {
-                            mostRecentDateTime = raceDateTime;
-                            lastRace = race;
-                        }
-                    }
-                }
-
-                // Find the most recent sprint race
-                for (WeeklyRaceSprint race : sprintRaces) {
+                for (WeeklyRace race : allRaces) {
                     LocalDateTime raceDateTime = race.getDateTime();
                     if (raceDateTime != null && raceDateTime.isBefore(currentDateTime)) {
                         if (mostRecentDateTime == null || raceDateTime.isAfter(mostRecentDateTime)) {
