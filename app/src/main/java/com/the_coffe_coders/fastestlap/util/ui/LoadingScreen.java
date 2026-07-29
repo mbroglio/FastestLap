@@ -40,17 +40,9 @@ public class LoadingScreen {
     public void showLoadingScreen(boolean invisible) {
         resetTimer();
         if (fragmentView != null) {
-            if (invisible) {
-                fragmentView.setVisibility(View.INVISIBLE);
-            } else {
-                fragmentView.setVisibility(View.GONE);
-            }
+            fragmentView.setVisibility(View.INVISIBLE);
         } else {
-            if (invisible) {
-                activityView.setVisibility(View.INVISIBLE);
-            } else {
-                activityView.setVisibility(View.GONE);
-            }
+            activityView.setVisibility(View.INVISIBLE);
         }
 
         loadingScreen.setVisibility(View.VISIBLE);
@@ -98,32 +90,45 @@ public class LoadingScreen {
         resetTimer();
     }
 
+    private final Runnable hideRunnable = this::hide;
+
     public void hideLoadingScreenWithCondition(boolean condition) {
         if (condition) {
-            handler.postDelayed(this::hide, 1000);
+            hideLoadingScreen();
         }
     }
 
     public void hideLoadingScreen() {
-        handler.postDelayed(this::hide, 1000);
+        if (loadingScreen != null && loadingScreen.getVisibility() == View.GONE) {
+            return;
+        }
+        handler.removeCallbacks(hideRunnable);
+        handler.postDelayed(hideRunnable, 1000);
     }
 
     public void hideLoadingScreenImmediately() {
-        handler.post(this::hide);
+        if (loadingScreen != null && loadingScreen.getVisibility() == View.GONE) {
+            return;
+        }
+        handler.removeCallbacks(hideRunnable);
+        handler.post(hideRunnable);
     }
 
     private void hide() {
+        if (loadingScreen == null || loadingScreen.getVisibility() == View.GONE) {
+            return;
+        }
         loadingScreen.setVisibility(View.GONE);
         if (fragmentView != null) {
             fragmentView.setVisibility(View.VISIBLE);
-        } else {
+        } else if (activityView != null) {
             activityView.setVisibility(View.VISIBLE);
         }
         handler.removeCallbacks(dotRunnable);
         timerHandler.removeCallbacks(timerRunnable);
+        android.util.Log.i("LoadingScreenLog", "LOADING_SCREEN_HIDDEN for activity: " + context.getClass().getSimpleName() + " at " + System.currentTimeMillis());
     }
 
-    private final Runnable timerRunnable = this::hide;
-
+    private final Runnable timerRunnable = hideRunnable;
 
 }

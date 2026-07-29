@@ -156,17 +156,20 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
     private void createConstructorBioPage(String teamId) {
         MutableLiveData<Result> data = constructorViewModel.getSelectedConstructor(teamId);
-        data.observe(this, result -> {
+        @SuppressWarnings("unchecked")
+        androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
+        observerHolder[0] = result -> {
             if (result instanceof Result.Loading) {
                 return;
             }
+            data.removeObserver(observerHolder[0]);
             if (result.isSuccess()) {
                 constructor = ((Result.ConstructorSuccess) result).getData();
 
                 if (constructor == null) {
                     NavigationUtils.navigateToHomePage(this);
                 } else {
-                    Log.i(TAG, "Constructor: " + constructor);
+                    Log.i(TAG, "Constructor loaded: " + constructor);
 
                     UIUtils.singleSetTextViewText(constructor.getName().toUpperCase(), findViewById(R.id.topAppBarTitle));
 
@@ -191,66 +194,91 @@ public class ConstructorBioActivity extends AppCompatActivity {
                     driverCard = findViewById(R.id.driver_2_card);
                     driverCard.setCardBackgroundColor(ContextCompat.getColor(this, teamColor));
 
-                    // Check if this constructor is the favorite and update the icon
                     favoriteBioHandler.updateFavoriteIcon(toolbar.getMenu(), R.id.favourite_icon_outline, teamId, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
 
-                    getDriverData(constructor.getDriverOneId(), constructor);
+                    fetchAllTeamDependencies(constructor);
                 }
+            } else {
+                Log.e(TAG, "Error fetching constructor: " + result.getError());
+                loadingScreen.hideLoadingScreen();
             }
-        });
+        };
+        data.observe(this, observerHolder[0]);
     }
 
+    private void fetchAllTeamDependencies(Constructor team) {
+        java.util.concurrent.atomic.AtomicInteger pendingCount = new java.util.concurrent.atomic.AtomicInteger(3);
 
-    public void getDriverData(String driverId, Constructor team) {
-        MutableLiveData<Result> data = driverViewModel.getDriver(driverId);
-
-        data.observe(this, result -> {
-            if (result instanceof Result.Loading) {
-                return;
+        Runnable checkComplete = () -> {
+            if (pendingCount.decrementAndGet() == 0) {
+                setTeamData(constructor, nation, driverOne, driverTwo);
             }
-            if (result.isSuccess()) {
-                if (driverId.equals(team.getDriverOneId())) {
-                    driverOne = ((Result.DriverSuccess) result).getData();
+        };
 
+        // Fetch Driver 1 in parallel
+        if (team.getDriverOneId() != null) {
+            MutableLiveData<Result> driver1Data = driverViewModel.getDriver(team.getDriverOneId());
+            @SuppressWarnings("unchecked")
+            androidx.lifecycle.Observer<Result>[] observer1 = new androidx.lifecycle.Observer[1];
+            observer1[0] = result -> {
+                if (result instanceof Result.Loading) return;
+                driver1Data.removeObserver(observer1[0]);
+                if (result.isSuccess()) {
+                    driverOne = ((Result.DriverSuccess) result).getData();
                     MaterialCardView driverOneCard = findViewById(R.id.driver_1_card);
                     driverOneCard.setOnClickListener(v ->
                             NavigationUtils.navigateToBioPage(this, driverOne.getDriverId(), 1));
+                }
+                checkComplete.run();
+            };
+            driver1Data.observe(this, observer1[0]);
+        } else {
+            checkComplete.run();
+        }
 
-                    getDriverData(team.getDriverTwoId(), team);
-
-                } else {
+        // Fetch Driver 2 in parallel
+        if (team.getDriverTwoId() != null) {
+            MutableLiveData<Result> driver2Data = driverViewModel.getDriver(team.getDriverTwoId());
+            @SuppressWarnings("unchecked")
+            androidx.lifecycle.Observer<Result>[] observer2 = new androidx.lifecycle.Observer[1];
+            observer2[0] = result -> {
+                if (result instanceof Result.Loading) return;
+                driver2Data.removeObserver(observer2[0]);
+                if (result.isSuccess()) {
                     driverTwo = ((Result.DriverSuccess) result).getData();
-
                     MaterialCardView driverTwoCard = findViewById(R.id.driver_2_card);
                     driverTwoCard.setOnClickListener(v ->
                             NavigationUtils.navigateToBioPage(this, driverTwo.getDriverId(), 1));
-
-                    getNationData(team.getNationality());
                 }
-            }
-        });
-    }
-
-    public void getNationData(String nationId) {
-        try {
-            MutableLiveData<Result> data = nationViewModel.getNation(nationId);
-            data.observe(this, result -> {
-                if (result instanceof Result.Loading) {
-                    return;
-                }
-                if (result.isSuccess()) {
-                    nation = ((Result.NationSuccess) result).getData();
-                    setTeamData(constructor, nation, driverOne, driverTwo);
-                } else {
-                    Log.e(TAG, "Error getting nation data");
-                    setTeamData(constructor, null, driverOne, driverTwo);
-                }
-            });
-        } catch (RuntimeException e) {
-            Log.e(TAG, "Error fetching nation data: " + e.getMessage());
-            setTeamData(constructor, null, driverOne, driverTwo);
+                checkComplete.run();
+            };
+            driver2Data.observe(this, observer2[0]);
+        } else {
+            checkComplete.run();
         }
 
+        // Fetch Nation in parallel
+        if (team.getNationality() != null) {
+            try {
+                MutableLiveData<Result> nationData = nationViewModel.getNation(team.getNationality());
+                @SuppressWarnings("unchecked")
+                androidx.lifecycle.Observer<Result>[] observerNation = new androidx.lifecycle.Observer[1];
+                observerNation[0] = result -> {
+                    if (result instanceof Result.Loading) return;
+                    nationData.removeObserver(observerNation[0]);
+                    if (result.isSuccess()) {
+                        nation = ((Result.NationSuccess) result).getData();
+                    }
+                    checkComplete.run();
+                };
+                nationData.observe(this, observerNation[0]);
+            } catch (Exception e) {
+                Log.e(TAG, "Error fetching nation: " + e.getMessage());
+                checkComplete.run();
+            }
+        } else {
+            checkComplete.run();
+        }
     }
 
     private void setTeamData(Constructor team, Nation nation, Driver driverOne, Driver driverTwo) {
@@ -261,8 +289,11 @@ public class ConstructorBioActivity extends AppCompatActivity {
             nationFlagUrl = nation.getNation_flag_url();
         }
 
+        String d1HalfPic = driverOne != null ? driverOne.getDriver_half_pic_url() : null;
+        String d2HalfPic = driverTwo != null ? driverTwo.getDriver_half_pic_url() : null;
+
         UIUtils.loadImagesInParallel(this,
-                new String[]{team.getTeam_logo_url(), nationFlagUrl, team.getCar_pic_url(), driverOne.getDriver_half_pic_url(), driverTwo.getDriver_half_pic_url()},
+                new String[]{team.getTeam_logo_url(), nationFlagUrl, team.getCar_pic_url(), d1HalfPic, d2HalfPic},
                 new ImageView[]{findViewById(R.id.team_logo_image), findViewById(R.id.team_flag), findViewById(R.id.team_car_image), findViewById(R.id.driver_1_image), findViewById(R.id.driver_2_image)},
                 () -> setTeamDataFinalStep(team));
 
@@ -270,9 +301,12 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
     private void setTeamDataFinalStep(Constructor team) {
 
+        String d1Name = driverOne != null ? driverOne.getGivenName() + " " + driverOne.getFamilyName() : "TBA";
+        String d2Name = driverTwo != null ? driverTwo.getGivenName() + " " + driverTwo.getFamilyName() : "TBA";
+
         UIUtils.multipleSetTextViewText(
-                new String[]{driverOne.getGivenName() + " " + driverOne.getFamilyName(),
-                        driverTwo.getGivenName() + " " + driverTwo.getFamilyName(),
+                new String[]{d1Name,
+                        d2Name,
                         team.getFull_name(),
                         team.getHq(),
                         team.getTeam_principal(),
@@ -298,6 +332,8 @@ public class ConstructorBioActivity extends AppCompatActivity {
         UIUtils.updateTachometers(this, team, winPercentageTachometer, podiumPercentageTachometer);
 
         createHistoryTable();
+        Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: ConstructorBioActivity at " + System.currentTimeMillis());
+        loadingScreen.hideLoadingScreen();
     }
 
     private void createHistoryTable() {
@@ -353,8 +389,6 @@ public class ConstructorBioActivity extends AppCompatActivity {
             teamHistory.setVisibility(View.GONE);
             tableLayout.setVisibility(View.GONE);
         }
-
-        loadingScreen.hideLoadingScreen();
     }
 
     @Override

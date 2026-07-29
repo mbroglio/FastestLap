@@ -15,7 +15,7 @@ public interface DriverStandingsDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(DriverStandings driverStandings);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(List<Driver> driverStandings);
 
     @Query("SELECT * FROM DriverStandings")

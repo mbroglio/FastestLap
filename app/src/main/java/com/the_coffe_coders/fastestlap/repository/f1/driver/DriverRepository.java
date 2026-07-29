@@ -58,7 +58,7 @@ public class DriverRepository {
             Long lastUpdate = lastUpdateTimestamps.get(driverId);
             if (lastUpdate == null || System.currentTimeMillis() - lastUpdate > 300000) { // 5 mins cache TTL
                 if (isNetworkAvailable()) {
-                    loadDriverFromRemote(driverId, false);
+                    loadDriverFromRemote(driverId, true);
                 }
             } else {
                 Log.d(TAG, "Driver found in cache: " + driverId);

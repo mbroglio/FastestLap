@@ -60,7 +60,7 @@ public class ResultRepository {
             Long lastUpdate = lastUpdateTimestamps.get(round);
             if (lastUpdate == null || System.currentTimeMillis() - lastUpdate > 300000) {
                 if (networkUtils.isConnected()) {
-                    loadResults(round);
+                    loadResults(round, true);
                 }
             } else {
                 Log.d(TAG, "Results found in cache for round: " + round);
@@ -80,18 +80,18 @@ public class ResultRepository {
                     Long ts = lastUpdateTimestamps.get(round);
                     boolean isStale = ts == null || System.currentTimeMillis() - ts > 300000L;
                     if (networkUtils.isConnected() && isStale) {
-                        loadResults(round);
+                        loadResults(round, true);
                     }
                 } else {
                     Log.d(TAG, "Results cache miss in local database for round: " + round);
-                    loadResults(round);
+                    loadResults(round, false);
                 }
             }
 
             @Override
             public void onFailure(Exception exception) {
                 Log.e(TAG, "Error checking local database for results: " + exception.getMessage());
-                loadResults(round);
+                loadResults(round, false);
             }
         });
     }
@@ -121,7 +121,13 @@ public class ResultRepository {
     }
 
     public void loadResults(String round) {
-        Objects.requireNonNull(resultsCache.get(round)).postValue(new Result.Loading("Fetching results from remote"));
+        loadResults(round, false);
+    }
+
+    public void loadResults(String round, boolean isBackgroundRefresh) {
+        if (!isBackgroundRefresh) {
+            Objects.requireNonNull(resultsCache.get(round)).postValue(new Result.Loading("Fetching results from remote"));
+        }
 
         if (networkUtils.isConnected()) {
             try {
@@ -142,7 +148,9 @@ public class ResultRepository {
                     @Override
                     public void onFailure(Exception exception) {
                         Log.e(TAG, "Error loading results: " + exception.getMessage());
-                        Objects.requireNonNull(resultsCache.get(round)).postValue(new Result.Error(exception.getMessage()));
+                        if (!isBackgroundRefresh) {
+                            Objects.requireNonNull(resultsCache.get(round)).postValue(new Result.Error(exception.getMessage()));
+                        }
                         loadResultsFromLocal(round);
                     }
                 });
@@ -164,7 +172,7 @@ public class ResultRepository {
             Long lastUpdate = qualifyingLastUpdateTimestamps.get(round);
             if (lastUpdate == null || System.currentTimeMillis() - lastUpdate > 300000) {
                 if (networkUtils.isConnected()) {
-                    loadQualifyingResults(round);
+                    loadQualifyingResults(round, true);
                 }
             } else {
                 Log.d(TAG, "Qualifying results found in cache for round: " + round);
@@ -184,24 +192,30 @@ public class ResultRepository {
                     Long ts = qualifyingLastUpdateTimestamps.get(round);
                     boolean isStale = ts == null || System.currentTimeMillis() - ts > 300000L;
                     if (networkUtils.isConnected() && isStale) {
-                        loadQualifyingResults(round);
+                        loadQualifyingResults(round, true);
                     }
                 } else {
                     Log.d(TAG, "Qualifying results cache miss in local database for round: " + round);
-                    loadQualifyingResults(round);
+                    loadQualifyingResults(round, false);
                 }
             }
 
             @Override
             public void onFailure(Exception exception) {
                 Log.e(TAG, "Error checking local database for qualifying results: " + exception.getMessage());
-                loadQualifyingResults(round);
+                loadQualifyingResults(round, false);
             }
         });
     }
 
     private void loadQualifyingResults(String round) {
-        Objects.requireNonNull(qualifyingResultsCache.get(round)).postValue(new Result.Loading("Fetching results from remote"));
+        loadQualifyingResults(round, false);
+    }
+
+    private void loadQualifyingResults(String round, boolean isBackgroundRefresh) {
+        if (!isBackgroundRefresh) {
+            Objects.requireNonNull(qualifyingResultsCache.get(round)).postValue(new Result.Loading("Fetching results from remote"));
+        }
 
         if (networkUtils.isConnected()) {
             try {
@@ -223,7 +237,9 @@ public class ResultRepository {
                     @Override
                     public void onFailure(Exception exception) {
                         Log.e(TAG, "Error loading results: " + exception.getMessage());
-                        Objects.requireNonNull(qualifyingResultsCache.get(round)).postValue(new Result.Error(exception.getMessage()));
+                        if (!isBackgroundRefresh) {
+                            Objects.requireNonNull(qualifyingResultsCache.get(round)).postValue(new Result.Error(exception.getMessage()));
+                        }
                         loadQualifyingResultsFromLocal(round);
 
                     }
@@ -268,7 +284,7 @@ public class ResultRepository {
             Long lastUpdate = sprintLastUpdateTimestamps.get(round);
             if (lastUpdate == null || System.currentTimeMillis() - lastUpdate > 300000) {
                 if (networkUtils.isConnected()) {
-                    loadSprintResults(round);
+                    loadSprintResults(round, true);
                 }
             } else {
                 Log.d(TAG, "Sprint results found in cache for round: " + round);
@@ -288,24 +304,30 @@ public class ResultRepository {
                     Long ts = sprintLastUpdateTimestamps.get(round);
                     boolean isStale = ts == null || System.currentTimeMillis() - ts > 300000L;
                     if (networkUtils.isConnected() && isStale) {
-                        loadSprintResults(round);
+                        loadSprintResults(round, true);
                     }
                 } else {
                     Log.d(TAG, "Sprint results cache miss in local database for round: " + round);
-                    loadSprintResults(round);
+                    loadSprintResults(round, false);
                 }
             }
 
             @Override
             public void onFailure(Exception exception) {
                 Log.e(TAG, "Error checking local database for sprint results: " + exception.getMessage());
-                loadSprintResults(round);
+                loadSprintResults(round, false);
             }
         });
     }
 
     private void loadSprintResults(String round) {
-        Objects.requireNonNull(sprintResultsCache.get(round)).postValue(new Result.Loading("Fetching results from remote"));
+        loadSprintResults(round, false);
+    }
+
+    private void loadSprintResults(String round, boolean isBackgroundRefresh) {
+        if (!isBackgroundRefresh) {
+            Objects.requireNonNull(sprintResultsCache.get(round)).postValue(new Result.Loading("Fetching results from remote"));
+        }
 
         if (networkUtils.isConnected()) {
             try {
@@ -327,7 +349,9 @@ public class ResultRepository {
                     @Override
                     public void onFailure(Exception exception) {
                         Log.e(TAG, "Error loading results: " + exception.getMessage());
-                        Objects.requireNonNull(sprintResultsCache.get(round)).postValue(new Result.Error(exception.getMessage()));
+                        if (!isBackgroundRefresh) {
+                            Objects.requireNonNull(sprintResultsCache.get(round)).postValue(new Result.Error(exception.getMessage()));
+                        }
                         loadSprintResultsFromLocal(round);
                     }
                 });

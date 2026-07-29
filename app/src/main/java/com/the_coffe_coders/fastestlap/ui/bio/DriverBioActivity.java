@@ -160,81 +160,92 @@ public class DriverBioActivity extends AppCompatActivity {
 
     public void createDriverBioPage(String driverId) {
         MutableLiveData<Result> driverMutableLiveData = driverViewModel.getDriver(driverId);
-        driverMutableLiveData.observe(this, result -> {
+        @SuppressWarnings("unchecked")
+        androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
+        observerHolder[0] = result -> {
             if (result instanceof Result.Loading) {
                 return;
             }
+            driverMutableLiveData.removeObserver(observerHolder[0]);
             if (result.isSuccess()) {
                 driver = ((Result.DriverSuccess) result).getData();
-                Log.i(TAG, "DRIVER SUCCESS");
-                Log.i(TAG, "DRIVER: " + driver.toString());
+                Log.i(TAG, "DRIVER SUCCESS: " + driver);
 
-                // Update the favorite icon when driver data is loaded
                 favoriteBioHandler.updateFavoriteIcon(toolbar.getMenu(), R.id.favourite_icon_outline, driverId, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
-                getTeamInfo(driver.getTeam_id());
+                if (driver.getTeam_id() != null) {
+                    getTeamInfo(driver.getTeam_id());
+                } else {
+                    getNationInfo(driver.getNationality());
+                }
             } else {
-                Log.i(TAG, "DRIVER ERROR");
+                Log.e(TAG, "DRIVER ERROR: " + result.getError());
+                loadingScreen.hideLoadingScreen();
             }
-        });
+        };
+        driverMutableLiveData.observe(this, observerHolder[0]);
     }
 
     public void getTeamInfo(String teamId) {
         loadingScreen.updateProgress();
 
-        MutableLiveData<Result> constructorMutableLiveData = constructorViewModel.getSelectedConstructor(teamId);
+        if (teamId == null) {
+            getNationInfo(driver.getNationality());
+            return;
+        }
 
-        constructorMutableLiveData.observe(this, result -> {
+        MutableLiveData<Result> constructorMutableLiveData = constructorViewModel.getSelectedConstructor(teamId);
+        @SuppressWarnings("unchecked")
+        androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
+        observerHolder[0] = result -> {
             if (result instanceof Result.Loading) {
                 return;
             }
+            constructorMutableLiveData.removeObserver(observerHolder[0]);
             if (result.isSuccess()) {
                 team = ((Result.ConstructorSuccess) result).getData();
-                Log.i(TAG, "GET CONSTRUCTOR FROM COMMON REPO: " + team.toString());
-                getNationInfo(driver.getNationality());
+                Log.i(TAG, "GET CONSTRUCTOR SUCCESS: " + team);
             } else {
-                Log.i(TAG, "GET CONSTRUCTOR FROM COMMON REPO ERROR");
+                Log.w(TAG, "GET CONSTRUCTOR ERROR: " + result.getError());
             }
-        });
+            getNationInfo(driver.getNationality());
+        };
+        constructorMutableLiveData.observe(this, observerHolder[0]);
     }
 
     public void getNationInfo(String nationId) {
+        if (nationId == null) {
+            boolean hasTeam = (driver != null && driver.getTeam_id() != null && team != null);
+            setDriverData(driver, null, team, hasTeam, hasTeam ? driver.getTeam_id() : null);
+            setToolbar(hasTeam, hasTeam ? driver.getTeam_id() : null);
+            return;
+        }
+
         try {
             MutableLiveData<Result> nationMutableLiveData = nationViewModel.getNation(nationId);
-            nationMutableLiveData.observe(this, result -> {
+            @SuppressWarnings("unchecked")
+            androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
+            observerHolder[0] = result -> {
                 if (result instanceof Result.Loading) {
                     return;
                 }
+                nationMutableLiveData.removeObserver(observerHolder[0]);
+                boolean hasTeam = (driver != null && driver.getTeam_id() != null && team != null);
                 if (result.isSuccess()) {
                     nation = ((Result.NationSuccess) result).getData();
-                    Log.i(TAG, "GET NATION FROM FIREBASE REPO: " + nation);
-                    if (driver.getTeam_id() != null) {
-                        setDriverData(driver, nation, team, true, driver.getTeam_id());
-                        setToolbar(true, driver.getTeam_id());
-                    } else {
-                        setDriverData(driver, nation, team, false, null);
-                        setToolbar(false, null);
-                    }
+                    Log.i(TAG, "GET NATION SUCCESS: " + nation);
                 } else {
-                    if (driver.getTeam_id() != null) {
-                        setDriverData(driver, null, team, true, driver.getTeam_id());
-                        setToolbar(true, driver.getTeam_id());
-                    } else {
-                        setDriverData(driver, null, team, false, null);
-                        setToolbar(false, null);
-                    }
+                    Log.w(TAG, "GET NATION ERROR: " + result.getError());
                 }
-            });
+                setDriverData(driver, nation, team, hasTeam, hasTeam ? driver.getTeam_id() : null);
+                setToolbar(hasTeam, hasTeam ? driver.getTeam_id() : null);
+            };
+            nationMutableLiveData.observe(this, observerHolder[0]);
         } catch (RuntimeException e) {
             Log.e(TAG, "Error fetching nation data: " + e.getMessage());
-            if (driver.getTeam_id() != null) {
-                setDriverData(driver, null, team, true, driver.getTeam_id());
-                setToolbar(true, driver.getTeam_id());
-            } else {
-                setDriverData(driver, null, team, false, null);
-                setToolbar(false, null);
-            }
+            boolean hasTeam = (driver != null && driver.getTeam_id() != null && team != null);
+            setDriverData(driver, null, team, hasTeam, hasTeam ? driver.getTeam_id() : null);
+            setToolbar(hasTeam, hasTeam ? driver.getTeam_id() : null);
         }
-
     }
 
     public void setToolbar(boolean teamIdPresent, String teamId) {
@@ -290,9 +301,11 @@ public class DriverBioActivity extends AppCompatActivity {
             nationFlagUrl = nation.getNation_flag_url();
         }
 
+        String teamLogoUrl = team != null ? team.getTeam_logo_url() : null;
+
         UIUtils.loadImagesInParallel(this,
                 new String[]{
-                        team.getTeam_logo_url(),
+                        teamLogoUrl,
                         nationFlagUrl,
                         driver.getDriver_full_pic_url(),
                         driver.getRacing_number_pic_url()},
@@ -334,6 +347,8 @@ public class DriverBioActivity extends AppCompatActivity {
         UIUtils.updateTachometers(this, driver, winPercentageTachometer, podiumPercentageTachometer);
 
         createHistoryTable();
+        Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: DriverBioActivity at " + System.currentTimeMillis());
+        loadingScreen.hideLoadingScreen();
     }
 
     private void createHistoryTable() {
@@ -392,7 +407,6 @@ public class DriverBioActivity extends AppCompatActivity {
             driverHistoryLayout.setVisibility(View.GONE);
             tableLayout.setVisibility(View.GONE);
         }
-        loadingScreen.hideLoadingScreen();
     }
 
     @Override

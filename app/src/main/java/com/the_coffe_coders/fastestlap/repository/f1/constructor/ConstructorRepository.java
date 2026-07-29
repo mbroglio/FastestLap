@@ -55,7 +55,7 @@ public class ConstructorRepository {
             Long lastUpdate = lastUpdateTimestamps.get(constructorId);
             if (lastUpdate == null || System.currentTimeMillis() - lastUpdate > 300000) {
                 if (isNetworkAvailable()) {
-                    loadConstructorFromRemote(constructorId, false);
+                    loadConstructorFromRemote(constructorId, true);
                 }
             } else {
                 Log.i(TAG, "Constructor found in cache: " + constructorId);
