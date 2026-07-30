@@ -1,6 +1,8 @@
 package com.the_coffe_coders.fastestlap.ui.live.fragment;
 
 import android.content.pm.ActivityInfo;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -58,6 +61,7 @@ public class RaceControlFragment extends Fragment {
         adapter = new RaceControlRecyclerAdapter(requireContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
         recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(buildDivider(recyclerView));
 
         // ── ViewModel (scoped to Activity so it survives tab switches) ──
         liveViewModel = new ViewModelProvider(
@@ -108,6 +112,45 @@ public class RaceControlFragment extends Fragment {
     }
 
     // ─────────────────────────────────────────────────────────────
+    // Separatore tra item (6 dp, bianco)
+    // ─────────────────────────────────────────────────────────────
+
+    private RecyclerView.ItemDecoration buildDivider(RecyclerView recyclerView) {
+        int dividerHeightPx = Math.round(6 * recyclerView.getContext().getResources().getDisplayMetrics().density);
+        int color = ContextCompat.getColor(requireContext(), R.color.white);
+
+        return new RecyclerView.ItemDecoration() {
+            final Paint paint = new Paint();
+
+            @Override
+            public void onDraw(@NonNull Canvas c, @NonNull RecyclerView parent,
+                               @NonNull RecyclerView.State state) {
+                paint.setColor(color);
+                int left  = parent.getPaddingLeft();
+                int right = parent.getWidth() - parent.getPaddingRight();
+
+                int childCount = parent.getChildCount();
+                for (int i = 0; i < childCount - 1; i++) {
+                    View child = parent.getChildAt(i);
+                    int top    = child.getBottom();
+                    int bottom = top + dividerHeightPx;
+                    c.drawRect(left, top, right, bottom, paint);
+                }
+            }
+
+            @Override
+            public void getItemOffsets(@NonNull android.graphics.Rect outRect, @NonNull View view,
+                                       @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+                // Aggiunge spazio sotto ogni item tranne l'ultimo
+                int pos = parent.getChildAdapterPosition(view);
+                if (pos >= 0 && pos < parent.getAdapter().getItemCount() - 1) {
+                    outRect.bottom = dividerHeightPx;
+                }
+            }
+        };
+    }
+
+    // ─────────────────────────────────────────────────────────────
     // Lifecycle – orientation lock
     // ─────────────────────────────────────────────────────────────
 
@@ -115,11 +158,28 @@ public class RaceControlFragment extends Fragment {
     public void onResume() {
         super.onResume();
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        if (liveViewModel != null) {
+            liveViewModel.startPolling();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+        if (liveViewModel != null) {
+            liveViewModel.stopPolling();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (liveViewModel != null) {
+            liveViewModel.stopPolling();
+        }
+        if (adapter != null) {
+            adapter.getPlayerManager().release();
+        }
     }
 }

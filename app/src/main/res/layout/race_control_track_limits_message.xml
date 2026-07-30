@@ -1,52 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/timer_gray"
     app:strokeColor="@color/black">
-<!--
+
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp">
+        android:layout_margin="8dp">
 
         <LinearLayout
             android:id="@+id/message_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:layout_alignParentTop="true"
             android:layout_centerInParent="true"
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/flag_1"
-                android:layout_width="@dimen/icon_24_dp"
-                android:layout_height="@dimen/icon_24_dp"
-                android:src="@drawable/black_and_white_flag_panel_icon"
-                android:visibility="gone">
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/warning_icon">
 
             </ImageView>
 
             <TextView
+                style="@style/t16UpperCaseBoldBlack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginStart="5dp"
                 android:layout_marginEnd="5dp"
                 android:fontFamily="@font/orbitron_bold"
-                android:text="TRACK LIMITS"
-                android:textColor="@color/black"
-                android:textSize="16sp">
+                android:text="@string/track_limits">
 
             </TextView>
 
             <ImageView
                 android:id="@+id/flag_2"
-                android:layout_width="@dimen/icon_24_dp"
-                android:layout_height="@dimen/icon_24_dp"
-                android:src="@drawable/black_and_white_flag_panel_icon"
-                android:visibility="gone">
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/warning_icon">
 
             </ImageView>
 
@@ -56,10 +54,10 @@
             android:id="@+id/divider"
             android:layout_width="0dp"
             android:layout_height="3dp"
-            android:layout_centerInParent="true"
-            android:layout_alignStart="@id/message_text_layout"
-            android:layout_alignEnd="@id/message_text_layout"
             android:layout_below="@id/message_title"
+            android:layout_alignStart="@id/message_title"
+            android:layout_alignEnd="@id/message_title"
+            android:layout_centerInParent="true"
             android:layout_marginTop="5dp"
             android:background="@color/black">
 
@@ -67,58 +65,38 @@
 
         <RelativeLayout
             android:id="@+id/message_text_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
             android:layout_below="@id/divider"
+            android:layout_centerInParent="true"
             android:layout_marginTop="5dp">
 
-            <LinearLayout
-                android:id="@+id/driver_involved_layout"
-                android:layout_width="wrap_content"
+            <TextView
+                android:id="@+id/driver_name"
+                style="@style/t14RegularBlack"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_centerInParent="true"
-                android:orientation="horizontal">
+                android:layout_gravity="center"
+                android:textColor="@color/grey_card">
 
-                <TextView
-                    android:id="@+id/driver_name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:fontFamily="@font/orbitron_regular"
-                    android:text="Lewis Hamilton"
-                    android:textColor="@color/black">
-
-                </TextView>
-
-                <ImageView
-                    android:layout_width="@dimen/icon_24_dp"
-                    android:layout_height="@dimen/icon_24_dp"
-                    android:layout_marginStart="5dp"
-                    android:src="@drawable/mercedeslogo">
-
-                </ImageView>
-
-            </LinearLayout>
+            </TextView>
 
             <TextView
-                android:layout_width="wrap_content"
+                android:id="@+id/message_text"
+                style="@style/t14UpperCaseBoldBlack"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
+                android:layout_below="@id/driver_name"
                 android:layout_centerInParent="true"
-                android:layout_below="@id/driver_involved_layout"
-                android:fontFamily="@font/orbitron_bold"
-                android:gravity="center"
-                android:text="CAR 27 (HUL) TIME 1:36.613 DELETED - TRACK LIMITS AT TURN 23"
-                android:textColor="@color/black"
-                android:textSize="13sp">
+                android:layout_marginTop="5dp"
+                android:gravity="center">
 
             </TextView>
 
         </RelativeLayout>
 
     </RelativeLayout>
-    -->
 
 </com.google.android.material.card.MaterialCardView>

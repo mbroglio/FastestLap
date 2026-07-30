@@ -263,6 +263,31 @@ public class Constants {
         put("rb", "Racing Bulls");
     }};
 
+    public static final Map<String,String> DRIVER_NUMBER_NAME = new HashMap<>() {{
+       put("44", "Lewis Hamilton");
+       put("16", "Charles Leclerc");
+       put("77", "Valtteri Bottas");
+       put("11", "Sergio Pérez");
+       put("3", "Max Verstappen");
+       put("6", "Isack Hadjar");
+       put("55", "Carlos Sainz");
+       put("23", "Alexander Albon");
+       put("81", "Oscar Piastri");
+       put("1", "Lando Norris");
+       put("10", "Pierre Gasly");
+       put("43", "Franco Colapinto");
+       put("18", "Lance Stroll");
+       put("14", "Fernando Alonso");
+       put("87", "Oliver Bearman");
+       put("31", "Esteban Ocon");
+       put("12", "Andrea Kimi Antonelli");
+       put("63", "George Russell");
+       put("30", "Liam Lawson");
+       put("41", "Arvid Lindblad");
+       put("27", "Nico Hulkemberg");
+       put("5", "Gabriel Bortoleto");
+    }};
+
     public static final List<Integer> PODIUM_DRIVER_NAME = List.of(
             R.id.first_name,
             R.id.second_name,

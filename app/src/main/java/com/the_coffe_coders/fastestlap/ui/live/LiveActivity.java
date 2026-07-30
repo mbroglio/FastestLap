@@ -68,6 +68,7 @@ public class LiveActivity extends AppCompatActivity {
         ViewPager2 viewPager = findViewById(R.id.view_pager);
         LivePagerAdapter adapter = new LivePagerAdapter(this);
         viewPager.setAdapter(adapter);
+        viewPager.setUserInputEnabled(false); // solo click sul tab, nessuno swipe
 
         TabLayout tabLayout = findViewById(R.id.tab_layout);
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {

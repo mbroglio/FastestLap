@@ -262,4 +262,11 @@
     <string name="widget_loading_title" translatable="false">FastestLap</string>
     <string name="widget_loading_text">Loading…</string>
 
+
+    <!-- LIVE TIMING -->
+    <string name="fia_communication">FIA Communication</string>
+    <string name="track_limits">Track Limits</string>
+    <string name="safety_car">Safety Car</string>
+    <string name="team_radio_plus_driver_number">Team Radio - Driver #%1$s</string>
+
 </resources>

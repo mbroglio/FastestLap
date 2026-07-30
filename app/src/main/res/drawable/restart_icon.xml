@@ -1,0 +1,20 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+
+    <!-- Freccia circolare di riavvio (senso orario, parte superiore aperta) -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#000000"
+        android:strokeWidth="6"
+        android:strokeLineCap="round"
+        android:pathData="M48,20 A20,20 0 1,1 20,37" />
+
+    <!-- Punta della freccia -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M16,28 L24,40 L32,28 Z" />
+
+</vector>
