@@ -12,7 +12,8 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * Modello di dominio per gli stint dei pneumatici restituiti dall'endpoint /v1/stints di OpenF1.
+ * Modello di dominio per gli stint dei pneumatici restituiti dall'endpoint /v1/stints di OpenF1,
+ * arricchito con la durata del pit stop da /v1/pit.
  */
 @Getter
 @Setter
@@ -33,7 +34,6 @@ public class Stint implements Parcelable {
         }
     };
 
-
     private int meetingKey;
     private int sessionKey;
     private int stintNumber;
@@ -42,6 +42,18 @@ public class Stint implements Parcelable {
     private Integer lapEnd;
     private String compound;
     private Integer tyreAgeAtStart;
+    private Double pitDuration;
+
+    public Stint(int meetingKey, int sessionKey, int stintNumber, int driverNumber, Integer lapStart, Integer lapEnd, String compound, Integer tyreAgeAtStart) {
+        this.meetingKey = meetingKey;
+        this.sessionKey = sessionKey;
+        this.stintNumber = stintNumber;
+        this.driverNumber = driverNumber;
+        this.lapStart = lapStart;
+        this.lapEnd = lapEnd;
+        this.compound = compound;
+        this.tyreAgeAtStart = tyreAgeAtStart;
+    }
 
     protected Stint(Parcel in) {
         meetingKey = in.readInt();
@@ -52,6 +64,7 @@ public class Stint implements Parcelable {
         lapEnd = (Integer) in.readValue(Integer.class.getClassLoader());
         compound = in.readString();
         tyreAgeAtStart = (Integer) in.readValue(Integer.class.getClassLoader());
+        pitDuration = (Double) in.readValue(Double.class.getClassLoader());
     }
 
     @Override
@@ -69,5 +82,6 @@ public class Stint implements Parcelable {
         parcel.writeValue(lapEnd);
         parcel.writeString(compound);
         parcel.writeValue(tyreAgeAtStart);
+        parcel.writeValue(pitDuration);
     }
 }

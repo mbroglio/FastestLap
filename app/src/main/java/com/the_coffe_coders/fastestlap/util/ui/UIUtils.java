@@ -60,8 +60,30 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
+import com.google.gson.JsonObject;
 
 public class UIUtils {
+
+    /*
+     * ----------------------------------------------------------------------------------------------
+     * JSON HELPERS
+     * ----------------------------------------------------------------------------------------------
+     */
+
+    public static String getStringOrNull(JsonObject obj, String key) {
+        if (obj == null || !obj.has(key) || obj.get(key).isJsonNull()) return null;
+        return obj.get(key).getAsString();
+    }
+
+    public static int getIntOrDefault(JsonObject obj, String key, int defaultValue) {
+        if (obj == null || !obj.has(key) || obj.get(key).isJsonNull()) return defaultValue;
+        return obj.get(key).getAsInt();
+    }
+
+    public static Integer getNullableInt(JsonObject obj, String key) {
+        if (obj == null || !obj.has(key) || obj.get(key).isJsonNull()) return null;
+        return obj.get(key).getAsInt();
+    }
 
 
     /*

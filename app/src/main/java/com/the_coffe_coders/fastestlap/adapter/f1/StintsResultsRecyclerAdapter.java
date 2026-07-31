@@ -168,10 +168,16 @@ public class StintsResultsRecyclerAdapter extends RecyclerView.Adapter<StintsRes
         String pitText = pitCount + " " + (pitCount == 1 ? "PIT" : "PITS");
         UIUtils.singleSetTextViewText(pitText, holder.pitNumber);
 
+        RaceResult driverResult = driverToResultMap.get(ds.driverNumber);
+        if (driverResult != null && driverResult.getConstructor() != null && holder.teamColorIndicator != null) {
+            String teamId = driverResult.getConstructor().getConstructorId();
+            Integer teamColorObj = Constants.TEAM_COLOR.get(teamId);
+            int color = androidx.core.content.ContextCompat.getColor(context, java.util.Objects.requireNonNullElseGet(teamColorObj, () -> R.color.mercedes_f1));
+            holder.teamColorIndicator.setBackgroundColor(color);
+        }
+
         // Generazione grafica degli stint
         holder.stintsContainer.removeAllViews();
-
-        RaceResult driverResult = driverToResultMap.get(ds.driverNumber);
 
         int driverWeightSum = 0;
         List<Integer> stintWeights = new ArrayList<>();
@@ -219,7 +225,7 @@ public class StintsResultsRecyclerAdapter extends RecyclerView.Adapter<StintsRes
     private View createStintGraphicView(Stint stint, int displayWeight) {
         LinearLayout stintLayout = new LinearLayout(context);
         stintLayout.setOrientation(LinearLayout.HORIZONTAL);
-        stintLayout.setGravity(Gravity.CENTER_VERTICAL);
+        stintLayout.setGravity(Gravity.TOP);
 
         int lapStart = (stint.getLapStart() != null) ? stint.getLapStart() : 1;
 
@@ -229,7 +235,7 @@ public class StintsResultsRecyclerAdapter extends RecyclerView.Adapter<StintsRes
         layoutParams.setMargins(0, 0, dpToPx(1), 0);
         stintLayout.setLayoutParams(layoutParams);
 
-        // Colonna con Icona Mescola + Numero Giro Iniziale dello stint
+        // Colonna con Icona Mescola + Numero Giro Iniziale dello stint + Tempo Pit Stop
         LinearLayout compoundColumn = new LinearLayout(context);
         compoundColumn.setOrientation(LinearLayout.VERTICAL);
         compoundColumn.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -248,16 +254,33 @@ public class StintsResultsRecyclerAdapter extends RecyclerView.Adapter<StintsRes
         lapStartTextView.setGravity(Gravity.CENTER);
         lapStartTextView.setSingleLine(true);
 
+        TextView pitDurationTextView = new TextView(context);
+        pitDurationTextView.setTextSize(7.5f);
+        pitDurationTextView.setGravity(Gravity.CENTER);
+        pitDurationTextView.setSingleLine(true);
+
+        if (stint.getPitDuration() != null && stint.getPitDuration() > 0) {
+            String durationStr = String.format(java.util.Locale.US, "%.1fs", stint.getPitDuration());
+            pitDurationTextView.setText(durationStr);
+            pitDurationTextView.setTextColor(Color.parseColor("#FFE800"));
+            pitDurationTextView.setVisibility(View.VISIBLE);
+        } else {
+            // Placeholder invisibile per garantire l'altezza uniforme e l'allineamento orizzontale delle ruote
+            pitDurationTextView.setText(" ");
+            pitDurationTextView.setVisibility(View.INVISIBLE);
+        }
+
         compoundColumn.addView(compoundIcon);
         compoundColumn.addView(lapStartTextView);
+        compoundColumn.addView(pitDurationTextView);
 
-        // Linea orizzontale del colore della mescola
+        // Linea orizzontale del colore della mescola (icona 16dp -> centro a 8dp; linea 5dp -> topMargin = 5.5dp)
         View stintLine = new View(context);
         stintLine.setBackgroundColor(getCompoundColor(stint.getCompound()));
         LinearLayout.LayoutParams lineParams = new LinearLayout.LayoutParams(
                 0, dpToPx(5), 1.0f
         );
-        lineParams.setMargins(dpToPx(2), 0, 0, dpToPx(7));
+        lineParams.setMargins(dpToPx(2), dpToPx(6), 0, 0);
         stintLine.setLayoutParams(lineParams);
 
         stintLayout.addView(compoundColumn);

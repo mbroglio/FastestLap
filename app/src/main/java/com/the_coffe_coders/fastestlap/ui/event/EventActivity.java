@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -405,36 +406,58 @@ public class EventActivity extends AppCompatActivity {
 
     private void fetchStintsAndShowDialog(Race race, String sessionName) {
         RaceResultFastestLap raceFastestLap;
-        if(sessionName.equals("Sprint")) {
+        if (sessionName.equals("Sprint")) {
             raceFastestLap = eventViewModel.extractFastestLap(race.getSprintResults());
-        }else{
+        } else {
             raceFastestLap = eventViewModel.extractFastestLap(race.getRaceResults());
         }
 
-        if (race.getStints() != null && !race.getStints().isEmpty()) {
-            NavigationUtils.showRaceResults(this, race, 0, race.getStints(), raceFastestLap);
-            return;
+        List<Stint> cachedStints = sessionName.equals("Sprint") ? race.getSprintStints() : race.getRaceStints();
+        if (cachedStints == null || cachedStints.isEmpty()) {
+            cachedStints = race.getStints();
         }
 
-        raceResultViewModel.getStints(race.getRaceName(), sessionName).observe(this, result -> {
-            List<Stint> stints = null;
+        if (loadingScreen != null) {
+            loadingScreen.showLoadingScreen(true);
+        }
 
-            if (result instanceof Result.Loading) {
-                Log.i(TAG, "Loading stints...");
-                return;
+        List<Stint> finalCachedStints = cachedStints;
+        MutableLiveData<Result> stintsLiveData = raceResultViewModel.getStints(race.getRaceName(), sessionName);
+        Observer<Result> observer = new Observer<Result>() {
+            @Override
+            public void onChanged(Result result) {
+                if (result instanceof Result.Loading) {
+                    Log.i(TAG, "Loading stints...");
+                    return;
+                }
+
+                stintsLiveData.removeObserver(this);
+
+                if (loadingScreen != null) {
+                    loadingScreen.hideLoadingScreenImmediately();
+                }
+
+                List<Stint> stints = null;
+                if (result instanceof Result.StintsSuccess) {
+                    Log.i(TAG, "Stints loaded successfully");
+
+                    stints = ((Result.StintsSuccess) result).getData();
+                    if (sessionName.equals("Sprint")) {
+                        race.setSprintStints(stints);
+                    } else {
+                        race.setRaceStints(stints);
+                    }
+                    Log.i(TAG, "Stints:\n " + stints);
+
+                } else if (result instanceof Result.Error) {
+                    Log.e(TAG, "Error loading stints: " + result.getError());
+                    stints = finalCachedStints;
+                }
+
+                NavigationUtils.showRaceResults(EventActivity.this, race, 0, (stints != null && !stints.isEmpty()) ? stints : finalCachedStints, raceFastestLap);
             }
-            if (result instanceof Result.StintsSuccess) {
-                Log.i(TAG, "Stints loaded successfully");
-
-                stints = ((Result.StintsSuccess) result).getData();
-                Log.i(TAG, "Stints:\n " + stints);
-
-            } else if (result instanceof Result.Error) {
-                Log.e(TAG, "Error loading stints: " + result.getError());
-            }
-
-            NavigationUtils.showRaceResults(this, race, 0, stints, raceFastestLap);
-        });
+        };
+        stintsLiveData.observe(this, observer);
     }
 
     private void showQualifyingResultsDialog(Race race) {
@@ -586,35 +609,41 @@ public class EventActivity extends AppCompatActivity {
             loadingScreen.showLoadingScreen(true);
         }
 
-        MutableLiveData<Result> qualifyingResultLiveData = raceResultViewModel.getQualifyingResults(round);
-        qualifyingResultLiveData.observe(this, result -> {
-            if (result instanceof Result.Loading) {
-                return;
-            }
-
-            if (loadingScreen != null) {
-                loadingScreen.hideLoadingScreenImmediately();
-            }
-
-            try {
-                if (result instanceof Result.RaceResultsSuccess) {
-                    Race race = ((Result.RaceResultsSuccess) result).getData();
-                    List<QualifyingResult> qualifyingResults = race != null ? race.getQualifyingResults() : null;
-
-                    if (qualifyingResults == null || qualifyingResults.isEmpty()) {
-                        Log.i(TAG, "No qualifying results found");
-                        Toast.makeText(this, "No qualifying results found", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Log.i(TAG, "Qualifying results found: " + qualifyingResults.size());
-                        showQualifyingResultsDialog(race);
-                    }
-                } else if (result instanceof Result.Error) {
-                    Toast.makeText(this, "Error loading qualifying results", Toast.LENGTH_SHORT).show();
+        MutableLiveData<Result> qualifyingLiveData = raceResultViewModel.getQualifyingResults(round);
+        Observer<Result> observer = new Observer<Result>() {
+            @Override
+            public void onChanged(Result result) {
+                if (result instanceof Result.Loading) {
+                    return;
                 }
-            } catch (Exception e) {
-                Log.e(TAG, "Error processing qualifying data: " + e.getMessage());
+
+                qualifyingLiveData.removeObserver(this);
+
+                if (loadingScreen != null) {
+                    loadingScreen.hideLoadingScreenImmediately();
+                }
+
+                try {
+                    if (result instanceof Result.RaceResultsSuccess) {
+                        Race race = ((Result.RaceResultsSuccess) result).getData();
+                        List<QualifyingResult> qualifyingResults = race != null ? race.getQualifyingResults() : null;
+
+                        if (qualifyingResults == null || qualifyingResults.isEmpty()) {
+                            Log.i(TAG, "No qualifying results found");
+                            Toast.makeText(EventActivity.this, "No qualifying results found", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.i(TAG, "Qualifying results found: " + qualifyingResults.size());
+                            showQualifyingResultsDialog(race);
+                        }
+                    } else if (result instanceof Result.Error) {
+                        Toast.makeText(EventActivity.this, "Error loading qualifying results", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error processing qualifying data: " + e.getMessage());
+                }
             }
-        });
+        };
+        qualifyingLiveData.observe(this, observer);
     }
 
     private void processSprintData(String round) {
@@ -623,35 +652,41 @@ public class EventActivity extends AppCompatActivity {
             loadingScreen.showLoadingScreen(true);
         }
 
-        MutableLiveData<Result> sprintResultLiveData = raceResultViewModel.getSprintResults(round);
-        sprintResultLiveData.observe(this, result -> {
-            if (result instanceof Result.Loading) {
-                return;
-            }
-
-            if (loadingScreen != null) {
-                loadingScreen.hideLoadingScreenImmediately();
-            }
-
-            try {
-                if (result instanceof Result.RaceResultsSuccess) {
-                    Race race = ((Result.RaceResultsSuccess) result).getData();
-                    List<RaceResult> sprintResults = race != null ? race.getSprintResults() : null;
-
-                    if (sprintResults == null || sprintResults.isEmpty()) {
-                        Log.i(TAG, "No sprint results found");
-                        Toast.makeText(this, "No sprint results found", Toast.LENGTH_SHORT).show();
-                    } else {
-                        Log.i(TAG, "Sprint results found: " + sprintResults.size());
-                        showRaceResultsDialog(race);
-                    }
-                } else if (result instanceof Result.Error) {
-                    Toast.makeText(this, "Error loading sprint results", Toast.LENGTH_SHORT).show();
+        MutableLiveData<Result> sprintLiveData = raceResultViewModel.getSprintResults(round);
+        Observer<Result> observer = new Observer<Result>() {
+            @Override
+            public void onChanged(Result result) {
+                if (result instanceof Result.Loading) {
+                    return;
                 }
-            } catch (Exception e) {
-                Log.e(TAG, "Error processing sprint data: " + e.getMessage());
+
+                sprintLiveData.removeObserver(this);
+
+                if (loadingScreen != null) {
+                    loadingScreen.hideLoadingScreenImmediately();
+                }
+
+                try {
+                    if (result instanceof Result.RaceResultsSuccess) {
+                        Race race = ((Result.RaceResultsSuccess) result).getData();
+                        List<RaceResult> sprintResults = race != null ? race.getSprintResults() : null;
+
+                        if (sprintResults == null || sprintResults.isEmpty()) {
+                            Log.i(TAG, "No sprint results found");
+                            Toast.makeText(EventActivity.this, "No sprint results found", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.i(TAG, "Sprint results found: " + sprintResults.size());
+                            showRaceResultsDialog(race);
+                        }
+                    } else if (result instanceof Result.Error) {
+                        Toast.makeText(EventActivity.this, "Error loading sprint results", Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error processing sprint data: " + e.getMessage());
+                }
             }
-        });
+        };
+        sprintLiveData.observe(this, observer);
     }
 
     @Override

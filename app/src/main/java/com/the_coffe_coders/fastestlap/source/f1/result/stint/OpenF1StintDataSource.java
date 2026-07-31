@@ -1,6 +1,9 @@
 package com.the_coffe_coders.fastestlap.source.f1.result.stint;
 
 import static com.the_coffe_coders.fastestlap.util.Constants.RETROFIT_ERROR;
+import static com.the_coffe_coders.fastestlap.util.ui.UIUtils.getIntOrDefault;
+import static com.the_coffe_coders.fastestlap.util.ui.UIUtils.getNullableInt;
+import static com.the_coffe_coders.fastestlap.util.ui.UIUtils.getStringOrNull;
 
 import android.util.Log;
 
@@ -10,6 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.the_coffe_coders.fastestlap.domain.f1.result.PitStopInfo;
 import com.the_coffe_coders.fastestlap.domain.f1.result.Stint;
 import com.the_coffe_coders.fastestlap.repository.f1.result.StintCallback;
 import com.the_coffe_coders.fastestlap.service.OpenF1APIService;
@@ -17,7 +21,10 @@ import com.the_coffe_coders.fastestlap.util.ServiceLocator;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -220,7 +227,7 @@ public class OpenF1StintDataSource implements StintDataSource {
                 }
                 try {
                     String json = body.string();
-                    processStintsResponse(json, callback);
+                    processStintsResponse(json, sessionKey, callback);
                 } catch (IOException e) {
                     Log.e(TAG, "IOException while reading stints response", e);
                     callback.onFailure(new Exception("Failed to read stints response: " + e.getMessage(), e));
@@ -238,7 +245,7 @@ public class OpenF1StintDataSource implements StintDataSource {
         });
     }
 
-    private void processStintsResponse(String json, StintCallback callback) {
+    private void processStintsResponse(String json, String sessionKey, StintCallback callback) {
         try {
             JsonArray jsonArray = new Gson().fromJson(json, JsonArray.class);
             if (jsonArray == null) {
@@ -253,7 +260,7 @@ public class OpenF1StintDataSource implements StintDataSource {
                 JsonObject obj = element.getAsJsonObject();
 
                 int meetingKey    = getIntOrDefault(obj, "meeting_key", 0);
-                int sessionKey    = getIntOrDefault(obj, "session_key", 0);
+                int sKey          = getIntOrDefault(obj, "session_key", 0);
                 int stintNumber   = getIntOrDefault(obj, "stint_number", 0);
                 int driverNumber  = getIntOrDefault(obj, "driver_number", 0);
                 Integer lapStart  = getNullableInt(obj, "lap_start");
@@ -261,7 +268,7 @@ public class OpenF1StintDataSource implements StintDataSource {
                 String compound   = getStringOrNull(obj, "compound");
                 Integer tyreAge   = getNullableInt(obj, "tyre_age_at_start");
 
-                stints.add(new Stint(meetingKey, sessionKey, stintNumber, driverNumber, lapStart, lapEnd, compound, tyreAge));
+                stints.add(new Stint(meetingKey, sKey, stintNumber, driverNumber, lapStart, lapEnd, compound, tyreAge));
             }
 
             // Ordina prima per driverNumber crescente, poi per lapStart crescente
@@ -278,8 +285,8 @@ public class OpenF1StintDataSource implements StintDataSource {
                 return Integer.compare(l1, l2);
             });
 
-            Log.d(TAG, "Successfully parsed and sorted " + stints.size() + " stints");
-            callback.onSuccess(stints);
+            Log.d(TAG, "Successfully parsed and sorted " + stints.size() + " stints. Fetching pit stop data...");
+            fetchPitStopsAndEnrichStints(sessionKey, stints, callback);
 
         } catch (Exception e) {
             Log.e(TAG, "Exception while parsing stints JSON", e);
@@ -287,18 +294,80 @@ public class OpenF1StintDataSource implements StintDataSource {
         }
     }
 
-    private String getStringOrNull(JsonObject obj, String key) {
-        if (!obj.has(key) || obj.get(key).isJsonNull()) return null;
-        return obj.get(key).getAsString();
-    }
+    private void fetchPitStopsAndEnrichStints(String sessionKey, List<Stint> stints, StintCallback callback) {
+        Call<ResponseBody> pitCall;
+        try {
+            int sKeyInt = Integer.parseInt(sessionKey);
+            pitCall = openF1APIService.getPitStops(sKeyInt);
+        } catch (NumberFormatException e) {
+            pitCall = openF1APIService.getPitStopsBySessionKey(sessionKey);
+        }
 
-    private int getIntOrDefault(JsonObject obj, String key, int defaultValue) {
-        if (!obj.has(key) || obj.get(key).isJsonNull()) return defaultValue;
-        return obj.get(key).getAsInt();
-    }
+        pitCall.enqueue(new Callback<>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                ResponseBody body = response.body();
+                if (body != null) {
+                    try {
+                        String json = body.string();
+                        JsonArray jsonArray = new Gson().fromJson(json, JsonArray.class);
+                        if (jsonArray != null) {
+                            Map<Integer, List<PitStopInfo>> driverPitMap = new HashMap<>();
+                            for (JsonElement elem : jsonArray) {
+                                if (!elem.isJsonObject()) continue;
+                                JsonObject obj = elem.getAsJsonObject();
+                                int driverNum = getIntOrDefault(obj, "driver_number", -1);
+                                int lapNum = getIntOrDefault(obj, "lap_number", -1);
+                                Double pitDur = null;
+                                if (obj.has("pit_duration") && !obj.get("pit_duration").isJsonNull()) {
+                                    try {
+                                        pitDur = obj.get("pit_duration").getAsDouble();
+                                    } catch (Exception ignored) {}
+                                }
 
-    private Integer getNullableInt(JsonObject obj, String key) {
-        if (!obj.has(key) || obj.get(key).isJsonNull()) return null;
-        return obj.get(key).getAsInt();
+                                if (driverNum != -1 && pitDur != null && pitDur > 0) {
+                                    driverPitMap.computeIfAbsent(driverNum, k -> new ArrayList<>())
+                                                .add(new PitStopInfo(lapNum, pitDur));
+                                }
+                            }
+
+                            for (List<PitStopInfo> list : driverPitMap.values()) {
+                                list.sort((p1, p2) -> Integer.compare(p1.getLapNumber(), p2.getLapNumber()));
+                            }
+
+                            Map<Integer, List<Stint>> driverStintsMap = new LinkedHashMap<>();
+                            for (Stint stint : stints) {
+                                driverStintsMap.computeIfAbsent(stint.getDriverNumber(), k -> new ArrayList<>())
+                                               .add(stint);
+                            }
+
+                            for (Map.Entry<Integer, List<Stint>> entry : driverStintsMap.entrySet()) {
+                                int driverNum = entry.getKey();
+                                List<Stint> driverStints = entry.getValue();
+                                List<PitStopInfo> driverPits = driverPitMap.get(driverNum);
+
+                                if (driverPits != null && !driverPits.isEmpty()) {
+                                    for (int i = 0; i < driverStints.size(); i++) {
+                                        Stint stint = driverStints.get(i);
+                                        if (i > 0 && (i - 1) < driverPits.size()) {
+                                            stint.setPitDuration(driverPits.get(i - 1).getDuration());
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        Log.w(TAG, "Error parsing pit stop data: " + e.getMessage());
+                    }
+                }
+                callback.onSuccess(stints);
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                Log.w(TAG, "Failed to fetch pit stops, returning stints without pit duration: " + t.getMessage());
+                callback.onSuccess(stints);
+            }
+        });
     }
 }
