@@ -50,7 +50,8 @@ public class TeamRadioPlayerManager {
     // State
     // ─────────────────────────────────────────────────────────────
 
-    private MediaPlayer activePlayer;
+    private MediaPlayer activePlayer;    // player già avviato
+    private MediaPlayer preparingPlayer; // player in attesa di onPrepared
     private String      activeUrl;
     private Listener    activeListener;
 
@@ -105,7 +106,17 @@ public class TeamRadioPlayerManager {
             return;
         }
 
+        // Tracciamo il player PRIMA di prepareAsync, così stopInternal() può
+        // rilasciarlo anche se onPrepared non è ancora scattato.
+        preparingPlayer = mp;
+
         mp.setOnPreparedListener(player -> {
+            // Ignorare se il player è stato sostituito da una chiamata stop()/play() successiva
+            if (player != preparingPlayer) {
+                player.release();
+                return;
+            }
+            preparingPlayer = null;
             activePlayer = player;
             player.start();
             startProgressUpdater();
@@ -184,13 +195,18 @@ public class TeamRadioPlayerManager {
      * @return {@code true} se l'URL è attivo e il listener è stato collegato.
      */
     public boolean attachIfPlaying(String url, Listener listener) {
-        if (url == null || !url.equals(activeUrl) || activePlayer == null) return false;
-
+        if (url == null || !url.equals(activeUrl)) return false;
+        // L'URL corrisponde: ci siamo in buffering (preparingPlayer != null) o in riproduzione
         activeListener = listener;
-        if (activePlayer.isPlaying()) {
-            listener.onStarted(activePlayer.getDuration(), activePlayer.getCurrentPosition());
+        if (activePlayer != null) {
+            if (activePlayer.isPlaying()) {
+                listener.onStarted(activePlayer.getDuration(), activePlayer.getCurrentPosition());
+            } else {
+                listener.onPaused(activePlayer.getCurrentPosition(), activePlayer.getDuration());
+            }
         } else {
-            listener.onPaused(activePlayer.getCurrentPosition(), activePlayer.getDuration());
+            // Ancora in buffering
+            listener.onBuffering();
         }
         return true;
     }
@@ -226,6 +242,19 @@ public class TeamRadioPlayerManager {
     }
 
     /**
+     * Ferma la riproduzione corrente e rilascia il player, senza distruggere il manager.
+     * Il manager rimane disponibile per successive chiamate a {@link #play}.
+     */
+    public void stop() {
+        if (activeListener != null) {
+            activeListener.onStopped();
+        }
+        stopInternal();
+        activeListener = null;
+        activeUrl      = null;
+    }
+
+    /**
      * Ferma tutto e rilascia il player. Da chiamare in
      * {@code onDetachedFromRecyclerView} e in {@code Fragment.onDestroyView}.
      */
@@ -241,6 +270,11 @@ public class TeamRadioPlayerManager {
 
     private void stopInternal() {
         stopProgressUpdater();
+        // Rilascia il player in fase di preparazione (zombie durante prepareAsync)
+        if (preparingPlayer != null) {
+            try { preparingPlayer.release(); } catch (Exception ignored) { }
+            preparingPlayer = null;
+        }
         if (activePlayer != null) {
             try {
                 if (activePlayer.isPlaying()) activePlayer.stop();

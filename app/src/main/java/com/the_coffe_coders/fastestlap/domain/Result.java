@@ -6,6 +6,7 @@ import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.f1.livetiming.RaceControlMessage;
 import com.the_coffe_coders.fastestlap.domain.f1.livetiming.TeamRadioMessage;
+import com.the_coffe_coders.fastestlap.domain.f1.result.Stint;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
@@ -262,6 +263,18 @@ public abstract class Result {
 
         public List<TeamRadioMessage> getData() {
             return messages;
+        }
+    }
+
+    public static class StintsSuccess extends Result {
+        private final List<Stint> stints;
+
+        public StintsSuccess(List<Stint> stints) {
+            this.stints = stints;
+        }
+
+        public List<Stint> getData() {
+            return stints;
         }
     }
 

@@ -29,4 +29,34 @@ public interface OpenF1APIService {
      */
     @GET("team_radio")
     Call<ResponseBody> getTeamRadioMessages(@Query("session_key") String sessionKey);
+
+    /**
+     * Returns the list of meetings for a given year (e.g. 2026).
+     */
+    @GET("meetings")
+    Call<ResponseBody> getMeetings(@Query("year") String year);
+
+    /**
+     * Returns the list of sessions for a given meeting_key and optional session_name.
+     */
+    @GET("sessions")
+    Call<ResponseBody> getSessions(@Query("meeting_key") int meetingKey, @Query("session_name") String sessionName);
+
+    /**
+     * Returns the list of sessions for a given meeting_key.
+     */
+    @GET("sessions")
+    Call<ResponseBody> getSessionsByMeetingKey(@Query("meeting_key") int meetingKey);
+
+    /**
+     * Returns the list of tyre stints for a given session_key.
+     */
+    @GET("stints")
+    Call<ResponseBody> getStints(@Query("session_key") int sessionKey);
+
+    /**
+     * Returns the list of tyre stints for a string session_key (e.g. "latest").
+     */
+    @GET("stints")
+    Call<ResponseBody> getStintsBySessionKey(@Query("session_key") String sessionKey);
 }

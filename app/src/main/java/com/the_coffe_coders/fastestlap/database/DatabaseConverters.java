@@ -19,6 +19,7 @@ import com.the_coffe_coders.fastestlap.domain.f1.result.QualifyingResult;
 import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResultFastestLap;
 import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResultTime;
+import com.the_coffe_coders.fastestlap.domain.f1.result.Stint;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.f1.track.Location;
@@ -79,6 +80,20 @@ public class DatabaseConverters {
     @TypeConverter
     public static String fromQualifyingResultList(List<QualifyingResult> results) {
         return gson.toJson(results);
+    }
+
+    @TypeConverter
+    public static List<Stint> toStintList(String json) {
+        if (json == null) return null;
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<Stint>>() {}.getType();
+        return gson.fromJson(json, listType);
+    }
+
+    @TypeConverter
+    public static String fromStintList(List<Stint> stints) {
+        if (stints == null) return null;
+        return gson.toJson(stints);
     }
 
     @TypeConverter

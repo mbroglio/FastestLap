@@ -1,58 +1,88 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="@color/white"
-    app:cardCornerRadius="0dp"
-    app:strokeColor="@color/app_primary_red"
-    app:strokeWidth="3dp">
+    android:id="@+id/activity_race_and_sprint_results"
+    android:background="@color/app_primary_red">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/top_bar_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/app_primary_red"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/top_bar_height"
+            android:background="@color/app_primary_red"
+            app:navigationIcon="@drawable/arrow_back_ios_style">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/medium_margin">
+
+                <TextView
+                    android:id="@+id/topAppBarTitle"
+                    style="@style/t25UpperCaseBoldBlack"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:gravity="center"
+                    android:maxLines="1">
+
+                </TextView>
+
+            </RelativeLayout>
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <TextView
+        android:id="@+id/event_description_title"
+        style="@style/t14UpperCaseBoldBlack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:paddingBottom="5dp"
+        android:background="@color/app_primary_red"
+        android:gravity="center"
+        android:maxLines="1"
+        app:layout_constraintTop_toBottomOf="@id/top_bar_layout"/>
 
     <RelativeLayout
+        android:id="@+id/results_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         android:background="@color/screen_background_color"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        app:layout_constraintTop_toBottomOf="@id/event_description_title"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/title_layout"
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:background="@color/app_primary_red"
-            android:orientation="vertical">
+            app:tabTextAppearance="@style/t14UpperCaseRegularWhite"
+            app:tabSelectedTextAppearance="@style/t16UpperCaseBoldWhite"
+            android:background="@color/screen_background_color"
+            app:tabIndicatorColor="@color/app_primary_red"
+            app:tabSelectedTextColor="@color/app_primary_red"
+            app:tabTextColor="@color/white" />
 
-            <TextView
-                android:id="@+id/race_results_title"
-                style="@style/t20UpperCaseBoldBlack"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="8dp"
-                android:gravity="center"
-                android:maxLines="1" />
-
-            <TextView
-                android:id="@+id/event_description_title"
-                style="@style/t14UpperCaseBoldBlack"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="5dp"
-                android:gravity="center"
-                android:maxLines="1" />
-
-        </LinearLayout>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/race_results_recycler_view"
+        <!-- ViewPager2 per i due Fragment (Risultati e Stint) -->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_above="@id/fastest_lap_layout"
-            android:layout_below="@id/title_layout"
+            android:layout_below="@id/tab_layout"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp" />
 
@@ -60,10 +90,11 @@
             android:id="@+id/fastest_lap_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@id/buttons_layout"
-            android:layout_alignStart="@id/buttons_layout"
-            android:layout_alignEnd="@id/buttons_layout"
+            android:layout_alignParentBottom="true"
             android:background="@color/timer_gray"
+            android:layout_marginStart="@dimen/medium_margin"
+            android:layout_marginEnd="@dimen/medium_margin"
+            android:layout_marginBottom="8dp"
             android:padding="5dp">
 
             <ImageView
@@ -148,48 +179,6 @@
 
         </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/buttons_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_gravity="center"
-            android:layout_marginStart="@dimen/medium_margin"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="@dimen/medium_margin"
-            android:layout_marginBottom="5dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/stints_result_layout"
-                style="@style/Widget.Material3.Button.ElevatedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
-                android:layout_weight="1"
-                android:backgroundTint="@color/dark_red"
-                android:fontFamily="@font/orbitron_bold"
-                android:text="@string/stints"
-                android:textColor="@color/black">
-
-            </Button>
-
-            <Button
-                android:id="@+id/close_results_button"
-                style="@style/Widget.Material3.Button.ElevatedButton"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_weight="1"
-                android:backgroundTint="@color/white"
-                android:fontFamily="@font/orbitron_bold"
-                android:text="@string/close"
-                android:textColor="@color/black">
-
-            </Button>
-
-        </LinearLayout>
-
     </RelativeLayout>
 
-</com.google.android.material.card.MaterialCardView>
+</androidx.constraintlayout.widget.ConstraintLayout>

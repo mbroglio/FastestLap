@@ -29,6 +29,8 @@ import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.f1.result.QualifyingResult;
 import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResult;
+import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResultFastestLap;
+import com.the_coffe_coders.fastestlap.domain.f1.result.Stint;
 import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.domain.f1.livetiming.RaceControlMessage;
@@ -388,22 +390,58 @@ public class EventActivity extends AppCompatActivity {
                     Log.e(TAG, "sprint results not found");
                 } else {
                     Log.i(TAG, "Showing sprint results");
-                    NavigationUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 0);
+
+                    fetchStintsAndShowDialog(race, "Sprint");
                 }
             } else {
                 Log.i(TAG, "Showing race results");
-                NavigationUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 0);
+
+                fetchStintsAndShowDialog(race, "Race");
             }
         } else {
             Log.e(TAG, "race is null, cannot show results");
         }
     }
 
+    private void fetchStintsAndShowDialog(Race race, String sessionName) {
+        RaceResultFastestLap raceFastestLap;
+        if(sessionName.equals("Sprint")) {
+            raceFastestLap = eventViewModel.extractFastestLap(race.getSprintResults());
+        }else{
+            raceFastestLap = eventViewModel.extractFastestLap(race.getRaceResults());
+        }
+
+        if (race.getStints() != null && !race.getStints().isEmpty()) {
+            NavigationUtils.showRaceResults(this, race, 0, race.getStints(), raceFastestLap);
+            return;
+        }
+
+        raceResultViewModel.getStints(race.getRaceName(), sessionName).observe(this, result -> {
+            List<Stint> stints = null;
+
+            if (result instanceof Result.Loading) {
+                Log.i(TAG, "Loading stints...");
+                return;
+            }
+            if (result instanceof Result.StintsSuccess) {
+                Log.i(TAG, "Stints loaded successfully");
+
+                stints = ((Result.StintsSuccess) result).getData();
+                Log.i(TAG, "Stints:\n " + stints);
+
+            } else if (result instanceof Result.Error) {
+                Log.e(TAG, "Error loading stints: " + result.getError());
+            }
+
+            NavigationUtils.showRaceResults(this, race, 0, stints, raceFastestLap);
+        });
+    }
+
     private void showQualifyingResultsDialog(Race race) {
         if (race != null) {
             if (race.getQualifyingResults() != null && !race.getQualifyingResults().isEmpty()) {
                 Log.i(TAG, "Showing qualifying results");
-                NavigationUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 1);
+                NavigationUtils.showRaceResults(this, race, 1, null, null);
             } else {
                 Log.e(TAG, "qualifying results not found");
             }
@@ -544,6 +582,9 @@ public class EventActivity extends AppCompatActivity {
 
     private void processQualifyingData(String round) {
         Log.d(TAG, "Processing qualifying data for round: " + round);
+        if (loadingScreen != null) {
+            loadingScreen.showLoadingScreen(true);
+        }
 
         MutableLiveData<Result> qualifyingResultLiveData = raceResultViewModel.getQualifyingResults(round);
         qualifyingResultLiveData.observe(this, result -> {
@@ -551,18 +592,24 @@ public class EventActivity extends AppCompatActivity {
                 return;
             }
 
+            if (loadingScreen != null) {
+                loadingScreen.hideLoadingScreenImmediately();
+            }
+
             try {
-                Race race = ((Result.RaceResultsSuccess) result).getData();
-                List<QualifyingResult> qualifyingResults = race.getQualifyingResults();
+                if (result instanceof Result.RaceResultsSuccess) {
+                    Race race = ((Result.RaceResultsSuccess) result).getData();
+                    List<QualifyingResult> qualifyingResults = race != null ? race.getQualifyingResults() : null;
 
-                if (qualifyingResults == null || qualifyingResults.isEmpty()) {
-                    Log.i(TAG, "No qualifying results found");
-                    Toast.makeText(this, "No qualifying results found", Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.i(TAG, "Qualifying results found: " + qualifyingResults.size());
-
-                    showQualifyingResultsDialog(race);
-
+                    if (qualifyingResults == null || qualifyingResults.isEmpty()) {
+                        Log.i(TAG, "No qualifying results found");
+                        Toast.makeText(this, "No qualifying results found", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.i(TAG, "Qualifying results found: " + qualifyingResults.size());
+                        showQualifyingResultsDialog(race);
+                    }
+                } else if (result instanceof Result.Error) {
+                    Toast.makeText(this, "Error loading qualifying results", Toast.LENGTH_SHORT).show();
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error processing qualifying data: " + e.getMessage());
@@ -572,6 +619,9 @@ public class EventActivity extends AppCompatActivity {
 
     private void processSprintData(String round) {
         Log.d(TAG, "Processing sprint data for round: " + round);
+        if (loadingScreen != null) {
+            loadingScreen.showLoadingScreen(true);
+        }
 
         MutableLiveData<Result> sprintResultLiveData = raceResultViewModel.getSprintResults(round);
         sprintResultLiveData.observe(this, result -> {
@@ -579,20 +629,27 @@ public class EventActivity extends AppCompatActivity {
                 return;
             }
 
+            if (loadingScreen != null) {
+                loadingScreen.hideLoadingScreenImmediately();
+            }
+
             try {
-                Race race = ((Result.RaceResultsSuccess) result).getData();
-                List<RaceResult> sprintResults = race.getSprintResults();
+                if (result instanceof Result.RaceResultsSuccess) {
+                    Race race = ((Result.RaceResultsSuccess) result).getData();
+                    List<RaceResult> sprintResults = race != null ? race.getSprintResults() : null;
 
-                if (sprintResults == null || sprintResults.isEmpty()) {
-                    Log.i(TAG, "No sprint results found");
-                    Toast.makeText(this, "No sprint results found", Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.i(TAG, "Sprint results found: " + sprintResults.size());
-
-                    showRaceResultsDialog(race);
+                    if (sprintResults == null || sprintResults.isEmpty()) {
+                        Log.i(TAG, "No sprint results found");
+                        Toast.makeText(this, "No sprint results found", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Log.i(TAG, "Sprint results found: " + sprintResults.size());
+                        showRaceResultsDialog(race);
+                    }
+                } else if (result instanceof Result.Error) {
+                    Toast.makeText(this, "Error loading sprint results", Toast.LENGTH_SHORT).show();
                 }
             } catch (Exception e) {
-                Log.e(TAG, "Error processing qualifying data: " + e.getMessage());
+                Log.e(TAG, "Error processing sprint data: " + e.getMessage());
             }
         });
     }

@@ -15,6 +15,8 @@ import androidx.navigation.Navigation;
 
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResultFastestLap;
+import com.the_coffe_coders.fastestlap.domain.f1.result.Stint;
 import com.the_coffe_coders.fastestlap.domain.junior.result.FeatureRace;
 import com.the_coffe_coders.fastestlap.domain.junior.result.SprintRace;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
@@ -22,14 +24,13 @@ import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.ui.event.PastEventsActivity;
+import com.the_coffe_coders.fastestlap.ui.event.RaceAndSprintResultsActivity;
 import com.the_coffe_coders.fastestlap.ui.event.UpcomingEventsActivity;
 import com.the_coffe_coders.fastestlap.ui.event.fragment.QualifyingResultsFragment;
-import com.the_coffe_coders.fastestlap.ui.event.fragment.RaceAndSprintResultsFragment;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.junior.Formula2Activity;
 import com.the_coffe_coders.fastestlap.ui.junior.Formula3Activity;
 import com.the_coffe_coders.fastestlap.ui.junior.fragment.JuniorDialogFragment;
-import com.the_coffe_coders.fastestlap.ui.live.LiveActivity;
 import com.the_coffe_coders.fastestlap.ui.profile.LoginFragment;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
@@ -37,6 +38,9 @@ import com.the_coffe_coders.fastestlap.ui.welcome.WelcomeActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.fragment.ForgotPasswordFragment;
 import com.the_coffe_coders.fastestlap.ui.welcome.fragment.SignUpFragment;
 import com.the_coffe_coders.fastestlap.util.Constants;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class NavigationUtils {
     public static void navigateToHomePage(Context context) {
@@ -229,24 +233,47 @@ public class NavigationUtils {
         context.startActivity(intent);
     }
 
-    public static void showRaceResultsDialog(FragmentManager fragmentManager, Race race, int sessionType) {
+    public static void showRaceResults(Context context, Race race, int sessionType, List<Stint> stints, RaceResultFastestLap fastestLap) {
         switch (sessionType) {
             case 0:
-                RaceAndSprintResultsFragment raceAndSprintResultsFragment = new RaceAndSprintResultsFragment();
-                Bundle args = new Bundle();
-                args.putParcelable("RACE", race);
-                raceAndSprintResultsFragment.setArguments(args);
-                raceAndSprintResultsFragment.show(fragmentManager, "RaceResultsFragment");
+                Intent intent = new Intent(context, RaceAndSprintResultsActivity.class);
+                intent.putExtra("RACE", race);
+                intent.putExtra("FASTEST_LAP", fastestLap);
+                if (stints != null) {
+                    intent.putParcelableArrayListExtra("STINTS", new ArrayList<>(stints));
+                }
+                context.startActivity(intent);
                 break;
             case 1:
-                QualifyingResultsFragment qualifyingResultsFragment = new QualifyingResultsFragment();
-                Bundle qualifyingArgs = new Bundle();
-                qualifyingArgs.putParcelable("RACE", race);
-                qualifyingResultsFragment.setArguments(qualifyingArgs);
-                qualifyingResultsFragment.show(fragmentManager, "QualifyingResultsFragment");
+                if (context instanceof androidx.fragment.app.FragmentActivity) {
+                    FragmentManager fragmentManager = ((androidx.fragment.app.FragmentActivity) context).getSupportFragmentManager();
+                    QualifyingResultsFragment qualifyingResultsFragment = new QualifyingResultsFragment();
+                    Bundle qualifyingArgs = new Bundle();
+                    qualifyingArgs.putParcelable("RACE", race);
+                    qualifyingResultsFragment.setArguments(qualifyingArgs);
+                    qualifyingResultsFragment.show(fragmentManager, "QualifyingResultsFragment");
+                }
                 break;
         }
     }
+/*
+    public static void showRaceResults(FragmentManager fragmentManager, Race race, int sessionType, List<Stint> stints) {
+        Context context = null;
+        if (fragmentManager != null && !fragmentManager.getFragments().isEmpty()) {
+            context = fragmentManager.getFragments().get(0).getContext();
+        }
+        if (context != null) {
+            showRaceResults(context, race, sessionType, stints);
+        } else if (sessionType == 1 && fragmentManager != null) {
+            QualifyingResultsFragment qualifyingResultsFragment = new QualifyingResultsFragment();
+            Bundle qualifyingArgs = new Bundle();
+            qualifyingArgs.putParcelable("RACE", race);
+            qualifyingResultsFragment.setArguments(qualifyingArgs);
+            qualifyingResultsFragment.show(fragmentManager, "QualifyingResultsFragment");
+        }
+    }
+
+ */
 
     public static void showProfileManageDialogs(FragmentManager fragmentManager, int dialogType, String additionalInfo) {
         switch (dialogType) {

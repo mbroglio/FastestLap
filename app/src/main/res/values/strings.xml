@@ -268,5 +268,6 @@
     <string name="track_limits">Track Limits</string>
     <string name="safety_car">Safety Car</string>
     <string name="team_radio_plus_driver_number">Team Radio - Driver #%1$s</string>
+    <string name="stints">Stints</string>
 
 </resources>

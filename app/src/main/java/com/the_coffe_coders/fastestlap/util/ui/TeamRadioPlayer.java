@@ -65,6 +65,7 @@ public class TeamRadioPlayer {
         public void onBuffering() {
             playButton.setVisibility(View.INVISIBLE);
             loadingBar.setVisibility(View.VISIBLE);
+            closeButton.setOnClickListener(v -> manager.stop());
         }
 
         @Override
@@ -82,6 +83,7 @@ public class TeamRadioPlayer {
             pauseButton.setImageResource(R.drawable.pause_64);
             pauseButton.setOnClickListener(v -> manager.pause());
             restartButton.setOnClickListener(v -> manager.restart());
+            closeButton.setOnClickListener(v -> manager.stop());
 
             showPlayerPanel();
         }
@@ -98,6 +100,8 @@ public class TeamRadioPlayer {
             setTime(timeElapsed, currentMs);
             pauseButton.setImageResource(R.drawable.play_64);
             pauseButton.setOnClickListener(v -> manager.resume());
+            restartButton.setOnClickListener(v -> manager.restart());
+            closeButton.setOnClickListener(v -> manager.stop());
             showPlayerPanel();
         }
 
@@ -105,15 +109,18 @@ public class TeamRadioPlayer {
         public void onCompleted(int durationMs) {
             if (seekBar != null) seekBar.setProgress(seekBar.getMax());
             setTime(timeElapsed, durationMs);
-            // Riprendi dall'inizio con click sul pulsante
+            // Audio terminato: play e riavvia ripartono dall'inizio
             pauseButton.setImageResource(R.drawable.play_64);
-            pauseButton.setOnClickListener(v -> manager.restart());
+            pauseButton.setOnClickListener(v -> manager.play(boundUrl, uiListener));
+            restartButton.setOnClickListener(v -> manager.play(boundUrl, uiListener));
+            closeButton.setOnClickListener(v -> resetToInfoPanel()); // il player è già terminato
         }
 
         @Override
         public void onStopped() {
-            // Un altro URL ha preso il controllo: torna al pannello info
+            // Chiamato da manager.stop() o quando un altro URL prende il controllo
             resetToInfoPanel();
+            // Il playButton ha ancora il listener impostato da bind() → nessuna azione necessaria
         }
 
         @Override

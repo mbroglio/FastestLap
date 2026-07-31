@@ -158,26 +158,17 @@ public class RaceControlFragment extends Fragment {
     public void onResume() {
         super.onResume();
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-        if (liveViewModel != null) {
-            liveViewModel.startPolling();
-        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-        if (liveViewModel != null) {
-            liveViewModel.stopPolling();
-        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (liveViewModel != null) {
-            liveViewModel.stopPolling();
-        }
         if (adapter != null) {
             adapter.getPlayerManager().release();
         }

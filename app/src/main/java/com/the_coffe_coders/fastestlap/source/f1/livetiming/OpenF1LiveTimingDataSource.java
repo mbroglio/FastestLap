@@ -40,7 +40,7 @@ import retrofit2.Response;
  * </ul>
  * </p>
  */
-public class OpenF1LiveTimingDataSource {
+public class OpenF1LiveTimingDataSource implements LiveTimingDataSource {
 
     private static final String TAG = "OpenF1LiveTimingDataSource";
     private static final String SESSION_KEY_LATEST = "latest";

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/screen_background_color"
+    android:orientation="vertical"
+    android:paddingStart="12dp"
+    android:paddingTop="8dp"
+    android:paddingEnd="12dp"
+    android:paddingBottom="8dp">
+
+    <!-- Info del Pilota -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingBottom="4dp">
+
+        <TextView
+            android:id="@+id/position_text"
+            style="@style/t14RegularWhiteLineLimited"
+            android:layout_width="32dp"
+            android:layout_height="wrap_content"
+            android:gravity="start|center" />
+
+        <TextView
+            android:id="@+id/driver_name"
+            style="@style/t14BoldWhiteLineLimited"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:gravity="start|center" />
+
+        <TextView
+            android:id="@+id/pit_number"
+            style="@style/t12RegularWhiteLineLimited"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:gravity="end|center" />
+
+    </LinearLayout>
+
+    <!-- Contenitore grafico orizzontale degli Stint a tutta larghezza -->
+    <LinearLayout
+        android:id="@+id/stints_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp" />
+
+    <!-- Separatore inferiore tra i piloti -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="4dp"
+        android:background="#22FFFFFF" />
+
+</LinearLayout>

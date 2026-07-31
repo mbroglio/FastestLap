@@ -72,6 +72,10 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".ui.event.RaceAndSprintResultsActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".ui.live.LiveActivity"
             android:exported="false"
             android:screenOrientation="portrait" />

@@ -39,6 +39,7 @@ public class LiveActivity extends AppCompatActivity {
     private TabLayout tabLayout;
     private ViewPager2 viewPager;
     private CheckBox fullTelemetryCheckbox;
+    private LiveViewModel liveViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +85,25 @@ public class LiveActivity extends AppCompatActivity {
                     break;
             }
         }).attach();
+
+        // Controlla il polling in base alla tab selezionata
+        liveViewModel = new ViewModelProvider(
+                this,
+                new LiveViewModelFactory(getApplication())
+        ).get(LiveViewModel.class);
+
+        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            private static final int RACE_CONTROL_TAB = 1;
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == RACE_CONTROL_TAB) {
+                    liveViewModel.startPolling();
+                } else {
+                    liveViewModel.stopPolling();
+                }
+            }
+        });
 
         setupSessionSituationObserver();
     }
@@ -180,6 +200,14 @@ public class LiveActivity extends AppCompatActivity {
             tabLayout.setVisibility(View.VISIBLE);
             showSystemUI();
             viewPager.setUserInputEnabled(true);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (liveViewModel != null) {
+            liveViewModel.stopPolling();
         }
     }
 
