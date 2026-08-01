@@ -1,14 +1,11 @@
 package com.the_coffe_coders.fastestlap.adapter.f1;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
-import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -18,8 +15,8 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.f1.livetiming.RaceControlMessage;
 import com.the_coffe_coders.fastestlap.domain.f1.livetiming.TeamRadioMessage;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.ui.TeamRadioPlayer;
-import com.the_coffe_coders.fastestlap.util.ui.TeamRadioPlayerManager;
+import com.the_coffe_coders.fastestlap.util.teamradio.TeamRadioPlayer;
+import com.the_coffe_coders.fastestlap.util.teamradio.TeamRadioPlayerManager;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.ArrayList;

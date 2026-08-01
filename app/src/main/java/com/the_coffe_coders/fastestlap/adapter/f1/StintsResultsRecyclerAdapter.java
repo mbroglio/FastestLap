@@ -75,14 +75,13 @@ public class StintsResultsRecyclerAdapter extends RecyclerView.Adapter<StintsRes
         if (raceResults != null) {
             for (RaceResult res : raceResults) {
                 if (res != null && res.getDriver() != null) {
-                    try {
-                        String permNum = res.getDriver().getPermanentNumber();
-                        if (permNum != null) {
-                            int num = Integer.parseInt(permNum);
+                    if (res.getDriver().getPermanentNumber() != null) {
+                        try {
+                            int num = Integer.parseInt(res.getDriver().getPermanentNumber());
                             driverToPosMap.put(num, res.getPosition());
                             driverToResultMap.put(num, res);
-                        }
-                    } catch (NumberFormatException ignored) {}
+                        } catch (NumberFormatException ignored) {}
+                    }
                 }
             }
         }
@@ -198,15 +197,16 @@ public class StintsResultsRecyclerAdapter extends RecyclerView.Adapter<StintsRes
         for (int i = 0; i < ds.stints.size(); i++) {
             Stint stint = ds.stints.get(i);
             int weight = stintWeights.get(i);
-            View stintGraphicView = createStintGraphicView(stint, weight);
+            boolean isFirstStint = (i == 0);
+            View stintGraphicView = createStintGraphicView(stint, weight, isFirstStint);
             holder.stintsContainer.addView(stintGraphicView);
         }
     }
 
     private int calculateStintLaps(Stint stint, int stintIndex, List<Stint> allDriverStints, RaceResult raceResult) {
-        int lapStart = (stint.getLapStart() != null) ? stint.getLapStart() : 1;
+        int lapStart = (stint.getLapStart() != null && stint.getLapStart() > 0) ? stint.getLapStart() : 1;
         int lapEnd;
-        if (stint.getLapEnd() != null) {
+        if (stint.getLapEnd() != null && stint.getLapEnd() >= lapStart) {
             lapEnd = stint.getLapEnd();
         } else if (stintIndex + 1 < allDriverStints.size() && allDriverStints.get(stintIndex + 1).getLapStart() != null) {
             lapEnd = allDriverStints.get(stintIndex + 1).getLapStart() - 1;
@@ -214,15 +214,15 @@ public class StintsResultsRecyclerAdapter extends RecyclerView.Adapter<StintsRes
             try {
                 lapEnd = Integer.parseInt(raceResult.getLaps());
             } catch (NumberFormatException e) {
-                lapEnd = lapStart;
+                lapEnd = maxRaceLaps;
             }
         } else {
-            lapEnd = lapStart;
+            lapEnd = maxRaceLaps;
         }
         return Math.max(1, lapEnd - lapStart + 1);
     }
 
-    private View createStintGraphicView(Stint stint, int displayWeight) {
+    private View createStintGraphicView(Stint stint, int displayWeight, boolean isFirstStint) {
         LinearLayout stintLayout = new LinearLayout(context);
         stintLayout.setOrientation(LinearLayout.HORIZONTAL);
         stintLayout.setGravity(Gravity.TOP);
@@ -248,7 +248,14 @@ public class StintsResultsRecyclerAdapter extends RecyclerView.Adapter<StintsRes
         compoundIcon.setLayoutParams(iconParams);
 
         TextView lapStartTextView = new TextView(context);
-        lapStartTextView.setText(String.valueOf(lapStart));
+        if (isFirstStint) {
+            // Per lo stint di partenza (inizio gara), il numero del giro (sempre 1) viene rimosso
+            lapStartTextView.setText(" ");
+            lapStartTextView.setVisibility(View.INVISIBLE);
+        } else {
+            lapStartTextView.setText(String.valueOf(lapStart));
+            lapStartTextView.setVisibility(View.VISIBLE);
+        }
         lapStartTextView.setTextSize(8.5f);
         lapStartTextView.setTextColor(Color.WHITE);
         lapStartTextView.setGravity(Gravity.CENTER);

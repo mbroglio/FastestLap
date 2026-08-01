@@ -99,6 +99,10 @@
             android:name=".ui.profile.ProfileActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".ui.weather.WeatherActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <!-- FileProvider for sharing generated .ics files with other apps -->
         <provider

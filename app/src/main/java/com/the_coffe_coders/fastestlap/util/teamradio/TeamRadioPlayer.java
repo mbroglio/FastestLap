@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.util.ui;
+package com.the_coffe_coders.fastestlap.util.teamradio;
 
 import android.view.View;
 import android.widget.ImageView;

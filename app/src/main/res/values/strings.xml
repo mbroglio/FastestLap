@@ -267,7 +267,24 @@
     <string name="fia_communication">FIA Communication</string>
     <string name="track_limits">Track Limits</string>
     <string name="safety_car">Safety Car</string>
-    <string name="team_radio_plus_driver_number">Team Radio - Driver #%1$s</string>
+    <string name="team_radio_plus_driver_number">Team Radio - Driver #%1$d</string>
     <string name="stints">Stints</string>
+
+    <!-- WEATHER -->
+    <string name="today">Today:</string>
+    <string name="humidity">Humidity:</string>
+    <string name="rain_probability">Rain Probability:</string>
+    <string name="speed_index">Speed:</string>
+    <string name="gust">Gust:</string>
+    <string name="weekend_forecast">WEEKEND FORECAST</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
+    <string name="time_09_00">09:00</string>
+    <string name="track">track</string>
+    <string name="time_14_00">14:00</string>
+    <string name="meteo_not_available_yet">METEO NOT AVAILABLE YET</string>
+    <string name="time_19_00">19:00</string>
+    <string name="race_weekend_forecast">Race Weekend Forecast</string>
 
 </resources>

@@ -64,4 +64,22 @@ public interface OpenF1APIService {
      */
     @GET("pit")
     Call<ResponseBody> getPitStopsBySessionKey(@Query("session_key") String sessionKey);
+
+    /**
+     * Returns weather telemetry data for a given session_key.
+     */
+    @GET("weather")
+    Call<ResponseBody> getWeather(@Query("session_key") int sessionKey);
+
+    /**
+     * Returns weather telemetry data for a string session_key.
+     */
+    @GET("weather")
+    Call<ResponseBody> getWeatherBySessionKey(@Query("session_key") String sessionKey);
+
+    /**
+     * Returns weather telemetry data for a given meeting_key.
+     */
+    @GET("weather")
+    Call<ResponseBody> getWeatherByMeetingKey(@Query("meeting_key") int meetingKey);
 }

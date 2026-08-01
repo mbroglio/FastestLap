@@ -306,6 +306,26 @@ public class NavigationUtils {
         }
     }
 
+    public static void navigateToWeatherPage(Context context, String locality, String latitude, String longitude, String sessionKey) {
+        navigateToWeatherPage(context, locality, latitude, longitude, sessionKey, null, null, false);
+    }
+
+    public static void navigateToWeatherPage(Context context, String locality, String latitude, String longitude, String sessionKey, String startDate, String endDate) {
+        navigateToWeatherPage(context, locality, latitude, longitude, sessionKey, startDate, endDate, false);
+    }
+
+    public static void navigateToWeatherPage(Context context, String locality, String latitude, String longitude, String sessionKey, String startDate, String endDate, boolean isSessionInProgress) {
+        Intent intent = new Intent(context, com.the_coffe_coders.fastestlap.ui.weather.WeatherActivity.class);
+        if (locality != null) intent.putExtra("LOCALITY", locality);
+        if (latitude != null) intent.putExtra("LATITUDE", latitude);
+        if (longitude != null) intent.putExtra("LONGITUDE", longitude);
+        if (sessionKey != null) intent.putExtra("SESSION_KEY", sessionKey);
+        if (startDate != null) intent.putExtra("START_DATE", startDate);
+        if (endDate != null) intent.putExtra("END_DATE", endDate);
+        intent.putExtra("IS_SESSION_IN_PROGRESS", isSessionInProgress);
+        context.startActivity(intent);
+    }
+
     public static void openGoogleWeather(Context context, String locality) {
         Intent intent = context.getPackageManager().getLaunchIntentForPackage(Constants.WEATHER_ACCESS_PACKAGE);
         if (intent != null) {

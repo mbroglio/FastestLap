@@ -228,8 +228,23 @@ public class EventActivity extends AppCompatActivity {
         trackLayout.setOnClickListener(v -> NavigationUtils.navigateToBioPage(this, trackId + "&" + weeklyRace.getRaceName().toUpperCase(), 2));
 
         Button openForecastButton = findViewById(R.id.goToForecastButton);
-        openForecastButton.setOnClickListener(v ->
-                NavigationUtils.openGoogleWeather(this, track.getLocation().getLocality()));
+        openForecastButton.setOnClickListener(v -> {
+            String locality = track.getLocation().getLocality();
+            String lat = track.getLocation().getLatitude();
+            String lon = track.getLocation().getLongitude();
+
+            String startDateStr = null;
+            String endDateStr = null;
+            if (weeklyRace.getFirstPractice() != null && weeklyRace.getFirstPractice().getStartDateTime() != null) {
+                startDateStr = weeklyRace.getFirstPractice().getStartDateTime().toLocalDate().toString();
+            }
+            if (weeklyRace.getFinalRace() != null && weeklyRace.getFinalRace().getStartDateTime() != null) {
+                endDateStr = weeklyRace.getFinalRace().getStartDateTime().toLocalDate().toString();
+            }
+
+            boolean isUnderway = weeklyRace.isUnderway(false);
+            NavigationUtils.navigateToWeatherPage(this, locality, lat, lon, "latest", startDateStr, endDateStr, isUnderway);
+        });
 
         String nationFlagUrl = null;
         if (nation != null) {

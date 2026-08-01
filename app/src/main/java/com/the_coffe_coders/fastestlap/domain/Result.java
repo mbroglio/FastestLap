@@ -18,6 +18,8 @@ import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorEntryList;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 
+import com.the_coffe_coders.fastestlap.domain.weather.DailyForecast;
+
 import java.util.List;
 
 import lombok.Getter;
@@ -275,6 +277,30 @@ public abstract class Result {
 
         public List<Stint> getData() {
             return stints;
+        }
+    }
+
+    public static class WeatherSuccess extends Result {
+        private final com.the_coffe_coders.fastestlap.domain.weather.WeatherInfo weatherInfo;
+
+        public WeatherSuccess(com.the_coffe_coders.fastestlap.domain.weather.WeatherInfo weatherInfo) {
+            this.weatherInfo = weatherInfo;
+        }
+
+        public com.the_coffe_coders.fastestlap.domain.weather.WeatherInfo getData() {
+            return weatherInfo;
+        }
+    }
+
+    public static class WeekendForecastSuccess extends Result {
+        private final List<DailyForecast> dailyForecasts;
+
+        public WeekendForecastSuccess(List<DailyForecast> dailyForecasts) {
+            this.dailyForecasts = dailyForecasts;
+        }
+
+        public List<DailyForecast> getData() {
+            return dailyForecasts;
         }
     }
 

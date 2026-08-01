@@ -206,6 +206,21 @@ public class ServiceLocator {
         return openF1APIService;
     }
 
+    public static final String OPEN_METEO_BASE_URL = "https://api.open-meteo.com/v1/";
+    private com.the_coffe_coders.fastestlap.service.OpenMeteoAPIService openMeteoAPIService;
+
+    public synchronized com.the_coffe_coders.fastestlap.service.OpenMeteoAPIService getOpenMeteoAPIService() {
+        if (openMeteoAPIService == null) {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(OPEN_METEO_BASE_URL)
+                    .addConverterFactory(ScalarsConverterFactory.create())
+                    .client(getOkHttpClient())
+                    .build();
+            openMeteoAPIService = retrofit.create(com.the_coffe_coders.fastestlap.service.OpenMeteoAPIService.class);
+        }
+        return openMeteoAPIService;
+    }
+
     public IUserRepository getUserRepository(Application application) {
         setApplicationContext(application);
         SharedPreferencesUtils sharedPreferencesUtil = new SharedPreferencesUtils(application);
