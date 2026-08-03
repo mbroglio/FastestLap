@@ -71,12 +71,12 @@ public class TrackRepository {
                 if (track != null) {
                     Log.d(TAG, "Track loaded from local database (cache hit): " + trackId);
                     track.setTrackId(trackId);
+
+                    Long previousTs = lastUpdateTimestamps.get(trackId);
+                    boolean isStale = previousTs == null || System.currentTimeMillis() - previousTs > 300_000L;
                     lastUpdateTimestamps.put(trackId, System.currentTimeMillis());
                     Objects.requireNonNull(trackCache.get(trackId)).postValue(new Result.TrackSuccess(track));
 
-                    // Only refresh from Firebase if the cached data is actually stale.
-                    Long ts = lastUpdateTimestamps.get(trackId);
-                    boolean isStale = ts == null || System.currentTimeMillis() - ts > 300_000L;
                     if (isNetworkAvailable() && isStale) {
                         loadTrackFromRemote(trackId, true);
                     } else {
@@ -92,6 +92,7 @@ public class TrackRepository {
                     }
                 }
             }
+
 
             @Override
             public void onError(Exception e) {
@@ -119,16 +120,26 @@ public class TrackRepository {
                         Objects.requireNonNull(trackCache.get(trackId)).postValue(new Result.TrackSuccess(track));
                     } else if (!isBackgroundRefresh) {
                         Log.e(TAG, "Track not found in remote: " + trackId);
+                        Objects.requireNonNull(trackCache.get(trackId)).postValue(
+                                new Result.Error("Track not found in remote: " + trackId));
                     }
                 }
 
                 @Override
                 public void onError(Exception exception) {
                     Log.e(TAG, "Error loading track: " + exception.getMessage());
+                    if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(trackCache.get(trackId)).postValue(
+                                new Result.Error("Error loading track: " + exception.getMessage()));
+                    }
                 }
             });
         } catch (Exception e) {
             Log.e(TAG, "Error loading track: " + e.getMessage());
+            if (!isBackgroundRefresh) {
+                Objects.requireNonNull(trackCache.get(trackId)).postValue(
+                        new Result.Error("Error loading track: " + e.getMessage()));
+            }
         }
     }
 }

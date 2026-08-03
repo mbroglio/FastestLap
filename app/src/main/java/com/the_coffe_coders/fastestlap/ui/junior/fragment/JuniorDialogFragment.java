@@ -34,6 +34,7 @@ import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorDriverStand
 import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorEntryList;
 import com.the_coffe_coders.fastestlap.ui.junior.viewmodel.JuniorCategoryViewModel;
 import com.the_coffe_coders.fastestlap.ui.junior.viewmodel.JuniorCategoryViewModelFactory;
+import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 public class JuniorDialogFragment extends DialogFragment {
@@ -49,6 +50,8 @@ public class JuniorDialogFragment extends DialogFragment {
     private JuniorCategoryViewModel juniorCategoryViewModel;
     private RecyclerView juniorRecyclerView;
     private Button closeButton;
+
+    private LoadingScreen loadingScreen;
 
 
     public JuniorDialogFragment() {
@@ -76,6 +79,10 @@ public class JuniorDialogFragment extends DialogFragment {
         juniorCategoryViewModel = new ViewModelProvider(this, new JuniorCategoryViewModelFactory(requireActivity().getApplication())).get(JuniorCategoryViewModel.class);
 
         dialogPage = view.findViewById(R.id.dialog_page);
+
+        loadingScreen = new LoadingScreen(view, getContext(), null, dialogPage);
+        loadingScreen.showLoadingScreen(false);
+
         raceInfoLayout = view.findViewById(R.id.race_info_layout);
         raceTypeTitle = view.findViewById(R.id.race_type_title);
         fastestLapLayout = view.findViewById(R.id.fastest_lap_layout);
@@ -107,6 +114,7 @@ public class JuniorDialogFragment extends DialogFragment {
         try {
             executeFunctions();
         } catch (Exception e) {
+            loadingScreen.hideLoadingScreen();
             dismiss();
         }
 
@@ -119,22 +127,27 @@ public class JuniorDialogFragment extends DialogFragment {
             case 0: // Entry list
                 setDialogForEntryList();
                 executeEntryList();
+                loadingScreen.hideLoadingScreen();
                 break;
             case 1: // Calendar
                 setDialogForCalendar();
                 executeCalendar();
+                loadingScreen.hideLoadingScreen();
                 break;
             case 2: // Drivers standing
                 setDialogForDriversStanding();
                 executeDriversStanding();
+                loadingScreen.hideLoadingScreen();
                 break;
             case 3: // Constructors standing
                 setDialogForConstructorsStanding();
                 executeConstructorsStanding();
+                loadingScreen.hideLoadingScreen();
                 break;
             case 4:
                 setDialogForResults();
                 executeFullResults();
+                loadingScreen.hideLoadingScreen();
                 break;
 
         }
@@ -206,11 +219,13 @@ public class JuniorDialogFragment extends DialogFragment {
 
                 if (entryList == null) {
                     Log.i(TAG, "ENTRY LIST NULL");
+                    loadingScreen.hideLoadingScreen();
                     dismiss();
                 } else {
                     if (entryList.getTeams().isEmpty()) {
                         Log.i(TAG, "ENTRY LIST EMPTY");
                         Toast.makeText(requireContext(), ContextCompat.getString(requireContext(), R.string.content_not_available), Toast.LENGTH_SHORT).show();
+                        loadingScreen.hideLoadingScreen();
                         dismiss();
                     } else {
                         juniorRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -220,6 +235,7 @@ public class JuniorDialogFragment extends DialogFragment {
                 }
             } else {
                 Toast.makeText(requireContext(), ContextCompat.getString(requireContext(), R.string.content_not_available), Toast.LENGTH_SHORT).show();
+                loadingScreen.hideLoadingScreen();
                 dismiss();
             }
         });
@@ -239,6 +255,7 @@ public class JuniorDialogFragment extends DialogFragment {
                 if (calendar == null) {
                     Log.i(TAG, "CALENDAR NULL");
                     Toast.makeText(requireContext(), ContextCompat.getString(requireContext(), R.string.content_not_available), Toast.LENGTH_SHORT).show();
+                    loadingScreen.hideLoadingScreen();
                     dismiss();
                 } else {
                     juniorRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -248,6 +265,7 @@ public class JuniorDialogFragment extends DialogFragment {
                 }
             } else {
                 Toast.makeText(requireContext(), ContextCompat.getString(requireContext(), R.string.content_not_available), Toast.LENGTH_SHORT).show();
+                loadingScreen.hideLoadingScreen();
                 dismiss();
             }
         });
@@ -266,6 +284,7 @@ public class JuniorDialogFragment extends DialogFragment {
                 if (driverStandings == null) {
                     Log.i(TAG, "DRIVERS STANDINGS NULL");
                     Toast.makeText(requireContext(), ContextCompat.getString(requireContext(), R.string.content_not_available), Toast.LENGTH_SHORT).show();
+                    loadingScreen.hideLoadingScreen();
                     dismiss();
                 } else {
                     juniorRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -274,6 +293,7 @@ public class JuniorDialogFragment extends DialogFragment {
                 }
             } else {
                 Toast.makeText(requireContext(), ContextCompat.getString(requireContext(), R.string.content_not_available), Toast.LENGTH_SHORT).show();
+                loadingScreen.hideLoadingScreen();
                 dismiss();
             }
         });
@@ -293,6 +313,7 @@ public class JuniorDialogFragment extends DialogFragment {
                 if (constructorStandings == null) {
                     Log.i(TAG, "CONSTRUCTORS STANDINGS NULL");
                     Toast.makeText(requireContext(), ContextCompat.getString(requireContext(), R.string.content_not_available), Toast.LENGTH_SHORT).show();
+                    loadingScreen.hideLoadingScreen();
                     dismiss();
                 } else {
                     juniorRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
@@ -301,6 +322,7 @@ public class JuniorDialogFragment extends DialogFragment {
                 }
             } else {
                 Toast.makeText(requireContext(), ContextCompat.getString(requireContext(), R.string.content_not_available), Toast.LENGTH_SHORT).show();
+                loadingScreen.hideLoadingScreen();
                 dismiss();
             }
         });

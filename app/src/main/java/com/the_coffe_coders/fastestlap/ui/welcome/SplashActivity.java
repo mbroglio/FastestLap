@@ -2,7 +2,9 @@ package com.the_coffe_coders.fastestlap.ui.welcome;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.media.AudioAttributes;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -38,8 +40,10 @@ public class SplashActivity extends AppCompatActivity {
     private TextView appCredits;
     private ProgressBar progressIndicator;
     private ImageView appLogo;
-    private MediaPlayer mediaPlayer;
     private MediaPlayer logoMediaPlayer;
+    private SoundPool soundPool;
+    private int soundId;
+    private boolean soundLoaded = false;
     private UserViewModel userViewModel;
 
     private NetworkUtils networkLiveData;
@@ -60,15 +64,30 @@ public class SplashActivity extends AppCompatActivity {
         Log.d("LaunchFlag", "Valore ricevuto: " + season_year);
         ServiceLocator.setCurrentYearBaseUrl(season_year);
 
-
         userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(ServiceLocator.getInstance().getUserRepository((Application) getApplicationContext()))).get(UserViewModel.class);
 
         appName = findViewById(R.id.app_name);
         appCredits = findViewById(R.id.app_credits);
         appLogo = findViewById(R.id.app_logo);
         progressIndicator = findViewById(R.id.progress_indicator);
-        mediaPlayer = MediaPlayer.create(this, R.raw.type_writer_short);
+
         logoMediaPlayer = MediaPlayer.create(this, R.raw.f1_car_sound);
+
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+        soundPool = new SoundPool.Builder()
+                .setMaxStreams(4)
+                .setAudioAttributes(audioAttributes)
+                .build();
+        soundPool.setOnLoadCompleteListener((sp, sampleId, status) -> {
+            if (status == 0) {
+                soundLoaded = true;
+            }
+        });
+        soundId = soundPool.load(this, R.raw.type_writer_short, 1);
+
         appName.setVisibility(View.INVISIBLE);
         appCredits.setVisibility(View.INVISIBLE);
         progressIndicator.setVisibility(View.INVISIBLE);
@@ -81,38 +100,65 @@ public class SplashActivity extends AppCompatActivity {
         Animation logoAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_in);
         Animation nameAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_up);
 
-        appLogo.startAnimation(logoAnimation);
         appLogo.setVisibility(View.VISIBLE);
-        if (mediaPlayer != null) mediaPlayer.start();
-        if (logoMediaPlayer != null) logoMediaPlayer.start();
+        appLogo.startAnimation(logoAnimation);
 
+        // 1. Audio rombo motore F1 durante l'animazione di ingresso del logo
+        if (logoMediaPlayer != null) {
+            try {
+                logoMediaPlayer.start();
+            } catch (Exception e) {
+                Log.e(TAG, "Error starting logoMediaPlayer: " + e.getMessage());
+            }
+        }
+
+        // 2. Attesa completamento animazione logo prima di far scorrere il nome app
         handler.postDelayed(() -> {
-            appName.startAnimation(nameAnimation);
+            if (isFinishing() || isDestroyed()) return;
+
             appName.setVisibility(View.VISIBLE);
+            appName.startAnimation(nameAnimation);
+
+            // 3. Attesa completamento animazione nome app (1000ms) prima dei credits a macchina da scrivere
             handler.postDelayed(() -> {
+                if (isFinishing() || isDestroyed()) return;
+
                 String creditsText = getString(R.string.app_credits);
-                int delay = 30; // Faster, smooth typewriter effect
+                appCredits.setVisibility(View.VISIBLE);
+                appCredits.setText("");
+
+                int delay = 90; // Rallentato a 90ms per un effetto macchina da scrivere ritmico e realistico
                 for (int i = 0; i < creditsText.length(); i++) {
                     final int index = i;
                     handler.postDelayed(() -> {
-                        try {
-                            appCredits.setVisibility(View.VISIBLE);
-                            appCredits.setText(creditsText.substring(0, index + 1));
-                        } catch (IllegalStateException e) {
-                            Log.e(TAG, "MediaPlayer error: " + e.getMessage());
+                        if (isFinishing() || isDestroyed()) return;
+                        appCredits.setText(creditsText.substring(0, index + 1));
+
+                        char c = creditsText.charAt(index);
+                        if (c != ' ' && soundPool != null && soundLoaded) {
+                            try {
+                                soundPool.play(soundId, 0.8f, 0.8f, 1, 0, 1.0f);
+                            } catch (Exception e) {
+                                Log.e(TAG, "Error playing soundPool: " + e.getMessage());
+                            }
                         }
                     }, (long) delay * i);
                 }
 
+                // 4. Al termine della digitazione, mostra il progress indicator prima della transizione
+                long totalTypingTime = (long) creditsText.length() * delay;
                 handler.postDelayed(() -> {
+                    if (isFinishing() || isDestroyed()) return;
+
                     progressIndicator.setVisibility(View.VISIBLE);
                     handler.postDelayed(() -> {
+                        if (isFinishing() || isDestroyed()) return;
                         NavigationUtils.navigateToWelcomePage(this);
                         finish();
-                    }, 500); // 500ms delay instead of 5 seconds
-                }, (long) creditsText.length() * delay);
-            }, 500);
-        }, 800);
+                    }, 800);
+                }, totalTypingTime + 200);
+            }, 1000);
+        }, 1800);
     }
 
     public void showForAutoLogin() {
@@ -129,14 +175,32 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        handler.removeCallbacksAndMessages(null);
+        stopMediaPlayers();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
+        stopMediaPlayers();
+    }
 
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-        }
+    private void stopMediaPlayers() {
         if (logoMediaPlayer != null) {
+            try {
+                if (logoMediaPlayer.isPlaying()) logoMediaPlayer.stop();
+            } catch (Exception ignored) {}
             logoMediaPlayer.release();
+            logoMediaPlayer = null;
+        }
+        if (soundPool != null) {
+            try {
+                soundPool.release();
+            } catch (Exception ignored) {}
+            soundPool = null;
         }
     }
 
@@ -165,6 +229,4 @@ public class SplashActivity extends AppCompatActivity {
             showIntroScreen();
         }
     }
-
-
 }

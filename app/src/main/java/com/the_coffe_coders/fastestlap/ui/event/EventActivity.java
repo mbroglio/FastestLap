@@ -191,17 +191,52 @@ public class EventActivity extends AppCompatActivity {
                     setEventImage(weeklyRace, track, null);
                 }
             } else {
-                Log.e(TAG, "Error getting track data");
-                loadingScreen.hideLoadingScreen();
+                Log.e(TAG, "Error getting track data: " + result.getError() + ", falling back to weeklyRace.getTrack()");
+                Track fallbackTrack = weeklyRace.getTrack();
+                if (fallbackTrack != null) {
+                    track = fallbackTrack;
+                    if (track.getCountry() != null) {
+                        fetchNationAndSetImage(weeklyRace, track);
+                    } else {
+                        setEventImage(weeklyRace, track, null);
+                    }
+                } else {
+                    loadingScreen.hideLoadingScreen();
+                }
             }
         };
         trackData.observe(this, observerTrack[0]);
     }
 
+    private void fetchNationAndSetImage(WeeklyRace weeklyRace, Track targetTrack) {
+        NationViewModel nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(getApplication())).get(NationViewModel.class);
+        try {
+            MutableLiveData<Result> nationData = nationViewModel.getNation(targetTrack.getCountry());
+            @SuppressWarnings("unchecked")
+            androidx.lifecycle.Observer<Result>[] observerNation = new androidx.lifecycle.Observer[1];
+            observerNation[0] = result1 -> {
+                if (result1 instanceof Result.Loading) {
+                    return;
+                }
+                nationData.removeObserver(observerNation[0]);
+                if (result1.isSuccess()) {
+                    nation = ((Result.NationSuccess) result1).getData();
+                    setEventImage(weeklyRace, targetTrack, nation);
+                } else {
+                    setEventImage(weeklyRace, targetTrack, null);
+                }
+            };
+            nationData.observe(this, observerNation[0]);
+        } catch (RuntimeException e) {
+            Log.e(TAG, "Error getting nation data: " + e.getMessage());
+            setEventImage(weeklyRace, targetTrack, null);
+        }
+    }
+
     private void setEventImage(WeeklyRace weeklyRace, Track track, Nation nation) {
         loadingScreen.updateProgress();
 
-        String imageUrl = track.getTrack_pic_url();
+        String imageUrl = track != null ? track.getTrack_pic_url() : null;
         LinearLayout eventCard = findViewById(R.id.event_card);
 
         UIUtils.loadImageInEventCardWithAlpha(this, imageUrl, eventCard,
@@ -211,11 +246,13 @@ public class EventActivity extends AppCompatActivity {
 
     private void buildEventCardStepTwo(WeeklyRace weeklyRace, Track track, Nation nation) {
 
+        String gpName = (track != null && track.getGp_long_name() != null) ? track.getGp_long_name() : (weeklyRace != null ? weeklyRace.getRaceName() : "");
+
         UIUtils.multipleSetTextViewText(
                 new String[]{
                         "Round " + weeklyRace.getRound(),
                         weeklyRace.getSeason(),
-                        track.getGp_long_name()},
+                        gpName},
 
                 new TextView[]{
                         findViewById(R.id.round_number),

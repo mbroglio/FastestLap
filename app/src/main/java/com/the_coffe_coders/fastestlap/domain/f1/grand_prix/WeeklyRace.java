@@ -101,7 +101,7 @@ public abstract class WeeklyRace {
 
     @Override
     public int hashCode() {
-        return Objects.hash(uid, round);
+        return Objects.hash(round);
     }
 
     public boolean isWeekFinished() {
