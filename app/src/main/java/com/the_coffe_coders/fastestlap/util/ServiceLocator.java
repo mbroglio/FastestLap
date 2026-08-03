@@ -8,6 +8,7 @@ import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.repository.user.UserRepository;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.service.OpenF1APIService;
+import com.the_coffe_coders.fastestlap.service.OpenMeteoAPIService;
 import com.the_coffe_coders.fastestlap.source.user.BaseUserAuthenticationRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.user.BaseUserDataRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.user.UserAuthenticationFirebaseDataSource;
@@ -207,16 +208,16 @@ public class ServiceLocator {
     }
 
     public static final String OPEN_METEO_BASE_URL = "https://api.open-meteo.com/v1/";
-    private com.the_coffe_coders.fastestlap.service.OpenMeteoAPIService openMeteoAPIService;
+    private OpenMeteoAPIService openMeteoAPIService;
 
-    public synchronized com.the_coffe_coders.fastestlap.service.OpenMeteoAPIService getOpenMeteoAPIService() {
+    public synchronized OpenMeteoAPIService getOpenMeteoAPIService() {
         if (openMeteoAPIService == null) {
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(OPEN_METEO_BASE_URL)
                     .addConverterFactory(ScalarsConverterFactory.create())
                     .client(getOkHttpClient())
                     .build();
-            openMeteoAPIService = retrofit.create(com.the_coffe_coders.fastestlap.service.OpenMeteoAPIService.class);
+            openMeteoAPIService = retrofit.create(OpenMeteoAPIService.class);
         }
         return openMeteoAPIService;
     }

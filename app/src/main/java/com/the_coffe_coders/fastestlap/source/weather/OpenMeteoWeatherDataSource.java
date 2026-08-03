@@ -137,14 +137,14 @@ public class OpenMeteoWeatherDataSource implements WeatherDataSource {
 
     @Override
     public void getWeekendForecast(double latitude, double longitude, String startDate, String endDate, WeekendForecastCallback callback) {
-        /*
+
         if (isEventDatePassed(endDate)) {
             Log.d(TAG, "Event date (" + endDate + ") has passed. Returning empty weekend forecast.");
             callback.onSuccess(new ArrayList<>());
             return;
         }
 
-         */
+
 
         openMeteoAPIService.getWeatherForecast(
                 latitude,

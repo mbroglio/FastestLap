@@ -182,5 +182,17 @@
     <string name="widget_medium_description">Widget FastestLap medio</string>
     <string name="widget_large_description">Widget FastestLap grande</string>
     <string name="widget_loading_text">Caricamento…</string>
+    <string name="team_radio_plus_driver_number">Team Radio - Pilota #%1$d</string>
+    <string name="today">Oggi:</string>
+    <string name="humidity">Umidità:</string>
+    <string name="rain_probability">Probabilità di Pioggia:</string>
+    <string name="speed_index">Velocità:</string>
+    <string name="gust">Raffiche:</string>
+    <string name="friday">Venerdì</string>
+    <string name="saturday">Sabato</string>
+    <string name="sunday">Domenica</string>
+    <string name="track">pista</string>
+    <string name="meteo_not_available_yet">METEO NON ANCORA DISPONIBILE</string>
+    <string name="race_weekend_forecast">Forecast Weekend di Gara</string>
 
 </resources>

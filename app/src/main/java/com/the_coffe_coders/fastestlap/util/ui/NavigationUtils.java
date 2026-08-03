@@ -256,24 +256,6 @@ public class NavigationUtils {
                 break;
         }
     }
-/*
-    public static void showRaceResults(FragmentManager fragmentManager, Race race, int sessionType, List<Stint> stints) {
-        Context context = null;
-        if (fragmentManager != null && !fragmentManager.getFragments().isEmpty()) {
-            context = fragmentManager.getFragments().get(0).getContext();
-        }
-        if (context != null) {
-            showRaceResults(context, race, sessionType, stints);
-        } else if (sessionType == 1 && fragmentManager != null) {
-            QualifyingResultsFragment qualifyingResultsFragment = new QualifyingResultsFragment();
-            Bundle qualifyingArgs = new Bundle();
-            qualifyingArgs.putParcelable("RACE", race);
-            qualifyingResultsFragment.setArguments(qualifyingArgs);
-            qualifyingResultsFragment.show(fragmentManager, "QualifyingResultsFragment");
-        }
-    }
-
- */
 
     public static void showProfileManageDialogs(FragmentManager fragmentManager, int dialogType, String additionalInfo) {
         switch (dialogType) {

@@ -25,17 +25,18 @@ public class LocalJuniorResultsDataSource implements JuniorResultsDataSource {
 
     @Override
     public void getJuniorResults(String series, JuniorResultCallback callback) {
-        Log.d(TAG, "Fetching junior results from local database");
-        JuniorResult result = juniorResultsDAO.getBySeries(series);
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            Log.d(TAG, "Fetching junior results from local database");
+            JuniorResult result = juniorResultsDAO.getBySeries(series);
 
-        Log.i(TAG, "Result: " + result);
+            Log.i(TAG, "Result: " + result);
 
-        if (result != null && result.getResults() != null && !result.getResults().isEmpty()) {
-            callback.onResultLoaded(result);
-        } else {
-            callback.onError(new Exception("No junior results found in local database"));
-
-        }
+            if (result != null && result.getResults() != null && !result.getResults().isEmpty()) {
+                callback.onResultLoaded(result);
+            } else {
+                callback.onError(new Exception("No junior results found in local database"));
+            }
+        });
     }
 
     public void insertJuniorResult(JuniorResult result) {

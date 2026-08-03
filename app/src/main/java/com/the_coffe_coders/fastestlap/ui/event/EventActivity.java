@@ -276,13 +276,13 @@ public class EventActivity extends AppCompatActivity {
 
         createWeekSchedule(sessions, weeklyRace.getRound());
 
-        String eventTitle = weeklyRace != null && weeklyRace.getRaceName() != null
+        String eventTitle = weeklyRace.getRaceName() != null
                 ? weeklyRace.getRaceName().toUpperCase()
                 : null;
         String totalLaps = (track != null && track.getLaps() != null) ? track.getLaps() : null;
 
         // TEST ONLY – decommentare per forzare la live card e testare OpenF1 senza GP in corso:
-        setLiveSession(eventTitle, totalLaps);
+        //setLiveSession(eventTitle, totalLaps);
 
         if (nextEvent != null && !underway) {
             LocalDateTime eventDateTime = nextEvent.getStartDateTime();
@@ -292,8 +292,6 @@ public class EventActivity extends AppCompatActivity {
         } else {
             setLiveSession(eventTitle, totalLaps);
         }
-
-
     }
 
     private void setLiveSession(String eventTitle, String totalLaps) {
@@ -312,56 +310,6 @@ public class EventActivity extends AppCompatActivity {
 
         Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: EventActivity at " + System.currentTimeMillis());
         loadingScreen.hideLoadingScreen();
-    }
-
-    /**
-     * Fetches Race Control and Team Radio data from OpenF1 and logs every
-     * entry to the console under the tag {@code LiveTimingTest}.
-     */
-    private void fetchAndLogLiveTimingData() {
-        Log.d("LiveTimingTest", "──────────────────────────────────────────────");
-        Log.d("LiveTimingTest", "Fetching live timing data from OpenF1 API…");
-
-        LiveTimingRepository repo = LiveTimingRepository.getInstance(getApplicationContext());
-
-        // Race Control
-        repo.fetchRaceControlMessages().observe(this, result -> {
-            if (result instanceof Result.Loading) {
-                Log.d("LiveTimingTest", "[RaceControl] Loading…");
-                return;
-            }
-            if (result instanceof Result.RaceControlSuccess) {
-                List<RaceControlMessage> messages = ((Result.RaceControlSuccess) result).getData();
-                Log.d("LiveTimingTest", "[RaceControl] " + messages.size() + " messages received:");
-                for (RaceControlMessage msg : messages) {
-                    Log.d("LiveTimingTest", "  [" + msg.getDate() + "] "
-                            + "[" + msg.getCategory() + "] "
-                            + (msg.getFlag() != null ? "[" + msg.getFlag() + "] " : "")
-                            + msg.getMessage());
-                }
-            } else if (result instanceof Result.Error) {
-                Log.e("LiveTimingTest", "[RaceControl] Error: " + result.getError());
-            }
-        });
-
-        // Team Radio
-        repo.fetchTeamRadioMessages().observe(this, result -> {
-            if (result instanceof Result.Loading) {
-                Log.d("LiveTimingTest", "[TeamRadio] Loading…");
-                return;
-            }
-            if (result instanceof Result.TeamRadioSuccess) {
-                List<TeamRadioMessage> messages = ((Result.TeamRadioSuccess) result).getData();
-                Log.d("LiveTimingTest", "[TeamRadio] " + messages.size() + " recordings received:");
-                for (TeamRadioMessage msg : messages) {
-                    Log.d("LiveTimingTest", "  [" + msg.getDate() + "] "
-                            + "Driver #" + msg.getDriverNumber() + " → "
-                            + msg.getRecordingUrl());
-                }
-            } else if (result instanceof Result.Error) {
-                Log.e("LiveTimingTest", "[TeamRadio] Error: " + result.getError());
-            }
-        });
     }
 
     private void startCountdown(LocalDateTime eventDate) {
@@ -438,7 +386,7 @@ public class EventActivity extends AppCompatActivity {
 
         List<Stint> finalCachedStints = cachedStints;
         MutableLiveData<Result> stintsLiveData = raceResultViewModel.getStints(race.getRaceName(), sessionName);
-        Observer<Result> observer = new Observer<Result>() {
+        Observer<Result> observer = new Observer<>() {
             @Override
             public void onChanged(Result result) {
                 if (result instanceof Result.Loading) {
@@ -625,7 +573,7 @@ public class EventActivity extends AppCompatActivity {
         }
 
         MutableLiveData<Result> qualifyingLiveData = raceResultViewModel.getQualifyingResults(round);
-        Observer<Result> observer = new Observer<Result>() {
+        Observer<Result> observer = new Observer<>() {
             @Override
             public void onChanged(Result result) {
                 if (result instanceof Result.Loading) {

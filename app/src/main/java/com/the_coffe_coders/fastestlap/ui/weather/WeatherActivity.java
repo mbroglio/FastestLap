@@ -30,6 +30,7 @@ import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class WeatherActivity extends AppCompatActivity {
     private static final String TAG = "WeatherActivity";
@@ -56,9 +57,7 @@ public class WeatherActivity extends AppCompatActivity {
     private TextView windDirValueText;
     private TextView windSpeedValueText;
     private TextView windGustValueText;
-
     private TextView weekendForecastText;
-
     private String locality = "SILVERSTONE";
     private double latitude = 52.0786;
     private double longitude = -1.0169;
@@ -109,14 +108,14 @@ public class WeatherActivity extends AppCompatActivity {
             }
             if (getIntent().hasExtra("LATITUDE")) {
                 try {
-                    latitude = Double.parseDouble(getIntent().getStringExtra("LATITUDE"));
+                    latitude = Double.parseDouble(Objects.requireNonNull(getIntent().getStringExtra("LATITUDE")));
                 } catch (Exception e) {
                     latitude = getIntent().getDoubleExtra("LATITUDE", 52.0786);
                 }
             }
             if (getIntent().hasExtra("LONGITUDE")) {
                 try {
-                    longitude = Double.parseDouble(getIntent().getStringExtra("LONGITUDE"));
+                    longitude = Double.parseDouble(Objects.requireNonNull(getIntent().getStringExtra("LONGITUDE")));
                 } catch (Exception e) {
                     longitude = getIntent().getDoubleExtra("LONGITUDE", -1.0169);
                 }
@@ -277,12 +276,14 @@ public class WeatherActivity extends AppCompatActivity {
     private void showWeatherNotAvailable() {
         if (weekendForecastLayout != null) weekendForecastLayout.setVisibility(View.GONE);
         if (weatherNotAvailableText != null) weatherNotAvailableText.setVisibility(View.VISIBLE);
+        UIUtils.singleSetTextViewText(getString(R.string.separator_high_dash), trackTempText);
     }
 
     private void hideWeather() {
         if (weekendForecastLayout != null) weekendForecastLayout.setVisibility(View.GONE);
         if (weatherNotAvailableText != null) weatherNotAvailableText.setVisibility(View.GONE);
         if (weekendForecastText != null) weekendForecastText.setVisibility(View.GONE);
+        UIUtils.singleSetTextViewText(getString(R.string.separator_high_dash), trackTempText);
     }
 
     private void showWeekendForecast(List<DailyForecast> forecasts) {
@@ -375,14 +376,17 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void playBackgroundVideo(int videoResId) {
-        if (currentVideoResId == videoResId || videoView == null) return;
+        if (videoView == null) return;
+        if (currentVideoResId == videoResId && videoView.isPlaying()) return;
         currentVideoResId = videoResId;
 
         String videoPath = "android.resource://" + getPackageName() + "/" + videoResId;
         Uri uri = Uri.parse(videoPath);
         videoView.setVideoURI(uri);
-        videoView.setOnPreparedListener(mp -> mp.setLooping(true));
-        videoView.start();
+        videoView.setOnPreparedListener(mp -> {
+            mp.setLooping(true);
+            videoView.start();
+        });
     }
 
     private void printWeatherInfoToConsole(WeatherInfo info) {
@@ -402,5 +406,27 @@ public class WeatherActivity extends AppCompatActivity {
         Log.d(TAG, "Wind Speed: " + info.getWindSpeedKmH() + " km/h");
         Log.d(TAG, "Wind Gust: " + info.getWindGustKmH() + " km/h");
         Log.d(TAG, "===============================================");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (videoView != null && currentVideoResId != -1) {
+            String videoPath = "android.resource://" + getPackageName() + "/" + currentVideoResId;
+            Uri uri = Uri.parse(videoPath);
+            videoView.setVideoURI(uri);
+            videoView.setOnPreparedListener(mp -> {
+                mp.setLooping(true);
+                videoView.start();
+            });
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (videoView != null && videoView.isPlaying()) {
+            videoView.pause();
+        }
     }
 }
