@@ -150,20 +150,14 @@ public class RaceControlFragment extends Fragment {
         };
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // Lifecycle – orientation lock
-    // ─────────────────────────────────────────────────────────────
-
     @Override
     public void onResume() {
         super.onResume();
-        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
     }
 
     @Override
