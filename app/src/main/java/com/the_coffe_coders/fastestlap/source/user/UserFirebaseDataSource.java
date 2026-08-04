@@ -19,7 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.the_coffe_coders.fastestlap.domain.user.User;
-import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
+import com.the_coffe_coders.fastestlap.util.service.SharedPreferencesUtils;
 
 /**
  * Class that gets the user information using Firebase Realtime Database.

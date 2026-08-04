@@ -287,4 +287,11 @@
     <string name="time_19_00" translatable="false">19:00</string>
     <string name="race_weekend_forecast">Race Weekend Forecast</string>
 
-</resources>
+    <!-- NOTIFICATIONS -->
+    <string name="news_channel_name">F1 News &amp; Updates</string>
+    <string name="news_channel_description">Notifications for latest Formula 1 news</string>
+    <string name="session_channel_name">F1 Session Reminders</string>
+    <string name="session_channel_description">Alerts when F1 Practice, Qualifying, or Race is starting</string>
+    <string name="session_starting_at">is starting at</string>
+
+</resources>

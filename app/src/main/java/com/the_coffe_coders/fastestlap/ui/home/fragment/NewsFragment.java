@@ -24,7 +24,7 @@ import com.the_coffe_coders.fastestlap.adapter.NewsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.news.News;
 import com.the_coffe_coders.fastestlap.source.news.NewsFetcher;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 

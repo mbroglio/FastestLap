@@ -195,4 +195,11 @@
     <string name="meteo_not_available_yet">METEO NON ANCORA DISPONIBILE</string>
     <string name="race_weekend_forecast">Forecast Weekend di Gara</string>
 
-</resources>
+    <!-- NOTIFICATIONS -->
+    <string name="news_channel_name">Notizie &amp; Aggiornamenti F1</string>
+    <string name="news_channel_description">Notifiche per le ultime notizie di Formula 1</string>
+    <string name="session_channel_name">Inizio Sessioni F1</string>
+    <string name="session_channel_description">Avvisi all\'inizio di Prove Libere, Qualifiche o Gara</string>
+    <string name="session_starting_at">incontra o inizia alle</string>
+
+</resources>

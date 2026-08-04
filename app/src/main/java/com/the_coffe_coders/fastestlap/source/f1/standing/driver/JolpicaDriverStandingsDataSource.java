@@ -14,7 +14,7 @@ import com.the_coffe_coders.fastestlap.repository.f1.standing.driver.DriverStand
 import com.the_coffe_coders.fastestlap.repository.mapper.DriverStandingsMapper;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
 
 import java.io.IOException;
 import java.util.Calendar;

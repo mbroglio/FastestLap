@@ -11,7 +11,7 @@ import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.source.f1.constructor.FirebaseConstructorDataSource;
 import com.the_coffe_coders.fastestlap.source.f1.constructor.JolpicaConstructorDataSource;
 import com.the_coffe_coders.fastestlap.source.f1.constructor.LocalConstructorDataSource;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 
 import java.util.HashMap;
 import java.util.Map;

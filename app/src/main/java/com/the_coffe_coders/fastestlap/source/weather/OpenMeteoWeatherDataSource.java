@@ -14,7 +14,7 @@ import com.the_coffe_coders.fastestlap.repository.weather.CurrentWeatherCallback
 import com.the_coffe_coders.fastestlap.repository.weather.WeekendForecastCallback;
 import com.the_coffe_coders.fastestlap.service.OpenF1APIService;
 import com.the_coffe_coders.fastestlap.service.OpenMeteoAPIService;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.weather.WeatherUtils;
 
 import java.text.SimpleDateFormat;

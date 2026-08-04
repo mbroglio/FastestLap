@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.util;
+package com.the_coffe_coders.fastestlap.util.service;
 
 import android.content.Context;
 import android.content.SharedPreferences;

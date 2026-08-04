@@ -34,9 +34,6 @@ import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResultFastestLap;
 import com.the_coffe_coders.fastestlap.domain.f1.result.Stint;
 import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
-import com.the_coffe_coders.fastestlap.domain.f1.livetiming.RaceControlMessage;
-import com.the_coffe_coders.fastestlap.domain.f1.livetiming.TeamRadioMessage;
-import com.the_coffe_coders.fastestlap.repository.f1.livetiming.LiveTimingRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
@@ -47,8 +44,9 @@ import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModelFactory;
-import com.the_coffe_coders.fastestlap.util.CalendarUtils;
+import com.the_coffe_coders.fastestlap.util.calendar.CalendarUtils;
 import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.notification.NotificationScheduler;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
@@ -567,8 +565,34 @@ public class EventActivity extends AppCompatActivity {
                     eventSchedule.findViewById(Constants.SESSION_TIME_FIELD.get(sessionId)));
 
             setChequeredFlag(eventSchedule, session, round);
+
+            // Automatically schedule background session reminder 15 mins before start for future sessions
+            if (!session.isFinished() && session.getStartDateTime() != null) {
+                try {
+                    long sessionStartTimeMillis = session.getStartDateTime()
+                            .atZone(org.threeten.bp.ZoneId.systemDefault())
+                            .toInstant()
+                            .toEpochMilli();
+
+                    String raceName = (currentRace != null && currentRace.getRaceName() != null)
+                            ? currentRace.getRaceName()
+                            : "Formula 1 Grand Prix";
+
+
+                    NotificationScheduler.scheduleSessionReminder(
+                            this,
+                            raceName,
+                            sessionId,
+                            session.getStartingTime(),
+                            sessionStartTimeMillis
+                    );
+                } catch (Exception e) {
+                    Log.w(TAG, "Could not schedule session reminder: " + e.getMessage());
+                }
+            }
         }
     }
+
 
     private void setChequeredFlag(View view, Session session, String round) {
         String sessionId = session.getClass().getSimpleName();

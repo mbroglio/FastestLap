@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.repository.track.TrackRepository;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
 
 public class TrackViewModelFactory implements ViewModelProvider.Factory {
     private final TrackRepository trackRepository;

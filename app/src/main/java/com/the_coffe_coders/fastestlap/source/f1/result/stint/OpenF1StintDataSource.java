@@ -17,7 +17,7 @@ import com.the_coffe_coders.fastestlap.domain.f1.result.PitStopInfo;
 import com.the_coffe_coders.fastestlap.domain.f1.result.Stint;
 import com.the_coffe_coders.fastestlap.repository.f1.result.StintCallback;
 import com.the_coffe_coders.fastestlap.service.OpenF1APIService;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
 
 import java.io.IOException;
 import java.util.ArrayList;

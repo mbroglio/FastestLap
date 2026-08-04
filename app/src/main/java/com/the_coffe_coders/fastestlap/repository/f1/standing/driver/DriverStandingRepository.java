@@ -11,7 +11,7 @@ import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandings;
 import com.the_coffe_coders.fastestlap.source.f1.standing.driver.JolpicaDriverStandingsDataSource;
 import com.the_coffe_coders.fastestlap.source.f1.standing.driver.LocalDriverStandingsDataSource;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 
 import java.util.Calendar;
 import java.util.HashMap;

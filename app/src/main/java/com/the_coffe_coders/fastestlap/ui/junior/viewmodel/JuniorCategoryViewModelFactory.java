@@ -11,7 +11,7 @@ import com.the_coffe_coders.fastestlap.repository.junior.calendar.JuniorCalendar
 import com.the_coffe_coders.fastestlap.repository.junior.entrylist.JuniorEntryListRepository;
 import com.the_coffe_coders.fastestlap.repository.junior.result.JuniorResultRepository;
 import com.the_coffe_coders.fastestlap.repository.junior.standings.JuniorStandingsRepository;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
 
 public class JuniorCategoryViewModelFactory implements ViewModelProvider.Factory {
     private final JuniorCalendarRepository juniorCalendarRepository;

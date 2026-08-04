@@ -1,7 +1,10 @@
 package com.the_coffe_coders.fastestlap.ui.home.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import java.util.List;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,9 +39,9 @@ import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
-import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.service.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 
 
@@ -352,13 +355,42 @@ public class HomeFragment extends Fragment {
             });
         }
 
-        // Pre-fetch all weekly races to populate local Room DB with full season calendar
+        // Pre-fetch all weekly races to populate local Room DB with full season calendar and schedule upcoming session reminders
         weeklyRaceViewModel.getWeeklyRacesLiveData().observe(getViewLifecycleOwner(), result -> {
             if (result instanceof Result.WeeklyRaceSuccess) {
-                Log.d(TAG, "Full season races pre-fetched into Room DB: " + ((Result.WeeklyRaceSuccess) result).getData().size());
+                List<com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace> races = ((Result.WeeklyRaceSuccess) result).getData();
+                Log.d(TAG, "Full season races pre-fetched into Room DB: " + (races != null ? races.size() : 0));
+                if (races != null && getContext() != null) {
+                    Context context = requireContext().getApplicationContext();
+                    for (com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace race : races) {
+                        List<com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Session> sessions = race.getSessions();
+                        if (sessions != null) {
+                            for (com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Session s : sessions) {
+                                if (!s.isFinished() && s.getStartDateTime() != null) {
+                                    try {
+                                        long sessionStartTimeMillis = s.getStartDateTime()
+                                                .atZone(org.threeten.bp.ZoneId.systemDefault())
+                                                .toInstant()
+                                                .toEpochMilli();
+                                        com.the_coffe_coders.fastestlap.util.notification.NotificationScheduler.scheduleSessionReminder(
+                                                context,
+                                                race.getRaceName() != null ? race.getRaceName() : "Formula 1 Grand Prix",
+                                                s.getClass().getSimpleName(),
+                                                s.getStartingTime(),
+                                                sessionStartTimeMillis
+                                        );
+                                    } catch (Exception e) {
+                                        Log.w(TAG, "Failed to schedule session reminder: " + e.getMessage());
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         });
     }
+
 
     private void setRefreshLayout(View view) {
         SwipeRefreshLayout homeSwipeRefreshLayout = view.findViewById(R.id.home_refresh_layout);

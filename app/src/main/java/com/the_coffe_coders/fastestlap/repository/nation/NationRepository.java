@@ -10,7 +10,7 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.source.nation.FirebaseNationDataSource;
 import com.the_coffe_coders.fastestlap.source.nation.LocalNationDataSource;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 
 import java.util.HashMap;
 import java.util.HashSet;

@@ -26,8 +26,7 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
             )
         }
     }
@@ -35,13 +34,15 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    tasks.withType<JavaCompile> {
-        options.compilerArgs.addAll(listOf("-Xlint:deprecation", "-Xlint:unchecked"))
-    }
+}
+
+tasks.withType<JavaCompile> {
+    options.compilerArgs.addAll(listOf("-Xlint:deprecation", "-Xlint:unchecked"))
 }
 
 dependencies {
     implementation(libs.appcompat)
+
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
@@ -75,6 +76,6 @@ dependencies {
     implementation(libs.commons.validator)
     implementation(libs.glide)
     implementation(libs.rome)
+    implementation(libs.work.runtime)
     annotationProcessor(libs.compiler)
-
 }

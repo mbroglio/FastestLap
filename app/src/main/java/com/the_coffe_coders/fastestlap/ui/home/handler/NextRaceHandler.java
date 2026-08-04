@@ -36,8 +36,8 @@ import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModel;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import org.threeten.bp.LocalDateTime;

@@ -10,7 +10,7 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendar;
 import com.the_coffe_coders.fastestlap.source.junior.calendar.FirebaseJuniorCalendarDataSource;
 import com.the_coffe_coders.fastestlap.source.junior.calendar.LocalJuniorCalendarDataSource;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 
 import java.util.HashMap;
 import java.util.Map;

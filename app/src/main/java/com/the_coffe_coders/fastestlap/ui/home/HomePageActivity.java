@@ -23,7 +23,8 @@ import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.notification.AppNotificationManager;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import org.threeten.bp.ZoneId;
@@ -47,7 +48,13 @@ public class HomePageActivity extends AppCompatActivity {
         setNavigationBar();
 
         getUserPreferences();
+
+        // Request notification permission for background news & session alerts on Android 13+
+        AppNotificationManager.getInstance().requestNotificationPermission(this);
     }
+
+
+
 
     private void setToolbar() {
         MaterialToolbar toolbar = findViewById(R.id.top_app_bar);

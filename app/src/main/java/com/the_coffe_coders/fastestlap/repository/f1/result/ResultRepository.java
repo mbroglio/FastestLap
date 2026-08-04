@@ -12,7 +12,7 @@ import com.the_coffe_coders.fastestlap.domain.f1.result.Stint;
 import com.the_coffe_coders.fastestlap.source.f1.result.JolpicaRaceResultDataSource;
 import com.the_coffe_coders.fastestlap.source.f1.result.LocalRaceResultDataSource;
 import com.the_coffe_coders.fastestlap.source.f1.result.stint.OpenF1StintDataSource;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 
 import java.util.HashMap;
 import java.util.List;

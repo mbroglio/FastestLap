@@ -10,10 +10,9 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.f1.livetiming.RaceControlMessage;
 import com.the_coffe_coders.fastestlap.domain.f1.livetiming.TeamRadioMessage;
 import com.the_coffe_coders.fastestlap.source.f1.livetiming.OpenF1LiveTimingDataSource;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Repository for live-timing data fetched from the OpenF1 API.

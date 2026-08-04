@@ -10,7 +10,7 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorResult;
 import com.the_coffe_coders.fastestlap.source.junior.results.FirebaseJuniorResultsDataSource;
 import com.the_coffe_coders.fastestlap.source.junior.results.LocalJuniorResultsDataSource;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 
 import java.util.HashMap;
 import java.util.Map;

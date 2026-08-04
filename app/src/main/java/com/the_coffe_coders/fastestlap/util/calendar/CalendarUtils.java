@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.util;
+package com.the_coffe_coders.fastestlap.util.calendar;
 
 import android.app.DownloadManager;
 import android.content.ActivityNotFoundException;
@@ -17,6 +17,7 @@ import androidx.core.content.FileProvider;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Practice;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.util.Constants;
 
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZoneOffset;

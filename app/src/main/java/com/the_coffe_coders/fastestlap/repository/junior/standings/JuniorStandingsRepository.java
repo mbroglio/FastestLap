@@ -11,7 +11,7 @@ import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorConstructor
 import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorDriverStandings;
 import com.the_coffe_coders.fastestlap.source.junior.standings.FirebaseJuniorStandingsDataSource;
 import com.the_coffe_coders.fastestlap.source.junior.standings.LocalJuniorStandingsDataSource;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 
 import java.util.HashMap;
 import java.util.Map;

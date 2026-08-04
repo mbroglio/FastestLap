@@ -11,6 +11,7 @@ import com.rometools.rome.feed.synd.SyndFeed;
 import com.rometools.rome.io.SyndFeedInput;
 import com.rometools.rome.io.XmlReader;
 import com.the_coffe_coders.fastestlap.domain.news.News;
+import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +41,7 @@ public class NewsFetcher {
     private static List<News> fetchF1News(String sourceUrl) {
         List<News> newsList = new ArrayList<>();
         try {
-            okhttp3.OkHttpClient client = com.the_coffe_coders.fastestlap.util.ServiceLocator.getInstance().getOkHttpClient();
+            okhttp3.OkHttpClient client = ServiceLocator.getInstance().getOkHttpClient();
             okhttp3.Request request = new okhttp3.Request.Builder()
                     .url(sourceUrl)
                     .header("User-Agent", "Mozilla/5.0 FastestLapApp")

@@ -13,7 +13,7 @@ import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandingsElement
 import com.the_coffe_coders.fastestlap.repository.f1.standing.constructor.ConstructorStandingRepository;
 import com.the_coffe_coders.fastestlap.repository.f1.standing.driver.DriverStandingRepository;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
 
 import java.util.List;
 
