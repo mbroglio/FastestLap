@@ -179,15 +179,24 @@ public class TrackBioActivity extends AppCompatActivity {
         goToMapButton.setOnClickListener(v ->
                 NavigationUtils.openLocation(this, track.getLocation().getLatitude(), track.getLocation().getLongitude()));
 
-        String nationFlag_Url = null;
-        if (nation != null) {
-            nationFlag_Url = nation.getNation_flag_url();
-        }
+        createHistoryTable();
+
+        String nationFlag_Url = nation != null ? nation.getNation_flag_url() : null;
 
         UIUtils.loadImagesInParallel(this,
-                new String[]{track.getTrack_full_layout_url(), nationFlag_Url},
-                new ImageView[]{circuitImage, countryFlag},
-                this::createHistoryTable);
+                new String[]{
+                        track.getTrack_full_layout_url(),
+                        nationFlag_Url},
+
+                new ImageView[]{
+                        circuitImage,
+                        countryFlag},
+
+                () -> {
+                    Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: TrackBioActivity at " + System.currentTimeMillis());
+                    loadingScreen.hideLoadingScreenImmediately();
+                });
+
     }
 
     private void createHistoryTable() {
@@ -250,9 +259,8 @@ public class TrackBioActivity extends AppCompatActivity {
             trackHistoryLayout.setVisibility(View.GONE);
             tableLayout.setVisibility(View.GONE);
         }
-        Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: TrackBioActivity at " + System.currentTimeMillis());
-        loadingScreen.hideLoadingScreen();
     }
+
 
     @Override
     protected void onResume() {

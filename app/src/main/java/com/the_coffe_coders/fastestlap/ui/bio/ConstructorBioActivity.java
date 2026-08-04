@@ -284,26 +284,10 @@ public class ConstructorBioActivity extends AppCompatActivity {
     private void setTeamData(Constructor team, Nation nation, Driver driverOne, Driver driverTwo) {
         loadingScreen.updateProgress();
 
-        String nationFlagUrl = null;
-        if (nation != null) {
-            nationFlagUrl = nation.getNation_flag_url();
-        }
-
-        String d1HalfPic = driverOne != null ? driverOne.getDriver_half_pic_url() : null;
-        String d2HalfPic = driverTwo != null ? driverTwo.getDriver_half_pic_url() : null;
-
-        UIUtils.loadImagesInParallel(this,
-                new String[]{team.getTeam_logo_url(), nationFlagUrl, team.getCar_pic_url(), d1HalfPic, d2HalfPic},
-                new ImageView[]{findViewById(R.id.team_logo_image), findViewById(R.id.team_flag), findViewById(R.id.team_car_image), findViewById(R.id.driver_1_image), findViewById(R.id.driver_2_image)},
-                () -> setTeamDataFinalStep(team));
-
-    }
-
-    private void setTeamDataFinalStep(Constructor team) {
-
         String d1Name = driverOne != null ? driverOne.getGivenName() + " " + driverOne.getFamilyName() : "TBA";
         String d2Name = driverTwo != null ? driverTwo.getGivenName() + " " + driverTwo.getFamilyName() : "TBA";
 
+        // Popola subito tutti i dati di testo, i tachimetri e la tabella dello storico
         UIUtils.multipleSetTextViewText(
                 new String[]{d1Name,
                         d2Name,
@@ -330,11 +314,38 @@ public class ConstructorBioActivity extends AppCompatActivity {
                         findViewById(R.id.team_podiums_value)});
 
         UIUtils.updateTachometers(this, team, winPercentageTachometer, podiumPercentageTachometer);
-
         createHistoryTable();
-        Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: ConstructorBioActivity at " + System.currentTimeMillis());
-        loadingScreen.hideLoadingScreen();
+
+        String nationFlagUrl = nation != null ? nation.getNation_flag_url() : null;
+        String d1HalfPic = driverOne != null ? driverOne.getDriver_half_pic_url() : null;
+        String d2HalfPic = driverTwo != null ? driverTwo.getDriver_half_pic_url() : null;
+
+        // Carica le immagini in parallelo e nascondi la schermata di caricamento solo al completamento
+        UIUtils.loadImagesInParallel(this,
+                new String[]{
+                        team.getTeam_logo_url(),
+                        nationFlagUrl,
+                        team.getCar_pic_url(),
+                        d1HalfPic,
+                        d2HalfPic},
+
+                new ImageView[]{
+                        findViewById(R.id.team_logo_image),
+                        findViewById(R.id.team_flag),
+                        findViewById(R.id.team_car_image),
+                        findViewById(R.id.driver_1_image),
+                        findViewById(R.id.driver_2_image)},
+
+                () -> {
+                    Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: ConstructorBioActivity at " + System.currentTimeMillis());
+                    loadingScreen.hideLoadingScreen();
+                    if (winPercentageTachometer != null) winPercentageTachometer.startAnimation();
+                    if (podiumPercentageTachometer != null) podiumPercentageTachometer.startAnimation();
+                });
+
     }
+
+
 
     private void createHistoryTable() {
         loadingScreen.updateProgress();

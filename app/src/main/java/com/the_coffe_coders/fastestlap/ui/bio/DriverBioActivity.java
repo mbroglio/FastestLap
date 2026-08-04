@@ -289,38 +289,14 @@ public class DriverBioActivity extends AppCompatActivity {
 
             teamLogoCard.setStrokeColor(ContextCompat.getColor(this, teamColor));
 
-            if (team.getConstructorId().equals("rb")) {
+            if (team != null && "rb".equals(team.getConstructorId())) {
                 teamLogoCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white));
             }
         } else {
             teamLogoCard.setStrokeColor(ContextCompat.getColor(this, R.color.timer_gray));
         }
 
-        String nationFlagUrl = null;
-        if (nation != null) {
-            nationFlagUrl = nation.getNation_flag_url();
-        }
-
-        String teamLogoUrl = team != null ? team.getTeam_logo_url() : null;
-
-        UIUtils.loadImagesInParallel(this,
-                new String[]{
-                        teamLogoUrl,
-                        nationFlagUrl,
-                        driver.getDriver_full_pic_url(),
-                        driver.getRacing_number_pic_url()},
-
-                new ImageView[]{
-                        teamLogoImage,
-                        findViewById(R.id.driver_flag),
-                        findViewById(R.id.driver_bio_pic),
-                        driverNumberImage},
-
-                () -> setDriverDataFinalStep(driver));
-    }
-
-    private void setDriverDataFinalStep(Driver driver) {
-
+        // Popola subito tutti i dati di testo, i tachimetri e la tabella dello storico
         UIUtils.multipleSetTextViewText(
                 new String[]{driver.getBirth_place(),
                         driver.getDateOfBirth(),
@@ -345,11 +321,35 @@ public class DriverBioActivity extends AppCompatActivity {
         );
 
         UIUtils.updateTachometers(this, driver, winPercentageTachometer, podiumPercentageTachometer);
-
         createHistoryTable();
-        Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: DriverBioActivity at " + System.currentTimeMillis());
-        loadingScreen.hideLoadingScreen();
+
+        String nationFlagUrl = nation != null ? nation.getNation_flag_url() : null;
+        String teamLogoUrl = team != null ? team.getTeam_logo_url() : null;
+
+        // Carica tutte le immagini in parallelo e nascondi la schermata di caricamento solo al completamento
+        UIUtils.loadImagesInParallel(this,
+                new String[]{
+                        teamLogoUrl,
+                        nationFlagUrl,
+                        driver.getDriver_full_pic_url(),
+                        driver.getRacing_number_pic_url()},
+
+
+                new ImageView[]{
+                        teamLogoImage,
+                        findViewById(R.id.driver_flag),
+                        findViewById(R.id.driver_bio_pic),
+                        driverNumberImage},
+
+                () -> {
+                    Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: DriverBioActivity at " + System.currentTimeMillis());
+                    loadingScreen.hideLoadingScreenImmediately();
+                    if (winPercentageTachometer != null) winPercentageTachometer.startAnimation();
+                    if (podiumPercentageTachometer != null) podiumPercentageTachometer.startAnimation();
+                });
     }
+
+
 
     private void createHistoryTable() {
         loadingScreen.updateProgress();
