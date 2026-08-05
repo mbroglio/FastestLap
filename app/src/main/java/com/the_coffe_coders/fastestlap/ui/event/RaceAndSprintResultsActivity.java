@@ -105,10 +105,10 @@ public class RaceAndSprintResultsActivity extends AppCompatActivity {
             new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
                 switch (position) {
                     case 0:
-                        tab.setText(getString(R.string.results).toUpperCase());
+                        tab.setText(getString(R.string.results).toUpperCase(java.util.Locale.getDefault()));
                         break;
                     case 1:
-                        tab.setText(getString(R.string.stints).toUpperCase());
+                        tab.setText(getString(R.string.stints).toUpperCase(java.util.Locale.getDefault()));
                         break;
                 }
             }).attach();

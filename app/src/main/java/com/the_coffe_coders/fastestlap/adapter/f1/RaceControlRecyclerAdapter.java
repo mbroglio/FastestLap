@@ -34,7 +34,7 @@ public class RaceControlRecyclerAdapter
     public static final int VIEW_TYPE_RACE_CONTROL = 0;
     public static final int VIEW_TYPE_TEAM_RADIO   = 1;
 
-    private static Context context = null;
+    private final Context context;
     private final List<Object> items;
     private final List<RaceControlLapGroup> rawRaceControlGroups = new ArrayList<>();
     private final List<TeamRadioMessage> rawTeamRadioMessages = new ArrayList<>();
@@ -47,7 +47,7 @@ public class RaceControlRecyclerAdapter
     private final TeamRadioPlayerManager playerManager;
 
     public RaceControlRecyclerAdapter(Context context) {
-        RaceControlRecyclerAdapter.context = context;
+        this.context = context;
         this.items         = new ArrayList<>();
         this.playerManager = new TeamRadioPlayerManager();
     }
@@ -238,6 +238,7 @@ public class RaceControlRecyclerAdapter
             messagesContainer = itemView.findViewById(R.id.messages_container);
         }
 
+        @android.annotation.SuppressLint("SetTextI18n")
         public void bind(RaceControlLapGroup group) {
             if (group.getLapNumber() != null) {
                 lapCount.setText("Lap: " + group.getLapNumber());
@@ -250,7 +251,7 @@ public class RaceControlRecyclerAdapter
             LayoutInflater inflater = LayoutInflater.from(itemView.getContext());
 
             for (RaceControlMessage msg : group.getMessages()) {
-                View cardView = inflateCardForMessage(inflater, msg);
+                View cardView = inflateCardForMessage(inflater, messagesContainer, msg);
 
                 if (cardView != null) {
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -268,7 +269,7 @@ public class RaceControlRecyclerAdapter
          * Seleziona e gonfia il layout corretto per un singolo {@link RaceControlMessage}
          * in base a category, flag, scope e contenuto del messaggio.
          */
-        private View inflateCardForMessage(LayoutInflater inflater, RaceControlMessage msg) {
+        private View inflateCardForMessage(LayoutInflater inflater, ViewGroup parent, RaceControlMessage msg) {
             String category = msg.getCategory() != null ? msg.getCategory().toUpperCase().trim() : "";
             String flag     = msg.getFlag()     != null ? msg.getFlag().toUpperCase().trim()     : "";
             String scope    = msg.getScope()    != null ? msg.getScope().toUpperCase().trim()    : "";
@@ -282,14 +283,14 @@ public class RaceControlRecyclerAdapter
                 case "FLAG": {
                     switch (scope) {
                         case "SECTOR":
-                            return inflateFlagTrackCard(inflater, flag, message);
+                            return inflateFlagTrackCard(inflater, parent, flag, message);
                         case "DRIVER":
-                            return inflateFlagDriverCard(inflater, flag, msg);
+                            return inflateFlagDriverCard(inflater, parent, flag, msg);
                         case "TRACK":{
                             if(msg.isChequeredFlag() || msg.isTrackClear())
-                                return inflateFlagTrackCard(inflater, flag, message);
+                                return inflateFlagTrackCard(inflater, parent, flag, message);
                             if(msg.isPitLane())
-                                return inflatePitLaneCard(inflater, flag, message);
+                                return inflatePitLaneCard(inflater, parent, flag, message);
                         }
 
                     }
@@ -299,11 +300,11 @@ public class RaceControlRecyclerAdapter
                 // SAFETYCAR
                 // ──────────────────────────────────────────────
                 case "SAFETYCAR": {
-                    return inflateSafetyCarCard(inflater, message);
+                    return inflateSafetyCarCard(inflater, parent, message);
                 }
 
                 case "SESSIONSTATUS": {
-                    return inflateSessionStatusLayout(inflater, message);
+                    return inflateSessionStatusLayout(inflater, parent, message);
                 }
 
                 // ──────────────────────────────────────────────
@@ -311,24 +312,24 @@ public class RaceControlRecyclerAdapter
                 // ──────────────────────────────────────────────
                 case "OTHER": {
                     if(msg.isTrackLimits()){
-                        return inflateTrackLimitsCard(inflater, message);
+                        return inflateTrackLimitsCard(inflater, parent, message);
                     } else if(msg.isPitLane()){
-                        return inflatePitLaneCard(inflater, flag, message);
+                        return inflatePitLaneCard(inflater, parent, flag, message);
                     } else{
-                        return inflateStewardsCard(inflater, message);
+                        return inflateStewardsCard(inflater, parent, message);
                     }
                 }
                 default: {
                     // Fallback per categorie sconosciute
-                    return inflateStewardsCard(inflater, message);
+                    return inflateStewardsCard(inflater, parent, message);
                 }
             }
         }
 
 
         // ── Layout inflaters ────────────────────────────────────
-        private View inflateFlagTrackCard(LayoutInflater inflater, String flag, String message) {
-            View card = inflater.inflate(R.layout.race_control_flag_track_message, null, false);
+        private View inflateFlagTrackCard(LayoutInflater inflater, ViewGroup parent, String flag, String message) {
+            View card = inflater.inflate(R.layout.race_control_flag_track_message, parent, false);
             applyFlagIcons(card, flag);
             if(flag.equalsIgnoreCase("CLEAR")){
                 UIUtils.singleSetTextViewText("TRACK CLEAR", card.findViewById(R.id.message_title));
@@ -340,8 +341,8 @@ public class RaceControlRecyclerAdapter
             return card;
         }
 
-        private View inflateFlagDriverCard(LayoutInflater inflater, String flag, RaceControlMessage msg) {
-            View card = inflater.inflate(R.layout.race_control_flag_driver_message, null, false);
+        private View inflateFlagDriverCard(LayoutInflater inflater, ViewGroup parent, String flag, RaceControlMessage msg) {
+            View card = inflater.inflate(R.layout.race_control_flag_driver_message, parent, false);
             applyFlagIcons(card, flag);
 
             TextView driverName = card.findViewById(R.id.driver_name);
@@ -364,8 +365,8 @@ public class RaceControlRecyclerAdapter
             return card;
         }
 
-        private View inflateSessionStatusLayout(LayoutInflater inflater, String message) {
-            View card = inflater.inflate(R.layout.race_control_session_status, null, false);
+        private View inflateSessionStatusLayout(LayoutInflater inflater, ViewGroup parent, String message) {
+            View card = inflater.inflate(R.layout.race_control_session_status, parent, false);
 
             if(message.contains("SESSION STARTED")){
                 applyFlagIcons(card, "GREEN");
@@ -379,8 +380,8 @@ public class RaceControlRecyclerAdapter
             return card;
         }
 
-        private View inflatePitLaneCard(LayoutInflater inflater, String flag, String message) {
-            View card = inflater.inflate(R.layout.race_control_pit_lane_lights, null, false);
+        private View inflatePitLaneCard(LayoutInflater inflater, ViewGroup parent, String flag, String message) {
+            View card = inflater.inflate(R.layout.race_control_pit_lane_lights, parent, false);
 
 
             ImageView flag1 = card.findViewById(R.id.flag_1);
@@ -420,8 +421,8 @@ public class RaceControlRecyclerAdapter
          * race_control_safety_car_message → usato per category=SAFETYCAR
          * IDs: flag_1, flag_2 (ImageView), message_text_layout (FrameLayout con TextView anonimo)
          */
-        private View inflateSafetyCarCard(LayoutInflater inflater, String message) {
-            View card = inflater.inflate(R.layout.race_control_safety_car_message, null, false);
+        private View inflateSafetyCarCard(LayoutInflater inflater, ViewGroup parent, String message) {
+            View card = inflater.inflate(R.layout.race_control_safety_car_message, parent, false);
 
             ImageView panel = card.findViewById(R.id.panel);
 
@@ -436,8 +437,8 @@ public class RaceControlRecyclerAdapter
             return card;
         }
 
-        private View inflateTrackLimitsCard(LayoutInflater inflater, String message) {
-            View card = inflater.inflate(R.layout.race_control_track_limits_message, null, false);
+        private View inflateTrackLimitsCard(LayoutInflater inflater, ViewGroup parent, String message) {
+            View card = inflater.inflate(R.layout.race_control_track_limits_message, parent, false);
 
             //extract "car 5" from string "car 5 (bor) time deleted"
             String driverName = Constants.DRIVER_NUMBER_NAME.get(message.split(" ")[1]);
@@ -453,8 +454,8 @@ public class RaceControlRecyclerAdapter
             return card;
         }
 
-        private View inflateStewardsCard(LayoutInflater inflater, String message) {
-            View card = inflater.inflate(R.layout.race_control_stewards_message, null, false);
+        private View inflateStewardsCard(LayoutInflater inflater, ViewGroup parent, String message) {
+            View card = inflater.inflate(R.layout.race_control_stewards_message, parent, false);
             UIUtils.singleSetTextViewText(message, card.findViewById(R.id.message_text));
 
             return card;

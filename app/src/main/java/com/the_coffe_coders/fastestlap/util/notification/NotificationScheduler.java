@@ -89,8 +89,8 @@ public class NotificationScheduler {
         long delayDays = delayHours / 24;
 
         String formattedDelay = delayDays > 0
-                ? String.format("%dd %dh %dm", delayDays, delayHours % 24, delayMinutes % 60)
-                : String.format("%dh %dm %ds", delayHours, delayMinutes % 60, delaySeconds % 60);
+                ? String.format(java.util.Locale.getDefault(), "%dd %dh %dm", delayDays, delayHours % 24, delayMinutes % 60)
+                : String.format(java.util.Locale.getDefault(), "%dh %dm %ds", delayHours, delayMinutes % 60, delaySeconds % 60);
 
         Log.i(TAG, "==================================================");
         Log.i(TAG, "⏰ [PROMEMORIA SESSIONE REGISTRATO IN WORKMANAGER]");

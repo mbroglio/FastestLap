@@ -39,7 +39,7 @@ public class SessionNotificationManager {
         AppNotificationManager mainManager = AppNotificationManager.getInstance();
         mainManager.createNotificationChannels(context);
 
-        if (!mainManager.hasNotificationPermission(context)) {
+        if (mainManager.hasNotificationPermission(context)) {
             Log.w(TAG, "Cannot show session notification — POST_NOTIFICATIONS permission not granted.");
             return;
         }

@@ -179,7 +179,7 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
                         holder.gpTextViewConfirmed,
                         holder.dateTextView});
 
-        UIUtils.translateMonth(weeklyRace.getDateTime().getMonth().toString().substring(0, 3).toUpperCase(),
+        UIUtils.translateMonth(weeklyRace.getDateTime().getMonth().toString().substring(0, 3).toUpperCase(java.util.Locale.getDefault()),
                 holder.monthTextView, true);
     }
 

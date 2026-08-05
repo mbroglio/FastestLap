@@ -104,7 +104,7 @@ public class OpenF1StintDataSource implements StintDataSource {
         JsonArray jsonArray = new Gson().fromJson(meetingsJson, JsonArray.class);
         if (jsonArray == null) return null;
 
-        String targetNorm = targetEventName.toLowerCase().trim();
+        String targetNorm = targetEventName.toLowerCase(java.util.Locale.ROOT).trim();
 
         for (JsonElement element : jsonArray) {
             if (!element.isJsonObject()) continue;
@@ -129,7 +129,7 @@ public class OpenF1StintDataSource implements StintDataSource {
 
     private boolean matches(String candidate, String targetNorm) {
         if (candidate == null) return false;
-        String candNorm = candidate.toLowerCase().trim();
+        String candNorm = candidate.toLowerCase(java.util.Locale.ROOT).trim();
         return candNorm.contains(targetNorm) || targetNorm.contains(candNorm);
     }
 
@@ -173,7 +173,7 @@ public class OpenF1StintDataSource implements StintDataSource {
         JsonArray jsonArray = new Gson().fromJson(sessionsJson, JsonArray.class);
         if (jsonArray == null || jsonArray.isEmpty()) return null;
 
-        String targetNorm = targetSessionName.toLowerCase().trim();
+        String targetNorm = targetSessionName.toLowerCase(java.util.Locale.ROOT).trim();
 
         // 1° Pass: Match ESATTO con equalsIgnoreCase su session_name
         for (JsonElement element : jsonArray) {
@@ -314,15 +314,23 @@ public class OpenF1StintDataSource implements StintDataSource {
                         if (jsonArray != null) {
                             Map<Integer, List<PitStopInfo>> driverPitMap = new HashMap<>();
                             for (JsonElement elem : jsonArray) {
+                                Log.d(TAG, "Pit stop: " + elem.toString());
                                 if (!elem.isJsonObject()) continue;
                                 JsonObject obj = elem.getAsJsonObject();
                                 int driverNum = getIntOrDefault(obj, "driver_number", -1);
                                 int lapNum = getIntOrDefault(obj, "lap_number", -1);
+
                                 Double pitDur = null;
-                                if (obj.has("pit_duration") && !obj.get("pit_duration").isJsonNull()) {
+                                if (obj.has("stop_duration") && !obj.get("stop_duration").isJsonNull()) {
                                     try {
-                                        pitDur = obj.get("pit_duration").getAsDouble();
+                                        pitDur = obj.get("stop_duration").getAsDouble();
                                     } catch (Exception ignored) {}
+                                }else{
+                                    if (obj.has("lane_duration") && !obj.get("lane_duration").isJsonNull()) {
+                                        try {
+                                            pitDur = obj.get("lane_duration").getAsDouble();
+                                        } catch (Exception ignored) {}
+                                    }
                                 }
 
                                 if (driverNum != -1 && pitDur != null && pitDur > 0) {

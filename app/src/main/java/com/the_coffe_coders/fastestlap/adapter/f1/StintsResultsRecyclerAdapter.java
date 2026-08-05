@@ -302,7 +302,7 @@ public class StintsResultsRecyclerAdapter extends RecyclerView.Adapter<StintsRes
 
     private int getTyreDrawableResource(String compound) {
         if (compound == null) return R.drawable.medium_tyre_icon;
-        switch (compound.toUpperCase()) {
+        switch (compound.toUpperCase(java.util.Locale.ROOT)) {
             case "SOFT":
                 return R.drawable.soft_tyre_icon;
             case "HARD":
@@ -319,7 +319,7 @@ public class StintsResultsRecyclerAdapter extends RecyclerView.Adapter<StintsRes
 
     private int getCompoundColor(String compound) {
         if (compound == null) return Color.parseColor("#FFE800");
-        switch (compound.toUpperCase()) {
+        switch (compound.toUpperCase(java.util.Locale.ROOT)) {
             case "SOFT":
                 return Color.parseColor("#FF1801");
             case "HARD":

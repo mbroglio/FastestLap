@@ -47,37 +47,35 @@ public class AppNotificationManager {
      * Initializes notification channels for Android 8.0+ (API 26+).
      */
     public void createNotificationChannels(Context context) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
-            if (notificationManager == null) return;
+        NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
+        if (notificationManager == null) return;
 
-            // 1. Channel for F1 News
-            NotificationChannel newsChannel = new NotificationChannel(
-                    CHANNEL_NEWS_ID,
-                    context.getString(R.string.news_channel_name),
-                    NotificationManager.IMPORTANCE_HIGH
-            );
-            newsChannel.setDescription(context.getString(R.string.news_channel_description));
-            newsChannel.enableVibration(true);
-            newsChannel.setShowBadge(true);
-            newsChannel.setLockscreenVisibility(android.app.Notification.VISIBILITY_PUBLIC);
+        // 1. Channel for F1 News
+        NotificationChannel newsChannel = new NotificationChannel(
+                CHANNEL_NEWS_ID,
+                context.getString(R.string.news_channel_name),
+                NotificationManager.IMPORTANCE_HIGH
+        );
+        newsChannel.setDescription(context.getString(R.string.news_channel_description));
+        newsChannel.enableVibration(true);
+        newsChannel.setShowBadge(true);
+        newsChannel.setLockscreenVisibility(android.app.Notification.VISIBILITY_PUBLIC);
 
-            // 2. Channel for Session Reminders (Race, Qualifying, Practice)
-            NotificationChannel sessionChannel = new NotificationChannel(
-                    CHANNEL_SESSIONS_ID,
-                    context.getString(R.string.session_channel_name),
-                    NotificationManager.IMPORTANCE_HIGH
-            );
-            sessionChannel.setDescription(context.getString(R.string.session_channel_description));
-            sessionChannel.enableVibration(true);
-            sessionChannel.setShowBadge(true);
-            sessionChannel.setLockscreenVisibility(android.app.Notification.VISIBILITY_PUBLIC);
+        // 2. Channel for Session Reminders (Race, Qualifying, Practice)
+        NotificationChannel sessionChannel = new NotificationChannel(
+                CHANNEL_SESSIONS_ID,
+                context.getString(R.string.session_channel_name),
+                NotificationManager.IMPORTANCE_HIGH
+        );
+        sessionChannel.setDescription(context.getString(R.string.session_channel_description));
+        sessionChannel.enableVibration(true);
+        sessionChannel.setShowBadge(true);
+        sessionChannel.setLockscreenVisibility(android.app.Notification.VISIBILITY_PUBLIC);
 
-            notificationManager.createNotificationChannel(newsChannel);
-            notificationManager.createNotificationChannel(sessionChannel);
+        notificationManager.createNotificationChannel(newsChannel);
+        notificationManager.createNotificationChannel(sessionChannel);
 
-            Log.i(TAG, "Notification channels created successfully.");
-        }
+        Log.i(TAG, "Notification channels created successfully.");
     }
 
     /**
@@ -85,10 +83,9 @@ public class AppNotificationManager {
      */
     public boolean hasNotificationPermission(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            return ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS)
-                    == PackageManager.PERMISSION_GRANTED;
+            return ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -96,7 +93,7 @@ public class AppNotificationManager {
      */
     public void requestNotificationPermission(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (!hasNotificationPermission(activity)) {
+            if (hasNotificationPermission(activity)) {
                 ActivityCompat.requestPermissions(
                         activity,
                         new String[]{android.Manifest.permission.POST_NOTIFICATIONS},
@@ -113,12 +110,7 @@ public class AppNotificationManager {
         if (rawHtml == null || rawHtml.trim().isEmpty()) {
             return "";
         }
-        String text;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            text = Html.fromHtml(rawHtml, Html.FROM_HTML_MODE_LEGACY).toString();
-        } else {
-            text = Html.fromHtml(rawHtml).toString();
-        }
+        String text = Html.fromHtml(rawHtml, Html.FROM_HTML_MODE_LEGACY).toString();
 
         // Remove residual HTML/XML tags
         text = text.replaceAll("<[^>]*>", "");

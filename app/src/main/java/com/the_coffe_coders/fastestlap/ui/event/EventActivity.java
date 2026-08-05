@@ -317,7 +317,7 @@ public class EventActivity extends AppCompatActivity {
         String totalLaps = (track != null && track.getLaps() != null) ? track.getLaps() : null;
 
         // TEST ONLY – decommentare per forzare la live card e testare OpenF1 senza GP in corso:
-        setLiveSession(eventTitle, totalLaps);
+        //setLiveSession(eventTitle, totalLaps);
 
         if (nextEvent != null && !underway) {
             LocalDateTime eventDateTime = nextEvent.getStartDateTime();
