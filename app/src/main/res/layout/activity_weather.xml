@@ -447,7 +447,7 @@
 
                     <TextView
                         android:id="@+id/weather_not_available_text"
-                        style="@style/t18UpperCaseBoldWhite"
+                        style="@style/t18BoldWhite"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_below="@id/weekend_forecast_text"

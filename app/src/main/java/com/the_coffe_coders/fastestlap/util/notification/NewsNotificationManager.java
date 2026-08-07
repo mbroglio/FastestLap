@@ -45,7 +45,7 @@ public class NewsNotificationManager {
         AppNotificationManager mainManager = AppNotificationManager.getInstance();
         mainManager.createNotificationChannels(context);
 
-        if (mainManager.hasNotificationPermission(context)) {
+        if (!mainManager.hasNotificationPermission(context)) {
             Log.w(TAG, "Cannot show news notification — POST_NOTIFICATIONS permission not granted.");
             new Handler(Looper.getMainLooper()).post(() ->
                     Toast.makeText(context, "Abilita i permessi di notifica dalle impostazioni del telefono!", Toast.LENGTH_LONG).show());

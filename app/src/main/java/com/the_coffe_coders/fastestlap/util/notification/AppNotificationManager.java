@@ -80,12 +80,14 @@ public class AppNotificationManager {
 
     /**
      * Checks if POST_NOTIFICATIONS permission is granted (Android 13+ / API 33+).
+     * Returns true if the permission IS granted (or if below Android 13 where it's implicit).
      */
     public boolean hasNotificationPermission(Context context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            return ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED;
+            return ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
         }
-        return false;
+        // Below Android 13, POST_NOTIFICATIONS is not required — always permitted
+        return true;
     }
 
     /**
@@ -93,7 +95,7 @@ public class AppNotificationManager {
      */
     public void requestNotificationPermission(Activity activity) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (hasNotificationPermission(activity)) {
+            if (!hasNotificationPermission(activity)) {
                 ActivityCompat.requestPermissions(
                         activity,
                         new String[]{android.Manifest.permission.POST_NOTIFICATIONS},

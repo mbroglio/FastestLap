@@ -192,7 +192,7 @@
     <string name="saturday">Sabato</string>
     <string name="sunday">Domenica</string>
     <string name="track">pista</string>
-    <string name="meteo_not_available_yet">METEO NON ANCORA DISPONIBILE</string>
+    <string name="meteo_not_available_yet">meteo non ancora disponibile</string>
     <string name="race_weekend_forecast">Forecast Weekend di Gara</string>
 
     <!-- NOTIFICATIONS -->
@@ -202,4 +202,4 @@
     <string name="session_channel_description">Avvisi all\'inizio di Prove Libere, Qualifiche o Gara</string>
     <string name="session_starting_at">incontra o inizia alle</string>
 
-</resources>
+</resources>

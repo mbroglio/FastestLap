@@ -40,7 +40,7 @@ public class NotificationScheduler {
 
         WorkManager.getInstance(context).enqueueUniquePeriodicWork(
                 PERIODIC_NEWS_WORK_NAME,
-                ExistingPeriodicWorkPolicy.KEEP,
+                ExistingPeriodicWorkPolicy.UPDATE,
                 newsWorkRequest
         );
 

@@ -22,12 +22,14 @@ public class WeatherUtils {
 
     /**
      * Returns description text for WMO weather code.
+     *
+     * @param code      WMO weather code from Open-Meteo API.
+     * @param isNight   True if it is currently nighttime at the circuit location.
      */
-    public static String getWeatherText(int code, boolean isRainfall) {
-        if (isRainfall) return "Rainy";
+    public static String getWeatherText(int code, boolean isNight) {
         switch (code) {
             case 0:
-                return "Sunny";
+                return isNight ? "Clear Night" : "Sunny";
             case 1:
             case 2:
                 return "Partly Cloudy";
@@ -52,24 +54,29 @@ public class WeatherUtils {
             case 99:
                 return "Thunderstorm";
             default:
-                return "Clear";
+                return isNight ? "Clear Night" : "Clear";
         }
     }
 
     /**
      * Returns drawable icon resource ID for weather code.
+     *
+     * @param code      WMO weather code from Open-Meteo API.
+     * @param isNight   True if it is currently nighttime at the circuit location.
      */
-    public static int getWeatherIconResId(int code, boolean isRainfall) {
-        if (isRainfall) return R.drawable.rain_weather_icon;
+    public static int getWeatherIconResId(int code, boolean isNight) {
         switch (code) {
             case 0:
-                return R.drawable.sun_weather_icon;
+                // Clear sky
+                return isNight ? R.drawable.night_weather_icon : R.drawable.sun_weather_icon;
             case 1:
             case 2:
-                return R.drawable.partially_cloud_weather_icon;
+                // Mainly clear / partly cloudy
+                return isNight ? R.drawable.night_cloud_weather_icon : R.drawable.partially_cloud_weather_icon;
             case 3:
             case 45:
             case 48:
+                // Overcast / foggy
                 return R.drawable.cloud_weather_icon;
             case 51:
             case 53:
@@ -78,33 +85,41 @@ public class WeatherUtils {
             case 63:
             case 80:
             case 81:
-                return R.drawable.rain_weather_icon;
+                // Light/moderate rain
+                return isNight ? R.drawable.night_rain_weather_icon : R.drawable.rain_weather_icon;
             case 65:
             case 82:
+                // Heavy rain
                 return R.drawable.heavy_rain_weather_icon;
             case 95:
             case 96:
             case 99:
+                // Thunderstorm
                 return R.drawable.storm_weather_icon;
             default:
-                return R.drawable.sun_weather_icon;
+                return isNight ? R.drawable.night_weather_icon : R.drawable.sun_weather_icon;
         }
     }
 
     /**
      * Returns raw video resource ID for weather background.
+     *
+     * @param code      WMO weather code from Open-Meteo API.
+     * @param isNight   True if it is currently nighttime at the circuit location.
      */
-    public static int getWeatherVideoResId(int code, boolean isRainfall) {
-        if (isRainfall) return R.raw.light_rain_weather_video;
+    public static int getWeatherVideoResId(int code, boolean isNight) {
         switch (code) {
             case 0:
-                return R.raw.sun_weather_video;
+                // Clear sky
+                return isNight ? R.raw.night_weather_video : R.raw.sun_weather_video;
             case 1:
             case 2:
-                return R.raw.partially_cloud_weather_video;
+                // Mainly clear / partly cloudy
+                return isNight ? R.raw.night_cloud_weather_video : R.raw.partially_cloud_weather_video;
             case 3:
             case 45:
             case 48:
+                // Overcast / foggy — no dedicated night video, use cloud
                 return R.raw.cloud_weather_video;
             case 51:
             case 53:
@@ -121,7 +136,7 @@ public class WeatherUtils {
             case 99:
                 return R.raw.heavy_rain_weather_video;
             default:
-                return R.raw.sun_weather_video;
+                return isNight ? R.raw.night_weather_video : R.raw.sun_weather_video;
         }
     }
 

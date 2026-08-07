@@ -259,13 +259,22 @@ public class WeatherActivity extends AppCompatActivity {
             if (result instanceof Result.WeekendForecastSuccess) {
                 List<DailyForecast> forecasts = ((Result.WeekendForecastSuccess) result).getData();
                 if (forecasts != null && !forecasts.isEmpty()) {
+                    // Forecast disponibile: mostra la tabella
                     showWeekendForecast(forecasts);
                 } else {
+                    // Lista vuota: l'evento è già passato, nascondi la sezione forecast
                     hideWeather();
                     loadingScreen.hideLoadingScreen();
                 }
             } else if (result instanceof Result.Error) {
-                Log.e(TAG, "Error fetching weekend forecast: " + result.getError());
+                String errorMsg = result.getError();
+                if ("FORECAST_NOT_AVAILABLE_YET".equals(errorMsg)) {
+                    // 404: l'evento è troppo lontano nel futuro (oltre ~16 giorni)
+                    Log.d(TAG, "Weekend forecast not yet available — event too far in the future.");
+                } else {
+                    // Errore di rete o server: mostra messaggio generico
+                    Log.e(TAG, "Error fetching weekend forecast: " + errorMsg);
+                }
                 showWeatherNotAvailable();
                 loadingScreen.hideLoadingScreen();
             }

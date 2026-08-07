@@ -64,7 +64,7 @@ public class OpenMeteoWeatherDataSource implements WeatherDataSource {
         openMeteoAPIService.getWeatherForecast(
                 latitude,
                 longitude,
-                "temperature_2m,relative_humidity_2m,weather_code,surface_pressure,wind_speed_10m,wind_direction_10m,wind_gusts_10m",
+                "temperature_2m,relative_humidity_2m,weather_code,is_day,surface_pressure,wind_speed_10m,wind_direction_10m,wind_gusts_10m",
                 null,
                 "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max",
                 "best_match",
@@ -95,9 +95,12 @@ public class OpenMeteoWeatherDataSource implements WeatherDataSource {
                                 }
 
                                 int code = current.has("weather_code") ? current.get("weather_code").getAsInt() : 0;
-                                info.setWeatherCondition(WeatherUtils.getWeatherText(code, false));
-                                info.setWeatherIconResId(WeatherUtils.getWeatherIconResId(code, false));
-                                info.setWeatherVideoResId(WeatherUtils.getWeatherVideoResId(code, false));
+                                // is_day: 1 = daytime, 0 = nighttime at the circuit's local time
+                                boolean isNight = current.has("is_day") && current.get("is_day").getAsInt() == 0;
+                                Log.d(TAG, "Current weather code: " + code + ", isNight: " + isNight);
+                                info.setWeatherCondition(WeatherUtils.getWeatherText(code, isNight));
+                                info.setWeatherIconResId(WeatherUtils.getWeatherIconResId(code, isNight));
+                                info.setWeatherVideoResId(WeatherUtils.getWeatherVideoResId(code, isNight));
                             }
 
                             if (json.has("daily") && !json.get("daily").isJsonNull()) {
@@ -258,9 +261,20 @@ public class OpenMeteoWeatherDataSource implements WeatherDataSource {
                     } catch (Exception e) {
                         Log.e(TAG, "Error parsing weekend forecast response", e);
                     }
-                }
 
-                callback.onSuccess(dailyForecasts);
+                    callback.onSuccess(dailyForecasts);
+
+                } else if (response.code() == 404) {
+                    // 404: Open-Meteo cannot provide forecast for dates too far in the future
+                    // (typically beyond 16 days). This is distinct from a past-event empty response.
+                    Log.w(TAG, "Weekend forecast returned 404 — event date is too far in the future (beyond forecast range).");
+                    callback.onFailure(new Exception("FORECAST_NOT_AVAILABLE_YET"));
+
+                } else {
+                    // Other HTTP errors (5xx, etc.)
+                    Log.e(TAG, "Weekend forecast HTTP error: " + response.code());
+                    callback.onFailure(new Exception("HTTP " + response.code() + ": Failed to fetch weekend forecast"));
+                }
             }
 
             @Override
