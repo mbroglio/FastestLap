@@ -24,11 +24,11 @@ public class FastestLapApplication extends Application {
             Log.w(TAG, "Failed to enable Firebase persistence: " + e.getMessage());
         }
 
-        // Initialize centralized notification channels & periodic background sync for production
+        // Initialize centralized notification channels & FCM push notifications
         try {
-            com.the_coffe_coders.fastestlap.util.notification.AppNotificationManager.getInstance().createNotificationChannels(this);
+            com.the_coffe_coders.fastestlap.util.notification.AppNotificationManager.getInstance().initFCM(this);
             com.the_coffe_coders.fastestlap.util.notification.NotificationScheduler.scheduleNewsCheck(this);
-            Log.i(TAG, "Notification system & background news scheduler initialized.");
+            Log.i(TAG, "Notification system & FCM push notification apparatus initialized.");
         } catch (Exception e) {
             Log.e(TAG, "Failed to initialize notification system: " + e.getMessage());
         }

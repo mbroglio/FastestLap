@@ -18,12 +18,14 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.NewsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.news.News;
 import com.the_coffe_coders.fastestlap.source.news.NewsFetcher;
 import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.notification.AppNotificationManager;
 import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
@@ -71,7 +73,17 @@ public class NewsFragment extends Fragment {
 
         setupLoadingScreen(view);
 
-        languageFeed = isAppLanguageEnglish();
+        Context ctx = requireContext();
+        boolean hasPref = AppNotificationManager.getInstance().hasSavedNewsSourcePreference(ctx);
+        if (hasPref) {
+            languageFeed = AppNotificationManager.getInstance().isSavedNewsLanguageEnglish(ctx);
+            defaultIndex = AppNotificationManager.getInstance().getSavedNewsSourceIndex(ctx);
+        } else {
+            languageFeed = isAppLanguageEnglish();
+            defaultIndex = 0;
+            String defaultSource = languageFeed ? Constants.DEFAULT_ENG_SOURCE : Constants.DEFAULT_ITA_SOURCE;
+            AppNotificationManager.getInstance().saveNewsSourcePreference(ctx, languageFeed, defaultIndex, defaultSource);
+        }
 
         NetworkUtils networkUtils = new NetworkUtils(requireContext());
         networkUtils.observe(getViewLifecycleOwner(), isConnected -> {
@@ -120,7 +132,7 @@ public class NewsFragment extends Fragment {
         languageFeedSwitch.setChecked(languageFeed);
 
         try {
-            loadNews(languageFeedSwitch.isChecked(), recyclerView, true, 0);
+            loadNews(languageFeed, recyclerView, defaultIndex);
         } catch (Exception e) {
             Toast.makeText(requireContext(),
                     R.string.feed_error, Toast.LENGTH_SHORT).show();
@@ -129,8 +141,11 @@ public class NewsFragment extends Fragment {
 
         languageFeedSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             try {
-                loadNews(isChecked, recyclerView, true, 0);
+                languageFeed = isChecked;
                 defaultIndex = 0;
+                String sourceName = isChecked ? Constants.DEFAULT_ENG_SOURCE : Constants.DEFAULT_ITA_SOURCE;
+                AppNotificationManager.getInstance().saveNewsSourcePreference(requireContext(), isChecked, defaultIndex, sourceName);
+                loadNews(isChecked, recyclerView, defaultIndex);
             } catch (Exception e) {
                 Toast.makeText(requireContext(),
                         R.string.feed_error, Toast.LENGTH_SHORT).show();
@@ -140,17 +155,14 @@ public class NewsFragment extends Fragment {
 
     }
 
-    private void loadNews(boolean languageFeed, RecyclerView recyclerView, boolean defaultSource, int value) {
+    private void loadNews(boolean languageFeed, RecyclerView recyclerView, int value) {
         // Check if we have cached data
         boolean useCache = false;
         List<News> cachedNews = null;
 
         if (languageFeed) {
             // English news
-            if (defaultSource && value == cachedEnglishSourceIndex && cachedEnglishNews != null) {
-                useCache = true;
-                cachedNews = cachedEnglishNews;
-            } else if (!defaultSource && value == cachedEnglishSourceIndex && cachedEnglishNews != null) {
+            if (value == cachedEnglishSourceIndex && cachedEnglishNews != null) {
                 useCache = true;
                 cachedNews = cachedEnglishNews;
             }
@@ -180,18 +192,14 @@ public class NewsFragment extends Fragment {
             List<News> newsList = null;
             try {
                 if (languageFeed) {
-                    if (defaultSource) {
-                        newsList = NewsFetcher.fetchNewsEngSources(0);
-                        defaultIndex = 0;
-                    } else {
-                        newsList = NewsFetcher.fetchNewsEngSources(value);
-                        defaultIndex = value;
-                    }
+                    newsList = NewsFetcher.fetchNewsEngSources(value);
+                    defaultIndex = value;
                     // Cache English news
                     cachedEnglishNews = newsList;
-                    cachedEnglishSourceIndex = defaultSource ? 0 : value;
+                    cachedEnglishSourceIndex = value;
                 } else {
                     newsList = NewsFetcher.fetchNewsItSources();
+                    defaultIndex = 0;
                     // Cache Italian news
                     cachedItalianNews = newsList;
                 }
@@ -284,7 +292,7 @@ public class NewsFragment extends Fragment {
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
 
-        if (defaultIndex >= 0) {
+        if (defaultIndex >= 0 && defaultIndex < sources.size()) {
             listView.setItemChecked(defaultIndex, true);
         }
 
@@ -292,15 +300,17 @@ public class NewsFragment extends Fragment {
                 .setView(listView)
                 .create();
 
-
         listView.setOnItemClickListener((parent, view, position, id) -> {
-
             for (int i = 0; i < sources.size(); i++) {
                 listView.setItemChecked(i, i == position);
             }
 
+            defaultIndex = position;
+            String sourceName = sources.get(position);
+            AppNotificationManager.getInstance().saveNewsSourcePreference(requireContext(), languageFeedSwitch.isChecked(), position, sourceName);
+
             try {
-                loadNews(languageFeed, newsRecyclerView, false, position);
+                loadNews(languageFeedSwitch.isChecked(), newsRecyclerView, position);
             } catch (Exception e) {
                 Toast.makeText(requireContext(),
                         R.string.feed_error, Toast.LENGTH_SHORT).show();

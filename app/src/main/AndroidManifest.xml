@@ -120,9 +120,38 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <!-- Receiver for exact AlarmManager session reminders and reboot rescheduling -->
+        <receiver
+            android:name=".util.notification.SessionAlarmReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+        <!-- Firebase Cloud Messaging (FCM) Service for Push Notifications -->
+        <service
+            android:name=".util.notification.FastestLapFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <!-- Set default FCM notification icon, accent color, and channel -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_notification" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/md_theme_primary" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="fastestlap_news_v3" />
+
     </application>
 
 </manifest>
 
 
-
+

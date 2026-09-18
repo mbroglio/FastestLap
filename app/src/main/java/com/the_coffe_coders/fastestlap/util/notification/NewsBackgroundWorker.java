@@ -11,6 +11,7 @@ import androidx.work.WorkerParameters;
 
 import com.the_coffe_coders.fastestlap.domain.news.News;
 import com.the_coffe_coders.fastestlap.source.news.NewsFetcher;
+import com.the_coffe_coders.fastestlap.util.Constants;
 
 import java.util.List;
 
@@ -33,17 +34,22 @@ public class NewsBackgroundWorker extends Worker {
     public Result doWork() {
         Log.i(TAG, "NewsBackgroundWorker started execution in background.");
         try {
-            boolean isItalian = "it".equalsIgnoreCase(java.util.Locale.getDefault().getLanguage());
+            String sourceId = AppNotificationManager.getInstance().getSavedNewsSourceId(getApplicationContext());
             List<News> newsList;
-            if (isItalian) {
-                newsList = NewsFetcher.fetchNewsItSources();
-                if (newsList == null || newsList.isEmpty()) {
-                    newsList = NewsFetcher.fetchNewsEngSources(0);
-                }
-            } else {
+            if (Constants.NEWS_SOURCE_ID_AUTOSPORT.equalsIgnoreCase(sourceId)) {
                 newsList = NewsFetcher.fetchNewsEngSources(0);
                 if (newsList == null || newsList.isEmpty()) {
                     newsList = NewsFetcher.fetchNewsItSources();
+                }
+            } else if (Constants.NEWS_SOURCE_ID_CRASH.equalsIgnoreCase(sourceId)) {
+                newsList = NewsFetcher.fetchNewsEngSources(1);
+                if (newsList == null || newsList.isEmpty()) {
+                    newsList = NewsFetcher.fetchNewsItSources();
+                }
+            } else {
+                newsList = NewsFetcher.fetchNewsItSources();
+                if (newsList == null || newsList.isEmpty()) {
+                    newsList = NewsFetcher.fetchNewsEngSources(0);
                 }
             }
 
@@ -58,6 +64,13 @@ public class NewsBackgroundWorker extends Worker {
 
             SharedPreferences prefs = getApplicationContext().getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
             String lastNotifiedLink = prefs.getString(KEY_LAST_NOTIFIED_LINK, "");
+
+            // If this is the very first execution, initialize baseline link without notifying
+            if (lastNotifiedLink.isEmpty()) {
+                Log.i(TAG, "First background check initialized with baseline article: " + latestLink);
+                prefs.edit().putString(KEY_LAST_NOTIFIED_LINK, latestLink).apply();
+                return Result.success();
+            }
 
             // If this is a brand new article link we haven't notified yet
             if (latestLink != null && !latestLink.equals(lastNotifiedLink)) {

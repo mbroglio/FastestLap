@@ -115,5 +115,6 @@
     <color name="formula_2">#019DDA</color>
 
     <color name="junior_card_overlay">#66000000</color>
+    <color name="status_green">#4CAF50</color>
 
 </resources>

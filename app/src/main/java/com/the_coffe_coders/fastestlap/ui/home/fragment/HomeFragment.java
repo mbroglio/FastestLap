@@ -366,16 +366,24 @@ public class HomeFragment extends Fragment {
                         List<com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Session> sessions = race.getSessions();
                         if (sessions != null) {
                             for (com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Session s : sessions) {
-                                if (!s.isFinished() && s.getStartDateTime() != null) {
+                                if (s.getStartDateTime() != null) {
                                     try {
                                         long sessionStartTimeMillis = s.getStartDateTime()
                                                 .atZone(org.threeten.bp.ZoneId.systemDefault())
                                                 .toInstant()
                                                 .toEpochMilli();
+
+                                        String sessionId = s.getClass().getSimpleName();
+                                        if (s instanceof com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Practice) {
+                                            com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Practice practice =
+                                                    (com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Practice) s;
+                                            sessionId = practice.getPractice();
+                                        }
+
                                         com.the_coffe_coders.fastestlap.util.notification.NotificationScheduler.scheduleSessionReminder(
                                                 context,
                                                 race.getRaceName() != null ? race.getRaceName() : "Formula 1 Grand Prix",
-                                                s.getClass().getSimpleName(),
+                                                sessionId,
                                                 s.getStartingTime(),
                                                 sessionStartTimeMillis
                                         );

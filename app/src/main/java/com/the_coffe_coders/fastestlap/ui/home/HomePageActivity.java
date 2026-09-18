@@ -51,6 +51,54 @@ public class HomePageActivity extends AppCompatActivity {
 
         // Request notification permission for background news & session alerts on Android 13+
         AppNotificationManager.getInstance().requestNotificationPermission(this);
+
+        handleIncomingNotification(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        handleIncomingNotification(intent);
+    }
+
+    private void handleIncomingNotification(Intent intent) {
+        if (intent == null) return;
+
+        // 1. Check for news URL (from local news notification or FCM news payload)
+        String newsUrl = intent.getStringExtra("EXTRA_NEWS_URL");
+        if (newsUrl == null || newsUrl.trim().isEmpty()) {
+            newsUrl = intent.getStringExtra("newsUrl");
+            if (newsUrl == null || newsUrl.trim().isEmpty()) {
+                newsUrl = intent.getStringExtra("url");
+            }
+        }
+
+        if (newsUrl != null && !newsUrl.trim().isEmpty()) {
+            try {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, android.net.Uri.parse(newsUrl));
+                startActivity(browserIntent);
+            } catch (Exception e) {
+                Log.w(TAG, "Could not open news URL: " + e.getMessage());
+            }
+            return;
+        }
+
+        // 2. Check for target tab routing (from session or news notification)
+        String targetTab = intent.getStringExtra("EXTRA_TARGET_TAB");
+        if (targetTab == null) {
+            targetTab = intent.getStringExtra("type");
+        }
+
+        if ("news".equalsIgnoreCase(targetTab)) {
+            if (bottomNavigationView != null) {
+                bottomNavigationView.post(() -> bottomNavigationView.setSelectedItemId(R.id.newsFragment));
+            }
+        } else if ("sessions".equalsIgnoreCase(targetTab) || "session".equalsIgnoreCase(targetTab)) {
+            if (bottomNavigationView != null) {
+                bottomNavigationView.post(() -> bottomNavigationView.setSelectedItemId(R.id.racingFragment));
+            }
+        }
     }
 
 

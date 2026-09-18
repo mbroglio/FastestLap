@@ -8,11 +8,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
 import androidx.core.os.LocaleListCompat;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -26,6 +28,7 @@ import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.notification.AppNotificationManager;
 import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.service.SharedPreferencesUtils;
@@ -39,6 +42,7 @@ public class ProfileActivity extends AppCompatActivity {
     private CheckBox autoLoginCheckBox;
     private Button saveButton;
     private Button dismissButton;
+    private TextView notificationPermissionStatus;
     private boolean isCheckBoxChanged = false;
     private boolean initialAutoLoginState = false;
     private boolean isFromLogin;
@@ -137,6 +141,9 @@ public class ProfileActivity extends AppCompatActivity {
                 setLocale("it-IT");
             }
         }));
+
+        // Setup Notification & FCM testing section
+        setupNotificationSection();
 
         // Hide action buttons initially
         saveButton.setVisibility(View.INVISIBLE);
@@ -251,5 +258,38 @@ public class ProfileActivity extends AppCompatActivity {
         super.onResume();
         // Refresh preferences when activity resumes
         fetchAutoLoginPreference();
+        updateNotificationPermissionStatus();
+    }
+
+    private void setupNotificationSection() {
+        notificationPermissionStatus = findViewById(R.id.notification_permission_status);
+        Button testNotificationButton = findViewById(R.id.test_notification_button);
+
+        if (testNotificationButton != null) {
+            testNotificationButton.setOnClickListener(v ->
+                    AppNotificationManager.getInstance().sendTestNotification(this)
+            );
+        }
+
+        updateNotificationPermissionStatus();
+    }
+
+    private void updateNotificationPermissionStatus() {
+        if (notificationPermissionStatus == null) return;
+        boolean hasPermission = AppNotificationManager.getInstance().hasNotificationPermission(this);
+        if (hasPermission) {
+            notificationPermissionStatus.setText(R.string.notification_status_granted);
+            notificationPermissionStatus.setTextColor(ContextCompat.getColor(this, R.color.status_green));
+            notificationPermissionStatus.setOnClickListener(v ->
+                    AppNotificationManager.getInstance().openNotificationSettings(this)
+            );
+        } else {
+            notificationPermissionStatus.setText(R.string.notification_status_denied);
+            notificationPermissionStatus.setTextColor(ContextCompat.getColor(this, R.color.app_primary_red));
+            notificationPermissionStatus.setOnClickListener(v -> {
+                AppNotificationManager.getInstance().requestNotificationPermission(this);
+                AppNotificationManager.getInstance().openNotificationSettings(this);
+            });
+        }
     }
 }

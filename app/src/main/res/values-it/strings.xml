@@ -200,6 +200,15 @@
     <string name="news_channel_description">Notifiche per le ultime notizie di Formula 1</string>
     <string name="session_channel_name">Inizio Sessioni F1</string>
     <string name="session_channel_description">Avvisi all\'inizio di Prove Libere, Qualifiche o Gara</string>
-    <string name="session_starting_at">incontra o inizia alle</string>
+    <string name="session_starting_at">inizia alle</string>
+    <string name="general_channel_name">Comunicazioni FastestLap</string>
+    <string name="general_channel_description">Notifiche generali e aggiornamenti dall\'app FastestLap</string>
+    <string name="notification_settings_title">NOTIFICHE &amp; FCM</string>
+    <string name="notification_status_checking">Verifica permessi notifiche…</string>
+    <string name="notification_status_granted">● Notifiche: Attive</string>
+    <string name="notification_status_denied">● Notifiche: Disattivate (Tocca per abilitare)</string>
+    <string name="test_notification_btn">Notifica di Prova</string>
+    <string name="copy_fcm_token_btn">Copia Token FCM</string>
+    <string name="fcm_token_hint">Usa il token FCM copiato nella Console Firebase per testare l\'invio ad app chiusa.</string>
 
 </resources>

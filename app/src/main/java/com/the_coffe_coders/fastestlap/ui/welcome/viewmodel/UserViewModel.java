@@ -64,6 +64,12 @@ public class UserViewModel extends ViewModel {
         }
     }
 
+    public void saveUserNewsSourcePreferences(String newsSource, String newsSourceId, String idToken) {
+        if (idToken != null) {
+            userRepository.saveUserNewsSourcePreferences(newsSource, newsSourceId, idToken);
+        }
+    }
+
     public Task<Boolean> isAutoLoginEnabled(String idToken) {
         return userRepository.isAutoLoginEnabled(idToken);
     }

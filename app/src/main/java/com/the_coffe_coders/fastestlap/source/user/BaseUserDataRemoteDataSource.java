@@ -23,6 +23,8 @@ public abstract class BaseUserDataRemoteDataSource {
 
     public abstract void saveUserAutoLoginPreferences(String autoLogin, String idToken);
 
+    public abstract void saveUserNewsSourcePreferences(String newsSource, String newsSourceId, String idToken);
+
     public abstract Task<Boolean> isAutoLoginEnabled(String idToken);
 }
 

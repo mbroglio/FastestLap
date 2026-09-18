@@ -213,7 +213,7 @@ public class SplashActivity extends AppCompatActivity {
                 userViewModel.isAutoLoginEnabled(userViewModel.getLoggedUser().getIdToken()).addOnCompleteListener(task -> {
                     if (task.isSuccessful() && Boolean.TRUE.equals(task.getResult())) {
                         Log.d(TAG, "Auto login is enabled");
-                        NavigationUtils.navigateToHomePage(this);
+                        NavigationUtils.navigateToHomePage(this, getIntent() != null ? getIntent().getExtras() : null);
                         finish();
                     } else {
                         Log.d(TAG, "Auto login is not enabled");
@@ -222,7 +222,7 @@ public class SplashActivity extends AppCompatActivity {
                 });
             } else {
                 Log.e(TAG, "No internet connection");
-                NavigationUtils.navigateToHomePage(this);
+                NavigationUtils.navigateToHomePage(this, getIntent() != null ? getIntent().getExtras() : null);
                 finish();
             }
         } else {

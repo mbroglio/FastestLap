@@ -77,5 +77,6 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.rome)
     implementation(libs.work.runtime)
+    implementation(libs.firebase.messaging)
     annotationProcessor(libs.compiler)
 }

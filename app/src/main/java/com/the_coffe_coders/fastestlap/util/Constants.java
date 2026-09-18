@@ -15,6 +15,22 @@ public class Constants {
     public static final String SHARED_PREFERENCES_FAVORITE_TEAM = "team_favorite";
     public static final String SHARED_PREFERENCES_AUTO_LOGIN = "auto_login";
     public static final String SHARED_PREFERENCES_LAST_UPDATE = "last_update";
+    public static final String SHARED_PREFERENCES_NEWS_SOURCE = "news_source";
+    public static final String SHARED_PREFERENCES_NEWS_SOURCE_ID = "news_source_id";
+    public static final String SHARED_PREFERENCES_NEWS_LANGUAGE = "news_language";
+    public static final String SHARED_PREFERENCES_NEWS_INDEX = "news_source_index";
+
+    public static final String NEWS_SOURCE_ID_MOTORSPORT = "motorsport";
+    public static final String NEWS_SOURCE_ID_AUTOSPORT = "autosport";
+    public static final String NEWS_SOURCE_ID_CRASH = "crash";
+
+    public static final String FCM_TOPIC_ALL = "all";
+    public static final String FCM_TOPIC_SESSIONS = "sessions";
+    public static final String FCM_TOPIC_NEWS = "news";
+    public static final String FCM_TOPIC_NEWS_PREFIX = "news_";
+    public static final String FCM_TOPIC_NEWS_MOTORSPORT = "news_motorsport";
+    public static final String FCM_TOPIC_NEWS_AUTOSPORT = "news_autosport";
+    public static final String FCM_TOPIC_NEWS_CRASH = "news_crash";
     public static final int DATABASE_VERSION = 2;
     public static final String SAVED_DRIVERS_STANDINGS_DATABASE = "saved_drivers_standings";
     public static final int FRESH_TIMEOUT = 1000 * 60; // 1 minute in milliseconds

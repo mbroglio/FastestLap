@@ -44,7 +44,14 @@ import java.util.List;
 
 public class NavigationUtils {
     public static void navigateToHomePage(Context context) {
+        navigateToHomePage(context, null);
+    }
+
+    public static void navigateToHomePage(Context context, Bundle extras) {
         Intent intent = new Intent(context, HomePageActivity.class);
+        if (extras != null) {
+            intent.putExtras(extras);
+        }
         context.startActivity(intent);
     }
 

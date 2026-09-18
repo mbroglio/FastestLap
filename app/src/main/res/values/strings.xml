@@ -293,5 +293,14 @@
     <string name="session_channel_name">F1 Session Reminders</string>
     <string name="session_channel_description">Alerts when F1 Practice, Qualifying, or Race is starting</string>
     <string name="session_starting_at">is starting at</string>
+    <string name="general_channel_name">FastestLap Announcements</string>
+    <string name="general_channel_description">General notifications and updates from FastestLap</string>
+    <string name="notification_settings_title">NOTIFICATIONS &amp; FCM</string>
+    <string name="notification_status_checking">Checking notification permissions…</string>
+    <string name="notification_status_granted">● Notifications: Enabled</string>
+    <string name="notification_status_denied">● Notifications: Disabled (Tap to enable)</string>
+    <string name="test_notification_btn">Send Test Alert</string>
+    <string name="copy_fcm_token_btn">Copy FCM Token</string>
+    <string name="fcm_token_hint">Use copied FCM token in Firebase Console (Cloud Messaging) to test push when app is closed.</string>
 
 </resources>
