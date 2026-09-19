@@ -16,6 +16,7 @@ import android.media.AudioAttributes;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Looper;
+import android.os.PowerManager;
 import android.text.Html;
 import android.util.Log;
 
@@ -49,6 +50,10 @@ public class AppNotificationManager {
     public static final String PREF_NAME = "fastestlap_fcm_pref";
     public static final String KEY_FCM_TOKEN = "key_fcm_token";
 
+    private static final String PREF_NOTIFIED_NEWS = "fastestlap_notified_news_urls";
+    private static final String KEY_RECENT_NEWS_PREFIX = "recent_news_";
+    private static final long NEWS_DUPLICATE_WINDOW_MS = 2 * 60 * 60 * 1000L; // 2 hours
+
     private static AppNotificationManager instance;
 
     public AppNotificationManager() {
@@ -59,6 +64,69 @@ public class AppNotificationManager {
             instance = new AppNotificationManager();
         }
         return instance;
+    }
+
+    /**
+     * Checks if a news article was already notified recently (within 2 hours)
+     * to prevent duplicate notifications.
+     */
+    public boolean isDuplicateNews(Context context, String newsUrl, String title) {
+        if (context == null) return false;
+        String key = getNewsDeduplicationKey(newsUrl, title);
+        if (key == null || key.isEmpty()) return false;
+
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NOTIFIED_NEWS, Context.MODE_PRIVATE);
+        long lastTime = prefs.getLong(KEY_RECENT_NEWS_PREFIX + key, 0);
+        long now = System.currentTimeMillis();
+        return (now - lastTime) < NEWS_DUPLICATE_WINDOW_MS;
+    }
+
+    /**
+     * Records that a notification for a news article has been posted.
+     */
+    public void markNewsAsNotified(Context context, String newsUrl, String title) {
+        if (context == null) return;
+        String key = getNewsDeduplicationKey(newsUrl, title);
+        if (key == null || key.isEmpty()) return;
+
+        SharedPreferences prefs = context.getSharedPreferences(PREF_NOTIFIED_NEWS, Context.MODE_PRIVATE);
+        prefs.edit().putLong(KEY_RECENT_NEWS_PREFIX + key, System.currentTimeMillis()).apply();
+    }
+
+    /**
+     * Generates a deterministic deduplication key based on normalized article URL or alphanumeric title.
+     */
+    public String getNewsDeduplicationKey(String newsUrl, String title) {
+        if (newsUrl != null && !newsUrl.trim().isEmpty()) {
+            return String.valueOf(Math.abs(newsUrl.trim().toLowerCase(Locale.ROOT).hashCode()));
+        }
+        if (title != null && !title.trim().isEmpty()) {
+            String norm = title.replaceAll("[^a-zA-Z0-9]", "").toLowerCase(Locale.ROOT);
+            return String.valueOf(Math.abs(norm.hashCode()));
+        }
+        return null;
+    }
+
+    /**
+     * Wakes up the phone screen for ~4 seconds upon receiving a notification,
+     * illuminating the display even when the device is locked or in standby mode.
+     */
+    public void wakeUpScreen(Context context) {
+        if (context == null) return;
+        try {
+            PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+            if (powerManager != null && !powerManager.isInteractive()) {
+                @SuppressLint("InvalidWakeLockTag")
+                PowerManager.WakeLock wakeLock = powerManager.newWakeLock(
+                        PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP | PowerManager.ON_AFTER_RELEASE,
+                        "FastestLap:NotificationWakeLock"
+                );
+                wakeLock.acquire(4000);
+                Log.i(TAG, "💡 [WAKELOCK ACQUIRED]: Screen turned ON for incoming notification.");
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to wake up screen: " + e.getMessage());
+        }
     }
 
     /**
@@ -485,6 +553,16 @@ public class AppNotificationManager {
         String cleanTitle = cleanHtmlDescription(title != null ? title : context.getString(R.string.news_channel_name));
         String cleanSummary = cleanHtmlDescription(summary != null ? summary : "");
 
+        // 1. Deduplication check: drop duplicate news notifications received within 2 hours
+        if (isDuplicateNews(context, newsUrl, cleanTitle)) {
+            Log.i(TAG, "Duplicate news notification suppressed for: " + cleanTitle);
+            return;
+        }
+        markNewsAsNotified(context, newsUrl, cleanTitle);
+
+        // 2. Wake up device screen from standby / lock screen
+        wakeUpScreen(context);
+
         Intent intent = new Intent(context, HomePageActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         intent.putExtra("EXTRA_TARGET_TAB", "news");
@@ -492,9 +570,21 @@ public class AppNotificationManager {
             intent.putExtra("EXTRA_NEWS_URL", newsUrl);
         }
 
+        // Generate deterministic notification ID using normalized URL or title
+        int notificationId;
+        if (newsUrl != null && !newsUrl.trim().isEmpty()) {
+            notificationId = Math.abs(newsUrl.trim().toLowerCase(Locale.ROOT).hashCode());
+        } else {
+            String norm = cleanTitle.replaceAll("[^a-zA-Z0-9]", "").toLowerCase(Locale.ROOT);
+            notificationId = norm.isEmpty() ? Math.abs(cleanTitle.hashCode()) : Math.abs(norm.hashCode());
+        }
+        if (notificationId <= 0) {
+            notificationId = 1001;
+        }
+
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 context,
-                cleanTitle.hashCode(),
+                notificationId,
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
@@ -519,7 +609,7 @@ public class AppNotificationManager {
                 .setContentText(cleanSummary)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setSound(soundUri)
-                .setDefaults(NotificationCompat.DEFAULT_LIGHTS | NotificationCompat.DEFAULT_VIBRATE)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent);
@@ -535,9 +625,8 @@ public class AppNotificationManager {
             builder.setLargeIcon(android.graphics.BitmapFactory.decodeResource(context.getResources(), R.drawable.app_icon));
         }
 
-        int notificationId = cleanTitle.hashCode() != 0 ? cleanTitle.hashCode() : (int) System.currentTimeMillis();
         NotificationManagerCompat.from(context).notify(notificationId, builder.build());
-        Log.i(TAG, "News notification posted: " + cleanTitle);
+        Log.i(TAG, "News notification posted (ID: " + notificationId + "): " + cleanTitle);
     }
 
     /**
@@ -556,6 +645,9 @@ public class AppNotificationManager {
         String validRaceName = (raceName != null && !raceName.trim().isEmpty()) ? raceName : "Formula 1 Grand Prix";
         String validSessionName = (sessionName != null && !sessionName.trim().isEmpty()) ? sessionName : "Session";
         String validSessionTime = (sessionTime != null) ? sessionTime.trim() : "";
+
+        // Wake up screen for session reminder
+        wakeUpScreen(context);
 
         String localizedSessionName = getLocalizedSessionName(context, validSessionName);
         String contentText;
@@ -587,7 +679,7 @@ public class AppNotificationManager {
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(contentText))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setSound(sessionSoundUri)
-                .setDefaults(NotificationCompat.DEFAULT_LIGHTS | NotificationCompat.DEFAULT_VIBRATE)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setCategory(NotificationCompat.CATEGORY_EVENT)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setAutoCancel(true)
@@ -637,6 +729,9 @@ public class AppNotificationManager {
         String cleanTitle = cleanHtmlDescription(title != null ? title : context.getString(R.string.app_name));
         String cleanBody = cleanHtmlDescription(body != null ? body : "");
 
+        // Wake up screen for incoming general notification
+        wakeUpScreen(context);
+
         Intent intent = new Intent(context, HomePageActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         if (extraData != null) {
@@ -672,7 +767,7 @@ public class AppNotificationManager {
                 .setContentText(cleanBody)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setSound(soundUri)
-                .setDefaults(NotificationCompat.DEFAULT_LIGHTS | NotificationCompat.DEFAULT_VIBRATE)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent);
@@ -706,6 +801,15 @@ public class AppNotificationManager {
             openNotificationSettings(context);
             return;
         }
+
+        // Clear test article from deduplication cache so multiple test button clicks always display
+        try {
+            SharedPreferences prefs = context.getSharedPreferences(PREF_NOTIFIED_NEWS, Context.MODE_PRIVATE);
+            String testKey = getNewsDeduplicationKey("https://www.formula1.com", "🏎️ FastestLap - Notifica News Test");
+            if (testKey != null) {
+                prefs.edit().remove(KEY_RECENT_NEWS_PREFIX + testKey).apply();
+            }
+        } catch (Exception ignored) {}
 
         // 1. Trigger test news notification
         showNewsNotification(

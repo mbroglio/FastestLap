@@ -58,6 +58,8 @@ public class SessionAlarmReceiver extends BroadcastReceiver {
         Log.i(TAG, "   🕒 Inizio         : " + sessionTime);
         Log.i(TAG, "==================================================");
 
+        AppNotificationManager.getInstance().wakeUpScreen(context);
+
         AppNotificationManager.getInstance().showSessionNotification(
                 context.getApplicationContext(),
                 raceName,

@@ -114,27 +114,17 @@ async function executeNewsCheckAndPush(db, messaging) {
 
             const payload = {
                 topic: source.topic,
-                notification: {
-                    title: "🏎️ " + title,
-                    body: description
-                },
                 data: {
                     type: "news",
                     sourceId: source.id,
                     sourceName: source.name,
-                    title: title,
+                    title: "🏎️ " + title,
                     body: description,
                     newsUrl: link,
-                    imageUrl: imageUrl
+                    imageUrl: imageUrl || ""
                 },
                 android: {
-                    priority: "high",
-                    notification: {
-                        channelId: "fastestlap_news_v3",
-                        icon: "ic_notification",
-                        color: "#9D0006",
-                        sound: "team_radio"
-                    }
+                    priority: "high"
                 }
             };
 
@@ -238,24 +228,16 @@ async function executeSessionCheckAndPush(db, messaging) {
 
                 const payload = {
                     topic: "sessions",
-                    notification: {
-                        title: `🏁 ${raceName}`,
-                        body: `${s.name} sta per iniziare! (ore ${timeStr})`
-                    },
                     data: {
                         type: "session",
                         raceName: raceName,
                         sessionName: s.name,
-                        sessionTime: timeStr
+                        sessionTime: timeStr,
+                        title: `🏁 ${raceName}`,
+                        body: `${s.name} sta per iniziare! (ore ${timeStr})`
                     },
                     android: {
-                        priority: "high",
-                        notification: {
-                            channelId: "fastestlap_sessions_v3",
-                            icon: "ic_notification",
-                            color: "#9D0006",
-                            sound: "team_radio"
-                        }
+                        priority: "high"
                     }
                 };
 
@@ -285,25 +267,17 @@ async function sendTestNotification(messaging, topic = "news_motorsport", custom
 
     const payload = {
         topic: topic,
-        notification: {
-            title: title,
-            body: body
-        },
         data: {
             type: isSession ? "session" : "news",
+            title: title,
+            body: body,
             raceName: isSession ? "Gran Premio di Test" : "",
             sessionName: isSession ? "Qualifiche" : "",
             sessionTime: isSession ? "15:00" : "",
             newsUrl: !isSession ? "https://www.formula1.com" : ""
         },
         android: {
-            priority: "high",
-            notification: {
-                channelId: isSession ? "fastestlap_sessions_v3" : "fastestlap_news_v3",
-                icon: "ic_notification",
-                color: "#9D0006",
-                sound: "team_radio"
-            }
+            priority: "high"
         }
     };
 

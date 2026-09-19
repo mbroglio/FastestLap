@@ -48,6 +48,9 @@ public class FastestLapFirebaseMessagingService extends FirebaseMessagingService
         Log.i(TAG, "   Da: " + remoteMessage.getFrom());
         Log.i(TAG, "==================================================");
 
+        // Turn on the device screen immediately upon push delivery
+        AppNotificationManager.getInstance().wakeUpScreen(this);
+
         String title = null;
         String body = null;
         String imageUrl = null;

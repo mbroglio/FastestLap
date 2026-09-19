@@ -27,7 +27,7 @@ public class FastestLapApplication extends Application {
         // Initialize centralized notification channels & FCM push notifications
         try {
             com.the_coffe_coders.fastestlap.util.notification.AppNotificationManager.getInstance().initFCM(this);
-            com.the_coffe_coders.fastestlap.util.notification.NotificationScheduler.scheduleNewsCheck(this);
+            com.the_coffe_coders.fastestlap.util.notification.NotificationScheduler.cancelNewsCheck(this);
             Log.i(TAG, "Notification system & FCM push notification apparatus initialized.");
         } catch (Exception e) {
             Log.e(TAG, "Failed to initialize notification system: " + e.getMessage());

@@ -73,6 +73,20 @@ public class NotificationScheduler {
     }
 
     /**
+     * Cancels any active periodic background news sync on WorkManager,
+     * as news notifications are now pushed centrally and in real-time by Firebase Cloud Functions.
+     */
+    public static void cancelNewsCheck(Context context) {
+        if (context == null) return;
+        try {
+            WorkManager.getInstance(context).cancelUniqueWork(PERIODIC_NEWS_WORK_NAME);
+            Log.i(TAG, "Local periodic NewsBackgroundWorker cancelled in favor of FCM Cloud Function.");
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to cancel periodic news check: " + e.getMessage());
+        }
+    }
+
+    /**
      * Schedules an exact reminder notification for an upcoming F1 session (15 minutes before start)
      * using AlarmManager setExactAndAllowWhileIdle to guarantee on-time delivery even when the app
      * is terminated and the device is in deep Doze mode.
