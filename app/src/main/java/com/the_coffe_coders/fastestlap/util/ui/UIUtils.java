@@ -6,7 +6,11 @@ import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.os.Build;
 import android.util.Log;
+import androidx.core.graphics.ColorUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -639,9 +643,98 @@ public class UIUtils {
                 ", Total Races: " + totalRaces + ", Wins: " + totalWins + ", Podiums: " + totalPodiums);
     }
 
-    // SYSTEM_UI_FLAG_FULLSCREEN: Hide the status bar
-    // SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN: Let the layout expand into status bar
-    // SYSTEM_UI_FLAG_LAYOUT_STABLE: avoid abrupt layout changes during toggling of status and navigation bars
-    // SYSTEM_UI_FLAG_HIDE_NAVIGATION: Hide the navigation bar
-    // SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION: Let the layout expand into navigation bar
+    /**
+     * Styles a favorite driver or constructor card with:
+     * - A subtle, gentle-on-the-eyes semi-transparent team color tint as background (composited over dark surface)
+     * - A ranking button with a darker, richer tone of the team color and clear elevation shadow
+     *
+     * @param context   The context
+     * @param cardView  The outer MaterialCardView of the favorite item
+     * @param rankCard  The ranking MaterialCardView inside the card (optional)
+     * @param teamId    The team/constructor ID (e.g. "ferrari", "mclaren")
+     */
+    public static void styleFavoriteCard(Context context, MaterialCardView cardView, MaterialCardView rankCard, String teamId) {
+        if (context == null || cardView == null) return;
+        try {
+            int teamColorRes = R.color.app_primary_red;
+            if (teamId != null) {
+                String normalized = teamId.toLowerCase().trim();
+                Integer col = Constants.TEAM_COLOR.get(normalized);
+                if (col == null) {
+                    if (normalized.contains("red_bull") || normalized.contains("redbull")) {
+                        col = Constants.TEAM_COLOR.get("red_bull");
+                    } else if (normalized.contains("mclaren")) {
+                        col = Constants.TEAM_COLOR.get("mclaren");
+                    } else if (normalized.contains("ferrari")) {
+                        col = Constants.TEAM_COLOR.get("ferrari");
+                    } else if (normalized.contains("mercedes")) {
+                        col = Constants.TEAM_COLOR.get("mercedes");
+                    } else if (normalized.contains("aston")) {
+                        col = Constants.TEAM_COLOR.get("aston_martin");
+                    } else if (normalized.contains("alpine")) {
+                        col = Constants.TEAM_COLOR.get("alpine");
+                    } else if (normalized.contains("haas")) {
+                        col = Constants.TEAM_COLOR.get("haas");
+                    } else if (normalized.contains("sauber") || normalized.contains("kick")) {
+                        col = Constants.TEAM_COLOR.get("sauber");
+                    } else if (normalized.contains("williams")) {
+                        col = Constants.TEAM_COLOR.get("williams");
+                    } else if (normalized.contains("rb") || normalized.contains("racing_bulls") || normalized.contains("toro_rosso")) {
+                        col = Constants.TEAM_COLOR.get("rb");
+                    } else if (normalized.contains("audi")) {
+                        col = Constants.TEAM_COLOR.get("audi");
+                    } else if (normalized.contains("cadillac")) {
+                        col = Constants.TEAM_COLOR.get("cadillac");
+                    }
+                }
+                if (col != null) {
+                    teamColorRes = col;
+                }
+            }
+            int teamColor = ContextCompat.getColor(context, teamColorRes);
+            int darkBase = ContextCompat.getColor(context, R.color.card_surface_dark);
+
+            // Vibrant semi-transparent team color tint: ~33% alpha (84 / 255) composited over dark base
+            int softCardBg = ColorUtils.compositeColors(ColorUtils.setAlphaComponent(teamColor, 84), darkBase);
+            cardView.setCardBackgroundColor(ColorStateList.valueOf(softCardBg));
+
+            // Illuminated border in the team color to make the card edges vivid and sleek
+            cardView.setStrokeColor(ColorStateList.valueOf(ColorUtils.setAlphaComponent(teamColor, 120)));
+            cardView.setStrokeWidth((int) (context.getResources().getDisplayMetrics().density * 1.5f));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                cardView.setOutlineSpotShadowColor(teamColor);
+                cardView.setOutlineAmbientShadowColor(ColorUtils.setAlphaComponent(teamColor, 60));
+            }
+
+            // Ensure card does not clip children so inner elevation shadows render freely
+            cardView.setClipChildren(false);
+            cardView.setClipToPadding(false);
+
+            // Ranking button: a rich, vibrant dark tone (45% black blend) with prominent elevation & colored shadow
+            if (rankCard != null) {
+                // Ensure parent containers do not clip rank card shadow
+                android.view.ViewParent p = rankCard.getParent();
+                while (p instanceof ViewGroup && p != cardView) {
+                    ((ViewGroup) p).setClipChildren(false);
+                    ((ViewGroup) p).setClipToPadding(false);
+                    p = p.getParent();
+                }
+
+                int darkRankColor = ColorUtils.blendARGB(teamColor, Color.BLACK, 0.45f);
+                rankCard.setCardBackgroundColor(ColorStateList.valueOf(darkRankColor));
+                rankCard.setCardElevation(context.getResources().getDisplayMetrics().density * 5);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    rankCard.setOutlineSpotShadowColor(Color.BLACK);
+                    rankCard.setOutlineAmbientShadowColor(ColorUtils.setAlphaComponent(teamColor, 120));
+                }
+            }
+        } catch (Exception e) {
+            Log.e("UIUtils.styleFavoriteCard", "Error styling favorite card: " + e.getMessage());
+        }
+    }
+
+    public static void styleFavoriteCard(Context context, MaterialCardView cardView, MaterialCardView rankCard, ImageView watermarkView, String teamId) {
+        styleFavoriteCard(context, cardView, rankCard, teamId);
+    }
 }

@@ -10,8 +10,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -26,6 +24,7 @@ import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.ui.AppAnimationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
@@ -97,68 +96,36 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void showIntroScreen() {
-        Animation logoAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_in);
-        Animation nameAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_up);
-
-        appLogo.setVisibility(View.VISIBLE);
-        appLogo.startAnimation(logoAnimation);
-
-        // 1. Audio rombo motore F1 durante l'animazione di ingresso del logo
-        if (logoMediaPlayer != null) {
-            try {
-                logoMediaPlayer.start();
-            } catch (Exception e) {
-                Log.e(TAG, "Error starting logoMediaPlayer: " + e.getMessage());
-            }
-        }
-
-        // 2. Attesa completamento animazione logo prima di far scorrere il nome app
-        handler.postDelayed(() -> {
-            if (isFinishing() || isDestroyed()) return;
-
-            appName.setVisibility(View.VISIBLE);
-            appName.startAnimation(nameAnimation);
-
-            // 3. Attesa completamento animazione nome app (1000ms) prima dei credits a macchina da scrivere
-            handler.postDelayed(() -> {
-                if (isFinishing() || isDestroyed()) return;
-
-                String creditsText = getString(R.string.app_credits);
-                appCredits.setVisibility(View.VISIBLE);
-                appCredits.setText("");
-
-                int delay = 90; // Rallentato a 90ms per un effetto macchina da scrivere ritmico e realistico
-                for (int i = 0; i < creditsText.length(); i++) {
-                    final int index = i;
-                    handler.postDelayed(() -> {
-                        if (isFinishing() || isDestroyed()) return;
-                        appCredits.setText(creditsText.substring(0, index + 1));
-
-                        char c = creditsText.charAt(index);
-                        if (c != ' ' && soundPool != null && soundLoaded) {
-                            try {
-                                soundPool.play(soundId, 0.8f, 0.8f, 1, 0, 1.0f);
-                            } catch (Exception e) {
-                                Log.e(TAG, "Error playing soundPool: " + e.getMessage());
-                            }
+        AppAnimationUtils.animateIntroSequence(
+                appLogo,
+                appName,
+                appCredits,
+                getString(R.string.app_credits),
+                progressIndicator,
+                () -> {
+                    if (logoMediaPlayer != null) {
+                        try {
+                            logoMediaPlayer.start();
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error starting logoMediaPlayer: " + e.getMessage());
                         }
-                    }, (long) delay * i);
-                }
-
-                // 4. Al termine della digitazione, mostra il progress indicator prima della transizione
-                long totalTypingTime = (long) creditsText.length() * delay;
-                handler.postDelayed(() -> {
+                    }
+                },
+                (index, letter) -> {
+                    if (letter != ' ' && soundPool != null && soundLoaded) {
+                        try {
+                            soundPool.play(soundId, 0.8f, 0.8f, 1, 0, 1.0f);
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error playing soundPool: " + e.getMessage());
+                        }
+                    }
+                },
+                () -> {
                     if (isFinishing() || isDestroyed()) return;
-
-                    progressIndicator.setVisibility(View.VISIBLE);
-                    handler.postDelayed(() -> {
-                        if (isFinishing() || isDestroyed()) return;
-                        NavigationUtils.navigateToWelcomePage(this);
-                        finish();
-                    }, 800);
-                }, totalTypingTime + 200);
-            }, 1000);
-        }, 1800);
+                    NavigationUtils.navigateToWelcomePage(this);
+                    finish();
+                }
+        );
     }
 
     public void showForAutoLogin() {
@@ -178,6 +145,7 @@ public class SplashActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
         handler.removeCallbacksAndMessages(null);
+        AppAnimationUtils.cancelAnimations(appLogo, appName, appCredits, progressIndicator);
         stopMediaPlayers();
     }
 
@@ -185,6 +153,7 @@ public class SplashActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         handler.removeCallbacksAndMessages(null);
+        AppAnimationUtils.cancelAnimations(appLogo, appName, appCredits, progressIndicator);
         stopMediaPlayers();
     }
 
@@ -213,8 +182,24 @@ public class SplashActivity extends AppCompatActivity {
                 userViewModel.isAutoLoginEnabled(userViewModel.getLoggedUser().getIdToken()).addOnCompleteListener(task -> {
                     if (task.isSuccessful() && Boolean.TRUE.equals(task.getResult())) {
                         Log.d(TAG, "Auto login is enabled");
-                        NavigationUtils.navigateToHomePage(this, getIntent() != null ? getIntent().getExtras() : null);
-                        finish();
+                        String fullAppName = getString(R.string.app_name);
+                        AppAnimationUtils.animateTextTypingWithTremor(
+                                appName,
+                                fullAppName,
+                                80,
+                                (index, letter) -> {
+                                    if (letter != ' ' && soundPool != null && soundLoaded) {
+                                        try {
+                                            soundPool.play(soundId, 0.7f, 0.7f, 1, 0, 1.0f);
+                                        } catch (Exception ignored) {}
+                                    }
+                                },
+                                () -> {
+                                    if (isFinishing() || isDestroyed()) return;
+                                    NavigationUtils.navigateToHomePage(this, getIntent() != null ? getIntent().getExtras() : null);
+                                    finish();
+                                }
+                        );
                     } else {
                         Log.d(TAG, "Auto login is not enabled");
                         showIntroScreen();

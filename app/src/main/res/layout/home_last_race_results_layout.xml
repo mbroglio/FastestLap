@@ -1,275 +1,322 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/last_race_card"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/screen_background_color"
-    android:orientation="horizontal">
+    app:cardBackgroundColor="@color/card_surface_elevated"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="3dp"
+    app:strokeColor="@color/subtle_white_border"
+    app:strokeWidth="1dp">
 
-    <LinearLayout
-        android:id="@+id/title_layout"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:paddingStart="14dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="14dp"
+        android:paddingBottom="12dp">
 
-        <LinearLayout
-            android:id="@+id/last_race_name_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:layout_weight="0.2"
-            android:background="@drawable/bottom_right_stroke">
-
-            <TextView
-                android:id="@+id/last_race_name"
-                style="@style/t20BoldWhite"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="5dp"
-                android:gravity="center"
-                android:maxLines="1"
-                android:text="@string/not_found">
-
-            </TextView>
-
-        </LinearLayout>
-
+        <!-- Category Tag: ULTIMA GARA -->
         <TextView
             android:id="@+id/last_race"
             style="@style/t12UpperCaseBoldWhiteLineLimited"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="5dp"
-            android:layout_weight="0.8"
-            android:gravity="center"
-            android:maxLines="2"
-            android:text="@string/last_race" />
-
-    </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/track_info"
-        android:layout_width="170dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/title_layout"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:orientation="vertical">
-
-        <ImageView
-            android:id="@+id/last_race_track_outline"
-            android:layout_width="120dp"
-            android:layout_height="100dp"
-            android:layout_centerHorizontal="true"
-            android:importantForAccessibility="no">
-
-        </ImageView>
-
-        <TextView
-            android:id="@+id/last_race_date"
-            style="@style/t12RegularWhiteLineLimited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/last_race_track_outline"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="5dp"
-            android:text="@string/not_found">
+            android:text="@string/last_race"
+            android:textColor="@color/app_primary_red"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        </TextView>
-
-        <TextView
-            android:id="@+id/last_race_month"
-            style="@style/t14BoldWhiteLineLimited"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/last_race_date"
-            android:layout_centerHorizontal="true"
-            android:text="@string/not_found">
-
-        </TextView>
-
-        <LinearLayout
-            android:id="@+id/track_separator"
-            android:layout_width="3dp"
-            android:layout_height="match_parent"
-            android:layout_alignTop="@id/last_race_track_outline"
-            android:layout_alignBottom="@id/last_race_month"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_toEndOf="@id/last_race_track_outline"
-            android:background="@color/white"
-            android:orientation="horizontal">
-
-        </LinearLayout>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/title_layout"
-        android:layout_toEndOf="@id/track_info">
-
+        <!-- Round Badge: ROUND X -->
         <TextView
             android:id="@+id/last_race_round"
             style="@style/t12BoldWhiteLineLimited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerInParent="true"
+            android:text="@string/not_found"
+            android:textColor="@color/timer_gray"
+            app:layout_constraintBaseline_toBaselineOf="@id/last_race"
+            app:layout_constraintEnd_toEndOf="parent" />
+
+        <!-- Nation Flag: Smussata, sotto il round -->
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/last_race_flag"
+            android:layout_width="42dp"
+            android:layout_height="28dp"
             android:layout_marginTop="5dp"
-            android:text="@string/not_found">
+            android:importantForAccessibility="no"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="@id/last_race_round"
+            app:layout_constraintStart_toStartOf="@id/last_race_round"
+            app:layout_constraintTop_toBottomOf="@id/last_race_round"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.FastestLap.RoundedFlag"
+            app:strokeColor="@color/subtle_white_border"
+            app:strokeWidth="1dp" />
 
-        </TextView>
+        <!-- Grand Prix Name -->
+        <TextView
+            android:id="@+id/last_race_name"
+            style="@style/t18BoldWhite"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="10dp"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:text="@string/not_found"
+            app:layout_constraintBottom_toBottomOf="@id/last_race_flag"
+            app:layout_constraintEnd_toStartOf="@id/last_race_flag"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/last_race" />
 
+        <!-- Horizontal separator -->
+        <View
+            android:id="@+id/header_divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/subtle_white_border"
+            app:layout_constraintTop_toBottomOf="@id/last_race_flag" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_vertical_split"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.38" />
+
+        <!-- Vertical subtle divider between Track and Podium -->
+        <View
+            android:id="@+id/track_separator"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@color/subtle_white_border"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline_vertical_split"
+            app:layout_constraintTop_toBottomOf="@id/header_divider" />
+
+        <!-- Track Outline Image -->
+        <ImageView
+            android:id="@+id/last_race_track_outline"
+            android:layout_width="0dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:importantForAccessibility="no"
+            android:scaleType="fitCenter"
+            app:layout_constraintEnd_toStartOf="@id/guideline_vertical_split"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/header_divider" />
+
+        <!-- Date block below track -->
+        <LinearLayout
+            android:id="@+id/date_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/guideline_vertical_split"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/last_race_track_outline">
+
+            <TextView
+                android:id="@+id/last_race_date"
+                style="@style/t16BoldWhite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/not_found" />
+
+            <TextView
+                android:id="@+id/last_race_month"
+                style="@style/t12BoldWhiteLineLimited"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="@string/not_found"
+                android:textColor="@color/timer_gray" />
+        </LinearLayout>
+
+        <!-- Right Side: Podium -->
         <LinearLayout
             android:id="@+id/race_podium"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/last_race_round"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="7dp"
-            android:layout_marginEnd="20dp"
-            android:orientation="vertical">
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:orientation="vertical"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/track_separator"
+            app:layout_constraintTop_toBottomOf="@id/header_divider">
 
+            <!-- P1: Gold Badge -->
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <TextView
-                    style="@style/t12RegularWhiteLineLimited"
-                    android:layout_width="10dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/_1_numeric">
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    app:cardBackgroundColor="@color/yellow"
+                    app:cardCornerRadius="6dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
 
-                </TextView>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:text="1"
+                        android:textColor="@color/black"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </com.google.android.material.card.MaterialCardView>
 
                 <TextView
                     android:id="@+id/last_race_first"
-                    style="@style/t12RegularWhiteLineLimited"
+                    style="@style/t12BoldWhiteLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:text="@string/not_found">
-
-                </TextView>
-
+                    android:layout_marginStart="8dp"
+                    android:text="Andrea Kimi Antonelli"
+                    android:textColor="@color/white" />
             </LinearLayout>
 
+            <!-- P2: Silver Badge -->
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center"
+                android:layout_marginTop="6dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <TextView
-                    style="@style/t12RegularWhiteLineLimited"
-                    android:layout_width="10dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/_2_numeric">
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    app:cardBackgroundColor="#D1D5DB"
+                    app:cardCornerRadius="6dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
 
-                </TextView>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:text="2"
+                        android:textColor="@color/black"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </com.google.android.material.card.MaterialCardView>
 
                 <TextView
                     android:id="@+id/last_race_second"
                     style="@style/t12RegularWhiteLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:text="@string/not_found">
-
-                </TextView>
-
+                    android:layout_marginStart="8dp"
+                    android:text="@string/not_found"
+                    android:textColor="#E0E0E0" />
             </LinearLayout>
 
+            <!-- P3: Bronze Badge -->
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                android:gravity="center"
+                android:layout_marginTop="6dp"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
-                <TextView
-                    style="@style/t12RegularWhiteLineLimited"
-                    android:layout_width="10dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="@string/_3_numeric">
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="22dp"
+                    android:layout_height="22dp"
+                    app:cardBackgroundColor="#CD7F32"
+                    app:cardCornerRadius="6dp"
+                    app:cardElevation="0dp"
+                    app:strokeWidth="0dp">
 
-                </TextView>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:includeFontPadding="false"
+                        android:text="3"
+                        android:textColor="@color/white"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </com.google.android.material.card.MaterialCardView>
 
                 <TextView
                     android:id="@+id/last_race_third"
                     style="@style/t12RegularWhiteLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:text="@string/not_found">
-
-                </TextView>
-
+                    android:layout_marginStart="8dp"
+                    android:text="@string/not_found"
+                    android:textColor="#E0E0E0" />
             </LinearLayout>
-
         </LinearLayout>
 
+        <!-- Past Event Results Button -->
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/past_event_result"
             android:layout_width="wrap_content"
-            android:layout_height="45dp"
-            android:layout_below="@id/race_podium"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center"
+            android:layout_height="36dp"
             android:layout_marginTop="10dp"
-            android:layout_marginBottom="5dp"
+            android:layout_marginBottom="4dp"
             android:clickable="true"
             android:focusable="true"
+            android:outlineAmbientShadowColor="#40E10600"
+            android:outlineSpotShadowColor="@color/app_primary_red"
             app:cardBackgroundColor="@color/app_primary_red"
-            app:strokeColor="@color/black"
-            app:strokeWidth="3dp">
+            app:cardCornerRadius="10dp"
+            app:cardElevation="3dp"
+            app:rippleColor="#33FFFFFF"
+            app:strokeWidth="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/race_podium"
+            app:layout_constraintStart_toStartOf="@id/race_podium"
+            app:layout_constraintTop_toBottomOf="@id/race_podium">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp">
 
                 <TextView
                     android:id="@+id/raceResult"
-                    style="@style/t12UpperCaseBoldBlackLineLimited"
+                    style="@style/t12UpperCaseBoldWhiteLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/medium_margin"
                     android:maxLines="1"
-                    android:text="@string/result">
-
-                </TextView>
+                    android:text="@string/result"
+                    android:textColor="@color/white" />
 
                 <ImageView
-                    android:layout_width="@dimen/icon_size"
-                    android:layout_height="@dimen/icon_size"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="16dp"
-                    android:layout_toEndOf="@id/raceResult"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:layout_marginStart="6dp"
                     android:importantForAccessibility="no"
-                    app:srcCompat="@drawable/checkered_flag">
-
-                </ImageView>
-
-            </RelativeLayout>
-
+                    app:srcCompat="@drawable/checkered_flag" />
+            </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</RelativeLayout>
+</com.google.android.material.card.MaterialCardView>

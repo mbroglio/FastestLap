@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/season_ended"
     android:layout_width="match_parent"
     android:layout_height="110dp"
-    android:background="@drawable/checkered_pattern">
+    app:cardBackgroundColor="@color/card_surface_elevated"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="3dp"
+    app:strokeColor="@color/subtle_white_border"
+    app:strokeWidth="1dp">
 
-    <TextView
-        android:id="@+id/season_ended"
-        style="@style/t25UpperCaseBoldWhite"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="@string/season_ended">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/checkered_pattern">
 
-    </TextView>
+        <TextView
+            style="@style/t25UpperCaseBoldWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/season_ended" />
 
-</RelativeLayout>
+    </RelativeLayout>
+
+</com.google.android.material.card.MaterialCardView>

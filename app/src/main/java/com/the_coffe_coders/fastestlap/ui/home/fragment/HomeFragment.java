@@ -207,7 +207,7 @@ public class HomeFragment extends Fragment {
         // Initialize handlers once or update view binding on back-stack return
         if (lastRaceHandler == null) {
             lastRaceHandler = new LastRaceHandler(
-                    this, view, weeklyRaceViewModel, trackViewModel,
+                    this, view, weeklyRaceViewModel, trackViewModel, nationViewModel,
                     raceResultViewModel, networkLiveData, this::markCardLoaded
             );
         } else {

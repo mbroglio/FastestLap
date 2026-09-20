@@ -35,7 +35,11 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="@dimen/medium_margin">
 
                     <include
                         android:id="@+id/last_race_results"
@@ -59,17 +63,19 @@
 
                 </FrameLayout>
 
-                <LinearLayout
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:background="@color/white">
-
-                </LinearLayout>
+                    android:layout_height="1dp"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_marginEnd="@dimen/medium_margin"
+                    android:background="@color/subtle_white_border" />
 
                 <FrameLayout
                     android:id="@+id/timer_card_countdown"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
                     android:layout_marginTop="@dimen/medium_margin"
                     android:layout_marginBottom="@dimen/medium_margin"
                     android:clickable="true"
@@ -89,32 +95,37 @@
                     android:layout_marginTop="@dimen/medium_margin"
                     android:layout_marginBottom="@dimen/medium_margin"
                     android:text="@string/updating_with_dots"
-                    android:visibility="gone">
+                    android:visibility="gone" />
 
-                </TextView>
-
-                <LinearLayout
+                <View
                     android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:background="@color/white">
-
-                </LinearLayout>
+                    android:layout_height="1dp"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_marginEnd="@dimen/medium_margin"
+                    android:background="@color/subtle_white_border" />
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_favorite_driver"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginStart="@dimen/medium_margin"
                     android:layout_marginTop="@dimen/medium_margin"
                     android:layout_marginEnd="@dimen/medium_margin"
-                    app:cardBackgroundColor="@color/timer_gray"
-                    app:strokeColor="@color/black"
-                    app:strokeWidth="3dp">
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    app:cardBackgroundColor="@color/card_surface_dark"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="3dp"
+                    app:strokeColor="@color/subtle_white_border"
+                    app:strokeWidth="1dp">
 
                     <FrameLayout
                         android:id="@+id/favorite_driver_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:clipChildren="false"
+                        android:clipToPadding="false">
 
                         <include
                             android:id="@+id/favorite_driver"
@@ -136,20 +147,28 @@
                 </com.google.android.material.card.MaterialCardView>
 
                 <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/card_favorite_constructor"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginStart="@dimen/medium_margin"
                     android:layout_marginTop="@dimen/medium_margin"
                     android:layout_marginEnd="@dimen/medium_margin"
-                    app:cardBackgroundColor="@color/timer_gray"
-                    app:strokeColor="@color/black"
-                    app:strokeWidth="3dp">
+                    android:layout_marginBottom="@dimen/medium_margin"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    app:cardBackgroundColor="@color/card_surface_dark"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="3dp"
+                    app:strokeColor="@color/subtle_white_border"
+                    app:strokeWidth="1dp">
 
                     <FrameLayout
                         android:id="@+id/favourite_constructor_layout"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:clipChildren="false"
+                        android:clipToPadding="false">
 
                         <include
                             android:id="@+id/favorite_constructor"

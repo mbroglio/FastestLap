@@ -6,9 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+
     <TextView
         android:id="@+id/favourite_constructor_name"
-        style="@style/t18BoldBlack"
+        style="@style/t18BoldWhite"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
@@ -44,9 +45,12 @@
         android:layout_marginBottom="5dp"
         android:clickable="true"
         android:focusable="true"
-        app:cardBackgroundColor="@color/timer_gray_dark"
-        app:strokeColor="@color/black"
-        app:strokeWidth="3dp">
+        android:outlineSpotShadowColor="@color/black"
+        app:cardBackgroundColor="@color/card_surface_elevated"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:rippleColor="#33FFFFFF"
+        app:strokeWidth="0dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -69,12 +73,13 @@
                     android:layout_width="15dp"
                     android:layout_height="match_parent"
                     android:importantForAccessibility="no"
-                    app:srcCompat="@drawable/podium">
+                    app:srcCompat="@drawable/podium"
+                    app:tint="@color/white">
 
                 </ImageView>
 
                 <TextView
-                    style="@style/t14BoldBlackLineLimited"
+                    style="@style/t14BoldWhiteLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="3dp"
@@ -96,7 +101,7 @@
 
                 <TextView
                     android:id="@+id/favourite_constructor_position"
-                    style="@style/t12BoldBlackLineLimited"
+                    style="@style/t12BoldWhiteLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
@@ -105,7 +110,7 @@
                 </TextView>
 
                 <TextView
-                    style="@style/t12BoldBlackLineLimited"
+                    style="@style/t12BoldWhiteLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
@@ -116,7 +121,7 @@
 
                 <TextView
                     android:id="@+id/favourite_constructor_points"
-                    style="@style/t12BoldBlackLineLimited"
+                    style="@style/t12BoldWhiteLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center"
@@ -125,7 +130,7 @@
                 </TextView>
 
                 <TextView
-                    style="@style/t10UpperCaseRegularBlackLineLimited"
+                    style="@style/t10UpperCaseRegularWhiteLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="3dp"
@@ -150,19 +155,21 @@
         android:layout_marginEnd="42dp"
         android:layout_toEndOf="@id/favourite_constructor_rank">
 
-        <ImageView
+        <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/favourite_constructor_flag"
-            android:layout_width="50dp"
-            android:layout_height="45dp"
-            android:layout_centerHorizontal="true"
+            android:layout_width="48dp"
+            android:layout_height="32dp"
+            android:layout_centerVertical="true"
             android:layout_toStartOf="@id/favourite_constructor_nationality"
-            android:importantForAccessibility="no">
-
-        </ImageView>
+            android:importantForAccessibility="no"
+            android:scaleType="centerCrop"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.FastestLap.RoundedFlag"
+            app:strokeColor="@color/subtle_white_border"
+            app:strokeWidth="1dp" />
 
         <TextView
             android:id="@+id/favourite_constructor_nationality"
-            style="@style/t12RegularBlackLineLimited"
+            style="@style/t12RegularWhiteLineLimited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
@@ -176,12 +183,12 @@
 
     <ImageView
         android:id="@+id/favourite_constructor_star"
-        android:layout_width="@dimen/icon_size"
-        android:layout_height="@dimen/icon_size"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="5dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginEnd="8dp"
         android:importantForAccessibility="no"
         app:srcCompat="@drawable/star_fav">
 

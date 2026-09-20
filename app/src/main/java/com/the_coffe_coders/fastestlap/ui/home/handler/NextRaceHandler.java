@@ -224,6 +224,14 @@ public class NextRaceHandler {
         try {
             UIUtils.singleSetTextViewText(nextRace.getRaceName(), view.findViewById(R.id.home_next_gp_name));
 
+            ImageView bgImageView = view.findViewById(R.id.home_next_gp_background_image);
+            if (bgImageView != null && nextRace != null && nextRace.getTrack() != null) {
+                String trackPicUrl = nextRace.getTrack().getTrack_pic_url();
+                if (trackPicUrl != null && !trackPicUrl.isEmpty()) {
+                    UIUtils.loadImageAsync(context, trackPicUrl, bgImageView);
+                }
+            }
+
             String nationFlagUrl = null;
             if (nation != null) {
                 nationFlagUrl = nation.getNation_flag_url();

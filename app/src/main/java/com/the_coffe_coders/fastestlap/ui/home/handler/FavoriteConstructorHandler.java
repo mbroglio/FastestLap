@@ -289,18 +289,21 @@ public class FavoriteConstructorHandler {
     }
 
     private void buildConstructorCardFinalStep(ConstructorStandingsElement standingElement, Constructor constructor) {
+        MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
         if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
             UIUtils.multipleSetTextViewText(
                     new String[]{standingElement.getPosition(), standingElement.getPoints()},
                     new TextView[]{view.findViewById(R.id.favourite_constructor_position), view.findViewById(R.id.favourite_constructor_points)}
             );
 
-            MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
             teamRank.setOnClickListener(v -> NavigationUtils.navigateToStandingsPage(context, constructor.getConstructorId(), 0));
         } else {
-            MaterialCardView teamRank = view.findViewById(R.id.favourite_constructor_rank);
             teamRank.setClickable(false);
         }
+
+        // Apply team color styling (semi-transparent card background + darker ranking button with shadow)
+        MaterialCardView constructorCard = view.findViewById(R.id.card_favorite_constructor);
+        UIUtils.styleFavoriteCard(context, constructorCard, teamRank, constructor.getConstructorId());
 
         showFavouriteConstructorCard();
         Log.i(TAG, "Constructor card built successfully");

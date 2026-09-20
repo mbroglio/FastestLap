@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -17,6 +18,8 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
+import com.the_coffe_coders.fastestlap.domain.nation.Nation;
+import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModel;
@@ -37,6 +40,7 @@ public class LastRaceHandler {
     private final Context context;
     private final WeeklyRaceViewModel weeklyRaceViewModel;
     private final TrackViewModel trackViewModel;
+    private final NationViewModel nationViewModel;
     private final RaceResultViewModel raceResultViewModel;
     private final CardLoadedCallback cardLoadedCallback;
     private LifecycleOwner lifecycleOwner;
@@ -47,6 +51,7 @@ public class LastRaceHandler {
     public LastRaceHandler(Fragment fragment, View view,
                            WeeklyRaceViewModel weeklyRaceViewModel,
                            TrackViewModel trackViewModel,
+                           NationViewModel nationViewModel,
                            RaceResultViewModel raceResultViewModel,
                            NetworkUtils networkLiveData,
                            CardLoadedCallback cardLoadedCallback) {
@@ -55,8 +60,18 @@ public class LastRaceHandler {
         this.view = view;
         this.weeklyRaceViewModel = weeklyRaceViewModel;
         this.trackViewModel = trackViewModel;
+        this.nationViewModel = nationViewModel;
         this.raceResultViewModel = raceResultViewModel;
         this.cardLoadedCallback = cardLoadedCallback;
+    }
+
+    public LastRaceHandler(Fragment fragment, View view,
+                           WeeklyRaceViewModel weeklyRaceViewModel,
+                           TrackViewModel trackViewModel,
+                           RaceResultViewModel raceResultViewModel,
+                           NetworkUtils networkLiveData,
+                           CardLoadedCallback cardLoadedCallback) {
+        this(fragment, view, weeklyRaceViewModel, trackViewModel, null, raceResultViewModel, networkLiveData, cardLoadedCallback);
     }
 
     public void updateView(View view, LifecycleOwner lifecycleOwner) {
@@ -137,9 +152,45 @@ public class LastRaceHandler {
             UIUtils.loadImageWithGlide(context, track.getTrack_minimal_layout_url(),
                     view.findViewById(R.id.last_race_track_outline),
                     () -> updateLastRaceUIFinalStep(race));
+            if (track != null) {
+                loadNationFlag(track.getCountry());
+            }
         } catch (Exception e) {
             Log.e(TAG, "Error updating last race UI: " + e.getMessage());
             loadPendingResultsLayout();
+        }
+    }
+
+    private void loadNationFlag(String country) {
+        if (country == null || country.isEmpty() || nationViewModel == null) {
+            return;
+        }
+        try {
+            MutableLiveData<Result> nationData = nationViewModel.getNation(country);
+            @SuppressWarnings("unchecked")
+            androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
+            observerHolder[0] = nationResult -> {
+                try {
+                    if (nationResult instanceof Result.Loading) {
+                        return;
+                    }
+                    nationData.removeObserver(observerHolder[0]);
+                    if (nationResult.isSuccess()) {
+                        Nation nation = ((Result.NationSuccess) nationResult).getData();
+                        if (nation != null && nation.getNation_flag_url() != null) {
+                            ImageView flagView = view.findViewById(R.id.last_race_flag);
+                            if (flagView != null) {
+                                UIUtils.loadImageAsync(context, nation.getNation_flag_url(), flagView);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error loading nation flag for last race: " + e.getMessage());
+                }
+            };
+            nationData.observe(lifecycleOwner, observerHolder[0]);
+        } catch (Exception e) {
+            Log.e(TAG, "Error requesting nation data: " + e.getMessage());
         }
     }
 

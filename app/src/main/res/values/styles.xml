@@ -652,4 +652,22 @@
         <item name="android:focusable">true</item>
     </style>
 
+    <!--
+    ROUNDED FLAG SHAPE APPEARANCE
+        - 8dp corner radius with smooth rounded family
+    -->
+    <style name="ShapeAppearance.FastestLap.RoundedFlag" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">8dp</item>
+    </style>
+
+    <!--
+    ROUNDED CARD BACKGROUND SHAPE APPEARANCE
+        - 16dp corner radius matching MaterialCardView
+    -->
+    <style name="ShapeAppearance.FastestLap.RoundedCardBackground" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">16dp</item>
+    </style>
+
 </resources>

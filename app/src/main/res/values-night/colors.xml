@@ -2,33 +2,36 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="timer_gray">#B1ADAD</color>
-    <color name="md_theme_primary">#9D0006</color>
+    <color name="timer_gray_dark">#777474</color>
+
+    <!-- Material 3 Dark Theme tokens (High Contrast Racing) -->
+    <color name="md_theme_primary">#E10600</color>
     <color name="md_theme_onPrimary">#FFFFFF</color>
-    <color name="md_theme_primaryContainer">#E01013</color>
-    <color name="md_theme_onPrimaryContainer">#FFFFFF</color>
-    <color name="md_theme_secondary">#AE3026</color>
-    <color name="md_theme_onSecondary">#FFFFFF</color>
-    <color name="md_theme_secondaryContainer">#FF7D6D</color>
-    <color name="md_theme_onSecondaryContainer">#3C0001</color>
-    <color name="md_theme_tertiary">#6B4300</color>
-    <color name="md_theme_onTertiary">#FFFFFF</color>
-    <color name="md_theme_tertiaryContainer">#9C6400</color>
-    <color name="md_theme_onTertiaryContainer">#FFFFFF</color>
-    <color name="md_theme_error">#BA1A1A</color>
-    <color name="md_theme_onError">#FFFFFF</color>
-    <color name="md_theme_errorContainer">#FFDAD6</color>
-    <color name="md_theme_onErrorContainer">#410002</color>
-    <color name="md_theme_background">#FFF8F7</color>
-    <color name="md_theme_onBackground">#291714</color>
-    <color name="md_theme_surface">#FFF8F7</color>
-    <color name="md_theme_onSurface">#291714</color>
-    <color name="md_theme_surfaceVariant">#FFDAD5</color>
-    <color name="md_theme_onSurfaceVariant">#5E3F3B</color>
-    <color name="md_theme_outline">#936E69</color>
-    <color name="md_theme_outlineVariant">#E8BCB6</color>
-    <color name="md_theme_inverseSurface">#402B28</color>
-    <color name="md_theme_inverseOnSurface">#FFEDEA</color>
-    <color name="md_theme_inversePrimary">#FFB4A9</color>
+    <color name="md_theme_primaryContainer">#930005</color>
+    <color name="md_theme_onPrimaryContainer">#FFDAD5</color>
+    <color name="md_theme_secondary">#FF5449</color>
+    <color name="md_theme_onSecondary">#680003</color>
+    <color name="md_theme_secondaryContainer">#8C1611</color>
+    <color name="md_theme_onSecondaryContainer">#FFDAD5</color>
+    <color name="md_theme_tertiary">#FFB95A</color>
+    <color name="md_theme_onTertiary">#452B00</color>
+    <color name="md_theme_tertiaryContainer">#643F00</color>
+    <color name="md_theme_onTertiaryContainer">#FFDDB6</color>
+    <color name="md_theme_error">#FFB4AB</color>
+    <color name="md_theme_onError">#690005</color>
+    <color name="md_theme_errorContainer">#93000A</color>
+    <color name="md_theme_onErrorContainer">#FFDAD6</color>
+    <color name="md_theme_background">#121215</color>
+    <color name="md_theme_onBackground">#FFFFFF</color>
+    <color name="md_theme_surface">#18191E</color>
+    <color name="md_theme_onSurface">#FFFFFF</color>
+    <color name="md_theme_surfaceVariant">#24252D</color>
+    <color name="md_theme_onSurfaceVariant">#C8CBD6</color>
+    <color name="md_theme_outline">#3E404D</color>
+    <color name="md_theme_outlineVariant">#2C2D36</color>
+    <color name="md_theme_inverseSurface">#E4E1E6</color>
+    <color name="md_theme_inverseOnSurface">#1B1B1F</color>
+    <color name="md_theme_inversePrimary">#BA1A1A</color>
     <color name="md_theme_primaryFixed">#FFDAD5</color>
     <color name="md_theme_onPrimaryFixed">#410001</color>
     <color name="md_theme_primaryFixedDim">#FFB4A9</color>
@@ -41,14 +44,15 @@
     <color name="md_theme_onTertiaryFixed">#2A1800</color>
     <color name="md_theme_tertiaryFixedDim">#FFB95A</color>
     <color name="md_theme_onTertiaryFixedVariant">#643F00</color>
-    <color name="md_theme_surfaceDim">#F5D2CD</color>
-    <color name="md_theme_surfaceBright">#FFF8F7</color>
-    <color name="md_theme_surfaceContainerLowest">#FFFFFF</color>
-    <color name="md_theme_surfaceContainerLow">#FFF0EE</color>
-    <color name="md_theme_surfaceContainer">#FFE9E6</color>
-    <color name="md_theme_surfaceContainerHigh">#FFE2DD</color>
-    <color name="md_theme_surfaceContainerHighest">#FEDBD6</color>
+    <color name="md_theme_surfaceDim">#121215</color>
+    <color name="md_theme_surfaceBright">#383942</color>
+    <color name="md_theme_surfaceContainerLowest">#0D0D10</color>
+    <color name="md_theme_surfaceContainerLow">#18191E</color>
+    <color name="md_theme_surfaceContainer">#202129</color>
+    <color name="md_theme_surfaceContainerHigh">#282933</color>
+    <color name="md_theme_surfaceContainerHighest">#31323D</color>
 
+    <!-- F1 Team Colors -->
     <color name="mclaren_f1">#fe8125</color>
     <color name="ferrari_f1">#e70c27</color>
     <color name="mercedes_f1">#31f3d3</color>
@@ -59,15 +63,17 @@
     <color name="williams_f1">#66c4fc</color>
     <color name="alpine_f1">#0c93c9</color>
     <color name="kick_f1">#01FE2B</color>
+    <color name="audi_f1">#FF2F1E</color>
+    <color name="cadillac_f1">#58585b</color>
 
-
-    <color name="app_primary_red">#CA3131</color>
-
-
+    <!-- App Identity & Surfaces -->
+    <color name="app_primary_red">#E10600</color>
     <color name="screen_background_color">#1E1E24</color>
+    <color name="card_surface_dark">#1C1D24</color>
+    <color name="card_surface_elevated">#262732</color>
+    <color name="subtle_white_border">#1FFFFFFF</color>
+
     <color name="yellow">#FFD700</color>
     <color name="dark_red">#8B0000</color>
     <color name="grey_card">#3B3B37</color>
-
-    <color name="timer_gray_dark">#777474</color>
 </resources>
