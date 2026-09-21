@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -32,9 +33,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:gravity="center"
-                    android:maxLines="1">
-
-                </TextView>
+                    android:maxLines="1" />
 
             </RelativeLayout>
 
@@ -63,534 +62,531 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/team_logo_and_flag"
+                <!-- UNIFIED CONSTRUCTOR INFO CARD -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/team_info_card"
                     android:layout_width="match_parent"
-                    android:layout_height="90dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginEnd="10dp"
-                    android:baselineAligned="false"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="12dp"
+                    app:cardBackgroundColor="@color/card_surface_elevated"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="3dp"
+                    app:strokeColor="@color/subtle_white_border"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="14dp">
+
+                        <!-- TEAM FULL NAME AT THE TOP OF THE CARD WITH AUTO-RESIZE -->
+                        <TextView
+                            android:id="@+id/team_full_name_value"
+                            style="@style/t20BoldWhite"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:layout_marginBottom="12dp"
+                            android:maxLines="1"
+                            android:text="@string/not_found"
+                            android:textColor="@color/white" />
+
+                        <!-- SECTION 1: TEAM LOGO & FLAG -->
+                        <LinearLayout
+                            android:id="@+id/team_logo_and_flag"
+                            android:layout_width="match_parent"
+                            android:layout_height="80dp"
+                            android:baselineAligned="false"
+                            android:orientation="horizontal">
+
+                            <RelativeLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.65">
+
+                                <com.google.android.material.card.MaterialCardView
+                                    android:id="@+id/team_logo_card"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_margin="2dp"
+                                    app:cardBackgroundColor="@color/team_card_modern_gray"
+                                    app:cardCornerRadius="14dp"
+                                    app:cardElevation="2dp"
+                                    app:strokeColor="@color/subtle_white_border"
+                                    app:strokeWidth="1.5dp">
+
+                                    <ImageView
+                                        android:id="@+id/team_logo_image"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_margin="8dp"
+                                        android:importantForAccessibility="no"
+                                        android:scaleType="fitCenter" />
+
+                                </com.google.android.material.card.MaterialCardView>
+
+                            </RelativeLayout>
+
+                            <RelativeLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.35">
+
+                                <com.google.android.material.card.MaterialCardView
+                                    android:id="@+id/team_flag_card"
+                                    android:layout_width="54dp"
+                                    android:layout_height="36dp"
+                                    android:layout_centerInParent="true"
+                                    app:cardBackgroundColor="@color/card_surface_elevated"
+                                    app:cardCornerRadius="6dp"
+                                    app:cardElevation="2dp"
+                                    app:strokeColor="@color/subtle_white_border"
+                                    app:strokeWidth="1dp">
+
+                                    <com.google.android.material.imageview.ShapeableImageView
+                                        android:id="@+id/team_flag"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:importantForAccessibility="no"
+                                        android:scaleType="centerCrop"
+                                        app:shapeAppearanceOverlay="@style/ShapeAppearance.FastestLap.RoundedFlag" />
+
+                                </com.google.android.material.card.MaterialCardView>
+
+                            </RelativeLayout>
+
+                        </LinearLayout>
+
+                        <!-- SEPARATOR: LOGO/FLAG TO CAR -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginBottom="12dp"
+                            android:background="@color/subtle_white_border" />
+
+                        <!-- SECTION 2: TEAM CAR IMAGE -->
+                        <ImageView
+                            android:id="@+id/team_car_image"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:adjustViewBounds="true"
+                            android:importantForAccessibility="no"
+                            android:scaleType="fitCenter" />
+
+                        <!-- SEPARATOR: CAR TO (TEAM INFO + DRIVERS) -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginBottom="12dp"
+                            android:background="@color/subtle_white_border" />
+
+                        <!-- SECTION 3: PARALLEL DRIVERS AND TEAM INFO -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:baselineAligned="false"
+                            android:orientation="horizontal">
+
+                            <!-- LEFT COLUMN: DRIVERS (UNA SOTTO L'ALTRA CENTRATE VERTICALMENTE) -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.85"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    style="@style/t12UpperCaseBoldWhiteLineLimited"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/drivers_index"
+                                    android:textColor="@color/app_primary_red" />
+
+                                <!-- CONTAINER CENTRATO TRA IL TITOLO DRIVERS E LA FINE DELLA CARD -->
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="0dp"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:orientation="vertical">
+
+                                    <!-- Driver 1 -->
+                                    <LinearLayout
+                                        android:id="@+id/driver_1"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center_horizontal"
+                                        android:orientation="vertical">
+
+                                        <com.google.android.material.card.MaterialCardView
+                                            android:id="@+id/driver_1_card"
+                                            android:layout_width="92dp"
+                                            android:layout_height="92dp"
+                                            android:clickable="true"
+                                            android:focusable="true"
+                                            app:cardBackgroundColor="@color/card_surface_dark"
+                                            app:cardCornerRadius="16dp"
+                                            app:cardElevation="3dp"
+                                            app:strokeColor="@color/subtle_white_border"
+                                            app:strokeWidth="1.5dp">
+
+                                            <ImageView
+                                                android:id="@+id/driver_1_image"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:layout_margin="8dp"
+                                                android:importantForAccessibility="no"
+                                                android:scaleType="fitCenter" />
+
+                                        </com.google.android.material.card.MaterialCardView>
+
+                                        <TextView
+                                            android:id="@+id/driver_1_name"
+                                            style="@style/t12BoldWhiteLineLimited"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="4dp"
+                                            android:gravity="center"
+                                            android:maxWidth="96dp"
+                                            android:text="@string/not_found"
+                                            android:textColor="@color/white" />
+
+                                    </LinearLayout>
+
+                                    <!-- Spacing between Driver 1 and Driver 2 -->
+                                    <Space
+                                        android:layout_width="match_parent"
+                                        android:layout_height="14dp" />
+
+                                    <!-- Driver 2 -->
+                                    <LinearLayout
+                                        android:id="@+id/driver_2"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="center_horizontal"
+                                        android:orientation="vertical">
+
+                                        <com.google.android.material.card.MaterialCardView
+                                            android:id="@+id/driver_2_card"
+                                            android:layout_width="92dp"
+                                            android:layout_height="92dp"
+                                            android:clickable="true"
+                                            android:focusable="true"
+                                            app:cardBackgroundColor="@color/card_surface_dark"
+                                            app:cardCornerRadius="16dp"
+                                            app:cardElevation="3dp"
+                                            app:strokeColor="@color/subtle_white_border"
+                                            app:strokeWidth="1.5dp">
+
+                                            <ImageView
+                                                android:id="@+id/driver_2_image"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:layout_margin="8dp"
+                                                android:importantForAccessibility="no"
+                                                android:scaleType="fitCenter" />
+
+                                        </com.google.android.material.card.MaterialCardView>
+
+                                        <TextView
+                                            android:id="@+id/driver_2_name"
+                                            style="@style/t12BoldWhiteLineLimited"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="4dp"
+                                            android:gravity="center"
+                                            android:maxWidth="96dp"
+                                            android:text="@string/not_found"
+                                            android:textColor="@color/white" />
+
+                                    </LinearLayout>
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                            <!-- VERTICAL DIVIDER -->
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="4dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginBottom="4dp"
+                                android:background="@color/subtle_white_border" />
+
+                            <!-- RIGHT COLUMN: TEAM INFO -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.15"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    style="@style/t12UpperCaseBoldWhiteLineLimited"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/team_info_index"
+                                    android:textColor="@color/app_primary_red" />
+
+                                <LinearLayout
+                                    android:id="@+id/team_stats"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:orientation="vertical">
+
+                                    <!-- HQ / Base -->
+                                    <TextView
+                                        android:id="@+id/team_base_text"
+                                        style="@style/t10UpperCaseBoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="start"
+                                        android:text="@string/base_index"
+                                        android:textColor="@color/timer_gray" />
+
+                                    <TextView
+                                        android:id="@+id/team_base_value"
+                                        style="@style/t12BoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:gravity="start"
+                                        android:text="@string/not_found"
+                                        android:textColor="@color/white" />
+
+                                    <!-- Team Principal -->
+                                    <TextView
+                                        android:id="@+id/team_principal_text"
+                                        style="@style/t10UpperCaseBoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="8dp"
+                                        android:gravity="start"
+                                        android:text="@string/team_principal_index"
+                                        android:textColor="@color/timer_gray" />
+
+                                    <TextView
+                                        android:id="@+id/team_principal_value"
+                                        style="@style/t12BoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:gravity="start"
+                                        android:text="@string/not_found"
+                                        android:textColor="@color/white" />
+
+                                    <!-- Chassis -->
+                                    <TextView
+                                        android:id="@+id/team_chassis_text"
+                                        style="@style/t10UpperCaseBoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="8dp"
+                                        android:gravity="start"
+                                        android:text="@string/chassis_index"
+                                        android:textColor="@color/timer_gray" />
+
+                                    <TextView
+                                        android:id="@+id/team_chassis_value"
+                                        style="@style/t12BoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:gravity="start"
+                                        android:text="@string/not_found"
+                                        android:textColor="@color/white" />
+
+                                    <!-- Power Unit -->
+                                    <TextView
+                                        android:id="@+id/team_power_unit_text"
+                                        style="@style/t10UpperCaseBoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="8dp"
+                                        android:gravity="start"
+                                        android:text="@string/power_unit_index"
+                                        android:textColor="@color/timer_gray" />
+
+                                    <TextView
+                                        android:id="@+id/team_power_unit_value"
+                                        style="@style/t12BoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:gravity="start"
+                                        android:text="@string/not_found"
+                                        android:textColor="@color/white" />
+
+                                    <!-- First Entry -->
+                                    <TextView
+                                        android:id="@+id/team_first_entry_text"
+                                        style="@style/t10UpperCaseBoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="8dp"
+                                        android:gravity="start"
+                                        android:text="@string/first_entry_index"
+                                        android:textColor="@color/timer_gray" />
+
+                                    <TextView
+                                        android:id="@+id/team_first_entry_value"
+                                        style="@style/t12BoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:gravity="start"
+                                        android:text="@string/not_found"
+                                        android:textColor="@color/white" />
+
+                                    <!-- World Championships -->
+                                    <TextView
+                                        android:id="@+id/team_championships_text"
+                                        style="@style/t10UpperCaseBoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="8dp"
+                                        android:gravity="start"
+                                        android:text="@string/world_championships_index"
+                                        android:textColor="@color/timer_gray" />
+
+                                    <TextView
+                                        android:id="@+id/team_championships_value"
+                                        style="@style/t12BoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:gravity="start"
+                                        android:text="@string/not_found"
+                                        android:textColor="@color/white" />
+
+                                    <!-- Wins -->
+                                    <TextView
+                                        android:id="@+id/team_wins_text"
+                                        style="@style/t10UpperCaseBoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="8dp"
+                                        android:gravity="start"
+                                        android:text="@string/wins_index"
+                                        android:textColor="@color/timer_gray" />
+
+                                    <TextView
+                                        android:id="@+id/team_wins_value"
+                                        style="@style/t12BoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:gravity="start"
+                                        android:text="@string/not_found"
+                                        android:textColor="@color/white" />
+
+                                    <!-- Podiums -->
+                                    <TextView
+                                        android:id="@+id/team_podiums_text"
+                                        style="@style/t10UpperCaseBoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="8dp"
+                                        android:gravity="start"
+                                        android:text="@string/podiums_index"
+                                        android:textColor="@color/timer_gray" />
+
+                                    <TextView
+                                        android:id="@+id/team_podiums_value"
+                                        style="@style/t12BoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:gravity="start"
+                                        android:text="@string/not_found"
+                                        android:textColor="@color/white" />
+
+                                </LinearLayout>
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- TACHOMETERS (OUTSIDE CARD) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center"
                     android:orientation="horizontal">
 
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.65">
+                    <com.the_coffe_coders.fastestlap.util.ui.TachometerView
+                        android:id="@+id/win_percentage_tachometer_team"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_marginEnd="52dp" />
 
-                        <com.google.android.material.card.MaterialCardView
-                            android:id="@+id/team_logo_card"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentBottom="true"
-                            android:layout_margin="5dp"
-                            app:cardBackgroundColor="@color/timer_gray"
-                            app:strokeWidth="3dp">
-
-                            <ImageView
-                                android:id="@+id/team_logo_image"
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_margin="8dp"
-                                android:importantForAccessibility="no">
-
-                            </ImageView>
-
-                        </com.google.android.material.card.MaterialCardView>
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.35">
-
-                        <ImageView
-                            android:id="@+id/team_flag"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentEnd="true"
-                            android:layout_alignParentBottom="true"
-                            android:layout_margin="16dp"
-                            android:importantForAccessibility="no">
-
-                        </ImageView>
-
-                    </RelativeLayout>
+                    <com.the_coffe_coders.fastestlap.util.ui.TachometerView
+                        android:id="@+id/podium_percentage_tachometer_team"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp" />
 
                 </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/team_car_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:importantForAccessibility="no">
-
-                </ImageView>
-
-                <LinearLayout
-                    android:id="@+id/team_info"
+                <!-- CONSTRUCTOR HISTORY CARD -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/team_history"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="5dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        style="@style/t18UpperCaseBoldWhite"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/drivers_index">
-
-                    </TextView>
-
-                    <RelativeLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="5dp">
-
-                        <LinearLayout
-                            android:id="@+id/driver_1"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:orientation="vertical">
-
-                            <com.google.android.material.card.MaterialCardView
-                                android:id="@+id/driver_1_card"
-                                android:layout_width="@dimen/driver_photo_in_card"
-                                android:layout_height="@dimen/driver_photo_in_card"
-                                android:layout_gravity="center"
-                                android:clickable="true"
-                                android:focusable="true"
-                                app:strokeColor="@color/black"
-                                app:strokeWidth="3dp">
-
-                                <ImageView
-                                    android:id="@+id/driver_1_image"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:layout_margin="5dp"
-                                    android:importantForAccessibility="no">
-
-                                </ImageView>
-
-                            </com.google.android.material.card.MaterialCardView>
-
-                            <TextView
-                                android:id="@+id/driver_1_name"
-                                style="@style/t12RegularWhiteLineLimited"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="@string/not_found">
-
-                            </TextView>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/driver_2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="70dp"
-                            android:layout_toEndOf="@id/driver_1"
-                            android:orientation="vertical">
-
-                            <com.google.android.material.card.MaterialCardView
-                                android:id="@+id/driver_2_card"
-                                android:layout_width="@dimen/driver_photo_in_card"
-                                android:layout_height="@dimen/driver_photo_in_card"
-                                android:layout_gravity="center"
-                                android:clickable="true"
-                                android:focusable="true"
-                                app:strokeColor="@color/black"
-                                app:strokeWidth="3dp">
-
-                                <ImageView
-                                    android:id="@+id/driver_2_image"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:layout_margin="5dp"
-                                    android:importantForAccessibility="no">
-
-                                </ImageView>
-
-                            </com.google.android.material.card.MaterialCardView>
-
-                            <TextView
-                                android:id="@+id/driver_2_name"
-                                style="@style/t12RegularWhiteLineLimited"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:text="@string/not_found">
-
-                            </TextView>
-
-                        </LinearLayout>
-
-                    </RelativeLayout>
-
-                    <TextView
-                        style="@style/t18UpperCaseBoldWhite"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:text="@string/team_info_index">
-
-                    </TextView>
-
-                    <LinearLayout
-                        android:id="@+id/team_stats"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="5dp"
-                        android:orientation="vertical">
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/team_full_name_text"
-                                style="@style/t14BoldWhiteLineLimited"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:text="@string/full_name_index">
-
-                            </TextView>
-
-                            <TextView
-                                android:id="@+id/team_full_name_value"
-                                style="@style/t12RegularWhiteLineLimited"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginEnd="2dp"
-                                android:layout_toEndOf="@id/team_full_name_text"
-                                android:gravity="start"
-                                android:text="@string/not_found">
-
-                            </TextView>
-
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/team_base_text"
-                                style="@style/t14BoldWhiteLineLimited"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:text="@string/base_index">
-
-                            </TextView>
-
-                            <TextView
-                                android:id="@+id/team_base_value"
-                                style="@style/t12RegularWhiteLineLimited"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:layout_marginStart="20dp"
-                                android:layout_marginEnd="2dp"
-                                android:layout_toEndOf="@id/team_base_text"
-                                android:gravity="start"
-                                android:text="@string/not_found">
-
-                            </TextView>
-
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/team_principal_text"
-                                style="@style/t14BoldWhiteLineLimited"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:text="@string/team_principal_index">
-
-                            </TextView>
-
-                            <TextView
-                                android:id="@+id/team_principal_value"
-                                style="@style/t12RegularWhiteLineLimited"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:layout_marginStart="20dp"
-                                android:layout_toEndOf="@id/team_principal_text"
-                                android:gravity="start"
-                                android:text="@string/not_found">
-
-                            </TextView>
-
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/team_chassis_text"
-                                style="@style/t14BoldWhiteLineLimited"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:text="@string/chassis_index">
-
-                            </TextView>
-
-                            <TextView
-                                android:id="@+id/team_chassis_value"
-                                style="@style/t12RegularWhiteLineLimited"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:layout_marginStart="20dp"
-                                android:layout_toEndOf="@id/team_chassis_text"
-                                android:gravity="start"
-                                android:text="@string/not_found">
-
-                            </TextView>
-
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/team_power_unit_text"
-                                style="@style/t14BoldWhiteLineLimited"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:text="@string/power_unit_index">
-
-                            </TextView>
-
-                            <TextView
-                                android:id="@+id/team_power_unit_value"
-                                style="@style/t12RegularWhiteLineLimited"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:layout_marginStart="20dp"
-                                android:layout_toEndOf="@id/team_power_unit_text"
-                                android:gravity="start"
-                                android:text="@string/not_found">
-
-                            </TextView>
-
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/team_first_entry_text"
-                                style="@style/t14BoldWhiteLineLimited"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:text="@string/first_entry_index">
-
-                            </TextView>
-
-                            <TextView
-                                android:id="@+id/team_first_entry_value"
-                                style="@style/t12RegularWhiteLineLimited"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:layout_marginStart="20dp"
-                                android:layout_toEndOf="@id/team_first_entry_text"
-                                android:gravity="start"
-                                android:text="@string/not_found">
-
-                            </TextView>
-
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/team_championships_text"
-                                style="@style/t14BoldWhiteLineLimited"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:text="@string/world_championships_index">
-
-                            </TextView>
-
-                            <TextView
-                                android:id="@+id/team_championships_value"
-                                style="@style/t12RegularWhiteLineLimited"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:layout_marginStart="20dp"
-                                android:layout_toEndOf="@id/team_championships_text"
-                                android:gravity="start"
-                                android:text="@string/not_found">
-
-                            </TextView>
-
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/team_wins_text"
-                                style="@style/t14BoldWhiteLineLimited"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:text="@string/wins_index">
-
-                            </TextView>
-
-                            <TextView
-                                android:id="@+id/team_wins_value"
-                                style="@style/t12RegularWhiteLineLimited"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:layout_marginStart="20dp"
-                                android:layout_toEndOf="@id/team_wins_text"
-                                android:gravity="start"
-                                android:text="@string/not_found">
-
-                            </TextView>
-
-                        </RelativeLayout>
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/team_podiums_text"
-                                style="@style/t14BoldWhiteLineLimited"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:text="@string/podiums_index">
-
-                            </TextView>
-
-                            <TextView
-                                android:id="@+id/team_podiums_value"
-                                style="@style/t12RegularWhiteLineLimited"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:layout_marginStart="20dp"
-                                android:layout_toEndOf="@id/team_podiums_text"
-                                android:gravity="start"
-                                android:text="@string/not_found">
-
-                            </TextView>
-
-                        </RelativeLayout>
-
-                    </LinearLayout>
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginBottom="24dp"
+                    app:cardBackgroundColor="@color/card_surface_elevated"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="3dp"
+                    app:strokeColor="@color/subtle_white_border"
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="16dp"
-                        android:gravity="center"
-                        android:orientation="horizontal">
+                        android:orientation="vertical"
+                        android:padding="14dp">
 
-                        <com.the_coffe_coders.fastestlap.util.ui.TachometerView
-                            android:id="@+id/win_percentage_tachometer_team"
-                            android:layout_width="120dp"
-                            android:layout_height="120dp"
-                            android:layout_marginEnd="52dp" />
-
-                        <com.the_coffe_coders.fastestlap.util.ui.TachometerView
-                            android:id="@+id/podium_percentage_tachometer_team"
-                            android:layout_width="120dp"
-                            android:layout_height="120dp" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/team_history"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:layout_marginBottom="5dp"
-                        android:orientation="vertical">
-
+                        <!-- Title -->
                         <TextView
+                            android:id="@+id/team_history_title"
                             style="@style/t18UpperCaseBoldWhite"
-                            android:layout_width="match_parent"
+                            android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/team_history_index" />
 
+                        <!-- Subtle Divider -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:background="@color/subtle_white_border" />
+
+                        <!-- History Table -->
                         <TableLayout
                             android:id="@+id/history_table"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="3dp"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginEnd="3dp">
+                            android:stretchColumns="*">
 
                         </TableLayout>
 
                     </LinearLayout>
 
-                </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
 

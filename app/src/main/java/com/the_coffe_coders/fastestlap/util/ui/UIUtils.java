@@ -737,4 +737,17 @@ public class UIUtils {
     public static void styleFavoriteCard(Context context, MaterialCardView cardView, MaterialCardView rankCard, ImageView watermarkView, String teamId) {
         styleFavoriteCard(context, cardView, rankCard, teamId);
     }
+
+    public static void styleDriverCard(Context context, MaterialCardView cardView, int teamColorRes) {
+        if (context == null || cardView == null) return;
+        try {
+            int teamColor = ContextCompat.getColor(context, teamColorRes);
+            int darkBase = ContextCompat.getColor(context, R.color.card_surface_dark);
+            int softCardBg = ColorUtils.compositeColors(ColorUtils.setAlphaComponent(teamColor, 84), darkBase);
+            cardView.setCardBackgroundColor(ColorStateList.valueOf(softCardBg));
+            cardView.setStrokeColor(ColorStateList.valueOf(ColorUtils.setAlphaComponent(teamColor, 120)));
+        } catch (Exception e) {
+            Log.e("UIUtils.styleDriverCard", "Error styling driver card: " + e.getMessage());
+        }
+    }
 }

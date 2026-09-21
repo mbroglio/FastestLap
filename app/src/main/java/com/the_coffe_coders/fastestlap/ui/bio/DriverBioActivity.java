@@ -267,6 +267,9 @@ public class DriverBioActivity extends AppCompatActivity {
             toolbar.setBackgroundColor(ContextCompat.getColor(this, teamColor));
             appBarLayout.setBackgroundColor(ContextCompat.getColor(this, teamColor));
 
+            TextView driverHistoryTitle = findViewById(R.id.driver_history_title);
+            driverHistoryTitle.setTextColor(ContextCompat.getColor(this, teamColor));
+
             teamLogoCard.setOnClickListener(v ->
                     NavigationUtils.navigateToBioPage(this, team.getConstructorId(), 0));
         } else {
@@ -354,7 +357,7 @@ public class DriverBioActivity extends AppCompatActivity {
     private void createHistoryTable() {
         loadingScreen.updateProgress();
 
-        LinearLayout driverHistoryLayout = findViewById(R.id.driver_history);
+        View driverHistoryLayout = findViewById(R.id.driver_history);
 
         TableLayout tableLayout = findViewById(R.id.history_table);
         tableLayout.removeAllViews();
@@ -365,18 +368,18 @@ public class DriverBioActivity extends AppCompatActivity {
             tableLayout.setVisibility(View.VISIBLE);
 
             View tableHeader = inflater.inflate(R.layout.driver_bio_table_header, tableLayout, false);
-            TableLayout.LayoutParams paramsHeader = (TableLayout.LayoutParams) tableHeader.getLayoutParams();
-            paramsHeader.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
-            tableHeader.setLayoutParams(paramsHeader);
-            tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray_dark));
-
             tableLayout.addView(tableHeader);
 
             List<DriverHistory> driverHistoryList = driver.getDriver_history();
             for (int i = driverHistoryList.size() - 1; i >= 0; i--) {
                 DriverHistory driverHistory = driverHistoryList.get(i);
                 View tableRow = inflater.inflate(R.layout.driver_bio_table_row, tableLayout, false);
-                tableRow.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
+
+                if (i % 2 == 1) {
+                    tableRow.setBackgroundColor(0x0AFFFFFF);
+                } else {
+                    tableRow.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+                }
 
                 UIUtils.multipleSetTextViewText(
                         new String[]{
@@ -395,10 +398,6 @@ public class DriverBioActivity extends AppCompatActivity {
                                 tableRow.findViewById(R.id.driver_wins),
                                 tableRow.findViewById(R.id.driver_podiums)}
                 );
-
-                TableLayout.LayoutParams tableParams = (TableLayout.LayoutParams) tableRow.getLayoutParams();
-                tableParams.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
-                tableRow.setLayoutParams(tableParams);
 
                 tableLayout.addView(tableRow);
             }

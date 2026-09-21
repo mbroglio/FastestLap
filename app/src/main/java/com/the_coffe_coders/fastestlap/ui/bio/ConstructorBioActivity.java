@@ -181,6 +181,9 @@ public class ConstructorBioActivity extends AppCompatActivity {
                     toolbar.setBackgroundColor(ContextCompat.getColor(this, teamColor));
                     appBarLayout.setBackgroundColor(ContextCompat.getColor(this, teamColor));
 
+                    TextView teamHistoryTitle = findViewById(R.id.team_history_title);
+                    teamHistoryTitle.setTextColor(ContextCompat.getColor(this, teamColor));
+
                     MaterialCardView teamLogoCard = findViewById(R.id.team_logo_card);
                     teamLogoCard.setStrokeColor(ContextCompat.getColor(this, teamColor));
 
@@ -188,11 +191,8 @@ public class ConstructorBioActivity extends AppCompatActivity {
                         teamLogoCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white));
                     }
 
-                    MaterialCardView driverCard = findViewById(R.id.driver_1_card);
-                    driverCard.setCardBackgroundColor(ContextCompat.getColor(this, teamColor));
-
-                    driverCard = findViewById(R.id.driver_2_card);
-                    driverCard.setCardBackgroundColor(ContextCompat.getColor(this, teamColor));
+                    UIUtils.styleDriverCard(this, findViewById(R.id.driver_1_card), teamColor);
+                    UIUtils.styleDriverCard(this, findViewById(R.id.driver_2_card), teamColor);
 
                     favoriteBioHandler.updateFavoriteIcon(toolbar.getMenu(), R.id.favourite_icon_outline, teamId, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
 
@@ -350,7 +350,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
     private void createHistoryTable() {
         loadingScreen.updateProgress();
 
-        LinearLayout teamHistory = findViewById(R.id.team_history);
+        View teamHistory = findViewById(R.id.team_history);
 
         TableLayout tableLayout = findViewById(R.id.history_table);
         tableLayout.removeAllViews();
@@ -361,19 +361,18 @@ public class ConstructorBioActivity extends AppCompatActivity {
             tableLayout.setVisibility(View.VISIBLE);
 
             View tableHeader = inflater.inflate(R.layout.constructor_bio_table_header, tableLayout, false);
-            TableLayout.LayoutParams paramsHeader = (TableLayout.LayoutParams) tableHeader.getLayoutParams();
-            paramsHeader.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
-            tableHeader.setLayoutParams(paramsHeader);
-            tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray_dark));
-
-            //set stroke of tableHeader
             tableLayout.addView(tableHeader);
 
             List<ConstructorHistory> constructorHistoryList = constructor.getTeam_history();
             for (int i = constructorHistoryList.size() - 1; i >= 0; i--) {
                 ConstructorHistory constructorHistory = constructorHistoryList.get(i);
                 View tableRow = inflater.inflate(R.layout.constructor_bio_table_row, tableLayout, false);
-                tableRow.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
+
+                if (i % 2 == 1) {
+                    tableRow.setBackgroundColor(0x0AFFFFFF);
+                } else {
+                    tableRow.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+                }
 
                 UIUtils.multipleSetTextViewText(
                         new String[]{constructorHistory.getYear(),
@@ -388,10 +387,6 @@ public class ConstructorBioActivity extends AppCompatActivity {
                                 tableRow.findViewById(R.id.team_wins),
                                 tableRow.findViewById(R.id.team_podiums)}
                 );
-
-                TableLayout.LayoutParams tableParams = (TableLayout.LayoutParams) tableRow.getLayoutParams();
-                tableParams.setMargins(0, 0, 0, (int) getResources().getDisplayMetrics().density * 5);
-                tableRow.setLayoutParams(tableParams);
 
                 tableLayout.addView(tableRow);
             }
