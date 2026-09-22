@@ -224,6 +224,8 @@ public class NewsFragment extends Fragment {
             return;
         }
 
+        displayNews(newsList, recyclerView);
+
         java.util.List<String> imageUrls = new java.util.ArrayList<>();
         for (int i = 0; i < Math.min(7, newsList.size()); i++) {
             String img = newsList.get(i).getImageUrl();
@@ -231,26 +233,9 @@ public class NewsFragment extends Fragment {
                 imageUrls.add(img);
             }
         }
-        if (imageUrls.isEmpty() || getContext() == null) {
-            displayNews(newsList, recyclerView);
-            return;
+        if (!imageUrls.isEmpty() && getContext() != null) {
+            UIUtils.preloadImagesInParallel(getContext(), imageUrls.toArray(new String[0]), null);
         }
-
-        final boolean[] displayed = {false};
-        Handler mainHandler = new Handler(Looper.getMainLooper());
-        Runnable showNewsRunnable = () -> {
-            if (!displayed[0]) {
-                displayed[0] = true;
-                displayNews(newsList, recyclerView);
-            }
-        };
-
-        mainHandler.postDelayed(showNewsRunnable, 1500);
-
-        UIUtils.preloadImagesInParallel(getContext(), imageUrls.toArray(new String[0]), () -> {
-            mainHandler.removeCallbacks(showNewsRunnable);
-            showNewsRunnable.run();
-        });
     }
 
     private boolean isAppLanguageEnglish() {

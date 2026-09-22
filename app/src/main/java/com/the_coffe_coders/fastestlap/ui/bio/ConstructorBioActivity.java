@@ -322,11 +322,15 @@ public class ConstructorBioActivity extends AppCompatActivity {
         UIUtils.updateTachometers(this, team, winPercentageTachometer, podiumPercentageTachometer);
         createHistoryTable();
 
+        loadingScreen.hideLoadingScreen();
+        if (winPercentageTachometer != null) winPercentageTachometer.startAnimation();
+        if (podiumPercentageTachometer != null) podiumPercentageTachometer.startAnimation();
+
         String nationFlagUrl = nation != null ? nation.getNation_flag_url() : null;
         String d1HalfPic = driverOne != null ? driverOne.getDriver_half_pic_url() : null;
         String d2HalfPic = driverTwo != null ? driverTwo.getDriver_half_pic_url() : null;
 
-        // Carica le immagini in parallelo e nascondi la schermata di caricamento solo al completamento
+        // Carica le immagini in parallelo in background
         UIUtils.loadImagesInParallel(this,
                 new String[]{
                         team.getTeam_logo_url(),
@@ -342,12 +346,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
                         findViewById(R.id.driver_1_image),
                         findViewById(R.id.driver_2_image)},
 
-                () -> {
-                    Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: ConstructorBioActivity at " + System.currentTimeMillis());
-                    loadingScreen.hideLoadingScreen();
-                    if (winPercentageTachometer != null) winPercentageTachometer.startAnimation();
-                    if (podiumPercentageTachometer != null) podiumPercentageTachometer.startAnimation();
-                });
+                () -> Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: ConstructorBioActivity at " + System.currentTimeMillis()));
 
     }
 

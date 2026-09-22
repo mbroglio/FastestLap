@@ -255,11 +255,9 @@ public class EventActivity extends AppCompatActivity {
         ImageView bgImageView = findViewById(R.id.event_background_image);
 
         if (bgImageView != null && imageUrl != null && !imageUrl.isEmpty()) {
-            UIUtils.loadImageWithGlide(this, imageUrl, bgImageView,
-                    () -> buildEventCardStepTwo(weeklyRace, track, nation));
-        } else {
-            buildEventCardStepTwo(weeklyRace, track, nation);
+            UIUtils.loadImageAsync(this, imageUrl, bgImageView);
         }
+        buildEventCardStepTwo(weeklyRace, track, nation);
     }
 
     private void buildEventCardStepTwo(WeeklyRace weeklyRace, Track track, Nation nation) {
@@ -304,15 +302,18 @@ public class EventActivity extends AppCompatActivity {
             });
         }
 
-        String nationFlagUrl = null;
-        if (nation != null) {
-            nationFlagUrl = nation.getNation_flag_url();
+        String nationFlagUrl = (nation != null) ? nation.getNation_flag_url() : null;
+        ImageView flagView = findViewById(R.id.country_flag);
+        ImageView trackOutlineView = findViewById(R.id.track_outline_image);
+
+        if (flagView != null && nationFlagUrl != null) {
+            UIUtils.loadImageAsync(this, nationFlagUrl, flagView);
+        }
+        if (trackOutlineView != null && track != null && track.getTrack_minimal_layout_url() != null) {
+            UIUtils.loadImageAsync(this, track.getTrack_minimal_layout_url(), trackOutlineView);
         }
 
-        UIUtils.loadSequenceOfImagesWithGlide(this,
-                new String[]{nationFlagUrl, track.getTrack_minimal_layout_url()},
-                new ImageView[]{findViewById(R.id.country_flag), findViewById(R.id.track_outline_image)},
-                () -> buildEventCardFinalStep(weeklyRace));
+        buildEventCardFinalStep(weeklyRace);
 
         View scheduleCalendarBadge = findViewById(R.id.schedule_calendar_badge);
         if (scheduleCalendarBadge != null) {

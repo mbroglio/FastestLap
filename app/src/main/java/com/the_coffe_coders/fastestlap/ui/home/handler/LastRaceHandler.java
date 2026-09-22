@@ -149,12 +149,14 @@ public class LastRaceHandler {
     private void updateLastRaceUI(WeeklyRace race, Track track) {
         try {
             UIUtils.singleSetTextViewText(race.getRaceName(), view.findViewById(R.id.last_race_name));
-            UIUtils.loadImageWithGlide(context, track.getTrack_minimal_layout_url(),
-                    view.findViewById(R.id.last_race_track_outline),
-                    () -> updateLastRaceUIFinalStep(race));
+            ImageView trackOutlineView = view.findViewById(R.id.last_race_track_outline);
+            if (trackOutlineView != null && track != null && track.getTrack_minimal_layout_url() != null) {
+                UIUtils.loadImageAsync(context, track.getTrack_minimal_layout_url(), trackOutlineView);
+            }
             if (track != null) {
                 loadNationFlag(track.getCountry());
             }
+            updateLastRaceUIFinalStep(race);
         } catch (Exception e) {
             Log.e(TAG, "Error updating last race UI: " + e.getMessage());
             loadPendingResultsLayout();

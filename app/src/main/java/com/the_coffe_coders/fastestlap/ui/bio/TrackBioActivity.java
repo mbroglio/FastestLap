@@ -181,6 +181,8 @@ public class TrackBioActivity extends AppCompatActivity {
 
         createHistoryTable();
 
+        loadingScreen.hideLoadingScreenImmediately();
+
         String nationFlag_Url = nation != null ? nation.getNation_flag_url() : null;
 
         UIUtils.loadImagesInParallel(this,
@@ -192,10 +194,7 @@ public class TrackBioActivity extends AppCompatActivity {
                         circuitImage,
                         countryFlag},
 
-                () -> {
-                    Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: TrackBioActivity at " + System.currentTimeMillis());
-                    loadingScreen.hideLoadingScreenImmediately();
-                });
+                () -> Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: TrackBioActivity at " + System.currentTimeMillis()));
 
     }
 

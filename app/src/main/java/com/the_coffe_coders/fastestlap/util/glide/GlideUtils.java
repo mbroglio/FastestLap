@@ -68,9 +68,19 @@ public class GlideUtils {
 
         Glide.with(context.getApplicationContext())
                 .load(url)
+                .diskCacheStrategy(DiskCacheStrategy.DATA)
+                .preload();
+    }
+
+    public static void preloadImage(Context context, String url, int width, int height) {
+        if (url == null || url.isEmpty()) return;
+        if (context == null || isActivityDestroyed(context)) return;
+
+        Glide.with(context.getApplicationContext())
+                .load(url)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .downsample(DownsampleStrategy.AT_MOST)
-                .preload();
+                .preload(width, height);
     }
 
     public static void preloadImage(Context context, String url, Runnable onComplete) {

@@ -326,10 +326,14 @@ public class DriverBioActivity extends AppCompatActivity {
         UIUtils.updateTachometers(this, driver, winPercentageTachometer, podiumPercentageTachometer);
         createHistoryTable();
 
+        loadingScreen.hideLoadingScreenImmediately();
+        if (winPercentageTachometer != null) winPercentageTachometer.startAnimation();
+        if (podiumPercentageTachometer != null) podiumPercentageTachometer.startAnimation();
+
         String nationFlagUrl = nation != null ? nation.getNation_flag_url() : null;
         String teamLogoUrl = team != null ? team.getTeam_logo_url() : null;
 
-        // Carica tutte le immagini in parallelo e nascondi la schermata di caricamento solo al completamento
+        // Carica tutte le immagini in parallelo in background
         UIUtils.loadImagesInParallel(this,
                 new String[]{
                         teamLogoUrl,
@@ -337,19 +341,13 @@ public class DriverBioActivity extends AppCompatActivity {
                         driver.getDriver_full_pic_url(),
                         driver.getRacing_number_pic_url()},
 
-
                 new ImageView[]{
                         teamLogoImage,
                         findViewById(R.id.driver_flag),
                         findViewById(R.id.driver_bio_pic),
                         driverNumberImage},
 
-                () -> {
-                    Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: DriverBioActivity at " + System.currentTimeMillis());
-                    loadingScreen.hideLoadingScreenImmediately();
-                    if (winPercentageTachometer != null) winPercentageTachometer.startAnimation();
-                    if (podiumPercentageTachometer != null) podiumPercentageTachometer.startAnimation();
-                });
+                () -> Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: DriverBioActivity at " + System.currentTimeMillis()));
     }
 
 

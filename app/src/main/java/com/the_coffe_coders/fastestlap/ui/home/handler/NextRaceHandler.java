@@ -237,13 +237,16 @@ public class NextRaceHandler {
                 nationFlagUrl = nation.getNation_flag_url();
             }
 
-            UIUtils.loadImageWithGlide(context, nationFlagUrl, view.findViewById(R.id.home_next_gp_flag), () -> {
-                try {
-                    setNextRaceCardFinalStep(nextRace);
-                } catch (Exception e) {
-                    setSeasonEnded();
-                }
-            });
+            ImageView flagView = view.findViewById(R.id.home_next_gp_flag);
+            if (flagView != null && nationFlagUrl != null) {
+                UIUtils.loadImageAsync(context, nationFlagUrl, flagView);
+            }
+
+            try {
+                setNextRaceCardFinalStep(nextRace);
+            } catch (Exception e) {
+                setSeasonEnded();
+            }
 
         } catch (Exception e) {
             Log.i(TAG, "connected: " + networkLiveData.isConnected());
