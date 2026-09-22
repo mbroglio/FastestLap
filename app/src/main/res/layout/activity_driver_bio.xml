@@ -207,8 +207,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
                                     android:gravity="start"
-                                    android:text="@string/not_found"
-                                    android:textColor="@color/white" />
+                                    android:text="@string/not_found" />
 
                                 <!-- Date of Birth -->
                                 <TextView
@@ -227,8 +226,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
                                     android:gravity="start"
-                                    android:text="@string/not_found"
-                                    android:textColor="@color/white" />
+                                    android:text="@string/not_found" />
 
                                 <!-- Age -->
                                 <TextView
@@ -247,8 +245,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
                                     android:gravity="start"
-                                    android:text="@string/not_found"
-                                    android:textColor="@color/white" />
+                                    android:text="@string/not_found" />
 
                                 <!-- Weight / Height -->
                                 <TextView
@@ -272,8 +269,7 @@
                                         style="@style/t12BoldWhiteLineLimited"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="@string/not_found"
-                                        android:textColor="@color/white" />
+                                        android:text="@string/not_found" />
 
                                     <TextView
                                         android:layout_width="wrap_content"
@@ -298,8 +294,7 @@
                                         style="@style/t12BoldWhiteLineLimited"
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
-                                        android:text="@string/not_found"
-                                        android:textColor="@color/white" />
+                                        android:text="@string/not_found" />
 
                                     <TextView
                                         android:layout_width="wrap_content"
@@ -329,8 +324,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
                                     android:gravity="start"
-                                    android:text="@string/not_found"
-                                    android:textColor="@color/white" />
+                                    android:text="@string/not_found" />
 
                                 <!-- Podiums -->
                                 <TextView
@@ -349,8 +343,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
                                     android:gravity="start"
-                                    android:text="@string/not_found"
-                                    android:textColor="@color/white" />
+                                    android:text="@string/not_found" />
 
                                 <!-- Championships -->
                                 <TextView
@@ -369,8 +362,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
                                     android:gravity="start"
-                                    android:text="@string/not_found"
-                                    android:textColor="@color/white" />
+                                    android:text="@string/not_found" />
 
                                 <!-- First Entry -->
                                 <TextView
@@ -389,8 +381,7 @@
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="2dp"
                                     android:gravity="start"
-                                    android:text="@string/not_found"
-                                    android:textColor="@color/white" />
+                                    android:text="@string/not_found" />
 
                             </LinearLayout>
 

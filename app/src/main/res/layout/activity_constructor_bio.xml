@@ -91,8 +91,7 @@
                             android:gravity="center"
                             android:layout_marginBottom="12dp"
                             android:maxLines="1"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white" />
+                            android:text="@string/not_found" />
 
                         <!-- SECTION 1: TEAM LOGO & FLAG -->
                         <LinearLayout
@@ -200,17 +199,16 @@
                                 android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/drivers_title"
                                     style="@style/t12UpperCaseBoldWhiteLineLimited"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="@string/drivers_index"
-                                    android:textColor="@color/app_primary_red" />
+                                    android:text="@string/drivers_index" />
 
                                 <!-- CONTAINER CENTRATO TRA IL TITOLO DRIVERS E LA FINE DELLA CARD -->
                                 <LinearLayout
                                     android:layout_width="match_parent"
-                                    android:layout_height="0dp"
-                                    android:layout_weight="1"
+                                    android:layout_height="match_parent"
                                     android:gravity="center"
                                     android:orientation="vertical">
 
@@ -252,8 +250,7 @@
                                             android:layout_marginTop="4dp"
                                             android:gravity="center"
                                             android:maxWidth="96dp"
-                                            android:text="@string/not_found"
-                                            android:textColor="@color/white" />
+                                            android:text="@string/not_found" />
 
                                     </LinearLayout>
 
@@ -300,8 +297,7 @@
                                             android:layout_marginTop="4dp"
                                             android:gravity="center"
                                             android:maxWidth="96dp"
-                                            android:text="@string/not_found"
-                                            android:textColor="@color/white" />
+                                            android:text="@string/not_found" />
 
                                     </LinearLayout>
 
@@ -327,11 +323,11 @@
                                 android:orientation="vertical">
 
                                 <TextView
+                                    android:id="@+id/team_info_title"
                                     style="@style/t12UpperCaseBoldWhiteLineLimited"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="@string/team_info_index"
-                                    android:textColor="@color/app_primary_red" />
+                                    android:text="@string/team_info_index" />
 
                                 <LinearLayout
                                     android:id="@+id/team_stats"
@@ -357,8 +353,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="2dp"
                                         android:gravity="start"
-                                        android:text="@string/not_found"
-                                        android:textColor="@color/white" />
+                                        android:text="@string/not_found" />
 
                                     <!-- Team Principal -->
                                     <TextView
@@ -378,8 +373,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="2dp"
                                         android:gravity="start"
-                                        android:text="@string/not_found"
-                                        android:textColor="@color/white" />
+                                        android:text="@string/not_found" />
 
                                     <!-- Chassis -->
                                     <TextView
@@ -399,8 +393,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="2dp"
                                         android:gravity="start"
-                                        android:text="@string/not_found"
-                                        android:textColor="@color/white" />
+                                        android:text="@string/not_found" />
 
                                     <!-- Power Unit -->
                                     <TextView
@@ -420,8 +413,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="2dp"
                                         android:gravity="start"
-                                        android:text="@string/not_found"
-                                        android:textColor="@color/white" />
+                                        android:text="@string/not_found" />
 
                                     <!-- First Entry -->
                                     <TextView
@@ -441,8 +433,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="2dp"
                                         android:gravity="start"
-                                        android:text="@string/not_found"
-                                        android:textColor="@color/white" />
+                                        android:text="@string/not_found" />
 
                                     <!-- World Championships -->
                                     <TextView
@@ -462,8 +453,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="2dp"
                                         android:gravity="start"
-                                        android:text="@string/not_found"
-                                        android:textColor="@color/white" />
+                                        android:text="@string/not_found" />
 
                                     <!-- Wins -->
                                     <TextView
@@ -483,8 +473,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="2dp"
                                         android:gravity="start"
-                                        android:text="@string/not_found"
-                                        android:textColor="@color/white" />
+                                        android:text="@string/not_found" />
 
                                     <!-- Podiums -->
                                     <TextView
@@ -504,8 +493,7 @@
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="2dp"
                                         android:gravity="start"
-                                        android:text="@string/not_found"
-                                        android:textColor="@color/white" />
+                                        android:text="@string/not_found" />
 
                                 </LinearLayout>
 

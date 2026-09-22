@@ -184,6 +184,12 @@ public class ConstructorBioActivity extends AppCompatActivity {
                     TextView teamHistoryTitle = findViewById(R.id.team_history_title);
                     teamHistoryTitle.setTextColor(ContextCompat.getColor(this, teamColor));
 
+                    TextView teamInfoTitle = findViewById(R.id.team_info_title);
+                    teamInfoTitle.setTextColor(ContextCompat.getColor(this, teamColor));
+
+                    TextView driversTitle = findViewById(R.id.drivers_title);
+                    driversTitle.setTextColor(ContextCompat.getColor(this, teamColor));
+
                     MaterialCardView teamLogoCard = findViewById(R.id.team_logo_card);
                     teamLogoCard.setStrokeColor(ContextCompat.getColor(this, teamColor));
 
