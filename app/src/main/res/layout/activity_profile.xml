@@ -221,7 +221,7 @@
 
             </LinearLayout>
 
-            <!-- Notification & FCM Management Section -->
+            <!-- Notification & FCM Management Section
             <LinearLayout
                 android:id="@+id/notification_management_section"
                 android:layout_width="match_parent"
@@ -262,6 +262,8 @@
                     android:textColor="@color/white" />
 
             </LinearLayout>
+
+            -->
 
             <Button
                 android:id="@+id/save_button"

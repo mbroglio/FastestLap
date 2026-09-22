@@ -143,7 +143,7 @@ public class ProfileActivity extends AppCompatActivity {
         }));
 
         // Setup Notification & FCM testing section
-        setupNotificationSection();
+       // setupNotificationSection();
 
         // Hide action buttons initially
         saveButton.setVisibility(View.INVISIBLE);
@@ -258,9 +258,10 @@ public class ProfileActivity extends AppCompatActivity {
         super.onResume();
         // Refresh preferences when activity resumes
         fetchAutoLoginPreference();
-        updateNotificationPermissionStatus();
+        //updateNotificationPermissionStatus();
     }
 
+    /*
     private void setupNotificationSection() {
         notificationPermissionStatus = findViewById(R.id.notification_permission_status);
         Button testNotificationButton = findViewById(R.id.test_notification_button);
@@ -273,6 +274,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         updateNotificationPermissionStatus();
     }
+
 
     private void updateNotificationPermissionStatus() {
         if (notificationPermissionStatus == null) return;
@@ -292,4 +294,5 @@ public class ProfileActivity extends AppCompatActivity {
             });
         }
     }
+    */
 }

@@ -670,4 +670,16 @@
         <item name="cornerSize">16dp</item>
     </style>
 
+    <!--
+    BOTTOM ROUNDED CARD SHAPE APPEARANCE
+        - Top corners 0dp, bottom corners 20dp
+    -->
+    <style name="ShapeAppearance.FastestLap.BottomRoundedCard" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">0dp</item>
+        <item name="cornerSizeTopRight">0dp</item>
+        <item name="cornerSizeBottomLeft">20dp</item>
+        <item name="cornerSizeBottomRight">20dp</item>
+    </style>
+
 </resources>

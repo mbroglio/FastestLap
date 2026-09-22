@@ -100,6 +100,23 @@ public class EventActivity extends AppCompatActivity {
         trackId = getIntent().getStringExtra("CIRCUIT_ID");
         Log.i(TAG, "Circuit ID: " + trackId);
 
+        View eventCardOuter = findViewById(R.id.event_card_outer);
+        if (eventCardOuter != null) {
+            eventCardOuter.setOutlineProvider(new android.view.ViewOutlineProvider() {
+                @Override
+                public void getOutline(View view, android.graphics.Outline outline) {
+                    int width = view.getWidth();
+                    int height = view.getHeight();
+                    if (width <= 0 || height <= 0) {
+                        return;
+                    }
+                    int radius = (int) (20 * getResources().getDisplayMetrics().density);
+                    outline.setRoundRect(0, -radius, width, height, radius);
+                }
+            });
+            eventCardOuter.setClipToOutline(true);
+        }
+
         initializeViewModels();
     }
 
@@ -235,11 +252,14 @@ public class EventActivity extends AppCompatActivity {
         loadingScreen.updateProgress();
 
         String imageUrl = track != null ? track.getTrack_pic_url() : null;
-        LinearLayout eventCard = findViewById(R.id.event_card);
+        ImageView bgImageView = findViewById(R.id.event_background_image);
 
-        UIUtils.loadImageInEventCardWithAlpha(this, imageUrl, eventCard,
-                () -> buildEventCardStepTwo(weeklyRace, track, nation),
-                76);
+        if (bgImageView != null && imageUrl != null && !imageUrl.isEmpty()) {
+            UIUtils.loadImageWithGlide(this, imageUrl, bgImageView,
+                    () -> buildEventCardStepTwo(weeklyRace, track, nation));
+        } else {
+            buildEventCardStepTwo(weeklyRace, track, nation);
+        }
     }
 
     private void buildEventCardStepTwo(WeeklyRace weeklyRace, Track track, Nation nation) {
@@ -262,24 +282,27 @@ public class EventActivity extends AppCompatActivity {
         LinearLayout trackLayout = findViewById(R.id.track_outline_layout);
         trackLayout.setOnClickListener(v -> NavigationUtils.navigateToBioPage(this, trackId + "&" + weeklyRace.getRaceName().toUpperCase(), 2));
 
-        Button openForecastButton = findViewById(R.id.goToForecastButton);
-        openForecastButton.setOnClickListener(v -> {
-            String locality = track.getLocation().getLocality();
-            String lat = track.getLocation().getLatitude();
-            String lon = track.getLocation().getLongitude();
 
-            String startDateStr = null;
-            String endDateStr = null;
-            if (weeklyRace.getFirstPractice() != null && weeklyRace.getFirstPractice().getStartDateTime() != null) {
-                startDateStr = weeklyRace.getFirstPractice().getStartDateTime().toLocalDate().toString();
-            }
-            if (weeklyRace.getFinalRace() != null && weeklyRace.getFinalRace().getStartDateTime() != null) {
-                endDateStr = weeklyRace.getFinalRace().getStartDateTime().toLocalDate().toString();
-            }
+        View scheduleWeatherBadge = findViewById(R.id.schedule_weather_badge);
+        if (scheduleWeatherBadge != null) {
+            scheduleWeatherBadge.setOnClickListener(v -> {
+                String locality = track.getLocation().getLocality();
+                String lat = track.getLocation().getLatitude();
+                String lon = track.getLocation().getLongitude();
 
-            boolean isUnderway = weeklyRace.isUnderway(false);
-            NavigationUtils.navigateToWeatherPage(this, locality, lat, lon, "latest", startDateStr, endDateStr, isUnderway);
-        });
+                String startDateStr = null;
+                String endDateStr = null;
+                if (weeklyRace.getFirstPractice() != null && weeklyRace.getFirstPractice().getStartDateTime() != null) {
+                    startDateStr = weeklyRace.getFirstPractice().getStartDateTime().toLocalDate().toString();
+                }
+                if (weeklyRace.getFinalRace() != null && weeklyRace.getFinalRace().getStartDateTime() != null) {
+                    endDateStr = weeklyRace.getFinalRace().getStartDateTime().toLocalDate().toString();
+                }
+
+                boolean isUnderway = weeklyRace.isUnderway(false);
+                NavigationUtils.navigateToWeatherPage(this, locality, lat, lon, "latest", startDateStr, endDateStr, isUnderway);
+            });
+        }
 
         String nationFlagUrl = null;
         if (nation != null) {
@@ -291,17 +314,18 @@ public class EventActivity extends AppCompatActivity {
                 new ImageView[]{findViewById(R.id.country_flag), findViewById(R.id.track_outline_image)},
                 () -> buildEventCardFinalStep(weeklyRace));
 
-        // Calendar export button
-        Button addToCalendarButton = findViewById(R.id.addToCalendarButton);
-        addToCalendarButton.setOnClickListener(v -> {
-            try {
-                CalendarUtils.addWeekendToCalendar(this, weeklyRace);
-                Toast.makeText(this, R.string.add_to_calendar_success, Toast.LENGTH_SHORT).show();
-            } catch (Exception e) {
-                Log.e(TAG, "Error opening calendar: " + e.getMessage());
-                Toast.makeText(this, R.string.calendar_not_found, Toast.LENGTH_SHORT).show();
-            }
-        });
+        View scheduleCalendarBadge = findViewById(R.id.schedule_calendar_badge);
+        if (scheduleCalendarBadge != null) {
+            scheduleCalendarBadge.setOnClickListener(v -> {
+                try {
+                    CalendarUtils.addWeekendToCalendar(this, weeklyRace);
+                    Toast.makeText(this, R.string.add_to_calendar_success, Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Log.e(TAG, "Error opening calendar: " + e.getMessage());
+                    Toast.makeText(this, R.string.calendar_not_found, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     private void buildEventCardFinalStep(WeeklyRace weeklyRace) {
@@ -309,7 +333,7 @@ public class EventActivity extends AppCompatActivity {
         Session nextEvent = weeklyRace.findNextEvent(sessions);
         boolean underway = weeklyRace.isUnderway(false) && !weeklyRace.isWeekFinished();
 
-        createWeekSchedule(sessions, weeklyRace.getRound());
+        createWeekSchedule(weeklyRace, sessions);
 
         String eventTitle = weeklyRace.getRaceName() != null
                 ? weeklyRace.getRaceName().toUpperCase()
@@ -541,30 +565,48 @@ public class EventActivity extends AppCompatActivity {
         resultsView.setVisibility(View.GONE);
     }
 
-    private void createWeekSchedule(List<Session> sessions, String round) {
+    private void createWeekSchedule(WeeklyRace weeklyRace, List<Session> sessions) {
         View eventSchedule = findViewById(R.id.event_schedule_table);
         loadingScreen.updateProgress();
 
         String sessionId;
 
-        for (Session session : sessions) {
+        for (int i = 0; i < sessions.size(); i++) {
+            Session session = sessions.get(i);
+            if (session == null) continue;
+
             sessionId = session.getClass().getSimpleName();
-            if (sessionId.equals("Practice")) {
+            if (session.isPractice()) {
                 Practice practice = (Practice) session;
+                if (practice.getNumber() <= 0) {
+                    practice.setNumber(i + 1);
+                }
                 sessionId = practice.getPractice();
             }
 
-            UIUtils.translateSchedule(this,
-                    eventSchedule.findViewById(Constants.SESSION_NAME_FIELD.get(sessionId)),
-                    eventSchedule.findViewById(Constants.SESSION_DAY_FIELD.get(sessionId)),
-                    sessionId);
+            Integer nameField = Constants.SESSION_NAME_FIELD.get(sessionId);
+            Integer dayField = Constants.SESSION_DAY_FIELD.get(sessionId);
+            Integer timeField = Constants.SESSION_TIME_FIELD.get(sessionId);
 
-            UIUtils.setTextViewTextWithCondition(sessionId.equals("Race"),
-                    session.getStartingTime(),
-                    session.getTime(),
-                    eventSchedule.findViewById(Constants.SESSION_TIME_FIELD.get(sessionId)));
+            if (nameField != null && dayField != null) {
+                UIUtils.translateSchedule(this,
+                        eventSchedule.findViewById(nameField),
+                        eventSchedule.findViewById(dayField),
+                        sessionId,
+                        session);
+            }
 
-            setChequeredFlag(eventSchedule, session, round);
+            if (timeField != null) {
+                UIUtils.setTextViewTextWithCondition(sessionId.equals("Race"),
+                        session.getStartingTime(),
+                        session.getTime(),
+                        eventSchedule.findViewById(timeField));
+            }
+
+            if(!session.isPractice()){
+                setChequeredFlag(eventSchedule, session, weeklyRace);
+            }
+
 
             // Automatically schedule background session reminder 15 mins before start for future sessions
             if (!session.isFinished() && session.getStartDateTime() != null) {
@@ -577,7 +619,6 @@ public class EventActivity extends AppCompatActivity {
                     String raceName = (currentRace != null && currentRace.getRaceName() != null)
                             ? currentRace.getRaceName()
                             : "Formula 1 Grand Prix";
-
 
                     NotificationScheduler.scheduleSessionReminder(
                             this,
@@ -593,38 +634,108 @@ public class EventActivity extends AppCompatActivity {
         }
     }
 
-
-    private void setChequeredFlag(View view, Session session, String round) {
+    private void setChequeredFlag(View view, Session session, WeeklyRace weeklyRace) {
         String sessionId = session.getClass().getSimpleName();
         if (session.isPractice()) {
             Practice practice = (Practice) session;
             sessionId = practice.getPractice();
         }
 
-        if (session.isFinished()) {
-            ImageView flag = view.findViewById(Constants.SESSION_FLAG_FIELD.get(sessionId));
-            flag.setVisibility(View.VISIBLE);
+        Integer flagContainerId = Constants.SESSION_FLAG_CONTAINER.get(sessionId);
+        Integer flagId = Constants.SESSION_FLAG_FIELD.get(sessionId);
+        Integer rowId = Constants.SESSION_ROW.get(sessionId);
 
-            LinearLayout currentSession = view.findViewById(Constants.SESSION_ROW.get(sessionId));
-            currentSession.setClickable(true);
-            currentSession.setFocusable(true);
-            currentSession.setOnClickListener(v -> manageSessionScheduleClick(session, round));
+        View flagContainer = flagContainerId != null ? view.findViewById(flagContainerId) : null;
+        View flagImage = flagId != null ? view.findViewById(flagId) : null;
+        View row = rowId != null ? view.findViewById(rowId) : null;
+
+        boolean isFinished = (weeklyRace != null && weeklyRace.isWeekFinished())
+                || (session != null && session.isFinished())
+                || (session != null && session.getEndDateTime() != null && session.getEndDateTime().isBefore(org.threeten.bp.LocalDateTime.now()));
+
+        if (isFinished) {
+            String round = weeklyRace != null ? weeklyRace.getRound() : "";
+
+            if (flagContainer != null) {
+                flagContainer.setVisibility(View.VISIBLE);
+                flagContainer.setClickable(true);
+                flagContainer.setFocusable(true);
+                flagContainer.setOnClickListener(v -> manageSessionScheduleClick(session, round));
+            }
+            if (flagImage != null) {
+                flagImage.setVisibility(View.VISIBLE);
+            }
+            if (row != null) {
+                row.setClickable(true);
+                row.setFocusable(true);
+                row.setOnClickListener(v -> manageSessionScheduleClick(session, round));
+            }
+        } else {
+            if (flagContainer != null) {
+                flagContainer.setVisibility(View.INVISIBLE);
+                flagContainer.setClickable(false);
+                flagContainer.setFocusable(false);
+                flagContainer.setOnClickListener(null);
+            }
+            if (flagImage != null) {
+                flagImage.setVisibility(View.INVISIBLE);
+            }
+            if (row != null) {
+                row.setClickable(false);
+                row.setFocusable(false);
+                row.setOnClickListener(null);
+            }
         }
     }
 
     private void manageSessionScheduleClick(Session session, String round) {
-
         Log.i(TAG, "session id clicked: " + session.getClass().getSimpleName());
-        if (session.isRace()) {
-            showRaceResultsDialog(currentRace);
+        if (!session.isPractice()){
+            if (session.isRace()) {
+                if (currentRace != null && currentRace.getRaceResults() != null && !currentRace.getRaceResults().isEmpty()) {
+                    showRaceResultsDialog(currentRace);
+                } else {
+                    fetchRaceResultsAndShow(round);
+                }
+            } else if (session.isQualifying()) {
+                processQualifyingData(round);
+            } else if (session.isSprint()) {
+                processSprintData(round);
+            } else{
+                Toast.makeText(this, R.string.results_not_available, Toast.LENGTH_SHORT).show();
+            }
         }
-        if (session.isQualifying()) {
-            processQualifyingData(round);
-        }
-        if (session.isSprint()) {
-            processSprintData(round);
-        }
+    }
 
+    private void fetchRaceResultsAndShow(String round) {
+        if (loadingScreen != null) {
+            loadingScreen.showLoadingScreen(true);
+        }
+        MutableLiveData<Result> resultMutableLiveData = raceResultViewModel.getRaceResults(round);
+        Observer<Result> observer = new Observer<>() {
+            @Override
+            public void onChanged(Result result) {
+                if (result instanceof Result.Loading) {
+                    return;
+                }
+                resultMutableLiveData.removeObserver(this);
+                if (loadingScreen != null) {
+                    loadingScreen.hideLoadingScreenImmediately();
+                }
+                if (result instanceof Result.RaceResultsSuccess) {
+                    Race race = ((Result.RaceResultsSuccess) result).getData();
+                    if (race != null && race.getRaceResults() != null && !race.getRaceResults().isEmpty()) {
+                        currentRace = race;
+                        showRaceResultsDialog(race);
+                    } else {
+                        Toast.makeText(EventActivity.this, R.string.results_not_available, Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(EventActivity.this, R.string.results_not_available, Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+        resultMutableLiveData.observe(this, observer);
     }
 
     private void processQualifyingData(String round) {
@@ -654,13 +765,13 @@ public class EventActivity extends AppCompatActivity {
 
                         if (qualifyingResults == null || qualifyingResults.isEmpty()) {
                             Log.i(TAG, "No qualifying results found");
-                            Toast.makeText(EventActivity.this, "No qualifying results found", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EventActivity.this, R.string.results_not_available, Toast.LENGTH_SHORT).show();
                         } else {
                             Log.i(TAG, "Qualifying results found: " + qualifyingResults.size());
                             showQualifyingResultsDialog(race);
                         }
                     } else if (result instanceof Result.Error) {
-                        Toast.makeText(EventActivity.this, "Error loading qualifying results", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EventActivity.this, R.string.results_not_available, Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Error processing qualifying data: " + e.getMessage());
@@ -697,13 +808,13 @@ public class EventActivity extends AppCompatActivity {
 
                         if (sprintResults == null || sprintResults.isEmpty()) {
                             Log.i(TAG, "No sprint results found");
-                            Toast.makeText(EventActivity.this, "No sprint results found", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EventActivity.this, R.string.results_not_available, Toast.LENGTH_SHORT).show();
                         } else {
                             Log.i(TAG, "Sprint results found: " + sprintResults.size());
                             showRaceResultsDialog(race);
                         }
                     } else if (result instanceof Result.Error) {
-                        Toast.makeText(EventActivity.this, "Error loading sprint results", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(EventActivity.this, R.string.results_not_available, Toast.LENGTH_SHORT).show();
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Error processing sprint data: " + e.getMessage());

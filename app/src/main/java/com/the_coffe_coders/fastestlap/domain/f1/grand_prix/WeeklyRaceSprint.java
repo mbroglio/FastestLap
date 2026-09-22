@@ -29,7 +29,9 @@ public class WeeklyRaceSprint extends WeeklyRace {
 
     public List<Session> getSessions() {
         List<Session> sessions = new ArrayList<>();
-
+        if (this.firstPractice != null) {
+            this.firstPractice.setNumber(1);
+        }
         sessions.add(firstPractice);
         sessions.add(sprintQualifying);
         sessions.add(sprint);

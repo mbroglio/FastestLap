@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.threeten.bp.DayOfWeek;
+
 public class Constants {
 
     public static final int SPACER_HEIGHT = 20;
@@ -167,6 +169,16 @@ public class Constants {
             "Race", R.id.session_5_flag
     );
 
+    public static final Map<String, Integer> SESSION_FLAG_CONTAINER = Map.of(
+            "Practice1", R.id.session_1_flag_container,
+            "Practice2", R.id.session_2_flag_container,
+            "Practice3", R.id.session_3_flag_container,
+            "SprintQualifying", R.id.session_2_flag_container,
+            "Sprint", R.id.session_3_flag_container,
+            "Qualifying", R.id.session_4_flag_container,
+            "Race", R.id.session_5_flag_container
+    );
+
     public static final Map<String, Integer> SESSION_NAME_FIELD = Map.of(
             "Practice1", R.id.session_1_name,
             "Practice2", R.id.session_2_name,
@@ -187,6 +199,46 @@ public class Constants {
             "Race", R.id.session_5
     );
 
+
+    public static final Map<DayOfWeek, String> DAY_OF_WEEK_ENG = Map.of(
+            DayOfWeek.MONDAY, "Monday",
+            DayOfWeek.TUESDAY, "Tuesday",
+            DayOfWeek.WEDNESDAY, "Wednesday",
+            DayOfWeek.THURSDAY, "Thursday",
+            DayOfWeek.FRIDAY, "Friday",
+            DayOfWeek.SATURDAY, "Saturday",
+            DayOfWeek.SUNDAY, "Sunday"
+    );
+
+    public static final Map<DayOfWeek, String> DAY_OF_WEEK_ITA = Map.of(
+            DayOfWeek.MONDAY, "Lunedì",
+            DayOfWeek.TUESDAY, "Martedì",
+            DayOfWeek.WEDNESDAY, "Mercoledì",
+            DayOfWeek.THURSDAY, "Giovedì",
+            DayOfWeek.FRIDAY, "Venerdì",
+            DayOfWeek.SATURDAY, "Sabato",
+            DayOfWeek.SUNDAY, "Domenica"
+    );
+
+    public static final Map<String, String> DAY_NAMES_ENG = Map.of(
+            "MONDAY", "Monday",
+            "TUESDAY", "Tuesday",
+            "WEDNESDAY", "Wednesday",
+            "THURSDAY", "Thursday",
+            "FRIDAY", "Friday",
+            "SATURDAY", "Saturday",
+            "SUNDAY", "Sunday"
+    );
+
+    public static final Map<String, String> DAY_NAMES_ITA = Map.of(
+            "MONDAY", "Lunedì",
+            "TUESDAY", "Martedì",
+            "WEDNESDAY", "Mercoledì",
+            "THURSDAY", "Giovedì",
+            "FRIDAY", "Venerdì",
+            "SATURDAY", "Sabato",
+            "SUNDAY", "Domenica"
+    );
 
     public static final Map<String, String> SESSION_DAY_ENG = Map.of(
             "Practice1", "Friday",

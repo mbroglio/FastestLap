@@ -31,7 +31,10 @@ import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.util.Constants;
+
+import org.threeten.bp.DayOfWeek;
 
 import java.time.Duration;
 import java.time.ZonedDateTime;
@@ -296,9 +299,13 @@ public class UIUtils {
      * ----------------------------------------------------------------------------------------------
      */
 
-    public static void translateSchedule(Context context, TextView sessionTypeTextView, TextView sessionDayTextView, String sessionId) {
+    public static void translateSchedule(Context context, TextView sessionTypeTextView, TextView sessionDayTextView, String sessionId, Session session) {
         translateSessionType(context, sessionTypeTextView, sessionId);
-        translateSessionDay(context, sessionDayTextView, sessionId);
+        translateSessionDay(context, sessionDayTextView, sessionId, session);
+    }
+
+    public static void translateSchedule(Context context, TextView sessionTypeTextView, TextView sessionDayTextView, String sessionId) {
+        translateSchedule(context, sessionTypeTextView, sessionDayTextView, sessionId, null);
     }
 
     public static void translateSessionType(Context context, TextView sessionTypeTextView, String sessionId) {
@@ -311,8 +318,23 @@ public class UIUtils {
     }
 
     public static void translateSessionDay(Context context, TextView sessionDayTextView, String sessionId) {
+        translateSessionDay(context, sessionDayTextView, sessionId, null);
+    }
+
+    public static void translateSessionDay(Context context, TextView sessionDayTextView, String sessionId, Session session) {
         String langTags = AppCompatDelegate.getApplicationLocales().toLanguageTags();
-        if (langTags != null && langTags.toLowerCase(Locale.ROOT).startsWith("it")) {
+        boolean isItalian = langTags != null && langTags.toLowerCase(Locale.ROOT).startsWith("it");
+
+        if (session != null && session.getStartDateTime() != null) {
+            DayOfWeek dayOfWeek = session.getStartDateTime().getDayOfWeek();
+            String dayName = isItalian ? Constants.DAY_OF_WEEK_ITA.get(dayOfWeek) : Constants.DAY_OF_WEEK_ENG.get(dayOfWeek);
+            if (dayName != null) {
+                UIUtils.singleSetTextViewText(dayName, sessionDayTextView);
+                return;
+            }
+        }
+
+        if (isItalian) {
             UIUtils.singleSetTextViewText(Constants.SESSION_DAY_ITA.getOrDefault(sessionId, context.getString(R.string.unknown)), sessionDayTextView);
         } else {
             UIUtils.singleSetTextViewText(Constants.SESSION_DAY_ENG.getOrDefault(sessionId, context.getString(R.string.unknown)), sessionDayTextView);

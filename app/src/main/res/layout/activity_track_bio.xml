@@ -20,8 +20,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/top_bar_height"
             android:background="@color/app_primary_red"
-            app:navigationIcon="@drawable/arrow_back_ios_style"
-            app:titleTextAppearance="@style/OrbitronBold_AutoSize_top_bar">
+            app:navigationIcon="@drawable/arrow_back_ios_style">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -35,36 +34,13 @@
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:gravity="center"
-                    android:maxLines="1">
-
-                </TextView>
+                    android:maxLines="1" />
 
             </RelativeLayout>
 
         </com.google.android.material.appbar.MaterialToolbar>
 
     </com.google.android.material.appbar.AppBarLayout>
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="@dimen/top_bar_height" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_end="0dp" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.62" />
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/track_bio_layout"
@@ -87,373 +63,412 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <!-- CARD 1: CIRCUIT NAME, LOCALITY & FLAG, TRACK IMAGE -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/track_main_card"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="12dp"
+                    app:cardBackgroundColor="@color/card_surface_elevated"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="3dp"
+                    app:strokeColor="@color/subtle_white_border"
+                    app:strokeWidth="1dp">
 
-                    <com.google.android.material.card.MaterialCardView
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="300dp"
-                        android:layout_marginStart="15dp"
-                        android:layout_marginTop="15dp"
-                        android:layout_marginEnd="15dp"
-                        app:cardBackgroundColor="@color/white"
-                        app:strokeColor="@color/app_primary_red"
-                        app:strokeWidth="5dp">
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="14dp">
 
+                        <!-- CIRCUIT NAME TITLE (NON TUTTO MAIUSCOLO) -->
+                        <TextView
+                            android:id="@+id/circuit_name_value"
+                            style="@style/t20BoldWhite"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:text="@string/not_found" />
+
+                        <!-- SOTTO, SENZA DIVIDER: NOME LOCALITÀ E BANDIERA NEL LAYOUT SMUSSATO -->
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_margin="8dp"
-                            android:orientation="vertical">
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:gravity="center"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/circuit_location_value"
+                                style="@style/t14BoldWhiteLineLimited"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                android:text="@string/not_found"
+                                android:textColor="@color/timer_gray" />
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/country_flag_card"
+                                android:layout_width="54dp"
+                                android:layout_height="36dp"
+                                android:layout_marginStart="12dp"
+                                app:cardBackgroundColor="@color/card_surface_elevated"
+                                app:cardCornerRadius="6dp"
+                                app:cardElevation="2dp"
+                                app:strokeColor="@color/subtle_white_border"
+                                app:strokeWidth="1dp">
+
+                                <com.google.android.material.imageview.ShapeableImageView
+                                    android:id="@+id/country_flag"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:importantForAccessibility="no"
+                                    android:scaleType="centerCrop"
+                                    app:shapeAppearanceOverlay="@style/ShapeAppearance.FastestLap.RoundedFlag" />
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                        </LinearLayout>
+
+                        <!-- SOTTO DIVIDER -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginBottom="12dp"
+                            android:background="@color/subtle_white_border" />
+
+                        <!-- IMMAGINE DEL CIRCUITO -->
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/track_image_card"
+                            android:layout_width="match_parent"
+                            android:layout_height="220dp"
+                            app:cardBackgroundColor="@color/modern_light_gray"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="2dp"
+                            app:strokeColor="@color/subtle_white_border"
+                            app:strokeWidth="1dp">
 
                             <ImageView
                                 android:id="@+id/track_image"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_margin="3dp"
+                                android:layout_margin="10dp"
                                 android:importantForAccessibility="no"
-                                android:scaleType="fitCenter">
+                                android:scaleType="fitCenter" />
 
-                            </ImageView>
+                        </com.google.android.material.card.MaterialCardView>
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginBottom="12dp"
+                            android:background="@color/subtle_white_border" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:baselineAligned="false"
+                            android:orientation="horizontal">
+
+                            <!-- COLONNA SINISTRA: MAPPA (ICONA MAPPAMONDO IN BOTTONE QUADRATO SMUSSATO CON OMBRA + SEE ON THE MAP) -->
+                            <LinearLayout
+                                android:id="@+id/map_button_container"
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:layout_weight="0.85"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <com.google.android.material.card.MaterialCardView
+                                    android:id="@+id/goToMapButton"
+                                    android:layout_width="84dp"
+                                    android:layout_height="84dp"
+                                    android:clickable="true"
+                                    android:focusable="true"
+                                    app:cardBackgroundColor="@color/card_surface_dark"
+                                    app:cardCornerRadius="18dp"
+                                    app:cardElevation="4dp"
+                                    app:strokeColor="@color/subtle_white_border"
+                                    app:strokeWidth="1.5dp">
+
+                                    <ImageView
+                                        android:layout_width="46dp"
+                                        android:layout_height="46dp"
+                                        android:layout_gravity="center"
+                                        android:importantForAccessibility="no"
+                                        android:scaleType="fitCenter"
+                                        android:src="@drawable/world_icon" />
+
+                                </com.google.android.material.card.MaterialCardView>
+
+                                <TextView
+                                    style="@style/t12BoldWhiteLineLimited"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:gravity="center"
+                                    android:maxWidth="96dp"
+                                    android:text="@string/open_with_google_maps"
+                                    android:textAllCaps="true" />
+
+                            </LinearLayout>
+
+                            <!-- VERTICAL DIVIDER -->
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="match_parent"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginTop="4dp"
+                                android:layout_marginEnd="8dp"
+                                android:layout_marginBottom="4dp"
+                                android:background="@color/subtle_white_border" />
+
+                            <!-- COLONNA DESTRA: INFORMAZIONI BIOGRAFICHE NELLO STESSO FORMATO DELLE ALTRE BIO -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1.15"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    style="@style/t12UpperCaseBoldWhiteLineLimited"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="@string/track_info_index" />
+
+                                <LinearLayout
+                                    android:id="@+id/track_stats"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:orientation="vertical">
+
+                                    <!-- First Entry -->
+                                    <TextView
+                                        android:id="@+id/track_first_entry_text"
+                                        style="@style/t10UpperCaseBoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:gravity="start"
+                                        android:text="@string/first_entry_index"
+                                        android:textColor="@color/timer_gray" />
+
+                                    <TextView
+                                        android:id="@+id/circuit_first_entry_value"
+                                        style="@style/t12BoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:gravity="start"
+                                        android:text="@string/not_found" />
+
+                                    <!-- Number of Laps -->
+                                    <TextView
+                                        android:id="@+id/number_of_laps_text"
+                                        style="@style/t10UpperCaseBoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="8dp"
+                                        android:gravity="start"
+                                        android:text="@string/number_of_laps_index"
+                                        android:textColor="@color/timer_gray" />
+
+                                    <TextView
+                                        android:id="@+id/number_of_laps_value"
+                                        style="@style/t12BoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:gravity="start"
+                                        android:text="@string/not_found"
+                                        android:textColor="@color/white" />
+
+                                    <!-- Circuit Length -->
+                                    <TextView
+                                        android:id="@+id/circuit_length_text"
+                                        style="@style/t10UpperCaseBoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="8dp"
+                                        android:gravity="start"
+                                        android:text="@string/track_length_index"
+                                        android:textColor="@color/timer_gray" />
+
+                                    <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:orientation="horizontal">
+
+                                        <TextView
+                                            android:id="@+id/circuit_length_value"
+                                            style="@style/t12BoldWhiteLineLimited"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="@string/not_found" />
+
+                                        <TextView
+                                            style="@style/t10RegularWhiteLineLimited"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginStart="4dp"
+                                            android:text="@string/km"
+                                            android:textColor="@color/timer_gray" />
+
+                                    </LinearLayout>
+
+                                    <!-- Race Distance -->
+                                    <TextView
+                                        android:id="@+id/race_distance_text"
+                                        style="@style/t10UpperCaseBoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="8dp"
+                                        android:gravity="start"
+                                        android:text="@string/race_distance_index"
+                                        android:textColor="@color/timer_gray" />
+
+                                    <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:orientation="horizontal">
+
+                                        <TextView
+                                            android:id="@+id/race_distance_value"
+                                            style="@style/t12BoldWhiteLineLimited"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="@string/not_found" />
+
+                                        <TextView
+                                            style="@style/t10RegularWhiteLineLimited"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginStart="4dp"
+                                            android:text="@string/km"
+                                            android:textColor="@color/timer_gray" />
+
+                                    </LinearLayout>
+
+                                    <!-- Fastest Lap -->
+                                    <TextView
+                                        android:id="@+id/fastest_lap_text"
+                                        style="@style/t12UpperCaseBoldWhiteLineLimited"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="8dp"
+                                        android:gravity="start"
+                                        android:text="@string/fastest_lap_index" />
+
+                                    <LinearLayout
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:layout_marginTop="2dp"
+                                        android:orientation="vertical">
+
+                                        <TextView
+                                            android:id="@+id/fastest_lap_value"
+                                            style="@style/t12BoldWhiteLineLimited"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:text="@string/not_found"
+                                            android:textColor="@color/purple" />
+
+                                        <TextView
+                                            android:id="@+id/fastest_lap_driver"
+                                            style="@style/t10RegularWhiteLineLimited"
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="wrap_content"
+                                            android:layout_marginTop="1dp"
+                                            android:text="@string/not_found"
+                                            android:textColor="@color/timer_gray" />
+
+                                    </LinearLayout>
+
+                                </LinearLayout>
+
+                            </LinearLayout>
 
                         </LinearLayout>
 
-                    </com.google.android.material.card.MaterialCardView>
+                    </LinearLayout>
 
-                </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                <LinearLayout
+                <!-- CARD 2: DIVISA VERTICALMENTE (MAP BUTTON A SINISTRA, INFO A DESTRA) -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/track_details_card"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="15dp"
-                    android:layout_marginEnd="15dp"
-                    android:orientation="vertical">
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="12dp"
+                    app:cardBackgroundColor="@color/card_surface_elevated"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="3dp"
+                    app:strokeColor="@color/subtle_white_border"
+                    app:strokeWidth="1dp">
 
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/circuit_name_text"
-                            style="@style/t14BoldWhiteLineLimited"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:text="@string/track_name_index">
 
-                        </TextView>
+                </com.google.android.material.card.MaterialCardView>
 
-                        <TextView
-                            android:id="@+id/circuit_name_value"
-                            style="@style/t12RegularWhiteLineLimited"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="20dp"
-                            android:layout_marginEnd="2dp"
-                            android:layout_toStartOf="@id/country_flag"
-                            android:layout_toEndOf="@id/circuit_name_text"
-                            android:gravity="start"
-                            android:maxLines="2"
-                            android:text="@string/not_found">
-
-                        </TextView>
-
-                        <ImageView
-                            android:id="@+id/country_flag"
-                            android:layout_width="70dp"
-                            android:layout_height="45dp"
-                            android:layout_alignParentTop="true"
-                            android:layout_alignParentEnd="true"
-                            android:importantForAccessibility="no">
-
-                        </ImageView>
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/track_location_text"
-                            style="@style/t14BoldWhiteLineLimited"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerInParent="true"
-                            android:text="@string/location_index">
-
-                        </TextView>
-
-                        <TextView
-                            android:id="@+id/circuit_location_value"
-                            style="@style/t12RegularWhiteLineLimited"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:layout_marginStart="20dp"
-                            android:layout_marginEnd="2dp"
-                            android:layout_toEndOf="@id/track_location_text"
-                            android:gravity="start"
-                            android:text="@string/not_found">
-
-                        </TextView>
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/track_first_entry_text"
-                            style="@style/t14BoldWhiteLineLimited"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerInParent="true"
-                            android:text="@string/first_entry_index">
-
-                        </TextView>
-
-                        <TextView
-                            android:id="@+id/circuit_first_entry_value"
-                            style="@style/t12RegularWhiteLineLimited"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:layout_marginStart="20dp"
-                            android:layout_marginEnd="2dp"
-                            android:layout_toEndOf="@id/track_first_entry_text"
-                            android:gravity="start"
-                            android:text="@string/not_found">
-
-                        </TextView>
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/number_of_laps_text"
-                            style="@style/t14BoldWhiteLineLimited"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerInParent="true"
-                            android:text="@string/number_of_laps_index">
-
-                        </TextView>
-
-                        <TextView
-                            android:id="@+id/number_of_laps_value"
-                            style="@style/t12RegularWhiteLineLimited"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:layout_marginStart="20dp"
-                            android:layout_marginEnd="2dp"
-                            android:layout_toEndOf="@id/number_of_laps_text"
-                            android:gravity="start"
-                            android:text="@string/not_found">
-
-                        </TextView>
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/circuit_length_text"
-                            style="@style/t14BoldWhiteLineLimited"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:text="@string/track_length_index">
-
-                        </TextView>
-
-                        <TextView
-                            android:id="@+id/circuit_length_value"
-                            style="@style/t12RegularWhiteLineLimited"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:layout_marginStart="20dp"
-                            android:layout_marginEnd="2dp"
-                            android:layout_toEndOf="@id/circuit_length_text"
-                            android:gravity="start"
-                            android:text="@string/not_found">
-
-                        </TextView>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:layout_marginStart="3dp"
-                            android:layout_toEndOf="@id/circuit_length_value"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:text="@string/km"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/text_minor_importance_size">
-
-                        </TextView>
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/race_distance_text"
-                            style="@style/t14BoldWhiteLineLimited"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerInParent="true"
-                            android:text="@string/race_distance_index">
-
-                        </TextView>
-
-                        <TextView
-                            android:id="@+id/race_distance_value"
-                            style="@style/t12RegularWhiteLineLimited"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:layout_marginStart="20dp"
-                            android:layout_toEndOf="@id/race_distance_text"
-                            android:text="@string/not_found">
-
-                        </TextView>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:layout_marginStart="3dp"
-                            android:layout_toEndOf="@id/race_distance_value"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:text="@string/km"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/text_minor_importance_size">
-
-                        </TextView>
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="20dp"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:id="@+id/fastest_lap_text"
-                            style="@style/t14BoldWhiteLineLimited"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_centerInParent="true"
-                            android:text="@string/fastest_lap_index"
-                            android:textColor="@color/app_primary_red">
-
-                        </TextView>
-
-                        <TextView
-                            android:id="@+id/fastest_lap_value"
-                            style="@style/t12RegularWhiteLineLimited"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:layout_marginStart="20dp"
-                            android:layout_toEndOf="@id/fastest_lap_text"
-                            android:text="@string/not_found">
-
-                        </TextView>
-
-                        <TextView
-                            android:id="@+id/fastest_lap_driver"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_centerInParent="true"
-                            android:layout_marginStart="8dp"
-                            android:layout_toEndOf="@id/fastest_lap_value"
-                            android:fontFamily="@font/orbitron_regular"
-                            android:text="@string/not_found"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/text_minor_importance_size">
-
-                        </TextView>
-
-                    </RelativeLayout>
-
-                </LinearLayout>
-
-                <Button
-                    android:id="@+id/goToMapButton"
-                    style="@style/Widget.Material3.Button.ElevatedButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="50dp"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginEnd="50dp"
-                    android:layout_marginBottom="24dp"
-                    android:backgroundTint="@color/white"
-                    android:fontFamily="@font/orbitron_bold"
-                    android:text="@string/open_with_google_maps"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/layout_subtitle_text_size"
-                    app:icon="@drawable/world_icon"
-                    app:iconGravity="textStart"
-                    app:iconTint="@null" />
-
-                <LinearLayout
+                <!-- CARD 3: TABELLA DELLO STORICO (RIFATTA CON LO STILE DELLE ALTRE BIO) -->
+                <com.google.android.material.card.MaterialCardView
                     android:id="@+id/track_history"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:orientation="vertical">
+                    android:layout_marginStart="12dp"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginEnd="12dp"
+                    android:layout_marginBottom="16dp"
+                    app:cardBackgroundColor="@color/card_surface_elevated"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="3dp"
+                    app:strokeColor="@color/subtle_white_border"
+                    app:strokeWidth="1dp">
 
-                    <TextView
-                        style="@style/t18BoldWhite"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/track_history_index" />
+                        android:orientation="vertical"
+                        android:padding="12dp">
 
+                        <TextView
+                            android:id="@+id/track_history_title"
+                            style="@style/t18UpperCaseBoldWhite"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:text="@string/track_history_index" />
 
-                    <TableLayout
-                        android:id="@+id/history_table"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="3dp"
-                        android:layout_marginTop="5dp"
-                        android:layout_marginEnd="3dp">
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:cardBackgroundColor="@color/card_surface_dark"
+                            app:cardCornerRadius="12dp"
+                            app:cardElevation="0dp"
+                            app:strokeColor="@color/subtle_white_border"
+                            app:strokeWidth="1dp">
 
-                    </TableLayout>
+                            <TableLayout
+                                android:id="@+id/history_table"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content">
 
-                </LinearLayout>
+                            </TableLayout>
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
 

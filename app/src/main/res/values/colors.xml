@@ -74,6 +74,7 @@
     <color name="grey_card">#3B3B37</color>
     <color name="timer_gray">#B1ADAD</color>
     <color name="team_card_modern_gray">#CED3D9</color>
+    <color name="modern_light_gray">#CED3D9</color>
     <color name="timer_gray_dark">#777474</color>
     <color name="light_black">#34343F</color>
 
@@ -81,5 +82,7 @@
 
     <color name="junior_card_overlay">#66000000</color>
     <color name="status_green">#4CAF50</color>
+
+    <color name="purple">#9D00FF</color>
 
 </resources>

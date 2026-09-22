@@ -1,204 +1,194 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/constructor_bio_table_row"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/background_top_bottom_margin_timer_grey"
     android:orientation="vertical"
-    tools:context=".ui.bio.ConstructorBioActivity">
+    tools:context=".ui.bio.TrackBioActivity">
 
     <LinearLayout
-        android:id="@+id/driver_history_row"
+        android:id="@+id/track_history_row"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginEnd="5dp"
+        android:gravity="center_vertical"
         android:orientation="horizontal"
-        tools:ignore="UselessParent">
+        android:paddingStart="8dp"
+        android:paddingTop="9dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="9dp">
 
+        <!-- Season Year -->
         <TextView
             android:id="@+id/season_year"
-            style="@style/t12RegularBlackLineLimited"
-            android:layout_width="match_parent"
+            style="@style/t12BoldWhiteLineLimited"
+            android:layout_width="65dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="0.8"
-            android:gravity="center">
+            android:gravity="center"
+            android:text="@string/not_found"
+            android:textColor="@color/white" />
 
-        </TextView>
-
-        <RelativeLayout
+        <!-- Podium Details (1st, 2nd, 3rd) -->
+        <LinearLayout
             android:id="@+id/race_podium"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.2"
-            android:orientation="horizontal">
+            android:layout_marginStart="16dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
+            <!-- 1st Place -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_marginStart="50dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="8dp"
-                android:layout_toStartOf="@id/race_highlights_button"
-                android:orientation="vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-                <LinearLayout
+                <TextView
+                    style="@style/t12BoldWhiteLineLimited"
+                    android:layout_width="14dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:text="@string/_1_numeric"
+                    android:textColor="#FFD700" />
+
+                <TextView
+                    android:id="@+id/first_driver"
+                    style="@style/t12BoldWhiteLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_marginStart="4dp"
+                    android:text="@string/not_found"
+                    android:textColor="@color/white" />
 
-                    <TextView
-                        style="@style/t12BoldBlackLineLimited"
-                        android:layout_width="10dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/_1_numeric">
-
-                    </TextView>
-
-                    <TextView
-                        android:id="@+id/first_driver"
-                        style="@style/t12RegularBlackLineLimited"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:text="@string/not_found">
-
-                    </TextView>
-
-                    <TextView
-                        style="@style/t12RegularBlackLineLimited"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:text="@string/separator_high_dash">
-
-                    </TextView>
-
-                    <TextView
-                        android:id="@+id/first_driver_team"
-                        style="@style/t10RegularBlackLineLimited"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:text="@string/not_found">
-
-                    </TextView>
-
-                </LinearLayout>
-
-                <LinearLayout
+                <TextView
+                    style="@style/t10RegularWhiteLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:orientation="horizontal">
+                    android:layout_marginStart="4dp"
+                    android:text="@string/separator_high_dash"
+                    android:textColor="@color/timer_gray" />
 
-                    <TextView
-                        style="@style/t12BoldBlackLineLimited"
-                        android:layout_width="10dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/_2_numeric">
-
-                    </TextView>
-
-                    <TextView
-                        android:id="@+id/second_driver"
-                        style="@style/t12RegularBlackLineLimited"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:text="@string/not_found">
-
-                    </TextView>
-
-                    <TextView
-                        style="@style/t12RegularBlackLineLimited"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="5dp"
-                        android:text="@string/separator_high_dash">
-
-                    </TextView>
-
-                    <TextView
-                        android:id="@+id/second_driver_team"
-                        style="@style/t10RegularBlackLineLimited"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:text="@string/not_found">
-
-                    </TextView>
-
-                </LinearLayout>
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/first_driver_team"
+                    style="@style/t10RegularWhiteLineLimited"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/t12BoldBlackLineLimited"
-                        android:layout_width="10dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/_3_numeric">
-
-                    </TextView>
-
-                    <TextView
-                        android:id="@+id/third_driver"
-                        style="@style/t12RegularBlackLineLimited"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:text="@string/not_found">
-
-                    </TextView>
-
-                    <TextView
-                        style="@style/t12RegularBlackLineLimited"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:text="@string/separator_high_dash">
-
-                    </TextView>
-
-                    <TextView
-                        android:id="@+id/third_driver_team"
-                        style="@style/t10RegularBlackLineLimited"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:text="@string/not_found">
-
-                    </TextView>
-
-                </LinearLayout>
+                    android:layout_marginStart="4dp"
+                    android:text="@string/not_found"
+                    android:textColor="@color/timer_gray" />
 
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/race_highlights_button"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:layout_marginEnd="5dp"
-                android:src="@drawable/youtube_icon">
+            <!-- 2nd Place -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            </ImageView>
+                <TextView
+                    style="@style/t12BoldWhiteLineLimited"
+                    android:layout_width="14dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:text="@string/_2_numeric"
+                    android:textColor="#C0C0C0" />
 
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/second_driver"
+                    style="@style/t12BoldWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@string/not_found"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    style="@style/t10RegularWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@string/separator_high_dash"
+                    android:textColor="@color/timer_gray" />
+
+                <TextView
+                    android:id="@+id/second_driver_team"
+                    style="@style/t10RegularWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@string/not_found"
+                    android:textColor="@color/timer_gray" />
+
+            </LinearLayout>
+
+            <!-- 3rd Place -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/t12BoldWhiteLineLimited"
+                    android:layout_width="14dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:text="@string/_3_numeric"
+                    android:textColor="#CD7F32" />
+
+                <TextView
+                    android:id="@+id/third_driver"
+                    style="@style/t12BoldWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@string/not_found"
+                    android:textColor="@color/white" />
+
+                <TextView
+                    style="@style/t10RegularWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@string/separator_high_dash"
+                    android:textColor="@color/timer_gray" />
+
+                <TextView
+                    android:id="@+id/third_driver_team"
+                    style="@style/t10RegularWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@string/not_found"
+                    android:textColor="@color/timer_gray" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Race Highlights Button (YouTube icon) -->
+        <ImageView
+            android:id="@+id/race_highlights_button"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="4dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:importantForAccessibility="no"
+            android:scaleType="fitCenter"
+            android:src="@drawable/youtube_icon"
+            android:visibility="gone" />
 
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/subtle_white_border" />
 
 </LinearLayout>

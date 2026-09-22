@@ -49,6 +49,7 @@
     <string name="podiums_index">Podiums:</string>
 
     <!-- TRACK BIO STRINGS -->
+    <string name="track_info_index">Track Info:</string>
     <string name="track_name_index">Track Name:</string>
     <string name="location_index">Location:</string>
     <string name="first_entry_index">First Entry:</string>
@@ -302,5 +303,9 @@
     <string name="test_notification_btn">Send Test Alert</string>
     <string name="copy_fcm_token_btn">Copy FCM Token</string>
     <string name="fcm_token_hint">Use copied FCM token in Firebase Console (Cloud Messaging) to test push when app is closed.</string>
+    <string name="schedule_session">session</string>
+    <string name="schedule_day">day</string>
+    <string name="schedule_time">time</string>
+    <string name="schedule_status">status</string>
 
 </resources>

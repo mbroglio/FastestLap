@@ -29,6 +29,7 @@
     <string name="power_unit_index">Motore:</string>
     <string name="world_championships_index">Campionati Mondiali:</string>
     <string name="wins_index">Vittorie:</string>
+    <string name="track_info_index">Info Circuito:</string>
     <string name="track_name_index">Nome Circuito:</string>
     <string name="location_index">Luogo:</string>
     <string name="first_entry_index">Debutto:</string>
@@ -210,5 +211,8 @@
     <string name="test_notification_btn">Notifica di Prova</string>
     <string name="copy_fcm_token_btn">Copia Token FCM</string>
     <string name="fcm_token_hint">Usa il token FCM copiato nella Console Firebase per testare l\'invio ad app chiusa.</string>
+    <string name="schedule_session">sessione</string>
+    <string name="schedule_day">giorno</string>
+    <string name="schedule_time">orario</string>
 
 </resources>

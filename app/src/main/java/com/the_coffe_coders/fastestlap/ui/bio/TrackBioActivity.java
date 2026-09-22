@@ -175,7 +175,7 @@ public class TrackBioActivity extends AppCompatActivity {
                             findViewById(R.id.fastest_lap_driver)});
         }
 
-        Button goToMapButton = findViewById(R.id.goToMapButton);
+        View goToMapButton = findViewById(R.id.goToMapButton);
         goToMapButton.setOnClickListener(v ->
                 NavigationUtils.openLocation(this, track.getLocation().getLatitude(), track.getLocation().getLongitude()));
 
@@ -202,7 +202,7 @@ public class TrackBioActivity extends AppCompatActivity {
     private void createHistoryTable() {
         loadingScreen.updateProgress();
 
-        LinearLayout trackHistoryLayout = findViewById(R.id.track_history);
+        View trackHistoryLayout = findViewById(R.id.track_history);
 
         TableLayout tableLayout = findViewById(R.id.history_table);
         tableLayout.removeAllViews();
@@ -213,14 +213,18 @@ public class TrackBioActivity extends AppCompatActivity {
             tableLayout.setVisibility(View.VISIBLE);
 
             View tableHeader = inflater.inflate(R.layout.track_bio_table_header, tableLayout, false);
-            tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray_dark));
-
             tableLayout.addView(tableHeader);
 
             List<TrackHistory> trackHistoryList = track.getTrack_history();
             for (int i = trackHistoryList.size() - 1; i >= 0; i--) {
                 TrackHistory history = trackHistoryList.get(i);
                 View tableRow = inflater.inflate(R.layout.track_bio_table_row, tableLayout, false);
+
+                if (i % 2 == 1) {
+                    tableRow.setBackgroundColor(0x0AFFFFFF);
+                } else {
+                    tableRow.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+                }
 
                 UIUtils.multipleSetTextViewText(
                         new String[]{

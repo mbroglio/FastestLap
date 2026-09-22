@@ -43,9 +43,9 @@ public class AppNotificationManager {
 
     private static final String TAG = "AppNotificationManager";
 
-    public static final String CHANNEL_NEWS_ID = "fastestlap_news_v3";
-    public static final String CHANNEL_SESSIONS_ID = "fastestlap_sessions_v3";
-    public static final String CHANNEL_GENERAL_ID = "fastestlap_general_v3";
+    public static final String CHANNEL_NEWS_ID = "fastestlap_news_v4";
+    public static final String CHANNEL_SESSIONS_ID = "fastestlap_sessions_v4";
+    public static final String CHANNEL_GENERAL_ID = "fastestlap_general_v4";
 
     public static final String PREF_NAME = "fastestlap_fcm_pref";
     public static final String KEY_FCM_TOKEN = "key_fcm_token";
@@ -393,9 +393,10 @@ public class AppNotificationManager {
 
     /**
      * Returns the Uri for the custom notification sound (team_radio.mp3).
+     * Uses stable name-based resource path to prevent stale ID issues across app rebuilds.
      */
     public static Uri getNotificationSoundUri(Context context) {
-        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.getPackageName() + "/" + R.raw.team_radio);
+        return Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + context.getPackageName() + "/raw/team_radio");
     }
 
     /**
@@ -404,7 +405,7 @@ public class AppNotificationManager {
     public static AudioAttributes getNotificationAudioAttributes() {
         return new AudioAttributes.Builder()
                 .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .setUsage(AudioAttributes.USAGE_NOTIFICATION_EVENT)
+                .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                 .build();
     }
 
@@ -416,17 +417,21 @@ public class AppNotificationManager {
         NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
         if (notificationManager == null) return;
 
-        // Clean up legacy v2 channels so Android resets audio settings to custom team_radio sound
+        // Clean up legacy channels so Android resets settings to custom team_radio sound
         try {
             notificationManager.deleteNotificationChannel("fastestlap_news_channel");
             notificationManager.deleteNotificationChannel("fastestlap_session_channel");
             notificationManager.deleteNotificationChannel("fastestlap_news_v2");
             notificationManager.deleteNotificationChannel("fastestlap_sessions_v2");
             notificationManager.deleteNotificationChannel("fastestlap_general_v2");
+            notificationManager.deleteNotificationChannel("fastestlap_news_v3");
+            notificationManager.deleteNotificationChannel("fastestlap_sessions_v3");
+            notificationManager.deleteNotificationChannel("fastestlap_general_v3");
         } catch (Exception ignored) {}
 
         Uri soundUri = getNotificationSoundUri(context);
         AudioAttributes audioAttributes = getNotificationAudioAttributes();
+        long[] vibrationPattern = new long[]{0, 300, 200, 300};
 
         // 1. Channel for F1 News
         NotificationChannel newsChannel = new NotificationChannel(
@@ -436,6 +441,7 @@ public class AppNotificationManager {
         );
         newsChannel.setDescription(context.getString(R.string.news_channel_description));
         newsChannel.enableVibration(true);
+        newsChannel.setVibrationPattern(vibrationPattern);
         newsChannel.setShowBadge(true);
         newsChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
         newsChannel.setSound(soundUri, audioAttributes);
@@ -448,6 +454,7 @@ public class AppNotificationManager {
         );
         sessionChannel.setDescription(context.getString(R.string.session_channel_description));
         sessionChannel.enableVibration(true);
+        sessionChannel.setVibrationPattern(vibrationPattern);
         sessionChannel.setShowBadge(true);
         sessionChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
         sessionChannel.setSound(soundUri, audioAttributes);
@@ -460,6 +467,7 @@ public class AppNotificationManager {
         );
         generalChannel.setDescription(context.getString(R.string.general_channel_description));
         generalChannel.enableVibration(true);
+        generalChannel.setVibrationPattern(vibrationPattern);
         generalChannel.setShowBadge(true);
         generalChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
         generalChannel.setSound(soundUri, audioAttributes);
@@ -468,7 +476,7 @@ public class AppNotificationManager {
         notificationManager.createNotificationChannel(sessionChannel);
         notificationManager.createNotificationChannel(generalChannel);
 
-        Log.i(TAG, "Notification channels created successfully with team_radio custom sound.");
+        Log.i(TAG, "Notification channels created successfully with team_radio custom sound (v4).");
     }
 
     /**
@@ -609,7 +617,8 @@ public class AppNotificationManager {
                 .setContentText(cleanSummary)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setSound(soundUri)
-                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setVibrate(new long[]{0, 300, 200, 300})
+                .setDefaults(NotificationCompat.DEFAULT_LIGHTS | NotificationCompat.DEFAULT_VIBRATE)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent);
@@ -679,7 +688,8 @@ public class AppNotificationManager {
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(contentText))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setSound(sessionSoundUri)
-                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setVibrate(new long[]{0, 300, 200, 300})
+                .setDefaults(NotificationCompat.DEFAULT_LIGHTS | NotificationCompat.DEFAULT_VIBRATE)
                 .setCategory(NotificationCompat.CATEGORY_EVENT)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setAutoCancel(true)
@@ -767,7 +777,8 @@ public class AppNotificationManager {
                 .setContentText(cleanBody)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setSound(soundUri)
-                .setDefaults(NotificationCompat.DEFAULT_ALL)
+                .setVibrate(new long[]{0, 300, 200, 300})
+                .setDefaults(NotificationCompat.DEFAULT_LIGHTS | NotificationCompat.DEFAULT_VIBRATE)
                 .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent);

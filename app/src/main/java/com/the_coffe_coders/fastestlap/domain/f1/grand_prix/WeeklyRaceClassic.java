@@ -22,6 +22,15 @@ public class WeeklyRaceClassic extends WeeklyRace {
     @Override
     public List<Session> getSessions() {
         List<Session> sessions = new ArrayList<>();
+        if (this.firstPractice != null) {
+            this.firstPractice.setNumber(1);
+        }
+        if (this.secondPractice != null) {
+            this.secondPractice.setNumber(2);
+        }
+        if (this.thirdPractice != null) {
+            this.thirdPractice.setNumber(3);
+        }
         sessions.add(this.firstPractice);
         sessions.add(this.secondPractice);
         sessions.add(this.thirdPractice);
