@@ -84,8 +84,10 @@ public class PastEventsActivity extends AppCompatActivity {
 
         UIUtils.applyWindowInsets(pastEventsLayout);
         pastEventsLayout.setOnRefreshListener(() -> {
+            if (weeklyRaceViewModel != null) {
+                weeklyRaceViewModel.refreshWeeklyRaces();
+            }
             refreshData();
-            pastEventsLayout.setRefreshing(false);
         });
 
         setupRecyclerView();
@@ -154,6 +156,7 @@ public class PastEventsActivity extends AppCompatActivity {
             if (resultEvent instanceof Result.Loading) {
                 return;
             }
+            pastEventsLayout.setRefreshing(false);
             if (resultEvent.isSuccess()) {
                 List<WeeklyRace> eventRaces = ((Result.WeeklyRaceSuccess) resultEvent).getData();
                 List<WeeklyRace> pastRaces = eventViewModel.extractPastRaces(eventRaces);

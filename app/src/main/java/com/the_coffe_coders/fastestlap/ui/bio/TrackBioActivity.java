@@ -69,8 +69,12 @@ public class TrackBioActivity extends AppCompatActivity {
 
         UIUtils.applyWindowInsets(trackBioLayout);
         trackBioLayout.setOnRefreshListener(() -> {
-            start();
-            trackBioLayout.setRefreshing(false);
+            if (trackViewModel != null && trackId != null) {
+                trackViewModel.refreshTrack(trackId);
+                fetchTrack();
+            } else {
+                trackBioLayout.setRefreshing(false);
+            }
         });
 
         trackId = getIntent().getStringExtra("CIRCUIT_ID");
@@ -101,6 +105,7 @@ public class TrackBioActivity extends AppCompatActivity {
                 return;
             }
             trackLiveData.removeObserver(observerTrack[0]);
+            trackBioLayout.setRefreshing(false);
             if (trackResult.isSuccess()) {
                 track = ((Result.TrackSuccess) trackResult).getData();
                 Log.i("TrackBioActivity", "Circuit from DB: " + track);

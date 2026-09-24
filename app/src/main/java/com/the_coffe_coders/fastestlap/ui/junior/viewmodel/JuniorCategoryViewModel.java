@@ -81,4 +81,15 @@ public class JuniorCategoryViewModel extends ViewModel {
                 return null;
         }
     }
+
+    public void refreshResults(int series) {
+        switch (series) {
+            case 0:
+                juniorResultRepository.refreshResults("f2");
+                break;
+            case 1:
+                juniorResultRepository.refreshResults("f3");
+                break;
+        }
+    }
 }

@@ -361,8 +361,22 @@ public class HomeFragment extends Fragment {
     private void setRefreshLayout(View view) {
         SwipeRefreshLayout homeSwipeRefreshLayout = view.findViewById(R.id.home_refresh_layout);
         homeSwipeRefreshLayout.setOnRefreshListener(() -> {
+            if (sharedPreferencesUtils != null) {
+                String favDriver = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FAVORITE_DRIVER, null);
+                if (favDriver != null && driverViewModel != null) {
+                    driverViewModel.refreshDriver(favDriver);
+                }
+                String favTeam = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FAVORITE_TEAM, null);
+                if (favTeam != null && constructorViewModel != null) {
+                    constructorViewModel.refreshConstructor(favTeam);
+                }
+            }
+            if (weeklyRaceViewModel != null) {
+                weeklyRaceViewModel.refreshNextRace();
+                weeklyRaceViewModel.refreshLastRace();
+                weeklyRaceViewModel.refreshWeeklyRaces();
+            }
             setupFragment(view);
-            homeSwipeRefreshLayout.setRefreshing(false);
         });
     }
 
@@ -392,6 +406,10 @@ public class HomeFragment extends Fragment {
         if (lastRaceCardLoaded && nextSessionCardLoaded && driverCardLoaded && constructorCardLoaded) {
             Log.d(TAG, "All cards loaded — hiding loading screen and setup complete.");
             loadingScreen.hideLoadingScreen();
+            SwipeRefreshLayout homeSwipeRefreshLayout = getView() != null ? getView().findViewById(R.id.home_refresh_layout) : null;
+            if (homeSwipeRefreshLayout != null) {
+                homeSwipeRefreshLayout.setRefreshing(false);
+            }
             isSettingUp = false;
         }
     }

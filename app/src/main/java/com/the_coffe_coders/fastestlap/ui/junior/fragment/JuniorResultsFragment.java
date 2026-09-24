@@ -68,18 +68,20 @@ public class JuniorResultsFragment extends Fragment {
 
         setToolbar();
 
-        SwipeRefreshLayout layout = view.findViewById(R.id.results_layout);
-        UIUtils.applyWindowInsets(layout);
+        resultsLayout = view.findViewById(R.id.results_layout);
+        UIUtils.applyWindowInsets(resultsLayout);
 
-        loadingScreen = new LoadingScreen(view, getContext(), null, layout);
+        loadingScreen = new LoadingScreen(view, getContext(), null, resultsLayout);
         loadingScreen.showLoadingScreen(false);
 
         resultsrRecyclerView = view.findViewById(R.id.results_recycler_view);
         contentNotAvailableLayout = view.findViewById(R.id.content_not_available_layout);
 
-        layout.setOnRefreshListener(() -> {
-            setupFragment();
-            layout.setRefreshing(false);
+        resultsLayout.setOnRefreshListener(() -> {
+            if (juniorCategoryViewModel != null) {
+                juniorCategoryViewModel.refreshResults(categoryType);
+            }
+            fetchResults();
         });
 
         initializeViewModels();
@@ -134,6 +136,9 @@ public class JuniorResultsFragment extends Fragment {
             if (result != null) {
                 if (result instanceof Result.Loading) {
                     return;
+                }
+                if (resultsLayout != null) {
+                    resultsLayout.setRefreshing(false);
                 }
                 if (result.isSuccess()) {
                     showResults();

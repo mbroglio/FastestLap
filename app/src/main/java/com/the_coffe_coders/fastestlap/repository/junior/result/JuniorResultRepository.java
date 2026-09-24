@@ -132,4 +132,13 @@ public class JuniorResultRepository {
         }
     }
 
+    public synchronized void refreshResults(String series) {
+        String cacheKey = "juniorResult" + series;
+        if (!juniorResultCache.containsKey(cacheKey)) {
+            juniorResultCache.put(cacheKey, new MutableLiveData<>());
+        }
+        if (isNetworkAvailable()) {
+            loadJuniorResult(series, false);
+        }
+    }
 }

@@ -301,4 +301,22 @@ public class WeeklyRaceRepository {
             }
         });
     }
+
+    public synchronized void refreshWeeklyRaces() {
+        if (networkUtils.isConnected()) {
+            fetchWeeklyRacesFromRemote(true);
+        }
+    }
+
+    public synchronized void refreshNextRace() {
+        if (networkUtils.isConnected()) {
+            fetchNextRaceFromRemote(false);
+        }
+    }
+
+    public synchronized void refreshLastRace() {
+        if (networkUtils.isConnected()) {
+            fetchLastRaceFromRemote(false);
+        }
+    }
 }

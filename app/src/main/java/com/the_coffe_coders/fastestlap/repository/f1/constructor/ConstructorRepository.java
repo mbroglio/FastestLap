@@ -71,6 +71,14 @@ public class ConstructorRepository {
                 if (constructor != null) {
                     Log.d(TAG, "Constructor loaded from local database (cache hit): " + constructorId);
                     constructor.setConstructorId(constructorId);
+
+                    // If cached constructor doesn't have season_stats yet, force remote fetch immediately
+                    if (constructor.getSeason_stats() == null && isNetworkAvailable()) {
+                        Log.d(TAG, "Constructor season_stats is null in cache, forcing remote fetch: " + constructorId);
+                        loadConstructorFromRemote(constructorId, false);
+                        return;
+                    }
+
                     lastUpdateTimestamps.put(constructorId, System.currentTimeMillis());
                     Objects.requireNonNull(constructorCache.get(constructorId)).postValue(new Result.ConstructorSuccess(constructor));
 
@@ -131,6 +139,23 @@ public class ConstructorRepository {
             });
         } catch (Exception e) {
             Log.e(TAG, "Error loading constructor from remote: " + e.getMessage());
+        }
+    }
+
+    public void invalidateCache(String constructorId) {
+        if (constructorId != null) {
+            constructorCache.remove(constructorId);
+            lastUpdateTimestamps.remove(constructorId);
+        }
+    }
+
+    public void refreshConstructor(String constructorId) {
+        if (constructorId == null) return;
+        if (!constructorCache.containsKey(constructorId)) {
+            constructorCache.put(constructorId, new MutableLiveData<>());
+        }
+        if (isNetworkAvailable()) {
+            loadConstructorFromRemote(constructorId, false);
         }
     }
 }

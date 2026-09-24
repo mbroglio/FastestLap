@@ -501,6 +501,227 @@
 
                         </LinearLayout>
 
+                        <!-- HORIZONTAL SEPARATOR BETWEEN BIO STATS AND SEASON STATS -->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:layout_marginTop="14dp"
+                            android:layout_marginBottom="10dp"
+                            android:background="@color/subtle_white_border" />
+
+                        <!-- THIS SEASON'S NUMBERS TITLE -->
+                        <TextView
+                            android:id="@+id/team_season_stats_title"
+                            style="@style/t12UpperCaseBoldWhiteLineLimited"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:gravity="center"
+                            android:text="@string/this_season_numbers_title" />
+
+                        <!-- ROW 1: 4 STATS (WINS, PODIUMS, POLES, DNF) -->
+                        <LinearLayout
+                            android:id="@+id/team_season_stats_row_1"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:baselineAligned="false"
+                            android:orientation="horizontal">
+
+                            <!-- Wins -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/team_season_wins"
+                                    style="@style/t20BoldWhite"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="@string/zero" />
+
+                                <TextView
+                                    style="@style/t10UpperCaseBoldWhiteLineLimited"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:gravity="center"
+                                    android:text="@string/season_wins_label"
+                                    android:textColor="@color/timer_gray" />
+
+                            </LinearLayout>
+
+                            <!-- Podiums -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/team_season_podiums"
+                                    style="@style/t20BoldWhite"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="@string/zero" />
+
+                                <TextView
+                                    style="@style/t10UpperCaseBoldWhiteLineLimited"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:gravity="center"
+                                    android:text="@string/season_podiums_label"
+                                    android:textColor="@color/timer_gray" />
+
+                            </LinearLayout>
+
+                            <!-- Poles -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/team_season_poles"
+                                    style="@style/t20BoldWhite"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="@string/zero" />
+
+                                <TextView
+                                    style="@style/t10UpperCaseBoldWhiteLineLimited"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:gravity="center"
+                                    android:text="@string/season_poles_label"
+                                    android:textColor="@color/timer_gray" />
+
+                            </LinearLayout>
+
+                            <!-- DNFs -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/team_season_dnfs"
+                                    style="@style/t20BoldWhite"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="@string/zero" />
+
+                                <TextView
+                                    style="@style/t10UpperCaseBoldWhiteLineLimited"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:gravity="center"
+                                    android:text="@string/season_dnf_label"
+                                    android:textColor="@color/timer_gray" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <!-- ROW 2: 2 CHAMPIONSHIP STATS WITH PODIUM ICON ON THE LEFT -->
+                        <LinearLayout
+                            android:id="@+id/team_season_stats_row_2"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:layout_marginBottom="4dp"
+                            android:baselineAligned="false"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <!-- Podium Icon on the left -->
+                            <ImageView
+                                android:id="@+id/team_season_podium_icon"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:layout_marginStart="8dp"
+                                android:layout_marginEnd="8dp"
+                                android:adjustViewBounds="true"
+                                android:importantForAccessibility="no"
+                                android:scaleType="fitCenter"
+                                android:src="@drawable/podium_colored_icon" />
+
+                            <!-- Position -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/team_season_position"
+                                    style="@style/t20BoldWhite"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="@string/separator" />
+
+                                <TextView
+                                    style="@style/t10UpperCaseBoldWhiteLineLimited"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:gravity="center"
+                                    android:text="@string/season_position_label"
+                                    android:textColor="@color/timer_gray" />
+
+                            </LinearLayout>
+
+                            <!-- Vertical Subtle Divider -->
+                            <View
+                                android:layout_width="1dp"
+                                android:layout_height="24dp"
+                                android:background="@color/subtle_white_border" />
+
+                            <!-- Points -->
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:orientation="vertical">
+
+                                <TextView
+                                    android:id="@+id/team_season_points"
+                                    style="@style/t20BoldWhite"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:gravity="center"
+                                    android:text="@string/zero" />
+
+                                <TextView
+                                    style="@style/t10UpperCaseBoldWhiteLineLimited"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="2dp"
+                                    android:gravity="center"
+                                    android:text="@string/season_points_label"
+                                    android:textColor="@color/timer_gray" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
                     </LinearLayout>
 
                 </com.google.android.material.card.MaterialCardView>

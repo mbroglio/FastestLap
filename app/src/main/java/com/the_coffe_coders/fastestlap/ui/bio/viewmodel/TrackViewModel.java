@@ -17,4 +17,7 @@ public class TrackViewModel extends ViewModel {
         return trackRepository.getTrack(trackId);
     }
 
+    public void refreshTrack(String trackId) {
+        trackRepository.refreshTrack(trackId);
+    }
 }

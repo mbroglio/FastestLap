@@ -264,9 +264,42 @@ exports.updateRaceStatsNow = onRequest(
   async (req, res) => {
     try {
       await f1Logic.executeRaceStatsUpdate(db);
+      await f1Logic.syncDriverSeasonStats(db);
+      await f1Logic.syncConstructorSeasonStats(db);
       res.status(200).json({ status: "success", message: "F1 Race stats and season stats update completed." });
     } catch (error) {
       console.error("Error in updateRaceStatsNow:", error);
+      res.status(500).json({ status: "error", message: error.message });
+    }
+  }
+);
+
+/**
+ * HTTP ENDPOINT: Manual Constructor Season Stats Sync Trigger
+ * Allows immediate manual sync of all constructors' season_stats from browser or curl:
+ * GET https://.../syncConstructorSeasonStatsNow (optionally ?season=2026 or ?inspect=true)
+ */
+exports.syncConstructorSeasonStatsNow = onRequest(
+  {
+    cors: true,
+    timeoutSeconds: 300
+  },
+  async (req, res) => {
+    try {
+      if (req.query.inspect) {
+        const snap = await db.ref("teams").once("value");
+        const val = snap.val() || {};
+        const summary = {};
+        for (const k of Object.keys(val)) {
+          summary[k] = val[k].season_stats;
+        }
+        return res.status(200).json({ status: "success", season_stats: summary });
+      }
+      const season = req.query.season || req.body?.season || null;
+      const result = await f1Logic.syncConstructorSeasonStats(db, season);
+      res.status(200).json({ status: "success", result });
+    } catch (error) {
+      console.error("Error in syncConstructorSeasonStatsNow:", error);
       res.status(500).json({ status: "error", message: error.message });
     }
   }

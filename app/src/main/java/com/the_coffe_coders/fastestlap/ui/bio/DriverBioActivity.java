@@ -131,8 +131,15 @@ public class DriverBioActivity extends AppCompatActivity {
 
         UIUtils.applyWindowInsets(driverBioLayout);
         driverBioLayout.setOnRefreshListener(() -> {
-            start();
-            driverBioLayout.setRefreshing(false);
+            if (networkLiveData.isConnected()) {
+                if (driverViewModel != null && driverId != null) {
+                    driverViewModel.refreshDriver(driverId);
+                    createDriverBioPage(driverId);
+                }
+            } else {
+                Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
+                driverBioLayout.setRefreshing(false);
+            }
         });
 
         driverId = getIntent().getStringExtra("DRIVER_ID");
@@ -168,6 +175,7 @@ public class DriverBioActivity extends AppCompatActivity {
                 return;
             }
             driverMutableLiveData.removeObserver(observerHolder[0]);
+            driverBioLayout.setRefreshing(false);
             if (result.isSuccess()) {
                 driver = ((Result.DriverSuccess) result).getData();
                 Log.i(TAG, "DRIVER SUCCESS: " + driver);

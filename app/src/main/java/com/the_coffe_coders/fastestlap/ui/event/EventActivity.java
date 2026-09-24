@@ -93,8 +93,10 @@ public class EventActivity extends AppCompatActivity {
 
         UIUtils.applyWindowInsets(eventLayout);
         eventLayout.setOnRefreshListener(() -> {
-            start();
-            eventLayout.setRefreshing(false);
+            if (weeklyRaceViewModel != null) {
+                weeklyRaceViewModel.refreshWeeklyRaces();
+            }
+            processRaceData();
         });
 
         trackId = getIntent().getStringExtra("CIRCUIT_ID");
@@ -137,6 +139,7 @@ public class EventActivity extends AppCompatActivity {
                 return;
             }
             data.removeObserver(observerHolder[0]);
+            eventLayout.setRefreshing(false);
             if (result.isSuccess()) {
                 Log.i("EventActivity", "Weekly races loaded successfully");
                 races.addAll(((Result.WeeklyRaceSuccess) result).getData());

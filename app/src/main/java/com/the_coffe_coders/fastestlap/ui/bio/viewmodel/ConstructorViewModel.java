@@ -25,4 +25,7 @@ public class ConstructorViewModel extends ViewModel {
         return constructorRepository.getConstructor(constructorId);
     }
 
+    public void refreshConstructor(String constructorId) {
+        constructorRepository.refreshConstructor(constructorId);
+    }
 }

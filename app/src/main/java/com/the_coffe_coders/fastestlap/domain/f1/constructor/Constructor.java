@@ -57,10 +57,7 @@ public class Constructor implements Parcelable {
     private String wins;
     private String world_championships;
     private String gps_entered;
-    @Ignore
-    private String season_wins;
-    @Ignore
-    private String season_podiums;
+    private ConstructorSeasonStats season_stats;
 
     protected Constructor(Parcel in) {
         uid = in.readLong();
@@ -82,6 +79,7 @@ public class Constructor implements Parcelable {
         wins = in.readString();
         world_championships = in.readString();
         gps_entered = in.readString();
+        season_stats = in.readParcelable(ConstructorSeasonStats.class.getClassLoader());
     }
 
     @Override
@@ -130,5 +128,6 @@ public class Constructor implements Parcelable {
         dest.writeString(wins);
         dest.writeString(world_championships);
         dest.writeString(gps_entered);
+        dest.writeParcelable(season_stats, flags);
     }
 }

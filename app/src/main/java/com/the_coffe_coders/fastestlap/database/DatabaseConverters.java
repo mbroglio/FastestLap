@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.ConstructorHistory;
+import com.the_coffe_coders.fastestlap.domain.f1.constructor.ConstructorSeasonStats;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.DriverHistory;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.DriverSeasonStats;
@@ -447,6 +448,16 @@ public class DatabaseConverters {
     @TypeConverter
     public static DriverSeasonStats toDriverSeasonStats(String json) {
         return gson.fromJson(json, DriverSeasonStats.class);
+    }
+
+    @TypeConverter
+    public static String fromConstructorSeasonStats(ConstructorSeasonStats stats) {
+        return gson.toJson(stats);
+    }
+
+    @TypeConverter
+    public static ConstructorSeasonStats toConstructorSeasonStats(String json) {
+        return gson.fromJson(json, ConstructorSeasonStats.class);
     }
 
 }

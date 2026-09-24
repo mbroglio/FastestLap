@@ -26,6 +26,7 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.ConstructorHistory;
+import com.the_coffe_coders.fastestlap.domain.f1.constructor.ConstructorSeasonStats;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
@@ -129,8 +130,15 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
         UIUtils.applyWindowInsets(constructorBioLayout);
         constructorBioLayout.setOnRefreshListener(() -> {
-            start();
-            constructorBioLayout.setRefreshing(false);
+            if (networkLiveData.isConnected()) {
+                if (constructorViewModel != null && teamId != null) {
+                    constructorViewModel.refreshConstructor(teamId);
+                    createConstructorBioPage(teamId);
+                }
+            } else {
+                Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
+                constructorBioLayout.setRefreshing(false);
+            }
         });
 
         teamId = getIntent().getStringExtra("TEAM_ID");
@@ -163,6 +171,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
                 return;
             }
             data.removeObserver(observerHolder[0]);
+            constructorBioLayout.setRefreshing(false);
             if (result.isSuccess()) {
                 constructor = ((Result.ConstructorSuccess) result).getData();
 
@@ -189,6 +198,11 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
                     TextView driversTitle = findViewById(R.id.drivers_title);
                     driversTitle.setTextColor(ContextCompat.getColor(this, teamColor));
+
+                    TextView teamSeasonStatsTitle = findViewById(R.id.team_season_stats_title);
+                    if (teamSeasonStatsTitle != null) {
+                        teamSeasonStatsTitle.setTextColor(ContextCompat.getColor(this, teamColor));
+                    }
 
                     MaterialCardView teamLogoCard = findViewById(R.id.team_logo_card);
                     teamLogoCard.setStrokeColor(ContextCompat.getColor(this, teamColor));
@@ -318,6 +332,53 @@ public class ConstructorBioActivity extends AppCompatActivity {
                         findViewById(R.id.team_championships_value),
                         findViewById(R.id.team_wins_value),
                         findViewById(R.id.team_podiums_value)});
+
+        ConstructorSeasonStats seasonStats = team.getSeason_stats();
+        String seasonWins = "0";
+        String seasonPodiums = "0";
+        String seasonPoles = "0";
+        String seasonDnfs = "0";
+        String seasonPosition = "-";
+        String seasonPoints = "0";
+
+        if (seasonStats != null) {
+            if (seasonStats.getWins() != null) seasonWins = seasonStats.getWins();
+            if (seasonStats.getPodiums() != null) seasonPodiums = seasonStats.getPodiums();
+            if (seasonStats.getPoles() != null) seasonPoles = seasonStats.getPoles();
+            if (seasonStats.getDnfs() != null) seasonDnfs = seasonStats.getDnfs();
+            if (seasonStats.getSeason_position() != null && !seasonStats.getSeason_position().equals("0")) {
+                seasonPosition = seasonStats.getSeason_position();
+            }
+            if (seasonStats.getSeason_points() != null) seasonPoints = seasonStats.getSeason_points();
+        }
+
+        if ("0".equals(seasonPosition)) {
+            seasonPosition = "-";
+        }
+
+        UIUtils.multipleSetTextViewText(
+                new String[]{seasonWins, seasonPodiums, seasonPoles, seasonDnfs, seasonPosition, seasonPoints},
+                new TextView[]{
+                        findViewById(R.id.team_season_wins),
+                        findViewById(R.id.team_season_podiums),
+                        findViewById(R.id.team_season_poles),
+                        findViewById(R.id.team_season_dnfs),
+                        findViewById(R.id.team_season_position),
+                        findViewById(R.id.team_season_points)
+                }
+        );
+
+        TextView teamSeasonPosition = findViewById(R.id.team_season_position);
+
+        if (!seasonPosition.equals("-")) {
+            if (seasonPosition.equals("1")) {
+                teamSeasonPosition.setTextColor(ContextCompat.getColor(this, R.color.yellow));
+            } else if (seasonPosition.equals("2")) {
+                teamSeasonPosition.setTextColor(ContextCompat.getColor(this, R.color.silver));
+            } else if (seasonPosition.equals("3")) {
+                teamSeasonPosition.setTextColor(ContextCompat.getColor(this, R.color.bronze));
+            }
+        }
 
         UIUtils.updateTachometers(this, team, winPercentageTachometer, podiumPercentageTachometer);
         createHistoryTable();

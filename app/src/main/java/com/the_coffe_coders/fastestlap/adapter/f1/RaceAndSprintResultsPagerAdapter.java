@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.adapter;
+package com.the_coffe_coders.fastestlap.adapter.f1;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;

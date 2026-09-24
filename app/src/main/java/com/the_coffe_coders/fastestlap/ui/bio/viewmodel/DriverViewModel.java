@@ -20,4 +20,8 @@ public class DriverViewModel extends ViewModel {
     public MutableLiveData<Result> getDriver(String driverId) {
         return driverRepository.getDriver(driverId);
     }
+
+    public void refreshDriver(String driverId) {
+        driverRepository.refreshDriver(driverId);
+    }
 }

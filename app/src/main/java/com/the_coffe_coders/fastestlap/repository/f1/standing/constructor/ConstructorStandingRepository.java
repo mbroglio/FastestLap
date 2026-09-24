@@ -167,4 +167,15 @@ public class ConstructorStandingRepository {
             Log.e(TAG, "Error loading constructor standing from remote: " + e.getMessage());
         }
     }
+
+    public synchronized void refreshConstructorStandings() {
+        String cacheKey = "constructorStanding";
+        if (!constructorStandingCache.containsKey(cacheKey)) {
+            constructorStandingCache.put(cacheKey, new MutableLiveData<>());
+        }
+        if (isNetworkAvailable() && !isFetchInFlight) {
+            isFetchInFlight = true;
+            loadConstructorStandingFromRemote(cacheKey, false);
+        }
+    }
 }

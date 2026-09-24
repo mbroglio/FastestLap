@@ -72,8 +72,11 @@ public class DriversStandingActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         driverStandingLayout.setOnRefreshListener(() -> {
-            start();
-            driverStandingLayout.setRefreshing(false);
+            if (driverStandingsViewModel != null) {
+                driverStandingsViewModel.refreshDriverStandings();
+            } else {
+                driverStandingLayout.setRefreshing(false);
+            }
         });
 
         setupPage();
@@ -95,6 +98,7 @@ public class DriversStandingActivity extends AppCompatActivity {
             if (result instanceof Result.Loading) {
                 return;
             }
+            driverStandingLayout.setRefreshing(false);
             if (result.isSuccess()) {
                 Log.i(TAG, "DRIVER STANDINGS SUCCESS");
                 DriverStandings driverStandings;
@@ -147,6 +151,7 @@ public class DriversStandingActivity extends AppCompatActivity {
             if (result instanceof Result.Loading) {
                 return;
             }
+            driverStandingLayout.setRefreshing(false);
             if (result.isSuccess()) {
                 Log.i(TAG, "DRIVER LIST SUCCESS");
                 List<Driver> driverList = ((Result.DriversSuccess) result).getData();

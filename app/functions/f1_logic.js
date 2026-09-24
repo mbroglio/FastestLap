@@ -135,14 +135,10 @@ async function executeRaceStatsUpdate(db) { // post race stats update
                 if (updates.wins > 0) {
                     const careerWins = parseInt(constructorData.wins) || 0;
                     multiPathUpdates[`${PATHS.teams}/${constructorId}/wins`] = (careerWins + updates.wins).toString();
-                    const seasonWins = parseInt(constructorData.season_wins) || 0;
-                    multiPathUpdates[`${PATHS.teams}/${constructorId}/season_wins`] = (seasonWins + updates.wins).toString();
                 }
                 if (updates.podiums > 0) {
                     const currentPodiums = parseInt(constructorData.podiums) || 0;
                     multiPathUpdates[`${PATHS.teams}/${constructorId}/podiums`] = (currentPodiums + updates.podiums).toString();
-                    const seasonPodiums = parseInt(constructorData.season_podiums) || 0;
-                    multiPathUpdates[`${PATHS.teams}/${constructorId}/season_podiums`] = (seasonPodiums + updates.podiums).toString();
                 }
                 if (updates.gps_entered > 0) {
                     const currentGpsEntered = parseInt(constructorData.gps_entered) || 0;
@@ -160,6 +156,8 @@ async function executeRaceStatsUpdate(db) { // post race stats update
 
     // Synchronize comprehensive driver season_stats (wins, podiums, dnfs, poles, seasonPosition, seasonPoints)
     await syncDriverSeasonStats(db, newSeason);
+    // Synchronize comprehensive constructor season_stats
+    await syncConstructorSeasonStats(db, newSeason);
 }
 
 async function executeChampionshipsUpdate(db) { // end of season championship update
@@ -254,9 +252,7 @@ async function processDriverSeasonArchive(newSeason, updates, db) {
                 dnfs: "0",
                 poles: "0",
                 season_position: "-",
-                season_points: "0",
-                seasonPosition: "-",
-                seasonPoints: "0"
+                season_points: "0"
             };
             // Champion check
             if (driver.position === "1") {
@@ -277,20 +273,30 @@ async function processConstructorSeasonArchive(newSeason, updates, db) {
         if (snap.exists()) {
             const data = snap.val();
 
+            const seasonStats = (data && data.season_stats) || {};
+            const wins = seasonStats.wins || data.season_wins || "0";
+            const podiums = seasonStats.podiums || data.season_podiums || "0";
+
             const entry = createHistoryEntryConstructor(
                 newSeason,
                 team.position,
                 team.points,
-                data.season_wins || "0",
-                data.season_podiums || "0",
+                wins,
+                podiums
                 // Teams don't have a "team" field in history
             );
 
             updates[`${PATHS.teams}/${teamId}/team_history`] = manageHistoryArray(data.team_history, entry);
 
             // Reset Season Stats
-            updates[`${PATHS.teams}/${teamId}/season_wins`] = "0";
-            updates[`${PATHS.teams}/${teamId}/season_podiums`] = "0";
+            updates[`${PATHS.teams}/${teamId}/season_stats`] = {
+                wins: "0",
+                podiums: "0",
+                dnfs: "0",
+                poles: "0",
+                season_position: "-",
+                season_points: "0"
+            };
             // Champion check
             if (team.position === "1") {
                 updates[`${PATHS.teams}/${teamId}/world_championships`] = ((parseInt(data.world_championships) || 0) + 1).toString();
@@ -489,9 +495,7 @@ async function fetchAndCalculateDriverSeasonStats(targetSeason) {
             dnfs: (dnfsMap[dId] || 0).toString(),
             poles: (polesMap[dId] || 0).toString(),
             season_position: (standing.position || "-").toString(),
-            season_points: (standing.points || "0").toString(),
-            seasonPosition: (standing.position || "-").toString(),
-            seasonPoints: (standing.points || "0").toString()
+            season_points: (standing.points || "0").toString()
         };
     }
 
@@ -512,9 +516,7 @@ async function fetchAndCalculateDriverSeasonStats(targetSeason) {
                 dnfs: (dnfsMap[dId] || 0).toString(),
                 poles: (polesMap[dId] || 0).toString(),
                 season_position: "-",
-                season_points: "0",
-                seasonPosition: "-",
-                seasonPoints: "0"
+                season_points: "0"
             };
         }
     }
@@ -546,9 +548,7 @@ async function syncDriverSeasonStats(db, targetSeason) {
             dnfs: "0",
             poles: "0",
             season_position: "-",
-            season_points: "0",
-            seasonPosition: "-",
-            seasonPoints: "0"
+            season_points: "0"
         };
 
         multiPathUpdates[`${PATHS.drivers}/${driverId}/season_stats`] = stats;
@@ -570,6 +570,190 @@ async function syncDriverSeasonStats(db, targetSeason) {
 
 /*
 * -----------------------------------------------------------------
+* CONSTRUCTOR SEASON STATS SYNC (wins, podiums, dnfs, poles, seasonPosition, seasonPoints)
+* -----------------------------------------------------------------
+*/
+
+async function fetchAndCalculateConstructorSeasonStats(targetSeason) {
+    let season = targetSeason;
+
+    // 1. Fetch Constructor Standings (seasonPosition, seasonPoints, wins)
+    const standingsUrl = season 
+        ? `https://api.jolpi.ca/ergast/f1/${season}/constructorstandings/?format=json`
+        : `https://api.jolpi.ca/ergast/f1/current/constructorstandings/?format=json`;
+
+    console.log(`Fetching F1 constructor standings from: ${standingsUrl}`);
+    const standingsRes = await axios.get(standingsUrl, { timeout: 15000 });
+    const standingsTable = standingsRes.data?.MRData?.StandingsTable;
+    if (!season && standingsTable?.season) {
+        season = standingsTable.season;
+    }
+    if (!season) {
+        season = new Date().getFullYear().toString();
+    }
+
+    const standingsLists = standingsTable?.StandingsLists || [];
+    const constructorStandings = (standingsLists.length > 0 && standingsLists[0].ConstructorStandings) ? standingsLists[0].ConstructorStandings : [];
+
+    // 2. Fetch Pole Positions (Qualifying 1)
+    const polesMap = {};
+    try {
+        const polesUrl = `https://api.jolpi.ca/ergast/f1/${season}/qualifying/1/?format=json&limit=100`;
+        console.log(`Fetching F1 pole positions for constructors from: ${polesUrl}`);
+        const polesRes = await axios.get(polesUrl, { timeout: 15000 });
+        const races = polesRes.data?.MRData?.RaceTable?.Races || [];
+        for (const r of races) {
+            const cId = r.QualifyingResults && r.QualifyingResults[0] && r.QualifyingResults[0].Constructor && r.QualifyingResults[0].Constructor.constructorId;
+            if (cId) {
+                polesMap[cId] = (polesMap[cId] || 0) + 1;
+            }
+        }
+    } catch (e) {
+        console.warn(`Could not fetch pole positions for constructor season ${season}: ${e.message}`);
+    }
+
+    // 3. Fetch Race Results (Podiums, Wins, DNFs)
+    const podiumsMap = {};
+    const winsMap = {};
+    const dnfsMap = {};
+
+    try {
+        let offset = 0;
+        const limit = 100;
+        let total = 1;
+
+        while (offset < total && offset <= 1500) {
+            const resultsUrl = `https://api.jolpi.ca/ergast/f1/${season}/results/?format=json&limit=${limit}&offset=${offset}`;
+            console.log(`Fetching race results chunk for constructors: offset ${offset}...`);
+            const resultsRes = await axios.get(resultsUrl, { timeout: 15000 });
+            total = parseInt(resultsRes.data?.MRData?.total) || 0;
+            const races = resultsRes.data?.MRData?.RaceTable?.Races || [];
+
+            for (const r of races) {
+                const results = r.Results || [];
+                for (const res of results) {
+                    const cId = res.Constructor?.constructorId;
+                    if (!cId) continue;
+                    const pos = parseInt(res.position);
+
+                    if (pos === 1) {
+                        winsMap[cId] = (winsMap[cId] || 0) + 1;
+                    }
+                    if (pos <= 3) {
+                        podiumsMap[cId] = (podiumsMap[cId] || 0) + 1;
+                    }
+
+                    const posText = res.positionText || "";
+                    const status = res.status || "";
+                    const isFinished = status.includes("Finished") || status.includes("Lap") || status.startsWith("+");
+                    const isDnf = posText === "R" || posText === "D" || posText === "W" || !isFinished;
+
+                    if (isDnf) {
+                        dnfsMap[cId] = (dnfsMap[cId] || 0) + 1;
+                    }
+                }
+            }
+
+            offset += limit;
+            if (races.length === 0) break;
+        }
+    } catch (e) {
+        console.warn(`Could not fetch full race results for constructor season ${season}: ${e.message}`);
+    }
+
+    // 4. Build consolidated stats dictionary by constructorId
+    const statsByConstructorId = {};
+
+    for (const standing of constructorStandings) {
+        const cId = standing.Constructor.constructorId;
+        const winsFromStandings = parseInt(standing.wins) || 0;
+        const calculatedWins = winsMap[cId] || 0;
+        const wins = Math.max(winsFromStandings, calculatedWins).toString();
+
+        statsByConstructorId[cId] = {
+            wins: wins,
+            podiums: (podiumsMap[cId] || 0).toString(),
+            dnfs: (dnfsMap[cId] || 0).toString(),
+            poles: (polesMap[cId] || 0).toString(),
+            season_position: (standing.position || "-").toString(),
+            season_points: (standing.points || "0").toString()
+        };
+    }
+
+    // Also include any constructor that participated in a race or qualifying but has 0 points
+    const allEncounteredConstructorIds = new Set([
+        ...Object.keys(statsByConstructorId),
+        ...Object.keys(podiumsMap),
+        ...Object.keys(winsMap),
+        ...Object.keys(dnfsMap),
+        ...Object.keys(polesMap)
+    ]);
+
+    for (const cId of allEncounteredConstructorIds) {
+        if (!statsByConstructorId[cId]) {
+            statsByConstructorId[cId] = {
+                wins: (winsMap[cId] || 0).toString(),
+                podiums: (podiumsMap[cId] || 0).toString(),
+                dnfs: (dnfsMap[cId] || 0).toString(),
+                poles: (polesMap[cId] || 0).toString(),
+                season_position: "-",
+                season_points: "0"
+            };
+        }
+    }
+
+    return {
+        season,
+        statsByConstructorId
+    };
+}
+
+async function syncConstructorSeasonStats(db, targetSeason) {
+    console.log(`Starting constructor season_stats sync...`);
+    const { season, statsByConstructorId } = await fetchAndCalculateConstructorSeasonStats(targetSeason);
+
+    const teamsSnap = await db.ref(PATHS.teams).once("value");
+    if (!teamsSnap.exists()) {
+        console.log("No teams node found in database.");
+        return { season, updatedCount: 0 };
+    }
+
+    const teamsData = teamsSnap.val() || {};
+    const multiPathUpdates = {};
+    let updatedCount = 0;
+
+    for (const constructorId of Object.keys(teamsData)) {
+        const stats = statsByConstructorId[constructorId] || {
+            wins: "0",
+            podiums: "0",
+            dnfs: "0",
+            poles: "0",
+            season_position: "-",
+            season_points: "0"
+        };
+
+        multiPathUpdates[`${PATHS.teams}/${constructorId}/season_stats`] = stats;
+
+        // Clean up legacy fields as season_stats is now the single source of truth
+        multiPathUpdates[`${PATHS.teams}/${constructorId}/season_wins`] = null;
+        multiPathUpdates[`${PATHS.teams}/${constructorId}/season_podiums`] = null;
+        updatedCount++;
+    }
+
+    if (Object.keys(multiPathUpdates).length > 0) {
+        await db.ref().update(multiPathUpdates);
+        console.log(`Successfully updated season_stats for ${updatedCount} constructors (Season ${season}).`);
+    }
+
+    return {
+        season,
+        updatedCount,
+        stats: statsByConstructorId
+    };
+}
+
+/*
+* -----------------------------------------------------------------
 * FUNCTION EXPORTS
 * -----------------------------------------------------------------
 */
@@ -580,6 +764,8 @@ module.exports = {
     executeChampionshipsUpdate,
     syncDriverSeasonStats,
     fetchAndCalculateDriverSeasonStats,
+    syncConstructorSeasonStats,
+    fetchAndCalculateConstructorSeasonStats,
 
     // Helper functions for testing
     loadMappings,

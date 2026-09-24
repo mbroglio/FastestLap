@@ -107,8 +107,10 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
         UIUtils.applyWindowInsets(upcomingEventsLayout);
         upcomingEventsLayout.setOnRefreshListener(() -> {
+            if (weeklyRaceViewModel != null) {
+                weeklyRaceViewModel.refreshWeeklyRaces();
+            }
             refreshData();
-            upcomingEventsLayout.setRefreshing(false);
         });
 
         setupRecyclerView();
@@ -184,6 +186,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
             if (result instanceof Result.Loading) {
                 return;
             }
+            upcomingEventsLayout.setRefreshing(false);
             if (result.isSuccess()) {
                 List<WeeklyRace> races = ((Result.WeeklyRaceSuccess) result).getData();
                 Log.i(TAG, "SUCCESS – total races: " + races.size());

@@ -90,10 +90,7 @@ public class WeatherActivity extends AppCompatActivity {
 
         UIUtils.applyWindowInsets(weatherLayout);
         if (weatherLayout != null) {
-            weatherLayout.setOnRefreshListener(() -> {
-                start();
-                weatherLayout.setRefreshing(false);
-            });
+            weatherLayout.setOnRefreshListener(this::observeWeatherData);
         }
 
         weatherViewModel = new ViewModelProvider(this).get(WeatherViewModel.class);
@@ -265,6 +262,7 @@ public class WeatherActivity extends AppCompatActivity {
                     // Lista vuota: l'evento è già passato, nascondi la sezione forecast
                     hideWeather();
                     loadingScreen.hideLoadingScreen();
+                    if (weatherLayout != null) weatherLayout.setRefreshing(false);
                 }
             } else if (result instanceof Result.Error) {
                 String errorMsg = result.getError();
@@ -277,6 +275,7 @@ public class WeatherActivity extends AppCompatActivity {
                 }
                 showWeatherNotAvailable();
                 loadingScreen.hideLoadingScreen();
+                if (weatherLayout != null) weatherLayout.setRefreshing(false);
             }
         });
     }
@@ -365,6 +364,7 @@ public class WeatherActivity extends AppCompatActivity {
         }
 
         loadingScreen.hideLoadingScreen();
+        if (weatherLayout != null) weatherLayout.setRefreshing(false);
     }
 
     private void bindHourlySlotDynamic(View container, HourlyForecast hf, int iconId, int tempId, int rainId) {

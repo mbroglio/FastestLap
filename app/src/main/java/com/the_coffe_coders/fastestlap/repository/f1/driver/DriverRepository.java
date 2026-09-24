@@ -152,4 +152,14 @@ public class DriverRepository {
         driverCache.get(driverId).postValue(new Result.Loading("Loading driver from local database"));
         loadDriverCacheFirst(driverId);
     }
+
+    public void refreshDriver(String driverId) {
+        if (driverId == null) return;
+        if (!driverCache.containsKey(driverId)) {
+            driverCache.put(driverId, new MutableLiveData<>());
+        }
+        if (isNetworkAvailable()) {
+            loadDriverFromRemote(driverId, false);
+        }
+    }
 }

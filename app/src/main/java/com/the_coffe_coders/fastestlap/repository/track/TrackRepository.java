@@ -142,4 +142,14 @@ public class TrackRepository {
             }
         }
     }
+
+    public void refreshTrack(String trackId) {
+        if (trackId == null) return;
+        if (!trackCache.containsKey(trackId)) {
+            trackCache.put(trackId, new MutableLiveData<>());
+        }
+        if (isNetworkAvailable()) {
+            loadTrackFromRemote(trackId, false);
+        }
+    }
 }

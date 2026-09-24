@@ -167,4 +167,15 @@ public class DriverStandingRepository {
             Log.e(TAG, "Error loading driver standing from remote: " + e.getMessage());
         }
     }
+
+    public synchronized void refreshDriverStandings() {
+        String cacheKey = "driverStanding";
+        if (!driverStandingCache.containsKey(cacheKey)) {
+            driverStandingCache.put(cacheKey, new MutableLiveData<>());
+        }
+        if (isNetworkAvailable() && !isFetchInFlight) {
+            isFetchInFlight = true;
+            loadDriverStandingFromRemote(cacheKey, false);
+        }
+    }
 }
