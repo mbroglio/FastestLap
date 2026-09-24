@@ -13,9 +13,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.f1.StintsResultsRecyclerAdapter;
+import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.f1.result.Stint;
+import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModel;
+import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModelFactory;
+
+import androidx.lifecycle.ViewModelProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,13 +61,11 @@ public class StintsResultsTabFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_stints_results_tab, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.stints_results_recycler_view);
+        View notAvailableLayout = view.findViewById(R.id.stints_not_available_layout);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         if ((stintsList == null || stintsList.isEmpty()) && race != null) {
             stintsList = race.getStints();
-        }
-        if (stintsList == null) {
-            stintsList = new ArrayList<>();
         }
 
         List<RaceResult> raceResults = (race != null)
@@ -70,7 +73,45 @@ public class StintsResultsTabFragment extends Fragment {
                     ? race.getRaceResults() : race.getSprintResults())
                 : null;
 
-        recyclerView.setAdapter(new StintsResultsRecyclerAdapter(requireContext(), stintsList, raceResults));
+        if (stintsList != null && !stintsList.isEmpty()) {
+            recyclerView.setVisibility(View.VISIBLE);
+            if (notAvailableLayout != null) {
+                notAvailableLayout.setVisibility(View.GONE);
+            }
+            recyclerView.setAdapter(new StintsResultsRecyclerAdapter(requireContext(), stintsList, raceResults));
+        } else {
+            recyclerView.setVisibility(View.GONE);
+            if (notAvailableLayout != null) {
+                notAvailableLayout.setVisibility(View.VISIBLE);
+            }
+
+            if (race != null && race.getRaceName() != null && isAdded()) {
+                String sessionType = (race.getRaceResults() != null && !race.getRaceResults().isEmpty()) ? "Race" : "Sprint";
+                RaceResultViewModel raceResultViewModel = new ViewModelProvider(
+                        requireActivity(),
+                        new RaceResultViewModelFactory(requireActivity().getApplication(), requireActivity())
+                ).get(RaceResultViewModel.class);
+
+                raceResultViewModel.getStints(race.getRaceName(), sessionType).observe(getViewLifecycleOwner(), result -> {
+                    if (result instanceof Result.StintsSuccess) {
+                        List<Stint> fetched = ((Result.StintsSuccess) result).getData();
+                        if (fetched != null && !fetched.isEmpty() && isAdded()) {
+                            stintsList = fetched;
+                            if (sessionType.equals("Sprint")) {
+                                race.setSprintStints(fetched);
+                            } else {
+                                race.setRaceStints(fetched);
+                            }
+                            recyclerView.setVisibility(View.VISIBLE);
+                            if (notAvailableLayout != null) {
+                                notAvailableLayout.setVisibility(View.GONE);
+                            }
+                            recyclerView.setAdapter(new StintsResultsRecyclerAdapter(requireContext(), stintsList, raceResults));
+                        }
+                    }
+                });
+            }
+        }
 
         return view;
     }

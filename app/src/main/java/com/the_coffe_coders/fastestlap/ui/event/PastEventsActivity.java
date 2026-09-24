@@ -184,6 +184,8 @@ public class PastEventsActivity extends AppCompatActivity {
         totalRaces = pastRaces.size();
         List<Race> fetchedRaces = java.util.Collections.synchronizedList(new ArrayList<>());
         final int[] completedCount = {0};
+        final boolean[] isDone = {false};
+        android.os.Handler timeoutHandler = new android.os.Handler(android.os.Looper.getMainLooper());
 
         for (WeeklyRace weeklyRace : pastRaces) {
             MutableLiveData<Result> singleRaceData = raceResultViewModel.getRaceResults(weeklyRace.getRound());
@@ -196,11 +198,23 @@ public class PastEventsActivity extends AppCompatActivity {
                 singleRaceData.removeObserver(observerHolder[0]);
                 if (result.isSuccess()) {
                     Race race = ((Result.RaceResultsSuccess) result).getData();
-                    fetchedRaces.add(race);
+                    if (race != null) {
+                        fetchedRaces.add(race);
+                    } else {
+                        fetchedRaces.add(createFallbackRace(weeklyRace));
+                    }
+                } else {
+                    Log.w("PastEvent", "Failed to fetch race results for round " + weeklyRace.getRound() + ", fallback to WeeklyRace card");
+                    fetchedRaces.add(createFallbackRace(weeklyRace));
                 }
                 synchronized (completedCount) {
                     completedCount[0]++;
                     if (completedCount[0] >= totalRaces) {
+                        synchronized (isDone) {
+                            if (isDone[0]) return;
+                            isDone[0] = true;
+                        }
+                        timeoutHandler.removeCallbacksAndMessages(null);
                         racesList.clear();
                         racesList.addAll(fetchedRaces);
                         sortAndUpdateList();
@@ -210,12 +224,70 @@ public class PastEventsActivity extends AppCompatActivity {
             };
             singleRaceData.observe(this, observerHolder[0]);
         }
+
+        // Safety timeout (6.5s): if OpenF1 rate-limiting (429) or network delays occur, show cards immediately
+        timeoutHandler.postDelayed(() -> {
+            synchronized (isDone) {
+                if (isDone[0]) return;
+                isDone[0] = true;
+            }
+            Log.w("PastEvent", "Parallel load timeout reached (" + completedCount[0] + "/" + totalRaces + "), filling fallbacks");
+            java.util.Set<String> addedRounds = new java.util.HashSet<>();
+            synchronized (fetchedRaces) {
+                for (Race r : fetchedRaces) {
+                    if (r != null && r.getRound() != null) {
+                        addedRounds.add(r.getRound());
+                    }
+                }
+            }
+            for (WeeklyRace wr : pastRaces) {
+                if (wr != null && !addedRounds.contains(wr.getRound())) {
+                    fetchedRaces.add(createFallbackRace(wr));
+                }
+            }
+            racesList.clear();
+            racesList.addAll(fetchedRaces);
+            sortAndUpdateList();
+            dataLoaded = true;
+        }, 6500);
+    }
+
+    private Race createFallbackRace(WeeklyRace weeklyRace) {
+        if (weeklyRace == null) {
+            return new Race();
+        }
+        Race fallback = weeklyRace.getFinalRace();
+        if (fallback == null) {
+            fallback = new Race();
+        }
+        if (fallback.getRound() == null) {
+            fallback.setRound(weeklyRace.getRound());
+        }
+        if (fallback.getRaceName() == null) {
+            fallback.setRaceName(weeklyRace.getRaceName());
+        }
+        if (fallback.getSeason() == null) {
+            fallback.setSeason(weeklyRace.getSeason());
+        }
+        if (fallback.getTrack() == null) {
+            fallback.setTrack(weeklyRace.getTrack());
+        }
+        if (fallback.getUrl() == null) {
+            fallback.setUrl(weeklyRace.getUrl());
+        }
+        return fallback;
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private void sortAndUpdateList() {
         // Ordina la lista finale per sicurezza (dalla più recente alla meno recente)
-        racesList.sort(Comparator.comparingInt(Race::getRoundAsInt));
+        racesList.sort(Comparator.comparingInt(race -> {
+            try {
+                return race.getRoundAsInt();
+            } catch (Exception e) {
+                return 0;
+            }
+        }));
         Collections.reverse(racesList);
 
         runOnUiThread(() -> {

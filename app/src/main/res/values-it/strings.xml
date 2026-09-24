@@ -10,6 +10,7 @@
     <string name="weather">Meteo a %1$s</string>
     <string name="next_session_index">Prossima sessione:</string>
     <string name="pending_results">In attesa dei risultati…</string>
+    <string name="data_not_available">DATI NON DISPONIBILI</string>
     <string name="podiums_index">Podi:</string>
     <string name="open_with_google_maps">Vedi sulla mappa</string>
     <string name="forgot_password_text">Fornisci l\'indirizzo email di cui vuoi reimpostare la tua password</string>

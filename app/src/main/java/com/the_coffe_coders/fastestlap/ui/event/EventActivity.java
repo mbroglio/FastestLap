@@ -449,6 +449,9 @@ public class EventActivity extends AppCompatActivity {
 
         List<Stint> finalCachedStints = cachedStints;
         MutableLiveData<Result> stintsLiveData = raceResultViewModel.getStints(race.getRaceName(), sessionName);
+        final boolean[] isHandled = {false};
+        android.os.Handler timeoutHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+
         Observer<Result> observer = new Observer<>() {
             @Override
             public void onChanged(Result result) {
@@ -457,6 +460,11 @@ public class EventActivity extends AppCompatActivity {
                     return;
                 }
 
+                synchronized (isHandled) {
+                    if (isHandled[0]) return;
+                    isHandled[0] = true;
+                }
+                timeoutHandler.removeCallbacksAndMessages(null);
                 stintsLiveData.removeObserver(this);
 
                 if (loadingScreen != null) {
@@ -483,6 +491,21 @@ public class EventActivity extends AppCompatActivity {
                 NavigationUtils.showRaceResults(EventActivity.this, race, 0, (stints != null && !stints.isEmpty()) ? stints : finalCachedStints, raceFastestLap);
             }
         };
+
+        // Fallback after 3.5 seconds if API times out or rate limits
+        timeoutHandler.postDelayed(() -> {
+            synchronized (isHandled) {
+                if (isHandled[0]) return;
+                isHandled[0] = true;
+            }
+            Log.w(TAG, "Stints fetching timed out, opening results with cached data or empty stints");
+            stintsLiveData.removeObserver(observer);
+            if (loadingScreen != null) {
+                loadingScreen.hideLoadingScreenImmediately();
+            }
+            NavigationUtils.showRaceResults(EventActivity.this, race, 0, finalCachedStints, raceFastestLap);
+        }, 3500);
+
         stintsLiveData.observe(this, observer);
     }
 

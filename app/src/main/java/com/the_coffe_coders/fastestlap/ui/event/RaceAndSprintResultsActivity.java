@@ -69,7 +69,17 @@ public class RaceAndSprintResultsActivity extends AppCompatActivity {
     }
 
     private void setupActivity() {
-        if (race == null) return;
+        if (race == null) {
+            View notAvailable = findViewById(R.id.data_not_available_layout);
+            if (notAvailable != null) notAvailable.setVisibility(View.VISIBLE);
+            View tabLayout = findViewById(R.id.tab_layout);
+            if (tabLayout != null) tabLayout.setVisibility(View.GONE);
+            View viewPager = findViewById(R.id.view_pager);
+            if (viewPager != null) viewPager.setVisibility(View.GONE);
+            View fastestLapLayout = findViewById(R.id.fastest_lap_layout);
+            if (fastestLapLayout != null) fastestLapLayout.setVisibility(View.GONE);
+            return;
+        }
 
         List<RaceResult> raceResultsList = race.getRaceResults();
         List<RaceResult> sprintResultsList = race.getSprintResults();

@@ -24,6 +24,7 @@
     <string name="next_session_index">Next Session In:</string>
 
     <string name="pending_results">Pending\nresults…</string>
+    <string name="data_not_available">DATA NOT AVAILABLE</string>
 
     <string name="base_countdown" translatable="false">00</string>
 

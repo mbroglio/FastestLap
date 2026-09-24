@@ -48,15 +48,27 @@ public class RaceResultsTabFragment extends Fragment {
         RecyclerView recyclerView = view.findViewById(R.id.race_results_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
+        View notAvailableLayout = view.findViewById(R.id.race_results_not_available_layout);
+
         if (race != null) {
             List<RaceResult> raceResultsList = race.getRaceResults();
             List<RaceResult> sprintResultsList = race.getSprintResults();
 
             if (raceResultsList != null && !raceResultsList.isEmpty()) {
+                recyclerView.setVisibility(View.VISIBLE);
+                if (notAvailableLayout != null) notAvailableLayout.setVisibility(View.GONE);
                 recyclerView.setAdapter(new RaceResultsRecyclerAdapter(requireContext(), raceResultsList));
             } else if (sprintResultsList != null && !sprintResultsList.isEmpty()) {
+                recyclerView.setVisibility(View.VISIBLE);
+                if (notAvailableLayout != null) notAvailableLayout.setVisibility(View.GONE);
                 recyclerView.setAdapter(new RaceResultsRecyclerAdapter(requireContext(), sprintResultsList));
+            } else {
+                recyclerView.setVisibility(View.GONE);
+                if (notAvailableLayout != null) notAvailableLayout.setVisibility(View.VISIBLE);
             }
+        } else {
+            recyclerView.setVisibility(View.GONE);
+            if (notAvailableLayout != null) notAvailableLayout.setVisibility(View.VISIBLE);
         }
 
         return view;
