@@ -133,6 +133,16 @@ public class FastestLapFirebaseMessagingService extends FirebaseMessagingService
             String raceName = (data != null) ? data.get("raceName") : null;
             String sessionName = (data != null) ? data.get("sessionName") : null;
             String sessionTime = (data != null) ? data.get("sessionTime") : null;
+            String startTimeMillisStr = (data != null) ? data.get("startTimeMillis") : null;
+
+            if (startTimeMillisStr != null && !startTimeMillisStr.trim().isEmpty()) {
+                try {
+                    long millis = Long.parseLong(startTimeMillisStr);
+                    java.time.Instant instant = java.time.Instant.ofEpochMilli(millis);
+                    java.time.ZonedDateTime zdt = instant.atZone(java.time.ZoneId.systemDefault());
+                    sessionTime = zdt.format(java.time.format.DateTimeFormatter.ofPattern("HH:mm"));
+                } catch (Exception ignored) {}
+            }
 
             if (raceName == null || raceName.trim().isEmpty()) raceName = title;
             if (sessionName == null || sessionName.trim().isEmpty()) sessionName = (body != null && !body.trim().isEmpty()) ? body : "Session";
@@ -140,6 +150,8 @@ public class FastestLapFirebaseMessagingService extends FirebaseMessagingService
 
             AppNotificationManager.getInstance().showSessionNotification(
                     this,
+                    title,
+                    body,
                     raceName,
                     sessionName,
                     sessionTime

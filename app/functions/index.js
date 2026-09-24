@@ -6,6 +6,7 @@ const admin = require("firebase-admin");
 const f1Logic = require("./f1_logic");
 const juniorLogic = require("./junior_categories_logic");
 const notificationLogic = require("./notification_logic");
+const calendarLogic = require("./calendar_logic");
 
 // Inizializza Firebase UNA sola volta qui
 admin.initializeApp({
@@ -134,14 +135,14 @@ exports.checkAndPushNews = onSchedule(
 );
 
 /**
- * SCHEDULER 6: F1 Session Reminders Check (Every 15 minutes)
- * Checks Jolpica F1 API and pushes 15-min start reminder to topic "sessions".
+ * SCHEDULER 6: F1 & Junior Categories Session Reminders Check (Every 5 minutes)
+ * Checks stored Firebase calendars and sends 30-min and 5-min alerts to dedicated topics.
  */
 exports.checkAndPushSessions = onSchedule(
   {
-    schedule: "every 15 minutes",
+    schedule: "every 5 minutes",
     timeZone: "Europe/Rome",
-    timeoutSeconds: 120,
+    timeoutSeconds: 180,
     retryConfig: {
       retryCount: 3,
       minBackoffDuration: "60s",
@@ -153,6 +154,52 @@ exports.checkAndPushSessions = onSchedule(
       await notificationLogic.executeSessionCheckAndPush(db, messaging);
     } catch (error) {
       console.error("Error in checkAndPushSessions:", error);
+    }
+  }
+);
+
+/**
+ * SCHEDULER 7: Daily Calendar Synchronization (Daily at 04:00 Rome time)
+ * Downloads current year calendar for F1 (Jolpica) and Junior categories (F2, F3)
+ * into Firebase RTDB under app_config/db_calendar/{f1,f2,f3}/{year}.
+ */
+exports.syncCalendars = onSchedule(
+  {
+    schedule: "0 4 * * *",
+    timeZone: "Europe/Rome",
+    timeoutSeconds: 300,
+    retryConfig: {
+      retryCount: 3,
+      minBackoffDuration: "60s",
+      maxBackoffDuration: "300s"
+    }
+  },
+  async (event) => {
+    try {
+      await calendarLogic.syncAllCalendars(db);
+    } catch (error) {
+      console.error("Error in syncCalendars:", error);
+    }
+  }
+);
+
+/**
+ * HTTP ENDPOINT: Manual Calendar Sync Trigger
+ * Allows immediate manual sync of F1, F2, and F3 calendars from browser or curl.
+ * GET https://.../syncCalendarsNow
+ */
+exports.syncCalendarsNow = onRequest(
+  {
+    cors: true,
+    timeoutSeconds: 300
+  },
+  async (req, res) => {
+    try {
+      const result = await calendarLogic.syncAllCalendars(db);
+      res.status(200).json({ status: "success", result });
+    } catch (error) {
+      console.error("Error in syncCalendarsNow:", error);
+      res.status(500).json({ status: "error", message: error.message });
     }
   }
 );
@@ -177,6 +224,49 @@ exports.sendTestPush = onRequest(
       res.status(200).json({ status: "success", result });
     } catch (error) {
       console.error("Error in sendTestPush:", error);
+      res.status(500).json({ status: "error", message: error.message });
+    }
+  }
+);
+
+/**
+ * HTTP ENDPOINT: Manual Driver Season Stats Sync Trigger
+ * Allows immediate manual sync of all drivers' season_stats from browser or curl:
+ * GET https://.../syncDriverSeasonStatsNow (optionally ?season=2026)
+ */
+exports.syncDriverSeasonStatsNow = onRequest(
+  {
+    cors: true,
+    timeoutSeconds: 300
+  },
+  async (req, res) => {
+    try {
+      const season = req.query.season || req.body?.season || null;
+      const result = await f1Logic.syncDriverSeasonStats(db, season);
+      res.status(200).json({ status: "success", result });
+    } catch (error) {
+      console.error("Error in syncDriverSeasonStatsNow:", error);
+      res.status(500).json({ status: "error", message: error.message });
+    }
+  }
+);
+
+/**
+ * HTTP ENDPOINT: Manual F1 Post-Race Stats Update Trigger
+ * Allows immediate manual trigger of post-race stats update from browser or curl:
+ * GET https://.../updateRaceStatsNow
+ */
+exports.updateRaceStatsNow = onRequest(
+  {
+    cors: true,
+    timeoutSeconds: 300
+  },
+  async (req, res) => {
+    try {
+      await f1Logic.executeRaceStatsUpdate(db);
+      res.status(200).json({ status: "success", message: "F1 Race stats and season stats update completed." });
+    } catch (error) {
+      console.error("Error in updateRaceStatsNow:", error);
       res.status(500).json({ status: "error", message: error.message });
     }
   }

@@ -94,13 +94,7 @@ async function executeRaceStatsUpdate(db) { // post race stats update
             const driverData = driverSnapshot.val();
             if (position <= 3) {
                 const currentPodiums = parseInt(driverData.podiums) || 0;
-                const seasonPodiums = parseInt(driverData.season_podiums) || 0;
-                multiPathUpdates[`${PATHS.drivers}/${driverId}/season_podiums`] = (seasonPodiums + 1).toString();
                 multiPathUpdates[`${PATHS.drivers}/${driverId}/podiums`] = (currentPodiums + 1).toString();
-                if (position === 1) {
-                    const seasonWins = parseInt(driverData.season_wins) || 0;
-                    multiPathUpdates[`${PATHS.drivers}/${driverId}/season_wins`] = (seasonWins + 1).toString();
-                }
             }
 
             if(positionString !== "R" && lapsCompleted !== 0) {
@@ -161,10 +155,11 @@ async function executeRaceStatsUpdate(db) { // post race stats update
     await processCircuitRaceUpdate(newSeason, newRound, trackId, results, multiPathUpdates, db);
 
     multiPathUpdates[`${PATHS.tracker}/last_season_updated`] = newSeason;
-    multiPathUpdates[`${PATHS.tracker}/last_race_updated`] = newRound;
-
     await db.ref().update(multiPathUpdates);
     console.log(`F1 Post-race update complete.`);
+
+    // Synchronize comprehensive driver season_stats (wins, podiums, dnfs, poles, seasonPosition, seasonPoints)
+    await syncDriverSeasonStats(db, newSeason);
 }
 
 async function executeChampionshipsUpdate(db) { // end of season championship update
@@ -237,20 +232,32 @@ async function processDriverSeasonArchive(newSeason, updates, db) {
             const data = snap.val();
 
             const teamNames = driver.Constructors.map(c => TEAM_ID_NAME_MAP[c.constructorId] || c.name).join(' / ');
+            const seasonStats = (data && data.season_stats) || {};
+            const wins = seasonStats.wins || data.season_wins || "0";
+            const podiums = seasonStats.podiums || data.season_podiums || "0";
+
             const entry = createHistoryEntryDriver(
                 newSeason,
                 driver.position,
                 driver.points,
-                data.season_wins || "0",
-                data.season_podiums || "0",
+                wins,
+                podiums,
                 teamNames
             );
 
             updates[`${PATHS.drivers}/${driverId}/driver_history`] = manageHistoryArray(data.driver_history, entry);
 
             // Reset Season Stats
-            updates[`${PATHS.drivers}/${driverId}/season_wins`] = "0";
-            updates[`${PATHS.drivers}/${driverId}/season_podiums`] = "0";
+            updates[`${PATHS.drivers}/${driverId}/season_stats`] = {
+                wins: "0",
+                podiums: "0",
+                dnfs: "0",
+                poles: "0",
+                season_position: "-",
+                season_points: "0",
+                seasonPosition: "-",
+                seasonPoints: "0"
+            };
             // Champion check
             if (driver.position === "1") {
                 updates[`${PATHS.drivers}/${driverId}/championships`] = ((parseInt(data.championships) || 0) + 1).toString();
@@ -373,6 +380,196 @@ function createCalendarEntry(newRound, newSeason, trackId, results, updates) {
 
 /*
 * -----------------------------------------------------------------
+* DRIVER SEASON STATS SYNC (wins, podiums, dnfs, poles, seasonPosition, seasonPoints)
+* -----------------------------------------------------------------
+*/
+
+async function fetchAndCalculateDriverSeasonStats(targetSeason) {
+    let season = targetSeason;
+
+    // 1. Fetch Driver Standings (seasonPosition, seasonPoints, wins)
+    const standingsUrl = season 
+        ? `https://api.jolpi.ca/ergast/f1/${season}/driverstandings/?format=json`
+        : `https://api.jolpi.ca/ergast/f1/current/driverstandings/?format=json`;
+
+    console.log(`Fetching F1 driver standings from: ${standingsUrl}`);
+    const standingsRes = await axios.get(standingsUrl, { timeout: 15000 });
+    const standingsTable = standingsRes.data?.MRData?.StandingsTable;
+    if (!season && standingsTable?.season) {
+        season = standingsTable.season;
+    }
+    if (!season) {
+        season = new Date().getFullYear().toString();
+    }
+
+    const standingsLists = standingsTable?.StandingsLists || [];
+    const driverStandings = (standingsLists.length > 0 && standingsLists[0].DriverStandings) ? standingsLists[0].DriverStandings : [];
+
+    // 2. Fetch Pole Positions (Qualifying 1)
+    const polesMap = {};
+    try {
+        const polesUrl = `https://api.jolpi.ca/ergast/f1/${season}/qualifying/1/?format=json&limit=100`;
+        console.log(`Fetching F1 pole positions from: ${polesUrl}`);
+        const polesRes = await axios.get(polesUrl, { timeout: 15000 });
+        const races = polesRes.data?.MRData?.RaceTable?.Races || [];
+        for (const r of races) {
+            if (r.QualifyingResults && r.QualifyingResults[0] && r.QualifyingResults[0].Driver) {
+                const poleDriverId = r.QualifyingResults[0].Driver.driverId;
+                polesMap[poleDriverId] = (polesMap[poleDriverId] || 0) + 1;
+            }
+        }
+    } catch (e) {
+        console.warn(`Could not fetch pole positions for season ${season}: ${e.message}`);
+    }
+
+    // 3. Fetch Race Results (Podiums, Wins, DNFs)
+    const podiumsMap = {};
+    const winsMap = {};
+    const dnfsMap = {};
+
+    try {
+        let offset = 0;
+        const limit = 100;
+        let total = 1;
+
+        while (offset < total && offset <= 1500) {
+            const resultsUrl = `https://api.jolpi.ca/ergast/f1/${season}/results/?format=json&limit=${limit}&offset=${offset}`;
+            console.log(`Fetching race results chunk: offset ${offset}...`);
+            const resultsRes = await axios.get(resultsUrl, { timeout: 15000 });
+            total = parseInt(resultsRes.data?.MRData?.total) || 0;
+            const races = resultsRes.data?.MRData?.RaceTable?.Races || [];
+
+            for (const r of races) {
+                const results = r.Results || [];
+                for (const res of results) {
+                    if (!res.Driver || !res.Driver.driverId) continue;
+                    const dId = res.Driver.driverId;
+                    const pos = parseInt(res.position);
+
+                    if (pos === 1) {
+                        winsMap[dId] = (winsMap[dId] || 0) + 1;
+                    }
+                    if (pos <= 3) {
+                        podiumsMap[dId] = (podiumsMap[dId] || 0) + 1;
+                    }
+
+                    // DNF detection:
+                    // In Jolpica/Ergast, retired drivers have positionText "R", "D", "W"
+                    // or status not containing "Finished" / "Lap" / "+..."
+                    const posText = res.positionText || "";
+                    const status = res.status || "";
+                    const isFinished = status.includes("Finished") || status.includes("Lap") || status.startsWith("+");
+                    const isDnf = posText === "R" || posText === "D" || posText === "W" || !isFinished;
+
+                    if (isDnf) {
+                        dnfsMap[dId] = (dnfsMap[dId] || 0) + 1;
+                    }
+                }
+            }
+
+            offset += limit;
+            if (races.length === 0) break;
+        }
+    } catch (e) {
+        console.warn(`Could not fetch full race results for season ${season}: ${e.message}`);
+    }
+
+    // 4. Build consolidated stats dictionary by driverId
+    const statsByDriverId = {};
+
+    for (const standing of driverStandings) {
+        const dId = standing.Driver.driverId;
+        const winsFromStandings = parseInt(standing.wins) || 0;
+        const calculatedWins = winsMap[dId] || 0;
+        const wins = Math.max(winsFromStandings, calculatedWins).toString();
+
+        statsByDriverId[dId] = {
+            wins: wins,
+            podiums: (podiumsMap[dId] || 0).toString(),
+            dnfs: (dnfsMap[dId] || 0).toString(),
+            poles: (polesMap[dId] || 0).toString(),
+            season_position: (standing.position || "-").toString(),
+            season_points: (standing.points || "0").toString(),
+            seasonPosition: (standing.position || "-").toString(),
+            seasonPoints: (standing.points || "0").toString()
+        };
+    }
+
+    // Also include any driver who participated in a race or qualifying but has 0 points
+    const allEncounteredDriverIds = new Set([
+        ...Object.keys(statsByDriverId),
+        ...Object.keys(podiumsMap),
+        ...Object.keys(winsMap),
+        ...Object.keys(dnfsMap),
+        ...Object.keys(polesMap)
+    ]);
+
+    for (const dId of allEncounteredDriverIds) {
+        if (!statsByDriverId[dId]) {
+            statsByDriverId[dId] = {
+                wins: (winsMap[dId] || 0).toString(),
+                podiums: (podiumsMap[dId] || 0).toString(),
+                dnfs: (dnfsMap[dId] || 0).toString(),
+                poles: (polesMap[dId] || 0).toString(),
+                season_position: "-",
+                season_points: "0",
+                seasonPosition: "-",
+                seasonPoints: "0"
+            };
+        }
+    }
+
+    return {
+        season,
+        statsByDriverId
+    };
+}
+
+async function syncDriverSeasonStats(db, targetSeason) {
+    console.log(`Starting driver season_stats sync...`);
+    const { season, statsByDriverId } = await fetchAndCalculateDriverSeasonStats(targetSeason);
+
+    const driversSnap = await db.ref(PATHS.drivers).once("value");
+    if (!driversSnap.exists()) {
+        console.log("No drivers node found in database.");
+        return { season, updatedCount: 0 };
+    }
+
+    const driversData = driversSnap.val() || {};
+    const multiPathUpdates = {};
+    let updatedCount = 0;
+
+    for (const driverId of Object.keys(driversData)) {
+        const stats = statsByDriverId[driverId] || {
+            wins: "0",
+            podiums: "0",
+            dnfs: "0",
+            poles: "0",
+            season_position: "-",
+            season_points: "0",
+            seasonPosition: "-",
+            seasonPoints: "0"
+        };
+
+        multiPathUpdates[`${PATHS.drivers}/${driverId}/season_stats`] = stats;
+
+        updatedCount++;
+    }
+
+    if (Object.keys(multiPathUpdates).length > 0) {
+        await db.ref().update(multiPathUpdates);
+        console.log(`Successfully updated season_stats for ${updatedCount} drivers (Season ${season}).`);
+    }
+
+    return {
+        season,
+        updatedCount,
+        stats: statsByDriverId
+    };
+}
+
+/*
+* -----------------------------------------------------------------
 * FUNCTION EXPORTS
 * -----------------------------------------------------------------
 */
@@ -381,6 +578,8 @@ function createCalendarEntry(newRound, newSeason, trackId, results, updates) {
 module.exports = {
     executeRaceStatsUpdate,
     executeChampionshipsUpdate,
+    syncDriverSeasonStats,
+    fetchAndCalculateDriverSeasonStats,
 
     // Helper functions for testing
     loadMappings,

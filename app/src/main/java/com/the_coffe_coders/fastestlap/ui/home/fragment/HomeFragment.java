@@ -16,6 +16,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandings;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
@@ -39,6 +40,7 @@ import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
+import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.service.SharedPreferencesUtils;
@@ -99,16 +101,12 @@ public class HomeFragment extends Fragment {
 
         networkLiveData = new NetworkUtils(requireContext());
 
-        // Initialize ViewModels once per fragment instance (ViewModelProvider is idempotent
-        // but calling initializeViewModels on every setupFragment adds unnecessary overhead).
         initializeViewModels();
 
         if (!isInitialized) {
             // First time setup: load all data from network / cache.
             setupFragment(view);
         } else {
-            // Fragment is returning from back-stack: data is already loaded in ViewModels / cache.
-            // Just re-attach the loading screen and handlers without triggering new network calls.
             Log.d(TAG, "Fragment returning from back-stack, skipping re-initialization.");
 
             // Reset flags so markCardLoaded can hide the loading screen again
@@ -176,10 +174,6 @@ public class HomeFragment extends Fragment {
         setupHandlers();
         setupUI(view);
 
-        // isSettingUp is intentionally NOT cleared here.
-        // It is cleared in markCardLoaded() once all 4 cards have finished loading,
-        // which prevents a concurrent network-restore or swipe-refresh from interrupting
-        // an in-progress async load.
     }
 
     private void initializeViewModels() {
@@ -271,8 +265,8 @@ public class HomeFragment extends Fragment {
             if (userViewModel.getLoggedUser() != null) {
                 // Check if preferences are already available locally
                 String localDriverId = sharedPreferencesUtils.readStringData(
-                        com.the_coffe_coders.fastestlap.util.Constants.SHARED_PREFERENCES_FILENAME,
-                        com.the_coffe_coders.fastestlap.util.Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
+                        Constants.SHARED_PREFERENCES_FILENAME,
+                        Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
                 boolean prefsAvailable = localDriverId != null && !localDriverId.isEmpty() && !localDriverId.equals("null");
 
                 if (prefsAvailable) {
@@ -358,47 +352,11 @@ public class HomeFragment extends Fragment {
         // Pre-fetch all weekly races to populate local Room DB with full season calendar and schedule upcoming session reminders
         weeklyRaceViewModel.getWeeklyRacesLiveData().observe(getViewLifecycleOwner(), result -> {
             if (result instanceof Result.WeeklyRaceSuccess) {
-                List<com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace> races = ((Result.WeeklyRaceSuccess) result).getData();
+                List<WeeklyRace> races = ((Result.WeeklyRaceSuccess) result).getData();
                 Log.d(TAG, "Full season races pre-fetched into Room DB: " + (races != null ? races.size() : 0));
-                if (races != null && getContext() != null) {
-                    Context context = requireContext().getApplicationContext();
-                    for (com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace race : races) {
-                        List<com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Session> sessions = race.getSessions();
-                        if (sessions != null) {
-                            for (com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Session s : sessions) {
-                                if (s.getStartDateTime() != null) {
-                                    try {
-                                        long sessionStartTimeMillis = s.getStartDateTime()
-                                                .atZone(org.threeten.bp.ZoneId.systemDefault())
-                                                .toInstant()
-                                                .toEpochMilli();
-
-                                        String sessionId = s.getClass().getSimpleName();
-                                        if (s instanceof com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Practice) {
-                                            com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Practice practice =
-                                                    (com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Practice) s;
-                                            sessionId = practice.getPractice();
-                                        }
-
-                                        com.the_coffe_coders.fastestlap.util.notification.NotificationScheduler.scheduleSessionReminder(
-                                                context,
-                                                race.getRaceName() != null ? race.getRaceName() : "Formula 1 Grand Prix",
-                                                sessionId,
-                                                s.getStartingTime(),
-                                                sessionStartTimeMillis
-                                        );
-                                    } catch (Exception e) {
-                                        Log.w(TAG, "Failed to schedule session reminder: " + e.getMessage());
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
             }
         });
     }
-
 
     private void setRefreshLayout(View view) {
         SwipeRefreshLayout homeSwipeRefreshLayout = view.findViewById(R.id.home_refresh_layout);

@@ -142,20 +142,27 @@ public class AppNotificationManager {
         FirebaseMessaging.getInstance().subscribeToTopic(Constants.FCM_TOPIC_ALL)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Log.d(TAG, "Subscribed to FCM topic: " + Constants.FCM_TOPIC_ALL);
+                        Log.i(TAG, "Subscribed to FCM topic: " + Constants.FCM_TOPIC_ALL);
+                    } else {
+                        Log.w(TAG, "Failed subscribing to FCM topic " + Constants.FCM_TOPIC_ALL + ": ", task.getException());
                     }
                 });
 
         FirebaseMessaging.getInstance().subscribeToTopic(Constants.FCM_TOPIC_SESSIONS)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        Log.d(TAG, "Subscribed to FCM topic: " + Constants.FCM_TOPIC_SESSIONS);
+                        Log.i(TAG, "Subscribed to FCM topic: " + Constants.FCM_TOPIC_SESSIONS);
+                    } else {
+                        Log.w(TAG, "Failed subscribing to FCM topic " + Constants.FCM_TOPIC_SESSIONS + ": ", task.getException());
                     }
                 });
 
         // 2. Subscribe to user-selected news source topic
         String currentSourceId = getSavedNewsSourceId(context);
         updateNewsTopicSubscription(currentSourceId);
+
+        // 3. Synchronize session topic subscriptions based on user preferences
+        syncSessionTopicSubscriptions(context);
 
         // 3. Retrieve and log the FCM registration token
         FirebaseMessaging.getInstance().getToken()
@@ -214,6 +221,99 @@ public class AppNotificationManager {
         }
         // Unsubscribe from legacy generic "news" topic to prevent duplicates
         FirebaseMessaging.getInstance().unsubscribeFromTopic(Constants.FCM_TOPIC_NEWS);
+    }
+
+    /**
+     * Synchronizes all FCM session topic subscriptions based on user preferences.
+     */
+    public void syncSessionTopicSubscriptions(Context context) {
+        if (context == null) return;
+        SharedPreferences prefs = context.getSharedPreferences(Constants.SHARED_PREFERENCES_FILENAME, Context.MODE_PRIVATE);
+
+        // F1 Preferences (defaults: all true)
+        boolean f1Race = prefs.getBoolean(Constants.PREF_NOTIF_F1_RACE, true);
+        boolean f1Quali = prefs.getBoolean(Constants.PREF_NOTIF_F1_QUALIFYING, true);
+        boolean f1Sprint = prefs.getBoolean(Constants.PREF_NOTIF_F1_SPRINT, true);
+        boolean f1Practice = prefs.getBoolean(Constants.PREF_NOTIF_F1_PRACTICE, true);
+
+        setTopicSubscription(Constants.FCM_TOPIC_SESSION_F1_RACE, f1Race);
+        setTopicSubscription(Constants.FCM_TOPIC_SESSION_F1_QUALIFYING, f1Quali);
+        setTopicSubscription(Constants.FCM_TOPIC_SESSION_F1_SPRINT, f1Sprint);
+        setTopicSubscription(Constants.FCM_TOPIC_SESSION_F1_PRACTICE, f1Practice);
+
+        // F2 Preferences (defaults: master false; if enabled: feature, sprint, quali true, practice false)
+        boolean f2Enabled = prefs.getBoolean(Constants.PREF_NOTIF_F2_ENABLED, false);
+        boolean f2Feature = f2Enabled && prefs.getBoolean(Constants.PREF_NOTIF_F2_FEATURE, true);
+        boolean f2Sprint = f2Enabled && prefs.getBoolean(Constants.PREF_NOTIF_F2_SPRINT, true);
+        boolean f2Quali = f2Enabled && prefs.getBoolean(Constants.PREF_NOTIF_F2_QUALIFYING, true);
+        boolean f2Practice = f2Enabled && prefs.getBoolean(Constants.PREF_NOTIF_F2_PRACTICE, false);
+
+        setTopicSubscription(Constants.FCM_TOPIC_SESSION_F2_FEATURE, f2Feature);
+        setTopicSubscription(Constants.FCM_TOPIC_SESSION_F2_SPRINT, f2Sprint);
+        setTopicSubscription(Constants.FCM_TOPIC_SESSION_F2_QUALIFYING, f2Quali);
+        setTopicSubscription(Constants.FCM_TOPIC_SESSION_F2_PRACTICE, f2Practice);
+
+        // F3 Preferences (defaults: master false; if enabled: feature, sprint, quali true, practice false)
+        boolean f3Enabled = prefs.getBoolean(Constants.PREF_NOTIF_F3_ENABLED, false);
+        boolean f3Feature = f3Enabled && prefs.getBoolean(Constants.PREF_NOTIF_F3_FEATURE, true);
+        boolean f3Sprint = f3Enabled && prefs.getBoolean(Constants.PREF_NOTIF_F3_SPRINT, true);
+        boolean f3Quali = f3Enabled && prefs.getBoolean(Constants.PREF_NOTIF_F3_QUALIFYING, true);
+        boolean f3Practice = f3Enabled && prefs.getBoolean(Constants.PREF_NOTIF_F3_PRACTICE, false);
+
+        setTopicSubscription(Constants.FCM_TOPIC_SESSION_F3_FEATURE, f3Feature);
+        setTopicSubscription(Constants.FCM_TOPIC_SESSION_F3_SPRINT, f3Sprint);
+        setTopicSubscription(Constants.FCM_TOPIC_SESSION_F3_QUALIFYING, f3Quali);
+        setTopicSubscription(Constants.FCM_TOPIC_SESSION_F3_PRACTICE, f3Practice);
+
+        Log.i(TAG, "Session topic subscriptions synced. F1: [race=" + f1Race + ", quali=" + f1Quali + ", sprint=" + f1Sprint + ", fp=" + f1Practice + "], F2: [enabled=" + f2Enabled + "], F3: [enabled=" + f3Enabled + "]");
+        syncSessionPreferencesToRemote(prefs);
+    }
+
+    public void setTopicSubscription(String topic, boolean subscribe) {
+        if (topic == null || topic.isEmpty()) return;
+        if (subscribe) {
+            FirebaseMessaging.getInstance().subscribeToTopic(topic)
+                    .addOnCompleteListener(t -> {
+                        if (t.isSuccessful()) Log.d(TAG, "Subscribed to " + topic);
+                        else Log.w(TAG, "Failed subscribing to " + topic, t.getException());
+                    });
+        } else {
+            FirebaseMessaging.getInstance().unsubscribeFromTopic(topic)
+                    .addOnCompleteListener(t -> {
+                        if (t.isSuccessful()) Log.d(TAG, "Unsubscribed from " + topic);
+                    });
+        }
+    }
+
+    private void syncSessionPreferencesToRemote(SharedPreferences prefs) {
+        try {
+            com.google.firebase.auth.FirebaseUser currentUser = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+            if (currentUser != null) {
+                java.util.Map<String, Object> sessionPrefs = new java.util.HashMap<>();
+                sessionPrefs.put(Constants.PREF_NOTIF_F1_RACE, prefs.getBoolean(Constants.PREF_NOTIF_F1_RACE, true));
+                sessionPrefs.put(Constants.PREF_NOTIF_F1_QUALIFYING, prefs.getBoolean(Constants.PREF_NOTIF_F1_QUALIFYING, true));
+                sessionPrefs.put(Constants.PREF_NOTIF_F1_SPRINT, prefs.getBoolean(Constants.PREF_NOTIF_F1_SPRINT, true));
+                sessionPrefs.put(Constants.PREF_NOTIF_F1_PRACTICE, prefs.getBoolean(Constants.PREF_NOTIF_F1_PRACTICE, true));
+                sessionPrefs.put(Constants.PREF_NOTIF_F2_ENABLED, prefs.getBoolean(Constants.PREF_NOTIF_F2_ENABLED, false));
+                sessionPrefs.put(Constants.PREF_NOTIF_F2_FEATURE, prefs.getBoolean(Constants.PREF_NOTIF_F2_FEATURE, true));
+                sessionPrefs.put(Constants.PREF_NOTIF_F2_SPRINT, prefs.getBoolean(Constants.PREF_NOTIF_F2_SPRINT, true));
+                sessionPrefs.put(Constants.PREF_NOTIF_F2_QUALIFYING, prefs.getBoolean(Constants.PREF_NOTIF_F2_QUALIFYING, true));
+                sessionPrefs.put(Constants.PREF_NOTIF_F2_PRACTICE, prefs.getBoolean(Constants.PREF_NOTIF_F2_PRACTICE, false));
+                sessionPrefs.put(Constants.PREF_NOTIF_F3_ENABLED, prefs.getBoolean(Constants.PREF_NOTIF_F3_ENABLED, false));
+                sessionPrefs.put(Constants.PREF_NOTIF_F3_FEATURE, prefs.getBoolean(Constants.PREF_NOTIF_F3_FEATURE, true));
+                sessionPrefs.put(Constants.PREF_NOTIF_F3_SPRINT, prefs.getBoolean(Constants.PREF_NOTIF_F3_SPRINT, true));
+                sessionPrefs.put(Constants.PREF_NOTIF_F3_QUALIFYING, prefs.getBoolean(Constants.PREF_NOTIF_F3_QUALIFYING, true));
+                sessionPrefs.put(Constants.PREF_NOTIF_F3_PRACTICE, prefs.getBoolean(Constants.PREF_NOTIF_F3_PRACTICE, false));
+
+                com.google.firebase.database.FirebaseDatabase.getInstance(Constants.FIREBASE_REALTIME_DATABASE)
+                        .getReference(Constants.FIREBASE_USERS_COLLECTION)
+                        .child(currentUser.getUid())
+                        .child("notification_preferences")
+                        .setValue(sessionPrefs);
+            }
+        } catch (Exception e) {
+            Log.w(TAG, "Failed syncing session preferences to remote: " + e.getMessage());
+        }
     }
 
     /**
@@ -643,6 +743,15 @@ public class AppNotificationManager {
      */
     @SuppressLint("MissingPermission")
     public void showSessionNotification(Context context, String raceName, String sessionName, String sessionTime) {
+        showSessionNotification(context, null, null, raceName, sessionName, sessionTime);
+    }
+
+    /**
+     * Displays a high-priority notification alerting the user that a session is starting soon,
+     * using the title and body provided in the push notification if available.
+     */
+    @SuppressLint("MissingPermission")
+    public void showSessionNotification(Context context, String title, String body, String raceName, String sessionName, String sessionTime) {
         if (context == null) return;
         createNotificationChannels(context);
 
@@ -659,9 +768,19 @@ public class AppNotificationManager {
         wakeUpScreen(context);
 
         String localizedSessionName = getLocalizedSessionName(context, validSessionName);
+        String contentTitle = (title != null && !title.trim().isEmpty()) ? title : validRaceName;
         String contentText;
-        if (!validSessionTime.isEmpty()) {
-            contentText = localizedSessionName + " " + context.getString(R.string.session_starting_at) + " " + validSessionTime;
+        if (body != null && !body.trim().isEmpty()) {
+            contentText = body;
+            if (!validSessionTime.isEmpty() && contentText.contains("(ore ")) {
+                contentText = contentText.replaceAll("\\(ore \\d{1,2}:\\d{2}\\)", "(ore " + validSessionTime + ")");
+            }
+        } else if (!validSessionTime.isEmpty()) {
+            if ("LIVE".equalsIgnoreCase(validSessionTime)) {
+                contentText = localizedSessionName + " " + context.getString(R.string.session_now_live);
+            } else {
+                contentText = localizedSessionName + " " + context.getString(R.string.session_starting_at) + " " + validSessionTime;
+            }
         } else {
             contentText = localizedSessionName;
         }
@@ -674,7 +793,7 @@ public class AppNotificationManager {
 
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 context,
-                (validRaceName + validSessionName).hashCode(),
+                (contentTitle + contentText).hashCode(),
                 intent,
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE
         );
@@ -683,7 +802,7 @@ public class AppNotificationManager {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_SESSIONS_ID)
                 .setSmallIcon(R.drawable.ic_notification)
                 .setLargeIcon(android.graphics.BitmapFactory.decodeResource(context.getResources(), R.drawable.app_icon))
-                .setContentTitle(validRaceName)
+                .setContentTitle(contentTitle)
                 .setContentText(contentText)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(contentText))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
@@ -695,9 +814,9 @@ public class AppNotificationManager {
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent);
 
-        int notificationId = (validRaceName + validSessionName).hashCode();
+        int notificationId = (contentTitle + contentText).hashCode();
         NotificationManagerCompat.from(context).notify(notificationId, builder.build());
-        Log.i(TAG, "Session notification posted for: " + validRaceName + " - " + localizedSessionName);
+        Log.i(TAG, "Session notification posted: " + contentTitle + " - " + contentText);
     }
 
     private String getLocalizedSessionName(Context context, String sessionId) {

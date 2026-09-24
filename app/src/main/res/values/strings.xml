@@ -37,6 +37,15 @@
     <string name="m" translatable="false">m</string>
     <string name="championships_index">Championships:</string>
 
+    <!-- DRIVER SEASON STATS STRINGS -->
+    <string name="this_season_numbers_title">THIS SEASON\'S NUMBERS:</string>
+    <string name="season_wins_label">WINS</string>
+    <string name="season_podiums_label">PODIUMS</string>
+    <string name="season_poles_label">POLES</string>
+    <string name="season_dnf_label">DNF</string>
+    <string name="season_position_label">POSITION</string>
+    <string name="season_points_label">POINTS</string>
+
     <!-- CONSTRUCTOR BIO STRINGS -->
 
     <string name="full_name_index">Full Name:</string>
@@ -294,6 +303,7 @@
     <string name="session_channel_name">F1 Session Reminders</string>
     <string name="session_channel_description">Alerts when F1 Practice, Qualifying, or Race is starting</string>
     <string name="session_starting_at">is starting at</string>
+    <string name="session_now_live">is now live</string>
     <string name="general_channel_name">FastestLap Announcements</string>
     <string name="general_channel_description">General notifications and updates from FastestLap</string>
     <string name="notification_settings_title">NOTIFICATIONS &amp; FCM</string>
@@ -307,5 +317,30 @@
     <string name="schedule_day">day</string>
     <string name="schedule_time">time</string>
     <string name="schedule_status">status</string>
+
+    <!-- SESSION NOTIFICATION PREFERENCES -->
+    <string name="session_notification_preferences_title">SESSION REMINDERS</string>
+    <string name="session_notification_preferences_subtitle">Alerts delivered at 30 minutes and 5 minutes before start</string>
+    <string name="f1_notifications_header">Formula 1</string>
+    <string name="f1_notif_race">Race</string>
+    <string name="f1_notif_qualifying">Qualifying</string>
+    <string name="f1_notif_sprint">Sprint (Race &amp; Shootout)</string>
+    <string name="f1_notif_practice">Practice (FP1, FP2, FP3)</string>
+
+    <string name="f2_notifications_header">Formula 2</string>
+    <string name="f2_notif_enable">Enable F2 Reminders</string>
+    <string name="f2_notif_feature">Feature Race</string>
+    <string name="f2_notif_sprint">Sprint Race</string>
+    <string name="f2_notif_qualifying">Qualifying</string>
+    <string name="f2_notif_practice">Practice</string>
+
+    <string name="f3_notifications_header">Formula 3</string>
+    <string name="f3_notif_enable">Enable F3 Reminders</string>
+    <string name="f3_notif_feature">Feature Race</string>
+    <string name="f3_notif_sprint">Sprint Race</string>
+    <string name="f3_notif_qualifying">Qualifying</string>
+    <string name="f3_notif_practice">Practice</string>
+    <string name="zero">0</string>
+    <string name="separator">-</string>
 
 </resources>

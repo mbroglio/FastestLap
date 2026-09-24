@@ -51,6 +51,7 @@ public class HomePageActivity extends AppCompatActivity {
 
         // Request notification permission for background news & session alerts on Android 13+
         AppNotificationManager.getInstance().requestNotificationPermission(this);
+        AppNotificationManager.getInstance().initFCM(this);
 
         handleIncomingNotification(getIntent());
     }

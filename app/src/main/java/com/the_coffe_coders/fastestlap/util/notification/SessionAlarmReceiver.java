@@ -25,46 +25,14 @@ public class SessionAlarmReceiver extends BroadcastReceiver {
 
         String action = intent.getAction();
 
-        // 1. Device reboot: restore all upcoming session alarms from local Room database
+        // 1. Device reboot: legacy local alarms are deprecated in favor of FCM Cloud Functions
         if (Intent.ACTION_BOOT_COMPLETED.equals(action)) {
-            Log.i(TAG, "Device rebooted (BOOT_COMPLETED). Rescheduling upcoming session reminders...");
-            NotificationScheduler.rescheduleAllUpcomingSessions(context.getApplicationContext());
+            Log.i(TAG, "Device rebooted (BOOT_COMPLETED). Local alarms suppressed in favor of centralized FCM push notifications.");
             return;
         }
 
-        // 2. Exact session alarm triggered
-        String raceName = intent.getStringExtra(EXTRA_RACE_NAME);
-        String sessionName = intent.getStringExtra(EXTRA_SESSION_NAME);
-        String sessionTime = intent.getStringExtra(EXTRA_SESSION_TIME);
-        long startTimeMillis = intent.getLongExtra(EXTRA_START_TIME_MILLIS, 0);
-
-        long now = System.currentTimeMillis();
-
-        // Safety check: if the session has already started or finished (e.g. phone was powered off during the session),
-        // discard the alarm to avoid flooding the user with stale notifications.
-        if (startTimeMillis > 0 && now >= startTimeMillis) {
-            Log.w(TAG, "Session has already started or passed (" + raceName + " - " + sessionName + "). Skipping stale alarm.");
-            return;
-        }
-
-        if (raceName == null) raceName = "Formula 1 Grand Prix";
-        if (sessionName == null) sessionName = "Session";
-        if (sessionTime == null) sessionTime = "NOW";
-
-        Log.i(TAG, "==================================================");
-        Log.i(TAG, "⏰ [EXACT ALARM TRIGGERED VIA ALARM_MANAGER]");
-        Log.i(TAG, "   📍 Gara / Evento  : " + raceName);
-        Log.i(TAG, "   🏁 Sessione       : " + sessionName);
-        Log.i(TAG, "   🕒 Inizio         : " + sessionTime);
-        Log.i(TAG, "==================================================");
-
-        AppNotificationManager.getInstance().wakeUpScreen(context);
-
-        AppNotificationManager.getInstance().showSessionNotification(
-                context.getApplicationContext(),
-                raceName,
-                sessionName,
-                sessionTime
-        );
+        // 2. Exact session alarm triggered from legacy AlarmManager
+        // If an old pending alarm is delivered by the OS, discard it to avoid duplicate or delayed notifications.
+        Log.i(TAG, "Legacy local session alarm received. Suppressed in favor of centralized FCM push notifications (-30m and -5m).");
     }
 }

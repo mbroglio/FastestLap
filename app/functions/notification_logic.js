@@ -1,5 +1,6 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
+const calendarLogic = require("./calendar_logic");
 
 const NEWS_SOURCES_CONFIG = [
     {
@@ -114,8 +115,14 @@ async function executeNewsCheckAndPush(db, messaging) {
 
             const payload = {
                 topic: source.topic,
+                notification: {
+                    title: "🏎️ " + title,
+                    body: description,
+                    ...(imageUrl ? { imageUrl } : {})
+                },
                 data: {
                     type: "news",
+                    EXTRA_TARGET_TAB: "news",
                     sourceId: source.id,
                     sourceName: source.name,
                     title: "🏎️ " + title,
@@ -124,7 +131,14 @@ async function executeNewsCheckAndPush(db, messaging) {
                     imageUrl: imageUrl || ""
                 },
                 android: {
-                    priority: "high"
+                    priority: "high",
+                    notification: {
+                        channelId: "fastestlap_news_v4",
+                        sound: "team_radio",
+                        defaultSound: false,
+                        priority: "high",
+                        visibility: "public"
+                    }
                 }
             };
 
@@ -149,108 +163,161 @@ async function executeNewsCheckAndPush(db, messaging) {
 }
 
 /**
- * Checks upcoming F1 race weekend sessions.
- * Sends an FCM push reminder to topic "sessions" 15-20 minutes before a session starts.
+ * Checks upcoming race weekend sessions across F1, F2, and F3 directly from the Firebase calendar.
+ * Sends two alerts per session to the dedicated topic:
+ * 1. 30 minutes before the session starts.
+ * 2. 5 minutes before the session starts.
  */
 async function executeSessionCheckAndPush(db, messaging) {
-    console.log("Starting F1 Session schedule check for push reminders...");
+    const currentYear = new Date().getFullYear();
+    console.log(`Starting session check from Firebase calendar for year ${currentYear}...`);
 
-    let raceData;
-    try {
-        const response = await axios.get(JOLPICA_NEXT_RACE_URL, { timeout: 10000 });
-        const races = response.data?.MRData?.RaceTable?.Races;
-        if (!races || races.length === 0) {
-            console.log("No upcoming race data returned from Jolpica API.");
-            return { sent: 0, reason: "no_upcoming_race" };
-        }
-        raceData = races[0];
-    } catch (err) {
-        console.error("Failed to fetch next race schedule from Jolpica:", err.message);
-        return { sent: 0, error: err.message };
+    // Ensure F1 calendar is loaded in RTDB as baseline
+    const f1CalRef = db.ref(`${calendarLogic.DB_PATHS.calendar}/f1/${currentYear}`);
+    let f1Snapshot = await f1CalRef.once("value");
+    if (!f1Snapshot.exists() || !f1Snapshot.val()) {
+        console.log("F1 calendar not found on Firebase. Performing initial fetch from Jolpica...");
+        await calendarLogic.fetchAndStoreF1Calendar(db, currentYear);
+        f1Snapshot = await f1CalRef.once("value");
     }
 
-    const raceName = raceData.raceName || "Gran Premio";
-    const season = raceData.season;
-    const round = raceData.round;
+    const f1Data = f1Snapshot.val() || {};
+    const f2Snapshot = await db.ref(`${calendarLogic.DB_PATHS.calendar}/f2/${currentYear}`).once("value");
+    const f2Data = f2Snapshot.val() || {};
+    const f3Snapshot = await db.ref(`${calendarLogic.DB_PATHS.calendar}/f3/${currentYear}`).once("value");
+    const f3Data = f3Snapshot.val() || {};
 
-    // Collect all sessions for this race weekend
-    const sessions = [];
+    // Collect all sessions across all categories
+    const allSessions = [];
 
-    function addSession(name, dateStr, timeStr) {
-        if (!dateStr) return;
-        const iso = timeStr ? `${dateStr}T${timeStr}` : `${dateStr}T00:00:00Z`;
-        const timestamp = new Date(iso).getTime();
-        if (!isNaN(timestamp)) {
-            sessions.push({ name, startTime: timestamp, iso });
-        }
-    }
+    function processCategoryRaces(racesMap, category) {
+        if (!racesMap) return;
+        for (const key of Object.keys(racesMap)) {
+            const race = racesMap[key];
+            if (!race || !race.sessions) continue;
+            const raceName = race.raceName || (race.Circuit?.circuitName || "Grand Prix");
+            const round = race.round || key;
 
-    // Standard practice sessions
-    if (raceData.FirstPractice) addSession("Prove Libere 1 (FP1)", raceData.FirstPractice.date, raceData.FirstPractice.time);
-    if (raceData.SecondPractice) addSession("Prove Libere 2 (FP2)", raceData.SecondPractice.date, raceData.SecondPractice.time);
-    if (raceData.ThirdPractice) addSession("Prove Libere 3 (FP3)", raceData.ThirdPractice.date, raceData.ThirdPractice.time);
-
-    // Sprint format sessions
-    if (raceData.SprintQualifying) addSession("Sprint Shootout", raceData.SprintQualifying.date, raceData.SprintQualifying.time);
-    if (raceData.Sprint) addSession("Gara Sprint", raceData.Sprint.date, raceData.Sprint.time);
-
-    // Qualifying and Main Race
-    if (raceData.Qualifying) addSession("Qualifiche", raceData.Qualifying.date, raceData.Qualifying.time);
-    if (raceData.date) addSession("Gara", raceData.date, raceData.time);
-
-    const now = Date.now();
-    const sentSessionsRef = db.ref(DB_PATHS.sent_sessions);
-    const sentSessions = [];
-
-    for (const s of sessions) {
-        const sessionStartTime = s.startTime;
-        const diffMinutes = (sessionStartTime - now) / (1000 * 60);
-
-        // Window: session starts in 5 to 25 minutes (centered at ~15-20 minutes before)
-        if (diffMinutes >= 5 && diffMinutes <= 25) {
-            const sessionKey = `${season}_${round}_${s.name.replace(/\s+/g, "_").toLowerCase()}`;
-
-            const checkSnap = await sentSessionsRef.child(sessionKey).once("value");
-            if (!checkSnap.exists()) {
-                await sentSessionsRef.child(sessionKey).set({
-                    raceName,
-                    sessionName: s.name,
-                    startTime: s.iso,
-                    sentAt: new Date().toISOString()
-                });
-
-                // Format time in Europe/Rome (CET/CEST)
-                const timeStr = new Date(sessionStartTime).toLocaleTimeString("it-IT", {
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    timeZone: "Europe/Rome"
-                });
-
-                const payload = {
-                    topic: "sessions",
-                    data: {
-                        type: "session",
-                        raceName: raceName,
-                        sessionName: s.name,
-                        sessionTime: timeStr,
-                        title: `🏁 ${raceName}`,
-                        body: `${s.name} sta per iniziare! (ore ${timeStr})`
-                    },
-                    android: {
-                        priority: "high"
-                    }
-                };
-
-                const response = await messaging.send(payload);
-                console.log(`🔥 [FCM PUSH SESSION SENT]: ${raceName} - ${s.name} (ore ${timeStr})`);
-                sentSessions.push({ session: s.name, time: timeStr, messageId: response });
-            } else {
-                console.log(`Session reminder for ${s.name} was already sent previously.`);
+            const sessionsList = Array.isArray(race.sessions) ? race.sessions : Object.values(race.sessions);
+            for (const s of sessionsList) {
+                if (s && s.startTimeMillis) {
+                    allSessions.push({
+                        ...s,
+                        raceName,
+                        round,
+                        category
+                    });
+                }
             }
         }
     }
 
-    return { sent: sentSessions.length, details: sentSessions };
+    processCategoryRaces(f1Data, "f1");
+    processCategoryRaces(f2Data, "f2");
+    processCategoryRaces(f3Data, "f3");
+
+    const now = Date.now();
+    const sentSessionsRef = db.ref(DB_PATHS.sent_sessions);
+    const sentAlerts = [];
+
+    for (const s of allSessions) {
+        const diffMinutes = (s.startTimeMillis - now) / (1000 * 60);
+
+        // Check 30-minute alert window (20m to 35m before start)
+        const is30mWindow = diffMinutes >= 20 && diffMinutes <= 35;
+        // Check 5-minute alert window (2m to 8m before start)
+        const is5mWindow = diffMinutes >= 2 && diffMinutes <= 8;
+
+        if (!is30mWindow && !is5mWindow) {
+            continue;
+        }
+
+        const alertSuffix = is30mWindow ? "30m" : "5m";
+        const sessionKey = `${currentYear}_${s.category}_round${s.round}_${s.id}_${alertSuffix}`;
+
+        const checkSnap = await sentSessionsRef.child(sessionKey).once("value");
+        if (checkSnap.exists()) {
+            continue;
+        }
+
+        // Format time in Europe/Rome (CET/CEST)
+        const timeStr = new Date(s.startTimeMillis).toLocaleTimeString("it-IT", {
+            hour: "2-digit",
+            minute: "2-digit",
+            timeZone: "Europe/Rome"
+        });
+
+        const categoryPrefix = s.category.toUpperCase() + ": ";
+        let title;
+        let body;
+
+        if (is30mWindow) {
+            title = `🏎️ ${categoryPrefix}${s.raceName}`;
+            body = `${s.name} inizia tra 30 minuti! (ore ${timeStr})`;
+        } else {
+            title = `🚨 ${categoryPrefix}${s.raceName}`;
+            body = `${s.name} sta per iniziare tra 5 minuti! (ore ${timeStr})`;
+        }
+
+        const targetTopic = s.topic || `session_${s.category}_${s.type || "race"}`;
+
+        const payload = {
+            topic: targetTopic,
+            notification: {
+                title: title,
+                body: body
+            },
+            data: {
+                type: "session",
+                EXTRA_TARGET_TAB: "sessions",
+                category: s.category,
+                raceName: s.raceName,
+                sessionName: s.name,
+                sessionTime: timeStr,
+                alertType: alertSuffix,
+                startTimeMillis: (s.startTimeMillis || "").toString(),
+                title: title,
+                body: body
+            },
+            android: {
+                priority: "high",
+                notification: {
+                    channelId: "fastestlap_sessions_v4",
+                    sound: "team_radio",
+                    defaultSound: false,
+                    priority: "high",
+                    visibility: "public"
+                }
+            }
+        };
+
+        try {
+            const response = await messaging.send(payload);
+            await sentSessionsRef.child(sessionKey).set({
+                raceName: s.raceName,
+                sessionName: s.name,
+                category: s.category,
+                startTime: s.iso || new Date(s.startTimeMillis).toISOString(),
+                alertType: alertSuffix,
+                topic: targetTopic,
+                sentAt: new Date().toISOString()
+            });
+
+            console.log(`🔥 [FCM PUSH SESSION SENT to ${targetTopic}]: ${title} - ${body} (Message ID: ${response})`);
+            sentAlerts.push({
+                session: s.name,
+                category: s.category,
+                alertType: alertSuffix,
+                time: timeStr,
+                topic: targetTopic,
+                messageId: response
+            });
+        } catch (pushErr) {
+            console.error(`Failed to send push for ${sessionKey}:`, pushErr.message);
+        }
+    }
+
+    return { sent: sentAlerts.length, details: sentAlerts };
 }
 
 /**
@@ -267,8 +334,13 @@ async function sendTestNotification(messaging, topic = "news_motorsport", custom
 
     const payload = {
         topic: topic,
+        notification: {
+            title: title,
+            body: body
+        },
         data: {
             type: isSession ? "session" : "news",
+            EXTRA_TARGET_TAB: isSession ? "sessions" : "news",
             title: title,
             body: body,
             raceName: isSession ? "Gran Premio di Test" : "",
@@ -277,7 +349,14 @@ async function sendTestNotification(messaging, topic = "news_motorsport", custom
             newsUrl: !isSession ? "https://www.formula1.com" : ""
         },
         android: {
-            priority: "high"
+            priority: "high",
+            notification: {
+                channelId: isSession ? "fastestlap_sessions_v4" : "fastestlap_news_v4",
+                sound: "team_radio",
+                defaultSound: false,
+                priority: "high",
+                visibility: "public"
+            }
         }
     };
 

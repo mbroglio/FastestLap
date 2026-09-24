@@ -33,6 +33,40 @@ public class Constants {
     public static final String FCM_TOPIC_NEWS_MOTORSPORT = "news_motorsport";
     public static final String FCM_TOPIC_NEWS_AUTOSPORT = "news_autosport";
     public static final String FCM_TOPIC_NEWS_CRASH = "news_crash";
+
+    // Granular session notification topics (F1, F2, F3)
+    public static final String FCM_TOPIC_SESSION_F1_RACE = "session_f1_race";
+    public static final String FCM_TOPIC_SESSION_F1_QUALIFYING = "session_f1_qualifying";
+    public static final String FCM_TOPIC_SESSION_F1_SPRINT = "session_f1_sprint";
+    public static final String FCM_TOPIC_SESSION_F1_PRACTICE = "session_f1_practice";
+
+    public static final String FCM_TOPIC_SESSION_F2_FEATURE = "session_f2_feature";
+    public static final String FCM_TOPIC_SESSION_F2_SPRINT = "session_f2_sprint";
+    public static final String FCM_TOPIC_SESSION_F2_QUALIFYING = "session_f2_qualifying";
+    public static final String FCM_TOPIC_SESSION_F2_PRACTICE = "session_f2_practice";
+
+    public static final String FCM_TOPIC_SESSION_F3_FEATURE = "session_f3_feature";
+    public static final String FCM_TOPIC_SESSION_F3_SPRINT = "session_f3_sprint";
+    public static final String FCM_TOPIC_SESSION_F3_QUALIFYING = "session_f3_qualifying";
+    public static final String FCM_TOPIC_SESSION_F3_PRACTICE = "session_f3_practice";
+
+    // SharedPreferences notification settings keys
+    public static final String PREF_NOTIF_F1_RACE = "pref_notif_f1_race";
+    public static final String PREF_NOTIF_F1_QUALIFYING = "pref_notif_f1_qualifying";
+    public static final String PREF_NOTIF_F1_SPRINT = "pref_notif_f1_sprint";
+    public static final String PREF_NOTIF_F1_PRACTICE = "pref_notif_f1_practice";
+
+    public static final String PREF_NOTIF_F2_ENABLED = "pref_notif_f2_enabled";
+    public static final String PREF_NOTIF_F2_FEATURE = "pref_notif_f2_feature";
+    public static final String PREF_NOTIF_F2_SPRINT = "pref_notif_f2_sprint";
+    public static final String PREF_NOTIF_F2_QUALIFYING = "pref_notif_f2_qualifying";
+    public static final String PREF_NOTIF_F2_PRACTICE = "pref_notif_f2_practice";
+
+    public static final String PREF_NOTIF_F3_ENABLED = "pref_notif_f3_enabled";
+    public static final String PREF_NOTIF_F3_FEATURE = "pref_notif_f3_feature";
+    public static final String PREF_NOTIF_F3_SPRINT = "pref_notif_f3_sprint";
+    public static final String PREF_NOTIF_F3_QUALIFYING = "pref_notif_f3_qualifying";
+    public static final String PREF_NOTIF_F3_PRACTICE = "pref_notif_f3_practice";
     public static final int DATABASE_VERSION = 2;
     public static final String SAVED_DRIVERS_STANDINGS_DATABASE = "saved_drivers_standings";
     public static final int FRESH_TIMEOUT = 1000 * 60; // 1 minute in milliseconds

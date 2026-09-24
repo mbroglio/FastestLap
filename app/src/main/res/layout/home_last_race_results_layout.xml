@@ -206,7 +206,7 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    app:cardBackgroundColor="#D1D5DB"
+                    app:cardBackgroundColor="@color/silver"
                     app:cardCornerRadius="6dp"
                     app:cardElevation="0dp"
                     app:strokeWidth="0dp">
@@ -243,7 +243,7 @@
                 <com.google.android.material.card.MaterialCardView
                     android:layout_width="22dp"
                     android:layout_height="22dp"
-                    app:cardBackgroundColor="#CD7F32"
+                    app:cardBackgroundColor="@color/bronze"
                     app:cardCornerRadius="6dp"
                     app:cardElevation="0dp"
                     app:strokeWidth="0dp">

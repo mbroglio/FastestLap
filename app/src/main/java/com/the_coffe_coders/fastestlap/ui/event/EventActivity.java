@@ -604,34 +604,7 @@ public class EventActivity extends AppCompatActivity {
                         eventSchedule.findViewById(timeField));
             }
 
-            if(!session.isPractice()){
-                setChequeredFlag(eventSchedule, session, weeklyRace);
-            }
-
-
-            // Automatically schedule background session reminder 15 mins before start for future sessions
-            if (!session.isFinished() && session.getStartDateTime() != null) {
-                try {
-                    long sessionStartTimeMillis = session.getStartDateTime()
-                            .atZone(org.threeten.bp.ZoneId.systemDefault())
-                            .toInstant()
-                            .toEpochMilli();
-
-                    String raceName = (currentRace != null && currentRace.getRaceName() != null)
-                            ? currentRace.getRaceName()
-                            : "Formula 1 Grand Prix";
-
-                    NotificationScheduler.scheduleSessionReminder(
-                            this,
-                            raceName,
-                            sessionId,
-                            session.getStartingTime(),
-                            sessionStartTimeMillis
-                    );
-                } catch (Exception e) {
-                    Log.w(TAG, "Could not schedule session reminder: " + e.getMessage());
-                }
-            }
+            setChequeredFlag(eventSchedule, session, weeklyRace);
         }
     }
 
@@ -659,14 +632,20 @@ public class EventActivity extends AppCompatActivity {
 
             if (flagContainer != null) {
                 flagContainer.setVisibility(View.VISIBLE);
-                flagContainer.setClickable(true);
-                flagContainer.setFocusable(true);
-                flagContainer.setOnClickListener(v -> manageSessionScheduleClick(session, round));
+                if(!session.isPractice()){
+                    flagContainer.setClickable(true);
+                    flagContainer.setFocusable(true);
+                    flagContainer.setOnClickListener(v -> manageSessionScheduleClick(session, round));
+                }else{
+                    flagContainer.setClickable(false);
+                    flagContainer.setFocusable(false);
+                    flagContainer.setOnClickListener(null);
+                }
             }
             if (flagImage != null) {
                 flagImage.setVisibility(View.VISIBLE);
             }
-            if (row != null) {
+            if (!session.isPractice() && row != null) {
                 row.setClickable(true);
                 row.setFocusable(true);
                 row.setOnClickListener(v -> manageSessionScheduleClick(session, round));

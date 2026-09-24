@@ -8,6 +8,7 @@ import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.ConstructorHistory;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.DriverHistory;
+import com.the_coffe_coders.fastestlap.domain.f1.driver.DriverSeasonStats;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Practice;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Qualifying;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
@@ -438,5 +439,14 @@ public class DatabaseConverters {
         return gson.fromJson(json, listType);
     }
 
+    @TypeConverter
+    public static String fromDriverSeasonStats(DriverSeasonStats stats) {
+        return gson.toJson(stats);
+    }
+
+    @TypeConverter
+    public static DriverSeasonStats toDriverSeasonStats(String json) {
+        return gson.fromJson(json, DriverSeasonStats.class);
+    }
 
 }

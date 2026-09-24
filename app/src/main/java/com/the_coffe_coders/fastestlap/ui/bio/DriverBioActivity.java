@@ -27,6 +27,7 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.DriverHistory;
+import com.the_coffe_coders.fastestlap.domain.f1.driver.DriverSeasonStats;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.ui.bio.handler.FavoriteBioHandler;
@@ -270,6 +271,9 @@ public class DriverBioActivity extends AppCompatActivity {
             TextView driverHistoryTitle = findViewById(R.id.driver_history_title);
             driverHistoryTitle.setTextColor(ContextCompat.getColor(this, teamColor));
 
+            TextView seasonStatsTitle = findViewById(R.id.season_stats_title);
+            seasonStatsTitle.setTextColor(ContextCompat.getColor(this, teamColor));
+
             teamLogoCard.setOnClickListener(v ->
                     NavigationUtils.navigateToBioPage(this, team.getConstructorId(), 0));
         } else {
@@ -322,6 +326,47 @@ public class DriverBioActivity extends AppCompatActivity {
                         findViewById(R.id.driver_first_entry)
                 }
         );
+
+        DriverSeasonStats seasonStats = driver.getSeason_stats();
+        String seasonWins = "0";
+        String seasonPodiums = "0";
+        String seasonPoles = "0";
+        String seasonDnfs = "0";
+        String seasonPosition = "-";
+        String seasonPoints = "0";
+
+        if (seasonStats != null) {
+            if (seasonStats.getWins() != null) seasonWins = seasonStats.getWins();
+            if (seasonStats.getPodiums() != null) seasonPodiums = seasonStats.getPodiums();
+            if (seasonStats.getPoles() != null) seasonPoles = seasonStats.getPoles();
+            if (seasonStats.getDnfs() != null) seasonDnfs = seasonStats.getDnfs();
+            if (seasonStats.getSeason_position() != null) seasonPosition = seasonStats.getSeason_position();
+            if (seasonStats.getSeason_points() != null) seasonPoints = seasonStats.getSeason_points();
+        }
+
+        UIUtils.multipleSetTextViewText(
+                new String[]{seasonWins, seasonPodiums, seasonPoles, seasonDnfs, seasonPosition, seasonPoints},
+                new TextView[]{
+                        findViewById(R.id.driver_season_wins),
+                        findViewById(R.id.driver_season_podiums),
+                        findViewById(R.id.driver_season_poles),
+                        findViewById(R.id.driver_season_dnfs),
+                        findViewById(R.id.driver_season_position),
+                        findViewById(R.id.driver_season_points)
+                }
+        );
+
+        TextView driverSeasonPosition = findViewById(R.id.driver_season_position);
+
+        if(!seasonPosition.equals("-")){
+            if(seasonPosition.equals("1")){
+                driverSeasonPosition.setTextColor(ContextCompat.getColor(this, R.color.yellow));
+            } else if(seasonPosition.equals("2")){
+                driverSeasonPosition.setTextColor(ContextCompat.getColor(this, R.color.silver));
+            } else if(seasonPosition.equals("3")){
+                driverSeasonPosition.setTextColor(ContextCompat.getColor(this, R.color.bronze));
+            }
+        }
 
         UIUtils.updateTachometers(this, driver, winPercentageTachometer, podiumPercentageTachometer);
         createHistoryTable();
