@@ -74,7 +74,6 @@ public class TrackRepository {
 
                     Long previousTs = lastUpdateTimestamps.get(trackId);
                     boolean isStale = previousTs == null || System.currentTimeMillis() - previousTs > 300_000L;
-                    lastUpdateTimestamps.put(trackId, System.currentTimeMillis());
                     Objects.requireNonNull(trackCache.get(trackId)).postValue(new Result.TrackSuccess(track));
 
                     if (isNetworkAvailable() && isStale) {

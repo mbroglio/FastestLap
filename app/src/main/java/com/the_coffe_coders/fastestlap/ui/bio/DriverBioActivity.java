@@ -134,7 +134,8 @@ public class DriverBioActivity extends AppCompatActivity {
             if (networkLiveData.isConnected()) {
                 if (driverViewModel != null && driverId != null) {
                     driverViewModel.refreshDriver(driverId);
-                    createDriverBioPage(driverId);
+                } else {
+                    driverBioLayout.setRefreshing(false);
                 }
             } else {
                 Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
@@ -168,13 +169,10 @@ public class DriverBioActivity extends AppCompatActivity {
 
     public void createDriverBioPage(String driverId) {
         MutableLiveData<Result> driverMutableLiveData = driverViewModel.getDriver(driverId);
-        @SuppressWarnings("unchecked")
-        androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
-        observerHolder[0] = result -> {
+        driverMutableLiveData.observe(this, result -> {
             if (result instanceof Result.Loading) {
                 return;
             }
-            driverMutableLiveData.removeObserver(observerHolder[0]);
             driverBioLayout.setRefreshing(false);
             if (result.isSuccess()) {
                 driver = ((Result.DriverSuccess) result).getData();
@@ -190,8 +188,7 @@ public class DriverBioActivity extends AppCompatActivity {
                 Log.e(TAG, "DRIVER ERROR: " + result.getError());
                 loadingScreen.hideLoadingScreen();
             }
-        };
-        driverMutableLiveData.observe(this, observerHolder[0]);
+        });
     }
 
     public void getTeamInfo(String teamId) {

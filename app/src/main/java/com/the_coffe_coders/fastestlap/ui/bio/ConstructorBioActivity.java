@@ -133,7 +133,8 @@ public class ConstructorBioActivity extends AppCompatActivity {
             if (networkLiveData.isConnected()) {
                 if (constructorViewModel != null && teamId != null) {
                     constructorViewModel.refreshConstructor(teamId);
-                    createConstructorBioPage(teamId);
+                } else {
+                    constructorBioLayout.setRefreshing(false);
                 }
             } else {
                 Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
@@ -164,13 +165,10 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
     private void createConstructorBioPage(String teamId) {
         MutableLiveData<Result> data = constructorViewModel.getSelectedConstructor(teamId);
-        @SuppressWarnings("unchecked")
-        androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
-        observerHolder[0] = result -> {
+        data.observe(this, result -> {
             if (result instanceof Result.Loading) {
                 return;
             }
-            data.removeObserver(observerHolder[0]);
             constructorBioLayout.setRefreshing(false);
             if (result.isSuccess()) {
                 constructor = ((Result.ConstructorSuccess) result).getData();
@@ -222,8 +220,7 @@ public class ConstructorBioActivity extends AppCompatActivity {
                 Log.e(TAG, "Error fetching constructor: " + result.getError());
                 loadingScreen.hideLoadingScreen();
             }
-        };
-        data.observe(this, observerHolder[0]);
+        });
     }
 
     private void fetchAllTeamDependencies(Constructor team) {

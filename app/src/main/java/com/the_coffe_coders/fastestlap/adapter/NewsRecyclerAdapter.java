@@ -3,37 +3,110 @@ package com.the_coffe_coders.fastestlap.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.transition.ChangeBounds;
+import android.transition.Fade;
+import android.transition.TransitionManager;
+import android.transition.TransitionSet;
 import android.util.Log;
-import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.news.News;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapter.NewsViewHolder> {
     private final List<News> newsList;
     private final Context context;
-    private final SparseBooleanArray expandedPositions = new SparseBooleanArray();
+    private final Set<String> expandedNewsIds;
     private final Runnable onImageLoaded;
     private final int itemsToWaitFor;
 
-    public NewsRecyclerAdapter(List<News> newsList, Context context, Runnable onImageLoaded, int itemsToWaitFor) {
-        this.newsList = newsList;
+    public NewsRecyclerAdapter(List<News> newsList, Context context, Runnable onImageLoaded, int itemsToWaitFor, Set<String> expandedNewsIds) {
+        this.newsList = new ArrayList<>(newsList != null ? newsList : Collections.emptyList());
         this.context = context;
         this.onImageLoaded = onImageLoaded;
         this.itemsToWaitFor = itemsToWaitFor;
+        this.expandedNewsIds = expandedNewsIds != null ? expandedNewsIds : new HashSet<>();
+    }
+
+    public NewsRecyclerAdapter(List<News> newsList, Context context, Runnable onImageLoaded, int itemsToWaitFor) {
+        this(newsList, context, onImageLoaded, itemsToWaitFor, new HashSet<>());
+    }
+
+    public void updateNewsList(List<News> newNewsList) {
+        if (newNewsList == null) return;
+
+        DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
+            @Override
+            public int getOldListSize() {
+                return newsList.size();
+            }
+
+            @Override
+            public int getNewListSize() {
+                return newNewsList.size();
+            }
+
+            @Override
+            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
+                News oldItem = newsList.get(oldItemPosition);
+                News newItem = newNewsList.get(newItemPosition);
+                return getNewsId(oldItem).equals(getNewsId(newItem));
+            }
+
+            @Override
+            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
+                News oldItem = newsList.get(oldItemPosition);
+                News newItem = newNewsList.get(newItemPosition);
+                return Objects.equals(oldItem.getTitle(), newItem.getTitle())
+                        && Objects.equals(oldItem.getDate(), newItem.getDate())
+                        && Objects.equals(oldItem.getDescription(), newItem.getDescription())
+                        && Objects.equals(oldItem.getImageUrl(), newItem.getImageUrl())
+                        && Objects.equals(oldItem.getLink(), newItem.getLink());
+            }
+        });
+
+        newsList.clear();
+        newsList.addAll(newNewsList);
+        diffResult.dispatchUpdatesTo(this);
+    }
+
+    public boolean isExpanded(News news) {
+        if (news == null) return false;
+        String id = getNewsId(news);
+        return expandedNewsIds.contains(id);
+    }
+
+    public void clearExpandedStates() {
+        expandedNewsIds.clear();
+    }
+
+    public static String getNewsId(News news) {
+        if (news == null) return "";
+        if (news.getLink() != null && !news.getLink().trim().isEmpty()) {
+            return news.getLink().trim();
+        }
+        if (news.getTitle() != null && !news.getTitle().trim().isEmpty()) {
+            return news.getTitle().trim();
+        }
+        return String.valueOf(news.hashCode());
     }
 
     @NonNull
@@ -74,28 +147,51 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
                 "",
                 holder.descriptionTextView);
 
-        boolean expanded = expandedPositions.get(position, false);
+        boolean expanded = isExpanded(news);
         holder.descriptionTextView.setVisibility(expanded ? View.VISIBLE : View.GONE);
         holder.linkLayout.setVisibility(expanded ? View.VISIBLE : View.GONE);
-        holder.newsImageView.setVisibility(expanded ? View.GONE : View.VISIBLE);
+        boolean hasImage = news.getImageUrl() != null && !news.getImageUrl().trim().isEmpty();
+        holder.newsImageView.setVisibility(hasImage ? View.VISIBLE : View.GONE);
 
         holder.newsLayout.setOnClickListener(v -> {
-            boolean isExpanded = expandedPositions.get(position, false);
-            if (isExpanded) {
-                expandedPositions.put(position, false);
-                holder.descriptionTextView.setVisibility(View.GONE);
-                holder.linkLayout.setVisibility(View.GONE);
-                holder.newsImageView.setVisibility(View.VISIBLE);
-            } else {
-                expandedPositions.put(position, true);
-                holder.descriptionTextView.setVisibility(View.VISIBLE);
-                holder.linkLayout.setVisibility(View.VISIBLE);
-                holder.newsImageView.setVisibility(View.GONE);
+            int adapterPos = holder.getBindingAdapterPosition();
+            if (adapterPos == RecyclerView.NO_POSITION || adapterPos >= newsList.size()) {
+                return;
             }
+
+            News currentNews = newsList.get(adapterPos);
+            String newsId = getNewsId(currentNews);
+            boolean wasExpanded = expandedNewsIds.contains(newsId);
+            boolean willExpand = !wasExpanded;
+
+            if (willExpand) {
+                expandedNewsIds.add(newsId);
+            } else {
+                expandedNewsIds.remove(newsId);
+            }
+
+            ViewGroup parent = (ViewGroup) holder.itemView.getParent();
+            if (parent != null) {
+                TransitionSet transitionSet = new TransitionSet();
+                transitionSet.setOrdering(TransitionSet.ORDERING_TOGETHER);
+                transitionSet.addTransition(new ChangeBounds());
+                transitionSet.addTransition(new Fade());
+                transitionSet.setDuration(220);
+                transitionSet.setInterpolator(new DecelerateInterpolator());
+                TransitionManager.beginDelayedTransition(parent, transitionSet);
+            }
+
+            holder.descriptionTextView.setVisibility(willExpand ? View.VISIBLE : View.GONE);
+            holder.linkLayout.setVisibility(willExpand ? View.VISIBLE : View.GONE);
         });
 
         holder.linkLayout.setOnClickListener(v -> {
-            String link = news.getLink();
+            int adapterPos = holder.getBindingAdapterPosition();
+            if (adapterPos == RecyclerView.NO_POSITION || adapterPos >= newsList.size()) {
+                return;
+            }
+            News currentNews = newsList.get(adapterPos);
+            String link = currentNews.getLink();
             if (link != null && !link.isEmpty()) {
                 try {
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
@@ -117,7 +213,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
 
     public static class NewsViewHolder extends RecyclerView.ViewHolder {
 
-        final RelativeLayout newsLayout, linkLayout;
+        final View newsLayout, linkLayout;
         final TextView titleTextView, dateTextView, descriptionTextView;
         final ImageView newsImageView;
 

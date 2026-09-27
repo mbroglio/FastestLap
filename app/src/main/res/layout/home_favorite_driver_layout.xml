@@ -8,7 +8,6 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
-
     <TextView
         android:id="@+id/favourite_driver_name"
         style="@style/t18BoldWhite"
@@ -18,6 +17,7 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="10dp"
         android:text="@string/not_found"
+        android:maxLines="1"
         app:layout_constraintEnd_toStartOf="@id/favourite_driver_pic"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

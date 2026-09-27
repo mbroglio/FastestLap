@@ -25,28 +25,38 @@ public class NetworkUtils extends LiveData<Boolean> {
         this.connectivityManager = (ConnectivityManager) this.context.getSystemService(Context.CONNECTIVITY_SERVICE);
     }
 
+    private volatile Boolean lastReportedState = null;
+
+    private synchronized void updateConnectionState() {
+        boolean connected = isConnected();
+        if (lastReportedState == null || lastReportedState != connected) {
+            lastReportedState = connected;
+            postValue(connected);
+        }
+    }
+
     @Override
     protected void onActive() {
         super.onActive();
-        // Publish current state immediately
-        postValue(isConnected());
+        // Publish current state if changed or first time
+        updateConnectionState();
 
         if (connectivityManager == null) return;
 
         networkCallback = new ConnectivityManager.NetworkCallback() {
             @Override
             public void onAvailable(@NonNull Network network) {
-                postValue(isConnected());
+                updateConnectionState();
             }
 
             @Override
             public void onLost(@NonNull Network network) {
-                postValue(isConnected());
+                updateConnectionState();
             }
 
             @Override
             public void onCapabilitiesChanged(@NonNull Network network, @NonNull NetworkCapabilities networkCapabilities) {
-                postValue(isConnected());
+                updateConnectionState();
             }
         };
 

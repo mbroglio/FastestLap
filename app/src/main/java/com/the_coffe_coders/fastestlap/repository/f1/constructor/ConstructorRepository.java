@@ -79,13 +79,13 @@ public class ConstructorRepository {
                         return;
                     }
 
-                    lastUpdateTimestamps.put(constructorId, System.currentTimeMillis());
+                    // Post cached constructor immediately so the UI is instantaneous
                     Objects.requireNonNull(constructorCache.get(constructorId)).postValue(new Result.ConstructorSuccess(constructor));
 
                     // Only refresh from remote if the cached data is actually stale.
-                    // Without this TTL guard, Firebase fires on every launch even when the
-                    // local data is fresh, causing the LiveData to re-emit and triggering
-                    // redundant card rebuilds in the UI.
+                    // lastUpdateTimestamps tracks when the constructor was fetched from REMOTE (Firebase).
+                    // We must NOT put System.currentTimeMillis() upon reading local Room cache,
+                    // otherwise isStale would always be false (0 ms) and remote updates would never fire!
                     Long ts = lastUpdateTimestamps.get(constructorId);
                     boolean isStale = ts == null || System.currentTimeMillis() - ts > 300_000L;
                     if (isNetworkAvailable() && isStale) {
@@ -129,16 +129,23 @@ public class ConstructorRepository {
                         Objects.requireNonNull(constructorCache.get(constructorId)).postValue(new Result.ConstructorSuccess(constructor));
                     } else if (!isBackgroundRefresh) {
                         Log.e(TAG, "Constructor not found: " + constructorId);
+                        Objects.requireNonNull(constructorCache.get(constructorId)).postValue(new Result.Error("Constructor not found: " + constructorId));
                     }
                 }
 
                 @Override
                 public void onError(Exception e) {
                     Log.e(TAG, "Error loading constructor from remote: " + e.getMessage());
+                    if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(constructorCache.get(constructorId)).postValue(new Result.Error(e.getMessage()));
+                    }
                 }
             });
         } catch (Exception e) {
             Log.e(TAG, "Error loading constructor from remote: " + e.getMessage());
+            if (!isBackgroundRefresh) {
+                Objects.requireNonNull(constructorCache.get(constructorId)).postValue(new Result.Error(e.getMessage()));
+            }
         }
     }
 

@@ -29,6 +29,7 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
@@ -47,6 +48,7 @@ public class TrackBioActivity extends AppCompatActivity {
 
     private TrackViewModel trackViewModel;
     private NationViewModel nationViewModel;
+    private com.the_coffe_coders.fastestlap.util.service.NetworkUtils networkLiveData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,12 +69,18 @@ public class TrackBioActivity extends AppCompatActivity {
         UIUtils.applyWindowInsets(toolbar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
+        networkLiveData = new NetworkUtils(this);
+
         UIUtils.applyWindowInsets(trackBioLayout);
         trackBioLayout.setOnRefreshListener(() -> {
-            if (trackViewModel != null && trackId != null) {
-                trackViewModel.refreshTrack(trackId);
-                fetchTrack();
+            if (networkLiveData.isConnected()) {
+                if (trackViewModel != null && trackId != null) {
+                    trackViewModel.refreshTrack(trackId);
+                } else {
+                    trackBioLayout.setRefreshing(false);
+                }
             } else {
+                android.widget.Toast.makeText(this, "No internet connection", android.widget.Toast.LENGTH_SHORT).show();
                 trackBioLayout.setRefreshing(false);
             }
         });
@@ -98,13 +106,10 @@ public class TrackBioActivity extends AppCompatActivity {
 
     private void fetchTrack() {
         MutableLiveData<Result> trackLiveData = trackViewModel.getTrack(trackId);
-        @SuppressWarnings("unchecked")
-        androidx.lifecycle.Observer<Result>[] observerTrack = new androidx.lifecycle.Observer[1];
-        observerTrack[0] = trackResult -> {
+        trackLiveData.observe(this, trackResult -> {
             if (trackResult instanceof Result.Loading) {
                 return;
             }
-            trackLiveData.removeObserver(observerTrack[0]);
             trackBioLayout.setRefreshing(false);
             if (trackResult.isSuccess()) {
                 track = ((Result.TrackSuccess) trackResult).getData();
@@ -140,8 +145,7 @@ public class TrackBioActivity extends AppCompatActivity {
                 Log.e("TrackBioActivity", "Error getting track data");
                 loadingScreen.hideLoadingScreen();
             }
-        };
-        trackLiveData.observe(this, observerTrack[0]);
+        });
     }
 
     private void setCircuitData(Track track, Nation nation) {

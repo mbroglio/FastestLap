@@ -1,6 +1,7 @@
 package com.the_coffe_coders.fastestlap.ui.home.fragment;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -18,7 +19,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import com.google.android.material.materialswitch.MaterialSwitch;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.NewsRecyclerAdapter;
@@ -30,18 +30,22 @@ import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class NewsFragment extends Fragment {
 
     private static final String TAG = "NewsFragment";
-    private final String currentLanguage = AppCompatDelegate.getApplicationLocales().toLanguageTags();
     private TextView newsMenu;
     private MaterialSwitch languageFeedSwitch;
     private Boolean languageFeed;
     private RecyclerView newsRecyclerView;
+    private NewsRecyclerAdapter newsAdapter;
+    private final Set<String> expandedNewsIds = new HashSet<>();
     private int defaultIndex;
     private int loadingCounter = 0;
     private LoadingScreen loadingScreen;
@@ -53,11 +57,6 @@ public class NewsFragment extends Fragment {
 
     public NewsFragment() {
         // Required empty public constructor
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
@@ -85,19 +84,63 @@ public class NewsFragment extends Fragment {
             AppNotificationManager.getInstance().saveNewsSourcePreference(ctx, languageFeed, defaultIndex, defaultSource);
         }
 
+        // Setup RecyclerView once
+        newsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+        List<News> initialNews = getCachedNews(languageFeed, defaultIndex);
+        newsAdapter = new NewsRecyclerAdapter(
+                initialNews != null ? initialNews : new ArrayList<>(),
+                requireContext(),
+                null,
+                0,
+                expandedNewsIds
+        );
+        newsRecyclerView.setAdapter(newsAdapter);
+
+        // Setup header controls once
+        if (newsMenu != null) {
+            newsMenu.setOnClickListener(v -> {
+                boolean isEnglish = languageFeedSwitch != null && languageFeedSwitch.isChecked();
+                showSourcesDialog(isEnglish);
+            });
+        }
+
+        if (languageFeedSwitch != null) {
+            languageFeedSwitch.setChecked(languageFeed);
+            languageFeedSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (languageFeed != null && languageFeed == isChecked) {
+                    return;
+                }
+                languageFeed = isChecked;
+                defaultIndex = 0;
+                String sourceName = isChecked ? Constants.DEFAULT_ENG_SOURCE : Constants.DEFAULT_ITA_SOURCE;
+                AppNotificationManager.getInstance().saveNewsSourcePreference(requireContext(), isChecked, defaultIndex, sourceName);
+
+                if (newsAdapter != null) {
+                    newsAdapter.clearExpandedStates();
+                }
+                newsRecyclerView.scrollToPosition(0);
+                loadNews(isChecked, defaultIndex, false);
+            });
+        }
+
         NetworkUtils networkUtils = new NetworkUtils(requireContext());
         networkUtils.observe(getViewLifecycleOwner(), isConnected -> {
-            Log.i("HomePageActivity", "network: " + isConnected);
+            Log.i(TAG, "network: " + isConnected);
             if (isConnected) {
                 newsRecyclerView.setVisibility(View.VISIBLE);
                 noConnectionText.setVisibility(View.GONE);
 
-                newsMenuManagement();
-                languageFeed(newsRecyclerView);
+                // If no news loaded yet, load with loading screen; if already loaded, silent background refresh
+                if (newsAdapter == null || newsAdapter.getItemCount() == 0) {
+                    loadNews(languageFeed, defaultIndex, false);
+                } else {
+                    loadNews(languageFeed, defaultIndex, true);
+                }
             } else {
-                newsRecyclerView.setVisibility(View.GONE);
-                noConnectionText.setVisibility(View.VISIBLE);
-                // If offline, ensure loading screen is hidden
+                if (newsAdapter == null || newsAdapter.getItemCount() == 0) {
+                    newsRecyclerView.setVisibility(View.GONE);
+                    noConnectionText.setVisibility(View.VISIBLE);
+                }
                 loadingScreen.hideLoadingScreen();
             }
         });
@@ -117,73 +160,32 @@ public class NewsFragment extends Fragment {
         }
     }
 
-    private void newsMenuManagement() {
-        newsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-
-        if (newsMenu != null && languageFeedSwitch != null) {
-            newsMenu.setOnClickListener(v -> {
-                boolean isEnglish = languageFeedSwitch.isChecked();
-                showSourcesDialog(isEnglish);
-            });
-        }
-    }
-
-    private void languageFeed(RecyclerView recyclerView) {
-        languageFeedSwitch.setChecked(languageFeed);
-
-        try {
-            loadNews(languageFeed, recyclerView, defaultIndex);
-        } catch (Exception e) {
-            Toast.makeText(requireContext(),
-                    R.string.feed_error, Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Errore durante il recupero del feed RSS", e);
-        }
-
-        languageFeedSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            try {
-                languageFeed = isChecked;
-                defaultIndex = 0;
-                String sourceName = isChecked ? Constants.DEFAULT_ENG_SOURCE : Constants.DEFAULT_ITA_SOURCE;
-                AppNotificationManager.getInstance().saveNewsSourcePreference(requireContext(), isChecked, defaultIndex, sourceName);
-                loadNews(isChecked, recyclerView, defaultIndex);
-            } catch (Exception e) {
-                Toast.makeText(requireContext(),
-                        R.string.feed_error, Toast.LENGTH_SHORT).show();
-                Log.e(TAG, "Errore durante il recupero del feed RSS", e);
-            }
-        });
-
-    }
-
-    private void loadNews(boolean languageFeed, RecyclerView recyclerView, int value) {
-        // Check if we have cached data
-        boolean useCache = false;
-        List<News> cachedNews = null;
-
-        if (languageFeed) {
-            // English news
-            if (value == cachedEnglishSourceIndex && cachedEnglishNews != null) {
-                useCache = true;
-                cachedNews = cachedEnglishNews;
+    private List<News> getCachedNews(boolean isEnglish, int sourceIndex) {
+        if (isEnglish) {
+            if (sourceIndex == cachedEnglishSourceIndex && cachedEnglishNews != null) {
+                return cachedEnglishNews;
             }
         } else {
-            // Italian news
             if (cachedItalianNews != null) {
-                useCache = true;
-                cachedNews = cachedItalianNews;
+                return cachedItalianNews;
             }
         }
+        return null;
+    }
 
-        if (useCache) {
-            // Use cached data - instant loading!
+    private void loadNews(boolean isEnglish, int value, boolean isSilent) {
+        // Check if we have cached data and it's not a silent refresh
+        List<News> cached = getCachedNews(isEnglish, value);
+        if (cached != null && !cached.isEmpty() && !isSilent) {
             Log.d(TAG, "Using cached news data");
-            preloadNewsImagesAndDisplay(cachedNews, recyclerView);
+            preloadNewsImagesAndDisplay(cached);
             return;
         }
 
-        // No cache available - fetch from network
-        loadingCounter = 1;
-        loadingScreen.showLoadingScreen(false);
+        if (!isSilent) {
+            loadingCounter = 1;
+            loadingScreen.showLoadingScreen(false);
+        }
 
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Handler handler = new Handler(Looper.getMainLooper());
@@ -191,16 +193,14 @@ public class NewsFragment extends Fragment {
         executor.execute(() -> {
             List<News> newsList = null;
             try {
-                if (languageFeed) {
+                if (isEnglish) {
                     newsList = NewsFetcher.fetchNewsEngSources(value);
                     defaultIndex = value;
-                    // Cache English news
                     cachedEnglishNews = newsList;
                     cachedEnglishSourceIndex = value;
                 } else {
                     newsList = NewsFetcher.fetchNewsItSources();
                     defaultIndex = 0;
-                    // Cache Italian news
                     cachedItalianNews = newsList;
                 }
             } catch (Exception e) {
@@ -209,22 +209,27 @@ public class NewsFragment extends Fragment {
 
             List<News> finalNewsList = newsList;
             handler.post(() -> {
+                if (!isAdded()) {
+                    return;
+                }
                 if (finalNewsList != null && !finalNewsList.isEmpty()) {
-                    preloadNewsImagesAndDisplay(finalNewsList, recyclerView);
+                    preloadNewsImagesAndDisplay(finalNewsList);
                 } else {
-                    Toast.makeText(getContext(), R.string.feed_error, Toast.LENGTH_SHORT).show();
-                    decrementLoadingCounter();
+                    if (!isSilent) {
+                        Toast.makeText(getContext(), R.string.feed_error, Toast.LENGTH_SHORT).show();
+                        decrementLoadingCounter();
+                    }
                 }
             });
         });
     }
 
-    private void preloadNewsImagesAndDisplay(List<News> newsList, RecyclerView recyclerView) {
-        if (newsList == null || newsList.isEmpty()) {
+    private void preloadNewsImagesAndDisplay(List<News> newsList) {
+        if (newsList == null || newsList.isEmpty() || !isAdded()) {
             return;
         }
 
-        displayNews(newsList, recyclerView);
+        displayNews(newsList);
 
         java.util.List<String> imageUrls = new java.util.ArrayList<>();
         for (int i = 0; i < Math.min(7, newsList.size()); i++) {
@@ -255,9 +260,16 @@ public class NewsFragment extends Fragment {
         return false;
     }
 
-    private void displayNews(List<News> newsList, RecyclerView recyclerView) {
-        NewsRecyclerAdapter adapter = new NewsRecyclerAdapter(newsList, getContext(), null, 0);
-        recyclerView.setAdapter(adapter);
+    private void displayNews(List<News> newsList) {
+        if (!isAdded()) {
+            return;
+        }
+        if (newsAdapter == null) {
+            newsAdapter = new NewsRecyclerAdapter(new ArrayList<>(newsList), requireContext(), null, 0, expandedNewsIds);
+            newsRecyclerView.setAdapter(newsAdapter);
+        } else {
+            newsAdapter.updateNewsList(newsList);
+        }
         loadingScreen.hideLoadingScreen();
     }
 
@@ -266,7 +278,6 @@ public class NewsFragment extends Fragment {
                 ? Constants.ENGLISH_NEWS_SOURCES
                 : Constants.ITALIAN_NEWS_SOURCES;
 
-        // create ListView with multiple choice layout (checkboxes) but single choice mode
         ListView listView = new ListView(requireContext());
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 requireContext(),
@@ -275,7 +286,6 @@ public class NewsFragment extends Fragment {
         );
         listView.setAdapter(adapter);
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-
 
         if (defaultIndex >= 0 && defaultIndex < sources.size()) {
             listView.setItemChecked(defaultIndex, true);
@@ -294,8 +304,13 @@ public class NewsFragment extends Fragment {
             String sourceName = sources.get(position);
             AppNotificationManager.getInstance().saveNewsSourcePreference(requireContext(), languageFeedSwitch.isChecked(), position, sourceName);
 
+            if (newsAdapter != null) {
+                newsAdapter.clearExpandedStates();
+            }
+            newsRecyclerView.scrollToPosition(0);
+
             try {
-                loadNews(languageFeedSwitch.isChecked(), newsRecyclerView, position);
+                loadNews(languageFeedSwitch.isChecked(), position, false);
             } catch (Exception e) {
                 Toast.makeText(requireContext(),
                         R.string.feed_error, Toast.LENGTH_SHORT).show();

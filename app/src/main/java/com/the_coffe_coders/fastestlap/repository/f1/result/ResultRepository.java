@@ -81,7 +81,6 @@ public class ResultRepository {
             @Override
             public void onSuccess(Race race) {
                 if (race != null && race.getRaceResults() != null && !race.getRaceResults().isEmpty()) {
-                    lastUpdateTimestamps.put(round, System.currentTimeMillis());
                     Objects.requireNonNull(resultsCache.get(round)).postValue(new Result.RaceResultsSuccess(race));
                     Log.d(TAG, "Results loaded from local cache for round: " + round);
                     Long ts = lastUpdateTimestamps.get(round);
@@ -214,7 +213,6 @@ public class ResultRepository {
             @Override
             public void onSuccess(Race race) {
                 if (race != null && race.getQualifyingResults() != null && !race.getQualifyingResults().isEmpty()) {
-                    qualifyingLastUpdateTimestamps.put(round, System.currentTimeMillis());
                     Objects.requireNonNull(qualifyingResultsCache.get(round)).postValue(new Result.RaceResultsSuccess(race));
                     Log.d(TAG, "Qualifying results loaded from local cache for round: " + round);
                     Long ts = qualifyingLastUpdateTimestamps.get(round);
@@ -331,7 +329,6 @@ public class ResultRepository {
             @Override
             public void onSuccess(Race race) {
                 if (race != null && race.getSprintResults() != null && !race.getSprintResults().isEmpty()) {
-                    sprintLastUpdateTimestamps.put(round, System.currentTimeMillis());
                     Objects.requireNonNull(sprintResultsCache.get(round)).postValue(new Result.RaceResultsSuccess(race));
                     Log.d(TAG, "Sprint results loaded from local cache for round: " + round);
                     Long ts = sprintLastUpdateTimestamps.get(round);

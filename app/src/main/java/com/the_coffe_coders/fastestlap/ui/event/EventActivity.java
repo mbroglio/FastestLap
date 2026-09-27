@@ -411,102 +411,32 @@ public class EventActivity extends AppCompatActivity {
 
     private void showRaceResultsDialog(Race race) {
         if (race != null) {
-            if (race.getRaceResults() == null || race.getRaceResults().isEmpty()) {
-                Log.e(TAG, "race results not found");
-                if (race.getSprintResults() == null || race.getSprintResults().isEmpty()) {
-                    Log.e(TAG, "sprint results not found");
-                } else {
-                    Log.i(TAG, "Showing sprint results");
+            String sessionName = null;
+            RaceResultFastestLap raceFastestLap = null;
 
-                    fetchStintsAndShowDialog(race, "Sprint");
-                }
-            } else {
+            if (race.getRaceResults() != null && !race.getRaceResults().isEmpty()) {
                 Log.i(TAG, "Showing race results");
+                sessionName = "Race";
+                raceFastestLap = eventViewModel.extractFastestLap(race.getRaceResults());
+            } else if (race.getSprintResults() != null && !race.getSprintResults().isEmpty()) {
+                Log.i(TAG, "Showing sprint results");
+                sessionName = "Sprint";
+                raceFastestLap = eventViewModel.extractFastestLap(race.getSprintResults());
+            }
 
-                fetchStintsAndShowDialog(race, "Race");
+            if (sessionName != null) {
+                List<Stint> cachedStints = sessionName.equals("Sprint") ? race.getSprintStints() : race.getRaceStints();
+                if (cachedStints == null || cachedStints.isEmpty()) {
+                    cachedStints = race.getStints();
+                }
+                NavigationUtils.showRaceResults(this, race, 0, cachedStints, raceFastestLap);
+            } else {
+                Log.e(TAG, "race results not found");
+                Toast.makeText(this, R.string.results_not_available, Toast.LENGTH_SHORT).show();
             }
         } else {
             Log.e(TAG, "race is null, cannot show results");
         }
-    }
-
-    private void fetchStintsAndShowDialog(Race race, String sessionName) {
-        RaceResultFastestLap raceFastestLap;
-        if (sessionName.equals("Sprint")) {
-            raceFastestLap = eventViewModel.extractFastestLap(race.getSprintResults());
-        } else {
-            raceFastestLap = eventViewModel.extractFastestLap(race.getRaceResults());
-        }
-
-        List<Stint> cachedStints = sessionName.equals("Sprint") ? race.getSprintStints() : race.getRaceStints();
-        if (cachedStints == null || cachedStints.isEmpty()) {
-            cachedStints = race.getStints();
-        }
-
-        if (loadingScreen != null) {
-            loadingScreen.showLoadingScreen(true);
-        }
-
-        List<Stint> finalCachedStints = cachedStints;
-        MutableLiveData<Result> stintsLiveData = raceResultViewModel.getStints(race.getRaceName(), sessionName);
-        final boolean[] isHandled = {false};
-        android.os.Handler timeoutHandler = new android.os.Handler(android.os.Looper.getMainLooper());
-
-        Observer<Result> observer = new Observer<>() {
-            @Override
-            public void onChanged(Result result) {
-                if (result instanceof Result.Loading) {
-                    Log.i(TAG, "Loading stints...");
-                    return;
-                }
-
-                synchronized (isHandled) {
-                    if (isHandled[0]) return;
-                    isHandled[0] = true;
-                }
-                timeoutHandler.removeCallbacksAndMessages(null);
-                stintsLiveData.removeObserver(this);
-
-                if (loadingScreen != null) {
-                    loadingScreen.hideLoadingScreenImmediately();
-                }
-
-                List<Stint> stints = null;
-                if (result instanceof Result.StintsSuccess) {
-                    Log.i(TAG, "Stints loaded successfully");
-
-                    stints = ((Result.StintsSuccess) result).getData();
-                    if (sessionName.equals("Sprint")) {
-                        race.setSprintStints(stints);
-                    } else {
-                        race.setRaceStints(stints);
-                    }
-                    Log.i(TAG, "Stints:\n " + stints);
-
-                } else if (result instanceof Result.Error) {
-                    Log.e(TAG, "Error loading stints: " + result.getError());
-                    stints = finalCachedStints;
-                }
-
-                NavigationUtils.showRaceResults(EventActivity.this, race, 0, (stints != null && !stints.isEmpty()) ? stints : finalCachedStints, raceFastestLap);
-            }
-        };
-
-        // Fallback after 3.5 seconds if API times out or rate limits
-        timeoutHandler.postDelayed(() -> {
-            synchronized (isHandled) {
-                if (isHandled[0]) return;
-                isHandled[0] = true;
-            }
-            Log.w(TAG, "Stints fetching timed out, opening results with cached data or empty stints");
-            stintsLiveData.removeObserver(observer);
-            if (loadingScreen != null) {
-                loadingScreen.hideLoadingScreenImmediately();
-            }
-            NavigationUtils.showRaceResults(EventActivity.this, race, 0, finalCachedStints, raceFastestLap);
-        }, 3500);
-
-        stintsLiveData.observe(this, observer);
     }
 
     private void showQualifyingResultsDialog(Race race) {

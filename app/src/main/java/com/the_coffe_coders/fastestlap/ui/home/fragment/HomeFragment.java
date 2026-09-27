@@ -116,6 +116,21 @@ public class HomeFragment extends Fragment {
             constructorCardLoaded = false;
             isSettingUp = true;
 
+            // Invalidate the handler fast-path caches so that a favourite changed in the Bio
+            // page is reflected immediately when the user returns here.  Without this, the
+            // handlers detect driverCardLoaded=true and skip re-reading SharedPreferences,
+            // showing the old favourite instead of the newly chosen one.
+            if (favoriteDriverHandler != null) {
+                favoriteDriverHandler.resetCardLoaded();
+            }
+            if (favoriteConstructorHandler != null) {
+                favoriteConstructorHandler.resetCardLoaded();
+            }
+            // Also clear cached standings so the handlers don't short-circuit via the
+            // cachedDriverStandings/cachedConstructorStandings fast path with stale data.
+            cachedDriverStandings = null;
+            cachedConstructorStandings = null;
+
             setupLoadingScreen(view);
             setupHandlers();
             setupUI(view);
@@ -362,11 +377,11 @@ public class HomeFragment extends Fragment {
         SwipeRefreshLayout homeSwipeRefreshLayout = view.findViewById(R.id.home_refresh_layout);
         homeSwipeRefreshLayout.setOnRefreshListener(() -> {
             if (sharedPreferencesUtils != null) {
-                String favDriver = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FAVORITE_DRIVER, null);
+                String favDriver = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
                 if (favDriver != null && driverViewModel != null) {
                     driverViewModel.refreshDriver(favDriver);
                 }
-                String favTeam = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FAVORITE_TEAM, null);
+                String favTeam = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
                 if (favTeam != null && constructorViewModel != null) {
                     constructorViewModel.refreshConstructor(favTeam);
                 }

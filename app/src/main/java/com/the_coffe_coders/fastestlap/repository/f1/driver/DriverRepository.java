@@ -75,13 +75,21 @@ public class DriverRepository {
                 if (driver != null) {
                     Log.d(TAG, "Driver loaded from local database (cache hit): " + driverId);
                     driver.setDriverId(driverId);
-                    lastUpdateTimestamps.put(driverId, System.currentTimeMillis());
+
+                    // If cached driver doesn't have season_stats yet, force remote fetch immediately
+                    if (driver.getSeason_stats() == null && isNetworkAvailable()) {
+                        Log.d(TAG, "Driver season_stats is null in cache, forcing remote fetch: " + driverId);
+                        loadDriverFromRemote(driverId, false);
+                        return;
+                    }
+
+                    // Post cached driver immediately so the UI is instantaneous
                     Objects.requireNonNull(driverCache.get(driverId)).postValue(new Result.DriverSuccess(driver));
 
                     // Step 2: Only refresh from remote if the cached data is actually stale.
-                    // Without this TTL guard, Firebase fires on every launch even when the
-                    // local data is fresh, causing the LiveData to re-emit and triggering
-                    // redundant card rebuilds in the UI.
+                    // lastUpdateTimestamps tracks when the driver was fetched from REMOTE (Firebase).
+                    // We must NOT put System.currentTimeMillis() upon reading local Room cache,
+                    // otherwise isStale would always be false (0 ms) and remote updates would never fire!
                     Long ts = lastUpdateTimestamps.get(driverId);
                     boolean isStale = ts == null || System.currentTimeMillis() - ts > 300_000L;
                     if (isNetworkAvailable() && isStale) {
@@ -128,16 +136,30 @@ public class DriverRepository {
                         Objects.requireNonNull(driverCache.get(driverId)).postValue(new Result.DriverSuccess(driver));
                     } else if (!isBackgroundRefresh) {
                         Log.e(TAG, "Driver not found in Firebase: " + driverId);
+                        Objects.requireNonNull(driverCache.get(driverId)).postValue(new Result.Error("Driver not found: " + driverId));
                     }
                 }
 
                 @Override
                 public void onError(Exception e) {
                     Log.e(TAG, "Error loading driver from Firebase: " + e.getMessage());
+                    if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(driverCache.get(driverId)).postValue(new Result.Error(e.getMessage()));
+                    }
                 }
             });
         } catch (Exception e) {
             Log.e(TAG, "Exception while loading driver from Firebase: " + e.getMessage());
+            if (!isBackgroundRefresh) {
+                Objects.requireNonNull(driverCache.get(driverId)).postValue(new Result.Error(e.getMessage()));
+            }
+        }
+    }
+
+    public void invalidateCache(String driverId) {
+        if (driverId != null) {
+            driverCache.remove(driverId);
+            lastUpdateTimestamps.remove(driverId);
         }
     }
 

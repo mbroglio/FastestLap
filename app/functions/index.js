@@ -16,25 +16,29 @@ const db = admin.database();
 const messaging = admin.messaging();
 
 /**
- * SCHEDULER 1: F1 Race Stats (Lun 20:00)
+ * SCHEDULER 1: F1 Race Stats & Post-Race Penalty Verification (Dynamic per DB Calendar)
+ * Attinge al calendario F1 memorizzato nel DB (app_config/db_calendar/f1/{year}).
+ * Si attiva a circa 2 ore dall'orario di inizio della gara (T+2h).
+ * Se l'aggiornamento fallisce o i risultati sono ancora pendenti su Jolpica, ritenta a ogni ora per le successive 12 ore.
+ * Se l'aggiornamento va a buon fine, nei successivi controlli orari (durante le 12 ore di finestra)
+ * verifica che non ci siano state variazioni a causa di eventuali sanzioni/penalità inflitte post-gara.
  */
 exports.updateRaceStats = onSchedule(
   {
-    schedule: "every monday 20:00",
+    schedule: "every 30 minutes",
     timeZone: "Europe/Rome",
     timeoutSeconds: 300,
     retryConfig: {
-      retryCount: 7,
-      minBackoffDuration: "300s",
-      maxBackoffDuration: "3600s"
+      retryCount: 3,
+      minBackoffDuration: "60s",
+      maxBackoffDuration: "300s"
     }
   },
   async (event) => {
     try {
-        await f1Logic.executeRaceStatsUpdate(db);
+        await f1Logic.executeScheduledRaceStatsCheck(db, messaging);
     } catch (error) {
         console.error("Critical Error in updateRaceStats:", error);
-        throw error;
     }
   }
 );
@@ -254,7 +258,7 @@ exports.syncDriverSeasonStatsNow = onRequest(
 /**
  * HTTP ENDPOINT: Manual F1 Post-Race Stats Update Trigger
  * Allows immediate manual trigger of post-race stats update from browser or curl:
- * GET https://.../updateRaceStatsNow
+ * GET https://.../updateRaceStatsNow (optionally ?season=2026&round=15&force=true)
  */
 exports.updateRaceStatsNow = onRequest(
   {
@@ -263,10 +267,16 @@ exports.updateRaceStatsNow = onRequest(
   },
   async (req, res) => {
     try {
-      await f1Logic.executeRaceStatsUpdate(db);
-      await f1Logic.syncDriverSeasonStats(db);
-      await f1Logic.syncConstructorSeasonStats(db);
-      res.status(200).json({ status: "success", message: "F1 Race stats and season stats update completed." });
+      const season = req.query.season ? parseInt(req.query.season) : null;
+      const round = req.query.round ? parseInt(req.query.round) : null;
+      const force = req.query.force === "true" || req.query.force === true || (!season && !round);
+
+      const result = await f1Logic.executeScheduledRaceStatsCheck(db, messaging, {
+        season,
+        round,
+        force
+      });
+      res.status(200).json({ status: "success", result });
     } catch (error) {
       console.error("Error in updateRaceStatsNow:", error);
       res.status(500).json({ status: "error", message: error.message });

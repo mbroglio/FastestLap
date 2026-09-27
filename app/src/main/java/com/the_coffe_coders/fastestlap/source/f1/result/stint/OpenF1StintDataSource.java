@@ -321,16 +321,12 @@ public class OpenF1StintDataSource implements StintDataSource {
                                 int lapNum = getIntOrDefault(obj, "lap_number", -1);
 
                                 Double pitDur = null;
-                                if (obj.has("stop_duration") && !obj.get("stop_duration").isJsonNull()) {
+                                Log.i(TAG, "stop duration: " + obj.get("stop_duration").getAsDouble());
+
+                                if (obj.has("lane_duration") && !obj.get("lane_duration").isJsonNull()) {
                                     try {
-                                        pitDur = obj.get("stop_duration").getAsDouble();
+                                        pitDur = obj.get("lane_duration").getAsDouble();
                                     } catch (Exception ignored) {}
-                                }else{
-                                    if (obj.has("lane_duration") && !obj.get("lane_duration").isJsonNull()) {
-                                        try {
-                                            pitDur = obj.get("lane_duration").getAsDouble();
-                                        } catch (Exception ignored) {}
-                                    }
                                 }
 
                                 if (driverNum != -1 && pitDur != null && pitDur > 0) {

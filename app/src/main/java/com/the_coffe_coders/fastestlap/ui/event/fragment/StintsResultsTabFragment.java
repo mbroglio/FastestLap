@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -62,10 +63,15 @@ public class StintsResultsTabFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_stints_results_tab, container, false);
         RecyclerView recyclerView = view.findViewById(R.id.stints_results_recycler_view);
         View notAvailableLayout = view.findViewById(R.id.stints_not_available_layout);
+        ProgressBar progressBar = view.findViewById(R.id.stints_progress_bar);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         if ((stintsList == null || stintsList.isEmpty()) && race != null) {
-            stintsList = race.getStints();
+            String sessionType = (race.getRaceResults() != null && !race.getRaceResults().isEmpty()) ? "Race" : "Sprint";
+            stintsList = sessionType.equals("Sprint") ? race.getSprintStints() : race.getRaceStints();
+            if (stintsList == null || stintsList.isEmpty()) {
+                stintsList = race.getStints();
+            }
         }
 
         List<RaceResult> raceResults = (race != null)
@@ -75,17 +81,24 @@ public class StintsResultsTabFragment extends Fragment {
 
         if (stintsList != null && !stintsList.isEmpty()) {
             recyclerView.setVisibility(View.VISIBLE);
+            if (progressBar != null) {
+                progressBar.setVisibility(View.GONE);
+            }
             if (notAvailableLayout != null) {
                 notAvailableLayout.setVisibility(View.GONE);
             }
             recyclerView.setAdapter(new StintsResultsRecyclerAdapter(requireContext(), stintsList, raceResults));
         } else {
             recyclerView.setVisibility(View.GONE);
-            if (notAvailableLayout != null) {
-                notAvailableLayout.setVisibility(View.VISIBLE);
-            }
 
             if (race != null && race.getRaceName() != null && isAdded()) {
+                if (progressBar != null) {
+                    progressBar.setVisibility(View.VISIBLE);
+                }
+                if (notAvailableLayout != null) {
+                    notAvailableLayout.setVisibility(View.GONE);
+                }
+
                 String sessionType = (race.getRaceResults() != null && !race.getRaceResults().isEmpty()) ? "Race" : "Sprint";
                 RaceResultViewModel raceResultViewModel = new ViewModelProvider(
                         requireActivity(),
@@ -93,6 +106,21 @@ public class StintsResultsTabFragment extends Fragment {
                 ).get(RaceResultViewModel.class);
 
                 raceResultViewModel.getStints(race.getRaceName(), sessionType).observe(getViewLifecycleOwner(), result -> {
+                    if (result instanceof Result.Loading) {
+                        if (progressBar != null) {
+                            progressBar.setVisibility(View.VISIBLE);
+                        }
+                        recyclerView.setVisibility(View.GONE);
+                        if (notAvailableLayout != null) {
+                            notAvailableLayout.setVisibility(View.GONE);
+                        }
+                        return;
+                    }
+
+                    if (progressBar != null) {
+                        progressBar.setVisibility(View.GONE);
+                    }
+
                     if (result instanceof Result.StintsSuccess) {
                         List<Stint> fetched = ((Result.StintsSuccess) result).getData();
                         if (fetched != null && !fetched.isEmpty() && isAdded()) {
@@ -107,9 +135,26 @@ public class StintsResultsTabFragment extends Fragment {
                                 notAvailableLayout.setVisibility(View.GONE);
                             }
                             recyclerView.setAdapter(new StintsResultsRecyclerAdapter(requireContext(), stintsList, raceResults));
+                        } else if (isAdded()) {
+                            recyclerView.setVisibility(View.GONE);
+                            if (notAvailableLayout != null) {
+                                notAvailableLayout.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    } else if (result instanceof Result.Error && isAdded()) {
+                        recyclerView.setVisibility(View.GONE);
+                        if (notAvailableLayout != null) {
+                            notAvailableLayout.setVisibility(View.VISIBLE);
                         }
                     }
                 });
+            } else {
+                if (progressBar != null) {
+                    progressBar.setVisibility(View.GONE);
+                }
+                if (notAvailableLayout != null) {
+                    notAvailableLayout.setVisibility(View.VISIBLE);
+                }
             }
         }
 

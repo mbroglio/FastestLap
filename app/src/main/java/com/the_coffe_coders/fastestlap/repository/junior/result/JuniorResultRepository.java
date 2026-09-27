@@ -72,7 +72,6 @@ public class JuniorResultRepository {
             public void onResultLoaded(JuniorResult result) {
                 if (result != null) {
                     Log.i(TAG, "Junior result loaded from local DB: " + cacheKey);
-                    lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                     Objects.requireNonNull(juniorResultCache.get(cacheKey))
                             .postValue(new Result.JuniorResultSuccess(result));
 
@@ -119,16 +118,27 @@ public class JuniorResultRepository {
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                         Objects.requireNonNull(juniorResultCache.get(cacheKey))
                                 .postValue(new Result.JuniorResultSuccess(result));
+                    } else if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(juniorResultCache.get(cacheKey))
+                                .postValue(new Result.Error("Junior result not found from remote"));
                     }
                 }
 
                 @Override
                 public void onError(Exception e) {
                     Log.e(TAG, "Error loading junior result: " + e.getMessage());
+                    if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(juniorResultCache.get(cacheKey))
+                                .postValue(new Result.Error(e.getMessage()));
+                    }
                 }
             });
         } catch (Exception e) {
             Log.e(TAG, "Error loading junior result: " + e.getMessage());
+            if (!isBackgroundRefresh) {
+                Objects.requireNonNull(juniorResultCache.get(cacheKey))
+                        .postValue(new Result.Error(e.getMessage()));
+            }
         }
     }
 

@@ -409,9 +409,9 @@ public class Constants {
     );
 
     public static final List<Integer> PAST_RACE_DRIVER_NAME = List.of(
-            R.id.past_first_driver,
-            R.id.past_second_driver,
-            R.id.past_third_driver
+            R.id.last_race_first,
+            R.id.last_race_second,
+            R.id.last_race_third
     );
 
     public static final List<Integer> HOME_SEASON_DRIVER_STANDINGS_NAME_FIELD = List.of(
