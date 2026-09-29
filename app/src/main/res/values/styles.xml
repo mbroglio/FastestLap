@@ -9,19 +9,9 @@
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:autoSizeMinTextSize">12sp</item>
         <item name="android:autoSizeMaxTextSize">20sp</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
-
-    <style name="JuniorCardTitle">
-        <item name="android:textSize">@dimen/page_title_text_size</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="android:fontFamily">@font/orbitron_regular</item>
-        <item name="android:textAllCaps">true</item>
-        <item name="android:autoSizeMaxTextSize">@dimen/page_title_text_size</item>
-        <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
-        <item name="autoSizeTextType">uniform</item>
-        <item name="maxLines">2</item>
-    </style>
-
 
     <!--
     PAGE SUPERTITLE STYLE UPPER CASE
@@ -40,6 +30,8 @@
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
     <style name="t25UpperCaseBoldBlack">
@@ -50,6 +42,8 @@
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
 
@@ -70,6 +64,8 @@
         <item name="android:autoSizeMaxTextSize">@dimen/page_title_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
     <style name="t20UpperCaseBoldWhite">
@@ -80,6 +76,8 @@
         <item name="android:autoSizeMaxTextSize">@dimen/page_title_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
 
@@ -98,6 +96,8 @@
         <item name="android:autoSizeMaxTextSize">@dimen/page_title_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
     <style name="t20BoldWhite">
@@ -107,6 +107,8 @@
         <item name="android:autoSizeMaxTextSize">@dimen/page_title_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
 
@@ -127,6 +129,8 @@
         <item name="android:autoSizeMaxTextSize">@dimen/layout_title_1_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
     <style name="t18UpperCaseBoldWhite">
@@ -137,6 +141,8 @@
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
 
@@ -155,6 +161,8 @@
         <item name="android:autoSizeMaxTextSize">@dimen/layout_title_1_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
     <style name="t18BoldWhite">
@@ -164,6 +172,8 @@
         <item name="android:autoSizeMaxTextSize">@dimen/layout_title_1_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
 
@@ -184,6 +194,8 @@
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
     <style name="t16UpperCaseBoldWhite">
@@ -194,6 +206,8 @@
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
 
@@ -212,6 +226,8 @@
         <item name="android:autoSizeMaxTextSize">@dimen/layout_title_2_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
     <style name="t16BoldWhite">
@@ -221,6 +237,8 @@
         <item name="android:autoSizeMaxTextSize">@dimen/layout_title_2_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
 
@@ -241,6 +259,8 @@
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
     <style name="t14UpperCaseBoldWhite">
@@ -251,6 +271,8 @@
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
 
@@ -271,6 +293,8 @@
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
     <style name="t14UpperCaseRegularWhite">
@@ -281,6 +305,8 @@
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
 
@@ -301,6 +327,8 @@
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:maxLines">1</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
     <style name="t14BoldBlackLineLimited">
@@ -311,6 +339,8 @@
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:maxLines">1</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
 
@@ -331,6 +361,8 @@
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:maxLines">1</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
     <style name="t14RegularBlackLineLimited">
@@ -341,6 +373,8 @@
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:maxLines">1</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
 
@@ -360,6 +394,8 @@
         <item name="android:autoSizeMaxTextSize">@dimen/layout_subtitle_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
 
     </style>
 
@@ -370,6 +406,8 @@
         <item name="android:autoSizeMaxTextSize">@dimen/layout_subtitle_text_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
 
@@ -391,6 +429,8 @@
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:maxLines">1</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
     <style name="t12RegularBlackLineLimited">
@@ -401,6 +441,8 @@
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:maxLines">1</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
 
@@ -421,6 +463,8 @@
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:maxLines">1</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
     <style name="t12BoldBlackLineLimited">
@@ -431,6 +475,8 @@
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_1</item>
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:maxLines">1</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
 
@@ -453,6 +499,8 @@
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:maxLines">1</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
     <style name="t12UpperCaseBoldBlackLineLimited">
@@ -464,6 +512,8 @@
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:maxLines">1</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
 
@@ -483,6 +533,8 @@
         <item name="android:autoSizeMaxTextSize">@dimen/text_minor_importance_size</item>
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_2</item>
         <item name="android:autoSizeTextType">uniform</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
 
     </style>
 
@@ -494,6 +546,8 @@
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_2</item>
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:maxLines">1</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
 
@@ -514,6 +568,8 @@
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_2</item>
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:maxLines">1</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
     <style name="t10RegularBlackLineLimited">
@@ -524,6 +580,8 @@
         <item name="android:autoSizeMinTextSize">@dimen/min_text_resize_2</item>
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:maxLines">1</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
 
@@ -546,6 +604,8 @@
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:maxLines">1</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
     <style name="t10UpperCaseRegularBlackLineLimited">
@@ -557,6 +617,8 @@
         <item name="android:autoSizeTextType">uniform</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:maxLines">1</item>
+        <item name="android:breakStrategy">simple</item>
+        <item name="android:hyphenationFrequency">none</item>
     </style>
 
 
