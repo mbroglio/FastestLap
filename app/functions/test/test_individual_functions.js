@@ -241,17 +241,24 @@ const juniorFunctions = {
                 const updates = {};
                 const basePath = `junior_categories/${seriesId}`;
                 
+                const resultsMap = {};
                 result.forEach(race => {
                     const raceResultsEntry = {
                         round: race.round,
                         circuit: race.circuit,
                         sprint: race.sprint_race,
-                        feature: race.feature_race,
                         nationFlagUrl: race.nationFlagUrl
                     };
-                    updates[`${basePath}/results/${race.round}`] = raceResultsEntry;
+                    if (race.isDouble && race.feature2_race) {
+                        raceResultsEntry.feature1 = race.feature1_race || race.feature_race;
+                        raceResultsEntry.feature2 = race.feature2_race;
+                    } else {
+                        raceResultsEntry.feature = race.feature_race;
+                    }
+                    resultsMap[race.round] = raceResultsEntry;
                     console.log(`Updating DB for Round ${race.round}...`);
                 });
+                updates[`${basePath}/results`] = resultsMap;
                 
                 await db.ref().update(updates);
                 console.log(`\n✓ Database updated with ${result.length} race results for ${seriesId}`);

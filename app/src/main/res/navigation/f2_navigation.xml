@@ -22,7 +22,9 @@
         android:id="@+id/f2CarBioFragment"
         android:name="com.the_coffe_coders.fastestlap.ui.junior.fragment.F2CarBioFragment"
         android:label="@string/the_formula_2_car"
-        tools:layout="@layout/fragment_f2_car_bio"></fragment>
+        tools:layout="@layout/fragment_f2_car_bio">
+
+    </fragment>
 
     <fragment
         android:id="@+id/juniorResultsFragment"
@@ -32,5 +34,10 @@
 
     </fragment>
 
-</navigation>
+    <fragment
+        android:id="@+id/junior_news"
+        android:name="com.the_coffe_coders.fastestlap.ui.junior.fragment.JuniorNewsFragment"
+        android:label="@string/news"
+        tools:layout="@layout/fragment_junior_news" />
 
+</navigation>

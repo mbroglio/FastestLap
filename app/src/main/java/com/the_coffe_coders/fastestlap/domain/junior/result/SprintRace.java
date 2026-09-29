@@ -3,6 +3,7 @@ package com.the_coffe_coders.fastestlap.domain.junior.result;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Collections;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -17,7 +18,7 @@ import lombok.ToString;
 @Setter
 @ToString
 
-public class SprintRace implements Parcelable {
+public class SprintRace implements Parcelable, JuniorRaceSession {
     public static final Creator<SprintRace> CREATOR = new Creator<>() {
         @Override
         public SprintRace createFromParcel(Parcel in) {
@@ -54,18 +55,21 @@ public class SprintRace implements Parcelable {
     }
 
     public List<JuniorSessionResultElement> getPodium() {
+        if (order == null || order.size() < 3) {
+            return order != null ? order : Collections.emptyList();
+        }
         return order.subList(0, 3);
     }
 
     public boolean isCompleted() {
-        return status.equalsIgnoreCase("completed");
+        return "completed".equalsIgnoreCase(status);
     }
 
     public boolean isCancelled() {
-        return status.equalsIgnoreCase("cancelled");
+        return "cancelled".equalsIgnoreCase(status);
     }
 
     public boolean isYetToStart() {
-        return status.equalsIgnoreCase("not_started");
+        return "not_started".equalsIgnoreCase(status);
     }
 }

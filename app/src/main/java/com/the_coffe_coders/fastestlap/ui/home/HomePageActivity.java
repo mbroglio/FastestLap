@@ -60,6 +60,7 @@ public class HomePageActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
+        AppNotificationManager.getInstance().clearAllNotifications(this);
         handleIncomingNotification(intent);
     }
 
@@ -180,6 +181,7 @@ public class HomePageActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        AppNotificationManager.getInstance().clearAllNotifications(this);
     }
 
 }

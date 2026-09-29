@@ -30,6 +30,7 @@ public class JuniorCalendarElement implements Parcelable {
 
     private String circuit;
     private String feature_date;
+    private String feature2_date;
     private String sprint_date;
     private String round;
     private String nation_flag_url;
@@ -38,6 +39,7 @@ public class JuniorCalendarElement implements Parcelable {
     protected JuniorCalendarElement(Parcel in) {
         circuit = in.readString();
         feature_date = in.readString();
+        feature2_date = in.readString();
         sprint_date = in.readString();
         round = in.readString();
         nation_flag_url = in.readString();
@@ -52,6 +54,7 @@ public class JuniorCalendarElement implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(circuit);
         dest.writeString(feature_date);
+        dest.writeString(feature2_date);
         dest.writeString(sprint_date);
         dest.writeString(round);
         dest.writeString(nation_flag_url);

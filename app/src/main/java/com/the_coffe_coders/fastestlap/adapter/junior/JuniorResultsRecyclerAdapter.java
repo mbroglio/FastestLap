@@ -5,15 +5,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.junior.result.FeatureRace;
+import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorRaceSession;
 import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorResult;
 import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorResultElement;
 import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorSessionResultElement;
@@ -32,7 +34,6 @@ public class JuniorResultsRecyclerAdapter extends RecyclerView.Adapter<JuniorRes
     private final FeatureRace featureRace;
     private final SprintRace sprintRace;
     private final int contentType;
-
 
     public JuniorResultsRecyclerAdapter(Context context, JuniorResult juniorResult, FragmentManager fragmentManager, int categoryType) {
         this.context = context;
@@ -67,273 +68,268 @@ public class JuniorResultsRecyclerAdapter extends RecyclerView.Adapter<JuniorRes
     @NonNull
     @Override
     public JuniorResultsViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = null;
-
-        switch (contentType) {
-            case 0:
-                view = LayoutInflater.from(context).inflate(R.layout.junior_event_result_card, parent, false);
-                break;
-            case 1:
-            case 2:
-                view = LayoutInflater.from(context).inflate(R.layout.junior_race_result_item, parent, false);
-                break;
+        LayoutInflater inflater = LayoutInflater.from(context);
+        if (viewType == 0) {
+            View view = inflater.inflate(R.layout.junior_event_result_card, parent, false);
+            return new EventResultViewHolder(view);
+        } else {
+            View view = inflater.inflate(R.layout.junior_race_result_item, parent, false);
+            return new SessionOrderViewHolder(view);
         }
-
-        if (view == null)
-            throw new IllegalArgumentException("Invalid content type");
-
-        return new JuniorResultsViewHolder(view, contentType);
     }
 
     @Override
     public void onBindViewHolder(@NonNull JuniorResultsViewHolder holder, int position) {
-        switch (contentType) {
-            case 0:
-                manageJuniorResult(holder, position);
-                break;
-            case 1:
-                manageJuniorSessionResultFeature(holder, position);
-                break;
-            case 2:
-                manageJuniorSessionResultSprint(holder, position);
-                break;
+        if (holder instanceof EventResultViewHolder) {
+            manageJuniorResult((EventResultViewHolder) holder, position);
+        } else if (holder instanceof SessionOrderViewHolder) {
+            manageSessionOrder((SessionOrderViewHolder) holder, position);
         }
     }
 
-    private void manageJuniorSessionResultSprint(JuniorResultsViewHolder holder, int position) {
-        JuniorSessionResultElement element = sprintRace.getOrder().get(position);
-        UIUtils.multipleSetTextViewText(
-                new String[]{
-                        element.getPosition(),
-                        element.getDriver()
-                },
-                new TextView[]{
-                        holder.position,
-                        holder.driverName});
-    }
-
-    private void manageJuniorSessionResultFeature(JuniorResultsViewHolder holder, int position) {
-        JuniorSessionResultElement element = featureRace.getOrder().get(position);
-        UIUtils.multipleSetTextViewText(
-                new String[]{
-                        element.getPosition(),
-                        element.getDriver()
-                },
-                new TextView[]{
-                        holder.position,
-                        holder.driverName});
-    }
-
-    private void manageJuniorResult(JuniorResultsViewHolder holder, int position) {
-        JuniorResultElement element = juniorResult.getResults().get(position);
-
-        UIUtils.singleSetTextViewText(context.getString(R.string.round_plus_value, Integer.toString(element.getRound())), holder.roundNumber);
-        UIUtils.singleSetTextViewText(element.getCircuit(), holder.gpName);
-
-        UIUtils.loadImageWithGlide(context, element.getNationFlagUrl(), holder.eventNationFlag,
-                () -> setFeatureResults(holder, element));
-    }
-
-    private void setFeatureResults(JuniorResultsViewHolder holder, JuniorResultElement element) {
-        if (element.getFeature() != null) {
-            if (element.getFeature().isCompleted()) {
-                showFeatureResults(holder);
-                List<JuniorSessionResultElement> podium = element.getFeature().getPodium();
-
-                UIUtils.multipleSetTextViewText(
-                        new String[]{
-                                podium.get(0).getDriver(),
-                                podium.get(1).getDriver(),
-                                podium.get(2).getDriver()
-                        },
-                        new TextView[]{
-                                holder.firstDriverFeature,
-                                holder.secondDriverFeature,
-                                holder.thirdDriverFeature});
-
-                holder.featureRaceLayout.setOnClickListener(v -> NavigationUtils.showFullResultsDialogFeature(
-                        element.getCircuit(), element.getFeature(), fragmentManager, categoryType, 0));
-            } else if (element.getFeature().isCancelled()) {
-                showFeatureCancelled(holder);
-                holder.featureRaceLayout.setOnClickListener(null);
-            } else if (element.getFeature().isYetToStart()) {
-                showFeatureYetToStart(holder);
-                holder.featureRaceLayout.setOnClickListener(null);
-            }
-        } else {
-            showFeatureError(holder);
-        }
-
-
-        setSprintResults(holder, element);
-    }
-
-    private void setSprintResults(JuniorResultsViewHolder holder, JuniorResultElement element) {
-        if (element.getSprint() != null) {
-            if (element.getSprint().isCompleted()) {
-                showSprintResults(holder);
-                List<JuniorSessionResultElement> podium = element.getSprint().getPodium();
-
-                UIUtils.multipleSetTextViewText(
-                        new String[]{
-                                podium.get(0).getDriver(),
-                                podium.get(1).getDriver(),
-                                podium.get(2).getDriver()
-                        },
-                        new TextView[]{
-                                holder.firstDriverSprint,
-                                holder.secondDriverSprint,
-                                holder.thirdDriverSprint});
-
-                holder.sprintRaceLayout.setOnClickListener(v -> NavigationUtils.showFullResultsDialogSprint(
-                        element.getCircuit(), element.getSprint(), fragmentManager, categoryType, 0));
-            } else if (element.getSprint().isCancelled()) {
-                showSprintCancelled(holder);
-                holder.sprintRaceLayout.setOnClickListener(null);
-            } else if (element.getSprint().isYetToStart()) {
-                showSprintYetToStart(holder);
-                holder.sprintRaceLayout.setOnClickListener(null);
-            }
-        } else {
-            showSprintError(holder);
-        }
-
-    }
-
-    private void showFeatureResults(JuniorResultsViewHolder holder) {
-        holder.featureResultsLayout.setVisibility(View.VISIBLE);
-        holder.featureCancelledLayout.setVisibility(View.GONE);
-        holder.featureYetToStartLayout.setVisibility(View.GONE);
-        holder.featureErrorLayout.setVisibility(View.GONE);
-    }
-
-    private void showFeatureCancelled(JuniorResultsViewHolder holder) {
-        holder.featureCancelledLayout.setVisibility(View.VISIBLE);
-        holder.featureResultsLayout.setVisibility(View.GONE);
-        holder.featureYetToStartLayout.setVisibility(View.GONE);
-        holder.featureErrorLayout.setVisibility(View.GONE);
-
-    }
-
-    private void showFeatureError(JuniorResultsViewHolder holder) {
-        holder.featureErrorLayout.setVisibility(View.VISIBLE);
-        holder.featureResultsLayout.setVisibility(View.GONE);
-        holder.featureCancelledLayout.setVisibility(View.GONE);
-        holder.featureYetToStartLayout.setVisibility(View.GONE);
-    }
-
-    private void showFeatureYetToStart(JuniorResultsViewHolder holder) {
-        holder.featureYetToStartLayout.setVisibility(View.VISIBLE);
-        holder.featureResultsLayout.setVisibility(View.GONE);
-        holder.featureCancelledLayout.setVisibility(View.GONE);
-        holder.featureErrorLayout.setVisibility(View.GONE);
-    }
-
-    private void showSprintResults(JuniorResultsViewHolder holder) {
-        holder.sprintResultsLayout.setVisibility(View.VISIBLE);
-        holder.sprintCancelledLayout.setVisibility(View.GONE);
-        holder.sprintYetToStartLayout.setVisibility(View.GONE);
-        holder.sprintErrorLayout.setVisibility(View.GONE);
-    }
-
-    private void showSprintCancelled(JuniorResultsViewHolder holder) {
-        holder.sprintCancelledLayout.setVisibility(View.VISIBLE);
-        holder.sprintResultsLayout.setVisibility(View.GONE);
-        holder.sprintYetToStartLayout.setVisibility(View.GONE);
-        holder.sprintErrorLayout.setVisibility(View.GONE);
-    }
-
-    private void showSprintError(JuniorResultsViewHolder holder) {
-        holder.sprintErrorLayout.setVisibility(View.VISIBLE);
-        holder.sprintResultsLayout.setVisibility(View.GONE);
-        holder.sprintCancelledLayout.setVisibility(View.GONE);
-        holder.sprintYetToStartLayout.setVisibility(View.GONE);
-    }
-
-    private void showSprintYetToStart(JuniorResultsViewHolder holder) {
-        holder.sprintYetToStartLayout.setVisibility(View.VISIBLE);
-        holder.sprintResultsLayout.setVisibility(View.GONE);
-        holder.sprintCancelledLayout.setVisibility(View.GONE);
-        holder.sprintErrorLayout.setVisibility(View.GONE);
+    @Override
+    public int getItemViewType(int position) {
+        return contentType;
     }
 
     @Override
     public int getItemCount() {
         switch (contentType) {
             case 0:
-                return juniorResult.getResults().size();
+                return (juniorResult != null && juniorResult.getResults() != null) ? juniorResult.getResults().size() : 0;
             case 1:
-                return featureRace.getOrder().size();
+                return (featureRace != null && featureRace.getOrder() != null) ? featureRace.getOrder().size() : 0;
             case 2:
-                return sprintRace.getOrder().size();
+                return (sprintRace != null && sprintRace.getOrder() != null) ? sprintRace.getOrder().size() : 0;
+            default:
+                return 0;
         }
-        return 0;
     }
 
-    public static class JuniorResultsViewHolder extends RecyclerView.ViewHolder {
+    private void manageSessionOrder(SessionOrderViewHolder holder, int position) {
+        JuniorSessionResultElement element = null;
+        if (contentType == 1 && featureRace != null && featureRace.getOrder() != null) {
+            element = featureRace.getOrder().get(position);
+        } else if (contentType == 2 && sprintRace != null && sprintRace.getOrder() != null) {
+            element = sprintRace.getOrder().get(position);
+        }
 
-        private final TextView roundNumber, gpName,
-                firstDriverFeature, secondDriverFeature, thirdDriverFeature,
-                firstDriverSprint, secondDriverSprint, thirdDriverSprint,
-                featureCancelledLayout, sprintCancelledLayout, featureYetToStartLayout, featureErrorLayout,
-                sprintYetToStartLayout, sprintErrorLayout, position, driverName;
+        if (element != null) {
+            if (holder.position != null) holder.position.setText(element.getPosition());
+            if (holder.driverName != null) holder.driverName.setText(element.getDriver());
+        }
+    }
 
-        private final LinearLayout sprintResultsLayout, featureResultsLayout, sprintRaceLayout, featureRaceLayout;
-        private final ImageView eventNationFlag;
+    private void manageJuniorResult(EventResultViewHolder holder, int position) {
+        if (juniorResult == null || juniorResult.getResults() == null || position >= juniorResult.getResults().size()) {
+            return;
+        }
 
-        public JuniorResultsViewHolder(@NonNull View itemView, int contentType) {
-            super(itemView);
+        JuniorResultElement element = juniorResult.getResults().get(position);
+        if (element == null) return;
 
-            if (contentType == 0) {
-                //junior_event_result_card
-                roundNumber = itemView.findViewById(R.id.round_number);
-                gpName = itemView.findViewById(R.id.gp_name);
-                sprintResultsLayout = itemView.findViewById(R.id.sprint_podium);
-                featureResultsLayout = itemView.findViewById(R.id.feature_podium);
-                featureCancelledLayout = itemView.findViewById(R.id.feature_cancelled);
-                featureYetToStartLayout = itemView.findViewById(R.id.feature_yet_to_start);
-                featureErrorLayout = itemView.findViewById(R.id.feature_error);
-                sprintYetToStartLayout = itemView.findViewById(R.id.sprint_yet_to_start);
-                sprintErrorLayout = itemView.findViewById(R.id.sprint_error);
-                sprintCancelledLayout = itemView.findViewById(R.id.sprint_cancelled);
-                sprintRaceLayout = itemView.findViewById(R.id.sprint_race_layout);
-                featureRaceLayout = itemView.findViewById(R.id.feature_race_layout);
-                firstDriverFeature = featureResultsLayout.findViewById(R.id.first_driver);
-                secondDriverFeature = featureResultsLayout.findViewById(R.id.second_driver);
-                thirdDriverFeature = featureResultsLayout.findViewById(R.id.third_driver);
-                firstDriverSprint = sprintResultsLayout.findViewById(R.id.first_driver);
-                secondDriverSprint = sprintResultsLayout.findViewById(R.id.second_driver);
-                thirdDriverSprint = sprintResultsLayout.findViewById(R.id.third_driver);
-                eventNationFlag = itemView.findViewById(R.id.event_nation_flag);
-                position = null;
-                driverName = null;
-            } else {
-                roundNumber = null;
-                gpName = null;
-                sprintResultsLayout = null;
-                featureResultsLayout = null;
-                featureCancelledLayout = null;
-                sprintCancelledLayout = null;
-                sprintRaceLayout = null;
-                featureRaceLayout = null;
-                firstDriverFeature = null;
-                secondDriverFeature = null;
-                thirdDriverFeature = null;
-                firstDriverSprint = null;
-                secondDriverSprint = null;
-                thirdDriverSprint = null;
-                eventNationFlag = null;
-                featureYetToStartLayout = null;
-                featureErrorLayout = null;
-                sprintYetToStartLayout = null;
-                sprintErrorLayout = null;
+        // Dynamic border color matching category topbar color
+        int topBarColor = ContextCompat.getColor(context, categoryType == 0 ? R.color.formula_2 : R.color.app_primary_red);
+        if (holder.cardView != null) {
+            holder.cardView.setStrokeColor(topBarColor);
+        }
 
-                //junior_race_result_item
-                position = itemView.findViewById(R.id.position_text);
-                driverName = itemView.findViewById(R.id.driver_name);
+        // Round number with category color accent
+        if (holder.roundNumber != null) {
+            holder.roundNumber.setText(context.getString(R.string.round_plus_value, String.valueOf(element.getRound())));
+            holder.roundNumber.setTextColor(topBarColor);
+        }
+
+        if (holder.gpName != null) {
+            holder.gpName.setText(element.getCircuit());
+        }
+
+        // Flag loading
+        if (holder.eventNationFlag != null) {
+            UIUtils.loadImageWithGlide(context, element.getNationFlagUrl(), holder.eventNationFlag, null);
+        }
+
+        boolean isDouble = element.isEventDouble();
+
+        // 1. Row 1 - Left: Sprint (always run)
+        bindSessionSlot(holder.sprintSlot, context.getString(R.string.sprint), element.getSprint(), element.getCircuit(), 0, topBarColor);
+
+        // 2. Row 1 - Right: Feature 1 (in double feature) or Feature (in standard weekend)
+        String feature1Title = isDouble ? context.getString(R.string.feature_1) : context.getString(R.string.feature);
+        FeatureRace feature1Race = isDouble ? element.getFeature1() : element.getFeature();
+        bindSessionSlot(holder.feature1Slot, feature1Title, feature1Race, element.getCircuit(), isDouble ? 1 : 0, topBarColor);
+
+        // 3. Row 2: Feature 2 (only displayed if double feature weekend)
+        if (isDouble) {
+            if (holder.feature2RowLayout != null) {
+                holder.feature2RowLayout.setVisibility(View.VISIBLE);
             }
+            bindSessionSlot(holder.feature2Slot, context.getString(R.string.feature_2), element.getFeature2(), element.getCircuit(), 2, topBarColor);
+        } else {
+            if (holder.feature2RowLayout != null) {
+                holder.feature2RowLayout.setVisibility(View.GONE);
+            }
+        }
+    }
 
+    private void bindSessionSlot(SessionSlotViewHolder slot, String titleText, JuniorRaceSession session, String circuit, int raceType, int color) {
+        if (slot == null || slot.itemView == null) return;
 
+        if (slot.title != null) {
+            slot.title.setText(titleText);
+            slot.title.setTextColor(color);
+        }
+
+        if (session == null) {
+            showSlotState(slot, SlotState.ERROR);
+            slot.itemView.setOnClickListener(null);
+            slot.itemView.setClickable(false);
+            return;
+        }
+
+        if (session.isCompleted()) {
+            showSlotState(slot, SlotState.COMPLETED);
+            List<JuniorSessionResultElement> podium = session.getPodium();
+            if (podium != null) {
+                if (slot.firstDriver != null) slot.firstDriver.setText(podium.size() > 0 ? podium.get(0).getDriver() : "-");
+                if (slot.secondDriver != null) slot.secondDriver.setText(podium.size() > 1 ? podium.get(1).getDriver() : "-");
+                if (slot.thirdDriver != null) slot.thirdDriver.setText(podium.size() > 2 ? podium.get(2).getDriver() : "-");
+            }
+            slot.itemView.setClickable(true);
+            slot.itemView.setOnClickListener(v -> {
+                if (session instanceof FeatureRace) {
+                    NavigationUtils.showFullResultsDialogFeature(circuit, (FeatureRace) session, fragmentManager, categoryType, raceType);
+                } else if (session instanceof SprintRace) {
+                    NavigationUtils.showFullResultsDialogSprint(circuit, (SprintRace) session, fragmentManager, categoryType, raceType);
+                }
+            });
+        } else if (session.isCancelled()) {
+            showSlotState(slot, SlotState.CANCELLED);
+            slot.itemView.setOnClickListener(null);
+            slot.itemView.setClickable(false);
+        } else if (session.isYetToStart()) {
+            showSlotState(slot, SlotState.YET_TO_START);
+            slot.itemView.setOnClickListener(null);
+            slot.itemView.setClickable(false);
+        } else {
+            showSlotState(slot, SlotState.ERROR);
+            slot.itemView.setOnClickListener(null);
+            slot.itemView.setClickable(false);
+        }
+    }
+
+    private enum SlotState { COMPLETED, CANCELLED, YET_TO_START, ERROR }
+
+    private void showSlotState(SessionSlotViewHolder slot, SlotState state) {
+        if (slot.podiumLayout != null) slot.podiumLayout.setVisibility(state == SlotState.COMPLETED ? View.VISIBLE : View.GONE);
+        if (slot.cancelledLayout != null) slot.cancelledLayout.setVisibility(state == SlotState.CANCELLED ? View.VISIBLE : View.GONE);
+        if (slot.yetToStartLayout != null) slot.yetToStartLayout.setVisibility(state == SlotState.YET_TO_START ? View.VISIBLE : View.GONE);
+        if (slot.errorLayout != null) slot.errorLayout.setVisibility(state == SlotState.ERROR ? View.VISIBLE : View.GONE);
+    }
+
+    public static abstract class JuniorResultsViewHolder extends RecyclerView.ViewHolder {
+        public JuniorResultsViewHolder(@NonNull View itemView) {
+            super(itemView);
+        }
+    }
+
+    public static class EventResultViewHolder extends JuniorResultsViewHolder {
+        final MaterialCardView cardView;
+        final TextView roundNumber;
+        final TextView gpName;
+        final ImageView eventNationFlag;
+        final View feature2RowLayout;
+        final SessionSlotViewHolder sprintSlot;
+        final SessionSlotViewHolder feature1Slot;
+        final SessionSlotViewHolder feature2Slot;
+
+        public EventResultViewHolder(@NonNull View itemView) {
+            super(itemView);
+            cardView = itemView.findViewById(R.id.junior_event_result_card_layout);
+            roundNumber = itemView.findViewById(R.id.round_number);
+            gpName = itemView.findViewById(R.id.gp_name);
+            eventNationFlag = itemView.findViewById(R.id.event_nation_flag);
+            feature2RowLayout = itemView.findViewById(R.id.feature2_row_layout);
+
+            sprintSlot = new SessionSlotViewHolder(
+                    itemView.findViewById(R.id.sprint_race_layout),
+                    R.id.sprint_title,
+                    R.id.sprint_podium,
+                    R.id.sprint_cancelled,
+                    R.id.sprint_yet_to_start,
+                    R.id.sprint_error
+            );
+
+            feature1Slot = new SessionSlotViewHolder(
+                    itemView.findViewById(R.id.feature1_race_layout),
+                    R.id.feature1_title,
+                    R.id.feature1_podium,
+                    R.id.feature1_cancelled,
+                    R.id.feature1_yet_to_start,
+                    R.id.feature1_error
+            );
+
+            feature2Slot = new SessionSlotViewHolder(
+                    itemView.findViewById(R.id.feature2_race_layout),
+                    R.id.feature2_title,
+                    R.id.feature2_podium,
+                    R.id.feature2_cancelled,
+                    R.id.feature2_yet_to_start,
+                    R.id.feature2_error
+            );
+        }
+    }
+
+    public static class SessionOrderViewHolder extends JuniorResultsViewHolder {
+        final TextView position;
+        final TextView driverName;
+
+        public SessionOrderViewHolder(@NonNull View itemView) {
+            super(itemView);
+            position = itemView.findViewById(R.id.position_text);
+            driverName = itemView.findViewById(R.id.driver_name);
+        }
+    }
+
+    static class SessionSlotViewHolder {
+        final View itemView;
+        final TextView title;
+        final View podiumLayout;
+        final View cancelledLayout;
+        final View yetToStartLayout;
+        final View errorLayout;
+        final TextView firstDriver;
+        final TextView secondDriver;
+        final TextView thirdDriver;
+
+        SessionSlotViewHolder(View root, int titleId, int podiumLayoutId, int cancelledId, int yetToStartId, int errorId) {
+            itemView = root;
+            if (root != null) {
+                title = root.findViewById(titleId);
+                podiumLayout = root.findViewById(podiumLayoutId);
+                cancelledLayout = root.findViewById(cancelledId);
+                yetToStartLayout = root.findViewById(yetToStartId);
+                errorLayout = root.findViewById(errorId);
+
+                if (podiumLayout != null) {
+                    firstDriver = podiumLayout.findViewById(R.id.first_driver);
+                    secondDriver = podiumLayout.findViewById(R.id.second_driver);
+                    thirdDriver = podiumLayout.findViewById(R.id.third_driver);
+                } else {
+                    firstDriver = null;
+                    secondDriver = null;
+                    thirdDriver = null;
+                }
+            } else {
+                title = null;
+                podiumLayout = null;
+                cancelledLayout = null;
+                yetToStartLayout = null;
+                errorLayout = null;
+                firstDriver = null;
+                secondDriver = null;
+                thirdDriver = null;
+            }
         }
     }
 }

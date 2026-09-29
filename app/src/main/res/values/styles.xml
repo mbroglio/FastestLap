@@ -682,4 +682,13 @@
         <item name="cornerSizeBottomRight">20dp</item>
     </style>
 
+    <!--
+    CIRCULAR SHAPE APPEARANCE
+        - 50% corner radius for circular avatars
+    -->
+    <style name="ShapeAppearance.FastestLap.Circular" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+
 </resources>

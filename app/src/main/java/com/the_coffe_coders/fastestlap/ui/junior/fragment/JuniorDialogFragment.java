@@ -193,10 +193,12 @@ public class JuniorDialogFragment extends DialogFragment {
                             raceTypeTitle,
                             driverNameFastestLap});
         } else {
-            polePositionLayout.setVisibility(View.VISIBLE);
+            String featureTitle = (raceType == 2) ? ContextCompat.getString(requireContext(), R.string.feature_2)
+                    : (raceType == 1 ? ContextCompat.getString(requireContext(), R.string.feature_1)
+                    : ContextCompat.getString(requireContext(), R.string.feature));
             UIUtils.multipleSetTextViewText(
                     new String[]{
-                            ContextCompat.getString(requireContext(), R.string.feature),
+                            featureTitle,
                             featureRace.getPole_position(),
                             featureRace.getFastest_lap()
                     },

@@ -314,3 +314,25 @@ exports.syncConstructorSeasonStatsNow = onRequest(
     }
   }
 );
+
+/**
+ * HTTP ENDPOINT: Manual Junior Series Update Trigger
+ * Allows immediate manual update of Junior categories (F2, F3) from browser or curl:
+ * GET https://.../updateJuniorSeriesNow (optionally ?force=true/false)
+ */
+exports.updateJuniorSeriesNow = onRequest(
+  {
+    cors: true,
+    timeoutSeconds: 300
+  },
+  async (req, res) => {
+    try {
+      const force = req.query.force !== "false";
+      await juniorLogic.executeJuniorSeriesUpdate(db, { force });
+      res.status(200).json({ status: "success", message: "Junior series update executed successfully", force });
+    } catch (error) {
+      console.error("Error in updateJuniorSeriesNow:", error);
+      res.status(500).json({ status: "error", message: error.message });
+    }
+  }
+);

@@ -510,6 +510,20 @@ public class AppNotificationManager {
     }
 
     /**
+     * Clears all active notifications currently posted by this app in the system notification shade.
+     * This automatically removes any notification badge on the app launcher icon.
+     */
+    public void clearAllNotifications(Context context) {
+        if (context == null) return;
+        try {
+            NotificationManagerCompat.from(context).cancelAll();
+            Log.i(TAG, "All active notifications cleared from notification shade.");
+        } catch (Exception e) {
+            Log.w(TAG, "Failed to clear notifications: " + e.getMessage());
+        }
+    }
+
+    /**
      * Initializes notification channels for Android 8.0+ (API 26+).
      */
     public void createNotificationChannels(Context context) {

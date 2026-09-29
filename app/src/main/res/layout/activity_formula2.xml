@@ -21,6 +21,7 @@
             android:background="@color/formula_2"
             app:navigationIcon="@drawable/arrow_back_ios_style"
             app:titleCentered="true"
+            app:title="FORMULA 2"
             app:titleTextAppearance="@style/t25UpperCaseBoldBlack" />
     </com.google.android.material.appbar.AppBarLayout>
 

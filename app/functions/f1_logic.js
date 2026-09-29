@@ -15,7 +15,10 @@ const PATHS = {
 const APIS = {
     raceResults: "https://api.jolpi.ca/ergast/f1/current/last/results/?format=json",
     driverStandings: "https://api.jolpi.ca/ergast/f1/current/driverstandings/?format=json",
-    constructorStandings: "https://api.jolpi.ca/ergast/f1/current/constructorstandings/?format=json"
+    constructorStandings: "https://api.jolpi.ca/ergast/f1/current/constructorstandings/?format=json",
+    qualifyingResults: "https://api.jolpi.ca/ergast/f1/current/qualifying/?format=json",
+    qualifyingResultsPoles: "https://api.jolpi.ca/ergast/f1/current/qualifying/1/?format=json",
+    results: "https://api.jolpi.ca/ergast/f1/current/results/?format=json"
 };
 
 let DRIVER_ID_NAME_MAP = {};
@@ -407,33 +410,19 @@ function createCalendarEntry(newRound, newSeason, trackId, results, updates) {
 * -----------------------------------------------------------------
 */
 
-async function fetchAndCalculateDriverSeasonStats(targetSeason) {
-    let season = targetSeason;
-
-    // 1. Fetch Driver Standings (seasonPosition, seasonPoints, wins)
-    const standingsUrl = season 
-        ? `https://api.jolpi.ca/ergast/f1/${season}/driverstandings/?format=json`
-        : `https://api.jolpi.ca/ergast/f1/current/driverstandings/?format=json`;
-
-    console.log(`Fetching F1 driver standings from: ${standingsUrl}`);
-    const standingsRes = await axios.get(standingsUrl, { timeout: 15000 });
+async function fetchAndCalculateDriverSeasonStats() {
+    
+    const standingsRes = await axios.get(APIS.driverStandings, { timeout: 15000 });
     const standingsTable = standingsRes.data?.MRData?.StandingsTable;
-    if (!season && standingsTable?.season) {
-        season = standingsTable.season;
-    }
-    if (!season) {
-        season = new Date().getFullYear().toString();
-    }
-
+    
     const standingsLists = standingsTable?.StandingsLists || [];
     const driverStandings = (standingsLists.length > 0 && standingsLists[0].DriverStandings) ? standingsLists[0].DriverStandings : [];
 
     // 2. Fetch Pole Positions (Qualifying 1)
     const polesMap = {};
     try {
-        const polesUrl = `https://api.jolpi.ca/ergast/f1/${season}/qualifying/1/?format=json&limit=100`;
-        console.log(`Fetching F1 pole positions from: ${polesUrl}`);
-        const polesRes = await axios.get(polesUrl, { timeout: 15000 });
+        console.log(`Fetching F1 pole positions`);
+        const polesRes = await axios.get(APIS.qualifyingResultsPoles+"&limit=100", { timeout: 15000 });
         const races = polesRes.data?.MRData?.RaceTable?.Races || [];
         for (const r of races) {
             if (r.QualifyingResults && r.QualifyingResults[0] && r.QualifyingResults[0].Driver) {
@@ -442,7 +431,7 @@ async function fetchAndCalculateDriverSeasonStats(targetSeason) {
             }
         }
     } catch (e) {
-        console.warn(`Could not fetch pole positions for season ${season}: ${e.message}`);
+        console.warn(`Could not fetch pole positions for current season: ${e.message}`);
     }
 
     // 3. Fetch Race Results (Podiums, Wins, DNFs)
@@ -456,7 +445,7 @@ async function fetchAndCalculateDriverSeasonStats(targetSeason) {
         let total = 1;
 
         while (offset < total && offset <= 1500) {
-            const resultsUrl = `https://api.jolpi.ca/ergast/f1/${season}/results/?format=json&limit=${limit}&offset=${offset}`;
+            const resultsUrl = APIS.results + `&limit=${limit}&offset=${offset}`;
             console.log(`Fetching race results chunk: offset ${offset}...`);
             const resultsRes = await axios.get(resultsUrl, { timeout: 15000 });
             total = parseInt(resultsRes.data?.MRData?.total) || 0;
@@ -494,7 +483,7 @@ async function fetchAndCalculateDriverSeasonStats(targetSeason) {
             if (races.length === 0) break;
         }
     } catch (e) {
-        console.warn(`Could not fetch full race results for season ${season}: ${e.message}`);
+        console.warn(`Could not fetch full race results: ${e.message}`);
     }
 
     // 4. Build consolidated stats dictionary by driverId
@@ -546,7 +535,7 @@ async function fetchAndCalculateDriverSeasonStats(targetSeason) {
 
 async function syncDriverSeasonStats(db, targetSeason) {
     console.log(`Starting driver season_stats sync...`);
-    const { season, statsByDriverId } = await fetchAndCalculateDriverSeasonStats(targetSeason);
+    const { season, statsByDriverId } = await fetchAndCalculateDriverSeasonStats();
 
     const driversSnap = await db.ref(PATHS.drivers).once("value");
     if (!driversSnap.exists()) {
@@ -591,16 +580,12 @@ async function syncDriverSeasonStats(db, targetSeason) {
 * -----------------------------------------------------------------
 */
 
-async function fetchAndCalculateConstructorSeasonStats(targetSeason) {
-    let season = targetSeason;
+async function fetchAndCalculateConstructorSeasonStats() {
+   
 
-    // 1. Fetch Constructor Standings (seasonPosition, seasonPoints, wins)
-    const standingsUrl = season 
-        ? `https://api.jolpi.ca/ergast/f1/${season}/constructorstandings/?format=json`
-        : `https://api.jolpi.ca/ergast/f1/current/constructorstandings/?format=json`;
 
-    console.log(`Fetching F1 constructor standings from: ${standingsUrl}`);
-    const standingsRes = await axios.get(standingsUrl, { timeout: 15000 });
+    console.log(`Fetching F1 constructor standings`);
+    const standingsRes = await axios.get(APIS.constructorStandings, { timeout: 15000 });
     const standingsTable = standingsRes.data?.MRData?.StandingsTable;
     if (!season && standingsTable?.season) {
         season = standingsTable.season;
@@ -615,9 +600,8 @@ async function fetchAndCalculateConstructorSeasonStats(targetSeason) {
     // 2. Fetch Pole Positions (Qualifying 1)
     const polesMap = {};
     try {
-        const polesUrl = `https://api.jolpi.ca/ergast/f1/${season}/qualifying/1/?format=json&limit=100`;
-        console.log(`Fetching F1 pole positions for constructors from: ${polesUrl}`);
-        const polesRes = await axios.get(polesUrl, { timeout: 15000 });
+        console.log(`Fetching F1 pole positions for constructors}`);
+        const polesRes = await axios.get(APIS.qualifyingResultsPoles+"&limit=100", { timeout: 15000 });
         const races = polesRes.data?.MRData?.RaceTable?.Races || [];
         for (const r of races) {
             const cId = r.QualifyingResults && r.QualifyingResults[0] && r.QualifyingResults[0].Constructor && r.QualifyingResults[0].Constructor.constructorId;
@@ -626,7 +610,7 @@ async function fetchAndCalculateConstructorSeasonStats(targetSeason) {
             }
         }
     } catch (e) {
-        console.warn(`Could not fetch pole positions for constructor season ${season}: ${e.message}`);
+        console.warn(`Could not fetch pole positions for constructor: ${e.message}`);
     }
 
     // 3. Fetch Race Results (Podiums, Wins, DNFs)
@@ -640,7 +624,7 @@ async function fetchAndCalculateConstructorSeasonStats(targetSeason) {
         let total = 1;
 
         while (offset < total && offset <= 1500) {
-            const resultsUrl = `https://api.jolpi.ca/ergast/f1/${season}/results/?format=json&limit=${limit}&offset=${offset}`;
+            const resultsUrl = APIS.raceResults+`&limit=${limit}&offset=${offset}`;
             console.log(`Fetching race results chunk for constructors: offset ${offset}...`);
             const resultsRes = await axios.get(resultsUrl, { timeout: 15000 });
             total = parseInt(resultsRes.data?.MRData?.total) || 0;
@@ -675,7 +659,7 @@ async function fetchAndCalculateConstructorSeasonStats(targetSeason) {
             if (races.length === 0) break;
         }
     } catch (e) {
-        console.warn(`Could not fetch full race results for constructor season ${season}: ${e.message}`);
+        console.warn(`Could not fetch full race results: ${e.message}`);
     }
 
     // 4. Build consolidated stats dictionary by constructorId
@@ -727,7 +711,7 @@ async function fetchAndCalculateConstructorSeasonStats(targetSeason) {
 
 async function syncConstructorSeasonStats(db, targetSeason) {
     console.log(`Starting constructor season_stats sync...`);
-    const { season, statsByConstructorId } = await fetchAndCalculateConstructorSeasonStats(targetSeason);
+    const { season, statsByConstructorId } = await fetchAndCalculateConstructorSeasonStats();
 
     const teamsSnap = await db.ref(PATHS.teams).once("value");
     if (!teamsSnap.exists()) {
@@ -1133,7 +1117,7 @@ async function executeScheduledRaceStatsCheck(db, messaging, options = {}) {
         }
 
         const attemptsCount = (tracker?.attempts_count || 0) + 1;
-        const url = `https://api.jolpi.ca/ergast/f1/${season}/${round}/results/?format=json`;
+        const url = `https://api.jolpi.ca/ergast/f1/current/${round}/results/?format=json`;
 
         let jolpicaRes;
         try {

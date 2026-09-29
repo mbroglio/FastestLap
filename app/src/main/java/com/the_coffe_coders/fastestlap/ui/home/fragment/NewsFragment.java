@@ -62,7 +62,7 @@ public class NewsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_news, container, false);
+        View view = inflater.inflate(getLayoutResource(), container, false);
 
         newsMenu = view.findViewById(R.id.news_menu_layout);
         languageFeedSwitch = view.findViewById(R.id.language_feed_switch);
@@ -146,6 +146,10 @@ public class NewsFragment extends Fragment {
         });
 
         return view;
+    }
+
+    protected int getLayoutResource() {
+        return R.layout.fragment_news;
     }
 
     private void setupLoadingScreen(View view) {

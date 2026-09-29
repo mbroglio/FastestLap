@@ -26,6 +26,7 @@ import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.ui.AppAnimationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
+import com.the_coffe_coders.fastestlap.util.notification.AppNotificationManager;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.Calendar;
@@ -53,7 +54,15 @@ public class SplashActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_splash_screen);
 
+        AppNotificationManager.getInstance().clearAllNotifications(this);
+
         start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AppNotificationManager.getInstance().clearAllNotifications(this);
     }
 
     private void start() {

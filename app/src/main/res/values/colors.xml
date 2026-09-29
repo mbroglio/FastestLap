@@ -84,8 +84,9 @@
     <color name="status_green">#4CAF50</color>
 
     <color name="purple">#9D00FF</color>
-
     <color name="silver">#D1D5DB</color>
     <color name="bronze">#CD7F32</color>
+
+    <color name="ripple_color">#20FFFFFF</color>
 
 </resources>
