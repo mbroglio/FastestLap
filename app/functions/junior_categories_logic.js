@@ -806,5 +806,4 @@ module.exports = {
     scrapeRaceResults,
     scrapeDriverStandings,
     scrapeTeamStandings,
-    formatTimeAgo
 };
