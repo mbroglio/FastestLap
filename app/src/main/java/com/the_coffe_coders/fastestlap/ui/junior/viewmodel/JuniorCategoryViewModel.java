@@ -92,4 +92,6 @@ public class JuniorCategoryViewModel extends ViewModel {
                 break;
         }
     }
+
+    //public MutableLive
 }

@@ -22,7 +22,9 @@
         android:id="@+id/f3CarBioFragment"
         android:name="com.the_coffe_coders.fastestlap.ui.junior.fragment.F3CarBioFragment"
         android:label="@string/the_formula_3_car"
-        tools:layout="@layout/fragment_f3_car_bio"></fragment>
+        tools:layout="@layout/fragment_f3_car_bio">
+
+    </fragment>
 
     <fragment
         android:id="@+id/juniorResultsFragment"

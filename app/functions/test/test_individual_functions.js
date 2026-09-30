@@ -342,6 +342,21 @@ const juniorFunctions = {
             console.log(`\n✓ Series ${seriesId} processed successfully`);
             return true;
         }
+    },
+
+    scrapeNews: {
+        description: 'Scrape official news from FIA Formula 2 / Formula 3 website',
+        args: ['seriesId', 'maxPages'],
+        example: 'node test_individual_functions.js junior scrapeNews f2 1',
+        needsDb: false,
+        execute: async (seriesId = 'f2', maxPages = '1') => {
+            const pages = parseInt(maxPages) || 1;
+            console.log(`Scraping ${seriesId.toUpperCase()} news (maxPages: ${pages})...`);
+            const news = await juniorLogic.scrapeJuniorNews(seriesId, { maxPages: pages });
+            console.log(`\nArticles found: ${news?.length || 0}`);
+            console.log(JSON.stringify(news, null, 2));
+            return news;
+        }
     }
 };
 

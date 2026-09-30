@@ -143,6 +143,9 @@
     <string name="season_ended">stagione conclusa</string>
     <string name="race_cancelled">gara cancellata</string>
     <string name="full_article">articolo completo</string>
+    <string name="load_more">carica altre notizie</string>
+    <string name="loading_more">caricamento…</string>
+    <string name="no_more_news">non ci sono altre notizie</string>
     <string name="race_result">risultato gara</string>
     <string name="days">giorni</string>
     <string name="podium">podio</string>

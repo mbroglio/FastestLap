@@ -1,6 +1,7 @@
 package com.the_coffe_coders.fastestlap.ui.junior;
 
 import android.os.Bundle;
+import android.view.Menu;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,9 +25,10 @@ public class Formula2Activity extends AppCompatActivity {
 
     private void setToolbarAndNavigation() {
         MaterialToolbar toolbar = findViewById(R.id.topAppBar);
+        UIUtils.applyWindowInsets(toolbar);
+
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
-        UIUtils.applyWindowInsets(toolbar);
 
         FragmentContainerView fragmentContainerView = findViewById(R.id.fragmentContainerView);
         UIUtils.applyWindowInsets(fragmentContainerView);
@@ -35,7 +37,30 @@ public class Formula2Activity extends AppCompatActivity {
         if (navHostFragment != null) {
             NavController navController = navHostFragment.getNavController();
 
+            toolbar.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.news_outline) {
+                    if (navController.getCurrentDestination() != null
+                            && navController.getCurrentDestination().getId() == R.id.junior_news) {
+                        return true;
+                    }
+                    Bundle bundle = new Bundle();
+                    bundle.putString("SERIES_ID", "f2");
+                    bundle.putInt("CATEGORY_TYPE", 0);
+                    navController.navigate(R.id.junior_news, bundle);
+                    return true;
+                }
+                return false;
+            });
+
             UIUtils.manualToolbarTitleUpdateWithNavigation(navController, this);
         }
+
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.junior_menu, menu);
+        return true;
     }
 }

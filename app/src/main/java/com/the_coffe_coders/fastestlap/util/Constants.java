@@ -96,6 +96,9 @@ public class Constants {
     public static final String AUTOSPORT_RSS_URL = "https://www.autosport.com/rss/f1/news/";
     public static final String MOTORSPORT_RSS_URL = "https://it.motorsport.com/rss/f1/news/";
     public static final String CRASH_RSS_URL = "https://www.crash.net/rss/f1";
+    public static final String F2_BASE_URL = "https://www.fiaformula2.com";
+    public static final String F3_BASE_URL = "https://www.fiaformula3.com";
+    public static final String DEFAULT_JUNIOR_NEWS_TAG = "2026.5xathIcs1PM5snXE3lfBr7";
 
     public static final Map<String, Integer> TEAM_COLOR = new HashMap<>() {{
         put("mercedes", R.color.mercedes_f1);

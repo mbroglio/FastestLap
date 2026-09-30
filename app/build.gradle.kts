@@ -76,6 +76,7 @@ dependencies {
     implementation(libs.commons.validator)
     implementation(libs.glide)
     implementation(libs.rome)
+    implementation(libs.jsoup)
     implementation(libs.work.runtime)
     implementation(libs.firebase.messaging)
     annotationProcessor(libs.compiler)

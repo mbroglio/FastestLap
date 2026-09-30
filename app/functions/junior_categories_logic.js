@@ -8,6 +8,11 @@ const JUNIOR_ROOT_PATH = "junior_categories";
 const F2_WIKI_URL = `https://en.wikipedia.org/wiki/${currentYear}_Formula_2_Championship`;
 const F3_WIKI_URL = `https://en.wikipedia.org/wiki/${currentYear}_FIA_Formula_3_Championship`;
 
+const F2_BASE_URL = "https://www.fiaformula2.com";
+const F3_BASE_URL = "https://www.fiaformula3.com";
+const DEFAULT_JUNIOR_NEWS_TAG = `${currentYear}.5xathIcs1PM5snXE3lfBr7`;
+
+
 
 
 
@@ -784,7 +789,6 @@ function getEndRound(roundsText) {
 
 
 
-
 /*
 * --------------------------------------------------------------------
 *   FUNCTION EXPORTS
@@ -801,5 +805,6 @@ module.exports = {
     scrapeCalendar,
     scrapeRaceResults,
     scrapeDriverStandings,
-    scrapeTeamStandings
+    scrapeTeamStandings,
+    formatTimeAgo
 };

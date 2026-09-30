@@ -6,8 +6,8 @@
         android:id="@+id/userActivity"
         android:icon="@drawable/anonymous_user_icon"
         android:title="User"
+        android:iconTint="@color/screen_background_color"
         app:showAsAction="always">
 
     </item>
-
 </menu>

@@ -83,11 +83,17 @@ public class NetworkUtils extends LiveData<Boolean> {
     }
 
     public boolean isConnected() {
-        if (connectivityManager == null) return false;
+        return isNetworkAvailable(context);
+    }
 
-        Network network = connectivityManager.getActiveNetwork();
+    public static boolean isNetworkAvailable(Context context) {
+        if (context == null) return false;
+        ConnectivityManager cm = (ConnectivityManager) context.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm == null) return false;
+
+        Network network = cm.getActiveNetwork();
         if (network == null) return false;
-        NetworkCapabilities nc = connectivityManager.getNetworkCapabilities(network);
+        NetworkCapabilities nc = cm.getNetworkCapabilities(network);
         if (nc == null) return false;
 
         boolean hasTransport = nc.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
@@ -99,6 +105,4 @@ public class NetworkUtils extends LiveData<Boolean> {
 
         return hasTransport && hasInternetCapability && isValidated;
     }
-
-
 }

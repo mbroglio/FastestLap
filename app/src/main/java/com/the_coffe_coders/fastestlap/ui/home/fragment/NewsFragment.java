@@ -3,8 +3,6 @@ package com.the_coffe_coders.fastestlap.ui.home.fragment;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +14,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,7 +22,8 @@ import com.google.android.material.materialswitch.MaterialSwitch;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.adapter.NewsRecyclerAdapter;
 import com.the_coffe_coders.fastestlap.domain.news.News;
-import com.the_coffe_coders.fastestlap.source.news.NewsFetcher;
+import com.the_coffe_coders.fastestlap.ui.home.viewmodel.NewsViewModel;
+import com.the_coffe_coders.fastestlap.ui.home.viewmodel.NewsViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.notification.AppNotificationManager;
 import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
@@ -34,8 +34,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class NewsFragment extends Fragment {
 
@@ -44,16 +42,11 @@ public class NewsFragment extends Fragment {
     private MaterialSwitch languageFeedSwitch;
     private Boolean languageFeed;
     private RecyclerView newsRecyclerView;
-    private NewsRecyclerAdapter newsAdapter;
+    protected NewsRecyclerAdapter newsAdapter;
     private final Set<String> expandedNewsIds = new HashSet<>();
     private int defaultIndex;
-    private int loadingCounter = 0;
     private LoadingScreen loadingScreen;
-
-    // Cache news data to avoid re-fetching
-    private List<News> cachedEnglishNews = null;
-    private List<News> cachedItalianNews = null;
-    private int cachedEnglishSourceIndex = -1;
+    protected NewsViewModel newsViewModel;
 
     public NewsFragment() {
         // Required empty public constructor
@@ -84,9 +77,14 @@ public class NewsFragment extends Fragment {
             AppNotificationManager.getInstance().saveNewsSourcePreference(ctx, languageFeed, defaultIndex, defaultSource);
         }
 
+        newsViewModel = new ViewModelProvider(this, new NewsViewModelFactory()).get(NewsViewModel.class);
+
         // Setup RecyclerView once
         newsRecyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
-        List<News> initialNews = getCachedNews(languageFeed, defaultIndex);
+        List<News> initialNews = getInitialNews();
+        if (initialNews == null || initialNews.isEmpty()) {
+            loadingScreen.showLoadingScreen(false);
+        }
         newsAdapter = new NewsRecyclerAdapter(
                 initialNews != null ? initialNews : new ArrayList<>(),
                 requireContext(),
@@ -94,7 +92,30 @@ public class NewsFragment extends Fragment {
                 0,
                 expandedNewsIds
         );
+        onAdapterCreated(newsAdapter);
         newsRecyclerView.setAdapter(newsAdapter);
+
+        // Setup observers
+        newsViewModel.getNewsLiveData().observe(getViewLifecycleOwner(), newsList -> {
+            if (newsList != null && !newsList.isEmpty()) {
+                preloadNewsImagesAndDisplay(newsList);
+            }
+        });
+
+        newsViewModel.getIsLoadingLiveData().observe(getViewLifecycleOwner(), isLoading -> {
+            if (isLoading != null && isLoading) {
+                loadingScreen.showLoadingScreen(false);
+            } else {
+                loadingScreen.hideLoadingScreen();
+            }
+        });
+
+        newsViewModel.getErrorLiveData().observe(getViewLifecycleOwner(), isError -> {
+            if (isError != null && isError) {
+                Toast.makeText(getContext(), R.string.feed_error, Toast.LENGTH_SHORT).show();
+                newsViewModel.consumeError();
+            }
+        });
 
         // Setup header controls once
         if (newsMenu != null) {
@@ -131,13 +152,13 @@ public class NewsFragment extends Fragment {
                 noConnectionText.setVisibility(View.GONE);
 
                 // If no news loaded yet, load with loading screen; if already loaded, silent background refresh
-                if (newsAdapter == null || newsAdapter.getItemCount() == 0) {
+                if (newsAdapter == null || newsAdapter.getNewsCount() == 0) {
                     loadNews(languageFeed, defaultIndex, false);
                 } else {
                     loadNews(languageFeed, defaultIndex, true);
                 }
             } else {
-                if (newsAdapter == null || newsAdapter.getItemCount() == 0) {
+                if (newsAdapter == null || newsAdapter.getNewsCount() == 0) {
                     newsRecyclerView.setVisibility(View.GONE);
                     noConnectionText.setVisibility(View.VISIBLE);
                 }
@@ -152,80 +173,19 @@ public class NewsFragment extends Fragment {
         return R.layout.fragment_news;
     }
 
+    protected List<News> getInitialNews() {
+        return newsViewModel != null ? newsViewModel.getCachedNews(languageFeed, defaultIndex) : null;
+    }
+
     private void setupLoadingScreen(View view) {
         loadingScreen = new LoadingScreen(view, getContext(), null, newsRecyclerView);
     }
 
-    private synchronized void decrementLoadingCounter() {
-        loadingCounter--;
-        if (loadingCounter <= 0) {
-            loadingCounter = 0;
-            loadingScreen.hideLoadingScreen();
+    protected void loadNews(boolean isEnglish, int value, boolean isSilent) {
+        defaultIndex = value;
+        if (newsViewModel != null) {
+            newsViewModel.loadNews(isEnglish, value, isSilent);
         }
-    }
-
-    private List<News> getCachedNews(boolean isEnglish, int sourceIndex) {
-        if (isEnglish) {
-            if (sourceIndex == cachedEnglishSourceIndex && cachedEnglishNews != null) {
-                return cachedEnglishNews;
-            }
-        } else {
-            if (cachedItalianNews != null) {
-                return cachedItalianNews;
-            }
-        }
-        return null;
-    }
-
-    private void loadNews(boolean isEnglish, int value, boolean isSilent) {
-        // Check if we have cached data and it's not a silent refresh
-        List<News> cached = getCachedNews(isEnglish, value);
-        if (cached != null && !cached.isEmpty() && !isSilent) {
-            Log.d(TAG, "Using cached news data");
-            preloadNewsImagesAndDisplay(cached);
-            return;
-        }
-
-        if (!isSilent) {
-            loadingCounter = 1;
-            loadingScreen.showLoadingScreen(false);
-        }
-
-        ExecutorService executor = Executors.newSingleThreadExecutor();
-        Handler handler = new Handler(Looper.getMainLooper());
-
-        executor.execute(() -> {
-            List<News> newsList = null;
-            try {
-                if (isEnglish) {
-                    newsList = NewsFetcher.fetchNewsEngSources(value);
-                    defaultIndex = value;
-                    cachedEnglishNews = newsList;
-                    cachedEnglishSourceIndex = value;
-                } else {
-                    newsList = NewsFetcher.fetchNewsItSources();
-                    defaultIndex = 0;
-                    cachedItalianNews = newsList;
-                }
-            } catch (Exception e) {
-                Log.e(TAG, "Error fetching news", e);
-            }
-
-            List<News> finalNewsList = newsList;
-            handler.post(() -> {
-                if (!isAdded()) {
-                    return;
-                }
-                if (finalNewsList != null && !finalNewsList.isEmpty()) {
-                    preloadNewsImagesAndDisplay(finalNewsList);
-                } else {
-                    if (!isSilent) {
-                        Toast.makeText(getContext(), R.string.feed_error, Toast.LENGTH_SHORT).show();
-                        decrementLoadingCounter();
-                    }
-                }
-            });
-        });
     }
 
     private void preloadNewsImagesAndDisplay(List<News> newsList) {
@@ -268,13 +228,49 @@ public class NewsFragment extends Fragment {
         if (!isAdded()) {
             return;
         }
+        boolean wasEmpty = (newsAdapter == null || newsAdapter.getNewsCount() == 0);
         if (newsAdapter == null) {
             newsAdapter = new NewsRecyclerAdapter(new ArrayList<>(newsList), requireContext(), null, 0, expandedNewsIds);
+            onAdapterCreated(newsAdapter);
             newsRecyclerView.setAdapter(newsAdapter);
         } else {
             newsAdapter.updateNewsList(newsList);
         }
         loadingScreen.hideLoadingScreen();
+        onNewsDisplayed(newsList);
+
+        if (wasEmpty && !newsList.isEmpty() && newsRecyclerView != null) {
+            newsRecyclerView.scrollToPosition(0);
+            if (newsRecyclerView.getLayoutManager() instanceof LinearLayoutManager) {
+                ((LinearLayoutManager) newsRecyclerView.getLayoutManager()).scrollToPositionWithOffset(0, 0);
+            }
+            newsRecyclerView.post(() -> {
+                if (isAdded() && newsRecyclerView != null) {
+                    newsRecyclerView.scrollToPosition(0);
+                    if (newsRecyclerView.getLayoutManager() instanceof LinearLayoutManager) {
+                        ((LinearLayoutManager) newsRecyclerView.getLayoutManager()).scrollToPositionWithOffset(0, 0);
+                    }
+                }
+            });
+            newsRecyclerView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
+                @Override
+                public void onLayoutChange(View v, int left, int top, int right, int bottom,
+                                           int oldLeft, int oldTop, int oldRight, int oldBottom) {
+                    v.removeOnLayoutChangeListener(this);
+                    if (newsRecyclerView.getLayoutManager() instanceof LinearLayoutManager) {
+                        ((LinearLayoutManager) newsRecyclerView.getLayoutManager()).scrollToPositionWithOffset(0, 0);
+                    }
+                }
+            });
+        }
+    }
+
+    protected void onNewsDisplayed(List<News> newsList) {
+        // Subclasses can customize behavior after news is displayed
+    }
+
+    protected void onAdapterCreated(NewsRecyclerAdapter adapter) {
+        // Subclasses can customize adapter
     }
 
     private void showSourcesDialog(boolean isEnglish) {

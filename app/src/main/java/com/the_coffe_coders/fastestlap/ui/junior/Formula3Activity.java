@@ -37,7 +37,28 @@ public class Formula3Activity extends AppCompatActivity {
         if (navHostFragment != null) {
             NavController navController = navHostFragment.getNavController();
 
+            toolbar.setOnMenuItemClickListener(item -> {
+                if (item.getItemId() == R.id.news_outline) {
+                    if (navController.getCurrentDestination() != null
+                            && navController.getCurrentDestination().getId() == R.id.junior_news) {
+                        return true;
+                    }
+                    Bundle bundle = new Bundle();
+                    bundle.putString("SERIES_ID", "f3");
+                    bundle.putInt("CATEGORY_TYPE", 1);
+                    navController.navigate(R.id.junior_news, bundle);
+                    return true;
+                }
+                return false;
+            });
+
             UIUtils.manualToolbarTitleUpdateWithNavigation(navController, this);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        getMenuInflater().inflate(R.menu.junior_menu, menu);
+        return true;
     }
 }

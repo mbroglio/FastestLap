@@ -195,6 +195,9 @@
     <string name="season_ended">season ended</string>
     <string name="race_cancelled">race cancelled</string>
     <string name="full_article">full article</string>
+    <string name="load_more">load more</string>
+    <string name="loading_more">loading…</string>
+    <string name="no_more_news">no more news</string>
     <string name="race_result">race result</string>
     <string name="days">days</string>
     <string name="hours_abbr" translatable="false">hrs</string>
