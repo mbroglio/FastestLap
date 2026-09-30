@@ -26,6 +26,21 @@ const NEWS_SOURCES_CONFIG = [
     }
 ];
 
+const JUNIOR_NEWS_SOURCES_CONFIG = [
+    {
+        id: "f2",
+        name: "Formula 2",
+        baseUrl: "https://www.fiaformula2.com",
+        topic: "f2_news"
+    },
+    {
+        id: "f3",
+        name: "Formula 3",
+        baseUrl: "https://www.fiaformula3.com",
+        topic: "f3_news"
+    }
+];
+
 const JOLPICA_NEXT_RACE_URL = "https://api.jolpi.ca/ergast/f1/current/next/?format=json";
 
 const DB_PATHS = {
@@ -35,15 +50,16 @@ const DB_PATHS = {
 
 /**
  * Checks for newly published F1 articles on RSS feeds for each supported source
- * (Motorsport IT, Autosport EN, Crash.net EN).
- * When a new article is detected for a specific source, sends an FCM push message
- * directly to that source's dedicated topic (e.g. news_motorsport, news_autosport, news_crash).
- * Only users who have selected that specific source in their app preferences receive the push!
+ * (Motorsport IT, Autosport EN, Crash.net EN) as well as official F2 and F3 news.
+ * When a new article is detected for a specific source/series, sends an FCM push message
+ * directly to that dedicated topic (e.g. news_motorsport, news_autosport, news_crash, f2_news, f3_news).
+ * Only users who have selected that specific source/series in their app preferences receive the push!
  */
 async function executeNewsCheckAndPush(db, messaging) {
-    console.log("Starting F1 News check for push notifications across all sources...");
+    console.log("Starting F1 and Junior News check for push notifications across all sources...");
     const results = [];
 
+    // 1. Check F1 News Sources
     for (const source of NEWS_SOURCES_CONFIG) {
         try {
             console.log(`Checking news for source: ${source.name} (${source.url})...`);
@@ -156,6 +172,133 @@ async function executeNewsCheckAndPush(db, messaging) {
         } catch (err) {
             console.error(`Error checking news for source ${source.name}:`, err.message);
             results.push({ source: source.id, updated: false, error: err.message });
+        }
+    }
+
+    // 2. Check F2 and F3 Junior Categories News
+    for (const junior of JUNIOR_NEWS_SOURCES_CONFIG) {
+        try {
+            const juniorUrl = `${junior.baseUrl}/en/latest`;
+            console.log(`Checking junior news for ${junior.name} (${juniorUrl})...`);
+            const response = await axios.get(juniorUrl, {
+                headers: {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+                    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8"
+                },
+                timeout: 10000
+            });
+
+            if (response.status !== 200 || !response.data) {
+                console.warn(`Non-200 response from ${junior.name}: ${response.status}`);
+                results.push({ source: junior.id, updated: false, reason: "http_status_" + response.status });
+                continue;
+            }
+
+            const $ = cheerio.load(response.data);
+            const firstItem = $("ul[class*=\"m9aRzq_grid\"] > li").first();
+
+            if (firstItem.length === 0) {
+                console.warn(`No news items found for ${junior.name}`);
+                results.push({ source: junior.id, updated: false, reason: "empty_feed" });
+                continue;
+            }
+
+            let titleAnchor = firstItem.find(".ujvI6a_content a[class*=\"ujvI6a_title\"]").first();
+            if (!titleAnchor.length) {
+                titleAnchor = firstItem.find("a").first();
+            }
+            const title = titleAnchor.text().trim();
+            let link = titleAnchor.attr("href") || "";
+            if (link && !link.startsWith("http://") && !link.startsWith("https://")) {
+                link = junior.baseUrl + (link.startsWith("/") ? "" : "/") + link;
+            }
+
+            let img = firstItem.find(".ujvI6a_image img").first();
+            if (!img.length) {
+                img = firstItem.find("img").first();
+            }
+            let imageUrl = img.attr("src") || img.attr("data-src") || "";
+            if (imageUrl.startsWith("//")) {
+                imageUrl = "https:" + imageUrl;
+            }
+
+            if (!title || !link) {
+                console.warn(`Missing title or link in ${junior.name}`);
+                results.push({ source: junior.id, updated: false, reason: "missing_fields" });
+                continue;
+            }
+
+            // Check if article was already notified for this junior series
+            const lastNotifiedRef = db.ref(`${DB_PATHS.last_news_prefix}/${junior.id}`);
+            const snapshot = await lastNotifiedRef.once("value");
+            const lastNotifiedLink = snapshot.val();
+
+            if (!lastNotifiedLink) {
+                console.log(`Baseline news article stored for ${junior.name}:`, link);
+                await lastNotifiedRef.set(link);
+                results.push({ source: junior.id, updated: false, reason: "baseline_initialized", article: title });
+                continue;
+            }
+
+            if (link === lastNotifiedLink) {
+                console.log(`No new articles for ${junior.name} since last check.`);
+                results.push({ source: junior.id, updated: false, reason: "up_to_date" });
+                continue;
+            }
+
+            // New junior article found! Update database and broadcast push to topic `f2_news` or `f3_news`
+            await lastNotifiedRef.set(link);
+            await db.ref(`${DB_PATHS.last_news_prefix}/${junior.id}_updated_at`).set(Date.now());
+
+            const prefix = junior.id === "f3" ? "[F3]" : "[F2]";
+            const fullTitle = `🏎️ ${prefix} ${title}`;
+            const body = `${junior.name} News`;
+
+            const payload = {
+                topic: junior.topic,
+                notification: {
+                    title: fullTitle,
+                    body: body,
+                    ...(imageUrl ? { imageUrl } : {})
+                },
+                data: {
+                    type: "news",
+                    EXTRA_TARGET_TAB: "news",
+                    category: junior.id,
+                    seriesId: junior.id,
+                    sourceId: junior.id,
+                    sourceName: junior.name,
+                    title: fullTitle,
+                    body: body,
+                    newsUrl: link,
+                    imageUrl: imageUrl || ""
+                },
+                android: {
+                    priority: "high",
+                    notification: {
+                        channelId: "fastestlap_news_v4",
+                        sound: "team_radio",
+                        defaultSound: false,
+                        priority: "high",
+                        visibility: "public"
+                    }
+                }
+            };
+
+            const msgResponse = await messaging.send(payload);
+            console.log(`🔥 [FCM PUSH NEWS SENT to ${junior.topic}]:`, fullTitle, "Message ID:", msgResponse);
+            results.push({
+                source: junior.id,
+                topic: junior.topic,
+                updated: true,
+                title: fullTitle,
+                link: link,
+                messageId: msgResponse
+            });
+
+        } catch (err) {
+            console.error(`Error checking news for junior series ${junior.name}:`, err.message);
+            results.push({ source: junior.id, updated: false, error: err.message });
         }
     }
 
@@ -369,5 +512,6 @@ module.exports = {
     executeNewsCheckAndPush,
     executeSessionCheckAndPush,
     sendTestNotification,
-    NEWS_SOURCES_CONFIG
+    NEWS_SOURCES_CONFIG,
+    JUNIOR_NEWS_SOURCES_CONFIG
 };

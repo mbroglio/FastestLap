@@ -477,28 +477,32 @@ public class EventActivity extends AppCompatActivity {
             resultMutableLiveData.removeObserver(observerHolder[0]);
 
             try {
-                Race race = ((Result.RaceResultsSuccess) result).getData();
-                List<RaceResult> podium = race != null ? race.getRaceResults() : null;
+                if (result instanceof Result.RaceResultsSuccess) {
+                    Race race = ((Result.RaceResultsSuccess) result).getData();
+                    List<RaceResult> podium = race != null ? race.getRaceResults() : null;
 
-                if (podium == null || podium.isEmpty()) {
-                    showPendingResults();
-                } else {
-                    this.currentRace = race;
+                    if (podium == null || podium.isEmpty()) {
+                        showPendingResults();
+                    } else {
+                        this.currentRace = race;
 
-                    Log.i(TAG, "Podium found, size: " + podium.size());
-                    for (int i = 0; i < 3 && i < podium.size(); i++) {
-                        String teamId = podium.get(i).getConstructor().getConstructorId();
+                        Log.i(TAG, "Podium found, size: " + podium.size());
+                        for (int i = 0; i < 3 && i < podium.size(); i++) {
+                            String teamId = podium.get(i).getConstructor().getConstructorId();
 
-                        UIUtils.singleSetTextViewText(podium.get(i).getDriver().getFullName(),
-                                findViewById(Constants.PODIUM_DRIVER_NAME.get(i)));
+                            UIUtils.singleSetTextViewText(podium.get(i).getDriver().getFullName(),
+                                    findViewById(Constants.PODIUM_DRIVER_NAME.get(i)));
 
-                        LinearLayout teamColor = findViewById(Constants.PODIUM_TEAM_COLOR.get(i));
-                        Integer teamColorObj = Constants.TEAM_COLOR.get(teamId);
-                        teamColor.setBackgroundColor(ContextCompat.getColor(this, Objects.requireNonNullElseGet(teamColorObj, () -> R.color.mercedes_f1)));
+                            LinearLayout teamColor = findViewById(Constants.PODIUM_TEAM_COLOR.get(i));
+                            Integer teamColorObj = Constants.TEAM_COLOR.get(teamId);
+                            teamColor.setBackgroundColor(ContextCompat.getColor(this, Objects.requireNonNullElseGet(teamColorObj, () -> R.color.mercedes_f1)));
+                        }
+
+                        View resultsView = findViewById(R.id.timer_card_results);
+                        resultsView.setOnClickListener(v -> showRaceResultsDialog(currentRace));
                     }
-
-                    View resultsView = findViewById(R.id.timer_card_results);
-                    resultsView.setOnClickListener(v -> showRaceResultsDialog(currentRace));
+                } else {
+                    showPendingResults();
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error processing race results: " + e.getMessage());

@@ -234,22 +234,12 @@
                 android:paddingBottom="16dp">
 
                 <TextView
-                    style="@style/t14BoldWhiteLineLimited"
+                    style="@style/t18BoldWhite"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="10dp"
                     android:layout_marginTop="10dp"
-                    android:text="@string/session_notification_preferences_title" />
-
-                <TextView
-                    style="@style/t12RegularWhiteLineLimited"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="10dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="10dp"
-                    android:text="@string/session_notification_preferences_subtitle"
-                    android:textColor="@color/timer_gray" />
+                    android:text="@string/preferences" />
 
                 <!-- FORMULA 1 SECTION -->
                 <LinearLayout
@@ -442,7 +432,30 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:visibility="gone">
+                    android:visibility="visible">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="10dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/t12RegularWhiteLineLimited"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/news" />
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/f2_notif_news_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true" />
+                    </LinearLayout>
 
                     <!-- F2 Feature Race -->
                     <LinearLayout
@@ -539,6 +552,7 @@
                             android:layout_height="wrap_content"
                             android:checked="false" />
                     </LinearLayout>
+
                 </LinearLayout>
 
                 <!-- FORMULA 3 SECTION -->
@@ -595,6 +609,29 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="20dp"
+                        android:layout_marginTop="4dp"
+                        android:layout_marginEnd="10dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            style="@style/t12RegularWhiteLineLimited"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/news" />
+
+                        <com.google.android.material.materialswitch.MaterialSwitch
+                            android:id="@+id/f3_notif_news_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true" />
+                    </LinearLayout>
 
                     <!-- F3 Feature Race -->
                     <LinearLayout

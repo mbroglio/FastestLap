@@ -54,6 +54,7 @@ public class PastEventsActivity extends AppCompatActivity {
 
     // Observer per il cleanup
     private LiveData<Result> currentWeeklyRaceObserver;
+    private android.os.Handler parallelLoadTimeoutHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,6 +116,11 @@ public class PastEventsActivity extends AppCompatActivity {
         if (currentWeeklyRaceObserver != null) {
             currentWeeklyRaceObserver.removeObservers(this);
             currentWeeklyRaceObserver = null;
+        }
+
+        if (parallelLoadTimeoutHandler != null) {
+            parallelLoadTimeoutHandler.removeCallbacksAndMessages(null);
+            parallelLoadTimeoutHandler = null;
         }
 
         if (racesList != null) {
@@ -185,7 +191,10 @@ public class PastEventsActivity extends AppCompatActivity {
         List<Race> fetchedRaces = java.util.Collections.synchronizedList(new ArrayList<>());
         final int[] completedCount = {0};
         final boolean[] isDone = {false};
-        android.os.Handler timeoutHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+        if (parallelLoadTimeoutHandler != null) {
+            parallelLoadTimeoutHandler.removeCallbacksAndMessages(null);
+        }
+        parallelLoadTimeoutHandler = new android.os.Handler(android.os.Looper.getMainLooper());
 
         for (WeeklyRace weeklyRace : pastRaces) {
             MutableLiveData<Result> singleRaceData = raceResultViewModel.getRaceResults(weeklyRace.getRound());
@@ -214,7 +223,9 @@ public class PastEventsActivity extends AppCompatActivity {
                             if (isDone[0]) return;
                             isDone[0] = true;
                         }
-                        timeoutHandler.removeCallbacksAndMessages(null);
+                        if (parallelLoadTimeoutHandler != null) {
+                            parallelLoadTimeoutHandler.removeCallbacksAndMessages(null);
+                        }
                         racesList.clear();
                         racesList.addAll(fetchedRaces);
                         sortAndUpdateList();
@@ -226,7 +237,7 @@ public class PastEventsActivity extends AppCompatActivity {
         }
 
         // Safety timeout (6.5s): if OpenF1 rate-limiting (429) or network delays occur, show cards immediately
-        timeoutHandler.postDelayed(() -> {
+        parallelLoadTimeoutHandler.postDelayed(() -> {
             synchronized (isDone) {
                 if (isDone[0]) return;
                 isDone[0] = true;
@@ -313,6 +324,11 @@ public class PastEventsActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Log.i("PastEvent", "onDestroy - cleaning up observers");
+
+        if (parallelLoadTimeoutHandler != null) {
+            parallelLoadTimeoutHandler.removeCallbacksAndMessages(null);
+            parallelLoadTimeoutHandler = null;
+        }
 
         // Cleanup degli observer
         if (currentWeeklyRaceObserver != null) {

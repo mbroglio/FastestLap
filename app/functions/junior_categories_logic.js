@@ -298,9 +298,8 @@ async function scrapeEntryList($, db, seriesId) {
         // Initialize team if not already present
         if (!teamsMap[teamName]) {
             teamsMap[teamName] = {
-                team_logo: (dbEntryListData[teamName] && dbEntryListData[teamName].team_logo) 
-                    ? dbEntryListData[teamName].team_logo 
-                    : {},
+                team_logo_url: "-",
+                car_image_url: "-",
                 drivers: []
             };
         }

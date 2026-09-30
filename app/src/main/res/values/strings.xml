@@ -349,5 +349,6 @@
     <string name="feature_1">Feature 1</string>
     <string name="feature_2">Feature 2</string>
     <string name="news">News</string>
+    <string name="preferences">Preferences</string>
 
 </resources>

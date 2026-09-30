@@ -5,61 +5,54 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/screen_background_color"
     tools:context=".ui.home.fragment.StandingsFragment">
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_top_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="50dp" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_end="0dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:background="@color/screen_background_color"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/drivers_card"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="40dp"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardBackgroundColor="@color/timer_gray"
-                app:cardCornerRadius="40dp"
-                app:strokeColor="@color/black"
-                app:strokeWidth="5dp">
+                app:cardBackgroundColor="@color/card_surface_elevated"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:rippleColor="@color/ripple_color"
+                app:strokeColor="@color/app_primary_red"
+                app:strokeWidth="1.5dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="20dp"
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        android:layout_marginBottom="16dp"
                         android:importantForAccessibility="no"
-                        app:srcCompat="@drawable/driver_card" />
+                        app:srcCompat="@drawable/driver_card"
+                        app:tint="@color/white" />
+
+                    <TextView
+                        style="@style/t20UpperCaseBoldWhite"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/drivers" />
 
                 </LinearLayout>
 
@@ -69,35 +62,43 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/constructors_card"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="40dp"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardBackgroundColor="@color/timer_gray"
-                app:cardCornerRadius="40dp"
-                app:strokeColor="@color/black"
-                app:strokeWidth="5dp">
+                app:cardBackgroundColor="@color/card_surface_elevated"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:rippleColor="@color/ripple_color"
+                app:strokeColor="@color/app_primary_red"
+                app:strokeWidth="1.5dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="16dp">
 
                     <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="10dp"
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        android:layout_marginBottom="16dp"
                         android:importantForAccessibility="no"
-                        app:srcCompat="@drawable/racing" />
+                        app:srcCompat="@drawable/racing"
+                        app:tint="@color/white" />
+
+                    <TextView
+                        style="@style/t20UpperCaseBoldWhite"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/constructors" />
 
                 </LinearLayout>
 

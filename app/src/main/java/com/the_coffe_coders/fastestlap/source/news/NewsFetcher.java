@@ -69,11 +69,11 @@ public class NewsFetcher {
     }
 
     public static List<News> fetchJuniorNews(String series, int maxPages) {
-        return fetchJuniorNews(series, maxPages, DEFAULT_JUNIOR_NEWS_TAG);
+        return fetchJuniorNews(series, maxPages, null);
     }
 
     public static List<News> fetchJuniorNewsPage(String series, int page) {
-        return fetchJuniorNewsPage(series, page, DEFAULT_JUNIOR_NEWS_TAG);
+        return fetchJuniorNewsPage(series, page, null);
     }
 
     public static List<News> fetchJuniorNewsPage(String series, int page, String tag) {
@@ -81,12 +81,19 @@ public class NewsFetcher {
         boolean isF3 = series != null && (series.equalsIgnoreCase("f3") || series.equalsIgnoreCase("formula3"));
         String baseUrl = isF3 ? F3_BASE_URL : F2_BASE_URL;
         String seriesId = isF3 ? "f3" : "f2";
-        String activeTag = (tag != null && !tag.trim().isEmpty()) ? tag.trim() : DEFAULT_JUNIOR_NEWS_TAG;
         int pageNum = Math.max(1, page);
 
-        String pageUrl = (pageNum == 1)
-                ? baseUrl + "/en/latest/tags/" + activeTag
-                : baseUrl + "/en/latest/tags/" + activeTag + "/slug_" + activeTag + "/page_" + pageNum;
+        String pageUrl;
+        if (tag != null && !tag.trim().isEmpty() && !tag.trim().equals(DEFAULT_JUNIOR_NEWS_TAG)) {
+            String activeTag = tag.trim();
+            pageUrl = (pageNum == 1)
+                    ? baseUrl + "/en/latest/tags/" + activeTag
+                    : baseUrl + "/en/latest/tags/" + activeTag + "/slug_" + activeTag + "/page_" + pageNum;
+        } else {
+            pageUrl = (pageNum == 1)
+                    ? baseUrl + "/en/latest"
+                    : baseUrl + "/en/latest/page_" + pageNum;
+        }
 
         okhttp3.OkHttpClient client = ServiceLocator.getInstance().getOkHttpClient();
         okhttp3.Request request = new okhttp3.Request.Builder()

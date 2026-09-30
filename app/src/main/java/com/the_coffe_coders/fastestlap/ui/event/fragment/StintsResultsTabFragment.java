@@ -53,7 +53,7 @@ public class StintsResultsTabFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             race = androidx.core.os.BundleCompat.getParcelable(getArguments(), "RACE", Race.class);
-            stintsList = getArguments().getParcelableArrayList("STINTS");
+            stintsList = androidx.core.os.BundleCompat.getParcelableArrayList(getArguments(), "STINTS", Stint.class);
         }
     }
 
@@ -117,6 +117,8 @@ public class StintsResultsTabFragment extends Fragment {
                         return;
                     }
 
+                    cancelTimeout();
+
                     if (progressBar != null) {
                         progressBar.setVisibility(View.GONE);
                     }
@@ -148,6 +150,8 @@ public class StintsResultsTabFragment extends Fragment {
                         }
                     }
                 });
+
+                startTimeout(progressBar, recyclerView, notAvailableLayout);
             } else {
                 if (progressBar != null) {
                     progressBar.setVisibility(View.GONE);
@@ -159,5 +163,40 @@ public class StintsResultsTabFragment extends Fragment {
         }
 
         return view;
+    }
+
+    private android.os.Handler stintTimeoutHandler;
+    private Runnable stintTimeoutRunnable;
+
+    private void startTimeout(ProgressBar progressBar, RecyclerView recyclerView, View notAvailableLayout) {
+        cancelTimeout();
+        stintTimeoutHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+        stintTimeoutRunnable = () -> {
+            if (isAdded() && (stintsList == null || stintsList.isEmpty())) {
+                if (progressBar != null) {
+                    progressBar.setVisibility(View.GONE);
+                }
+                if (recyclerView != null) {
+                    recyclerView.setVisibility(View.GONE);
+                }
+                if (notAvailableLayout != null) {
+                    notAvailableLayout.setVisibility(View.VISIBLE);
+                }
+            }
+        };
+        stintTimeoutHandler.postDelayed(stintTimeoutRunnable, 5000);
+    }
+
+    private void cancelTimeout() {
+        if (stintTimeoutHandler != null && stintTimeoutRunnable != null) {
+            stintTimeoutHandler.removeCallbacks(stintTimeoutRunnable);
+            stintTimeoutRunnable = null;
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        cancelTimeout();
     }
 }

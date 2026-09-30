@@ -41,6 +41,10 @@ public class OpenF1StintDataSource implements StintDataSource {
     private static OpenF1StintDataSource instance;
     private final OpenF1APIService openF1APIService;
 
+    private String cachedMeetingsJson;
+    private long meetingsCacheTimestamp;
+    private static final long MEETINGS_CACHE_TTL = 3600_000L; // 1 hour
+
     public OpenF1StintDataSource() {
         this.openF1APIService = ServiceLocator.getInstance().getOpenF1APIService();
     }
@@ -62,29 +66,49 @@ public class OpenF1StintDataSource implements StintDataSource {
         Log.d(TAG, "Fetching stints for eventName: " + eventName + ", sessionName: " + sessionName + ", year: " + year);
 
         if (eventName == null || eventName.trim().isEmpty()) {
-            // Fallback: fetch latest session stints directly if eventName is missing
-            fetchStintsBySessionKey("latest", callback);
+            callback.onFailure(new Exception("Event name is null or empty"));
             return;
+        }
+
+        // Check if meetings are already cached in memory
+        if (cachedMeetingsJson != null && (System.currentTimeMillis() - meetingsCacheTimestamp < MEETINGS_CACHE_TTL)) {
+            try {
+                Integer meetingKey = findMeetingKey(cachedMeetingsJson, eventName);
+                if (meetingKey != null) {
+                    Log.d(TAG, "Matched meeting_key from cache: " + meetingKey + " for event: " + eventName);
+                    fetchSessionKeyAndStints(meetingKey, sessionName, callback);
+                    return;
+                }
+            } catch (Exception e) {
+                Log.w(TAG, "Error checking cached meetings: " + e.getMessage());
+            }
         }
 
         openF1APIService.getMeetings(year).enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                if (!response.isSuccessful()) {
+                    Log.e(TAG, "OpenF1 meetings failed with code: " + response.code());
+                    callback.onFailure(new Exception("OpenF1 meetings HTTP error: " + response.code()));
+                    return;
+                }
                 ResponseBody body = response.body();
                 if (body == null) {
                     Log.e(TAG, "OpenF1 meetings returned empty body");
-                    fetchStintsBySessionKey("latest", callback);
+                    callback.onFailure(new Exception("Empty response body from meetings endpoint"));
                     return;
                 }
                 try {
                     String json = body.string();
+                    cachedMeetingsJson = json;
+                    meetingsCacheTimestamp = System.currentTimeMillis();
                     Integer meetingKey = findMeetingKey(json, eventName);
                     if (meetingKey != null) {
                         Log.d(TAG, "Matched meeting_key: " + meetingKey + " for event: " + eventName);
                         fetchSessionKeyAndStints(meetingKey, sessionName, callback);
                     } else {
-                        Log.w(TAG, "No matching meeting_key found for event: " + eventName + ", falling back to latest");
-                        fetchStintsBySessionKey("latest", callback);
+                        Log.w(TAG, "No matching meeting_key found for event: " + eventName);
+                        callback.onFailure(new Exception("No matching meeting found for event: " + eventName));
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Error processing meetings response", e);
@@ -121,15 +145,18 @@ public class OpenF1StintDataSource implements StintDataSource {
                     || matches(location, targetNorm)
                     || matches(countryName, targetNorm)
                     || matches(circuitShort, targetNorm)) {
-                return getIntOrDefault(obj, "meeting_key", -1);
+                int key = getIntOrDefault(obj, "meeting_key", -1);
+                if (key > 0) return key;
             }
         }
         return null;
     }
 
     private boolean matches(String candidate, String targetNorm) {
-        if (candidate == null) return false;
+        if (candidate == null || candidate.trim().isEmpty()) return false;
         String candNorm = candidate.toLowerCase(java.util.Locale.ROOT).trim();
+        if (candNorm.equals(targetNorm)) return true;
+        if (candNorm.equals("grand prix") || candNorm.equals("gp") || candNorm.length() < 3) return false;
         return candNorm.contains(targetNorm) || targetNorm.contains(candNorm);
     }
 
@@ -139,6 +166,11 @@ public class OpenF1StintDataSource implements StintDataSource {
         openF1APIService.getSessionsByMeetingKey(meetingKey).enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                if (!response.isSuccessful()) {
+                    Log.e(TAG, "OpenF1 sessions failed with code: " + response.code());
+                    callback.onFailure(new Exception("OpenF1 sessions HTTP error: " + response.code()));
+                    return;
+                }
                 ResponseBody body = response.body();
                 if (body == null) {
                     Log.e(TAG, "OpenF1 sessions returned empty body");
@@ -153,7 +185,7 @@ public class OpenF1StintDataSource implements StintDataSource {
                         fetchStintsBySessionKey(String.valueOf(sessionKey), callback);
                     } else {
                         Log.w(TAG, "No matching session_key found for sessionName: " + targetSession);
-                        fetchStintsBySessionKey("latest", callback);
+                        callback.onFailure(new Exception("No matching session found for sessionName: " + targetSession));
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Error processing sessions response", e);
@@ -182,7 +214,8 @@ public class OpenF1StintDataSource implements StintDataSource {
 
             String sName = getStringOrNull(obj, "session_name");
             if (sName != null && sName.trim().equalsIgnoreCase(targetNorm)) {
-                return getIntOrDefault(obj, "session_key", -1);
+                int key = getIntOrDefault(obj, "session_key", -1);
+                if (key > 0) return key;
             }
         }
 
@@ -193,13 +226,12 @@ public class OpenF1StintDataSource implements StintDataSource {
 
             String sName = getStringOrNull(obj, "session_name");
             if (matches(sName, targetNorm)) {
-                return getIntOrDefault(obj, "session_key", -1);
+                int key = getIntOrDefault(obj, "session_key", -1);
+                if (key > 0) return key;
             }
         }
 
-        // Fallback: primo session_key disponibile se nessun nome corrisponde
-        JsonObject first = jsonArray.get(0).getAsJsonObject();
-        return getIntOrDefault(first, "session_key", -1);
+        return null;
     }
 
     private void fetchStintsBySessionKey(String sessionKey, StintCallback callback) {
@@ -219,6 +251,11 @@ public class OpenF1StintDataSource implements StintDataSource {
         call.enqueue(new Callback<>() {
             @Override
             public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                if (!response.isSuccessful()) {
+                    Log.e(TAG, "OpenF1 stints failed with code: " + response.code());
+                    callback.onFailure(new Exception("OpenF1 stints HTTP error: " + response.code()));
+                    return;
+                }
                 ResponseBody body = response.body();
                 if (body == null) {
                     Log.e(TAG, "OpenF1 stints returned empty body");
@@ -271,6 +308,12 @@ public class OpenF1StintDataSource implements StintDataSource {
                 stints.add(new Stint(meetingKey, sKey, stintNumber, driverNumber, lapStart, lapEnd, compound, tyreAge));
             }
 
+            if (stints.isEmpty()) {
+                Log.d(TAG, "No stints found for session: " + sessionKey);
+                callback.onSuccess(stints);
+                return;
+            }
+
             // Ordina prima per driverNumber crescente, poi per lapStart crescente
             stints.sort((s1, s2) -> {
                 int driverCompare = Integer.compare(s1.getDriverNumber(), s2.getDriverNumber());
@@ -314,15 +357,12 @@ public class OpenF1StintDataSource implements StintDataSource {
                         if (jsonArray != null) {
                             Map<Integer, List<PitStopInfo>> driverPitMap = new HashMap<>();
                             for (JsonElement elem : jsonArray) {
-                                Log.d(TAG, "Pit stop: " + elem.toString());
                                 if (!elem.isJsonObject()) continue;
                                 JsonObject obj = elem.getAsJsonObject();
                                 int driverNum = getIntOrDefault(obj, "driver_number", -1);
                                 int lapNum = getIntOrDefault(obj, "lap_number", -1);
 
                                 Double pitDur = null;
-                                Log.i(TAG, "stop duration: " + obj.get("stop_duration").getAsDouble());
-
                                 if (obj.has("lane_duration") && !obj.get("lane_duration").isJsonNull()) {
                                     try {
                                         pitDur = obj.get("lane_duration").getAsDouble();

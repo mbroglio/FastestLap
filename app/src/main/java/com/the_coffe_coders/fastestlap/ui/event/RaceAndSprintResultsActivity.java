@@ -12,6 +12,7 @@ import androidx.core.content.ContextCompat;
 import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.the_coffe_coders.fastestlap.R;
@@ -122,7 +123,7 @@ public class RaceAndSprintResultsActivity extends AppCompatActivity {
 
     private void setupFastestLapLayout() {
         Log.i(TAG, "Fastest lap: " + raceFastestLap);
-        RelativeLayout fastestLapLayout = findViewById(R.id.fastest_lap_layout);
+        MaterialCardView fastestLapLayout = findViewById(R.id.fastest_lap_layout);
 
         if (fastestLapLayout == null) return;
 

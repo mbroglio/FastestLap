@@ -20,12 +20,18 @@ import android.os.PowerManager;
 import android.text.Html;
 import android.util.Log;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.os.LocaleListCompat;
 
 import com.bumptech.glide.Glide;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
@@ -243,11 +249,13 @@ public class AppNotificationManager {
 
         // F2 Preferences (defaults: master false; if enabled: feature, sprint, quali true, practice false)
         boolean f2Enabled = prefs.getBoolean(Constants.PREF_NOTIF_F2_ENABLED, false);
+        boolean f2News = f2Enabled && prefs.getBoolean(Constants.PREF_NOTIF_F2_NEWS, true);
         boolean f2Feature = f2Enabled && prefs.getBoolean(Constants.PREF_NOTIF_F2_FEATURE, true);
         boolean f2Sprint = f2Enabled && prefs.getBoolean(Constants.PREF_NOTIF_F2_SPRINT, true);
         boolean f2Quali = f2Enabled && prefs.getBoolean(Constants.PREF_NOTIF_F2_QUALIFYING, true);
         boolean f2Practice = f2Enabled && prefs.getBoolean(Constants.PREF_NOTIF_F2_PRACTICE, false);
 
+        setTopicSubscription(Constants.FCM_TOPIC_F2_NEWS, f2News);
         setTopicSubscription(Constants.FCM_TOPIC_SESSION_F2_FEATURE, f2Feature);
         setTopicSubscription(Constants.FCM_TOPIC_SESSION_F2_SPRINT, f2Sprint);
         setTopicSubscription(Constants.FCM_TOPIC_SESSION_F2_QUALIFYING, f2Quali);
@@ -255,11 +263,13 @@ public class AppNotificationManager {
 
         // F3 Preferences (defaults: master false; if enabled: feature, sprint, quali true, practice false)
         boolean f3Enabled = prefs.getBoolean(Constants.PREF_NOTIF_F3_ENABLED, false);
+        boolean f3News = f3Enabled && prefs.getBoolean(Constants.PREF_NOTIF_F3_NEWS, true);
         boolean f3Feature = f3Enabled && prefs.getBoolean(Constants.PREF_NOTIF_F3_FEATURE, true);
         boolean f3Sprint = f3Enabled && prefs.getBoolean(Constants.PREF_NOTIF_F3_SPRINT, true);
         boolean f3Quali = f3Enabled && prefs.getBoolean(Constants.PREF_NOTIF_F3_QUALIFYING, true);
         boolean f3Practice = f3Enabled && prefs.getBoolean(Constants.PREF_NOTIF_F3_PRACTICE, false);
 
+        setTopicSubscription(Constants.FCM_TOPIC_F3_NEWS, f3News);
         setTopicSubscription(Constants.FCM_TOPIC_SESSION_F3_FEATURE, f3Feature);
         setTopicSubscription(Constants.FCM_TOPIC_SESSION_F3_SPRINT, f3Sprint);
         setTopicSubscription(Constants.FCM_TOPIC_SESSION_F3_QUALIFYING, f3Quali);
@@ -287,7 +297,7 @@ public class AppNotificationManager {
 
     private void syncSessionPreferencesToRemote(SharedPreferences prefs) {
         try {
-            com.google.firebase.auth.FirebaseUser currentUser = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
             if (currentUser != null) {
                 java.util.Map<String, Object> sessionPrefs = new java.util.HashMap<>();
                 sessionPrefs.put(Constants.PREF_NOTIF_F1_RACE, prefs.getBoolean(Constants.PREF_NOTIF_F1_RACE, true));
@@ -295,17 +305,19 @@ public class AppNotificationManager {
                 sessionPrefs.put(Constants.PREF_NOTIF_F1_SPRINT, prefs.getBoolean(Constants.PREF_NOTIF_F1_SPRINT, true));
                 sessionPrefs.put(Constants.PREF_NOTIF_F1_PRACTICE, prefs.getBoolean(Constants.PREF_NOTIF_F1_PRACTICE, true));
                 sessionPrefs.put(Constants.PREF_NOTIF_F2_ENABLED, prefs.getBoolean(Constants.PREF_NOTIF_F2_ENABLED, false));
+                sessionPrefs.put(Constants.PREF_NOTIF_F2_NEWS, prefs.getBoolean(Constants.PREF_NOTIF_F2_NEWS, true));
                 sessionPrefs.put(Constants.PREF_NOTIF_F2_FEATURE, prefs.getBoolean(Constants.PREF_NOTIF_F2_FEATURE, true));
                 sessionPrefs.put(Constants.PREF_NOTIF_F2_SPRINT, prefs.getBoolean(Constants.PREF_NOTIF_F2_SPRINT, true));
                 sessionPrefs.put(Constants.PREF_NOTIF_F2_QUALIFYING, prefs.getBoolean(Constants.PREF_NOTIF_F2_QUALIFYING, true));
                 sessionPrefs.put(Constants.PREF_NOTIF_F2_PRACTICE, prefs.getBoolean(Constants.PREF_NOTIF_F2_PRACTICE, false));
                 sessionPrefs.put(Constants.PREF_NOTIF_F3_ENABLED, prefs.getBoolean(Constants.PREF_NOTIF_F3_ENABLED, false));
+                sessionPrefs.put(Constants.PREF_NOTIF_F3_NEWS, prefs.getBoolean(Constants.PREF_NOTIF_F3_NEWS, true));
                 sessionPrefs.put(Constants.PREF_NOTIF_F3_FEATURE, prefs.getBoolean(Constants.PREF_NOTIF_F3_FEATURE, true));
                 sessionPrefs.put(Constants.PREF_NOTIF_F3_SPRINT, prefs.getBoolean(Constants.PREF_NOTIF_F3_SPRINT, true));
                 sessionPrefs.put(Constants.PREF_NOTIF_F3_QUALIFYING, prefs.getBoolean(Constants.PREF_NOTIF_F3_QUALIFYING, true));
                 sessionPrefs.put(Constants.PREF_NOTIF_F3_PRACTICE, prefs.getBoolean(Constants.PREF_NOTIF_F3_PRACTICE, false));
 
-                com.google.firebase.database.FirebaseDatabase.getInstance(Constants.FIREBASE_REALTIME_DATABASE)
+                FirebaseDatabase.getInstance(Constants.FIREBASE_REALTIME_DATABASE)
                         .getReference(Constants.FIREBASE_USERS_COLLECTION)
                         .child(currentUser.getUid())
                         .child("notification_preferences")
@@ -349,10 +361,10 @@ public class AppNotificationManager {
 
         // 4. Remote Realtime Database sync (if user is authenticated)
         try {
-            com.google.firebase.auth.FirebaseUser currentUser = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
             if (currentUser != null) {
                 String uid = currentUser.getUid();
-                com.google.firebase.database.DatabaseReference userRef = com.google.firebase.database.FirebaseDatabase.getInstance(Constants.FIREBASE_REALTIME_DATABASE)
+                DatabaseReference userRef = FirebaseDatabase.getInstance(Constants.FIREBASE_REALTIME_DATABASE)
                         .getReference(Constants.FIREBASE_USERS_COLLECTION)
                         .child(uid);
                 userRef.child(Constants.SHARED_PREFERENCES_NEWS_SOURCE).setValue(sourceName);
@@ -442,7 +454,7 @@ public class AppNotificationManager {
 
     public boolean isDeviceLanguageEnglish(Context context) {
         try {
-            androidx.core.os.LocaleListCompat appLocales = androidx.appcompat.app.AppCompatDelegate.getApplicationLocales();
+            LocaleListCompat appLocales = AppCompatDelegate.getApplicationLocales();
             String langTag = appLocales.toLanguageTags();
             if (langTag != null && !langTag.isEmpty()) {
                 return langTag.toLowerCase(Locale.ROOT).startsWith("en");
@@ -460,9 +472,9 @@ public class AppNotificationManager {
     public void syncFcmTokenToRemote(String token) {
         if (token == null || token.isEmpty()) return;
         try {
-            com.google.firebase.auth.FirebaseUser currentUser = com.google.firebase.auth.FirebaseAuth.getInstance().getCurrentUser();
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
             if (currentUser != null) {
-                com.google.firebase.database.FirebaseDatabase.getInstance(Constants.FIREBASE_REALTIME_DATABASE)
+                FirebaseDatabase.getInstance(Constants.FIREBASE_REALTIME_DATABASE)
                         .getReference(Constants.FIREBASE_USERS_COLLECTION)
                         .child(currentUser.getUid())
                         .child("fcm_token")
@@ -526,7 +538,7 @@ public class AppNotificationManager {
     /**
      * Initializes notification channels for Android 8.0+ (API 26+).
      */
-    public void createNotificationChannels(Context context) {
+public void createNotificationChannels(Context context) {
         if (context == null) return;
         NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
         if (notificationManager == null) return;
@@ -580,8 +592,7 @@ public class AppNotificationManager {
                 NotificationManager.IMPORTANCE_HIGH
         );
         generalChannel.setDescription(context.getString(R.string.general_channel_description));
-        generalChannel.enableVibration(true);
-        generalChannel.setVibrationPattern(vibrationPattern);
+        generalChannel.enableVibration(false);
         generalChannel.setShowBadge(true);
         generalChannel.setLockscreenVisibility(Notification.VISIBILITY_PUBLIC);
         generalChannel.setSound(soundUri, audioAttributes);

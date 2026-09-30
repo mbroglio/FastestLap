@@ -30,7 +30,7 @@ import com.the_coffe_coders.fastestlap.ui.event.fragment.QualifyingResultsFragme
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.junior.Formula2Activity;
 import com.the_coffe_coders.fastestlap.ui.junior.Formula3Activity;
-import com.the_coffe_coders.fastestlap.ui.junior.fragment.JuniorDialogFragment;
+import com.the_coffe_coders.fastestlap.ui.junior.fragment.JuniorFullResultsDialogFragment;
 import com.the_coffe_coders.fastestlap.ui.profile.LoginFragment;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
@@ -195,44 +195,70 @@ public class NavigationUtils {
         }
     }
 
-    public static void showEntryListDialog(FragmentManager fragmentManager, int categoryType) {
-        showJuniorDialog(fragmentManager, categoryType, -1, 0, null, null, null);
+    public static void navigateToJuniorEntryListPage(View view, int categoryType) {
+        NavController navController = Navigation.findNavController(view);
+        Bundle args = new Bundle();
+        args.putInt("CATEGORY_TYPE", categoryType);
+        if (categoryType == 0) {
+            navController.navigate(R.id.to_juniorEntryList_formula2, args);
+        } else if (categoryType == 1) {
+            navController.navigate(R.id.to_juniorEntryList_formula3, args);
+        }
     }
 
-    public static void showCalendarDialog(FragmentManager fragmentManager, int categoryType) {
-        showJuniorDialog(fragmentManager, categoryType, -1, 1, null, null, null);
+    public static void navigateToJuniorCalendarPage(View view, int categoryType) {
+        NavController navController = Navigation.findNavController(view);
+        Bundle args = new Bundle();
+        args.putInt("CATEGORY_TYPE", categoryType);
+        if (categoryType == 0) {
+            navController.navigate(R.id.to_juniorCalendar_formula2, args);
+        } else if (categoryType == 1) {
+            navController.navigate(R.id.to_juniorCalendar_formula3, args);
+        }
     }
 
-    public static void showDriversStandingDialog(FragmentManager fragmentManager, int categoryType) {
-        showJuniorDialog(fragmentManager, categoryType, -1, 2, null, null, null);
+    public static void navigateToJuniorDriverStandingsPage(View view, int categoryType) {
+        NavController navController = Navigation.findNavController(view);
+        Bundle args = new Bundle();
+        args.putInt("CATEGORY_TYPE", categoryType);
+        if (categoryType == 0) {
+            navController.navigate(R.id.to_juniorDriverStandings_formula2, args);
+        } else if (categoryType == 1) {
+            navController.navigate(R.id.to_juniorDriverStandings_formula3, args);
+        }
     }
 
-    public static void showConstructorsStandingDialog(FragmentManager fragmentManager, int categoryType) {
-        showJuniorDialog(fragmentManager, categoryType, -1, 3, null, null, null);
+    public static void navigateToJuniorConstructorStandingsPage(View view, int categoryType) {
+        NavController navController = Navigation.findNavController(view);
+        Bundle args = new Bundle();
+        args.putInt("CATEGORY_TYPE", categoryType);
+        if (categoryType == 0) {
+            navController.navigate(R.id.to_juniorConstructorStandings_formula2, args);
+        } else if (categoryType == 1) {
+            navController.navigate(R.id.to_juniorConstructorStandings_formula3, args);
+        }
     }
 
     public static void showFullResultsDialogFeature(String circuit, FeatureRace featureRace, FragmentManager fragmentManager, int categoryType, int raceType) {
-        showJuniorDialog(fragmentManager, categoryType, raceType, 4, featureRace, null, circuit);
-    }
-
-    public static void showFullResultsDialogSprint(String circuit, SprintRace sprintRace, FragmentManager fragmentManager, int categoryType, int raceType) {
-        showJuniorDialog(fragmentManager, categoryType, raceType, 4, null, sprintRace, circuit);
-    }
-
-
-    private static void showJuniorDialog(FragmentManager fragmentManager,
-                                         int categoryType, int raceType, int content,
-                                         FeatureRace featureRace, SprintRace sprintRace, String circuit) {
-        JuniorDialogFragment juniorDialogFragment = new JuniorDialogFragment();
+        JuniorFullResultsDialogFragment dialog = new JuniorFullResultsDialogFragment();
         Bundle args = new Bundle();
         args.putInt("CATEGORY_TYPE", categoryType);
         args.putInt("RACE_TYPE", raceType);
-        args.putInt("CONTENT", content);
-        args.putParcelable("JUNIOR_SPRINT_RACE", sprintRace);
         args.putParcelable("JUNIOR_FEATURE_RACE", featureRace);
         args.putString("CIRCUIT", circuit);
-        juniorDialogFragment.setArguments(args);
-        juniorDialogFragment.show(fragmentManager, "JuniorDialogFragment");
+        dialog.setArguments(args);
+        dialog.show(fragmentManager, "JuniorFullResultsDialogFragment");
+    }
+
+    public static void showFullResultsDialogSprint(String circuit, SprintRace sprintRace, FragmentManager fragmentManager, int categoryType, int raceType) {
+        JuniorFullResultsDialogFragment dialog = new JuniorFullResultsDialogFragment();
+        Bundle args = new Bundle();
+        args.putInt("CATEGORY_TYPE", categoryType);
+        args.putInt("RACE_TYPE", raceType);
+        args.putParcelable("JUNIOR_SPRINT_RACE", sprintRace);
+        args.putString("CIRCUIT", circuit);
+        dialog.setArguments(args);
+        dialog.show(fragmentManager, "JuniorFullResultsDialogFragment");
     }
 
     public static void navigateToWelcomePage(Context context) {

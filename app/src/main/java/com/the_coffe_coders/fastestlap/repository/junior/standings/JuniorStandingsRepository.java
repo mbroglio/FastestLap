@@ -245,4 +245,24 @@ public class JuniorStandingsRepository {
             }
         }
     }
+
+    public synchronized void refreshDriverStandings(String series) {
+        String cacheKey = "juniorDriverStandings" + series;
+        if (!juniorStandingsCache.containsKey(cacheKey)) {
+            juniorStandingsCache.put(cacheKey, new MutableLiveData<>());
+        }
+        if (isNetworkAvailable()) {
+            loadDriverStandingsFromRemote(cacheKey, series, false);
+        }
+    }
+
+    public synchronized void refreshConstructorStandings(String series) {
+        String cacheKey = "juniorConstructorStandings" + series;
+        if (!juniorStandingsCache.containsKey(cacheKey)) {
+            juniorStandingsCache.put(cacheKey, new MutableLiveData<>());
+        }
+        if (isNetworkAvailable()) {
+            loadConstructorStandingsFromRemote(cacheKey, series, false);
+        }
+    }
 }

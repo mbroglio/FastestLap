@@ -14,7 +14,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="@string/race_result" />
+        android:text="@string/race_result"
+        android:textColor="@color/app_primary_red"/>
 
     <LinearLayout
         android:id="@+id/race_podium"

@@ -273,6 +273,7 @@ public class ProfileActivity extends AppCompatActivity {
         // F2 Switches & Container
         MaterialSwitch f2MasterSwitch = findViewById(R.id.f2_notif_master_switch);
         android.widget.LinearLayout f2SessionsContainer = findViewById(R.id.f2_sessions_container);
+        MaterialSwitch f2NewsSwitch = findViewById(R.id.f2_notif_news_switch);
         MaterialSwitch f2FeatureSwitch = findViewById(R.id.f2_notif_feature_switch);
         MaterialSwitch f2SprintSwitch = findViewById(R.id.f2_notif_sprint_switch);
         MaterialSwitch f2QualiSwitch = findViewById(R.id.f2_notif_qualifying_switch);
@@ -281,6 +282,7 @@ public class ProfileActivity extends AppCompatActivity {
         // F3 Switches & Container
         MaterialSwitch f3MasterSwitch = findViewById(R.id.f3_notif_master_switch);
         android.widget.LinearLayout f3SessionsContainer = findViewById(R.id.f3_sessions_container);
+        MaterialSwitch f3NewsSwitch = findViewById(R.id.f3_notif_news_switch);
         MaterialSwitch f3FeatureSwitch = findViewById(R.id.f3_notif_feature_switch);
         MaterialSwitch f3SprintSwitch = findViewById(R.id.f3_notif_sprint_switch);
         MaterialSwitch f3QualiSwitch = findViewById(R.id.f3_notif_qualifying_switch);
@@ -338,19 +340,21 @@ public class ProfileActivity extends AppCompatActivity {
 
         boolean f2Enabled = prefs.getBoolean(Constants.PREF_NOTIF_F2_ENABLED, false);
         if (f2MasterSwitch != null) f2MasterSwitch.setChecked(f2Enabled);
+        if (f2NewsSwitch != null) f2NewsSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F2_NEWS, true));
         if (f2FeatureSwitch != null) f2FeatureSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F2_FEATURE, true));
         if (f2SprintSwitch != null) f2SprintSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F2_SPRINT, true));
         if (f2QualiSwitch != null) f2QualiSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F2_QUALIFYING, true));
         if (f2PracticeSwitch != null) f2PracticeSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F2_PRACTICE, false));
-        updateSubSwitchesState(f2SessionsContainer, f2Enabled, f2FeatureSwitch, f2SprintSwitch, f2QualiSwitch, f2PracticeSwitch);
+        updateSubSwitchesState(f2SessionsContainer, f2Enabled, f2NewsSwitch, f2FeatureSwitch, f2SprintSwitch, f2QualiSwitch, f2PracticeSwitch);
 
         boolean f3Enabled = prefs.getBoolean(Constants.PREF_NOTIF_F3_ENABLED, false);
         if (f3MasterSwitch != null) f3MasterSwitch.setChecked(f3Enabled);
+        if (f3NewsSwitch != null) f3NewsSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F3_NEWS, true));
         if (f3FeatureSwitch != null) f3FeatureSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F3_FEATURE, true));
         if (f3SprintSwitch != null) f3SprintSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F3_SPRINT, true));
         if (f3QualiSwitch != null) f3QualiSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F3_QUALIFYING, true));
         if (f3PracticeSwitch != null) f3PracticeSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F3_PRACTICE, false));
-        updateSubSwitchesState(f3SessionsContainer, f3Enabled, f3FeatureSwitch, f3SprintSwitch, f3QualiSwitch, f3PracticeSwitch);
+        updateSubSwitchesState(f3SessionsContainer, f3Enabled, f3NewsSwitch, f3FeatureSwitch, f3SprintSwitch, f3QualiSwitch, f3PracticeSwitch);
 
         // Listener helper lambda
         java.util.function.BiConsumer<String, Boolean> onPrefChanged = (key, value) -> {
@@ -365,8 +369,9 @@ public class ProfileActivity extends AppCompatActivity {
 
         if (f2MasterSwitch != null) f2MasterSwitch.setOnCheckedChangeListener((v, c) -> {
             onPrefChanged.accept(Constants.PREF_NOTIF_F2_ENABLED, c);
-            updateSubSwitchesState(f2SessionsContainer, c, f2FeatureSwitch, f2SprintSwitch, f2QualiSwitch, f2PracticeSwitch);
+            updateSubSwitchesState(f2SessionsContainer, c, f2NewsSwitch, f2FeatureSwitch, f2SprintSwitch, f2QualiSwitch, f2PracticeSwitch);
         });
+        if (f2NewsSwitch != null) f2NewsSwitch.setOnCheckedChangeListener((v, c) -> onPrefChanged.accept(Constants.PREF_NOTIF_F2_NEWS, c));
         if (f2FeatureSwitch != null) f2FeatureSwitch.setOnCheckedChangeListener((v, c) -> onPrefChanged.accept(Constants.PREF_NOTIF_F2_FEATURE, c));
         if (f2SprintSwitch != null) f2SprintSwitch.setOnCheckedChangeListener((v, c) -> onPrefChanged.accept(Constants.PREF_NOTIF_F2_SPRINT, c));
         if (f2QualiSwitch != null) f2QualiSwitch.setOnCheckedChangeListener((v, c) -> onPrefChanged.accept(Constants.PREF_NOTIF_F2_QUALIFYING, c));
@@ -374,8 +379,9 @@ public class ProfileActivity extends AppCompatActivity {
 
         if (f3MasterSwitch != null) f3MasterSwitch.setOnCheckedChangeListener((v, c) -> {
             onPrefChanged.accept(Constants.PREF_NOTIF_F3_ENABLED, c);
-            updateSubSwitchesState(f3SessionsContainer, c, f3FeatureSwitch, f3SprintSwitch, f3QualiSwitch, f3PracticeSwitch);
+            updateSubSwitchesState(f3SessionsContainer, c, f3NewsSwitch, f3FeatureSwitch, f3SprintSwitch, f3QualiSwitch, f3PracticeSwitch);
         });
+        if (f3NewsSwitch != null) f3NewsSwitch.setOnCheckedChangeListener((v, c) -> onPrefChanged.accept(Constants.PREF_NOTIF_F3_NEWS, c));
         if (f3FeatureSwitch != null) f3FeatureSwitch.setOnCheckedChangeListener((v, c) -> onPrefChanged.accept(Constants.PREF_NOTIF_F3_FEATURE, c));
         if (f3SprintSwitch != null) f3SprintSwitch.setOnCheckedChangeListener((v, c) -> onPrefChanged.accept(Constants.PREF_NOTIF_F3_SPRINT, c));
         if (f3QualiSwitch != null) f3QualiSwitch.setOnCheckedChangeListener((v, c) -> onPrefChanged.accept(Constants.PREF_NOTIF_F3_QUALIFYING, c));

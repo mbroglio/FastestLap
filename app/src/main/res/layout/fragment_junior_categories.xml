@@ -7,55 +7,40 @@
     android:layout_height="match_parent"
     tools:context=".ui.home.fragment.RacingFragment">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_top_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_begin="50dp" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_end="0dp" />
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
         android:background="@color/screen_background_color"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toTopOf="@id/guideline_bottom"
-        app:layout_constraintTop_toTopOf="parent">
+        android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/formula_2_card"
                 android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="20dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginBottom="40dp"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardBackgroundColor="@color/timer_gray"
-                app:cardCornerRadius="40dp"
-                app:strokeColor="@color/black"
-                app:strokeWidth="5dp">
+                app:cardBackgroundColor="@color/card_surface_elevated"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:rippleColor="@color/ripple_color"
+                app:strokeColor="@color/formula_2"
+                app:strokeWidth="1.5dp">
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="40dp"
                     android:importantForAccessibility="no"
-                    android:src="@drawable/formula_2_logo" />
+                    app:srcCompat="@drawable/formula_2_logo" />
 
             </com.google.android.material.card.MaterialCardView>
 
@@ -63,31 +48,32 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1">
 
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/formula_3_card"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentBottom="true"
-                android:layout_margin="20dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="40dp"
+                android:layout_marginEnd="40dp"
+                android:layout_marginBottom="40dp"
                 android:clickable="true"
                 android:focusable="true"
-                app:cardBackgroundColor="@color/timer_gray"
-                app:cardCornerRadius="40dp"
-                app:strokeColor="@color/black"
-                app:strokeWidth="5dp">
+                app:cardBackgroundColor="@color/card_surface_elevated"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="4dp"
+                app:rippleColor="@color/ripple_color"
+                app:strokeColor="@color/app_primary_red"
+                app:strokeWidth="1.5dp">
 
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="40dp"
                     android:importantForAccessibility="no"
-                    android:src="@drawable/formula_3_logo" />
+                    app:srcCompat="@drawable/formula_3_logo" />
 
             </com.google.android.material.card.MaterialCardView>
 

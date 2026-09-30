@@ -243,11 +243,19 @@
                         android:text="@string/constructors_standing" />
                 </com.google.android.material.card.MaterialCardView>
 
+                <View
+                    android:id="@+id/header_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="30dp"
+                    android:background="@color/subtle_white_border"
+                    app:layout_constraintTop_toBottomOf="@id/last_race_flag" />
+
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/f3_car_bio_card"
                     android:layout_width="match_parent"
                     android:layout_height="120dp"
-                    android:layout_marginTop="64dp"
                     app:cardBackgroundColor="@color/card_surface_elevated"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="3dp"

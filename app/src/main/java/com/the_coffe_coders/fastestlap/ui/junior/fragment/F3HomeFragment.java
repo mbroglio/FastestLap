@@ -52,11 +52,11 @@ public class F3HomeFragment extends Fragment {
 
 
         entryListCard.setOnClickListener(v ->
-                NavigationUtils.showEntryListDialog(requireActivity().getSupportFragmentManager(), categoryType)
+                NavigationUtils.navigateToJuniorEntryListPage(v, categoryType)
         );
 
         calendarCard.setOnClickListener(v ->
-                NavigationUtils.showCalendarDialog(requireActivity().getSupportFragmentManager(), categoryType)
+                NavigationUtils.navigateToJuniorCalendarPage(v, categoryType)
         );
 
         resultsCard.setOnClickListener(v ->
@@ -64,11 +64,11 @@ public class F3HomeFragment extends Fragment {
         );
 
         driversStandingCard.setOnClickListener(v ->
-                NavigationUtils.showDriversStandingDialog(requireActivity().getSupportFragmentManager(), categoryType)
+                NavigationUtils.navigateToJuniorDriverStandingsPage(v, categoryType)
         );
 
         constructorsStandingCard.setOnClickListener(v ->
-                NavigationUtils.showConstructorsStandingDialog(requireActivity().getSupportFragmentManager(), categoryType)
+                NavigationUtils.navigateToJuniorConstructorStandingsPage(v, categoryType)
         );
 
         carBioCard.setOnClickListener(v ->

@@ -5,12 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/medium_margin"
-    android:layout_marginTop="8dp"
+    android:layout_marginTop="6dp"
     android:layout_marginEnd="@dimen/medium_margin"
-    android:layout_marginBottom="8dp"
-    app:cardBackgroundColor="@color/grey_card"
-    app:strokeColor="@color/grey_card"
-    app:strokeWidth="3dp">
+    android:layout_marginBottom="6dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardBackgroundColor="@color/card_surface_elevated"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="3dp"
+    app:rippleColor="@color/ripple_color"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -27,14 +31,17 @@
             android:layout_gravity="center"
             android:layout_marginStart="5dp">
 
-            <ImageView
+            <com.google.android.material.imageview.ShapeableImageView
                 android:id="@+id/event_nation_flag"
                 android:layout_width="45dp"
                 android:layout_height="35dp"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true">
-
-            </ImageView>
+                android:layout_alignParentTop="true"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.FastestLap.RoundedFlag"
+                app:strokeColor="@color/subtle_white_border"
+                app:strokeWidth="1dp" />
 
             <View
                 android:id="@+id/empty_space_centering"
@@ -47,7 +54,7 @@
 
             <TextView
                 android:id="@+id/gp_round_number"
-                style="@style/t10BoldWhiteLineLimited"
+                style="@style/t10UpperCaseBoldWhiteLineLimited"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -92,6 +99,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/sprint_title"
                         style="@style/t12UpperCaseBoldWhiteLineLimited"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -123,14 +131,13 @@
 
                 </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="2dp"
+                <View
+                    android:id="@+id/track_separator"
+                    android:layout_width="1dp"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginBottom="5dp"
-                    android:background="@color/white">
-
-                </LinearLayout>
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@color/subtle_white_border" />
 
                 <LinearLayout
                     android:id="@+id/feature_race_layout"
@@ -141,6 +148,7 @@
                     android:orientation="vertical">
 
                     <TextView
+                        android:id="@+id/feature_title"
                         style="@style/t12UpperCaseBoldWhiteLineLimited"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

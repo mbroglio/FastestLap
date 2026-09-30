@@ -40,11 +40,13 @@ public class Constants {
     public static final String FCM_TOPIC_SESSION_F1_SPRINT = "session_f1_sprint";
     public static final String FCM_TOPIC_SESSION_F1_PRACTICE = "session_f1_practice";
 
+    public static final String FCM_TOPIC_F2_NEWS = "f2_news";
     public static final String FCM_TOPIC_SESSION_F2_FEATURE = "session_f2_feature";
     public static final String FCM_TOPIC_SESSION_F2_SPRINT = "session_f2_sprint";
     public static final String FCM_TOPIC_SESSION_F2_QUALIFYING = "session_f2_qualifying";
     public static final String FCM_TOPIC_SESSION_F2_PRACTICE = "session_f2_practice";
 
+    public static final String FCM_TOPIC_F3_NEWS = "f3_news";
     public static final String FCM_TOPIC_SESSION_F3_FEATURE = "session_f3_feature";
     public static final String FCM_TOPIC_SESSION_F3_SPRINT = "session_f3_sprint";
     public static final String FCM_TOPIC_SESSION_F3_QUALIFYING = "session_f3_qualifying";
@@ -57,12 +59,14 @@ public class Constants {
     public static final String PREF_NOTIF_F1_PRACTICE = "pref_notif_f1_practice";
 
     public static final String PREF_NOTIF_F2_ENABLED = "pref_notif_f2_enabled";
+    public static final String PREF_NOTIF_F2_NEWS = "pref_notif_f2_news";
     public static final String PREF_NOTIF_F2_FEATURE = "pref_notif_f2_feature";
     public static final String PREF_NOTIF_F2_SPRINT = "pref_notif_f2_sprint";
     public static final String PREF_NOTIF_F2_QUALIFYING = "pref_notif_f2_qualifying";
     public static final String PREF_NOTIF_F2_PRACTICE = "pref_notif_f2_practice";
 
     public static final String PREF_NOTIF_F3_ENABLED = "pref_notif_f3_enabled";
+    public static final String PREF_NOTIF_F3_NEWS = "pref_notif_f3_news";
     public static final String PREF_NOTIF_F3_FEATURE = "pref_notif_f3_feature";
     public static final String PREF_NOTIF_F3_SPRINT = "pref_notif_f3_sprint";
     public static final String PREF_NOTIF_F3_QUALIFYING = "pref_notif_f3_qualifying";
@@ -142,20 +146,6 @@ public class Constants {
         put("invicta", R.drawable.gradient_color_invicta_racing);
         put("art", R.drawable.gradient_color_art_grand_prix);
         put("mp_motorsport", R.drawable.gradient_color_mp_motorsport);
-    }};
-
-    public static final Map<String, Integer> JUNIOR_TEAM_LOGO = new HashMap<>() {{
-        put("dams", R.drawable.dams_logo);
-        put("prema", R.drawable.prema_logo);
-        put("trident", R.drawable.trident_motorsport_logo);
-        put("hitech", R.drawable.hitech_logo);
-        put("campos", R.drawable.campos_racing_logo);
-        put("aix", R.drawable.aix_racing_logo);
-        put("van_amersfoort", R.drawable.van_amersfoort_logo);
-        put("rodin", R.drawable.rodin_motorsport_logo);
-        put("invicta", R.drawable.invicta_racing_logo);
-        put("art", R.drawable.art_grand_prix_logo);
-        put("mp_motorsport", R.drawable.mp_motorsport_logo);
     }};
 
     public static final String[] SESSIONS = {

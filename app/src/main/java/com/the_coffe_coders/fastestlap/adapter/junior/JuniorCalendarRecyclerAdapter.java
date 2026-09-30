@@ -11,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendar;
 import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendarElement;
@@ -20,10 +21,12 @@ public class JuniorCalendarRecyclerAdapter extends RecyclerView.Adapter<JuniorCa
 
     private final Context context;
     private final JuniorCalendar calendar;
+    private final int type;
 
-    public JuniorCalendarRecyclerAdapter(Context context, JuniorCalendar calendar) {
+    public JuniorCalendarRecyclerAdapter(Context context, JuniorCalendar calendar, int type) {
         this.context = context;
         this.calendar = calendar;
+        this.type = type;
     }
 
     @NonNull
@@ -39,6 +42,18 @@ public class JuniorCalendarRecyclerAdapter extends RecyclerView.Adapter<JuniorCa
         JuniorCalendarElement element = calendar.getEvents().get(position);
         holder.eventRound.setText(context.getString(R.string.round_plus_value, element.getRound()));
         holder.eventName.setText(element.getCircuit());
+
+        if(type == 0){
+            holder.eventRound.setTextColor(context.getColor(R.color.formula_2));
+            holder.cardView.setStrokeColor(context.getColor(R.color.formula_2));
+            holder.sprintTitle.setTextColor(context.getColor(R.color.formula_2));
+            holder.featureTitle.setTextColor(context.getColor(R.color.formula_2));
+        }else{
+            holder.eventRound.setTextColor(context.getColor(R.color.app_primary_red));
+            holder.cardView.setStrokeColor(context.getColor(R.color.app_primary_red));
+            holder.sprintTitle.setTextColor(context.getColor(R.color.app_primary_red));
+            holder.featureTitle.setTextColor(context.getColor(R.color.app_primary_red));
+        }
 
         UIUtils.loadImageWithGlide(context, element.getNation_flag_url(), holder.nationFlag,
                 () -> setDates(holder, element));
@@ -64,11 +79,13 @@ public class JuniorCalendarRecyclerAdapter extends RecyclerView.Adapter<JuniorCa
 
     public static class JuniorCalendarViewHolder extends RecyclerView.ViewHolder {
 
-        final TextView eventRound, eventName, sprintDateDay, sprintDateMonth, featureDateDay, featureDateMonth;
+        final MaterialCardView cardView;
+        final TextView eventRound, eventName, sprintDateDay, sprintDateMonth, featureDateDay, featureDateMonth, sprintTitle, featureTitle;
         final ImageView nationFlag;
 
         public JuniorCalendarViewHolder(@NonNull View itemView) {
             super(itemView);
+            cardView = itemView.findViewById(R.id.junior_event_calendar_card_layout);
             eventRound = itemView.findViewById(R.id.gp_round_number);
             eventName = itemView.findViewById(R.id.gp_name);
             sprintDateDay = itemView.findViewById(R.id.sprint_date);
@@ -76,6 +93,8 @@ public class JuniorCalendarRecyclerAdapter extends RecyclerView.Adapter<JuniorCa
             featureDateDay = itemView.findViewById(R.id.feature_date);
             featureDateMonth = itemView.findViewById(R.id.feature_month);
             nationFlag = itemView.findViewById(R.id.event_nation_flag);
+            sprintTitle = itemView.findViewById(R.id.sprint_title);
+            featureTitle = itemView.findViewById(R.id.feature_title);
         }
     }
 }
