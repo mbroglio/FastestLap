@@ -1,349 +1,616 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:layout_marginStart="10dp"
-    android:layout_marginEnd="5dp"
-    android:background="@color/screen_background_color"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/text_view"
-        style="@style/t18BoldWhite"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/weekend_schedule_index" />
+    app:cardBackgroundColor="@color/card_surface_elevated"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="3dp"
+    app:strokeColor="@color/subtle_white_border"
+    app:strokeWidth="1dp">
 
     <LinearLayout
-        android:id="@+id/sessions_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="5dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="14dp">
 
         <LinearLayout
-            android:id="@+id/session_1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/bottom_right_stroke"
-            android:clickable="false"
-            android:focusable="false"
+            android:layout_marginBottom="12dp"
+            android:gravity="center_vertical"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/session_1_name"
-                style="@style/t14BoldWhiteLineLimited"
+                android:id="@+id/text_view"
+                style="@style/t18UpperCaseBoldWhite"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.4"
-                android:paddingEnd="5dp"
-                android:text="@string/not_found"
-                tools:ignore="RtlSymmetry" />
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:text="@string/weekend_schedule_index"
+                android:textColor="@color/white" />
 
-            <TextView
-                android:id="@+id/session_1_day"
-                style="@style/t12RegularWhiteLineLimited"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.23"
-                android:paddingEnd="5dp"
-                android:text="@string/not_found"
-                tools:ignore="RtlSymmetry" />
-
-            <TextView
-                android:id="@+id/session_1_time"
-                style="@style/t12RegularWhiteLineLimited"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.27"
-                android:gravity="center"
-                android:paddingEnd="5dp"
-                android:text="@string/not_found"
-                tools:ignore="RtlSymmetry" />
-
-            <LinearLayout
-                android:id="@+id/session_1_flag_container"
-                android:layout_width="0dp"
-                android:layout_height="28dp"
-                android:layout_weight="0.1"
-                android:background="@drawable/background_right_rounded"
-                android:clickable="false"
-                android:focusable="false">
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/schedule_weather_badge"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardBackgroundColor="@color/card_surface_dark"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/subtle_white_border"
+                app:strokeWidth="1dp">
 
                 <ImageView
-                    android:id="@+id/session_1_flag"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="3dp"
+                    android:id="@+id/schedule_weather_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
                     android:importantForAccessibility="no"
-                    android:visibility="invisible"
-                    app:srcCompat="@drawable/checkered_flag" />
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/partially_cloud_weather_icon" />
 
-            </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/schedule_calendar_badge"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardBackgroundColor="@color/card_surface_dark"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp"
+                app:strokeColor="@color/subtle_white_border"
+                app:strokeWidth="1dp">
+
+                <ImageView
+                    android:id="@+id/schedule_calendar_icon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:importantForAccessibility="no"
+                    android:scaleType="fitCenter"
+                    app:srcCompat="@drawable/calendar_add_icon"
+                    app:tint="@color/white" />
+
+            </com.google.android.material.card.MaterialCardView>
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/session_2"
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/bottom_right_stroke"
-            android:clickable="false"
-            android:focusable="false"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/session_2_name"
-                style="@style/t14BoldWhiteLineLimited"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.4"
-                android:paddingEnd="5dp"
-                android:text="@string/not_found"
-                tools:ignore="RtlSymmetry" />
-
-            <TextView
-                android:id="@+id/session_2_day"
-                style="@style/t12RegularWhiteLineLimited"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.23"
-                android:paddingEnd="5dp"
-                android:text="@string/not_found"
-                tools:ignore="RtlSymmetry" />
-
-            <TextView
-                android:id="@+id/session_2_time"
-                style="@style/t12RegularWhiteLineLimited"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.27"
-                android:gravity="center"
-                android:paddingEnd="5dp"
-                android:text="@string/not_found"
-                tools:ignore="RtlSymmetry" />
+            app:cardBackgroundColor="@color/card_surface_dark"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/subtle_white_border"
+            app:strokeWidth="1dp">
 
             <LinearLayout
-                android:id="@+id/session_2_flag_container"
-                android:layout_width="0dp"
-                android:layout_height="28dp"
-                android:layout_weight="0.1"
-                android:background="@drawable/background_right_rounded"
-                android:clickable="false"
-                android:focusable="false">
+                android:id="@+id/sessions_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-                <ImageView
-                    android:id="@+id/session_2_flag"
+                <!-- TABLE HEADER -->
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="3dp"
-                    android:importantForAccessibility="no"
-                    android:visibility="invisible"
-                    app:srcCompat="@drawable/checkered_flag" />
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="12dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="10dp">
+
+                    <TextView
+                        style="@style/t10UpperCaseBoldWhiteLineLimited"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.26"
+                        android:gravity="center"
+                        android:text="@string/schedule_session"
+                        android:textColor="@color/timer_gray" />
+
+                    <TextView
+                        style="@style/t10UpperCaseBoldWhiteLineLimited"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.28"
+                        android:gravity="center"
+                        android:text="@string/schedule_day"
+                        android:textColor="@color/timer_gray" />
+
+                    <TextView
+                        style="@style/t10UpperCaseBoldWhiteLineLimited"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.30"
+                        android:gravity="center"
+                        android:text="@string/schedule_time"
+                        android:textColor="@color/timer_gray" />
+
+                    <TextView
+                        style="@style/t10UpperCaseBoldWhiteLineLimited"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.16"
+                        android:gravity="center"
+                        android:text="@string/schedule_status"
+                        android:textColor="@color/timer_gray" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/subtle_white_border" />
+
+                <!-- SESSION 1 -->
+                <LinearLayout
+                    android:id="@+id/session_1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="12dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/session_1_name"
+                        style="@style/t12BoldWhiteLineLimited"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.26"
+                        android:gravity="center"
+                        android:maxLines="2"
+                        android:paddingStart="2dp"
+                        android:paddingEnd="2dp"
+                        android:text="@string/not_found"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/session_1_day"
+                        style="@style/t12RegularWhiteLineLimited"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.28"
+                        android:gravity="center"
+                        android:paddingStart="2dp"
+                        android:paddingEnd="2dp"
+                        android:text="@string/not_found"
+                        android:textColor="@color/timer_gray" />
+
+                    <TextView
+                        android:id="@+id/session_1_time"
+                        style="@style/t12BoldWhiteLineLimited"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.3"
+                        android:gravity="center"
+                        android:paddingStart="2dp"
+                        android:paddingEnd="2dp"
+                        android:text="@string/not_found"
+                        android:textColor="@color/white" />
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.16">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/session_1_flag_container"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:visibility="invisible"
+                            app:cardBackgroundColor="@color/card_surface_elevated"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="2dp"
+                            app:strokeColor="@color/subtle_white_border"
+                            app:strokeWidth="1dp">
+
+                            <ImageView
+                                android:id="@+id/session_1_flag"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:layout_gravity="center"
+                                android:importantForAccessibility="no"
+                                android:scaleType="fitCenter"
+                                app:srcCompat="@drawable/checkered_flag"
+                                app:tint="@color/white" />
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/subtle_white_border" />
+
+                <!-- SESSION 2 -->
+                <LinearLayout
+                    android:id="@+id/session_2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="12dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/session_2_name"
+                        style="@style/t12BoldWhiteLineLimited"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.26"
+                        android:gravity="center"
+                        android:maxLines="2"
+                        android:paddingStart="2dp"
+                        android:paddingEnd="2dp"
+                        android:text="@string/not_found"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/session_2_day"
+                        style="@style/t12RegularWhiteLineLimited"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.28"
+                        android:gravity="center"
+                        android:paddingStart="2dp"
+                        android:paddingEnd="2dp"
+                        android:text="@string/not_found"
+                        android:textColor="@color/timer_gray" />
+
+                    <TextView
+                        android:id="@+id/session_2_time"
+                        style="@style/t12BoldWhiteLineLimited"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.30"
+                        android:gravity="center"
+                        android:paddingStart="2dp"
+                        android:paddingEnd="2dp"
+                        android:text="@string/not_found"
+                        android:textColor="@color/white" />
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.16">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/session_2_flag_container"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:visibility="invisible"
+                            app:cardBackgroundColor="@color/card_surface_elevated"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="2dp"
+                            app:strokeColor="@color/subtle_white_border"
+                            app:strokeWidth="1dp">
+
+                            <ImageView
+                                android:id="@+id/session_2_flag"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:layout_gravity="center"
+                                android:importantForAccessibility="no"
+                                android:scaleType="fitCenter"
+                                app:srcCompat="@drawable/checkered_flag"
+                                app:tint="@color/white" />
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/subtle_white_border" />
+
+                <!-- SESSION 3 -->
+                <LinearLayout
+                    android:id="@+id/session_3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="12dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/session_3_name"
+                        style="@style/t12BoldWhiteLineLimited"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.26"
+                        android:gravity="center"
+                        android:maxLines="2"
+                        android:paddingStart="2dp"
+                        android:paddingEnd="2dp"
+                        android:text="@string/not_found"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/session_3_day"
+                        style="@style/t12RegularWhiteLineLimited"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.28"
+                        android:gravity="center"
+                        android:paddingStart="2dp"
+                        android:paddingEnd="2dp"
+                        android:text="@string/not_found"
+                        android:textColor="@color/timer_gray" />
+
+                    <TextView
+                        android:id="@+id/session_3_time"
+                        style="@style/t12BoldWhiteLineLimited"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.30"
+                        android:gravity="center"
+                        android:paddingStart="2dp"
+                        android:paddingEnd="2dp"
+                        android:text="@string/not_found"
+                        android:textColor="@color/white" />
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.16">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/session_3_flag_container"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:visibility="invisible"
+                            app:cardBackgroundColor="@color/card_surface_elevated"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="2dp"
+                            app:strokeColor="@color/subtle_white_border"
+                            app:strokeWidth="1dp">
+
+                            <ImageView
+                                android:id="@+id/session_3_flag"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:layout_gravity="center"
+                                android:importantForAccessibility="no"
+                                android:scaleType="fitCenter"
+                                app:srcCompat="@drawable/checkered_flag"
+                                app:tint="@color/white" />
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/subtle_white_border" />
+
+                <!-- SESSION 4 -->
+                <LinearLayout
+                    android:id="@+id/session_4"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="12dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/session_4_name"
+                        style="@style/t12BoldWhiteLineLimited"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.26"
+                        android:gravity="center"
+                        android:maxLines="2"
+                        android:paddingStart="2dp"
+                        android:paddingEnd="2dp"
+                        android:text="@string/not_found"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/session_4_day"
+                        style="@style/t12RegularWhiteLineLimited"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.28"
+                        android:gravity="center"
+                        android:paddingStart="2dp"
+                        android:paddingEnd="2dp"
+                        android:text="@string/not_found"
+                        android:textColor="@color/timer_gray" />
+
+                    <TextView
+                        android:id="@+id/session_4_time"
+                        style="@style/t12BoldWhiteLineLimited"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.30"
+                        android:gravity="center"
+                        android:paddingStart="2dp"
+                        android:paddingEnd="2dp"
+                        android:text="@string/not_found"
+                        android:textColor="@color/white" />
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.16">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/session_4_flag_container"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:visibility="invisible"
+                            app:cardBackgroundColor="@color/card_surface_elevated"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="2dp"
+                            app:strokeColor="@color/subtle_white_border"
+                            app:strokeWidth="1dp">
+
+                            <ImageView
+                                android:id="@+id/session_4_flag"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:layout_gravity="center"
+                                android:importantForAccessibility="no"
+                                android:scaleType="fitCenter"
+                                app:srcCompat="@drawable/checkered_flag"
+                                app:tint="@color/white" />
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/subtle_white_border" />
+
+                <!-- SESSION 5 -->
+                <LinearLayout
+                    android:id="@+id/session_5"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="12dp"
+                    android:paddingTop="10dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/session_5_name"
+                        style="@style/t12BoldWhiteLineLimited"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.26"
+                        android:gravity="center"
+                        android:maxLines="2"
+                        android:paddingStart="2dp"
+                        android:paddingEnd="2dp"
+                        android:text="@string/not_found"
+                        android:textColor="@color/white" />
+
+                    <TextView
+                        android:id="@+id/session_5_day"
+                        style="@style/t12RegularWhiteLineLimited"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.28"
+                        android:gravity="center"
+                        android:paddingStart="2dp"
+                        android:paddingEnd="2dp"
+                        android:text="@string/not_found"
+                        android:textColor="@color/timer_gray" />
+
+                    <TextView
+                        android:id="@+id/session_5_time"
+                        style="@style/t12BoldWhiteLineLimited"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.30"
+                        android:gravity="center"
+                        android:paddingStart="2dp"
+                        android:paddingEnd="2dp"
+                        android:text="@string/not_found"
+                        android:textColor="@color/white" />
+
+                    <FrameLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.16">
+
+                        <com.google.android.material.card.MaterialCardView
+                            android:id="@+id/session_5_flag_container"
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:layout_gravity="center"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:visibility="invisible"
+                            app:cardBackgroundColor="@color/card_surface_elevated"
+                            app:cardCornerRadius="8dp"
+                            app:cardElevation="2dp"
+                            app:strokeColor="@color/subtle_white_border"
+                            app:strokeWidth="1dp">
+
+                            <ImageView
+                                android:id="@+id/session_5_flag"
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:layout_gravity="center"
+                                android:importantForAccessibility="no"
+                                android:scaleType="fitCenter"
+                                app:srcCompat="@drawable/checkered_flag"
+                                app:tint="@color/white" />
+
+                        </com.google.android.material.card.MaterialCardView>
+
+                    </FrameLayout>
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/session_3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/bottom_right_stroke"
-            android:clickable="false"
-            android:focusable="false"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/session_3_name"
-                style="@style/t14BoldWhiteLineLimited"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.4"
-                android:paddingEnd="5dp"
-                android:text="@string/not_found"
-                tools:ignore="RtlSymmetry" />
-
-            <TextView
-                android:id="@+id/session_3_day"
-                style="@style/t12RegularWhiteLineLimited"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.23"
-                android:paddingEnd="5dp"
-                android:text="@string/not_found"
-                tools:ignore="RtlSymmetry" />
-
-            <TextView
-                android:id="@+id/session_3_time"
-                style="@style/t12RegularWhiteLineLimited"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.27"
-                android:gravity="center"
-                android:paddingEnd="5dp"
-                android:text="@string/not_found"
-                tools:ignore="RtlSymmetry" />
-
-            <LinearLayout
-                android:id="@+id/session_3_flag_container"
-                android:layout_width="0dp"
-                android:layout_height="28dp"
-                android:layout_weight="0.1"
-                android:background="@drawable/background_right_rounded"
-                android:clickable="false"
-                android:focusable="false">
-
-                <ImageView
-                    android:id="@+id/session_3_flag"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="3dp"
-                    android:importantForAccessibility="no"
-                    android:visibility="invisible"
-                    app:srcCompat="@drawable/checkered_flag" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/session_4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/bottom_right_stroke"
-            android:clickable="false"
-            android:focusable="false"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/session_4_name"
-                style="@style/t14BoldWhiteLineLimited"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.4"
-                android:paddingEnd="5dp"
-                android:text="@string/not_found"
-                tools:ignore="RtlSymmetry" />
-
-            <TextView
-                android:id="@+id/session_4_day"
-                style="@style/t12RegularWhiteLineLimited"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.23"
-                android:paddingEnd="5dp"
-                android:text="@string/not_found"
-                tools:ignore="RtlSymmetry" />
-
-            <TextView
-                android:id="@+id/session_4_time"
-                style="@style/t12RegularWhiteLineLimited"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.27"
-                android:gravity="center"
-                android:paddingEnd="5dp"
-                android:text="@string/not_found"
-                tools:ignore="RtlSymmetry" />
-
-            <LinearLayout
-                android:id="@+id/session_4_flag_container"
-                android:layout_width="0dp"
-                android:layout_height="28dp"
-                android:layout_weight="0.1"
-                android:background="@drawable/background_right_rounded"
-                android:clickable="false"
-                android:focusable="false">
-
-                <ImageView
-                    android:id="@+id/session_4_flag"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="3dp"
-                    android:importantForAccessibility="no"
-                    android:visibility="invisible"
-                    app:srcCompat="@drawable/checkered_flag" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/session_5"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/bottom_right_stroke"
-            android:clickable="false"
-            android:focusable="false"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/session_5_name"
-                style="@style/t14BoldWhiteLineLimited"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.4"
-                android:paddingEnd="5dp"
-                android:text="@string/not_found"
-                tools:ignore="RtlSymmetry" />
-
-            <TextView
-                android:id="@+id/session_5_day"
-                style="@style/t12RegularWhiteLineLimited"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.23"
-                android:paddingEnd="5dp"
-                android:text="@string/not_found"
-                tools:ignore="RtlSymmetry" />
-
-            <TextView
-                android:id="@+id/session_5_time"
-                style="@style/t12RegularWhiteLineLimited"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.27"
-                android:gravity="center"
-                android:paddingEnd="5dp"
-                android:text="@string/not_found"
-                tools:ignore="RtlSymmetry" />
-
-            <LinearLayout
-                android:id="@+id/session_5_flag_container"
-                android:layout_width="0dp"
-                android:layout_height="28dp"
-                android:layout_weight="0.1"
-                android:background="@drawable/background_right_rounded"
-                android:clickable="false"
-                android:focusable="false">
-
-                <ImageView
-                    android:id="@+id/session_5_flag"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_margin="3dp"
-                    android:importantForAccessibility="no"
-                    android:visibility="invisible"
-                    app:srcCompat="@drawable/checkered_flag" />
-
-            </LinearLayout>
-
-        </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -15,6 +15,8 @@ import androidx.navigation.Navigation;
 
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResultFastestLap;
+import com.the_coffe_coders.fastestlap.domain.f1.result.Stint;
 import com.the_coffe_coders.fastestlap.domain.junior.result.FeatureRace;
 import com.the_coffe_coders.fastestlap.domain.junior.result.SprintRace;
 import com.the_coffe_coders.fastestlap.ui.bio.ConstructorBioActivity;
@@ -22,13 +24,13 @@ import com.the_coffe_coders.fastestlap.ui.bio.DriverBioActivity;
 import com.the_coffe_coders.fastestlap.ui.bio.TrackBioActivity;
 import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.ui.event.PastEventsActivity;
+import com.the_coffe_coders.fastestlap.ui.event.RaceAndSprintResultsActivity;
 import com.the_coffe_coders.fastestlap.ui.event.UpcomingEventsActivity;
 import com.the_coffe_coders.fastestlap.ui.event.fragment.QualifyingResultsFragment;
-import com.the_coffe_coders.fastestlap.ui.event.fragment.RaceAndSprintResultsFragment;
 import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.junior.Formula2Activity;
 import com.the_coffe_coders.fastestlap.ui.junior.Formula3Activity;
-import com.the_coffe_coders.fastestlap.ui.junior.fragment.JuniorDialogFragment;
+import com.the_coffe_coders.fastestlap.ui.junior.fragment.JuniorFullResultsDialogFragment;
 import com.the_coffe_coders.fastestlap.ui.profile.LoginFragment;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
@@ -37,9 +39,19 @@ import com.the_coffe_coders.fastestlap.ui.welcome.fragment.ForgotPasswordFragmen
 import com.the_coffe_coders.fastestlap.ui.welcome.fragment.SignUpFragment;
 import com.the_coffe_coders.fastestlap.util.Constants;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class NavigationUtils {
     public static void navigateToHomePage(Context context) {
+        navigateToHomePage(context, null);
+    }
+
+    public static void navigateToHomePage(Context context, Bundle extras) {
         Intent intent = new Intent(context, HomePageActivity.class);
+        if (extras != null) {
+            intent.putExtras(extras);
+        }
         context.startActivity(intent);
     }
 
@@ -108,6 +120,25 @@ public class NavigationUtils {
         context.startActivity(intent);
     }
 
+    public static void navigateToLivePage(Context context) {
+        navigateToLivePage(context, null, null);
+    }
+
+    public static void navigateToLivePage(Context context, String eventTitle) {
+        navigateToLivePage(context, eventTitle, null);
+    }
+
+    public static void navigateToLivePage(Context context, String eventTitle, String totalLaps) {
+        Intent intent = new Intent(context, com.the_coffe_coders.fastestlap.ui.live.LiveActivity.class);
+        if (eventTitle != null) {
+            intent.putExtra("EVENT_TITLE", eventTitle);
+        }
+        if (totalLaps != null) {
+            intent.putExtra("TOTAL_LAPS", totalLaps);
+        }
+        context.startActivity(intent);
+    }
+
     public static void navigateToJuniorPage(Context context, int categoryType) {
         Intent intent;
         switch (categoryType) {
@@ -164,44 +195,70 @@ public class NavigationUtils {
         }
     }
 
-    public static void showEntryListDialog(FragmentManager fragmentManager, int categoryType) {
-        showJuniorDialog(fragmentManager, categoryType, -1, 0, null, null, null);
+    public static void navigateToJuniorEntryListPage(View view, int categoryType) {
+        NavController navController = Navigation.findNavController(view);
+        Bundle args = new Bundle();
+        args.putInt("CATEGORY_TYPE", categoryType);
+        if (categoryType == 0) {
+            navController.navigate(R.id.to_juniorEntryList_formula2, args);
+        } else if (categoryType == 1) {
+            navController.navigate(R.id.to_juniorEntryList_formula3, args);
+        }
     }
 
-    public static void showCalendarDialog(FragmentManager fragmentManager, int categoryType) {
-        showJuniorDialog(fragmentManager, categoryType, -1, 1, null, null, null);
+    public static void navigateToJuniorCalendarPage(View view, int categoryType) {
+        NavController navController = Navigation.findNavController(view);
+        Bundle args = new Bundle();
+        args.putInt("CATEGORY_TYPE", categoryType);
+        if (categoryType == 0) {
+            navController.navigate(R.id.to_juniorCalendar_formula2, args);
+        } else if (categoryType == 1) {
+            navController.navigate(R.id.to_juniorCalendar_formula3, args);
+        }
     }
 
-    public static void showDriversStandingDialog(FragmentManager fragmentManager, int categoryType) {
-        showJuniorDialog(fragmentManager, categoryType, -1, 2, null, null, null);
+    public static void navigateToJuniorDriverStandingsPage(View view, int categoryType) {
+        NavController navController = Navigation.findNavController(view);
+        Bundle args = new Bundle();
+        args.putInt("CATEGORY_TYPE", categoryType);
+        if (categoryType == 0) {
+            navController.navigate(R.id.to_juniorDriverStandings_formula2, args);
+        } else if (categoryType == 1) {
+            navController.navigate(R.id.to_juniorDriverStandings_formula3, args);
+        }
     }
 
-    public static void showConstructorsStandingDialog(FragmentManager fragmentManager, int categoryType) {
-        showJuniorDialog(fragmentManager, categoryType, -1, 3, null, null, null);
+    public static void navigateToJuniorConstructorStandingsPage(View view, int categoryType) {
+        NavController navController = Navigation.findNavController(view);
+        Bundle args = new Bundle();
+        args.putInt("CATEGORY_TYPE", categoryType);
+        if (categoryType == 0) {
+            navController.navigate(R.id.to_juniorConstructorStandings_formula2, args);
+        } else if (categoryType == 1) {
+            navController.navigate(R.id.to_juniorConstructorStandings_formula3, args);
+        }
     }
 
     public static void showFullResultsDialogFeature(String circuit, FeatureRace featureRace, FragmentManager fragmentManager, int categoryType, int raceType) {
-        showJuniorDialog(fragmentManager, categoryType, raceType, 4, featureRace, null, circuit);
-    }
-
-    public static void showFullResultsDialogSprint(String circuit, SprintRace sprintRace, FragmentManager fragmentManager, int categoryType, int raceType) {
-        showJuniorDialog(fragmentManager, categoryType, raceType, 4, null, sprintRace, circuit);
-    }
-
-
-    private static void showJuniorDialog(FragmentManager fragmentManager,
-                                         int categoryType, int raceType, int content,
-                                         FeatureRace featureRace, SprintRace sprintRace, String circuit) {
-        JuniorDialogFragment juniorDialogFragment = new JuniorDialogFragment();
+        JuniorFullResultsDialogFragment dialog = new JuniorFullResultsDialogFragment();
         Bundle args = new Bundle();
         args.putInt("CATEGORY_TYPE", categoryType);
         args.putInt("RACE_TYPE", raceType);
-        args.putInt("CONTENT", content);
-        args.putParcelable("JUNIOR_SPRINT_RACE", sprintRace);
         args.putParcelable("JUNIOR_FEATURE_RACE", featureRace);
         args.putString("CIRCUIT", circuit);
-        juniorDialogFragment.setArguments(args);
-        juniorDialogFragment.show(fragmentManager, "JuniorDialogFragment");
+        dialog.setArguments(args);
+        dialog.show(fragmentManager, "JuniorFullResultsDialogFragment");
+    }
+
+    public static void showFullResultsDialogSprint(String circuit, SprintRace sprintRace, FragmentManager fragmentManager, int categoryType, int raceType) {
+        JuniorFullResultsDialogFragment dialog = new JuniorFullResultsDialogFragment();
+        Bundle args = new Bundle();
+        args.putInt("CATEGORY_TYPE", categoryType);
+        args.putInt("RACE_TYPE", raceType);
+        args.putParcelable("JUNIOR_SPRINT_RACE", sprintRace);
+        args.putString("CIRCUIT", circuit);
+        dialog.setArguments(args);
+        dialog.show(fragmentManager, "JuniorFullResultsDialogFragment");
     }
 
     public static void navigateToWelcomePage(Context context) {
@@ -209,21 +266,26 @@ public class NavigationUtils {
         context.startActivity(intent);
     }
 
-    public static void showRaceResultsDialog(FragmentManager fragmentManager, Race race, int sessionType) {
+    public static void showRaceResults(Context context, Race race, int sessionType, List<Stint> stints, RaceResultFastestLap fastestLap) {
         switch (sessionType) {
             case 0:
-                RaceAndSprintResultsFragment raceAndSprintResultsFragment = new RaceAndSprintResultsFragment();
-                Bundle args = new Bundle();
-                args.putParcelable("RACE", race);
-                raceAndSprintResultsFragment.setArguments(args);
-                raceAndSprintResultsFragment.show(fragmentManager, "RaceResultsFragment");
+                Intent intent = new Intent(context, RaceAndSprintResultsActivity.class);
+                intent.putExtra("RACE", race);
+                intent.putExtra("FASTEST_LAP", fastestLap);
+                if (stints != null) {
+                    intent.putParcelableArrayListExtra("STINTS", new ArrayList<>(stints));
+                }
+                context.startActivity(intent);
                 break;
             case 1:
-                QualifyingResultsFragment qualifyingResultsFragment = new QualifyingResultsFragment();
-                Bundle qualifyingArgs = new Bundle();
-                qualifyingArgs.putParcelable("RACE", race);
-                qualifyingResultsFragment.setArguments(qualifyingArgs);
-                qualifyingResultsFragment.show(fragmentManager, "QualifyingResultsFragment");
+                if (context instanceof androidx.fragment.app.FragmentActivity) {
+                    FragmentManager fragmentManager = ((androidx.fragment.app.FragmentActivity) context).getSupportFragmentManager();
+                    QualifyingResultsFragment qualifyingResultsFragment = new QualifyingResultsFragment();
+                    Bundle qualifyingArgs = new Bundle();
+                    qualifyingArgs.putParcelable("RACE", race);
+                    qualifyingResultsFragment.setArguments(qualifyingArgs);
+                    qualifyingResultsFragment.show(fragmentManager, "QualifyingResultsFragment");
+                }
                 break;
         }
     }
@@ -257,6 +319,26 @@ public class NavigationUtils {
             Toast.makeText(context, R.string.no_map_app_found, Toast.LENGTH_SHORT).show();
             Log.e("UIUtils", "No map app found to open location");
         }
+    }
+
+    public static void navigateToWeatherPage(Context context, String locality, String latitude, String longitude, String sessionKey) {
+        navigateToWeatherPage(context, locality, latitude, longitude, sessionKey, null, null, false);
+    }
+
+    public static void navigateToWeatherPage(Context context, String locality, String latitude, String longitude, String sessionKey, String startDate, String endDate) {
+        navigateToWeatherPage(context, locality, latitude, longitude, sessionKey, startDate, endDate, false);
+    }
+
+    public static void navigateToWeatherPage(Context context, String locality, String latitude, String longitude, String sessionKey, String startDate, String endDate, boolean isSessionInProgress) {
+        Intent intent = new Intent(context, com.the_coffe_coders.fastestlap.ui.weather.WeatherActivity.class);
+        if (locality != null) intent.putExtra("LOCALITY", locality);
+        if (latitude != null) intent.putExtra("LATITUDE", latitude);
+        if (longitude != null) intent.putExtra("LONGITUDE", longitude);
+        if (sessionKey != null) intent.putExtra("SESSION_KEY", sessionKey);
+        if (startDate != null) intent.putExtra("START_DATE", startDate);
+        if (endDate != null) intent.putExtra("END_DATE", endDate);
+        intent.putExtra("IS_SESSION_IN_PROGRESS", isSessionInProgress);
+        context.startActivity(intent);
     }
 
     public static void openGoogleWeather(Context context, String locality) {

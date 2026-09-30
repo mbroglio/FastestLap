@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.threeten.bp.DayOfWeek;
+
 public class Constants {
 
     public static final int SPACER_HEIGHT = 20;
@@ -15,6 +17,60 @@ public class Constants {
     public static final String SHARED_PREFERENCES_FAVORITE_TEAM = "team_favorite";
     public static final String SHARED_PREFERENCES_AUTO_LOGIN = "auto_login";
     public static final String SHARED_PREFERENCES_LAST_UPDATE = "last_update";
+    public static final String SHARED_PREFERENCES_NEWS_SOURCE = "news_source";
+    public static final String SHARED_PREFERENCES_NEWS_SOURCE_ID = "news_source_id";
+    public static final String SHARED_PREFERENCES_NEWS_LANGUAGE = "news_language";
+    public static final String SHARED_PREFERENCES_NEWS_INDEX = "news_source_index";
+
+    public static final String NEWS_SOURCE_ID_MOTORSPORT = "motorsport";
+    public static final String NEWS_SOURCE_ID_AUTOSPORT = "autosport";
+    public static final String NEWS_SOURCE_ID_CRASH = "crash";
+
+    public static final String FCM_TOPIC_ALL = "all";
+    public static final String FCM_TOPIC_SESSIONS = "sessions";
+    public static final String FCM_TOPIC_NEWS = "news";
+    public static final String FCM_TOPIC_NEWS_PREFIX = "news_";
+    public static final String FCM_TOPIC_NEWS_MOTORSPORT = "news_motorsport";
+    public static final String FCM_TOPIC_NEWS_AUTOSPORT = "news_autosport";
+    public static final String FCM_TOPIC_NEWS_CRASH = "news_crash";
+
+    // Granular session notification topics (F1, F2, F3)
+    public static final String FCM_TOPIC_SESSION_F1_RACE = "session_f1_race";
+    public static final String FCM_TOPIC_SESSION_F1_QUALIFYING = "session_f1_qualifying";
+    public static final String FCM_TOPIC_SESSION_F1_SPRINT = "session_f1_sprint";
+    public static final String FCM_TOPIC_SESSION_F1_PRACTICE = "session_f1_practice";
+
+    public static final String FCM_TOPIC_F2_NEWS = "f2_news";
+    public static final String FCM_TOPIC_SESSION_F2_FEATURE = "session_f2_feature";
+    public static final String FCM_TOPIC_SESSION_F2_SPRINT = "session_f2_sprint";
+    public static final String FCM_TOPIC_SESSION_F2_QUALIFYING = "session_f2_qualifying";
+    public static final String FCM_TOPIC_SESSION_F2_PRACTICE = "session_f2_practice";
+
+    public static final String FCM_TOPIC_F3_NEWS = "f3_news";
+    public static final String FCM_TOPIC_SESSION_F3_FEATURE = "session_f3_feature";
+    public static final String FCM_TOPIC_SESSION_F3_SPRINT = "session_f3_sprint";
+    public static final String FCM_TOPIC_SESSION_F3_QUALIFYING = "session_f3_qualifying";
+    public static final String FCM_TOPIC_SESSION_F3_PRACTICE = "session_f3_practice";
+
+    // SharedPreferences notification settings keys
+    public static final String PREF_NOTIF_F1_RACE = "pref_notif_f1_race";
+    public static final String PREF_NOTIF_F1_QUALIFYING = "pref_notif_f1_qualifying";
+    public static final String PREF_NOTIF_F1_SPRINT = "pref_notif_f1_sprint";
+    public static final String PREF_NOTIF_F1_PRACTICE = "pref_notif_f1_practice";
+
+    public static final String PREF_NOTIF_F2_ENABLED = "pref_notif_f2_enabled";
+    public static final String PREF_NOTIF_F2_NEWS = "pref_notif_f2_news";
+    public static final String PREF_NOTIF_F2_FEATURE = "pref_notif_f2_feature";
+    public static final String PREF_NOTIF_F2_SPRINT = "pref_notif_f2_sprint";
+    public static final String PREF_NOTIF_F2_QUALIFYING = "pref_notif_f2_qualifying";
+    public static final String PREF_NOTIF_F2_PRACTICE = "pref_notif_f2_practice";
+
+    public static final String PREF_NOTIF_F3_ENABLED = "pref_notif_f3_enabled";
+    public static final String PREF_NOTIF_F3_NEWS = "pref_notif_f3_news";
+    public static final String PREF_NOTIF_F3_FEATURE = "pref_notif_f3_feature";
+    public static final String PREF_NOTIF_F3_SPRINT = "pref_notif_f3_sprint";
+    public static final String PREF_NOTIF_F3_QUALIFYING = "pref_notif_f3_qualifying";
+    public static final String PREF_NOTIF_F3_PRACTICE = "pref_notif_f3_practice";
     public static final int DATABASE_VERSION = 2;
     public static final String SAVED_DRIVERS_STANDINGS_DATABASE = "saved_drivers_standings";
     public static final int FRESH_TIMEOUT = 1000 * 60; // 1 minute in milliseconds
@@ -44,6 +100,9 @@ public class Constants {
     public static final String AUTOSPORT_RSS_URL = "https://www.autosport.com/rss/f1/news/";
     public static final String MOTORSPORT_RSS_URL = "https://it.motorsport.com/rss/f1/news/";
     public static final String CRASH_RSS_URL = "https://www.crash.net/rss/f1";
+    public static final String F2_BASE_URL = "https://www.fiaformula2.com";
+    public static final String F3_BASE_URL = "https://www.fiaformula3.com";
+    public static final String DEFAULT_JUNIOR_NEWS_TAG = "2026.5xathIcs1PM5snXE3lfBr7";
 
     public static final Map<String, Integer> TEAM_COLOR = new HashMap<>() {{
         put("mercedes", R.color.mercedes_f1);
@@ -87,20 +146,6 @@ public class Constants {
         put("invicta", R.drawable.gradient_color_invicta_racing);
         put("art", R.drawable.gradient_color_art_grand_prix);
         put("mp_motorsport", R.drawable.gradient_color_mp_motorsport);
-    }};
-
-    public static final Map<String, Integer> JUNIOR_TEAM_LOGO = new HashMap<>() {{
-        put("dams", R.drawable.dams_logo);
-        put("prema", R.drawable.prema_logo);
-        put("trident", R.drawable.trident_motorsport_logo);
-        put("hitech", R.drawable.hitech_logo);
-        put("campos", R.drawable.campos_racing_logo);
-        put("aix", R.drawable.aix_racing_logo);
-        put("van_amersfoort", R.drawable.van_amersfoort_logo);
-        put("rodin", R.drawable.rodin_motorsport_logo);
-        put("invicta", R.drawable.invicta_racing_logo);
-        put("art", R.drawable.art_grand_prix_logo);
-        put("mp_motorsport", R.drawable.mp_motorsport_logo);
     }};
 
     public static final String[] SESSIONS = {
@@ -151,6 +196,16 @@ public class Constants {
             "Race", R.id.session_5_flag
     );
 
+    public static final Map<String, Integer> SESSION_FLAG_CONTAINER = Map.of(
+            "Practice1", R.id.session_1_flag_container,
+            "Practice2", R.id.session_2_flag_container,
+            "Practice3", R.id.session_3_flag_container,
+            "SprintQualifying", R.id.session_2_flag_container,
+            "Sprint", R.id.session_3_flag_container,
+            "Qualifying", R.id.session_4_flag_container,
+            "Race", R.id.session_5_flag_container
+    );
+
     public static final Map<String, Integer> SESSION_NAME_FIELD = Map.of(
             "Practice1", R.id.session_1_name,
             "Practice2", R.id.session_2_name,
@@ -171,6 +226,46 @@ public class Constants {
             "Race", R.id.session_5
     );
 
+
+    public static final Map<DayOfWeek, String> DAY_OF_WEEK_ENG = Map.of(
+            DayOfWeek.MONDAY, "Monday",
+            DayOfWeek.TUESDAY, "Tuesday",
+            DayOfWeek.WEDNESDAY, "Wednesday",
+            DayOfWeek.THURSDAY, "Thursday",
+            DayOfWeek.FRIDAY, "Friday",
+            DayOfWeek.SATURDAY, "Saturday",
+            DayOfWeek.SUNDAY, "Sunday"
+    );
+
+    public static final Map<DayOfWeek, String> DAY_OF_WEEK_ITA = Map.of(
+            DayOfWeek.MONDAY, "Lunedì",
+            DayOfWeek.TUESDAY, "Martedì",
+            DayOfWeek.WEDNESDAY, "Mercoledì",
+            DayOfWeek.THURSDAY, "Giovedì",
+            DayOfWeek.FRIDAY, "Venerdì",
+            DayOfWeek.SATURDAY, "Sabato",
+            DayOfWeek.SUNDAY, "Domenica"
+    );
+
+    public static final Map<String, String> DAY_NAMES_ENG = Map.of(
+            "MONDAY", "Monday",
+            "TUESDAY", "Tuesday",
+            "WEDNESDAY", "Wednesday",
+            "THURSDAY", "Thursday",
+            "FRIDAY", "Friday",
+            "SATURDAY", "Saturday",
+            "SUNDAY", "Sunday"
+    );
+
+    public static final Map<String, String> DAY_NAMES_ITA = Map.of(
+            "MONDAY", "Lunedì",
+            "TUESDAY", "Martedì",
+            "WEDNESDAY", "Mercoledì",
+            "THURSDAY", "Giovedì",
+            "FRIDAY", "Venerdì",
+            "SATURDAY", "Sabato",
+            "SUNDAY", "Domenica"
+    );
 
     public static final Map<String, String> SESSION_DAY_ENG = Map.of(
             "Practice1", "Friday",
@@ -263,6 +358,31 @@ public class Constants {
         put("rb", "Racing Bulls");
     }};
 
+    public static final Map<String,String> DRIVER_NUMBER_NAME = new HashMap<>() {{
+       put("44", "Lewis Hamilton");
+       put("16", "Charles Leclerc");
+       put("77", "Valtteri Bottas");
+       put("11", "Sergio Pérez");
+       put("3", "Max Verstappen");
+       put("6", "Isack Hadjar");
+       put("55", "Carlos Sainz");
+       put("23", "Alexander Albon");
+       put("81", "Oscar Piastri");
+       put("1", "Lando Norris");
+       put("10", "Pierre Gasly");
+       put("43", "Franco Colapinto");
+       put("18", "Lance Stroll");
+       put("14", "Fernando Alonso");
+       put("87", "Oliver Bearman");
+       put("31", "Esteban Ocon");
+       put("12", "Andrea Kimi Antonelli");
+       put("63", "George Russell");
+       put("30", "Liam Lawson");
+       put("41", "Arvid Lindblad");
+       put("27", "Nico Hulkemberg");
+       put("5", "Gabriel Bortoleto");
+    }};
+
     public static final List<Integer> PODIUM_DRIVER_NAME = List.of(
             R.id.first_name,
             R.id.second_name,
@@ -282,9 +402,9 @@ public class Constants {
     );
 
     public static final List<Integer> PAST_RACE_DRIVER_NAME = List.of(
-            R.id.past_first_driver,
-            R.id.past_second_driver,
-            R.id.past_third_driver
+            R.id.last_race_first,
+            R.id.last_race_second,
+            R.id.last_race_third
     );
 
     public static final List<Integer> HOME_SEASON_DRIVER_STANDINGS_NAME_FIELD = List.of(

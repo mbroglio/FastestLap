@@ -81,4 +81,59 @@ public class JuniorCategoryViewModel extends ViewModel {
                 return null;
         }
     }
+
+    public void refreshResults(int series) {
+        switch (series) {
+            case 0:
+                juniorResultRepository.refreshResults("f2");
+                break;
+            case 1:
+                juniorResultRepository.refreshResults("f3");
+                break;
+        }
+    }
+
+    public void refreshEntryList(int series) {
+        switch (series) {
+            case 0:
+                juniorEntryListRepository.refreshEntryList("f2");
+                break;
+            case 1:
+                juniorEntryListRepository.refreshEntryList("f3");
+                break;
+        }
+    }
+
+    public void refreshCalendar(int series) {
+        switch (series) {
+            case 0:
+                juniorCalendarRepository.refreshCalendar("f2");
+                break;
+            case 1:
+                juniorCalendarRepository.refreshCalendar("f3");
+                break;
+        }
+    }
+
+    public void refreshDriverStandings(int series) {
+        switch (series) {
+            case 0:
+                juniorStandingsRepository.refreshDriverStandings("f2");
+                break;
+            case 1:
+                juniorStandingsRepository.refreshDriverStandings("f3");
+                break;
+        }
+    }
+
+    public void refreshConstructorStandings(int series) {
+        switch (series) {
+            case 0:
+                juniorStandingsRepository.refreshConstructorStandings("f2");
+                break;
+            case 1:
+                juniorStandingsRepository.refreshConstructorStandings("f3");
+                break;
+        }
+    }
 }

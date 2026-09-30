@@ -7,13 +7,11 @@
     android:orientation="vertical">
 
     <TextView
-        style="@style/t16BoldBlack"
+        style="@style/t12UpperCaseBoldWhiteLineLimited"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/next_session_index">
-
-    </TextView>
+        android:text="@string/next_session_index" />
 
     <FrameLayout
         android:layout_width="match_parent"

@@ -13,7 +13,7 @@ import com.the_coffe_coders.fastestlap.repository.f1.result.RaceResultCallback;
 import com.the_coffe_coders.fastestlap.repository.mapper.RaceMapper;
 import com.the_coffe_coders.fastestlap.service.ErgastAPIService;
 import com.the_coffe_coders.fastestlap.util.JSONParserUtils;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
 
 import java.io.IOException;
 

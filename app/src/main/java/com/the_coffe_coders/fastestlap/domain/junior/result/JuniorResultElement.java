@@ -29,17 +29,31 @@ public class JuniorResultElement implements Parcelable {
     };
 
     private int round;
-    private FeatureRace feature;
+    private FeatureRace feature1;
+    private FeatureRace feature2;
     private SprintRace sprint;
     private String circuit;
     private String nationFlagUrl;
 
     protected JuniorResultElement(Parcel in) {
         round = in.readInt();
-        feature = in.readParcelable(FeatureRace.class.getClassLoader());
+        feature1 = in.readParcelable(FeatureRace.class.getClassLoader());
+        feature2 = in.readParcelable(FeatureRace.class.getClassLoader());
         sprint = in.readParcelable(SprintRace.class.getClassLoader());
         circuit = in.readString();
         nationFlagUrl = in.readString();
+    }
+
+    public boolean isEventDouble(){
+        return feature2 != null;
+    }
+
+    public void setFeature(FeatureRace feature) {
+        this.feature1 = feature;
+    }
+
+    public FeatureRace getFeature() {
+        return feature1 != null ? feature1 : feature2;
     }
 
     @Override
@@ -50,7 +64,8 @@ public class JuniorResultElement implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(round);
-        dest.writeParcelable(feature, flags);
+        dest.writeParcelable(feature1, flags);
+        dest.writeParcelable(feature2, flags);
         dest.writeParcelable(sprint, flags);
         dest.writeString(circuit);
         dest.writeString(nationFlagUrl);

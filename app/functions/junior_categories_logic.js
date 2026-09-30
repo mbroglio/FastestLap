@@ -8,6 +8,11 @@ const JUNIOR_ROOT_PATH = "junior_categories";
 const F2_WIKI_URL = `https://en.wikipedia.org/wiki/${currentYear}_Formula_2_Championship`;
 const F3_WIKI_URL = `https://en.wikipedia.org/wiki/${currentYear}_FIA_Formula_3_Championship`;
 
+const F2_BASE_URL = "https://www.fiaformula2.com";
+const F3_BASE_URL = "https://www.fiaformula3.com";
+const DEFAULT_JUNIOR_NEWS_TAG = `${currentYear}.5xathIcs1PM5snXE3lfBr7`;
+
+
 
 
 
@@ -17,12 +22,14 @@ const F3_WIKI_URL = `https://en.wikipedia.org/wiki/${currentYear}_FIA_Formula_3_
 */
 
 // Main Update Function
-async function executeJuniorSeriesUpdate(db) {
-    console.log("Starting Junior Series Update...");
+async function executeJuniorSeriesUpdate(db, options = {}) {
+    console.log("Starting Junior Series Update...", options);
+    const force = options.force === true;
 
     // F2
-    if (await checkRaceYesterday(db, "f2")) await processSeries(db, "f2", F2_WIKI_URL);
-    else{
+    if (force || await checkRaceYesterday(db, "f2")) {
+        await processSeries(db, "f2", F2_WIKI_URL);
+    } else {
         console.log("F2: No race yesterday.");
         const f2EntryListRef = db.ref(`${JUNIOR_ROOT_PATH}/f2/entrylist`);
         const snapshot = await f2EntryListRef.once("value");
@@ -33,8 +40,9 @@ async function executeJuniorSeriesUpdate(db) {
     } 
 
     // F3
-    if (await checkRaceYesterday(db, "f3")) await processSeries(db, "f3", F3_WIKI_URL);
-    else{
+    if (force || await checkRaceYesterday(db, "f3")) {
+        await processSeries(db, "f3", F3_WIKI_URL);
+    } else {
         console.log("F3: No race yesterday.");
         const f3EntryListRef = db.ref(`${JUNIOR_ROOT_PATH}/f3/entrylist`);
         const snapshot = await f3EntryListRef.once("value");
@@ -110,6 +118,12 @@ async function checkRaceYesterday(db, seriesId) {
         const race = calendarData[key];
 
         // Compare string (e.g., "16 March")
+        if (race.feature2_date && race.feature2_date.toLowerCase() === yesterdayString.toLowerCase()) {
+            console.log(`[${seriesId}] Match found: Round ${race.round} at ${race.circuit} on Feature 2 Date`);
+            raceFound = true;
+            break;
+        }
+
         if (race.feature_date && race.feature_date.toLowerCase() === yesterdayString.toLowerCase()) {
             console.log(`[${seriesId}] Match found: Round ${race.round} at ${race.circuit} on Feature Date`);
             raceFound = true;
@@ -155,6 +169,9 @@ async function processSeries(db, seriesId, url) {
                 sprint_date: race.sprint_date,
                 feature_date: race.feature_date
             };
+            if (race.feature2_date) {
+                calendarEntry.feature2_date = race.feature2_date;
+            }
             // Add nationFlagUrl if available
             if (race.nation_flag_url) {
                 calendarEntry.nation_flag_url = race.nation_flag_url;
@@ -165,18 +182,25 @@ async function processSeries(db, seriesId, url) {
 
     const raceResults = scrapeRaceResults($, calendar);
     if (raceResults) {
+        const resultsMap = {};
         raceResults.forEach(race => {
             const raceResultsEntry = {
                 round: race.round,
                 circuit: race.circuit,
                 sprint: race.sprint_race,
-                feature: race.feature_race,
                 nationFlagUrl: race.nationFlagUrl
+            };
+            if (race.isDouble && race.feature2_race) {
+                raceResultsEntry.feature1 = race.feature1_race || race.feature_race;
+                raceResultsEntry.feature2 = race.feature2_race;
+            } else {
+                raceResultsEntry.feature = race.feature_race;
             }
-            updates[`${basePath}/results/${race.round}`] = raceResultsEntry;
+            resultsMap[race.round] = raceResultsEntry;
 
             console.log(`Race results for Round ${race.round} processed.`);
         });
+        updates[`${basePath}/results`] = resultsMap;
     }
 
     const driverStandings = scrapeDriverStandings($, entryList);
@@ -274,9 +298,8 @@ async function scrapeEntryList($, db, seriesId) {
         // Initialize team if not already present
         if (!teamsMap[teamName]) {
             teamsMap[teamName] = {
-                team_logo: (dbEntryListData[teamName] && dbEntryListData[teamName].team_logo) 
-                    ? dbEntryListData[teamName].team_logo 
-                    : {},
+                team_logo_url: "-",
+                car_image_url: "-",
                 drivers: []
             };
         }
@@ -315,6 +338,19 @@ async function scrapeCalendar($, db) {
         const headers = $(table).find('th').text().toLowerCase();
         if (!headers.includes('round') || !headers.includes('circuit') || !headers.includes('feature race')) return;
 
+        let sprintCol = 2;
+        let featureCol = 3;
+        let feature2Col = -1;
+
+        const headerRow = $(table).find('tr').first();
+        headerRow.find('th').each((colIdx, th) => {
+            const hText = $(th).text().toLowerCase();
+            if (hText.includes('sprint')) sprintCol = colIdx;
+            else if (hText.includes('feature 2') || hText.includes('feature race 2')) feature2Col = colIdx;
+            else if (hText.includes('feature 1') || hText.includes('feature race 1')) featureCol = colIdx;
+            else if (hText.includes('feature')) featureCol = colIdx;
+        });
+
         $(table).find('tr').each((rowIndex, row) => {
             const cells = $(row).find('td, th');
             if (cells.length < 4) return;
@@ -330,12 +366,23 @@ async function scrapeCalendar($, db) {
             // Fix to get clean circuit name
             if (!circuitName) circuitName = circuitCell.find('a').first().text().trim();
 
-            calendar.push({
+            const eventItem = {
                 round: roundText,
                 circuit: cleanText(circuitName),
-                sprint_date: cleanText($(cells[2]).text()),
-                feature_date: cleanText($(cells[3]).text())
-            });
+                sprint_date: sprintCol >= 0 && cells.length > sprintCol ? cleanText($(cells[sprintCol]).text()) : cleanText($(cells[2]).text()),
+                feature_date: featureCol >= 0 && cells.length > featureCol ? cleanText($(cells[featureCol]).text()) : cleanText($(cells[3]).text())
+            };
+
+            if (feature2Col >= 0 && cells.length > feature2Col) {
+                eventItem.feature2_date = cleanText($(cells[feature2Col]).text());
+            } else if (cells.length >= 5) {
+                const possibleF2Date = cleanText($(cells[4]).text());
+                if (possibleF2Date && /\d/.test(possibleF2Date)) {
+                    eventItem.feature2_date = possibleF2Date;
+                }
+            }
+
+            calendar.push(eventItem);
         });
     });
 
@@ -397,12 +444,55 @@ async function scrapeCalendar($, db) {
 // scrapes the race results
 function scrapeRaceResults($, calendar = null) {
     console.log("Scraping Results Matrix...");
-    const races = [];
+    const races = {};
     $('table.wikitable').each((i, table) => {
         const headers = $(table).find('th').text().toLowerCase();
         if (!headers.includes('driver') || !headers.includes('points')) return;
 
-        $(table).find('tr').each((rowIndex, row) => {
+        const trs = $(table).find('tr');
+        if (trs.length < 2) return;
+
+        const row0 = $(trs[0]).find('th, td');
+        const row1 = $(trs[1]).find('th, td');
+
+        const columnMap = [];
+        let roundCounter = 1;
+        let subheaderIndex = 0;
+
+        row0.each((idx, cell) => {
+            const cellText = $(cell).text().trim().replace(/\[.*?\]/g, '');
+            const colspan = parseInt($(cell).attr('colspan')) || 1;
+            const rowspan = parseInt($(cell).attr('rowspan')) || 1;
+
+            if (/^(pos|driver|entrant|team|points|no\.?)$/i.test(cellText) || rowspan > 1) {
+                return;
+            }
+
+            const roundNum = roundCounter++;
+            for (let c = 0; c < colspan; c++) {
+                let sessionCode = "";
+                if (subheaderIndex < row1.length) {
+                    sessionCode = $(row1[subheaderIndex]).text().trim().replace(/\[.*?\]/g, '').toUpperCase();
+                    subheaderIndex++;
+                }
+
+                let sessionType = 'sprint';
+                if (colspan === 3) {
+                    if (c === 0 || sessionCode.startsWith('S')) sessionType = 'sprint';
+                    else if (c === 1 || sessionCode === 'FR1' || sessionCode === 'FEA1' || sessionCode === 'R1') sessionType = 'feature1';
+                    else sessionType = 'feature2';
+                } else if (colspan === 2) {
+                    if (c === 0 || sessionCode.startsWith('S')) sessionType = 'sprint';
+                    else sessionType = 'feature1';
+                } else {
+                    sessionType = sessionCode.startsWith('S') ? 'sprint' : 'feature1';
+                }
+
+                columnMap.push({ round: roundNum, sessionType, sessionCode });
+            }
+        });
+
+        trs.each((rowIndex, row) => {
             const cells = $(row).find('td, th');
             if (cells.length === 0) return;
 
@@ -418,15 +508,30 @@ function scrapeRaceResults($, calendar = null) {
             }
             if (!driverName || /^[A-Z]{3}$/.test(driverName)) return;
 
-            let raceCounter = 0;
-            for (let j = resultsStartIndex; j < cells.length - 1; j++) {
-                let rawText = $(cells[j]).text().trim();
-                const roundNum = Math.floor(raceCounter / 2) + 1;
-                const typeKey = (raceCounter % 2 !== 0) ? 'feature' : 'sprint';
-                raceCounter++;
+            for (let j = resultsStartIndex; j < cells.length; j++) {
+                const colIdx = j - resultsStartIndex;
+                if (colIdx >= columnMap.length) break;
 
+                const colInfo = columnMap[colIdx];
+                const roundNum = colInfo.round;
+                const sessionType = colInfo.sessionType;
+
+                if (!races[roundNum]) {
+                    races[roundNum] = {
+                        round: roundNum,
+                        sprint: { status: null, fl: null, pl: null, results: [] },
+                        feature1: { status: null, fl: null, pl: null, results: [] },
+                        feature2: { status: null, fl: null, pl: null, results: [] },
+                        isDouble: false
+                    };
+                }
+
+                if (sessionType === 'feature2') {
+                    races[roundNum].isDouble = true;
+                }
+
+                let rawText = $(cells[j]).text().trim();
                 if (!rawText) continue;
-                if (!races[roundNum]) races[roundNum] = { round: roundNum, sprint: { status: null, fl: null, pl: null, results: [] }, feature: { status: null, fl: null, pl: null, results: [] } };
 
                 // Cleaning and Logic
                 rawText = rawText.replace(/\[.*?\]/g, '');
@@ -438,18 +543,18 @@ function scrapeRaceResults($, calendar = null) {
                 rawText = rawText.trim();
 
                 // Handle race status markers
-                if (rawText === "SR" || rawText === "FR") {
-                    races[roundNum][typeKey].status = "not_started";
+                if (rawText === "SR" || rawText === "FR" || rawText === "FR1" || rawText === "FR2") {
+                    races[roundNum][sessionType].status = "not_started";
                     continue;
                 }
                 if (rawText === "C") {
-                    races[roundNum][typeKey].status = "cancelled";
+                    races[roundNum][sessionType].status = "cancelled";
                     continue;
                 }
 
                 if (rawText) {
-                    if (isFL) races[roundNum][typeKey].fl = driverName;
-                    if (isPole) races[roundNum][typeKey].pl = driverName;
+                    if (isFL) races[roundNum][sessionType].fl = driverName;
+                    if (isPole) races[roundNum][sessionType].pl = driverName;
 
                     let sortVal = parseInt(rawText);
                     if (isNaN(sortVal)) {
@@ -457,7 +562,7 @@ function scrapeRaceResults($, calendar = null) {
                         sortVal = (s === "RET") ? 1000 : (s === "NC") ? 1001 : (s === "DSQ") ? 1002 : 1003;
                     }
 
-                    races[roundNum][typeKey].results.push({ driver: driverName, position: rawText, sortVal: sortVal });
+                    races[roundNum][sessionType].results.push({ driver: driverName, position: rawText, sortVal: sortVal });
                 }
             }
         });
@@ -468,24 +573,47 @@ function scrapeRaceResults($, calendar = null) {
         const d = races[roundKey];
         const sorter = (a, b) => a.sortVal - b.sortVal;
         d.sprint.results.sort(sorter);
-        d.feature.results.sort(sorter);
+        d.feature1.results.sort(sorter);
+        d.feature2.results.sort(sorter);
 
         const clean = (list) => list.map(({ driver, position }) => ({ driver, position }));
+        const sprintOrder = clean(d.sprint.results);
+        const feature1Order = clean(d.feature1.results);
+        const feature2Order = clean(d.feature2.results);
+
+        // Include the event only if at least one session has been contested/completed
+        const hasSessionWithResults = sprintOrder.length > 0 || feature1Order.length > 0 || (d.isDouble && feature2Order.length > 0);
+        if (!hasSessionWithResults) {
+            console.log(`Skipping Round ${roundKey}: no sessions contested yet.`);
+            return;
+        }
+
         const result = {
             round: parseInt(roundKey),
+            isDouble: d.isDouble,
             sprint_race: { 
-                status: d.sprint.status || (d.sprint.results.length > 0 ? "completed" : "not_started"),
+                status: d.sprint.status || (sprintOrder.length > 0 ? "completed" : "not_started"),
                 fastest_lap: d.sprint.fl || "N/A", 
                 pole_position: d.sprint.pl || "N/A", 
-                order: clean(d.sprint.results) 
+                order: sprintOrder 
             },
             feature_race: { 
-                status: d.feature.status || (d.feature.results.length > 0 ? "completed" : "not_started"),
-                fastest_lap: d.feature.fl || "N/A", 
-                pole_position: d.feature.pl || "N/A", 
-                order: clean(d.feature.results) 
+                status: d.feature1.status || (feature1Order.length > 0 ? "completed" : "not_started"),
+                fastest_lap: d.feature1.fl || "N/A", 
+                pole_position: d.feature1.pl || "N/A", 
+                order: feature1Order 
             }
         };
+
+        if (d.isDouble) {
+            result.feature1_race = result.feature_race;
+            result.feature2_race = {
+                status: d.feature2.status || (feature2Order.length > 0 ? "completed" : "not_started"),
+                fastest_lap: d.feature2.fl || "N/A", 
+                pole_position: d.feature2.pl || "N/A", 
+                order: feature2Order 
+            };
+        }
 
         // Enrich with calendar data (circuit name and nation flag URL)
         if (calendar && calendar.length > 0) {
@@ -660,7 +788,6 @@ function getEndRound(roundsText) {
 
 
 
-
 /*
 * --------------------------------------------------------------------
 *   FUNCTION EXPORTS
@@ -677,5 +804,5 @@ module.exports = {
     scrapeCalendar,
     scrapeRaceResults,
     scrapeDriverStandings,
-    scrapeTeamStandings
+    scrapeTeamStandings,
 };

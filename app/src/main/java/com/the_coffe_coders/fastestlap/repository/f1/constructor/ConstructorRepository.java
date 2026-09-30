@@ -11,7 +11,7 @@ import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.source.f1.constructor.FirebaseConstructorDataSource;
 import com.the_coffe_coders.fastestlap.source.f1.constructor.JolpicaConstructorDataSource;
 import com.the_coffe_coders.fastestlap.source.f1.constructor.LocalConstructorDataSource;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -71,13 +71,21 @@ public class ConstructorRepository {
                 if (constructor != null) {
                     Log.d(TAG, "Constructor loaded from local database (cache hit): " + constructorId);
                     constructor.setConstructorId(constructorId);
-                    lastUpdateTimestamps.put(constructorId, System.currentTimeMillis());
+
+                    // If cached constructor doesn't have season_stats yet, force remote fetch immediately
+                    if (constructor.getSeason_stats() == null && isNetworkAvailable()) {
+                        Log.d(TAG, "Constructor season_stats is null in cache, forcing remote fetch: " + constructorId);
+                        loadConstructorFromRemote(constructorId, false);
+                        return;
+                    }
+
+                    // Post cached constructor immediately so the UI is instantaneous
                     Objects.requireNonNull(constructorCache.get(constructorId)).postValue(new Result.ConstructorSuccess(constructor));
 
                     // Only refresh from remote if the cached data is actually stale.
-                    // Without this TTL guard, Firebase fires on every launch even when the
-                    // local data is fresh, causing the LiveData to re-emit and triggering
-                    // redundant card rebuilds in the UI.
+                    // lastUpdateTimestamps tracks when the constructor was fetched from REMOTE (Firebase).
+                    // We must NOT put System.currentTimeMillis() upon reading local Room cache,
+                    // otherwise isStale would always be false (0 ms) and remote updates would never fire!
                     Long ts = lastUpdateTimestamps.get(constructorId);
                     boolean isStale = ts == null || System.currentTimeMillis() - ts > 300_000L;
                     if (isNetworkAvailable() && isStale) {
@@ -121,16 +129,40 @@ public class ConstructorRepository {
                         Objects.requireNonNull(constructorCache.get(constructorId)).postValue(new Result.ConstructorSuccess(constructor));
                     } else if (!isBackgroundRefresh) {
                         Log.e(TAG, "Constructor not found: " + constructorId);
+                        Objects.requireNonNull(constructorCache.get(constructorId)).postValue(new Result.Error("Constructor not found: " + constructorId));
                     }
                 }
 
                 @Override
                 public void onError(Exception e) {
                     Log.e(TAG, "Error loading constructor from remote: " + e.getMessage());
+                    if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(constructorCache.get(constructorId)).postValue(new Result.Error(e.getMessage()));
+                    }
                 }
             });
         } catch (Exception e) {
             Log.e(TAG, "Error loading constructor from remote: " + e.getMessage());
+            if (!isBackgroundRefresh) {
+                Objects.requireNonNull(constructorCache.get(constructorId)).postValue(new Result.Error(e.getMessage()));
+            }
+        }
+    }
+
+    public void invalidateCache(String constructorId) {
+        if (constructorId != null) {
+            constructorCache.remove(constructorId);
+            lastUpdateTimestamps.remove(constructorId);
+        }
+    }
+
+    public void refreshConstructor(String constructorId) {
+        if (constructorId == null) return;
+        if (!constructorCache.containsKey(constructorId)) {
+            constructorCache.put(constructorId, new MutableLiveData<>());
+        }
+        if (isNetworkAvailable()) {
+            loadConstructorFromRemote(constructorId, false);
         }
     }
 }

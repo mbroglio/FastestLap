@@ -23,7 +23,7 @@ import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModelFactory;
-import com.the_coffe_coders.fastestlap.util.CalendarUtils;
+import com.the_coffe_coders.fastestlap.util.calendar.CalendarUtils;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
@@ -107,8 +107,10 @@ public class UpcomingEventsActivity extends AppCompatActivity {
 
         UIUtils.applyWindowInsets(upcomingEventsLayout);
         upcomingEventsLayout.setOnRefreshListener(() -> {
+            if (weeklyRaceViewModel != null) {
+                weeklyRaceViewModel.refreshWeeklyRaces();
+            }
             refreshData();
-            upcomingEventsLayout.setRefreshing(false);
         });
 
         setupRecyclerView();
@@ -184,6 +186,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
             if (result instanceof Result.Loading) {
                 return;
             }
+            upcomingEventsLayout.setRefreshing(false);
             if (result.isSuccess()) {
                 List<WeeklyRace> races = ((Result.WeeklyRaceSuccess) result).getData();
                 Log.i(TAG, "SUCCESS – total races: " + races.size());

@@ -10,7 +10,7 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.junior.calendar.JuniorCalendar;
 import com.the_coffe_coders.fastestlap.source.junior.calendar.FirebaseJuniorCalendarDataSource;
 import com.the_coffe_coders.fastestlap.source.junior.calendar.LocalJuniorCalendarDataSource;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -76,7 +76,6 @@ public class JuniorCalendarRepository {
             public void onCalendarLoaded(JuniorCalendar calendar) {
                 if (calendar != null) {
                     Log.i(TAG, "Junior calendar loaded from local DB: " + cacheKey);
-                    lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                     Objects.requireNonNull(juniorCalendarCache.get(cacheKey))
                             .postValue(new Result.JuniorCalendarSuccess(calendar));
 
@@ -123,16 +122,37 @@ public class JuniorCalendarRepository {
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                         Objects.requireNonNull(juniorCalendarCache.get(cacheKey))
                                 .postValue(new Result.JuniorCalendarSuccess(calendar));
+                    } else if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(juniorCalendarCache.get(cacheKey))
+                                .postValue(new Result.Error("Junior calendar not found from remote"));
                     }
                 }
 
                 @Override
                 public void onError(Exception e) {
                     Log.e(TAG, "Error loading junior calendar: " + e.getMessage());
+                    if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(juniorCalendarCache.get(cacheKey))
+                                .postValue(new Result.Error(e.getMessage()));
+                    }
                 }
             });
         } catch (Exception e) {
             Log.e(TAG, "Error loading junior calendar: " + e.getMessage());
+            if (!isBackgroundRefresh) {
+                Objects.requireNonNull(juniorCalendarCache.get(cacheKey))
+                        .postValue(new Result.Error(e.getMessage()));
+            }
+        }
+    }
+
+    public synchronized void refreshCalendar(String series) {
+        String cacheKey = "juniorCalendar" + series;
+        if (!juniorCalendarCache.containsKey(cacheKey)) {
+            juniorCalendarCache.put(cacheKey, new MutableLiveData<>());
+        }
+        if (isNetworkAvailable()) {
+            loadJuniorCalendar(series, false);
         }
     }
 }

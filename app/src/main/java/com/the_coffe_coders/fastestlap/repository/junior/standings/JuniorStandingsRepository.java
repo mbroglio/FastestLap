@@ -11,7 +11,7 @@ import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorConstructor
 import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorDriverStandings;
 import com.the_coffe_coders.fastestlap.source.junior.standings.FirebaseJuniorStandingsDataSource;
 import com.the_coffe_coders.fastestlap.source.junior.standings.LocalJuniorStandingsDataSource;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -77,11 +77,12 @@ public class JuniorStandingsRepository {
             public void onConstructorStandingsLoaded(JuniorConstructorStandings constructorStandings) {
                 if (constructorStandings != null) {
                     Log.i(TAG, "Junior constructor standings loaded from local DB: " + cacheKey);
-                    lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                     Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
                             .postValue(new Result.JuniorConstructorStandingsSuccess(constructorStandings));
 
-                    if (isNetworkAvailable()) {
+                    Long ts = lastUpdateTimestamps.get(cacheKey);
+                    boolean isStale = ts == null || System.currentTimeMillis() - ts > 300_000L;
+                    if (isNetworkAvailable() && isStale) {
                         loadConstructorStandingsFromRemote(cacheKey, series, true);
                     }
                 } else {
@@ -122,16 +123,27 @@ public class JuniorStandingsRepository {
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                         Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
                                 .postValue(new Result.JuniorConstructorStandingsSuccess(constructorStandings));
+                    } else if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
+                                .postValue(new Result.Error("Junior constructor standings not found from remote"));
                     }
                 }
 
                 @Override
                 public void onError(Exception e) {
                     Log.e(TAG, "Error loading junior constructor standings from remote: " + e.getMessage());
+                    if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
+                                .postValue(new Result.Error(e.getMessage()));
+                    }
                 }
             });
         } catch (Exception e) {
             Log.e(TAG, "Error loading junior constructor standings from remote: " + e.getMessage());
+            if (!isBackgroundRefresh) {
+                Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
+                        .postValue(new Result.Error(e.getMessage()));
+            }
         }
     }
 
@@ -160,11 +172,12 @@ public class JuniorStandingsRepository {
             public void onDriverStandingsLoaded(JuniorDriverStandings driverStandings) {
                 if (driverStandings != null) {
                     Log.i(TAG, "Junior driver standings loaded from local DB: " + cacheKey);
-                    lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                     Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
                             .postValue(new Result.JuniorDriverStandingsSuccess(driverStandings));
 
-                    if (isNetworkAvailable()) {
+                    Long ts = lastUpdateTimestamps.get(cacheKey);
+                    boolean isStale = ts == null || System.currentTimeMillis() - ts > 300_000L;
+                    if (isNetworkAvailable() && isStale) {
                         loadDriverStandingsFromRemote(cacheKey, series, true);
                     }
                 } else {
@@ -205,6 +218,9 @@ public class JuniorStandingsRepository {
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                         Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
                                 .postValue(new Result.JuniorDriverStandingsSuccess(driverStandings));
+                    } else if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
+                                .postValue(new Result.Error("Junior driver standings not found from remote"));
                     }
                 }
 
@@ -215,10 +231,38 @@ public class JuniorStandingsRepository {
                 @Override
                 public void onError(Exception e) {
                     Log.e(TAG, "Error loading junior driver standings from remote: " + e.getMessage());
+                    if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
+                                .postValue(new Result.Error(e.getMessage()));
+                    }
                 }
             });
         } catch (Exception e) {
             Log.e(TAG, "Error loading junior driver standings from remote: " + e.getMessage());
+            if (!isBackgroundRefresh) {
+                Objects.requireNonNull(juniorStandingsCache.get(cacheKey))
+                        .postValue(new Result.Error(e.getMessage()));
+            }
+        }
+    }
+
+    public synchronized void refreshDriverStandings(String series) {
+        String cacheKey = "juniorDriverStandings" + series;
+        if (!juniorStandingsCache.containsKey(cacheKey)) {
+            juniorStandingsCache.put(cacheKey, new MutableLiveData<>());
+        }
+        if (isNetworkAvailable()) {
+            loadDriverStandingsFromRemote(cacheKey, series, false);
+        }
+    }
+
+    public synchronized void refreshConstructorStandings(String series) {
+        String cacheKey = "juniorConstructorStandings" + series;
+        if (!juniorStandingsCache.containsKey(cacheKey)) {
+            juniorStandingsCache.put(cacheKey, new MutableLiveData<>());
+        }
+        if (isNetworkAvailable()) {
+            loadConstructorStandingsFromRemote(cacheKey, series, false);
         }
     }
 }

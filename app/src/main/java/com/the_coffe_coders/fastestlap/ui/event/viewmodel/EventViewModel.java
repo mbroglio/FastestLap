@@ -10,7 +10,9 @@ import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResultFastestLap;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class EventViewModel extends ViewModel {
 
@@ -21,10 +23,18 @@ public class EventViewModel extends ViewModel {
 
     public List<WeeklyRace> extractUpcomingRaces(List<WeeklyRace> races) {
         List<WeeklyRace> upcomingRaces = new ArrayList<>();
-        for (WeeklyRace weeklyRace : races) {
-            // A Race is considered upcoming if it is yet to finish
-            if (!weeklyRace.isWeekFinished()) {
-                upcomingRaces.add(weeklyRace);
+        Set<String> seenRounds = new HashSet<>();
+
+        if (races != null) {
+            for (WeeklyRace weeklyRace : races) {
+                if (weeklyRace != null && weeklyRace.getRound() != null) {
+                    if (!seenRounds.contains(weeklyRace.getRound())) {
+                        seenRounds.add(weeklyRace.getRound());
+                        if (!weeklyRace.isWeekFinished()) {
+                            upcomingRaces.add(weeklyRace);
+                        }
+                    }
+                }
             }
         }
         upcomingRaces.sort(Comparator.nullsLast(Comparator.comparingInt(race -> {
@@ -36,11 +46,18 @@ public class EventViewModel extends ViewModel {
 
     public List<WeeklyRace> extractPastRaces(List<WeeklyRace> races) {
         List<WeeklyRace> pastRaces = new ArrayList<>();
+        Set<String> seenRounds = new HashSet<>();
 
-        for (WeeklyRace weeklyRace : races) {
-            // A Race is considered upcoming if it is yet to finish
-            if (weeklyRace.isWeekFinished()) {
-                pastRaces.add(weeklyRace);
+        if (races != null) {
+            for (WeeklyRace weeklyRace : races) {
+                if (weeklyRace != null && weeklyRace.getRound() != null) {
+                    if (!seenRounds.contains(weeklyRace.getRound())) {
+                        seenRounds.add(weeklyRace.getRound());
+                        if (weeklyRace.isWeekFinished()) {
+                            pastRaces.add(weeklyRace);
+                        }
+                    }
+                }
             }
         }
 

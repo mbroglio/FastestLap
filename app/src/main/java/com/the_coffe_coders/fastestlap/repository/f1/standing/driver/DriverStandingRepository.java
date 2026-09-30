@@ -11,7 +11,7 @@ import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandings;
 import com.the_coffe_coders.fastestlap.source.f1.standing.driver.JolpicaDriverStandingsDataSource;
 import com.the_coffe_coders.fastestlap.source.f1.standing.driver.LocalDriverStandingsDataSource;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -82,7 +82,6 @@ public class DriverStandingRepository {
             public void onDriverStandingsLoaded(DriverStandings driverStandings) {
                 if (driverStandings != null && currentYear.equals(driverStandings.getSeason())) {
                     Log.d(TAG, "Driver standings loaded from local database (cache hit)");
-                    lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                     Objects.requireNonNull(driverStandingCache.get(cacheKey))
                             .postValue(new Result.DriverStandingsSuccess(driverStandings));
 
@@ -142,6 +141,9 @@ public class DriverStandingRepository {
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                         Objects.requireNonNull(driverStandingCache.get(cacheKey))
                                 .postValue(new Result.DriverStandingsSuccess(driverStandings));
+                    } else if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(driverStandingCache.get(cacheKey))
+                                .postValue(new Result.Error("Driver standings not found from remote"));
                     }
                 }
 
@@ -153,6 +155,9 @@ public class DriverStandingRepository {
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                         Objects.requireNonNull(driverStandingCache.get(cacheKey))
                                 .postValue(new Result.DriversSuccess(driverList));
+                    } else if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(driverStandingCache.get(cacheKey))
+                                .postValue(new Result.Error("Driver list not found from remote"));
                     }
                 }
 
@@ -160,11 +165,30 @@ public class DriverStandingRepository {
                 public void onError(Exception e) {
                     isFetchInFlight = false;
                     Log.e(TAG, "Error loading driver standing from remote: " + e.getMessage());
+                    if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(driverStandingCache.get(cacheKey))
+                                .postValue(new Result.Error(e.getMessage()));
+                    }
                 }
             });
         } catch (Exception e) {
             isFetchInFlight = false;
             Log.e(TAG, "Error loading driver standing from remote: " + e.getMessage());
+            if (!isBackgroundRefresh) {
+                Objects.requireNonNull(driverStandingCache.get(cacheKey))
+                        .postValue(new Result.Error(e.getMessage()));
+            }
+        }
+    }
+
+    public synchronized void refreshDriverStandings() {
+        String cacheKey = "driverStanding";
+        if (!driverStandingCache.containsKey(cacheKey)) {
+            driverStandingCache.put(cacheKey, new MutableLiveData<>());
+        }
+        if (isNetworkAvailable() && !isFetchInFlight) {
+            isFetchInFlight = true;
+            loadDriverStandingFromRemote(cacheKey, false);
         }
     }
 }

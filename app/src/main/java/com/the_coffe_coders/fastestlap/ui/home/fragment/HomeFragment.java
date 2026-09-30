@@ -1,7 +1,10 @@
 package com.the_coffe_coders.fastestlap.ui.home.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import java.util.List;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandings;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
@@ -36,9 +40,10 @@ import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
-import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
+import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.service.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 
 
@@ -96,16 +101,12 @@ public class HomeFragment extends Fragment {
 
         networkLiveData = new NetworkUtils(requireContext());
 
-        // Initialize ViewModels once per fragment instance (ViewModelProvider is idempotent
-        // but calling initializeViewModels on every setupFragment adds unnecessary overhead).
         initializeViewModels();
 
         if (!isInitialized) {
             // First time setup: load all data from network / cache.
             setupFragment(view);
         } else {
-            // Fragment is returning from back-stack: data is already loaded in ViewModels / cache.
-            // Just re-attach the loading screen and handlers without triggering new network calls.
             Log.d(TAG, "Fragment returning from back-stack, skipping re-initialization.");
 
             // Reset flags so markCardLoaded can hide the loading screen again
@@ -114,6 +115,21 @@ public class HomeFragment extends Fragment {
             driverCardLoaded = false;
             constructorCardLoaded = false;
             isSettingUp = true;
+
+            // Invalidate the handler fast-path caches so that a favourite changed in the Bio
+            // page is reflected immediately when the user returns here.  Without this, the
+            // handlers detect driverCardLoaded=true and skip re-reading SharedPreferences,
+            // showing the old favourite instead of the newly chosen one.
+            if (favoriteDriverHandler != null) {
+                favoriteDriverHandler.resetCardLoaded();
+            }
+            if (favoriteConstructorHandler != null) {
+                favoriteConstructorHandler.resetCardLoaded();
+            }
+            // Also clear cached standings so the handlers don't short-circuit via the
+            // cachedDriverStandings/cachedConstructorStandings fast path with stale data.
+            cachedDriverStandings = null;
+            cachedConstructorStandings = null;
 
             setupLoadingScreen(view);
             setupHandlers();
@@ -173,10 +189,6 @@ public class HomeFragment extends Fragment {
         setupHandlers();
         setupUI(view);
 
-        // isSettingUp is intentionally NOT cleared here.
-        // It is cleared in markCardLoaded() once all 4 cards have finished loading,
-        // which prevents a concurrent network-restore or swipe-refresh from interrupting
-        // an in-progress async load.
     }
 
     private void initializeViewModels() {
@@ -204,7 +216,7 @@ public class HomeFragment extends Fragment {
         // Initialize handlers once or update view binding on back-stack return
         if (lastRaceHandler == null) {
             lastRaceHandler = new LastRaceHandler(
-                    this, view, weeklyRaceViewModel, trackViewModel,
+                    this, view, weeklyRaceViewModel, trackViewModel, nationViewModel,
                     raceResultViewModel, networkLiveData, this::markCardLoaded
             );
         } else {
@@ -268,8 +280,8 @@ public class HomeFragment extends Fragment {
             if (userViewModel.getLoggedUser() != null) {
                 // Check if preferences are already available locally
                 String localDriverId = sharedPreferencesUtils.readStringData(
-                        com.the_coffe_coders.fastestlap.util.Constants.SHARED_PREFERENCES_FILENAME,
-                        com.the_coffe_coders.fastestlap.util.Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
+                        Constants.SHARED_PREFERENCES_FILENAME,
+                        Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
                 boolean prefsAvailable = localDriverId != null && !localDriverId.isEmpty() && !localDriverId.equals("null");
 
                 if (prefsAvailable) {
@@ -352,10 +364,11 @@ public class HomeFragment extends Fragment {
             });
         }
 
-        // Pre-fetch all weekly races to populate local Room DB with full season calendar
+        // Pre-fetch all weekly races to populate local Room DB with full season calendar and schedule upcoming session reminders
         weeklyRaceViewModel.getWeeklyRacesLiveData().observe(getViewLifecycleOwner(), result -> {
             if (result instanceof Result.WeeklyRaceSuccess) {
-                Log.d(TAG, "Full season races pre-fetched into Room DB: " + ((Result.WeeklyRaceSuccess) result).getData().size());
+                List<WeeklyRace> races = ((Result.WeeklyRaceSuccess) result).getData();
+                Log.d(TAG, "Full season races pre-fetched into Room DB: " + (races != null ? races.size() : 0));
             }
         });
     }
@@ -363,8 +376,22 @@ public class HomeFragment extends Fragment {
     private void setRefreshLayout(View view) {
         SwipeRefreshLayout homeSwipeRefreshLayout = view.findViewById(R.id.home_refresh_layout);
         homeSwipeRefreshLayout.setOnRefreshListener(() -> {
+            if (sharedPreferencesUtils != null) {
+                String favDriver = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
+                if (favDriver != null && driverViewModel != null) {
+                    driverViewModel.refreshDriver(favDriver);
+                }
+                String favTeam = sharedPreferencesUtils.readStringData(Constants.SHARED_PREFERENCES_FILENAME, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
+                if (favTeam != null && constructorViewModel != null) {
+                    constructorViewModel.refreshConstructor(favTeam);
+                }
+            }
+            if (weeklyRaceViewModel != null) {
+                weeklyRaceViewModel.refreshNextRace();
+                weeklyRaceViewModel.refreshLastRace();
+                weeklyRaceViewModel.refreshWeeklyRaces();
+            }
             setupFragment(view);
-            homeSwipeRefreshLayout.setRefreshing(false);
         });
     }
 
@@ -394,6 +421,10 @@ public class HomeFragment extends Fragment {
         if (lastRaceCardLoaded && nextSessionCardLoaded && driverCardLoaded && constructorCardLoaded) {
             Log.d(TAG, "All cards loaded — hiding loading screen and setup complete.");
             loadingScreen.hideLoadingScreen();
+            SwipeRefreshLayout homeSwipeRefreshLayout = getView() != null ? getView().findViewById(R.id.home_refresh_layout) : null;
+            if (homeSwipeRefreshLayout != null) {
+                homeSwipeRefreshLayout.setRefreshing(false);
+            }
             isSettingUp = false;
         }
     }

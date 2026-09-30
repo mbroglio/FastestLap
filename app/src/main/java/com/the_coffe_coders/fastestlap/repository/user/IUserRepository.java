@@ -31,6 +31,8 @@ public interface IUserRepository {
 
     void saveUserAutoLoginPreferences(String autoLogin, String idToken);
 
+    void saveUserNewsSourcePreferences(String newsSource, String newsSourceId, String idToken);
+
     void onSuccessFromAuthentication(User user);
 
     Task<Boolean> isAutoLoginEnabled(String idToken);

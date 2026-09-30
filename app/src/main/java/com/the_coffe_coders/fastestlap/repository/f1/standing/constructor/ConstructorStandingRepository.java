@@ -11,7 +11,7 @@ import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.source.f1.standing.constructor.JolpicaConstructorStandingsDataSource;
 import com.the_coffe_coders.fastestlap.source.f1.standing.constructor.LocalConstructorStandingsDataSource;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -82,7 +82,6 @@ public class ConstructorStandingRepository {
             public void onConstructorLoaded(ConstructorStandings constructorStandings) {
                 if (constructorStandings != null && currentYear.equals(constructorStandings.getSeason())) {
                     Log.d(TAG, "Constructor standings loaded from local database (cache hit)");
-                    lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                     Objects.requireNonNull(constructorStandingCache.get(cacheKey))
                             .postValue(new Result.ConstructorStandingsSuccess(constructorStandings));
 
@@ -142,6 +141,9 @@ public class ConstructorStandingRepository {
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                         Objects.requireNonNull(constructorStandingCache.get(cacheKey))
                                 .postValue(new Result.ConstructorStandingsSuccess(constructorStandings));
+                    } else if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(constructorStandingCache.get(cacheKey))
+                                .postValue(new Result.Error("Constructor standings not found from remote"));
                     }
                 }
 
@@ -153,6 +155,9 @@ public class ConstructorStandingRepository {
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                         Objects.requireNonNull(constructorStandingCache.get(cacheKey))
                                 .postValue(new Result.ConstructorsSuccess(constructorList));
+                    } else if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(constructorStandingCache.get(cacheKey))
+                                .postValue(new Result.Error("Constructor list not found from remote"));
                     }
                 }
 
@@ -160,11 +165,30 @@ public class ConstructorStandingRepository {
                 public void onError(Exception e) {
                     isFetchInFlight = false;
                     Log.e(TAG, "Error loading constructor standing from remote: " + e.getMessage());
+                    if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(constructorStandingCache.get(cacheKey))
+                                .postValue(new Result.Error(e.getMessage()));
+                    }
                 }
             });
         } catch (Exception e) {
             isFetchInFlight = false;
             Log.e(TAG, "Error loading constructor standing from remote: " + e.getMessage());
+            if (!isBackgroundRefresh) {
+                Objects.requireNonNull(constructorStandingCache.get(cacheKey))
+                        .postValue(new Result.Error(e.getMessage()));
+            }
+        }
+    }
+
+    public synchronized void refreshConstructorStandings() {
+        String cacheKey = "constructorStanding";
+        if (!constructorStandingCache.containsKey(cacheKey)) {
+            constructorStandingCache.put(cacheKey, new MutableLiveData<>());
+        }
+        if (isNetworkAvailable() && !isFetchInFlight) {
+            isFetchInFlight = true;
+            loadConstructorStandingFromRemote(cacheKey, false);
         }
     }
 }

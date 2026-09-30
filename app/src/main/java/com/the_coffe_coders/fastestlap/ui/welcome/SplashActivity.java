@@ -2,14 +2,14 @@ package com.the_coffe_coders.fastestlap.ui.welcome;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.media.AudioAttributes;
 import android.media.MediaPlayer;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -22,9 +22,11 @@ import androidx.lifecycle.ViewModelProvider;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.ui.AppAnimationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
+import com.the_coffe_coders.fastestlap.util.notification.AppNotificationManager;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.Calendar;
@@ -38,8 +40,10 @@ public class SplashActivity extends AppCompatActivity {
     private TextView appCredits;
     private ProgressBar progressIndicator;
     private ImageView appLogo;
-    private MediaPlayer mediaPlayer;
     private MediaPlayer logoMediaPlayer;
+    private SoundPool soundPool;
+    private int soundId;
+    private boolean soundLoaded = false;
     private UserViewModel userViewModel;
 
     private NetworkUtils networkLiveData;
@@ -50,7 +54,15 @@ public class SplashActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_splash_screen);
 
+        AppNotificationManager.getInstance().clearAllNotifications(this);
+
         start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AppNotificationManager.getInstance().clearAllNotifications(this);
     }
 
     private void start() {
@@ -60,15 +72,30 @@ public class SplashActivity extends AppCompatActivity {
         Log.d("LaunchFlag", "Valore ricevuto: " + season_year);
         ServiceLocator.setCurrentYearBaseUrl(season_year);
 
-
         userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(ServiceLocator.getInstance().getUserRepository((Application) getApplicationContext()))).get(UserViewModel.class);
 
         appName = findViewById(R.id.app_name);
         appCredits = findViewById(R.id.app_credits);
         appLogo = findViewById(R.id.app_logo);
         progressIndicator = findViewById(R.id.progress_indicator);
-        mediaPlayer = MediaPlayer.create(this, R.raw.type_writer_short);
+
         logoMediaPlayer = MediaPlayer.create(this, R.raw.f1_car_sound);
+
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+                .build();
+        soundPool = new SoundPool.Builder()
+                .setMaxStreams(4)
+                .setAudioAttributes(audioAttributes)
+                .build();
+        soundPool.setOnLoadCompleteListener((sp, sampleId, status) -> {
+            if (status == 0) {
+                soundLoaded = true;
+            }
+        });
+        soundId = soundPool.load(this, R.raw.type_writer_short, 1);
+
         appName.setVisibility(View.INVISIBLE);
         appCredits.setVisibility(View.INVISIBLE);
         progressIndicator.setVisibility(View.INVISIBLE);
@@ -78,41 +105,36 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private void showIntroScreen() {
-        Animation logoAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_in);
-        Animation nameAnimation = AnimationUtils.loadAnimation(this, R.anim.slide_up);
-
-        appLogo.startAnimation(logoAnimation);
-        appLogo.setVisibility(View.VISIBLE);
-        if (mediaPlayer != null) mediaPlayer.start();
-        if (logoMediaPlayer != null) logoMediaPlayer.start();
-
-        handler.postDelayed(() -> {
-            appName.startAnimation(nameAnimation);
-            appName.setVisibility(View.VISIBLE);
-            handler.postDelayed(() -> {
-                String creditsText = getString(R.string.app_credits);
-                int delay = 30; // Faster, smooth typewriter effect
-                for (int i = 0; i < creditsText.length(); i++) {
-                    final int index = i;
-                    handler.postDelayed(() -> {
+        AppAnimationUtils.animateIntroSequence(
+                appLogo,
+                appName,
+                appCredits,
+                getString(R.string.app_credits),
+                progressIndicator,
+                () -> {
+                    if (logoMediaPlayer != null) {
                         try {
-                            appCredits.setVisibility(View.VISIBLE);
-                            appCredits.setText(creditsText.substring(0, index + 1));
-                        } catch (IllegalStateException e) {
-                            Log.e(TAG, "MediaPlayer error: " + e.getMessage());
+                            logoMediaPlayer.start();
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error starting logoMediaPlayer: " + e.getMessage());
                         }
-                    }, (long) delay * i);
+                    }
+                },
+                (index, letter) -> {
+                    if (letter != ' ' && soundPool != null && soundLoaded) {
+                        try {
+                            soundPool.play(soundId, 0.8f, 0.8f, 1, 0, 1.0f);
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error playing soundPool: " + e.getMessage());
+                        }
+                    }
+                },
+                () -> {
+                    if (isFinishing() || isDestroyed()) return;
+                    NavigationUtils.navigateToWelcomePage(this);
+                    finish();
                 }
-
-                handler.postDelayed(() -> {
-                    progressIndicator.setVisibility(View.VISIBLE);
-                    handler.postDelayed(() -> {
-                        NavigationUtils.navigateToWelcomePage(this);
-                        finish();
-                    }, 500); // 500ms delay instead of 5 seconds
-                }, (long) creditsText.length() * delay);
-            }, 500);
-        }, 800);
+        );
     }
 
     public void showForAutoLogin() {
@@ -129,14 +151,34 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        handler.removeCallbacksAndMessages(null);
+        AppAnimationUtils.cancelAnimations(appLogo, appName, appCredits, progressIndicator);
+        stopMediaPlayers();
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
+        handler.removeCallbacksAndMessages(null);
+        AppAnimationUtils.cancelAnimations(appLogo, appName, appCredits, progressIndicator);
+        stopMediaPlayers();
+    }
 
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-        }
+    private void stopMediaPlayers() {
         if (logoMediaPlayer != null) {
+            try {
+                if (logoMediaPlayer.isPlaying()) logoMediaPlayer.stop();
+            } catch (Exception ignored) {}
             logoMediaPlayer.release();
+            logoMediaPlayer = null;
+        }
+        if (soundPool != null) {
+            try {
+                soundPool.release();
+            } catch (Exception ignored) {}
+            soundPool = null;
         }
     }
 
@@ -149,8 +191,24 @@ public class SplashActivity extends AppCompatActivity {
                 userViewModel.isAutoLoginEnabled(userViewModel.getLoggedUser().getIdToken()).addOnCompleteListener(task -> {
                     if (task.isSuccessful() && Boolean.TRUE.equals(task.getResult())) {
                         Log.d(TAG, "Auto login is enabled");
-                        NavigationUtils.navigateToHomePage(this);
-                        finish();
+                        String fullAppName = getString(R.string.app_name);
+                        AppAnimationUtils.animateTextTypingWithTremor(
+                                appName,
+                                fullAppName,
+                                80,
+                                (index, letter) -> {
+                                    if (letter != ' ' && soundPool != null && soundLoaded) {
+                                        try {
+                                            soundPool.play(soundId, 0.7f, 0.7f, 1, 0, 1.0f);
+                                        } catch (Exception ignored) {}
+                                    }
+                                },
+                                () -> {
+                                    if (isFinishing() || isDestroyed()) return;
+                                    NavigationUtils.navigateToHomePage(this, getIntent() != null ? getIntent().getExtras() : null);
+                                    finish();
+                                }
+                        );
                     } else {
                         Log.d(TAG, "Auto login is not enabled");
                         showIntroScreen();
@@ -158,13 +216,11 @@ public class SplashActivity extends AppCompatActivity {
                 });
             } else {
                 Log.e(TAG, "No internet connection");
-                NavigationUtils.navigateToHomePage(this);
+                NavigationUtils.navigateToHomePage(this, getIntent() != null ? getIntent().getExtras() : null);
                 finish();
             }
         } else {
             showIntroScreen();
         }
     }
-
-
 }

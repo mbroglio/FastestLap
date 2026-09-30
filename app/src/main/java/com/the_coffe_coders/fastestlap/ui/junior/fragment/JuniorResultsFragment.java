@@ -23,6 +23,7 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorResult;
 import com.the_coffe_coders.fastestlap.ui.junior.viewmodel.JuniorCategoryViewModel;
 import com.the_coffe_coders.fastestlap.ui.junior.viewmodel.JuniorCategoryViewModelFactory;
+import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 public class JuniorResultsFragment extends Fragment {
@@ -37,6 +38,8 @@ public class JuniorResultsFragment extends Fragment {
     private TextView contentNotAvailableLayout;
     private JuniorResultsRecyclerAdapter juniorResultsAdapter;
 
+    private LoadingScreen loadingScreen;
+
 
     public JuniorResultsFragment() {
     }
@@ -48,15 +51,14 @@ public class JuniorResultsFragment extends Fragment {
         if (getArguments() != null) {
             categoryType = getArguments().getInt("CATEGORY_TYPE");
         }
+
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_junior_results, container, false);
-        /*
-        resultsLayout = view.findViewById(R.id.results_layout);
-        UIUtils.applyWindowInsets(resultsLayout);
-*/
+
         setupFragment();
 
         return view;
@@ -66,15 +68,20 @@ public class JuniorResultsFragment extends Fragment {
 
         setToolbar();
 
-        SwipeRefreshLayout layout = view.findViewById(R.id.results_layout);
-        UIUtils.applyWindowInsets(layout);
+        resultsLayout = view.findViewById(R.id.results_layout);
+        UIUtils.applyWindowInsets(resultsLayout);
+
+        loadingScreen = new LoadingScreen(view, getContext(), null, resultsLayout);
+        loadingScreen.showLoadingScreen(false);
 
         resultsrRecyclerView = view.findViewById(R.id.results_recycler_view);
         contentNotAvailableLayout = view.findViewById(R.id.content_not_available_layout);
 
-        layout.setOnRefreshListener(() -> {
-            setupFragment();
-            layout.setRefreshing(false);
+        resultsLayout.setOnRefreshListener(() -> {
+            if (juniorCategoryViewModel != null) {
+                juniorCategoryViewModel.refreshResults(categoryType);
+            }
+            fetchResults();
         });
 
         initializeViewModels();
@@ -130,6 +137,9 @@ public class JuniorResultsFragment extends Fragment {
                 if (result instanceof Result.Loading) {
                     return;
                 }
+                if (resultsLayout != null) {
+                    resultsLayout.setRefreshing(false);
+                }
                 if (result.isSuccess()) {
                     showResults();
                     Log.i(TAG, "Results fetched successfully");
@@ -149,6 +159,8 @@ public class JuniorResultsFragment extends Fragment {
                             juniorResultsAdapter.onBindViewHolder(
                                     juniorResultsAdapter.createViewHolder(resultsrRecyclerView, juniorResultsAdapter.getItemViewType(i)), i);
                         }
+
+                        loadingScreen.hideLoadingScreen();
                     } else {
                         showContentNotAvailable();
                         Log.e(TAG, "Junior result is null");
@@ -173,5 +185,7 @@ public class JuniorResultsFragment extends Fragment {
     public void showContentNotAvailable() {
         resultsrRecyclerView.setVisibility(View.GONE);
         contentNotAvailableLayout.setVisibility(View.VISIBLE);
+        
+        loadingScreen.hideLoadingScreen();
     }
 }

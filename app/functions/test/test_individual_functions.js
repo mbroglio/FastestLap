@@ -241,17 +241,24 @@ const juniorFunctions = {
                 const updates = {};
                 const basePath = `junior_categories/${seriesId}`;
                 
+                const resultsMap = {};
                 result.forEach(race => {
                     const raceResultsEntry = {
                         round: race.round,
                         circuit: race.circuit,
                         sprint: race.sprint_race,
-                        feature: race.feature_race,
                         nationFlagUrl: race.nationFlagUrl
                     };
-                    updates[`${basePath}/results/${race.round}`] = raceResultsEntry;
+                    if (race.isDouble && race.feature2_race) {
+                        raceResultsEntry.feature1 = race.feature1_race || race.feature_race;
+                        raceResultsEntry.feature2 = race.feature2_race;
+                    } else {
+                        raceResultsEntry.feature = race.feature_race;
+                    }
+                    resultsMap[race.round] = raceResultsEntry;
                     console.log(`Updating DB for Round ${race.round}...`);
                 });
+                updates[`${basePath}/results`] = resultsMap;
                 
                 await db.ref().update(updates);
                 console.log(`\n✓ Database updated with ${result.length} race results for ${seriesId}`);
@@ -334,6 +341,21 @@ const juniorFunctions = {
             await juniorLogic.processSeries(db, seriesId, url);
             console.log(`\n✓ Series ${seriesId} processed successfully`);
             return true;
+        }
+    },
+
+    scrapeNews: {
+        description: 'Scrape official news from FIA Formula 2 / Formula 3 website',
+        args: ['seriesId', 'maxPages'],
+        example: 'node test_individual_functions.js junior scrapeNews f2 1',
+        needsDb: false,
+        execute: async (seriesId = 'f2', maxPages = '1') => {
+            const pages = parseInt(maxPages) || 1;
+            console.log(`Scraping ${seriesId.toUpperCase()} news (maxPages: ${pages})...`);
+            const news = await juniorLogic.scrapeJuniorNews(seriesId, { maxPages: pages });
+            console.log(`\nArticles found: ${news?.length || 0}`);
+            console.log(JSON.stringify(news, null, 2));
+            return news;
         }
     }
 };

@@ -8,11 +8,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ScrollView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
 import androidx.core.os.LocaleListCompat;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -26,9 +28,10 @@ import com.the_coffe_coders.fastestlap.ui.home.HomePageActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
-import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
+import com.the_coffe_coders.fastestlap.util.notification.AppNotificationManager;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.service.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
@@ -39,6 +42,7 @@ public class ProfileActivity extends AppCompatActivity {
     private CheckBox autoLoginCheckBox;
     private Button saveButton;
     private Button dismissButton;
+    private TextView notificationPermissionStatus;
     private boolean isCheckBoxChanged = false;
     private boolean initialAutoLoginState = false;
     private boolean isFromLogin;
@@ -88,6 +92,8 @@ public class ProfileActivity extends AppCompatActivity {
 
         profileAccessButtons();
 
+
+
         TextInputEditText emailText = findViewById(R.id.email_text);
 
         // Set email from current user
@@ -135,6 +141,9 @@ public class ProfileActivity extends AppCompatActivity {
                 setLocale("it-IT");
             }
         }));
+
+        // Setup Session Notification preferences (F1, F2, F3)
+        setupSessionNotificationSwitches();
 
         // Hide action buttons initially
         saveButton.setVisibility(View.INVISIBLE);
@@ -249,5 +258,179 @@ public class ProfileActivity extends AppCompatActivity {
         super.onResume();
         // Refresh preferences when activity resumes
         fetchAutoLoginPreference();
+        //updateNotificationPermissionStatus();
     }
+
+    private void setupSessionNotificationSwitches() {
+        SharedPreferences prefs = getSharedPreferences(Constants.SHARED_PREFERENCES_FILENAME, MODE_PRIVATE);
+
+        // F1 Switches
+        MaterialSwitch f1RaceSwitch = findViewById(R.id.f1_notif_race_switch);
+        MaterialSwitch f1QualiSwitch = findViewById(R.id.f1_notif_qualifying_switch);
+        MaterialSwitch f1SprintSwitch = findViewById(R.id.f1_notif_sprint_switch);
+        MaterialSwitch f1PracticeSwitch = findViewById(R.id.f1_notif_practice_switch);
+
+        // F2 Switches & Container
+        MaterialSwitch f2MasterSwitch = findViewById(R.id.f2_notif_master_switch);
+        android.widget.LinearLayout f2SessionsContainer = findViewById(R.id.f2_sessions_container);
+        MaterialSwitch f2NewsSwitch = findViewById(R.id.f2_notif_news_switch);
+        MaterialSwitch f2FeatureSwitch = findViewById(R.id.f2_notif_feature_switch);
+        MaterialSwitch f2SprintSwitch = findViewById(R.id.f2_notif_sprint_switch);
+        MaterialSwitch f2QualiSwitch = findViewById(R.id.f2_notif_qualifying_switch);
+        MaterialSwitch f2PracticeSwitch = findViewById(R.id.f2_notif_practice_switch);
+
+        // F3 Switches & Container
+        MaterialSwitch f3MasterSwitch = findViewById(R.id.f3_notif_master_switch);
+        android.widget.LinearLayout f3SessionsContainer = findViewById(R.id.f3_sessions_container);
+        MaterialSwitch f3NewsSwitch = findViewById(R.id.f3_notif_news_switch);
+        MaterialSwitch f3FeatureSwitch = findViewById(R.id.f3_notif_feature_switch);
+        MaterialSwitch f3SprintSwitch = findViewById(R.id.f3_notif_sprint_switch);
+        MaterialSwitch f3QualiSwitch = findViewById(R.id.f3_notif_qualifying_switch);
+        MaterialSwitch f3PracticeSwitch = findViewById(R.id.f3_notif_practice_switch);
+
+        // Dropdown Headers and Arrows
+        View f1DropdownHeader = findViewById(R.id.f1_dropdown_header);
+        android.widget.ImageView f1DropdownArrow = findViewById(R.id.f1_dropdown_arrow);
+        android.widget.LinearLayout f1SessionsContainer = findViewById(R.id.f1_sessions_container);
+
+        View f2DropdownHeader = findViewById(R.id.f2_dropdown_header);
+        android.widget.ImageView f2DropdownArrow = findViewById(R.id.f2_dropdown_arrow);
+
+        View f3DropdownHeader = findViewById(R.id.f3_dropdown_header);
+        android.widget.ImageView f3DropdownArrow = findViewById(R.id.f3_dropdown_arrow);
+
+        // F1 is expanded by default
+        if (f1SessionsContainer != null) f1SessionsContainer.setVisibility(View.VISIBLE);
+        if (f1DropdownArrow != null) f1DropdownArrow.setRotation(180f);
+        if (f1DropdownHeader != null && f1SessionsContainer != null && f1DropdownArrow != null) {
+            f1DropdownHeader.setOnClickListener(v -> {
+                boolean isExpanded = f1SessionsContainer.getVisibility() == View.VISIBLE;
+                f1SessionsContainer.setVisibility(isExpanded ? View.GONE : View.VISIBLE);
+                f1DropdownArrow.animate().rotation(isExpanded ? 0f : 180f).setDuration(200).start();
+            });
+        }
+
+        // F2 is hidden by default as a drop down menu
+        if (f2SessionsContainer != null) f2SessionsContainer.setVisibility(View.GONE);
+        if (f2DropdownArrow != null) f2DropdownArrow.setRotation(0f);
+        if (f2DropdownHeader != null && f2SessionsContainer != null && f2DropdownArrow != null) {
+            f2DropdownHeader.setOnClickListener(v -> {
+                boolean isExpanded = f2SessionsContainer.getVisibility() == View.VISIBLE;
+                f2SessionsContainer.setVisibility(isExpanded ? View.GONE : View.VISIBLE);
+                f2DropdownArrow.animate().rotation(isExpanded ? 0f : 180f).setDuration(200).start();
+            });
+        }
+
+        // F3 is hidden by default as a drop down menu
+        if (f3SessionsContainer != null) f3SessionsContainer.setVisibility(View.GONE);
+        if (f3DropdownArrow != null) f3DropdownArrow.setRotation(0f);
+        if (f3DropdownHeader != null && f3SessionsContainer != null && f3DropdownArrow != null) {
+            f3DropdownHeader.setOnClickListener(v -> {
+                boolean isExpanded = f3SessionsContainer.getVisibility() == View.VISIBLE;
+                f3SessionsContainer.setVisibility(isExpanded ? View.GONE : View.VISIBLE);
+                f3DropdownArrow.animate().rotation(isExpanded ? 0f : 180f).setDuration(200).start();
+            });
+        }
+
+        // Set initial states from preferences
+        if (f1RaceSwitch != null) f1RaceSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F1_RACE, true));
+        if (f1QualiSwitch != null) f1QualiSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F1_QUALIFYING, true));
+        if (f1SprintSwitch != null) f1SprintSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F1_SPRINT, true));
+        if (f1PracticeSwitch != null) f1PracticeSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F1_PRACTICE, true));
+
+        boolean f2Enabled = prefs.getBoolean(Constants.PREF_NOTIF_F2_ENABLED, false);
+        if (f2MasterSwitch != null) f2MasterSwitch.setChecked(f2Enabled);
+        if (f2NewsSwitch != null) f2NewsSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F2_NEWS, true));
+        if (f2FeatureSwitch != null) f2FeatureSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F2_FEATURE, true));
+        if (f2SprintSwitch != null) f2SprintSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F2_SPRINT, true));
+        if (f2QualiSwitch != null) f2QualiSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F2_QUALIFYING, true));
+        if (f2PracticeSwitch != null) f2PracticeSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F2_PRACTICE, false));
+        updateSubSwitchesState(f2SessionsContainer, f2Enabled, f2NewsSwitch, f2FeatureSwitch, f2SprintSwitch, f2QualiSwitch, f2PracticeSwitch);
+
+        boolean f3Enabled = prefs.getBoolean(Constants.PREF_NOTIF_F3_ENABLED, false);
+        if (f3MasterSwitch != null) f3MasterSwitch.setChecked(f3Enabled);
+        if (f3NewsSwitch != null) f3NewsSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F3_NEWS, true));
+        if (f3FeatureSwitch != null) f3FeatureSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F3_FEATURE, true));
+        if (f3SprintSwitch != null) f3SprintSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F3_SPRINT, true));
+        if (f3QualiSwitch != null) f3QualiSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F3_QUALIFYING, true));
+        if (f3PracticeSwitch != null) f3PracticeSwitch.setChecked(prefs.getBoolean(Constants.PREF_NOTIF_F3_PRACTICE, false));
+        updateSubSwitchesState(f3SessionsContainer, f3Enabled, f3NewsSwitch, f3FeatureSwitch, f3SprintSwitch, f3QualiSwitch, f3PracticeSwitch);
+
+        // Listener helper lambda
+        java.util.function.BiConsumer<String, Boolean> onPrefChanged = (key, value) -> {
+            prefs.edit().putBoolean(key, value).apply();
+            AppNotificationManager.getInstance().syncSessionTopicSubscriptions(ProfileActivity.this);
+        };
+
+        if (f1RaceSwitch != null) f1RaceSwitch.setOnCheckedChangeListener((v, c) -> onPrefChanged.accept(Constants.PREF_NOTIF_F1_RACE, c));
+        if (f1QualiSwitch != null) f1QualiSwitch.setOnCheckedChangeListener((v, c) -> onPrefChanged.accept(Constants.PREF_NOTIF_F1_QUALIFYING, c));
+        if (f1SprintSwitch != null) f1SprintSwitch.setOnCheckedChangeListener((v, c) -> onPrefChanged.accept(Constants.PREF_NOTIF_F1_SPRINT, c));
+        if (f1PracticeSwitch != null) f1PracticeSwitch.setOnCheckedChangeListener((v, c) -> onPrefChanged.accept(Constants.PREF_NOTIF_F1_PRACTICE, c));
+
+        if (f2MasterSwitch != null) f2MasterSwitch.setOnCheckedChangeListener((v, c) -> {
+            onPrefChanged.accept(Constants.PREF_NOTIF_F2_ENABLED, c);
+            updateSubSwitchesState(f2SessionsContainer, c, f2NewsSwitch, f2FeatureSwitch, f2SprintSwitch, f2QualiSwitch, f2PracticeSwitch);
+        });
+        if (f2NewsSwitch != null) f2NewsSwitch.setOnCheckedChangeListener((v, c) -> onPrefChanged.accept(Constants.PREF_NOTIF_F2_NEWS, c));
+        if (f2FeatureSwitch != null) f2FeatureSwitch.setOnCheckedChangeListener((v, c) -> onPrefChanged.accept(Constants.PREF_NOTIF_F2_FEATURE, c));
+        if (f2SprintSwitch != null) f2SprintSwitch.setOnCheckedChangeListener((v, c) -> onPrefChanged.accept(Constants.PREF_NOTIF_F2_SPRINT, c));
+        if (f2QualiSwitch != null) f2QualiSwitch.setOnCheckedChangeListener((v, c) -> onPrefChanged.accept(Constants.PREF_NOTIF_F2_QUALIFYING, c));
+        if (f2PracticeSwitch != null) f2PracticeSwitch.setOnCheckedChangeListener((v, c) -> onPrefChanged.accept(Constants.PREF_NOTIF_F2_PRACTICE, c));
+
+        if (f3MasterSwitch != null) f3MasterSwitch.setOnCheckedChangeListener((v, c) -> {
+            onPrefChanged.accept(Constants.PREF_NOTIF_F3_ENABLED, c);
+            updateSubSwitchesState(f3SessionsContainer, c, f3NewsSwitch, f3FeatureSwitch, f3SprintSwitch, f3QualiSwitch, f3PracticeSwitch);
+        });
+        if (f3NewsSwitch != null) f3NewsSwitch.setOnCheckedChangeListener((v, c) -> onPrefChanged.accept(Constants.PREF_NOTIF_F3_NEWS, c));
+        if (f3FeatureSwitch != null) f3FeatureSwitch.setOnCheckedChangeListener((v, c) -> onPrefChanged.accept(Constants.PREF_NOTIF_F3_FEATURE, c));
+        if (f3SprintSwitch != null) f3SprintSwitch.setOnCheckedChangeListener((v, c) -> onPrefChanged.accept(Constants.PREF_NOTIF_F3_SPRINT, c));
+        if (f3QualiSwitch != null) f3QualiSwitch.setOnCheckedChangeListener((v, c) -> onPrefChanged.accept(Constants.PREF_NOTIF_F3_QUALIFYING, c));
+        if (f3PracticeSwitch != null) f3PracticeSwitch.setOnCheckedChangeListener((v, c) -> onPrefChanged.accept(Constants.PREF_NOTIF_F3_PRACTICE, c));
+    }
+
+    private void updateSubSwitchesState(View container, boolean isEnabled, MaterialSwitch... switches) {
+        if (container != null) {
+            container.setAlpha(isEnabled ? 1.0f : 0.5f);
+        }
+        if (switches != null) {
+            for (MaterialSwitch sw : switches) {
+                if (sw != null) sw.setEnabled(isEnabled);
+            }
+        }
+    }
+
+    /*
+    private void setupNotificationSection() {
+        notificationPermissionStatus = findViewById(R.id.notification_permission_status);
+        Button testNotificationButton = findViewById(R.id.test_notification_button);
+
+        if (testNotificationButton != null) {
+            testNotificationButton.setOnClickListener(v ->
+                    AppNotificationManager.getInstance().sendTestNotification(this)
+            );
+        }
+
+        updateNotificationPermissionStatus();
+    }
+
+
+    private void updateNotificationPermissionStatus() {
+        if (notificationPermissionStatus == null) return;
+        boolean hasPermission = AppNotificationManager.getInstance().hasNotificationPermission(this);
+        if (hasPermission) {
+            notificationPermissionStatus.setText(R.string.notification_status_granted);
+            notificationPermissionStatus.setTextColor(ContextCompat.getColor(this, R.color.status_green));
+            notificationPermissionStatus.setOnClickListener(v ->
+                    AppNotificationManager.getInstance().openNotificationSettings(this)
+            );
+        } else {
+            notificationPermissionStatus.setText(R.string.notification_status_denied);
+            notificationPermissionStatus.setTextColor(ContextCompat.getColor(this, R.color.app_primary_red));
+            notificationPermissionStatus.setOnClickListener(v -> {
+                AppNotificationManager.getInstance().requestNotificationPermission(this);
+                AppNotificationManager.getInstance().openNotificationSettings(this);
+            });
+        }
+    }
+    */
 }

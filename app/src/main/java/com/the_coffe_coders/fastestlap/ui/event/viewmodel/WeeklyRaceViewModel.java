@@ -27,4 +27,16 @@ public class WeeklyRaceViewModel extends ViewModel {
     public LiveData<Result> getWeeklyRacesLiveData() {
         return weeklyRaceRepository.fetchWeeklyRaces();
     }
+
+    public void refreshWeeklyRaces() {
+        weeklyRaceRepository.refreshWeeklyRaces();
+    }
+
+    public void refreshNextRace() {
+        weeklyRaceRepository.refreshNextRace();
+    }
+
+    public void refreshLastRace() {
+        weeklyRaceRepository.refreshLastRace();
+    }
 }

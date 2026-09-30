@@ -1,78 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/news_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginBottom="8dp"
-    android:background="@color/light_black"
-    android:padding="8dp">
-
-    <ImageView
-        android:id="@+id/news_image"
-        android:layout_width="120dp"
-        android:layout_height="80dp"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:importantForAccessibility="no"
-        android:scaleType="centerCrop"
-        android:visibility="visible" />
+    android:layout_marginStart="@dimen/medium_margin"
+    android:layout_marginTop="6dp"
+    android:layout_marginEnd="@dimen/medium_margin"
+    android:layout_marginBottom="6dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardBackgroundColor="@color/card_surface_elevated"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="3dp"
+    app:rippleColor="#20FFFFFF"
+    app:strokeColor="@color/subtle_white_border"
+    app:strokeWidth="1dp">
 
     <LinearLayout
-        android:id="@+id/text_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_toEndOf="@id/news_image"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="12dp">
 
-        <TextView
-            android:id="@+id/title_layout"
-            style="@style/t14BoldWhiteLineLimited"
+        <!-- Top Row: Thumbnail + Header (Date & Title) -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="start"
-            android:maxLines="5" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/news_image"
+                android:layout_width="105dp"
+                android:layout_height="78dp"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.FastestLap.RoundedFlag"
+                app:strokeColor="@color/subtle_white_border"
+                app:strokeWidth="1dp" />
+
+            <LinearLayout
+                android:id="@+id/text_container"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/date_text_layout"
+                    style="@style/t10UpperCaseBoldWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/app_primary_red" />
+
+                <TextView
+                    android:id="@+id/title_layout"
+                    style="@style/t14BoldWhiteLineLimited"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="3dp"
+                    android:ellipsize="end"
+                    android:gravity="start"
+                    android:maxLines="3"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Expandable Description Text (Full Width) -->
         <TextView
             android:id="@+id/description_text_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:fontFamily="@font/roboto_extra_light"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/roboto_regular"
+            android:lineSpacingExtra="3dp"
             android:maxLines="20"
-            android:textColor="@color/white"
-            android:textSize="@dimen/layout_subtitle_text_size"
+            android:textColor="#D0D0D0"
+            android:textSize="13sp"
             android:visibility="gone" />
 
+        <!-- Read Full Article Button (Pill style) -->
         <RelativeLayout
             android:id="@+id/link_text_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="4dp"
-            android:background="@color/app_primary_red"
-            android:visibility="visible">
+            android:layout_gravity="end"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/news_pill_button_red"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingStart="14dp"
+            android:paddingTop="7dp"
+            android:paddingEnd="14dp"
+            android:paddingBottom="7dp"
+            android:visibility="gone">
 
             <TextView
-                style="@style/t12UpperCaseBoldBlackLineLimited"
+                style="@style/t12UpperCaseBoldWhiteLineLimited"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:text="@string/full_article" />
+                android:layout_centerInParent="true"
+                android:text="@string/full_article"
+                android:textColor="@color/white" />
 
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/date_text_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:fontFamily="@font/orbitron_bold"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_minor_importance_size" />
-
     </LinearLayout>
 
-</RelativeLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -1,43 +1,47 @@
 [versions]
 androidxJunit = "1.3.0"
-commonsValidator = "1.10.1"
-agp = "9.3.1"
+commonsValidator = "1.11.0"
+agp = "9.4.1"
 compiler = "5.0.9"
 espressoCoreVersion = "3.7.0"
-firebaseBom = "34.16.0"
-fragmentKtx = "1.8.9"
+firebaseBom = "34.19.0"
+fragmentKtx = "1.9.1"
 glide = "5.0.9"
 gson = "2.14.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
-appcompat = "1.7.1"
-loggingInterceptor = "5.4.0"
-lombok = "1.18.46"
-lombokVersion = "1.18.46"
+appcompat = "1.8.0"
+loggingInterceptor = "5.5.0"
+lombok = "1.18.48"
+lombokVersion = "1.18.48"
 material = "1.14.0"
 activity = "1.13.0"
-constraintlayout = "2.2.1"
-mockitoCore = "5.23.0"
-mockitoKotlin = "6.3.0"
+constraintlayout = "2.2.2"
+mockitoCore = "5.24.0"
+mockitoKotlin = "6.4.0"
 playServicesCronet = "18.1.1"
 retrofit = "3.0.0"
-robolectric = "4.16.1"
+robolectric = "4.17"
 rome = "2.1.0"
-threetenbp = "1.7.3"
-navigationFragment = "2.9.8"
-navigationUi = "2.9.8"
-roomCommon = "2.8.4"
-roomRuntime = "2.8.4"
-roomCompiler = "2.8.4"
-firebaseDatabase = "22.0.1"
+jsoup = "1.18.3"
+threetenbp = "1.7.4"
+navigationFragment = "2.10.2"
+navigationUi = "2.10.2"
+roomCommon = "2.8.5"
+roomRuntime = "2.8.5"
+roomCompiler = "2.8.5"
+firebaseDatabase = "22.0.2"
 firebaseAuth = "24.2.0"
-playServicesAuth = "21.6.0"
-firebaseFirestore = "26.4.1"
+playServicesAuth = "22.0.0"
+firebaseFirestore = "26.6.0"
 lifecycleLivedata = "2.11.0"
 swiperefreshlayout = "1.2.0"
+workRuntime = "2.12.0"
+workRuntimeVersion = "2.12.0"
 
 [libraries]
+
 commons-validator = { module = "commons-validator:commons-validator", version.ref = "commonsValidator" }
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compiler" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
@@ -45,6 +49,7 @@ converter-scalars = { module = "com.squareup.retrofit2:converter-scalars", versi
 espresso-core-v351 = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCoreVersion" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 fragment-ktx = { module = "androidx.fragment:fragment-ktx", version.ref = "fragmentKtx" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
@@ -65,6 +70,7 @@ projectlombok-lombok = { module = "org.projectlombok:lombok", version.ref = "lom
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
 rome = { module = "com.rometools:rome", version.ref = "rome" }
+jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
 threetenbp = { module = "org.threeten:threetenbp", version.ref = "threetenbp" }
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 navigation-ui = { group = "androidx.navigation", name = "navigation-ui", version.ref = "navigationUi" }
@@ -77,6 +83,9 @@ play-services-auth = { group = "com.google.android.gms", name = "play-services-a
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 lifecycle-livedata = { group = "androidx.lifecycle", name = "lifecycle-livedata", version.ref = "lifecycleLivedata" }
 swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
+work-runtime = { group = "androidx.work", name = "work-runtime", version.ref = "workRuntime" }
+androidx-work-runtime = { group = "androidx.work", name = "work-runtime", version.ref = "workRuntimeVersion" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

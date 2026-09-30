@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
@@ -29,6 +30,8 @@ import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
 import com.the_coffe_coders.fastestlap.domain.f1.result.QualifyingResult;
 import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResult;
+import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResultFastestLap;
+import com.the_coffe_coders.fastestlap.domain.f1.result.Stint;
 import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
@@ -41,8 +44,9 @@ import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModelFactory;
-import com.the_coffe_coders.fastestlap.util.CalendarUtils;
+import com.the_coffe_coders.fastestlap.util.calendar.CalendarUtils;
 import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.notification.NotificationScheduler;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
@@ -89,12 +93,31 @@ public class EventActivity extends AppCompatActivity {
 
         UIUtils.applyWindowInsets(eventLayout);
         eventLayout.setOnRefreshListener(() -> {
-            start();
-            eventLayout.setRefreshing(false);
+            if (weeklyRaceViewModel != null) {
+                weeklyRaceViewModel.refreshWeeklyRaces();
+            }
+            processRaceData();
         });
 
         trackId = getIntent().getStringExtra("CIRCUIT_ID");
         Log.i(TAG, "Circuit ID: " + trackId);
+
+        View eventCardOuter = findViewById(R.id.event_card_outer);
+        if (eventCardOuter != null) {
+            eventCardOuter.setOutlineProvider(new android.view.ViewOutlineProvider() {
+                @Override
+                public void getOutline(View view, android.graphics.Outline outline) {
+                    int width = view.getWidth();
+                    int height = view.getHeight();
+                    if (width <= 0 || height <= 0) {
+                        return;
+                    }
+                    int radius = (int) (20 * getResources().getDisplayMetrics().density);
+                    outline.setRoundRect(0, -radius, width, height, radius);
+                }
+            });
+            eventCardOuter.setClipToOutline(true);
+        }
 
         initializeViewModels();
     }
@@ -116,6 +139,7 @@ public class EventActivity extends AppCompatActivity {
                 return;
             }
             data.removeObserver(observerHolder[0]);
+            eventLayout.setRefreshing(false);
             if (result.isSuccess()) {
                 Log.i("EventActivity", "Weekly races loaded successfully");
                 races.addAll(((Result.WeeklyRaceSuccess) result).getData());
@@ -185,31 +209,69 @@ public class EventActivity extends AppCompatActivity {
                     setEventImage(weeklyRace, track, null);
                 }
             } else {
-                Log.e(TAG, "Error getting track data");
-                loadingScreen.hideLoadingScreen();
+                Log.e(TAG, "Error getting track data: " + result.getError() + ", falling back to weeklyRace.getTrack()");
+                Track fallbackTrack = weeklyRace.getTrack();
+                if (fallbackTrack != null) {
+                    track = fallbackTrack;
+                    if (track.getCountry() != null) {
+                        fetchNationAndSetImage(weeklyRace, track);
+                    } else {
+                        setEventImage(weeklyRace, track, null);
+                    }
+                } else {
+                    loadingScreen.hideLoadingScreen();
+                }
             }
         };
         trackData.observe(this, observerTrack[0]);
     }
 
+    private void fetchNationAndSetImage(WeeklyRace weeklyRace, Track targetTrack) {
+        NationViewModel nationViewModel = new ViewModelProvider(this, new NationViewModelFactory(getApplication())).get(NationViewModel.class);
+        try {
+            MutableLiveData<Result> nationData = nationViewModel.getNation(targetTrack.getCountry());
+            @SuppressWarnings("unchecked")
+            androidx.lifecycle.Observer<Result>[] observerNation = new androidx.lifecycle.Observer[1];
+            observerNation[0] = result1 -> {
+                if (result1 instanceof Result.Loading) {
+                    return;
+                }
+                nationData.removeObserver(observerNation[0]);
+                if (result1.isSuccess()) {
+                    nation = ((Result.NationSuccess) result1).getData();
+                    setEventImage(weeklyRace, targetTrack, nation);
+                } else {
+                    setEventImage(weeklyRace, targetTrack, null);
+                }
+            };
+            nationData.observe(this, observerNation[0]);
+        } catch (RuntimeException e) {
+            Log.e(TAG, "Error getting nation data: " + e.getMessage());
+            setEventImage(weeklyRace, targetTrack, null);
+        }
+    }
+
     private void setEventImage(WeeklyRace weeklyRace, Track track, Nation nation) {
         loadingScreen.updateProgress();
 
-        String imageUrl = track.getTrack_pic_url();
-        LinearLayout eventCard = findViewById(R.id.event_card);
+        String imageUrl = track != null ? track.getTrack_pic_url() : null;
+        ImageView bgImageView = findViewById(R.id.event_background_image);
 
-        UIUtils.loadImageInEventCardWithAlpha(this, imageUrl, eventCard,
-                () -> buildEventCardStepTwo(weeklyRace, track, nation),
-                76);
+        if (bgImageView != null && imageUrl != null && !imageUrl.isEmpty()) {
+            UIUtils.loadImageAsync(this, imageUrl, bgImageView);
+        }
+        buildEventCardStepTwo(weeklyRace, track, nation);
     }
 
     private void buildEventCardStepTwo(WeeklyRace weeklyRace, Track track, Nation nation) {
+
+        String gpName = (track != null && track.getGp_long_name() != null) ? track.getGp_long_name() : (weeklyRace != null ? weeklyRace.getRaceName() : "");
 
         UIUtils.multipleSetTextViewText(
                 new String[]{
                         "Round " + weeklyRace.getRound(),
                         weeklyRace.getSeason(),
-                        track.getGp_long_name()},
+                        gpName},
 
                 new TextView[]{
                         findViewById(R.id.round_number),
@@ -221,31 +283,53 @@ public class EventActivity extends AppCompatActivity {
         LinearLayout trackLayout = findViewById(R.id.track_outline_layout);
         trackLayout.setOnClickListener(v -> NavigationUtils.navigateToBioPage(this, trackId + "&" + weeklyRace.getRaceName().toUpperCase(), 2));
 
-        Button openForecastButton = findViewById(R.id.goToForecastButton);
-        openForecastButton.setOnClickListener(v ->
-                NavigationUtils.openGoogleWeather(this, track.getLocation().getLocality()));
 
-        String nationFlagUrl = null;
-        if (nation != null) {
-            nationFlagUrl = nation.getNation_flag_url();
+        View scheduleWeatherBadge = findViewById(R.id.schedule_weather_badge);
+        if (scheduleWeatherBadge != null) {
+            scheduleWeatherBadge.setOnClickListener(v -> {
+                String locality = track.getLocation().getLocality();
+                String lat = track.getLocation().getLatitude();
+                String lon = track.getLocation().getLongitude();
+
+                String startDateStr = null;
+                String endDateStr = null;
+                if (weeklyRace.getFirstPractice() != null && weeklyRace.getFirstPractice().getStartDateTime() != null) {
+                    startDateStr = weeklyRace.getFirstPractice().getStartDateTime().toLocalDate().toString();
+                }
+                if (weeklyRace.getFinalRace() != null && weeklyRace.getFinalRace().getStartDateTime() != null) {
+                    endDateStr = weeklyRace.getFinalRace().getStartDateTime().toLocalDate().toString();
+                }
+
+                boolean isUnderway = weeklyRace.isUnderway(false);
+                NavigationUtils.navigateToWeatherPage(this, locality, lat, lon, "latest", startDateStr, endDateStr, isUnderway);
+            });
         }
 
-        UIUtils.loadSequenceOfImagesWithGlide(this,
-                new String[]{nationFlagUrl, track.getTrack_minimal_layout_url()},
-                new ImageView[]{findViewById(R.id.country_flag), findViewById(R.id.track_outline_image)},
-                () -> buildEventCardFinalStep(weeklyRace));
+        String nationFlagUrl = (nation != null) ? nation.getNation_flag_url() : null;
+        ImageView flagView = findViewById(R.id.country_flag);
+        ImageView trackOutlineView = findViewById(R.id.track_outline_image);
 
-        // Calendar export button
-        Button addToCalendarButton = findViewById(R.id.addToCalendarButton);
-        addToCalendarButton.setOnClickListener(v -> {
-            try {
-                CalendarUtils.addWeekendToCalendar(this, weeklyRace);
-                Toast.makeText(this, R.string.add_to_calendar_success, Toast.LENGTH_SHORT).show();
-            } catch (Exception e) {
-                Log.e(TAG, "Error opening calendar: " + e.getMessage());
-                Toast.makeText(this, R.string.calendar_not_found, Toast.LENGTH_SHORT).show();
-            }
-        });
+        if (flagView != null && nationFlagUrl != null) {
+            UIUtils.loadImageAsync(this, nationFlagUrl, flagView);
+        }
+        if (trackOutlineView != null && track != null && track.getTrack_minimal_layout_url() != null) {
+            UIUtils.loadImageAsync(this, track.getTrack_minimal_layout_url(), trackOutlineView);
+        }
+
+        buildEventCardFinalStep(weeklyRace);
+
+        View scheduleCalendarBadge = findViewById(R.id.schedule_calendar_badge);
+        if (scheduleCalendarBadge != null) {
+            scheduleCalendarBadge.setOnClickListener(v -> {
+                try {
+                    CalendarUtils.addWeekendToCalendar(this, weeklyRace);
+                    Toast.makeText(this, R.string.add_to_calendar_success, Toast.LENGTH_SHORT).show();
+                } catch (Exception e) {
+                    Log.e(TAG, "Error opening calendar: " + e.getMessage());
+                    Toast.makeText(this, R.string.calendar_not_found, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     private void buildEventCardFinalStep(WeeklyRace weeklyRace) {
@@ -253,7 +337,15 @@ public class EventActivity extends AppCompatActivity {
         Session nextEvent = weeklyRace.findNextEvent(sessions);
         boolean underway = weeklyRace.isUnderway(false) && !weeklyRace.isWeekFinished();
 
-        createWeekSchedule(sessions, weeklyRace.getRound());
+        createWeekSchedule(weeklyRace, sessions);
+
+        String eventTitle = weeklyRace.getRaceName() != null
+                ? weeklyRace.getRaceName().toUpperCase()
+                : null;
+        String totalLaps = (track != null && track.getLaps() != null) ? track.getLaps() : null;
+
+        // TEST ONLY – decommentare per forzare la live card e testare OpenF1 senza GP in corso:
+        //setLiveSession(eventTitle, totalLaps);
 
         if (nextEvent != null && !underway) {
             LocalDateTime eventDateTime = nextEvent.getStartDateTime();
@@ -261,11 +353,11 @@ public class EventActivity extends AppCompatActivity {
         } else if (!underway) {
             showResults(weeklyRace);
         } else {
-            setLiveSession();
+            setLiveSession(eventTitle, totalLaps);
         }
     }
 
-    private void setLiveSession() {
+    private void setLiveSession(String eventTitle, String totalLaps) {
         View liveSession = findViewById(R.id.event_live_card);
         View noLiveSession = findViewById(R.id.event_not_live_card);
 
@@ -275,6 +367,9 @@ public class EventActivity extends AppCompatActivity {
         ImageView liveIcon = findViewById(R.id.live_icon);
         Animation pulse = AnimationUtils.loadAnimation(this, R.anim.pulse_dynamic);
         liveIcon.startAnimation(pulse);
+
+        // Al click apre la LiveActivity passando il titolo dell'evento e i giri totali
+        liveSession.setOnClickListener(v -> NavigationUtils.navigateToLivePage(this, eventTitle, totalLaps));
 
         Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: EventActivity at " + System.currentTimeMillis());
         loadingScreen.hideLoadingScreen();
@@ -316,17 +411,28 @@ public class EventActivity extends AppCompatActivity {
 
     private void showRaceResultsDialog(Race race) {
         if (race != null) {
-            if (race.getRaceResults() == null || race.getRaceResults().isEmpty()) {
-                Log.e(TAG, "race results not found");
-                if (race.getSprintResults() == null || race.getSprintResults().isEmpty()) {
-                    Log.e(TAG, "sprint results not found");
-                } else {
-                    Log.i(TAG, "Showing sprint results");
-                    NavigationUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 0);
-                }
-            } else {
+            String sessionName = null;
+            RaceResultFastestLap raceFastestLap = null;
+
+            if (race.getRaceResults() != null && !race.getRaceResults().isEmpty()) {
                 Log.i(TAG, "Showing race results");
-                NavigationUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 0);
+                sessionName = "Race";
+                raceFastestLap = eventViewModel.extractFastestLap(race.getRaceResults());
+            } else if (race.getSprintResults() != null && !race.getSprintResults().isEmpty()) {
+                Log.i(TAG, "Showing sprint results");
+                sessionName = "Sprint";
+                raceFastestLap = eventViewModel.extractFastestLap(race.getSprintResults());
+            }
+
+            if (sessionName != null) {
+                List<Stint> cachedStints = sessionName.equals("Sprint") ? race.getSprintStints() : race.getRaceStints();
+                if (cachedStints == null || cachedStints.isEmpty()) {
+                    cachedStints = race.getStints();
+                }
+                NavigationUtils.showRaceResults(this, race, 0, cachedStints, raceFastestLap);
+            } else {
+                Log.e(TAG, "race results not found");
+                Toast.makeText(this, R.string.results_not_available, Toast.LENGTH_SHORT).show();
             }
         } else {
             Log.e(TAG, "race is null, cannot show results");
@@ -337,7 +443,7 @@ public class EventActivity extends AppCompatActivity {
         if (race != null) {
             if (race.getQualifyingResults() != null && !race.getQualifyingResults().isEmpty()) {
                 Log.i(TAG, "Showing qualifying results");
-                NavigationUtils.showRaceResultsDialog(getSupportFragmentManager(), race, 1);
+                NavigationUtils.showRaceResults(this, race, 1, null, null);
             } else {
                 Log.e(TAG, "qualifying results not found");
             }
@@ -371,28 +477,32 @@ public class EventActivity extends AppCompatActivity {
             resultMutableLiveData.removeObserver(observerHolder[0]);
 
             try {
-                Race race = ((Result.RaceResultsSuccess) result).getData();
-                List<RaceResult> podium = race != null ? race.getRaceResults() : null;
+                if (result instanceof Result.RaceResultsSuccess) {
+                    Race race = ((Result.RaceResultsSuccess) result).getData();
+                    List<RaceResult> podium = race != null ? race.getRaceResults() : null;
 
-                if (podium == null || podium.isEmpty()) {
-                    showPendingResults();
-                } else {
-                    this.currentRace = race;
+                    if (podium == null || podium.isEmpty()) {
+                        showPendingResults();
+                    } else {
+                        this.currentRace = race;
 
-                    Log.i(TAG, "Podium found, size: " + podium.size());
-                    for (int i = 0; i < 3 && i < podium.size(); i++) {
-                        String teamId = podium.get(i).getConstructor().getConstructorId();
+                        Log.i(TAG, "Podium found, size: " + podium.size());
+                        for (int i = 0; i < 3 && i < podium.size(); i++) {
+                            String teamId = podium.get(i).getConstructor().getConstructorId();
 
-                        UIUtils.singleSetTextViewText(podium.get(i).getDriver().getFullName(),
-                                findViewById(Constants.PODIUM_DRIVER_NAME.get(i)));
+                            UIUtils.singleSetTextViewText(podium.get(i).getDriver().getFullName(),
+                                    findViewById(Constants.PODIUM_DRIVER_NAME.get(i)));
 
-                        LinearLayout teamColor = findViewById(Constants.PODIUM_TEAM_COLOR.get(i));
-                        Integer teamColorObj = Constants.TEAM_COLOR.get(teamId);
-                        teamColor.setBackgroundColor(ContextCompat.getColor(this, Objects.requireNonNullElseGet(teamColorObj, () -> R.color.mercedes_f1)));
+                            LinearLayout teamColor = findViewById(Constants.PODIUM_TEAM_COLOR.get(i));
+                            Integer teamColorObj = Constants.TEAM_COLOR.get(teamId);
+                            teamColor.setBackgroundColor(ContextCompat.getColor(this, Objects.requireNonNullElseGet(teamColorObj, () -> R.color.mercedes_f1)));
+                        }
+
+                        View resultsView = findViewById(R.id.timer_card_results);
+                        resultsView.setOnClickListener(v -> showRaceResultsDialog(currentRace));
                     }
-
-                    View resultsView = findViewById(R.id.timer_card_results);
-                    resultsView.setOnClickListener(v -> showRaceResultsDialog(currentRace));
+                } else {
+                    showPendingResults();
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error processing race results: " + e.getMessage());
@@ -416,119 +526,242 @@ public class EventActivity extends AppCompatActivity {
         resultsView.setVisibility(View.GONE);
     }
 
-    private void createWeekSchedule(List<Session> sessions, String round) {
+    private void createWeekSchedule(WeeklyRace weeklyRace, List<Session> sessions) {
         View eventSchedule = findViewById(R.id.event_schedule_table);
         loadingScreen.updateProgress();
 
         String sessionId;
 
-        for (Session session : sessions) {
+        for (int i = 0; i < sessions.size(); i++) {
+            Session session = sessions.get(i);
+            if (session == null) continue;
+
             sessionId = session.getClass().getSimpleName();
-            if (sessionId.equals("Practice")) {
+            if (session.isPractice()) {
                 Practice practice = (Practice) session;
+                if (practice.getNumber() <= 0) {
+                    practice.setNumber(i + 1);
+                }
                 sessionId = practice.getPractice();
             }
 
-            UIUtils.translateSchedule(this,
-                    eventSchedule.findViewById(Constants.SESSION_NAME_FIELD.get(sessionId)),
-                    eventSchedule.findViewById(Constants.SESSION_DAY_FIELD.get(sessionId)),
-                    sessionId);
+            Integer nameField = Constants.SESSION_NAME_FIELD.get(sessionId);
+            Integer dayField = Constants.SESSION_DAY_FIELD.get(sessionId);
+            Integer timeField = Constants.SESSION_TIME_FIELD.get(sessionId);
 
-            UIUtils.setTextViewTextWithCondition(sessionId.equals("Race"),
-                    session.getStartingTime(),
-                    session.getTime(),
-                    eventSchedule.findViewById(Constants.SESSION_TIME_FIELD.get(sessionId)));
+            if (nameField != null && dayField != null) {
+                UIUtils.translateSchedule(this,
+                        eventSchedule.findViewById(nameField),
+                        eventSchedule.findViewById(dayField),
+                        sessionId,
+                        session);
+            }
 
-            setChequeredFlag(eventSchedule, session, round);
+            if (timeField != null) {
+                UIUtils.setTextViewTextWithCondition(sessionId.equals("Race"),
+                        session.getStartingTime(),
+                        session.getTime(),
+                        eventSchedule.findViewById(timeField));
+            }
+
+            setChequeredFlag(eventSchedule, session, weeklyRace);
         }
     }
 
-    private void setChequeredFlag(View view, Session session, String round) {
+    private void setChequeredFlag(View view, Session session, WeeklyRace weeklyRace) {
         String sessionId = session.getClass().getSimpleName();
         if (session.isPractice()) {
             Practice practice = (Practice) session;
             sessionId = practice.getPractice();
         }
 
-        if (session.isFinished()) {
-            ImageView flag = view.findViewById(Constants.SESSION_FLAG_FIELD.get(sessionId));
-            flag.setVisibility(View.VISIBLE);
+        Integer flagContainerId = Constants.SESSION_FLAG_CONTAINER.get(sessionId);
+        Integer flagId = Constants.SESSION_FLAG_FIELD.get(sessionId);
+        Integer rowId = Constants.SESSION_ROW.get(sessionId);
 
-            LinearLayout currentSession = view.findViewById(Constants.SESSION_ROW.get(sessionId));
-            currentSession.setClickable(true);
-            currentSession.setFocusable(true);
-            currentSession.setOnClickListener(v -> manageSessionScheduleClick(session, round));
+        View flagContainer = flagContainerId != null ? view.findViewById(flagContainerId) : null;
+        View flagImage = flagId != null ? view.findViewById(flagId) : null;
+        View row = rowId != null ? view.findViewById(rowId) : null;
+
+        boolean isFinished = (weeklyRace != null && weeklyRace.isWeekFinished())
+                || (session != null && session.isFinished())
+                || (session != null && session.getEndDateTime() != null && session.getEndDateTime().isBefore(org.threeten.bp.LocalDateTime.now()));
+
+        if (isFinished) {
+            String round = weeklyRace != null ? weeklyRace.getRound() : "";
+
+            if (flagContainer != null) {
+                flagContainer.setVisibility(View.VISIBLE);
+                if(!session.isPractice()){
+                    flagContainer.setClickable(true);
+                    flagContainer.setFocusable(true);
+                    flagContainer.setOnClickListener(v -> manageSessionScheduleClick(session, round));
+                }else{
+                    flagContainer.setClickable(false);
+                    flagContainer.setFocusable(false);
+                    flagContainer.setOnClickListener(null);
+                }
+            }
+            if (flagImage != null) {
+                flagImage.setVisibility(View.VISIBLE);
+            }
+            if (!session.isPractice() && row != null) {
+                row.setClickable(true);
+                row.setFocusable(true);
+                row.setOnClickListener(v -> manageSessionScheduleClick(session, round));
+            }
+        } else {
+            if (flagContainer != null) {
+                flagContainer.setVisibility(View.INVISIBLE);
+                flagContainer.setClickable(false);
+                flagContainer.setFocusable(false);
+                flagContainer.setOnClickListener(null);
+            }
+            if (flagImage != null) {
+                flagImage.setVisibility(View.INVISIBLE);
+            }
+            if (row != null) {
+                row.setClickable(false);
+                row.setFocusable(false);
+                row.setOnClickListener(null);
+            }
         }
     }
 
     private void manageSessionScheduleClick(Session session, String round) {
-
         Log.i(TAG, "session id clicked: " + session.getClass().getSimpleName());
-        if (session.isRace()) {
-            showRaceResultsDialog(currentRace);
+        if (!session.isPractice()){
+            if (session.isRace()) {
+                if (currentRace != null && currentRace.getRaceResults() != null && !currentRace.getRaceResults().isEmpty()) {
+                    showRaceResultsDialog(currentRace);
+                } else {
+                    fetchRaceResultsAndShow(round);
+                }
+            } else if (session.isQualifying()) {
+                processQualifyingData(round);
+            } else if (session.isSprint()) {
+                processSprintData(round);
+            } else{
+                Toast.makeText(this, R.string.results_not_available, Toast.LENGTH_SHORT).show();
+            }
         }
-        if (session.isQualifying()) {
-            processQualifyingData(round);
-        }
-        if (session.isSprint()) {
-            processSprintData(round);
-        }
+    }
 
+    private void fetchRaceResultsAndShow(String round) {
+        if (loadingScreen != null) {
+            loadingScreen.showLoadingScreen(true);
+        }
+        MutableLiveData<Result> resultMutableLiveData = raceResultViewModel.getRaceResults(round);
+        Observer<Result> observer = new Observer<>() {
+            @Override
+            public void onChanged(Result result) {
+                if (result instanceof Result.Loading) {
+                    return;
+                }
+                resultMutableLiveData.removeObserver(this);
+                if (loadingScreen != null) {
+                    loadingScreen.hideLoadingScreenImmediately();
+                }
+                if (result instanceof Result.RaceResultsSuccess) {
+                    Race race = ((Result.RaceResultsSuccess) result).getData();
+                    if (race != null && race.getRaceResults() != null && !race.getRaceResults().isEmpty()) {
+                        currentRace = race;
+                        showRaceResultsDialog(race);
+                    } else {
+                        Toast.makeText(EventActivity.this, R.string.results_not_available, Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(EventActivity.this, R.string.results_not_available, Toast.LENGTH_SHORT).show();
+                }
+            }
+        };
+        resultMutableLiveData.observe(this, observer);
     }
 
     private void processQualifyingData(String round) {
         Log.d(TAG, "Processing qualifying data for round: " + round);
+        if (loadingScreen != null) {
+            loadingScreen.showLoadingScreen(true);
+        }
 
-        MutableLiveData<Result> qualifyingResultLiveData = raceResultViewModel.getQualifyingResults(round);
-        qualifyingResultLiveData.observe(this, result -> {
-            if (result instanceof Result.Loading) {
-                return;
-            }
-
-            try {
-                Race race = ((Result.RaceResultsSuccess) result).getData();
-                List<QualifyingResult> qualifyingResults = race.getQualifyingResults();
-
-                if (qualifyingResults == null || qualifyingResults.isEmpty()) {
-                    Log.i(TAG, "No qualifying results found");
-                    Toast.makeText(this, "No qualifying results found", Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.i(TAG, "Qualifying results found: " + qualifyingResults.size());
-
-                    showQualifyingResultsDialog(race);
-
+        MutableLiveData<Result> qualifyingLiveData = raceResultViewModel.getQualifyingResults(round);
+        Observer<Result> observer = new Observer<>() {
+            @Override
+            public void onChanged(Result result) {
+                if (result instanceof Result.Loading) {
+                    return;
                 }
-            } catch (Exception e) {
-                Log.e(TAG, "Error processing qualifying data: " + e.getMessage());
+
+                qualifyingLiveData.removeObserver(this);
+
+                if (loadingScreen != null) {
+                    loadingScreen.hideLoadingScreenImmediately();
+                }
+
+                try {
+                    if (result instanceof Result.RaceResultsSuccess) {
+                        Race race = ((Result.RaceResultsSuccess) result).getData();
+                        List<QualifyingResult> qualifyingResults = race != null ? race.getQualifyingResults() : null;
+
+                        if (qualifyingResults == null || qualifyingResults.isEmpty()) {
+                            Log.i(TAG, "No qualifying results found");
+                            Toast.makeText(EventActivity.this, R.string.results_not_available, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.i(TAG, "Qualifying results found: " + qualifyingResults.size());
+                            showQualifyingResultsDialog(race);
+                        }
+                    } else if (result instanceof Result.Error) {
+                        Toast.makeText(EventActivity.this, R.string.results_not_available, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error processing qualifying data: " + e.getMessage());
+                }
             }
-        });
+        };
+        qualifyingLiveData.observe(this, observer);
     }
 
     private void processSprintData(String round) {
         Log.d(TAG, "Processing sprint data for round: " + round);
+        if (loadingScreen != null) {
+            loadingScreen.showLoadingScreen(true);
+        }
 
-        MutableLiveData<Result> sprintResultLiveData = raceResultViewModel.getSprintResults(round);
-        sprintResultLiveData.observe(this, result -> {
-            if (result instanceof Result.Loading) {
-                return;
-            }
-
-            try {
-                Race race = ((Result.RaceResultsSuccess) result).getData();
-                List<RaceResult> sprintResults = race.getSprintResults();
-
-                if (sprintResults == null || sprintResults.isEmpty()) {
-                    Log.i(TAG, "No sprint results found");
-                    Toast.makeText(this, "No sprint results found", Toast.LENGTH_SHORT).show();
-                } else {
-                    Log.i(TAG, "Sprint results found: " + sprintResults.size());
-
-                    showRaceResultsDialog(race);
+        MutableLiveData<Result> sprintLiveData = raceResultViewModel.getSprintResults(round);
+        Observer<Result> observer = new Observer<Result>() {
+            @Override
+            public void onChanged(Result result) {
+                if (result instanceof Result.Loading) {
+                    return;
                 }
-            } catch (Exception e) {
-                Log.e(TAG, "Error processing qualifying data: " + e.getMessage());
+
+                sprintLiveData.removeObserver(this);
+
+                if (loadingScreen != null) {
+                    loadingScreen.hideLoadingScreenImmediately();
+                }
+
+                try {
+                    if (result instanceof Result.RaceResultsSuccess) {
+                        Race race = ((Result.RaceResultsSuccess) result).getData();
+                        List<RaceResult> sprintResults = race != null ? race.getSprintResults() : null;
+
+                        if (sprintResults == null || sprintResults.isEmpty()) {
+                            Log.i(TAG, "No sprint results found");
+                            Toast.makeText(EventActivity.this, R.string.results_not_available, Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.i(TAG, "Sprint results found: " + sprintResults.size());
+                            showRaceResultsDialog(race);
+                        }
+                    } else if (result instanceof Result.Error) {
+                        Toast.makeText(EventActivity.this, R.string.results_not_available, Toast.LENGTH_SHORT).show();
+                    }
+                } catch (Exception e) {
+                    Log.e(TAG, "Error processing sprint data: " + e.getMessage());
+                }
             }
-        });
+        };
+        sprintLiveData.observe(this, observer);
     }
 
     @Override

@@ -9,6 +9,7 @@ import androidx.room.PrimaryKey;
 
 import com.the_coffe_coders.fastestlap.domain.f1.result.QualifyingResult;
 import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResult;
+import com.the_coffe_coders.fastestlap.domain.f1.result.Stint;
 import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
 
 import org.threeten.bp.LocalDateTime;
@@ -43,6 +44,8 @@ public class Race extends Session implements Parcelable {
     public List<RaceResult> raceResults;
     public List<QualifyingResult> qualifyingResults;
     public List<RaceResult> sprintResults;
+    public List<Stint> raceStints;
+    public List<Stint> sprintStints;
     public LocalDateTime dateTime;
     @PrimaryKey(autoGenerate = true)
     private int uid;
@@ -64,6 +67,8 @@ public class Race extends Session implements Parcelable {
         this.raceResults = raceResults;
         this.qualifyingResults = qualifyingResults;
         this.sprintResults = sprintResults;
+        this.raceStints = new ArrayList<>();
+        this.sprintStints = new ArrayList<>();
         setEndDateTime();
     }
 
@@ -71,12 +76,16 @@ public class Race extends Session implements Parcelable {
         raceResults = new ArrayList<>();
         qualifyingResults = new ArrayList<>();
         sprintResults = new ArrayList<>();
+        raceStints = new ArrayList<>();
+        sprintStints = new ArrayList<>();
     }
 
     protected Race(Parcel in) {
         raceResults = in.createTypedArrayList(RaceResult.CREATOR);
         qualifyingResults = in.createTypedArrayList(QualifyingResult.CREATOR);
         sprintResults = in.createTypedArrayList(RaceResult.CREATOR);
+        raceStints = in.createTypedArrayList(Stint.CREATOR);
+        sprintStints = in.createTypedArrayList(Stint.CREATOR);
         uid = in.readInt();
         season = in.readString();
         round = in.readString();
@@ -94,6 +103,31 @@ public class Race extends Session implements Parcelable {
 
     public void setResults(List<RaceResult> raceResults) {
         this.raceResults = raceResults;
+    }
+
+    public List<Stint> getRaceStints() {
+        return raceStints;
+    }
+
+    public void setRaceStints(List<Stint> raceStints) {
+        this.raceStints = raceStints;
+    }
+
+    public List<Stint> getSprintStints() {
+        return sprintStints;
+    }
+
+    public void setSprintStints(List<Stint> sprintStints) {
+        this.sprintStints = sprintStints;
+    }
+
+    public List<Stint> getStints() {
+        if (raceResults != null && !raceResults.isEmpty()) {
+            return raceStints;
+        } else if (sprintResults != null && !sprintResults.isEmpty()) {
+            return sprintStints;
+        }
+        return (raceStints != null && !raceStints.isEmpty()) ? raceStints : sprintStints;
     }
 
     public void addResult(RaceResult result) {
@@ -117,6 +151,9 @@ public class Race extends Session implements Parcelable {
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeTypedList(raceResults);
         dest.writeTypedList(qualifyingResults);
+        dest.writeTypedList(sprintResults);
+        dest.writeTypedList(raceStints);
+        dest.writeTypedList(sprintStints);
         dest.writeInt(uid);
         dest.writeString(season);
         dest.writeString(round);

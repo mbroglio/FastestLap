@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/driver_card_view"
-    style="?materialCardViewElevatedStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="10dp"
-    android:layout_marginTop="4dp"
-    android:layout_marginEnd="10dp"
-    android:layout_marginBottom="4dp"
+    android:layout_marginStart="@dimen/medium_margin"
+    android:layout_marginTop="5dp"
+    android:layout_marginEnd="@dimen/medium_margin"
+    android:layout_marginBottom="5dp"
     android:clickable="true"
     android:focusable="true"
+    app:cardBackgroundColor="@color/card_surface_elevated"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="3dp"
+    app:rippleColor="@color/ripple_color"
+    app:strokeColor="@color/subtle_white_border"
+    app:strokeWidth="1.5dp"
     tools:context=".ui.standing.DriversStandingActivity">
 
+    <!-- Not Found / Error State -->
     <TextView
         android:id="@+id/driver_not_found"
         android:layout_width="match_parent"
@@ -20,90 +27,140 @@
         android:autoSizeMaxTextSize="@dimen/layout_subtitle_text_size"
         android:autoSizeMinTextSize="@dimen/text_minor_importance_size"
         android:autoSizeTextType="uniform"
-        android:background="@color/timer_gray"
+        android:background="@color/card_surface_elevated"
         android:fontFamily="@font/orbitron_bold"
         android:gravity="center"
         android:maxLines="1"
         android:paddingStart="@dimen/medium_margin"
         android:paddingEnd="@dimen/medium_margin"
-        android:textColor="@color/black"
+        android:textColor="@color/white"
         android:textSize="@dimen/layout_subtitle_text_size"
-        android:visibility="gone">
+        android:visibility="gone" />
 
-    </TextView>
-
+    <!-- Driver Card Container with Gradient Background -->
     <RelativeLayout
         android:id="@+id/small_driver_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:visibility="visible">
 
-        <TextView
-            android:id="@+id/driver_position"
-            style="@style/t20UpperCaseBoldBlack"
-            android:layout_width="40dp"
+        <!-- Semi-transparent Dark Surface Overlay -->
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_centerInParent="true"
-            android:layout_marginStart="5dp"
-            android:gravity="center"
-            android:text="@string/not_found">
+            android:background="#D01C1D24"
+            android:paddingStart="12dp"
+            android:paddingTop="9dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="9dp">
 
-        </TextView>
+            <!-- Driver Position -->
+            <TextView
+                android:id="@+id/driver_position"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:fontFamily="@font/orbitron_bold"
+                android:gravity="center"
+                android:minWidth="24dp"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                tools:text="1" />
 
-        <ImageView
-            android:id="@+id/driver_image"
-            android:layout_width="@dimen/small_image"
-            android:layout_height="@dimen/small_image"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_toEndOf="@id/driver_position"
-            android:importantForAccessibility="no">
+            <!-- Vertical Separator after Position -->
+            <View
+                android:id="@+id/pos_separator"
+                android:layout_width="1.5dp"
+                android:layout_height="18dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_toEndOf="@id/driver_position"
+                android:background="@color/subtle_white_border" />
 
-        </ImageView>
+            <!-- Driver Circular Avatar -->
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/driver_image"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@id/pos_separator"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.FastestLap.Circular"
+                app:strokeColor="@color/subtle_white_border"
+                app:strokeWidth="1.5dp" />
 
-        <ImageView
-            android:id="@+id/team_logo"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_centerInParent="true"
-            android:layout_marginStart="5dp"
-            android:layout_toEndOf="@id/driver_image"
-            android:importantForAccessibility="no">
+            <!-- Team Logo Badge Container -->
+            <FrameLayout
+                android:id="@+id/team_logo_container"
+                android:layout_width="38dp"
+                android:layout_height="26dp"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="8dp"
+                android:layout_toEndOf="@id/driver_image"
+                android:background="@drawable/team_logo_badge_background"
+                android:padding="2dp">
 
-        </ImageView>
+                <ImageView
+                    android:id="@+id/team_logo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:importantForAccessibility="no"
+                    android:scaleType="fitCenter" />
+            </FrameLayout>
 
-        <TextView
-            android:id="@+id/driver_name"
-            style="@style/t14BoldBlackLineLimited"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_gravity="center"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="8dp"
-            android:layout_toStartOf="@id/driver_points"
-            android:layout_toEndOf="@id/team_logo">
+            <!-- Points Pill Badge (Top/Center Right) -->
+            <LinearLayout
+                android:id="@+id/points_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:background="@drawable/badge_pill_translucent"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingStart="10dp"
+                android:paddingTop="4dp"
+                android:paddingEnd="10dp"
+                android:paddingBottom="4dp">
 
-        </TextView>
+                <TextView
+                    android:id="@+id/driver_points"
+                    style="@style/t14BoldWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/orbitron_bold"
+                    tools:text="331" />
 
-        <TextView
-            android:id="@+id/driver_points"
-            style="@style/t20UpperCaseBoldBlack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerInParent="true"
-            android:layout_marginEnd="10dp"
-            android:gravity="center"
-            android:text="@string/not_found">
+                <TextView
+                    style="@style/t10UpperCaseBoldWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@string/points_upper_case"
+                    android:textColor="@color/modern_light_gray" />
+            </LinearLayout>
 
-        </TextView>
+            <!-- Driver Name -->
+            <TextView
+                android:id="@+id/driver_name"
+                style="@style/t14BoldWhiteLineLimited"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_toEndOf="@id/team_logo_container"
+                android:layout_toStartOf="@id/points_container"
+                android:gravity="start|center_vertical"
+                android:maxLines="2"
+                tools:text="Max Verstappen" />
+
+        </RelativeLayout>
 
     </RelativeLayout>
 
 </com.google.android.material.card.MaterialCardView>
-

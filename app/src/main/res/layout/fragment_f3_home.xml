@@ -134,7 +134,13 @@
                     android:id="@+id/f3_results_card"
                     style="@style/F3MenuCard"
                     android:layout_width="match_parent"
-                    android:layout_height="120dp">
+                    android:layout_height="120dp"
+                    app:cardBackgroundColor="@color/card_surface_elevated"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="3dp"
+                    app:rippleColor="@color/ripple_color"
+                    app:strokeColor="@color/app_primary_red"
+                    app:strokeWidth="1.5dp">
 
                     <ImageView
                         android:layout_width="match_parent"
@@ -166,7 +172,13 @@
                     style="@style/F3MenuCard"
                     android:layout_width="match_parent"
                     android:layout_height="120dp"
-                    android:layout_marginTop="16dp">
+                    android:layout_marginTop="16dp"
+                    app:cardBackgroundColor="@color/card_surface_elevated"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="3dp"
+                    app:rippleColor="@color/ripple_color"
+                    app:strokeColor="@color/app_primary_red"
+                    app:strokeWidth="1.5dp">
 
                     <ImageView
                         android:layout_width="match_parent"
@@ -198,7 +210,13 @@
                     style="@style/F3MenuCard"
                     android:layout_width="match_parent"
                     android:layout_height="120dp"
-                    android:layout_marginTop="16dp">
+                    android:layout_marginTop="16dp"
+                    app:cardBackgroundColor="@color/card_surface_elevated"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="3dp"
+                    app:rippleColor="@color/ripple_color"
+                    app:strokeColor="@color/app_primary_red"
+                    app:strokeWidth="1.5dp">
 
                     <ImageView
                         android:layout_width="match_parent"
@@ -225,13 +243,25 @@
                         android:text="@string/constructors_standing" />
                 </com.google.android.material.card.MaterialCardView>
 
+                <View
+                    android:id="@+id/header_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="3dp"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="30dp"
+                    android:background="@color/subtle_white_border"
+                    app:layout_constraintTop_toBottomOf="@id/last_race_flag" />
+
                 <com.google.android.material.card.MaterialCardView
                     android:id="@+id/f3_car_bio_card"
                     android:layout_width="match_parent"
                     android:layout_height="120dp"
-                    android:layout_marginTop="64dp"
-                    app:strokeColor="@android:color/transparent"
-                    app:strokeWidth="0dp">
+                    app:cardBackgroundColor="@color/card_surface_elevated"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="3dp"
+                    app:rippleColor="@color/ripple_color"
+                    app:strokeColor="@color/app_primary_red"
+                    app:strokeWidth="1.5dp">
 
                     <TextView
                         style="@style/t20UpperCaseBoldWhite"

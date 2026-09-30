@@ -10,7 +10,7 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.source.nation.FirebaseNationDataSource;
 import com.the_coffe_coders.fastestlap.source.nation.LocalNationDataSource;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -81,13 +81,10 @@ public class NationRepository {
                 if (nation != null) {
                     Log.d(TAG, "Nation loaded from local database (cache hit): " + nationId);
                     nation.setNationId(nationId);
-                    lastUpdateTimestamps.put(nationId, System.currentTimeMillis());
                     Objects.requireNonNull(nationCache.get(nationId)).postValue(new Result.NationSuccess(nation));
 
                     // Only refresh from remote if the cached data is actually stale.
-                    // Without this TTL guard, Firebase fires on every launch even when the
-                    // local data is fresh, causing the LiveData to re-emit and triggering
-                    // redundant card rebuilds in the UI.
+                    // lastUpdateTimestamps tracks when the nation was fetched from REMOTE (Firebase).
                     Long ts = lastUpdateTimestamps.get(nationId);
                     boolean isStale = ts == null || System.currentTimeMillis() - ts > 300_000L;
                     if (isNetworkAvailable() && isStale && !inFlightFetches.contains(nationId)) {
@@ -135,6 +132,8 @@ public class NationRepository {
                         Objects.requireNonNull(nationCache.get(nationId)).postValue(new Result.NationSuccess(nation));
                     } else if (!isBackgroundRefresh) {
                         Log.e(TAG, "Nation not found: " + nationId);
+                        Objects.requireNonNull(nationCache.get(nationId)).postValue(
+                                new Result.Error("Nation not found: " + nationId));
                     }
                 }
 
@@ -142,11 +141,19 @@ public class NationRepository {
                 public void onError(Exception e) {
                     inFlightFetches.remove(nationId);
                     Log.e(TAG, "Error loading nation from remote: " + e.getMessage());
+                    if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(nationCache.get(nationId)).postValue(
+                                new Result.Error(e.getMessage()));
+                    }
                 }
             });
         } catch (Exception e) {
             inFlightFetches.remove(nationId);
             Log.e(TAG, "Error loading nation from remote: " + e.getMessage());
+            if (!isBackgroundRefresh) {
+                Objects.requireNonNull(nationCache.get(nationId)).postValue(
+                        new Result.Error(e.getMessage()));
+            }
         }
     }
 }

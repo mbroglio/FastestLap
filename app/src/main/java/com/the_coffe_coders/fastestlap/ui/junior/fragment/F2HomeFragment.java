@@ -50,11 +50,11 @@ public class F2HomeFragment extends Fragment {
         carBioCard = view.findViewById(R.id.f2_car_bio_card);
 
         entryListCard.setOnClickListener(v ->
-                NavigationUtils.showEntryListDialog(requireActivity().getSupportFragmentManager(), categoryType)
+                NavigationUtils.navigateToJuniorEntryListPage(v, categoryType)
         );
 
         calendarCard.setOnClickListener(v ->
-                NavigationUtils.showCalendarDialog(requireActivity().getSupportFragmentManager(), categoryType)
+                NavigationUtils.navigateToJuniorCalendarPage(v, categoryType)
         );
 
         resultsCard.setOnClickListener(v ->
@@ -62,11 +62,11 @@ public class F2HomeFragment extends Fragment {
         );
 
         driversStandingCard.setOnClickListener(v ->
-                NavigationUtils.showDriversStandingDialog(requireActivity().getSupportFragmentManager(), categoryType)
+                NavigationUtils.navigateToJuniorDriverStandingsPage(v, categoryType)
         );
 
         constructorsStandingCard.setOnClickListener(v ->
-                NavigationUtils.showConstructorsStandingDialog(requireActivity().getSupportFragmentManager(), categoryType)
+                NavigationUtils.navigateToJuniorConstructorStandingsPage(v, categoryType)
         );
 
         carBioCard.setOnClickListener(v ->

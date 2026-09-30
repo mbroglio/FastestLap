@@ -35,7 +35,7 @@ public class RaceResultsRecyclerAdapter extends RecyclerView.Adapter<RaceResults
     @Override
     public ResultViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.race_result_item, parent, false);
+                .inflate(R.layout.race_result_item_history, parent, false);
         return new ResultViewHolder(view);
     }
 

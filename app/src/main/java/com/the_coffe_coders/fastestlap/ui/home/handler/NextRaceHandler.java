@@ -36,8 +36,8 @@ import com.the_coffe_coders.fastestlap.ui.event.EventActivity;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.WeeklyRaceViewModel;
 import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import org.threeten.bp.LocalDateTime;
@@ -224,18 +224,29 @@ public class NextRaceHandler {
         try {
             UIUtils.singleSetTextViewText(nextRace.getRaceName(), view.findViewById(R.id.home_next_gp_name));
 
+            ImageView bgImageView = view.findViewById(R.id.home_next_gp_background_image);
+            if (bgImageView != null && nextRace != null && nextRace.getTrack() != null) {
+                String trackPicUrl = nextRace.getTrack().getTrack_pic_url();
+                if (trackPicUrl != null && !trackPicUrl.isEmpty()) {
+                    UIUtils.loadImageAsync(context, trackPicUrl, bgImageView);
+                }
+            }
+
             String nationFlagUrl = null;
             if (nation != null) {
                 nationFlagUrl = nation.getNation_flag_url();
             }
 
-            UIUtils.loadImageWithGlide(context, nationFlagUrl, view.findViewById(R.id.home_next_gp_flag), () -> {
-                try {
-                    setNextRaceCardFinalStep(nextRace);
-                } catch (Exception e) {
-                    setSeasonEnded();
-                }
-            });
+            ImageView flagView = view.findViewById(R.id.home_next_gp_flag);
+            if (flagView != null && nationFlagUrl != null) {
+                UIUtils.loadImageAsync(context, nationFlagUrl, flagView);
+            }
+
+            try {
+                setNextRaceCardFinalStep(nextRace);
+            } catch (Exception e) {
+                setSeasonEnded();
+            }
 
         } catch (Exception e) {
             Log.i(TAG, "connected: " + networkLiveData.isConnected());

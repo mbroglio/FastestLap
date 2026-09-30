@@ -21,7 +21,9 @@
             android:background="@color/formula_2"
             app:navigationIcon="@drawable/arrow_back_ios_style"
             app:titleCentered="true"
-            app:titleTextAppearance="@style/t25UpperCaseBoldBlack" />
+            app:title="FORMULA 2"
+            app:titleTextAppearance="@style/t25UpperCaseBoldBlack"
+            app:titleTextColor="@color/screen_background_color"/>
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.fragment.app.FragmentContainerView

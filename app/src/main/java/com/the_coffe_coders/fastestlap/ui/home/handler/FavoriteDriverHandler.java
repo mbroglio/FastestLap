@@ -27,8 +27,8 @@ import com.the_coffe_coders.fastestlap.ui.home.viewmodel.HomeViewModel;
 import com.the_coffe_coders.fastestlap.ui.standing.DriversStandingActivity;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
-import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
@@ -284,18 +284,25 @@ public class FavoriteDriverHandler {
     }
 
     private void buildDriverCardFinalStep(DriverStandingsElement standingElement, Driver driver) {
+        MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
         if (standingElement.getPosition() != null && standingElement.getPoints() != null) {
             UIUtils.multipleSetTextViewText(
                     new String[]{standingElement.getPosition(), standingElement.getPoints()},
                     new TextView[]{view.findViewById(R.id.favourite_driver_position), view.findViewById(R.id.favourite_driver_points)}
             );
 
-            MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
             driverRank.setOnClickListener(v -> NavigationUtils.navigateToStandingsPage(context, driver.getDriverId(), 1));
         } else {
-            MaterialCardView driverRank = view.findViewById(R.id.favourite_driver_rank);
             driverRank.setClickable(false);
         }
+
+        // Apply team color styling (semi-transparent card background + darker ranking button with shadow)
+        String teamId = driver.getTeam_id();
+        if ((teamId == null || teamId.isEmpty()) && standingElement.getConstructors() != null && !standingElement.getConstructors().isEmpty()) {
+            teamId = standingElement.getConstructors().get(0).getConstructorId();
+        }
+        MaterialCardView driverCard = view.findViewById(R.id.card_favorite_driver);
+        UIUtils.styleFavoriteCard(context, driverCard, driverRank, teamId);
 
         Log.i(TAG, "Driver card built successfully");
         showFavouriteDriverCard();

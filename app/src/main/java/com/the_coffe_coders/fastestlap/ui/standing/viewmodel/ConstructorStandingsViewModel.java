@@ -24,4 +24,8 @@ public class ConstructorStandingsViewModel extends ViewModel {
     public MutableLiveData<Result> getConstructorListLiveData() {
         return constructorStandingRepository.getConstructorStandings();
     }
+
+    public void refreshConstructorStandings() {
+        constructorStandingRepository.refreshConstructorStandings();
+    }
 }
