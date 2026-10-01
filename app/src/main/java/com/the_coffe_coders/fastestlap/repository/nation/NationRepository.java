@@ -156,4 +156,15 @@ public class NationRepository {
             }
         }
     }
+
+    public void refreshNation(String nationId) {
+        if (nationId == null) return;
+        if (!nationCache.containsKey(nationId)) {
+            nationCache.put(nationId, new MutableLiveData<>());
+        }
+        if (isNetworkAvailable() && !inFlightFetches.contains(nationId)) {
+            inFlightFetches.add(nationId);
+            loadNationFromRemote(nationId, false);
+        }
+    }
 }

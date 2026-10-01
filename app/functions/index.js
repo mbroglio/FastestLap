@@ -336,3 +336,25 @@ exports.updateJuniorSeriesNow = onRequest(
     }
   }
 );
+
+/**
+ * HTTP ENDPOINT: Manual All Career Stats Verification and Synchronization Trigger
+ * Reconciles accurate career stats (podiums, wins, gps_entered) from Jolpica for all drivers and teams
+ * and writes them directly to Firebase RTDB.
+ * GET https://.../syncAllCareerStatsNow
+ */
+exports.syncAllCareerStatsNow = onRequest(
+  {
+    cors: true,
+    timeoutSeconds: 540
+  },
+  async (req, res) => {
+    try {
+      const report = await f1Logic.syncAllCareerStats(db);
+      res.status(200).json({ status: "success", report });
+    } catch (error) {
+      console.error("Error in syncAllCareerStatsNow:", error);
+      res.status(500).json({ status: "error", message: error.message });
+    }
+  }
+);

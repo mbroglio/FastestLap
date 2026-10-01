@@ -4,13 +4,9 @@ import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_D
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.repository.f1.driver.DriverCallback;
 
@@ -35,9 +31,9 @@ public class FirebaseDriverDataSource implements DriverDataSource {
         Log.i(TAG, "Fetching driver from Firebase with ID: " + driverId);
         DatabaseReference databaseReference = database.getReference("drivers").child(driverId);
 
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+        databaseReference.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DataSnapshot snapshot = task.getResult();
                 if (snapshot.exists()) {
                     Driver driver = snapshot.getValue(Driver.class);
                     if (driver != null) {
@@ -52,12 +48,10 @@ public class FirebaseDriverDataSource implements DriverDataSource {
                     Log.e(TAG, "No driver found for ID: " + driverId);
                     callback.onError(new Exception("No driver found"));
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(TAG, "Firebase request cancelled: " + error.getMessage());
-                callback.onError(new Exception("Firebase error: " + error.getMessage()));
+            } else {
+                Exception error = task.getException() != null ? task.getException() : new Exception("Firebase request failed");
+                Log.e(TAG, "Firebase request failed: " + error.getMessage());
+                callback.onError(error);
             }
         });
     }

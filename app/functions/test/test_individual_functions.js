@@ -455,6 +455,44 @@ const f1Functions = {
             console.log('\nCircuit archive updates:');
             console.log(JSON.stringify(updates, null, 2));
             
+        }
+    },
+
+    fixCareerStats: {
+        description: 'Verify and synchronize accurate career stats (podiums, wins, gps_entered) from Jolpica',
+        args: [],
+        example: 'node test_individual_functions.js f1 fixCareerStats',
+        execute: async (db) => {
+            const fixCareerStatsModule = require('./fix_career_stats');
+            const driversSnap = await db.ref('drivers').once('value');
+            const drivers = Object.keys(driversSnap.val() || {});
+            console.log(`Checking ${drivers.length} drivers for career stats accuracy...`);
+
+            const updates = {};
+            for (const d of drivers) {
+                const cur = driversSnap.val()[d] || {};
+                console.log(`Fetching Jolpica stats for ${d}...`);
+                const stats = await fixCareerStatsModule.fetchDriverCareerStats(d);
+                console.log(`  Driver ${d}: podiums ${cur.podiums} -> ${stats.podiums}, gps_entered ${cur.gps_entered} -> ${stats.gps_entered}`);
+                updates[`drivers/${d}/podiums`] = stats.podiums;
+                updates[`drivers/${d}/gps_entered`] = stats.gps_entered;
+            }
+
+            const teamsSnap = await db.ref('teams').once('value');
+            const teams = Object.keys(teamsSnap.val() || {});
+            console.log(`Checking ${teams.length} constructors for career stats accuracy...`);
+            for (const t of teams) {
+                const cur = teamsSnap.val()[t] || {};
+                console.log(`Fetching Jolpica stats for team ${t}...`);
+                const stats = await fixCareerStatsModule.fetchConstructorCareerStats(t);
+                console.log(`  Team ${t}: podiums ${cur.podiums} -> ${stats.podiums}, wins ${cur.wins} -> ${stats.wins}, gps_entered ${cur.gps_entered} -> ${stats.gps_entered}`);
+                updates[`teams/${t}/podiums`] = stats.podiums;
+                updates[`teams/${t}/wins`] = stats.wins;
+                updates[`teams/${t}/gps_entered`] = stats.gps_entered;
+            }
+
+            await db.ref().update(updates);
+            console.log('✓ Career stats successfully repaired in database!');
             return updates;
         }
     }

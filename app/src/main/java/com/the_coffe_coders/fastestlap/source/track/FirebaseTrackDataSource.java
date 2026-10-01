@@ -6,13 +6,9 @@ import static com.the_coffe_coders.fastestlap.util.Constants.FIREBASE_REALTIME_D
 
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
 import com.the_coffe_coders.fastestlap.repository.track.TrackCallback;
 
@@ -64,9 +60,9 @@ public class FirebaseTrackDataSource implements TrackDataSource {
 
     private void fetchTrackDirect(String key, TrackCallback callback) {
         DatabaseReference databaseReference = database.getReference(FIREBASE_CIRCUITS_COLLECTION).child(key);
-        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+        databaseReference.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DataSnapshot snapshot = task.getResult();
                 if (snapshot.exists()) {
                     Track track = snapshot.getValue(Track.class);
                     if (track != null) {
@@ -80,20 +76,18 @@ public class FirebaseTrackDataSource implements TrackDataSource {
                 } else {
                     callback.onError(new NullPointerException("No track found for key: " + key));
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                callback.onError(error.toException());
+            } else {
+                Exception error = task.getException() != null ? task.getException() : new Exception("Firebase request failed");
+                callback.onError(error);
             }
         });
     }
 
     private void checkCircuitMapCollection(String originalTrackId, TrackCallback callback, Exception originalError) {
         DatabaseReference mapRef = database.getReference(FIREBASE_CIRCUIT_MAP_COLLECTION).child(originalTrackId);
-        mapRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+        mapRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DataSnapshot snapshot = task.getResult();
                 if (snapshot.exists()) {
                     String mappedId = snapshot.getValue(String.class);
                     if (mappedId != null && !mappedId.isEmpty()) {
@@ -111,10 +105,7 @@ public class FirebaseTrackDataSource implements TrackDataSource {
                 } else {
                     searchAllCircuits(originalTrackId, callback, originalError);
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+            } else {
                 String aliasId = TRACK_ID_ALIASES.get(originalTrackId.toLowerCase());
                 if (aliasId != null) {
                     fetchTrackDirect(aliasId, callback);
@@ -127,9 +118,9 @@ public class FirebaseTrackDataSource implements TrackDataSource {
 
     private void searchAllCircuits(String originalTrackId, TrackCallback callback, Exception originalError) {
         DatabaseReference circuitsRef = database.getReference(FIREBASE_CIRCUITS_COLLECTION);
-        circuitsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+        circuitsRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DataSnapshot snapshot = task.getResult();
                 if (snapshot.exists()) {
                     String cleanSearchId = originalTrackId.toLowerCase().replaceAll("[^a-z0-9]", "");
                     for (DataSnapshot child : snapshot.getChildren()) {
@@ -162,10 +153,7 @@ public class FirebaseTrackDataSource implements TrackDataSource {
                     }
                 }
                 callback.onError(originalError);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+            } else {
                 callback.onError(originalError);
             }
         });

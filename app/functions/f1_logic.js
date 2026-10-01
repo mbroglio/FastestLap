@@ -1,4 +1,5 @@
 const axios = require("axios");
+const careerStatsLogic = require("./career_stats_logic");
 
 const PATHS = {
     drivers: "drivers",
@@ -54,15 +55,26 @@ async function executeRaceStatsUpdateWithResults(db, newSeason, newRound, trackI
     const multiPathUpdates = {};
     const constructorUpdates = {};
 
+    // Idempotence check: verify if career stats were already applied for this season and round
+    const raceUpdateSnap = await db.ref(`${PATHS.race_updates}/${newSeason}/${newRound}`).once("value");
+    const raceUpdateData = raceUpdateSnap.val() || {};
+    const careerStatsAlreadyApplied = raceUpdateData.career_stats_applied === true;
+
+    if (careerStatsAlreadyApplied) {
+        console.log(`[F1 Race Stats] Career stats already applied for Season ${newSeason}, Round ${newRound}. Skipping increments to prevent duplicate accumulation.`);
+    }
+
     for (const result of results) {
         const driverId = result.Driver?.driverId;
         const constructorId = result.Constructor?.constructorId;
         const position = parseInt(result.position);
 
         const positionString = result.positionText;
-        const lapsCompleted = parseInt(result.laps);
+        const statusStr = (result.status || "").toLowerCase();
+        // Any driver listed in race results entered the GP (excluding only DNS / Did Not Start)
+        const isDns = positionString === "DNS" || positionString === "W" || statusStr.includes("did not start");
 
-        if (driverId) {
+        if (driverId && !careerStatsAlreadyApplied) {
             const driverRef = db.ref(`${PATHS.drivers}/${driverId}`);
             const driverSnapshot = await driverRef.once("value");
 
@@ -73,7 +85,7 @@ async function executeRaceStatsUpdateWithResults(db, newSeason, newRound, trackI
                     multiPathUpdates[`${PATHS.drivers}/${driverId}/podiums`] = (currentPodiums + 1).toString();
                 }
 
-                if (positionString !== "R" && lapsCompleted !== 0) {
+                if (!isDns) {
                     const gpsEntered = parseInt(driverData.gps_entered) || 0;
                     multiPathUpdates[`${PATHS.drivers}/${driverId}/gps_entered`] = (gpsEntered + 1).toString();
                 }
@@ -95,35 +107,38 @@ async function executeRaceStatsUpdateWithResults(db, newSeason, newRound, trackI
             }
         }
 
-        if (constructorId) {
+        if (constructorId && !careerStatsAlreadyApplied) {
             if (!constructorUpdates[constructorId]) constructorUpdates[constructorId] = { podiums: 0, wins: 0, gps_entered: 0 };
             if (position === 1) constructorUpdates[constructorId].wins += 1;
             if (position <= 3) constructorUpdates[constructorId].podiums += 1;
-            if (positionString !== "R" && lapsCompleted !== 0) constructorUpdates[constructorId].gps_entered = 1;
+            if (!isDns) constructorUpdates[constructorId].gps_entered = 1;
         }
     }
 
-    for (const constructorId in constructorUpdates) {
-        const updates = constructorUpdates[constructorId];
-        if (updates.podiums > 0 || updates.wins > 0 || updates.gps_entered > 0) {
-            const constructorRef = db.ref(`${PATHS.teams}/${constructorId}`);
-            const constructorSnapshot = await constructorRef.once("value");
-            if (constructorSnapshot.exists()) {
-                const constructorData = constructorSnapshot.val();
-                if (updates.wins > 0) {
-                    const careerWins = parseInt(constructorData.wins) || 0;
-                    multiPathUpdates[`${PATHS.teams}/${constructorId}/wins`] = (careerWins + updates.wins).toString();
-                }
-                if (updates.podiums > 0) {
-                    const currentPodiums = parseInt(constructorData.podiums) || 0;
-                    multiPathUpdates[`${PATHS.teams}/${constructorId}/podiums`] = (currentPodiums + updates.podiums).toString();
-                }
-                if (updates.gps_entered > 0) {
-                    const currentGpsEntered = parseInt(constructorData.gps_entered) || 0;
-                    multiPathUpdates[`${PATHS.teams}/${constructorId}/gps_entered`] = (currentGpsEntered + updates.gps_entered).toString();
+    if (!careerStatsAlreadyApplied) {
+        for (const constructorId in constructorUpdates) {
+            const updates = constructorUpdates[constructorId];
+            if (updates.podiums > 0 || updates.wins > 0 || updates.gps_entered > 0) {
+                const constructorRef = db.ref(`${PATHS.teams}/${constructorId}`);
+                const constructorSnapshot = await constructorRef.once("value");
+                if (constructorSnapshot.exists()) {
+                    const constructorData = constructorSnapshot.val();
+                    if (updates.wins > 0) {
+                        const careerWins = parseInt(constructorData.wins) || 0;
+                        multiPathUpdates[`${PATHS.teams}/${constructorId}/wins`] = (careerWins + updates.wins).toString();
+                    }
+                    if (updates.podiums > 0) {
+                        const currentPodiums = parseInt(constructorData.podiums) || 0;
+                        multiPathUpdates[`${PATHS.teams}/${constructorId}/podiums`] = (currentPodiums + updates.podiums).toString();
+                    }
+                    if (updates.gps_entered > 0) {
+                        const currentGpsEntered = parseInt(constructorData.gps_entered) || 0;
+                        multiPathUpdates[`${PATHS.teams}/${constructorId}/gps_entered`] = (currentGpsEntered + updates.gps_entered).toString();
+                    }
                 }
             }
         }
+        multiPathUpdates[`${PATHS.race_updates}/${newSeason}/${newRound}/career_stats_applied`] = true;
     }
 
     if (trackId) {
@@ -1180,7 +1195,7 @@ async function executeScheduledRaceStatsCheck(db, messaging, options = {}) {
             await syncConstructorSeasonStats(db, season);
 
             // Update tracker
-            await db.ref(`${PATHS.race_updates}/${season}/${round}`).set({
+            await db.ref(`${PATHS.race_updates}/${season}/${round}`).update({
                 season,
                 round,
                 race_name: raceName,
@@ -1290,6 +1305,9 @@ module.exports = {
     fetchAndCalculateDriverSeasonStats,
     syncConstructorSeasonStats,
     fetchAndCalculateConstructorSeasonStats,
+    syncAllCareerStats: careerStatsLogic.syncAllCareerStats,
+    fetchDriverCareerStats: careerStatsLogic.fetchDriverCareerStats,
+    fetchConstructorCareerStats: careerStatsLogic.fetchConstructorCareerStats,
 
     // Helper functions for testing
     loadMappings,

@@ -75,6 +75,9 @@ public class TrackBioActivity extends AppCompatActivity {
         trackBioLayout.setOnRefreshListener(() -> {
             if (networkLiveData.isConnected()) {
                 if (trackViewModel != null && trackId != null) {
+                    if (track != null && track.getCountry() != null && nationViewModel != null) {
+                        nationViewModel.refreshNation(track.getCountry());
+                    }
                     trackViewModel.refreshTrack(trackId);
                 } else {
                     trackBioLayout.setRefreshing(false);

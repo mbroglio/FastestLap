@@ -21,4 +21,8 @@ public class NationViewModel extends ViewModel {
         return nationRepository.getNation(nationId);
     }
 
+    public void refreshNation(String nationId) {
+        nationRepository.refreshNation(nationId);
+    }
+
 }

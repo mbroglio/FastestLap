@@ -41,9 +41,9 @@ public class UserFirebaseDataSource extends BaseUserDataRemoteDataSource {
 
     @Override
     public void saveUserData(User user) {
-        databaseReference.child(FIREBASE_USERS_COLLECTION).child(user.getIdToken()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+        databaseReference.child(FIREBASE_USERS_COLLECTION).child(user.getIdToken()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DataSnapshot snapshot = task.getResult();
                 if (snapshot.exists()) {
                     Log.d(TAG, "User already present in Firebase Realtime Database");
                     userResponseCallback.onSuccessFromRemoteDatabase(user);
@@ -53,10 +53,8 @@ public class UserFirebaseDataSource extends BaseUserDataRemoteDataSource {
                             .addOnSuccessListener(aVoid -> userResponseCallback.onSuccessFromRemoteDatabase(user))
                             .addOnFailureListener(e -> userResponseCallback.onFailureFromRemoteDatabase(e.getLocalizedMessage()));
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+            } else {
+                Exception error = task.getException() != null ? task.getException() : new Exception("Failed to check user");
                 userResponseCallback.onFailureFromRemoteDatabase(error.getMessage());
             }
         });

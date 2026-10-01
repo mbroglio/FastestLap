@@ -60,7 +60,7 @@ public class Formula3Activity extends AppCompatActivity {
                 if (toolbar != null && toolbar.getMenu() != null) {
                     MenuItem newsItem = toolbar.getMenu().findItem(R.id.news_outline);
                     if (newsItem != null) {
-                        newsItem.setVisible(destination.getId() != R.id.junior_news);
+                        newsItem.setVisible(destination.getId() == R.id.f3HomeFragment);
                     }
                 }
             });
@@ -79,7 +79,7 @@ public class Formula3Activity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem newsItem = menu.findItem(R.id.news_outline);
         if (newsItem != null && navController != null && navController.getCurrentDestination() != null) {
-            newsItem.setVisible(navController.getCurrentDestination().getId() != R.id.junior_news);
+            newsItem.setVisible(navController.getCurrentDestination().getId() == R.id.f3HomeFragment);
         }
         return super.onPrepareOptionsMenu(menu);
     }

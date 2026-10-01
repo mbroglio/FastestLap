@@ -133,6 +133,14 @@ public class DriverBioActivity extends AppCompatActivity {
         driverBioLayout.setOnRefreshListener(() -> {
             if (networkLiveData.isConnected()) {
                 if (driverViewModel != null && driverId != null) {
+                    if (driver != null) {
+                        if (driver.getTeam_id() != null && constructorViewModel != null) {
+                            constructorViewModel.refreshConstructor(driver.getTeam_id());
+                        }
+                        if (driver.getNationality() != null && nationViewModel != null) {
+                            nationViewModel.refreshNation(driver.getNationality());
+                        }
+                    }
                     driverViewModel.refreshDriver(driverId);
                 } else {
                     driverBioLayout.setRefreshing(false);

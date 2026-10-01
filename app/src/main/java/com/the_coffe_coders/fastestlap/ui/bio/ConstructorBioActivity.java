@@ -132,6 +132,17 @@ public class ConstructorBioActivity extends AppCompatActivity {
         constructorBioLayout.setOnRefreshListener(() -> {
             if (networkLiveData.isConnected()) {
                 if (constructorViewModel != null && teamId != null) {
+                    if (constructor != null) {
+                        if (constructor.getDriverOneId() != null && driverViewModel != null) {
+                            driverViewModel.refreshDriver(constructor.getDriverOneId());
+                        }
+                        if (constructor.getDriverTwoId() != null && driverViewModel != null) {
+                            driverViewModel.refreshDriver(constructor.getDriverTwoId());
+                        }
+                        if (constructor.getNationality() != null && nationViewModel != null) {
+                            nationViewModel.refreshNation(constructor.getNationality());
+                        }
+                    }
                     constructorViewModel.refreshConstructor(teamId);
                 } else {
                     constructorBioLayout.setRefreshing(false);
