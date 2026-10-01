@@ -4,13 +4,14 @@
 
 ![FastestLap Logo](Screenshots/Home%20with%20Results%20and%20Preferences.png)
 
-**Your Ultimate Formula 1 Companion App**
+**Your Ultimate Formula 1, Formula 2 & Formula 3 Companion App**
 
-[![Version](https://img.shields.io/badge/version-1.1.1-blue.svg)](https://github.com/mbroglio/fastestlap)
+[![Version](https://img.shields.io/badge/version-1.2.0-red.svg)](https://github.com/mbroglio/fastestlap)
 [![API](https://img.shields.io/badge/API-26%2B-brightgreen.svg)](https://android-arsenal.com/api?level=26)
 [![License](https://img.shields.io/badge/license-MIT-orange.svg)](LICENSE)
+[![Firebase](https://img.shields.io/badge/Firebase-RTDB%20%7C%20FCM%20%7C%20Functions-orange.svg)](https://firebase.google.com/)
 
-[Features](#features) • [Screenshots](#screenshots) • [Installation](#installation) • [Architecture](#architecture) • [Contributing](#contributing)
+[Features](#features) • [Screenshots](#screenshots) • [Architecture](#architecture) • [Cloud Functions](#cloud-functions--backend) • [Installation](#installation) • [Roadmap](#roadmap)
 
 </div>
 
@@ -18,9 +19,9 @@
 
 ## 📖 About
 
-**FastestLap** is a comprehensive Android application designed for Formula 1 enthusiasts. Stay up-to-date with real-time race results, driver and constructor standings, upcoming events, breaking F1 news, and insights into junior categories (Formula 2 & Formula 3).
+**FastestLap** is a high-performance, real-time Android application engineered for motorsport enthusiasts. Covering **Formula 1**, **Formula 2**, and **Formula 3**, FastestLap delivers live race telemetry, live timing intervals, pit stop and stint strategies, driver and team radios with audio playback, race direction steward messages, live weather radar forecasts, championship standings, multi-source breaking news, and detailed career biographies.
 
-Built with modern Android development practices, FastestLap provides an intuitive and engaging user experience for following your favorite drivers, teams, and races throughout the season.
+FastestLap integrates a cloud-native backend built on **Firebase Realtime Database**, **Cloud Functions (Node.js 22)**, and **Firebase Cloud Messaging (FCM)** to provide automated real-time background notifications and stats reconciliation.
 
 ### 👥 Team: The Coffee Coders
 
@@ -34,50 +35,58 @@ Built with modern Android development practices, FastestLap provides an intuitiv
 
 ## ✨ Features
 
-### 🏁 Race Information
-- **Live Race Results** - Get up-to-the-minute results from qualifying, sprint, and race sessions
-- **Event Schedule** - View complete weekend schedules with session times
-- **Countdown Timers** - Never miss a race with live countdown to upcoming events
-- **Past Events** - Browse historical race results and standings
-- **Calendar Export** - Add full weekend session schedules directly to your device calendar
-- **Home Screen Widgets** - Quick access to race info and countdowns from your home screen
+### ⏱️ Live Timing & Race Control (OpenF1 Integration)
+- **Real-Time Leaderboard** - Live driver positions, gaps to leader, interval deltas, sector times, and current lap times.
+- **Team Radios with Audio Playback** - Stream driver-to-pit-wall radio messages with embedded audio player (`.mp3` clips fetched in real-time from OpenF1).
+- **Race Direction & Stewards Feed** - Instant visual flags and banners for Safety Car, Virtual Safety Car (VSC), Red/Yellow/Green flags, track limits infractions, and steward investigations.
+- **Tyre Stints & Pit Stop Strategies** - Comprehensive strategy breakdown showing tyre compound choices (Soft, Medium, Hard, Intermediate, Wet), stint lap durations, and pit lane stop times.
+- **Fault-Tolerant Resilience** - If live telemetry or stint data is temporarily pending or unavailable from external providers, the app gracefully falls back to "Not Available" without disrupting overall race results, caching retrieved sessions into **Room Database** for offline access.
 
-### 🏆 Standings & Statistics
-- **Driver Standings** - Real-time driver championship rankings
-- **Constructor Standings** - Team championship leaderboard
-- **Historical Data** - Access to complete season statistics
-- **Detailed Bio Pages** - In-depth profiles for drivers, constructors, and circuits
+### 🏁 Race Information & Calendars
+- **Comprehensive Grand Prix Weekend Schedule** - Complete breakdown of Practice 1, Practice 2, Practice 3, Sprint Shootout, Sprint, Qualifying, and Race sessions.
+- **Dynamic Timezone Conversion** - Session times automatically converted to the user's local device timezone with countdown timers (days, hours, minutes, seconds).
+- **Calendar Export (.ics)** - One-click export of full weekend session schedules directly into the device's native calendar (Google Calendar, Outlook, etc.).
+- **Past & Upcoming Events** - Browse historical race winners, podium finishers, and upcoming Grand Prix with circuit overviews.
 
-### 📰 News & Updates
-- **Multi-Source News Feed** - Aggregated F1 news from:
-  - Autosport
-  - Crash.net
-  - Motorsport
-- **English & Italian Sources** - Multilingual news coverage
-- **RSS Integration** - Real-time news updates
+### 🌤️ Circuit Weather Suite (Open-Meteo Integration)
+- **Live Circuit Weather & Hourly Forecasts** - Accurate track-specific meteorological forecasts powered by Open-Meteo coordinates.
+- **Track & Environmental Metrics** - Air temperature, track asphalt temperature, precipitation probability, relative humidity, wind speed, and direction.
+- **Dynamic Atmospheric Backgrounds** - Immersive video backgrounds (`.mp4`) that adapt to actual sky conditions (sunny, overcast, light rain, heavy rain, night).
 
-### 🎯 Junior Categories
-- **Formula 2 Support** - Results and standings for F2
-- **Formula 3 Support** - Results and standings for F3
-- **Driver Progression** - Track drivers as they move through categories
+### 🏆 Standings & In-Depth Biographies
+- **Championship Standings** - Real-time Driver and Constructor championship tables for F1, F2, and F3 with points, podiums, wins, and team colors.
+- **Driver Bio Pages** - High-resolution portrait, permanent driver number, national flag, biography, and **interactive circular tachometer gauges** displaying career podium percentages (`podiums / gps_entered * 100`) and win ratios.
+- **Constructor Bio Pages** - Team car liveries, team principal, technical chief, chassis, power unit supplier, headquarters, and current driver pairings.
+- **Circuit Bio Pages** - Vector track layout, country flag, inaugural GP date, lap records, lap distance, and total race distance.
+- **Pull-To-Refresh** - SwipeRefreshLayout across all bio and standing pages forcing remote synchronization from Firebase RTDB.
 
-### 👤 User Features
-- **Personal Preferences** - Set favorite drivers and teams
-- **Auto-Login** - Seamless authentication with Firebase
-- **Google Sign-In** - Quick OAuth integration
-- **Profile Management** - Customize your experience
+### 🎯 Junior Categories Suite (Formula 2 & Formula 3)
+- **Modular Fragment Architecture** - Fast, dedicated tabs for:
+  - **Calendario**: Round-by-round calendar with Sprint and Feature race results.
+  - **Classifica Piloti**: Full driver championship standings with team badges.
+  - **Classifica Costruttori**: Team standings and points.
+  - **Entry List**: Custom cards showcasing team logo, driver numbers, national flags, driver portraits, and the **official team car livery** rendered beneath the lineup.
+  - **Notizie Junior**: Dedicated F2 & F3 news stream scraped directly from official FIA championship portals with tag filtering.
 
-### 🌍 Localization
-- **Multi-Language Support** - Available in:
-  - English (en-GB)
-  - Italian (it)
-- **Regional Formatting** - Date, time, and number formats based on locale
+### 📰 Multi-Source News Feed
+- **F1 News Hub** - Aggregated news coverage from top motorsport publications:
+  - **Motorsport.com (IT)** (Italian)
+  - **Autosport** (English)
+  - **Crash.net** (English)
+- **Official Junior Series News** - Breaking stories from `fiaformula2.com` and `fiaformula3.com`.
+- **Scheduled Background Scraping** - Backend Cloud Function checks RSS feeds and FIA pages **every 15 minutes** for new articles.
 
-### 🎨 User Experience
-- **Dark Mode** - Full dark theme support
-- **Material Design** - Modern, intuitive interface
-- **Responsive Layouts** - Optimized for various screen sizes
-- **Smooth Animations** - Polished transitions and interactions
+### 🔔 Centralized Push Notifications (FCM v4)
+- **Session Reminders** - Automated alerts sent **30 minutes** and **5 minutes** prior to session start times across F1, F2, and F3.
+- **Custom Audio Channel** - Notifications play the custom F1 `team_radio.mp3` alert sound.
+- **Breaking News Push** - Immediate notifications when a new article is published by the user's selected news sources or junior series.
+- **Post-Race Penalty & Sanction Alerts** - Background verification detects post-race time penalties, disqualifications, or points adjustments within a 12-hour window post-race, pushing updated results immediately.
+- **Granular Preference Toggles** - Enable or disable individual session alerts, news topics, and junior notifications in User Profile settings.
+
+### 🎨 Visual Design & Theme
+- **High-Contrast Racing Dark Theme** - Built with Material Design 3 tokens (`#121215` background, `#1C1D24` / `#262732` elevated cards, `#E10600` racing red accent).
+- **Official Team Liveries** - Accurate hex colors for all constructors (Ferrari, McLaren, Red Bull, Mercedes, Aston Martin, Haas, Racing Bulls, Williams, Alpine, Kick Sauber, Audi, Cadillac).
+- **Custom Typography** - **Orbitron** font for digital timers, telemetry, positions, and lap deltas; **Roboto** for clear editorial content.
 
 ---
 
@@ -115,37 +124,93 @@ Built with modern Android development practices, FastestLap provides an intuitiv
 
 ---
 
-## 🚀 Installation
+## 🏗️ Architecture
+
+FastestLap follows **Clean Architecture** principles with a strict separation of concerns, reactive data flows, and offline-first caching.
+
+```
+FastestLap/
+├── app/
+│   ├── src/main/java/com/the_coffe_coders/fastestlap/
+│   │   ├── adapter/              # RecyclerView & ViewPager Adapters
+│   │   ├── api/                  # Retrofit API interfaces (OpenF1, Open-Meteo, Jolpica)
+│   │   ├── database/             # Room Database (DAOs & Entities for offline cache)
+│   │   ├── domain/               # Domain Models (F1, Junior, Live Timing, News, Weather)
+│   │   ├── repository/           # Repository Pattern Implementations & Callbacks
+│   │   ├── source/               # Remote & Local Data Sources (Firebase, REST, Scraping)
+│   │   ├── ui/                   # MVVM UI Layer
+│   │   │   ├── bio/              # Driver, Constructor & Track Bio Activities
+│   │   │   ├── event/            # Grand Prix Weekend, Results & Stints Activities
+│   │   │   ├── home/             # Home Dashboard & Bottom Nav Fragments
+│   │   │   ├── junior/           # Formula 2 & Formula 3 Modular Activities/Fragments
+│   │   │   ├── live/             # Live Timing, Race Control & Radio Audio Player
+│   │   │   ├── news/             # Multi-source News Fragment & Detail Viewer
+│   │   │   ├── profile/          # Profile, Preferences & Notification Settings
+│   │   │   ├── standing/         # Drivers & Constructors Standings
+│   │   │   └── weather/          # Circuit Weather Forecast Activity
+│   │   └── util/                 # Constants, UIUtils, Notification Managers & Schedulers
+│   ├── res/                      # XML Layouts, Team Colors, Orbitron/Roboto Fonts & Audio
+│   └── functions/                # Cloud Functions Backend (Node.js 22)
+│       ├── index.js              # Schedulers & HTTP Trigger Endpoints
+│       ├── f1_logic.js           # Idempotent F1 Results, Season Stats & Variations
+│       ├── junior_categories_logic.js # F2/F3 Calendar, Standings & Entry List Scrapers
+│       ├── notification_logic.js # 15-min News Check & 5-min Session Reminders
+│       ├── calendar_logic.js     # Automated Daily F1/F2/F3 Calendar Sync
+│       └── career_stats_logic.js # Jolpica Career Stats Verification & Reconciler
+└── build.gradle.kts
+```
+
+---
+
+## ⚡ Cloud Functions & Backend
+
+The backend runs on **Google Cloud Functions v2** (Node.js 22) connected to **Firebase Realtime Database** and **Firebase Cloud Messaging**:
+
+| Function Name | Type | Schedule / Trigger | Purpose |
+| :--- | :--- | :--- | :--- |
+| `checkAndPushNews` | Scheduler | Every 15 minutes | Scrapes F1 RSS feeds (Motorsport, Autosport, Crash) and official F2/F3 websites; pushes alerts to dedicated FCM topics. |
+| `checkAndPushSessions` | Scheduler | Every 5 minutes | Scans stored F1, F2, and F3 calendars; sends -30m and -5m reminder alerts with custom radio sound. |
+| `updateRaceStats` | Scheduler | Every 30 minutes | Activates ~2h post-race; applies race results to season stats, verifies post-race penalties within a 12h window, and pushes updates if classifications change. |
+| `syncCalendars` | Scheduler | Daily at 04:00 Rome | Synchronizes full season calendars for F1, F2, and F3 from Jolpica into Firebase RTDB. |
+| `updateJuniorSeries` | Scheduler | Sun & Mon at 14:00 | Updates F2 and F3 race results and championship standings. |
+| `syncAllCareerStatsNow`| HTTP Endpoint | On-Demand (GET) | Reconciles and repairs career statistics (podi, vittorie, GP disputati) directly from Jolpica API with rate-limit backoff. |
+| `updateRaceStatsNow` | HTTP Endpoint | On-Demand (GET) | Forces immediate post-race calculation for a specific round or season. |
+| `syncCalendarsNow` | HTTP Endpoint | On-Demand (GET) | Triggers immediate manual calendar synchronization for F1, F2, and F3. |
+
+---
+
+## 🔌 APIs & Data Sources
+
+- **[OpenF1 API](https://openf1.org/)** - Real-time timing, sector intervals, pit stop durations, tyre compound stints, team radio audio clips, and race control banners.
+- **[Jolpi.ca Ergast API](https://api.jolpi.ca/ergast/f1/)** - Official historical Formula 1 results, driver championship standings, constructor standings, and schedules.
+- **[Open-Meteo API](https://open-meteo.com/)** - High-resolution weather forecasts, rain probability, wind speed, and track temperatures based on circuit coordinates.
+- **FIA Formula 2 & Formula 3 Portals** - Live scraping for entry lists, car liveries, and championship standings.
+- **Motorsport IT, Autosport, Crash.net** - Multi-language RSS news streams.
+
+---
+
+## 🚀 Installation & Setup
 
 ### Prerequisites
 
-- **Android Studio** Arctic Fox (2020.3.1) or later
-- **JDK** 11 or higher
-- **Android SDK** API 26+ (Android 8.0 Oreo)
-- **Firebase Account** for authentication and database features
+- **Android Studio** Hedgehog (2023.1.1) or newer
+- **JDK** 17 or higher
+- **Android SDK** API 26+ (Android 8.0 Oreo minimum)
+- **Node.js 22+** and **Firebase CLI** (for Cloud Functions development)
 
 ### Setup Instructions
 
 1. **Clone the Repository**
    ```bash
-   git clone https://github.com/yourusername/fastestlap.git
+   git clone https://github.com/mbroglio/fastestlap.git
    cd fastestlap
    ```
 
 2. **Configure Firebase**
-   - Create a new Firebase project at [Firebase Console](https://console.firebase.google.com/)
-   - Download `google-services.json` and place it in `app/` directory
-   - Enable Firebase Authentication (Email/Password and Google Sign-In)
-   - Set up Firebase Realtime Database
-   - Configure database rules appropriately
+   - Place your `google-services.json` inside the `app/` directory.
+   - Ensure Firebase Authentication (Email/Password, Google OAuth) and Realtime Database are enabled.
 
-3. **Configure Local Properties** (if needed)
-   ```properties
-   # local.properties
-   sdk.dir=YOUR_ANDROID_SDK_PATH
-   ```
-
-4. **Build the Project**
+3. **Build the Project**
    ```bash
    ./gradlew build
    ```
@@ -154,241 +219,28 @@ Built with modern Android development practices, FastestLap provides an intuitiv
    gradlew.bat build
    ```
 
-5. **Run the App**
-   - Open the project in Android Studio
-   - Sync Gradle files
-   - Run on an emulator or physical device (API 24+)
-
----
-
-## 🏗️ Architecture
-
-FastestLap follows **Clean Architecture** principles with a clear separation of concerns.
-
-### Project Structure
-
-```
-app/
-├── src/
-│   ├── main/
-│   │   ├── java/com/the_coffe_coders/fastestlap/
-│   │   │   ├── adapter/          # RecyclerView Adapters
-│   │   │   ├── api/              # API Response Models
-│   │   │   ├── database/         # Room Database
-│   │   │   ├── domain/           # Business Models
-│   │   │   │   ├── driver/
-│   │   │   │   ├── constructor/
-│   │   │   │   ├── grand_prix/
-│   │   │   │   ├── news/
-│   │   │   │   └── user/
-│   │   │   ├── dto/              # Data Transfer Objects
-│   │   │   ├── mapper/           # Data Mappers
-│   │   │   ├── repository/       # Repository Layer
-│   │   │   ├── service/          # API Services
-│   │   │   ├── source/           # Data Sources
-│   │   │   │   ├── driver/
-│   │   │   │   ├── constructor/
-│   │   │   │   ├── news/
-│   │   │   │   ├── result/
-│   │   │   │   ├── standing/
-│   │   │   │   ├── track/
-│   │   │   │   ├── user/
-│   │   │   │   └── weeklyrace/
-│   │   │   ├── ui/               # UI Layer (MVVM)
-│   │   │   │   ├── bio/          # Biography Activities
-│   │   │   │   ├── event/        # Event Activities
-│   │   │   │   ├── home/         # Home & Fragments
-│   │   │   │   ├── junior/       # Junior Categories
-│   │   │   │   ├── profile/      # User Profile
-│   │   │   │   ├── standing/     # Standings
-│   │   │   │   └── welcome/      # Authentication
-│   │   │   └── util/             # Utilities
-│   │   ├── res/                  # Resources
-│   │   └── AndroidManifest.xml
-│   ├── test/                     # Unit Tests
-│   └── androidTest/              # Instrumentation Tests
-├── functions/                    # Firebase Cloud Functions
-│   ├── f1_logic.js
-│   ├── junior_categories_logic.js
-│   └── index.js
-└── build.gradle.kts
-```
-
-### Design Patterns
-
-- **MVVM (Model-View-ViewModel)** - UI layer architecture
-- **Repository Pattern** - Data access abstraction
-- **Singleton Pattern** - Service locator and database instances
-- **Observer Pattern** - LiveData for reactive UI updates
-- **Factory Pattern** - ViewModel creation
-
-### Tech Stack
-
-#### Core
-- **Language:** Java 11
-- **Min SDK:** 26 (Android 8.0)
-- **Target SDK:** 34 (Android 14)
-- **Compile SDK:** 36
-
-#### Libraries & Frameworks
-
-**UI & Navigation**
-- AndroidX AppCompat `1.7.1`
-- Material Design Components `1.13.0`
-- Navigation Component `2.9.6`
-- ConstraintLayout `2.2.1`
-- SwipeRefreshLayout `1.1.0`
-
-**Networking**
-- Retrofit `3.0.0`
-- OkHttp Logging Interceptor `5.3.2`
-- Gson `2.13.2`
-
-**Database**
-- Room `2.8.4`
-
-**Firebase**
-- Firebase BOM `34.6.0`
-- Firebase Authentication `24.0.1`
-- Firebase Realtime Database `22.0.1`
-- Firebase Firestore `26.0.2`
-- Firebase Analytics
-- Google Play Services Auth `21.4.0`
-
-**Image Loading**
-- Glide `5.0.5`
-
-**Utilities**
-- Lombok `1.18.42` (Annotation Processing)
-- ThreeTenBP `1.7.2` (Date/Time)
-- Rome `2.1.0` (RSS Feed Parsing)
-- Commons Validator `1.10.1`
-
-**Testing**
-- JUnit `4.13.2`
-- AndroidX Test `1.3.0`
-- Espresso `3.7.0`
-
----
-
-## 🔌 APIs & Data Sources
-
-### F1 Data API
-- **Provider:** [Jolpi.ca Ergast API](https://api.jolpi.ca/ergast/f1/)
-- **Data:** Race results, standings, driver/constructor info, schedules
-
-### Firebase Services
-- **Authentication** - User sign-in/sign-up
-- **Realtime Database** - User preferences and app data
-- **Cloud Functions** - Scheduled data updates
-
-### News Sources
-- **Autosport** - English F1 news
-- **Crash.net** - English F1 coverage
-- **Motorsport** - Italian F1 news
-
----
-
-## 🛠️ Development
-
-### Build Variants
-
-```kotlin
-buildTypes {
-    release {
-        isMinifyEnabled = false
-        proguardFiles(
-            getDefaultProguardFile("proguard-android-optimize.txt"),
-            "proguard-rules.pro"
-        )
-    }
-}
-```
-
-### Running Tests
-
-```bash
-# Unit Tests
-./gradlew test
-
-# Instrumentation Tests
-./gradlew connectedAndroidTest
-
-# Generate Coverage Report
-./gradlew jacocoTestReport
-```
-
-### Code Style
-
-This project follows standard Android coding conventions:
-- Package naming: lowercase
-- Class naming: PascalCase
-- Method/variable naming: camelCase
-- Constants: UPPER_SNAKE_CASE
-- 4-space indentation
-
-### Lombok Usage
-
-The project uses Lombok for reducing boilerplate code:
-- `@Getter` / `@Setter` - Automatic getters/setters
-- `@NoArgsConstructor` / `@AllArgsConstructor` - Constructor generation
-- `@ToString` - toString() method generation
-- `@EqualsAndHashCode` - equals() and hashCode() methods
-
----
-
-## 📋 TODO & Roadmap
-
-Check out our [TODO.md](TODO.md) for a comprehensive list of planned improvements and features.
-
-### 🏎️ Next Up: Live Data Suite
-- [ ] **Team Radios** (Live driver & pit wall audio feed & transcriptions)
-- [ ] **Live Car Position** (Real-time track positioning and driver maps)
-- [ ] **Live Intervals** (Dynamic gaps to leader, gaps ahead, and sector deltas)
-- [ ] **Live Race Direction Messages** (Steward decisions, flags, safety car, penalties)
-
-### High Priority
-- [ ] Add comprehensive unit tests
-- [ ] Enable ProGuard for release builds
-- [ ] Implement Firebase Crashlytics
-- [ ] Migrate to Kotlin (incremental)
-- [ ] Add dependency injection (Hilt)
-
-### Future Features
-- [ ] Push notifications for race updates
-- [ ] Home screen widgets
-- [ ] Offline mode enhancement
-- [ ] Social features (predictions, discussions)
-- [ ] Wear OS support
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! Here's how you can help:
-
-1. **Fork the repository**
-2. **Create a feature branch**
+4. **Deploy Cloud Functions (Optional)**
    ```bash
-   git checkout -b feature/amazing-feature
+   cd app/functions
+   npm install
+   firebase deploy --only functions
    ```
-3. **Commit your changes**
-   ```bash
-   git commit -m 'Add some amazing feature'
-   ```
-4. **Push to the branch**
-   ```bash
-   git push origin feature/amazing-feature
-   ```
-5. **Open a Pull Request**
 
-### Contribution Guidelines
+---
 
-- Follow existing code style and conventions
-- Add unit tests for new features
-- Update documentation as needed
-- Ensure all tests pass before submitting PR
-- Write clear commit messages
+## 📋 Roadmap
+
+### 🏎️ Real-Time & Mobile Enhancements
+- [x] **OpenF1 Live Timing** (intervals, sector times, tyre compound stints)
+- [x] **Live Team Radios** (with embedded audio player)
+- [x] **Live Race Control Messages** (Safety Car, VSC, flags, track limits, stewards)
+- [x] **Circuit Weather Forecasts** (Open-Meteo with dynamic weather video backgrounds)
+- [x] **Junior Categories Suite** (Modular F2 & F3 Calendars, Standings, Entry List with car liveries)
+- [x] **Centralized Cloud Push Notifications** (FCM v4 for 30m/5m sessions, breaking news, post-race penalty variations)
+- [x] **Idempotent Stats Engine** (Career stats protection and Jolpica reconciliation endpoint)
+
+### 🌐 Cross-Platform Web Expansion
+- [ ] **FastestLap iOS-Style Web App / PWA** (`web/` client powered by React + Vite + TypeScript + Tailwind CSS with Apple Human Interface Guidelines).
 
 ---
 
@@ -407,32 +259,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Groppo Gabriele** - [GitHub](https://github.com/GabrieleGroppo)
 - **Lanticina Riccardo** - [GitHub](https://github.com/Riccardolanticina)
 
-### Project Links
-- **GitHub:** [https://github.com/yourusername/fastestlap](https://github.com/mbroglio/fastestlap)
-- **Documentation:** [Documentazione/Documentazione FastestLap.pdf](Documentazione/Documentazione%20FastestLap.pdf)
-- **Presentation:** [Documentazione/Presentazione FastestLap.pdf](Documentazione/Presentazione%20FastestLap.pdf)
-
----
-
-## 🙏 Acknowledgments
-
-- **Jolpi.ca** for providing the F1 Ergast API
-- **Firebase** for backend services
-- **Material Design** for UI components
-- **Glide** for efficient image loading
-- All open-source libraries that made this project possible
-
----
-
-## 📊 Project Stats
-
-- **Language:** Java
-- **Lines of Code:** ~10,000+
-- **Activities:** 15+
-- **Fragments:** 10+
-- **API Integrations:** 3+
-- **Supported Languages:** 2 (EN, IT)
-
 ---
 
 <div align="center">
@@ -441,7 +267,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ⭐ Star this repo if you find it useful!
 
-[Report Bug](https://github.com/yourusername/fastestlap/issues) • [Request Feature](https://github.com/yourusername/fastestlap/issues)
-
 </div>
-
