@@ -55,11 +55,18 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
             this.loadedPositions = new boolean[getItemCount()];
             this.currentLoadedCount = 0;
         }
+        if (targetLoadCount == 0 && loadingScreen != null) {
+            loadingScreen.hideLoadingScreen();
+            return;
+        }
         preloadAllItems();
     }
 
     private void preloadAllItems() {
         if (races == null || races.isEmpty()) {
+            if (loadingScreen != null) {
+                loadingScreen.hideLoadingScreen();
+            }
             return;
         }
         for (int i = 0; i < races.size(); i++) {
@@ -67,7 +74,7 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
             Race race = races.get(pos);
             if (race.getTrack() != null && race.getTrack().getTrack_minimal_layout_url() != null) {
                 UIUtils.preloadImage(context, race.getTrack().getTrack_minimal_layout_url(), () -> endLoading(pos));
-            } else {
+            } else if (race.getTrack() != null && race.getTrack().getTrackId() != null) {
                 androidx.lifecycle.LiveData<Result> trackLd = trackViewModel.getTrack(race.getTrack().getTrackId());
                 @SuppressWarnings("unchecked")
                 androidx.lifecycle.Observer<Result>[] selfRef = new androidx.lifecycle.Observer[1];
@@ -85,6 +92,8 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
                     }
                 };
                 trackLd.observe(lifecycleOwner, selfRef[0]);
+            } else {
+                endLoading(pos);
             }
         }
     }
@@ -121,14 +130,20 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
 
         // Imposta subito i dati di base che sono già disponibili
         LocalDateTime raceDateTime = race.getStartDateTime();
-        UIUtils.multipleSetTextViewText(
-                new String[]{raceDateTime.getDayOfMonth() + "", raceDateTime.getMonth().toString().substring(0, 3)},
-                new TextView[]{holder.pastDateTextView, holder.pastMonthTextView});
+        if (raceDateTime != null) {
+            UIUtils.multipleSetTextViewText(
+                    new String[]{raceDateTime.getDayOfMonth() + "", raceDateTime.getMonth().toString().substring(0, 3)},
+                    new TextView[]{holder.pastDateTextView, holder.pastMonthTextView});
+        } else {
+            UIUtils.multipleSetTextViewText(
+                    new String[]{"--", "--"},
+                    new TextView[]{holder.pastDateTextView, holder.pastMonthTextView});
+        }
 
         UIUtils.multipleSetTextViewText(
                 new String[]{
-                        context.getString(R.string.round_plus_value, race.getRound()),
-                        race.getRaceName()},
+                        context.getString(R.string.round_plus_value, race.getRound() != null ? race.getRound() : "--"),
+                        race.getRaceName() != null ? race.getRaceName() : ""},
                 new TextView[]{
                         holder.pastRoundTextView,
                         holder.pastGPTextView});
@@ -139,9 +154,12 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
         // Carica il track subito se già disponibile (da preloadAllItems) oppure osserva il LiveData
         if (race.getTrack() != null && race.getTrack().getTrack_minimal_layout_url() != null) {
             UIUtils.loadImageWithGlide(context, race.getTrack().getTrack_minimal_layout_url(), holder.trackOutline, () -> endLoading(position));
-            holder.pastEventCard.setOnClickListener(v ->
-                    NavigationUtils.navigateToEventPage(context, race.getTrack().getTrackId()));
-        } else {
+            holder.pastEventCard.setOnClickListener(v -> {
+                if (race.getTrack() != null && race.getTrack().getTrackId() != null) {
+                    NavigationUtils.navigateToEventPage(context, race.getTrack().getTrackId());
+                }
+            });
+        } else if (race.getTrack() != null && race.getTrack().getTrackId() != null) {
             androidx.lifecycle.LiveData<Result> trackLd = trackViewModel.getTrack(race.getTrack().getTrackId());
             @SuppressWarnings("unchecked")
             androidx.lifecycle.Observer<Result>[] selfRef = new androidx.lifecycle.Observer[1];
@@ -154,22 +172,35 @@ public class PastEventsRecyclerAdapter extends RecyclerView.Adapter<PastEventsRe
                     Track track = ((Result.TrackSuccess) result).getData();
                     race.setTrack(track);
                     UIUtils.loadImageWithGlide(context, track.getTrack_minimal_layout_url(), holder.trackOutline, () -> endLoading(position));
-                    holder.pastEventCard.setOnClickListener(v ->
-                            NavigationUtils.navigateToEventPage(context, race.getTrack().getTrackId()));
+                    holder.pastEventCard.setOnClickListener(v -> {
+                        if (race.getTrack() != null && race.getTrack().getTrackId() != null) {
+                            NavigationUtils.navigateToEventPage(context, race.getTrack().getTrackId());
+                        }
+                    });
                 } else {
                     Log.e("PastEventsAdapter", "Failed to load track for position: " + position);
                     endLoading(position);
                 }
             };
             trackLd.observe(lifecycleOwner, selfRef[0]);
+        } else {
+            endLoading(position);
         }
     }
 
     private void generatePodium(@NonNull PastEventsRecyclerAdapter.PastEventViewHolder holder, Race race, int position) {
+        View pendingResults = holder.pastEventCard.findViewById(R.id.pending_results_text);
+        View podium = holder.pastEventCard.findViewById(R.id.race_podium);
+        View arrow = holder.pastEventCard.findViewById(R.id.past_event_card_arrow);
 
         if (race.getResults() == null || race.getResults().isEmpty()) {
-            setPendingPodium(holder);
+            pendingResults.setVisibility(View.VISIBLE);
+            podium.setVisibility(View.GONE);
+            arrow.setVisibility(View.GONE);
         } else {
+            pendingResults.setVisibility(View.GONE);
+            podium.setVisibility(View.VISIBLE);
+            arrow.setVisibility(View.VISIBLE);
             for (int i = 0; i < 3 && i < race.getResults().size(); i++) {
                 RaceResult raceResult = race.getResults().get(i);
                 UIUtils.singleSetTextViewText(

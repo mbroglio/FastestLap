@@ -14,7 +14,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 
 import java.util.Objects;

@@ -5,12 +5,11 @@
     android:layout_height="wrap_content">
 
     <TextView
-        style="@style/t20BoldBlack"
+        style="@style/t16BoldWhite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="@string/pending_results">
-
-    </TextView>
+        android:textColor="@color/timer_gray"
+        android:text="@string/pending_results" />
 
 </RelativeLayout>

@@ -19,7 +19,9 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.the_coffe_coders.fastestlap.domain.user.User;
-import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
+import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.notification.AppNotificationManager;
+import com.the_coffe_coders.fastestlap.util.service.SharedPreferencesUtils;
 
 /**
  * Class that gets the user information using Firebase Realtime Database.
@@ -39,9 +41,9 @@ public class UserFirebaseDataSource extends BaseUserDataRemoteDataSource {
 
     @Override
     public void saveUserData(User user) {
-        databaseReference.child(FIREBASE_USERS_COLLECTION).child(user.getIdToken()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+        databaseReference.child(FIREBASE_USERS_COLLECTION).child(user.getIdToken()).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DataSnapshot snapshot = task.getResult();
                 if (snapshot.exists()) {
                     Log.d(TAG, "User already present in Firebase Realtime Database");
                     userResponseCallback.onSuccessFromRemoteDatabase(user);
@@ -51,10 +53,8 @@ public class UserFirebaseDataSource extends BaseUserDataRemoteDataSource {
                             .addOnSuccessListener(aVoid -> userResponseCallback.onSuccessFromRemoteDatabase(user))
                             .addOnFailureListener(e -> userResponseCallback.onFailureFromRemoteDatabase(e.getLocalizedMessage()));
                 }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
+            } else {
+                Exception error = task.getException() != null ? task.getException() : new Exception("Failed to check user");
                 userResponseCallback.onFailureFromRemoteDatabase(error.getMessage());
             }
         });
@@ -79,8 +79,21 @@ public class UserFirebaseDataSource extends BaseUserDataRemoteDataSource {
                                                 SHARED_PREFERENCES_FILENAME,
                                                 SHARED_PREFERENCES_FAVORITE_TEAM,
                                                 favoriteTeam);
-                                        userResponseCallback.onSuccessFromGettingUserPreferences();
 
+                                        // Also retrieve remote news source preference if present
+                                        databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
+                                                child(Constants.SHARED_PREFERENCES_NEWS_SOURCE_ID).get().addOnCompleteListener(taskNewsId -> {
+                                                    if (taskNewsId.isSuccessful() && taskNewsId.getResult().getValue(String.class) != null) {
+                                                        String sourceId = taskNewsId.getResult().getValue(String.class);
+                                                        sharedPreferencesUtil.writeStringData(
+                                                                SHARED_PREFERENCES_FILENAME,
+                                                                Constants.SHARED_PREFERENCES_NEWS_SOURCE_ID,
+                                                                sourceId);
+                                                        AppNotificationManager.getInstance().updateNewsTopicSubscription(sourceId);
+                                                    }
+                                                });
+
+                                        userResponseCallback.onSuccessFromGettingUserPreferences();
                                     }
                                 });
                     }
@@ -116,6 +129,17 @@ public class UserFirebaseDataSource extends BaseUserDataRemoteDataSource {
     public void saveUserAutoLoginPreferences(String autoLogin, String idToken) {
         databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
                 child(SHARED_PREFERENCES_AUTO_LOGIN).setValue(autoLogin).addOnSuccessListener(unused -> Log.i(TAG, "fattoooo auto login"));
+    }
+
+    @Override
+    public void saveUserNewsSourcePreferences(String newsSource, String newsSourceId, String idToken) {
+        if (idToken != null) {
+            databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
+                    child(Constants.SHARED_PREFERENCES_NEWS_SOURCE).setValue(newsSource);
+            databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
+                    child(Constants.SHARED_PREFERENCES_NEWS_SOURCE_ID).setValue(newsSourceId)
+                    .addOnSuccessListener(unused -> Log.i(TAG, "Saved news source preference to remote DB"));
+        }
     }
 
     public Task<Boolean> isAutoLoginEnabled(String idToken) {

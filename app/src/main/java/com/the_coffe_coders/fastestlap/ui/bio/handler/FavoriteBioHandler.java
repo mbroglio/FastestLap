@@ -6,7 +6,7 @@ import android.view.MenuItem;
 
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
+import com.the_coffe_coders.fastestlap.util.service.SharedPreferencesUtils;
 
 public class FavoriteBioHandler {
 

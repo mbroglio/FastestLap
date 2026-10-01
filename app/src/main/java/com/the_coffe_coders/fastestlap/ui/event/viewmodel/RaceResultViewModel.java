@@ -1,5 +1,7 @@
 package com.the_coffe_coders.fastestlap.ui.event.viewmodel;
 
+import android.util.Log;
+
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -25,5 +27,17 @@ public class RaceResultViewModel extends ViewModel {
 
     public MutableLiveData<Result> getSprintResults(String round) {
         return resultRepository.fetchSprintResults(round);
+    }
+
+    /**
+     * Recupera la lista degli stint degli pneumatici per un evento e una sessione specifici.
+     *
+     * @param eventName nome dell'evento (es. visualizzato nella topBar di EventActivity)
+     * @param sessionName nome della sessione (es. "Race", "Qualifying", "Sprint")
+     * @return LiveData che emette Result.Loading -> Result.StintsSuccess o Result.Error
+     */
+    public MutableLiveData<Result> getStints(String eventName, String sessionName) {
+        Log.i("RaceResultViewModel", "Fetching stints for event: " + eventName + ", session: " + sessionName);
+        return resultRepository.fetchStints(eventName, sessionName);
     }
 }

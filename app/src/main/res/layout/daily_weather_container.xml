@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/day_hourly_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="20dp"
+    android:layout_marginTop="4dp"
+    android:layout_marginEnd="40dp"
+    android:layout_marginBottom="6dp"
+    android:baselineAligned="false"
+    android:orientation="horizontal"
+    android:visibility="gone"
+    android:weightSum="3">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@drawable/background_top_bottom_margin_timer_grey"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="6dp">
+
+        <TextView
+            style="@style/t10BoldWhiteLineLimited"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time_09_00"
+            android:textColor="@color/white" />
+
+        <ImageView
+            android:id="@+id/morning_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="2dp" />
+
+        <TextView
+            android:id="@+id/morning_temp"
+            style="@style/t12BoldWhiteLineLimited"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/morning_rain"
+            style="@style/t10RegularWhiteLineLimited"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/formula_2" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_weight="1"
+        android:background="@drawable/background_top_bottom_margin_timer_grey"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="6dp">
+
+        <TextView
+            style="@style/t10BoldWhiteLineLimited"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time_14_00" />
+
+        <ImageView
+            android:id="@+id/afternoon_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="2dp" />
+
+        <TextView
+            android:id="@+id/afternoon_temp"
+            style="@style/t12BoldWhiteLineLimited"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/afternoon_rain"
+            style="@style/t10RegularWhiteLineLimited"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/formula_2" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_weight="1"
+        android:background="@drawable/background_top_bottom_margin_timer_grey"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="6dp">
+
+        <TextView
+            style="@style/t10BoldWhiteLineLimited"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/time_19_00" />
+
+        <ImageView
+            android:id="@+id/evening_icon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_marginTop="2dp" />
+
+        <TextView
+            android:id="@+id/evening_temp"
+            style="@style/t12BoldWhiteLineLimited"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/evening_rain"
+            style="@style/t10RegularWhiteLineLimited"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/formula_2" />
+
+    </LinearLayout>
+
+</LinearLayout>

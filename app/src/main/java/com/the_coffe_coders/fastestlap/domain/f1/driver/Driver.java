@@ -13,6 +13,7 @@ import org.threeten.bp.Period;
 import org.threeten.bp.format.DateTimeFormatter;
 
 import java.util.List;
+import java.util.Objects;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -64,14 +65,11 @@ public class Driver implements Parcelable {
     private String weight; // F
     private String first_entry; //F
     private String gps_entered; // F
-    @Ignore
-    private String season_wins;
-    @Ignore
-    private String season_podiums;
+    private DriverSeasonStats season_stats; //F
 
     protected Driver(Parcel in) {
         uid = in.readLong();
-        driverId = in.readString();
+        driverId = Objects.requireNonNull(in.readString());
         permanentNumber = in.readString();
         code = in.readString();
         url = in.readString();
@@ -91,6 +89,7 @@ public class Driver implements Parcelable {
         weight = in.readString();
         first_entry = in.readString();
         gps_entered = in.readString();
+        season_stats = in.readParcelable(DriverSeasonStats.class.getClassLoader());
     }
 
     public int getDriverAge() {
@@ -136,5 +135,6 @@ public class Driver implements Parcelable {
         dest.writeString(weight);
         dest.writeString(first_entry);
         dest.writeString(gps_entered);
+        dest.writeParcelable(season_stats, flags);
     }
 }

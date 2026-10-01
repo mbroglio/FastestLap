@@ -73,8 +73,11 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         teamStandingLayout.setOnRefreshListener(() -> {
-            start();
-            teamStandingLayout.setRefreshing(false);
+            if (constructorStandingsViewModel != null) {
+                constructorStandingsViewModel.refreshConstructorStandings();
+            } else {
+                teamStandingLayout.setRefreshing(false);
+            }
         });
 
         setupPage();
@@ -98,6 +101,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
                 Log.i(TAG, "Constructor Standings LOADING");
                 return;
             }
+            teamStandingLayout.setRefreshing(false);
             if (result.isSuccess()) {
                 Log.i(TAG, "CONSTRUCTORS STANDINGS SUCCESS");
                 ConstructorStandings constructorStandings;
@@ -127,6 +131,7 @@ public class ConstructorsStandingActivity extends AppCompatActivity {
             if (result instanceof Result.Loading) {
                 return;
             }
+            teamStandingLayout.setRefreshing(false);
             if (result.isSuccess()) {
                 Log.i(TAG, "CONSTRUCTORS LIST SUCCESS");
                 List<Constructor> constructorList = ((Result.ConstructorsSuccess) result).getData();

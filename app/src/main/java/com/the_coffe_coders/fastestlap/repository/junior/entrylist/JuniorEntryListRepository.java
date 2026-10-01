@@ -10,7 +10,7 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorEntryList;
 import com.the_coffe_coders.fastestlap.source.junior.entryList.FirebaseJuniorEntryListDataSource;
 import com.the_coffe_coders.fastestlap.source.junior.entryList.LocalJuniorEntryListDataSource;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -73,7 +73,6 @@ public class JuniorEntryListRepository {
             public void onEntryListLoaded(JuniorEntryList entryList) {
                 if (entryList != null) {
                     Log.i(TAG, "Junior entry list loaded from local DB: " + cacheKey);
-                    lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                     Objects.requireNonNull(juniorEntryListCache.get(cacheKey))
                             .postValue(new Result.JuniorEntryListSuccess(entryList));
 
@@ -120,18 +119,37 @@ public class JuniorEntryListRepository {
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                         Objects.requireNonNull(juniorEntryListCache.get(cacheKey))
                                 .postValue(new Result.JuniorEntryListSuccess(entryList));
+                    } else if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(juniorEntryListCache.get(cacheKey))
+                                .postValue(new Result.Error("Junior entry list not found from remote"));
                     }
                 }
 
                 @Override
                 public void onError(Exception e) {
                     Log.e(TAG, "Error loading junior entry list: " + e.getMessage());
+                    if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(juniorEntryListCache.get(cacheKey))
+                                .postValue(new Result.Error(e.getMessage()));
+                    }
                 }
             });
         } catch (Exception e) {
             Log.e(TAG, "Error loading junior entry list: " + e.getMessage());
+            if (!isBackgroundRefresh) {
+                Objects.requireNonNull(juniorEntryListCache.get(cacheKey))
+                        .postValue(new Result.Error(e.getMessage()));
+            }
         }
     }
 
-
+    public synchronized void refreshEntryList(String series) {
+        String cacheKey = "juniorEntryList" + series;
+        if (!juniorEntryListCache.containsKey(cacheKey)) {
+            juniorEntryListCache.put(cacheKey, new MutableLiveData<>());
+        }
+        if (isNetworkAvailable()) {
+            loadJuniorEntryList(series, false);
+        }
+    }
 }

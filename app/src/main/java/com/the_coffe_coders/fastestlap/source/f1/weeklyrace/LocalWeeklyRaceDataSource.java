@@ -38,12 +38,23 @@ public class LocalWeeklyRaceDataSource {
         Log.d(TAG, "Fetching all weekly races from local database");
         AppRoomDatabase.databaseWriteExecutor.execute(() -> {
             try {
+                List<WeeklyRace> rawList = new ArrayList<>();
+                rawList.addAll(weeklyRaceClassicDao.getAllRaces());
+                rawList.addAll(weeklyRaceSprintDao.getAllRaces());
+
                 List<WeeklyRace> weeklyRaceList = new ArrayList<>();
-                weeklyRaceList.addAll(weeklyRaceClassicDao.getAllRaces());
-                weeklyRaceList.addAll(weeklyRaceSprintDao.getAllRaces());
+                java.util.Set<String> seenRounds = new java.util.HashSet<>();
+                for (WeeklyRace race : rawList) {
+                    if (race != null && race.getRound() != null) {
+                        if (!seenRounds.contains(race.getRound())) {
+                            seenRounds.add(race.getRound());
+                            weeklyRaceList.add(race);
+                        }
+                    }
+                }
 
                 if (!weeklyRaceList.isEmpty()) {
-                    Log.d(TAG, "Found " + weeklyRaceList.size() + " weekly races in local database");
+                    Log.d(TAG, "Found " + weeklyRaceList.size() + " unique weekly races in local database");
                     callback.onSuccess(weeklyRaceList);
                 } else {
                     Log.d(TAG, "No weekly races found in local database");
@@ -77,10 +88,12 @@ public class LocalWeeklyRaceDataSource {
     }
 
     public void saveSingleWeeklyRace(WeeklyRace weeklyRace) {
-        if (weeklyRace == null) return;
+        if (weeklyRace == null || weeklyRace.getRound() == null) return;
         Log.d(TAG, "Saving single weekly race to local database: " + weeklyRace.getRound());
         AppRoomDatabase.databaseWriteExecutor.execute(() -> {
             try {
+                weeklyRaceClassicDao.delete(weeklyRace.getRound());
+                weeklyRaceSprintDao.delete(weeklyRace.getRound());
                 if (weeklyRace instanceof WeeklyRaceClassic) {
                     weeklyRaceClassicDao.insert((WeeklyRaceClassic) weeklyRace);
                 } else if (weeklyRace instanceof WeeklyRaceSprint) {

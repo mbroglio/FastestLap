@@ -10,6 +10,7 @@
     <string name="weather">Meteo a %1$s</string>
     <string name="next_session_index">Prossima sessione:</string>
     <string name="pending_results">In attesa dei risultati…</string>
+    <string name="data_not_available">DATI NON DISPONIBILI</string>
     <string name="podiums_index">Podi:</string>
     <string name="open_with_google_maps">Vedi sulla mappa</string>
     <string name="forgot_password_text">Fornisci l\'indirizzo email di cui vuoi reimpostare la tua password</string>
@@ -21,6 +22,14 @@
     <string name="weight_height_index">Peso - Altezza:</string>
     <string name="best_result_index">Miglior Risultato:</string>
     <string name="championships_index">Campionati:</string>
+    <!-- DRIVER SEASON STATS STRINGS -->
+    <string name="this_season_numbers_title">THIS SEASON\'S NUMBERS</string>
+    <string name="season_wins_label">VITTORIE</string>
+    <string name="season_podiums_label">PODI</string>
+    <string name="season_poles_label">POLE</string>
+    <string name="season_dnf_label">DNF</string>
+    <string name="season_position_label">POSIZIONE</string>
+    <string name="season_points_label">PUNTI</string>
 
     <string name="full_name_index">Nome Completo:</string>
     <string name="base_index">Sede principale:</string>
@@ -29,6 +38,7 @@
     <string name="power_unit_index">Motore:</string>
     <string name="world_championships_index">Campionati Mondiali:</string>
     <string name="wins_index">Vittorie:</string>
+    <string name="track_info_index">Info Circuito:</string>
     <string name="track_name_index">Nome Circuito:</string>
     <string name="location_index">Luogo:</string>
     <string name="first_entry_index">Debutto:</string>
@@ -133,6 +143,9 @@
     <string name="season_ended">stagione conclusa</string>
     <string name="race_cancelled">gara cancellata</string>
     <string name="full_article">articolo completo</string>
+    <string name="load_more">carica altre notizie</string>
+    <string name="loading_more">caricamento…</string>
+    <string name="no_more_news">non ci sono altre notizie</string>
     <string name="race_result">risultato gara</string>
     <string name="days">giorni</string>
     <string name="podium">podio</string>
@@ -182,5 +195,61 @@
     <string name="widget_medium_description">Widget FastestLap medio</string>
     <string name="widget_large_description">Widget FastestLap grande</string>
     <string name="widget_loading_text">Caricamento…</string>
+    <string name="team_radio_plus_driver_number">Team Radio - Pilota #%1$d</string>
+    <string name="today">Oggi:</string>
+    <string name="humidity">Umidità:</string>
+    <string name="rain_probability">Probabilità di Pioggia:</string>
+    <string name="speed_index">Velocità:</string>
+    <string name="gust">Raffiche:</string>
+    <string name="friday">Venerdì</string>
+    <string name="saturday">Sabato</string>
+    <string name="sunday">Domenica</string>
+    <string name="track">pista</string>
+    <string name="meteo_not_available_yet">meteo non ancora disponibile</string>
+    <string name="race_weekend_forecast">Forecast Weekend di Gara</string>
+
+    <!-- NOTIFICATIONS -->
+    <string name="news_channel_name">Notizie &amp; Aggiornamenti F1</string>
+    <string name="news_channel_description">Notifiche per le ultime notizie di Formula 1</string>
+    <string name="session_channel_name">Inizio Sessioni F1</string>
+    <string name="session_channel_description">Avvisi all\'inizio di Prove Libere, Qualifiche o Gara</string>
+    <string name="session_starting_at">inizia alle</string>
+    <string name="session_now_live">è ora in corso</string>
+    <string name="general_channel_name">Comunicazioni FastestLap</string>
+    <string name="general_channel_description">Notifiche generali e aggiornamenti dall\'app FastestLap</string>
+    <string name="notification_settings_title">NOTIFICHE &amp; FCM</string>
+    <string name="notification_status_checking">Verifica permessi notifiche…</string>
+    <string name="notification_status_granted">● Notifiche: Attive</string>
+    <string name="notification_status_denied">● Notifiche: Disattivate (Tocca per abilitare)</string>
+    <string name="test_notification_btn">Notifica di Prova</string>
+    <string name="copy_fcm_token_btn">Copia Token FCM</string>
+    <string name="fcm_token_hint">Usa il token FCM copiato nella Console Firebase per testare l\'invio ad app chiusa.</string>
+    <string name="schedule_session">sessione</string>
+    <string name="schedule_day">giorno</string>
+    <string name="schedule_time">orario</string>
+    <string name="schedule_status">stato</string>
+
+    <!-- SESSION NOTIFICATION PREFERENCES -->
+    <string name="session_notification_preferences_title">PROMEMORIA SESSIONI</string>
+    <string name="session_notification_preferences_subtitle">Avvisi a 30 minuti e a 5 minuti dall\'inizio della sessione</string>
+    <string name="f1_notifications_header">Formula 1</string>
+    <string name="f1_notif_race">Gara</string>
+    <string name="f1_notif_qualifying">Qualifiche</string>
+    <string name="f1_notif_sprint">Sprint (Gara &amp; Qualifiche)</string>
+    <string name="f1_notif_practice">Prove Libere (FP1, FP2, FP3)</string>
+
+    <string name="f2_notifications_header">Formula 2</string>
+    <string name="f2_notif_enable">Abilita notifiche F2</string>
+    <string name="f2_notif_feature">Feature Race</string>
+    <string name="f2_notif_sprint">Sprint Race</string>
+    <string name="f2_notif_qualifying">Qualifiche</string>
+    <string name="f2_notif_practice">Prove Libere</string>
+
+    <string name="f3_notifications_header">Formula 3</string>
+    <string name="f3_notif_enable">Abilita notifiche F3</string>
+    <string name="f3_notif_feature">Feature Race</string>
+    <string name="f3_notif_sprint">Sprint Race</string>
+    <string name="f3_notif_qualifying">Qualifiche</string>
+    <string name="f3_notif_practice">Prove Libere</string>
 
 </resources>

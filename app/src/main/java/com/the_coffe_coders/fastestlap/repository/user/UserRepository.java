@@ -95,6 +95,11 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     }
 
     @Override
+    public void saveUserNewsSourcePreferences(String newsSource, String newsSourceId, String idToken) {
+        userDataRemoteDataSource.saveUserNewsSourcePreferences(newsSource, newsSourceId, idToken);
+    }
+
+    @Override
     public Task<Boolean> isAutoLoginEnabled(String idToken) {
         return userDataRemoteDataSource.isAutoLoginEnabled(idToken);
     }

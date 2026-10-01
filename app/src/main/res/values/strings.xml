@@ -24,6 +24,7 @@
     <string name="next_session_index">Next Session In:</string>
 
     <string name="pending_results">Pending\nresults…</string>
+    <string name="data_not_available">DATA NOT AVAILABLE</string>
 
     <string name="base_countdown" translatable="false">00</string>
 
@@ -37,6 +38,15 @@
     <string name="m" translatable="false">m</string>
     <string name="championships_index">Championships:</string>
 
+    <!-- DRIVER SEASON STATS STRINGS -->
+    <string name="this_season_numbers_title">THIS SEASON\'S NUMBERS:</string>
+    <string name="season_wins_label">WINS</string>
+    <string name="season_podiums_label">PODIUMS</string>
+    <string name="season_poles_label">POLES</string>
+    <string name="season_dnf_label">DNF</string>
+    <string name="season_position_label">POSITION</string>
+    <string name="season_points_label">POINTS</string>
+
     <!-- CONSTRUCTOR BIO STRINGS -->
 
     <string name="full_name_index">Full Name:</string>
@@ -49,6 +59,7 @@
     <string name="podiums_index">Podiums:</string>
 
     <!-- TRACK BIO STRINGS -->
+    <string name="track_info_index">Track Info:</string>
     <string name="track_name_index">Track Name:</string>
     <string name="location_index">Location:</string>
     <string name="first_entry_index">First Entry:</string>
@@ -184,6 +195,9 @@
     <string name="season_ended">season ended</string>
     <string name="race_cancelled">race cancelled</string>
     <string name="full_article">full article</string>
+    <string name="load_more">load more</string>
+    <string name="loading_more">loading…</string>
+    <string name="no_more_news">no more news</string>
     <string name="race_result">race result</string>
     <string name="days">days</string>
     <string name="hours_abbr" translatable="false">hrs</string>
@@ -261,5 +275,80 @@
     <string name="widget_large_description">FastestLap large widget</string>
     <string name="widget_loading_title" translatable="false">FastestLap</string>
     <string name="widget_loading_text">Loading…</string>
+
+
+    <!-- LIVE TIMING -->
+    <string name="fia_communication" translatable="false">FIA Communication</string>
+    <string name="track_limits" translatable="false">Track Limits</string>
+    <string name="safety_car" translatable="false">Safety Car</string>
+    <string name="team_radio_plus_driver_number">Team Radio - Driver #%1$d</string>
+    <string name="stints" translatable="false">Stints</string>
+
+    <!-- WEATHER -->
+    <string name="today">Today:</string>
+    <string name="humidity">Humidity:</string>
+    <string name="rain_probability">Rain Probability:</string>
+    <string name="speed_index">Speed:</string>
+    <string name="gust">Gust:</string>
+    <string name="weekend_forecast" translatable="false">WEEKEND FORECAST</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="sunday">Sunday</string>
+    <string name="time_09_00" translatable="false">09:00</string>
+    <string name="track">track</string>
+    <string name="time_14_00" translatable="false">14:00</string>
+    <string name="meteo_not_available_yet">meteo not available yet</string>
+    <string name="time_19_00" translatable="false">19:00</string>
+    <string name="race_weekend_forecast">Race Weekend Forecast</string>
+
+    <!-- NOTIFICATIONS -->
+    <string name="news_channel_name">F1 News &amp; Updates</string>
+    <string name="news_channel_description">Notifications for latest Formula 1 news</string>
+    <string name="session_channel_name">F1 Session Reminders</string>
+    <string name="session_channel_description">Alerts when F1 Practice, Qualifying, or Race is starting</string>
+    <string name="session_starting_at">is starting at</string>
+    <string name="session_now_live">is now live</string>
+    <string name="general_channel_name">FastestLap Announcements</string>
+    <string name="general_channel_description">General notifications and updates from FastestLap</string>
+    <string name="notification_settings_title">NOTIFICATIONS &amp; FCM</string>
+    <string name="notification_status_checking">Checking notification permissions…</string>
+    <string name="notification_status_granted">● Notifications: Enabled</string>
+    <string name="notification_status_denied">● Notifications: Disabled (Tap to enable)</string>
+    <string name="test_notification_btn">Send Test Alert</string>
+    <string name="copy_fcm_token_btn">Copy FCM Token</string>
+    <string name="fcm_token_hint">Use copied FCM token in Firebase Console (Cloud Messaging) to test push when app is closed.</string>
+    <string name="schedule_session">session</string>
+    <string name="schedule_day">day</string>
+    <string name="schedule_time">time</string>
+    <string name="schedule_status">status</string>
+
+    <!-- SESSION NOTIFICATION PREFERENCES -->
+    <string name="session_notification_preferences_title">SESSION REMINDERS</string>
+    <string name="session_notification_preferences_subtitle">Alerts delivered at 30 minutes and 5 minutes before start</string>
+    <string name="f1_notifications_header">Formula 1</string>
+    <string name="f1_notif_race">Race</string>
+    <string name="f1_notif_qualifying">Qualifying</string>
+    <string name="f1_notif_sprint">Sprint (Race &amp; Shootout)</string>
+    <string name="f1_notif_practice">Practice (FP1, FP2, FP3)</string>
+
+    <string name="f2_notifications_header">Formula 2</string>
+    <string name="f2_notif_enable">Enable F2 Reminders</string>
+    <string name="f2_notif_feature">Feature Race</string>
+    <string name="f2_notif_sprint">Sprint Race</string>
+    <string name="f2_notif_qualifying">Qualifying</string>
+    <string name="f2_notif_practice">Practice</string>
+
+    <string name="f3_notifications_header">Formula 3</string>
+    <string name="f3_notif_enable">Enable F3 Reminders</string>
+    <string name="f3_notif_feature">Feature Race</string>
+    <string name="f3_notif_sprint">Sprint Race</string>
+    <string name="f3_notif_qualifying">Qualifying</string>
+    <string name="f3_notif_practice">Practice</string>
+    <string name="zero">0</string>
+    <string name="separator">-</string>
+    <string name="feature_1">Feature 1</string>
+    <string name="feature_2">Feature 2</string>
+    <string name="news">News</string>
+    <string name="preferences">Preferences</string>
 
 </resources>

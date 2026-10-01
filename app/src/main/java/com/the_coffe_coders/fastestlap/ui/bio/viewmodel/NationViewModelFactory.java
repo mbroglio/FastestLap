@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.repository.nation.NationRepository;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
 
 public class NationViewModelFactory implements ViewModelProvider.Factory {
     private final NationRepository nationRepository;

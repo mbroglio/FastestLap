@@ -29,6 +29,7 @@ import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.NationViewModelFactory;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.TrackViewModelFactory;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
@@ -47,6 +48,7 @@ public class TrackBioActivity extends AppCompatActivity {
 
     private TrackViewModel trackViewModel;
     private NationViewModel nationViewModel;
+    private com.the_coffe_coders.fastestlap.util.service.NetworkUtils networkLiveData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,10 +69,23 @@ public class TrackBioActivity extends AppCompatActivity {
         UIUtils.applyWindowInsets(toolbar);
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
+        networkLiveData = new NetworkUtils(this);
+
         UIUtils.applyWindowInsets(trackBioLayout);
         trackBioLayout.setOnRefreshListener(() -> {
-            start();
-            trackBioLayout.setRefreshing(false);
+            if (networkLiveData.isConnected()) {
+                if (trackViewModel != null && trackId != null) {
+                    if (track != null && track.getCountry() != null && nationViewModel != null) {
+                        nationViewModel.refreshNation(track.getCountry());
+                    }
+                    trackViewModel.refreshTrack(trackId);
+                } else {
+                    trackBioLayout.setRefreshing(false);
+                }
+            } else {
+                android.widget.Toast.makeText(this, "No internet connection", android.widget.Toast.LENGTH_SHORT).show();
+                trackBioLayout.setRefreshing(false);
+            }
         });
 
         trackId = getIntent().getStringExtra("CIRCUIT_ID");
@@ -94,13 +109,11 @@ public class TrackBioActivity extends AppCompatActivity {
 
     private void fetchTrack() {
         MutableLiveData<Result> trackLiveData = trackViewModel.getTrack(trackId);
-        @SuppressWarnings("unchecked")
-        androidx.lifecycle.Observer<Result>[] observerTrack = new androidx.lifecycle.Observer[1];
-        observerTrack[0] = trackResult -> {
+        trackLiveData.observe(this, trackResult -> {
             if (trackResult instanceof Result.Loading) {
                 return;
             }
-            trackLiveData.removeObserver(observerTrack[0]);
+            trackBioLayout.setRefreshing(false);
             if (trackResult.isSuccess()) {
                 track = ((Result.TrackSuccess) trackResult).getData();
                 Log.i("TrackBioActivity", "Circuit from DB: " + track);
@@ -135,8 +148,7 @@ public class TrackBioActivity extends AppCompatActivity {
                 Log.e("TrackBioActivity", "Error getting track data");
                 loadingScreen.hideLoadingScreen();
             }
-        };
-        trackLiveData.observe(this, observerTrack[0]);
+        });
     }
 
     private void setCircuitData(Track track, Nation nation) {
@@ -175,25 +187,33 @@ public class TrackBioActivity extends AppCompatActivity {
                             findViewById(R.id.fastest_lap_driver)});
         }
 
-        Button goToMapButton = findViewById(R.id.goToMapButton);
+        View goToMapButton = findViewById(R.id.goToMapButton);
         goToMapButton.setOnClickListener(v ->
                 NavigationUtils.openLocation(this, track.getLocation().getLatitude(), track.getLocation().getLongitude()));
 
-        String nationFlag_Url = null;
-        if (nation != null) {
-            nationFlag_Url = nation.getNation_flag_url();
-        }
+        createHistoryTable();
+
+        loadingScreen.hideLoadingScreenImmediately();
+
+        String nationFlag_Url = nation != null ? nation.getNation_flag_url() : null;
 
         UIUtils.loadImagesInParallel(this,
-                new String[]{track.getTrack_full_layout_url(), nationFlag_Url},
-                new ImageView[]{circuitImage, countryFlag},
-                this::createHistoryTable);
+                new String[]{
+                        track.getTrack_full_layout_url(),
+                        nationFlag_Url},
+
+                new ImageView[]{
+                        circuitImage,
+                        countryFlag},
+
+                () -> Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: TrackBioActivity at " + System.currentTimeMillis()));
+
     }
 
     private void createHistoryTable() {
         loadingScreen.updateProgress();
 
-        LinearLayout trackHistoryLayout = findViewById(R.id.track_history);
+        View trackHistoryLayout = findViewById(R.id.track_history);
 
         TableLayout tableLayout = findViewById(R.id.history_table);
         tableLayout.removeAllViews();
@@ -204,14 +224,18 @@ public class TrackBioActivity extends AppCompatActivity {
             tableLayout.setVisibility(View.VISIBLE);
 
             View tableHeader = inflater.inflate(R.layout.track_bio_table_header, tableLayout, false);
-            tableHeader.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray_dark));
-
             tableLayout.addView(tableHeader);
 
             List<TrackHistory> trackHistoryList = track.getTrack_history();
             for (int i = trackHistoryList.size() - 1; i >= 0; i--) {
                 TrackHistory history = trackHistoryList.get(i);
                 View tableRow = inflater.inflate(R.layout.track_bio_table_row, tableLayout, false);
+
+                if (i % 2 == 1) {
+                    tableRow.setBackgroundColor(0x0AFFFFFF);
+                } else {
+                    tableRow.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+                }
 
                 UIUtils.multipleSetTextViewText(
                         new String[]{
@@ -250,9 +274,8 @@ public class TrackBioActivity extends AppCompatActivity {
             trackHistoryLayout.setVisibility(View.GONE);
             tableLayout.setVisibility(View.GONE);
         }
-        Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: TrackBioActivity at " + System.currentTimeMillis());
-        loadingScreen.hideLoadingScreen();
     }
+
 
     @Override
     protected void onResume() {

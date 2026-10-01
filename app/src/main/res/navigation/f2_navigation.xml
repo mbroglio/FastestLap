@@ -16,13 +16,27 @@
         <action
             android:id="@+id/to_juniorResults_formula2"
             app:destination="@id/juniorResultsFragment" />
+        <action
+            android:id="@+id/to_juniorEntryList_formula2"
+            app:destination="@id/juniorEntryListFragment" />
+        <action
+            android:id="@+id/to_juniorCalendar_formula2"
+            app:destination="@id/juniorCalendarFragment" />
+        <action
+            android:id="@+id/to_juniorDriverStandings_formula2"
+            app:destination="@id/juniorDriverStandingsFragment" />
+        <action
+            android:id="@+id/to_juniorConstructorStandings_formula2"
+            app:destination="@id/juniorConstructorStandingsFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/f2CarBioFragment"
         android:name="com.the_coffe_coders.fastestlap.ui.junior.fragment.F2CarBioFragment"
         android:label="@string/the_formula_2_car"
-        tools:layout="@layout/fragment_f2_car_bio"></fragment>
+        tools:layout="@layout/fragment_f2_car_bio">
+
+    </fragment>
 
     <fragment
         android:id="@+id/juniorResultsFragment"
@@ -32,5 +46,34 @@
 
     </fragment>
 
-</navigation>
+    <fragment
+        android:id="@+id/junior_news"
+        android:name="com.the_coffe_coders.fastestlap.ui.junior.fragment.JuniorNewsFragment"
+        android:label="@string/news"
+        tools:layout="@layout/fragment_junior_news" />
 
+    <fragment
+        android:id="@+id/juniorEntryListFragment"
+        android:name="com.the_coffe_coders.fastestlap.ui.junior.fragment.JuniorEntryListFragment"
+        android:label="@string/entry_list"
+        tools:layout="@layout/fragment_junior_entry_list" />
+
+    <fragment
+        android:id="@+id/juniorCalendarFragment"
+        android:name="com.the_coffe_coders.fastestlap.ui.junior.fragment.JuniorCalendarFragment"
+        android:label="@string/calendar"
+        tools:layout="@layout/fragment_junior_calendar" />
+
+    <fragment
+        android:id="@+id/juniorDriverStandingsFragment"
+        android:name="com.the_coffe_coders.fastestlap.ui.junior.fragment.JuniorDriverStandingsFragment"
+        android:label="@string/drivers"
+        tools:layout="@layout/fragment_junior_driver_standings" />
+
+    <fragment
+        android:id="@+id/juniorConstructorStandingsFragment"
+        android:name="com.the_coffe_coders.fastestlap.ui.junior.fragment.JuniorConstructorStandingsFragment"
+        android:label="@string/constructors"
+        tools:layout="@layout/fragment_junior_constructor_standings" />
+
+</navigation>

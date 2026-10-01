@@ -8,11 +8,14 @@ import androidx.lifecycle.MutableLiveData;
 import com.the_coffe_coders.fastestlap.database.AppRoomDatabase;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
+import com.the_coffe_coders.fastestlap.domain.f1.result.Stint;
 import com.the_coffe_coders.fastestlap.source.f1.result.JolpicaRaceResultDataSource;
 import com.the_coffe_coders.fastestlap.source.f1.result.LocalRaceResultDataSource;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+import com.the_coffe_coders.fastestlap.source.f1.result.stint.OpenF1StintDataSource;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -21,10 +24,12 @@ public class ResultRepository {
     private static ResultRepository instance;
     final JolpicaRaceResultDataSource jolpicaRaceResultDataSource;
     final LocalRaceResultDataSource localRaceResultDataSource;
+    final OpenF1StintDataSource openF1StintDataSource;
     // Cache
     private final Map<String, MutableLiveData<Result>> resultsCache;
     private final Map<String, MutableLiveData<Result>> qualifyingResultsCache;
     private final Map<String, MutableLiveData<Result>> sprintResultsCache;
+    private final Map<String, MutableLiveData<Result>> stintsCache;
     private final Map<String, Long> lastUpdateTimestamps;
     private final Map<String, Long> qualifyingLastUpdateTimestamps;
     private final Map<String, Long> sprintLastUpdateTimestamps;
@@ -35,11 +40,13 @@ public class ResultRepository {
         resultsCache = new HashMap<>();
         qualifyingResultsCache = new HashMap<>();
         sprintResultsCache = new HashMap<>();
+        stintsCache = new HashMap<>();
         lastUpdateTimestamps = new HashMap<>();
         qualifyingLastUpdateTimestamps = new HashMap<>();
         sprintLastUpdateTimestamps = new HashMap<>();
         jolpicaRaceResultDataSource = new JolpicaRaceResultDataSource();
         localRaceResultDataSource = LocalRaceResultDataSource.getInstance(appRoomDatabase);
+        openF1StintDataSource = OpenF1StintDataSource.getInstance();
 
         networkUtils = new NetworkUtils(context);
     }
@@ -73,13 +80,13 @@ public class ResultRepository {
         localRaceResultDataSource.getRaceResults(round, new RaceResultCallback() {
             @Override
             public void onSuccess(Race race) {
-                if (race != null) {
-                    lastUpdateTimestamps.put(round, System.currentTimeMillis());
+                if (race != null && race.getRaceResults() != null && !race.getRaceResults().isEmpty()) {
                     Objects.requireNonNull(resultsCache.get(round)).postValue(new Result.RaceResultsSuccess(race));
                     Log.d(TAG, "Results loaded from local cache for round: " + round);
                     Long ts = lastUpdateTimestamps.get(round);
                     boolean isStale = ts == null || System.currentTimeMillis() - ts > 300000L;
-                    if (networkUtils.isConnected() && isStale) {
+                    boolean missingStints = race.getRaceStints() == null || race.getRaceStints().isEmpty();
+                    if (networkUtils.isConnected() && (isStale || missingStints)) {
                         loadResults(round, true);
                     }
                 } else {
@@ -100,13 +107,16 @@ public class ResultRepository {
         localRaceResultDataSource.getRaceResults(round, new RaceResultCallback() {
             @Override
             public void onSuccess(Race race) {
-                if (race != null) {
+                if (race != null && race.getRaceResults() != null && !race.getRaceResults().isEmpty()) {
                     resultsCache.put(round, new MutableLiveData<>(new Result.RaceResultsSuccess(race)));
                     lastUpdateTimestamps.put(round, System.currentTimeMillis());
                     Objects.requireNonNull(resultsCache.get(round)).postValue(new Result.RaceResultsSuccess(race));
                     Log.d(TAG, "Results loaded from local cache for round: " + race);
                 } else {
                     Log.e(TAG, "Results not found in local cache for round: " + round);
+                    if (resultsCache.containsKey(round) && resultsCache.get(round) != null) {
+                        resultsCache.get(round).postValue(new Result.Error("No race results found in cache"));
+                    }
                 }
             }
 
@@ -136,9 +146,27 @@ public class ResultRepository {
                     public void onSuccess(Race race) {
                         Log.d(TAG, "Results loaded: " + race);
                         if (race != null) {
-                            localRaceResultDataSource.insertRaceResults(race);
-                            lastUpdateTimestamps.put(round, System.currentTimeMillis());
-                            Objects.requireNonNull(resultsCache.get(round)).postValue(new Result.RaceResultsSuccess(race));
+                            saveAndPostRace(round, race);
+
+                            if (race.getRaceName() != null) {
+                                openF1StintDataSource.getStints(race.getRaceName(), "Race", new StintCallback() {
+                                    @Override
+                                    public void onSuccess(List<Stint> stints) {
+                                        if (stints != null && !stints.isEmpty()) {
+                                            race.setRaceStints(stints);
+                                            localRaceResultDataSource.insertRaceResults(race);
+                                            if (resultsCache.containsKey(round) && resultsCache.get(round) != null) {
+                                                resultsCache.get(round).postValue(new Result.RaceResultsSuccess(race));
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Exception exception) {
+                                        Log.w(TAG, "Non-blocking stint fetch failed for race round " + round + ": " + exception.getMessage());
+                                    }
+                                });
+                            }
                         } else {
                             Log.e(TAG, "Results not found in cache for round: " + round);
                             loadResultsFromLocal(round);
@@ -156,11 +184,21 @@ public class ResultRepository {
                 });
             } catch (Exception e) {
                 Log.e(TAG, "Error loading results: " + e.getMessage());
+                if (!isBackgroundRefresh && resultsCache.containsKey(round) && resultsCache.get(round) != null) {
+                    resultsCache.get(round).postValue(new Result.Error(e.getMessage()));
+                }
+                loadResultsFromLocal(round);
             }
         } else {
             Log.e(TAG, "Failed to load results: No internet connection");
             loadResultsFromLocal(round);
         }
+    }
+
+    private void saveAndPostRace(String round, Race race) {
+        localRaceResultDataSource.insertRaceResults(race);
+        lastUpdateTimestamps.put(round, System.currentTimeMillis());
+        Objects.requireNonNull(resultsCache.get(round)).postValue(new Result.RaceResultsSuccess(race));
     }
 
     public synchronized MutableLiveData<Result> fetchQualifyingResults(String round) {
@@ -185,8 +223,7 @@ public class ResultRepository {
         localRaceResultDataSource.getQualifyingResults(round, new RaceResultCallback() {
             @Override
             public void onSuccess(Race race) {
-                if (race != null) {
-                    qualifyingLastUpdateTimestamps.put(round, System.currentTimeMillis());
+                if (race != null && race.getQualifyingResults() != null && !race.getQualifyingResults().isEmpty()) {
                     Objects.requireNonNull(qualifyingResultsCache.get(round)).postValue(new Result.RaceResultsSuccess(race));
                     Log.d(TAG, "Qualifying results loaded from local cache for round: " + round);
                     Long ts = qualifyingLastUpdateTimestamps.get(round);
@@ -257,20 +294,25 @@ public class ResultRepository {
         localRaceResultDataSource.getQualifyingResults(round, new RaceResultCallback() {
             @Override
             public void onSuccess(Race race) {
-                if (race != null) {
+                if (race != null && race.getQualifyingResults() != null && !race.getQualifyingResults().isEmpty()) {
                     qualifyingResultsCache.put(round, new MutableLiveData<>(new Result.RaceResultsSuccess(race)));
                     qualifyingLastUpdateTimestamps.put(round, System.currentTimeMillis());
                     Objects.requireNonNull(qualifyingResultsCache.get(round)).postValue(new Result.RaceResultsSuccess(race));
                     Log.d(TAG, "Qualifying results loaded from local cache for round: " + round);
                 } else {
                     Log.e(TAG, "Qualifying results not found in local cache for round: " + round);
+                    if (qualifyingResultsCache.containsKey(round) && qualifyingResultsCache.get(round) != null) {
+                        qualifyingResultsCache.get(round).postValue(new Result.Error("No qualifying results found in cache"));
+                    }
                 }
             }
 
             @Override
             public void onFailure(Exception exception) {
                 Log.e(TAG, "Error loading qualifying results from local cache: " + exception.getMessage());
-                Objects.requireNonNull(qualifyingResultsCache.get(round)).postValue(new Result.Error(exception.getMessage()));
+                if (qualifyingResultsCache.containsKey(round) && qualifyingResultsCache.get(round) != null) {
+                    qualifyingResultsCache.get(round).postValue(new Result.Error(exception.getMessage()));
+                }
             }
         });
     }
@@ -297,13 +339,13 @@ public class ResultRepository {
         localRaceResultDataSource.getSprintResults(round, new RaceResultCallback() {
             @Override
             public void onSuccess(Race race) {
-                if (race != null) {
-                    sprintLastUpdateTimestamps.put(round, System.currentTimeMillis());
+                if (race != null && race.getSprintResults() != null && !race.getSprintResults().isEmpty()) {
                     Objects.requireNonNull(sprintResultsCache.get(round)).postValue(new Result.RaceResultsSuccess(race));
                     Log.d(TAG, "Sprint results loaded from local cache for round: " + round);
                     Long ts = sprintLastUpdateTimestamps.get(round);
                     boolean isStale = ts == null || System.currentTimeMillis() - ts > 300000L;
-                    if (networkUtils.isConnected() && isStale) {
+                    boolean missingStints = race.getSprintStints() == null || race.getSprintStints().isEmpty();
+                    if (networkUtils.isConnected() && (isStale || missingStints)) {
                         loadSprintResults(round, true);
                     }
                 } else {
@@ -334,21 +376,38 @@ public class ResultRepository {
                 jolpicaRaceResultDataSource.getSprintResults(Integer.parseInt(round), new RaceResultCallback() {
                     @Override
                     public void onSuccess(Race race) {
-                        Log.d(TAG, "Results loaded: " + race);
+                        Log.d(TAG, "Sprint results loaded: " + race);
                         if (race != null) {
-                            localRaceResultDataSource.insertSprintResults(race);
-                            sprintLastUpdateTimestamps.put(round, System.currentTimeMillis());
-                            Objects.requireNonNull(sprintResultsCache.get(round)).postValue(new Result.RaceResultsSuccess(race));
+                            saveAndPostSprint(round, race);
 
+                            if (race.getRaceName() != null) {
+                                openF1StintDataSource.getStints(race.getRaceName(), "Sprint", new StintCallback() {
+                                    @Override
+                                    public void onSuccess(List<Stint> stints) {
+                                        if (stints != null && !stints.isEmpty()) {
+                                            race.setSprintStints(stints);
+                                            localRaceResultDataSource.insertSprintResults(race);
+                                            if (sprintResultsCache.containsKey(round) && sprintResultsCache.get(round) != null) {
+                                                sprintResultsCache.get(round).postValue(new Result.RaceResultsSuccess(race));
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Exception exception) {
+                                        Log.w(TAG, "Non-blocking stint fetch failed for sprint round " + round + ": " + exception.getMessage());
+                                    }
+                                });
+                            }
                         } else {
-                            Log.e(TAG, "Results not found in cache for round: " + round);
+                            Log.e(TAG, "Sprint results not found in remote for round: " + round);
                             loadSprintResultsFromLocal(round);
                         }
                     }
 
                     @Override
                     public void onFailure(Exception exception) {
-                        Log.e(TAG, "Error loading results: " + exception.getMessage());
+                        Log.e(TAG, "Error loading sprint results: " + exception.getMessage());
                         if (!isBackgroundRefresh) {
                             Objects.requireNonNull(sprintResultsCache.get(round)).postValue(new Result.Error(exception.getMessage()));
                         }
@@ -356,7 +415,11 @@ public class ResultRepository {
                     }
                 });
             } catch (Exception e) {
-                Log.e(TAG, "Error loading results: " + e.getMessage());
+                Log.e(TAG, "Error loading sprint results: " + e.getMessage());
+                if (!isBackgroundRefresh && sprintResultsCache.containsKey(round) && sprintResultsCache.get(round) != null) {
+                    sprintResultsCache.get(round).postValue(new Result.Error(e.getMessage()));
+                }
+                loadSprintResultsFromLocal(round);
             }
         } else {
             Log.e(TAG, "Failed to load results: No internet connection");
@@ -364,17 +427,26 @@ public class ResultRepository {
         }
     }
 
+    private void saveAndPostSprint(String round, Race race) {
+        localRaceResultDataSource.insertSprintResults(race);
+        sprintLastUpdateTimestamps.put(round, System.currentTimeMillis());
+        Objects.requireNonNull(sprintResultsCache.get(round)).postValue(new Result.RaceResultsSuccess(race));
+    }
+
     private void loadSprintResultsFromLocal(String round) {
         localRaceResultDataSource.getSprintResults(round, new RaceResultCallback() {
             @Override
             public void onSuccess(Race race) {
-                if (race != null) {
+                if (race != null && race.getSprintResults() != null && !race.getSprintResults().isEmpty()) {
                     sprintResultsCache.put(round, new MutableLiveData<>(new Result.RaceResultsSuccess(race)));
                     sprintLastUpdateTimestamps.put(round, System.currentTimeMillis());
                     Objects.requireNonNull(sprintResultsCache.get(round)).postValue(new Result.RaceResultsSuccess(race));
                     Log.d(TAG, "Sprint results loaded from local cache for round: " + race);
                 } else {
                     Log.e(TAG, "Sprint results not found in local cache for round: " + round);
+                    if (sprintResultsCache.containsKey(round) && sprintResultsCache.get(round) != null) {
+                        sprintResultsCache.get(round).postValue(new Result.Error("No sprint results found in cache"));
+                    }
                 }
             }
 
@@ -386,5 +458,73 @@ public class ResultRepository {
                 }
             }
         });
+    }
+
+    public synchronized MutableLiveData<Result> fetchStints(String eventName, String sessionName) {
+        String key = (eventName != null ? eventName : "latest") + "_" + (sessionName != null ? sessionName : "Race");
+        Log.d(TAG, "Fetching stints for key: " + key);
+
+        if (!stintsCache.containsKey(key)) {
+            stintsCache.put(key, new MutableLiveData<>());
+        }
+
+        MutableLiveData<Result> liveData = stintsCache.get(key);
+        Result current = Objects.requireNonNull(liveData).getValue();
+        if (current instanceof Result.StintsSuccess) {
+            List<Stint> cached = ((Result.StintsSuccess) current).getData();
+            if (cached != null && !cached.isEmpty()) {
+                return liveData;
+            }
+        }
+
+        liveData.postValue(new Result.Loading("Fetching stints from OpenF1"));
+
+        if (networkUtils.isConnected()) {
+            openF1StintDataSource.getStints(eventName, sessionName, new StintCallback() {
+                @Override
+                public void onSuccess(java.util.List<Stint> stints) {
+                    if (stints != null && !stints.isEmpty()) {
+                        Log.d(TAG, "Stints loaded successfully: " + stints.size());
+                        liveData.postValue(new Result.StintsSuccess(stints));
+                        enrichCachedRacesWithStints(eventName, sessionName, stints);
+                    } else {
+                        Log.d(TAG, "Stints returned empty list");
+                        liveData.postValue(new Result.Error("No stints available"));
+                    }
+                }
+
+                @Override
+                public void onFailure(Exception exception) {
+                    Log.e(TAG, "Error fetching stints: " + exception.getMessage());
+                    liveData.postValue(new Result.Error(exception.getMessage()));
+                }
+            });
+        } else {
+            Log.e(TAG, "Failed to load stints: No internet connection");
+            liveData.postValue(new Result.Error("No network connection"));
+        }
+
+        return liveData;
+    }
+
+    private void enrichCachedRacesWithStints(String eventName, String sessionName, List<Stint> stints) {
+        if (stints == null || stints.isEmpty() || eventName == null) return;
+        boolean isSprint = "Sprint".equalsIgnoreCase(sessionName);
+        for (Map.Entry<String, MutableLiveData<Result>> entry : (isSprint ? sprintResultsCache : resultsCache).entrySet()) {
+            Result r = entry.getValue().getValue();
+            if (r instanceof Result.RaceResultsSuccess) {
+                Race race = ((Result.RaceResultsSuccess) r).getData();
+                if (race != null && eventName.equalsIgnoreCase(race.getRaceName())) {
+                    if (isSprint) {
+                        race.setSprintStints(stints);
+                        localRaceResultDataSource.insertSprintResults(race);
+                    } else {
+                        race.setRaceStints(stints);
+                        localRaceResultDataSource.insertRaceResults(race);
+                    }
+                    entry.getValue().postValue(new Result.RaceResultsSuccess(race));
+                }
+            }
+        }
     }
 }

@@ -10,7 +10,7 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.junior.result.JuniorResult;
 import com.the_coffe_coders.fastestlap.source.junior.results.FirebaseJuniorResultsDataSource;
 import com.the_coffe_coders.fastestlap.source.junior.results.LocalJuniorResultsDataSource;
-import com.the_coffe_coders.fastestlap.util.NetworkUtils;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -72,7 +72,6 @@ public class JuniorResultRepository {
             public void onResultLoaded(JuniorResult result) {
                 if (result != null) {
                     Log.i(TAG, "Junior result loaded from local DB: " + cacheKey);
-                    lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                     Objects.requireNonNull(juniorResultCache.get(cacheKey))
                             .postValue(new Result.JuniorResultSuccess(result));
 
@@ -119,17 +118,37 @@ public class JuniorResultRepository {
                         lastUpdateTimestamps.put(cacheKey, System.currentTimeMillis());
                         Objects.requireNonNull(juniorResultCache.get(cacheKey))
                                 .postValue(new Result.JuniorResultSuccess(result));
+                    } else if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(juniorResultCache.get(cacheKey))
+                                .postValue(new Result.Error("Junior result not found from remote"));
                     }
                 }
 
                 @Override
                 public void onError(Exception e) {
                     Log.e(TAG, "Error loading junior result: " + e.getMessage());
+                    if (!isBackgroundRefresh) {
+                        Objects.requireNonNull(juniorResultCache.get(cacheKey))
+                                .postValue(new Result.Error(e.getMessage()));
+                    }
                 }
             });
         } catch (Exception e) {
             Log.e(TAG, "Error loading junior result: " + e.getMessage());
+            if (!isBackgroundRefresh) {
+                Objects.requireNonNull(juniorResultCache.get(cacheKey))
+                        .postValue(new Result.Error(e.getMessage()));
+            }
         }
     }
 
+    public synchronized void refreshResults(String series) {
+        String cacheKey = "juniorResult" + series;
+        if (!juniorResultCache.containsKey(cacheKey)) {
+            juniorResultCache.put(cacheKey, new MutableLiveData<>());
+        }
+        if (isNetworkAvailable()) {
+            loadJuniorResult(series, false);
+        }
+    }
 }

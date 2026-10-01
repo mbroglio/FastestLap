@@ -6,8 +6,10 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.ConstructorHistory;
+import com.the_coffe_coders.fastestlap.domain.f1.constructor.ConstructorSeasonStats;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.DriverHistory;
+import com.the_coffe_coders.fastestlap.domain.f1.driver.DriverSeasonStats;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Practice;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Qualifying;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
@@ -19,6 +21,7 @@ import com.the_coffe_coders.fastestlap.domain.f1.result.QualifyingResult;
 import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResultFastestLap;
 import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResultTime;
+import com.the_coffe_coders.fastestlap.domain.f1.result.Stint;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.f1.track.Location;
@@ -79,6 +82,20 @@ public class DatabaseConverters {
     @TypeConverter
     public static String fromQualifyingResultList(List<QualifyingResult> results) {
         return gson.toJson(results);
+    }
+
+    @TypeConverter
+    public static List<Stint> toStintList(String json) {
+        if (json == null) return null;
+        Gson gson = new Gson();
+        Type listType = new TypeToken<List<Stint>>() {}.getType();
+        return gson.fromJson(json, listType);
+    }
+
+    @TypeConverter
+    public static String fromStintList(List<Stint> stints) {
+        if (stints == null) return null;
+        return gson.toJson(stints);
     }
 
     @TypeConverter
@@ -423,5 +440,24 @@ public class DatabaseConverters {
         return gson.fromJson(json, listType);
     }
 
+    @TypeConverter
+    public static String fromDriverSeasonStats(DriverSeasonStats stats) {
+        return gson.toJson(stats);
+    }
+
+    @TypeConverter
+    public static DriverSeasonStats toDriverSeasonStats(String json) {
+        return gson.fromJson(json, DriverSeasonStats.class);
+    }
+
+    @TypeConverter
+    public static String fromConstructorSeasonStats(ConstructorSeasonStats stats) {
+        return gson.toJson(stats);
+    }
+
+    @TypeConverter
+    public static ConstructorSeasonStats toConstructorSeasonStats(String json) {
+        return gson.fromJson(json, ConstructorSeasonStats.class);
+    }
 
 }

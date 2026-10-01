@@ -20,7 +20,7 @@ import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
 
 import org.apache.commons.validator.routines.EmailValidator;
 

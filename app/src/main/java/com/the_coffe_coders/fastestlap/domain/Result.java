@@ -4,6 +4,9 @@ import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.f1.livetiming.RaceControlMessage;
+import com.the_coffe_coders.fastestlap.domain.f1.livetiming.TeamRadioMessage;
+import com.the_coffe_coders.fastestlap.domain.f1.result.Stint;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
@@ -14,6 +17,8 @@ import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorDriverStand
 import com.the_coffe_coders.fastestlap.domain.junior.standings.JuniorEntryList;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.domain.user.User;
+
+import com.the_coffe_coders.fastestlap.domain.weather.DailyForecast;
 
 import java.util.List;
 
@@ -236,6 +241,66 @@ public abstract class Result {
 
         public JuniorConstructorStandings getData() {
             return constructorStandings;
+        }
+    }
+
+    public static class RaceControlSuccess extends Result {
+        private final List<RaceControlMessage> messages;
+
+        public RaceControlSuccess(List<RaceControlMessage> messages) {
+            this.messages = messages;
+        }
+
+        public List<RaceControlMessage> getData() {
+            return messages;
+        }
+    }
+
+    public static class TeamRadioSuccess extends Result {
+        private final List<TeamRadioMessage> messages;
+
+        public TeamRadioSuccess(List<TeamRadioMessage> messages) {
+            this.messages = messages;
+        }
+
+        public List<TeamRadioMessage> getData() {
+            return messages;
+        }
+    }
+
+    public static class StintsSuccess extends Result {
+        private final List<Stint> stints;
+
+        public StintsSuccess(List<Stint> stints) {
+            this.stints = stints;
+        }
+
+        public List<Stint> getData() {
+            return stints;
+        }
+    }
+
+    public static class WeatherSuccess extends Result {
+        private final com.the_coffe_coders.fastestlap.domain.weather.WeatherInfo weatherInfo;
+
+        public WeatherSuccess(com.the_coffe_coders.fastestlap.domain.weather.WeatherInfo weatherInfo) {
+            this.weatherInfo = weatherInfo;
+        }
+
+        public com.the_coffe_coders.fastestlap.domain.weather.WeatherInfo getData() {
+            return weatherInfo;
+        }
+    }
+
+    public static class WeekendForecastSuccess extends Result {
+        private final List<DailyForecast> dailyForecasts;
+
+        public WeekendForecastSuccess(List<DailyForecast> dailyForecasts) {
+            this.dailyForecasts = dailyForecasts;
+        }
+
+        public List<DailyForecast> getData() {
+            return dailyForecasts;
         }
     }
 

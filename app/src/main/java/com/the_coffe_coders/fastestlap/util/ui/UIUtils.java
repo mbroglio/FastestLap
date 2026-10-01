@@ -6,27 +6,19 @@ import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkCapabilities;
-import android.os.Handler;
-import android.os.Looper;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.os.Build;
 import android.util.Log;
+import androidx.core.graphics.ColorUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.os.LocaleListCompat;
@@ -34,24 +26,16 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.navigation.NavController;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DataSource;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.engine.GlideException;
-import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
-import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.CustomTarget;
-import com.bumptech.glide.request.target.Target;
-import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.card.MaterialCardView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.util.Constants;
 
-import java.security.MessageDigest;
+import org.threeten.bp.DayOfWeek;
+
 import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -60,8 +44,31 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
+import com.google.gson.JsonObject;
+import com.the_coffe_coders.fastestlap.util.glide.GlideUtils;
 
 public class UIUtils {
+
+    /*
+     * ----------------------------------------------------------------------------------------------
+     * JSON HELPERS
+     * ----------------------------------------------------------------------------------------------
+     */
+
+    public static String getStringOrNull(JsonObject obj, String key) {
+        if (obj == null || !obj.has(key) || obj.get(key).isJsonNull()) return null;
+        return obj.get(key).getAsString();
+    }
+
+    public static int getIntOrDefault(JsonObject obj, String key, int defaultValue) {
+        if (obj == null || !obj.has(key) || obj.get(key).isJsonNull()) return defaultValue;
+        return obj.get(key).getAsInt();
+    }
+
+    public static Integer getNullableInt(JsonObject obj, String key) {
+        if (obj == null || !obj.has(key) || obj.get(key).isJsonNull()) return null;
+        return obj.get(key).getAsInt();
+    }
 
 
     /*
@@ -115,362 +122,40 @@ public class UIUtils {
 
     /*
      * ----------------------------------------------------------------------------------------------
-     * IMAGE LOADING AND COLORS
+     * IMAGE LOADING AND COLORS (Delegated to GlideUtils)
      * ----------------------------------------------------------------------------------------------
      */
 
     public static void loadImageWithGlide(Context context, String url, ImageView imageView, Runnable onSuccess) {
-        loadImage(context, url, imageView, onSuccess, 0);
+        GlideUtils.loadImageWithGlide(context, url, imageView, onSuccess);
     }
 
-    /**
-     * Starts downloading the image at {@code url} into Glide's disk cache without
-     * displaying it anywhere. Call this as early as possible (e.g. when you first
-     * receive the URL) so the cache is warm by the time the real load starts.
-     */
     public static void preloadImage(Context context, String url) {
-        if (url == null || url.isEmpty()) return;
-        // Guard against destroyed activities
-        if (context instanceof android.app.Activity) {
-            android.app.Activity activity = (android.app.Activity) context;
-            if (activity.isDestroyed() || activity.isFinishing()) return;
-        }
-        // Use applicationContext so the decoded bitmap is pinned in the app-scoped
-        // Glide RequestManager and never evicted when a fragment/activity is destroyed.
-        // This makes every return visit to the home fragment an instant memory-cache hit
-        // instead of a fresh Firebase Storage fetch.
-        Glide.with(context.getApplicationContext())
-                .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .preload();
+        GlideUtils.preloadImage(context, url);
     }
 
     public static void preloadImage(Context context, String url, Runnable onComplete) {
-        if (url == null || url.isEmpty()) {
-            if (onComplete != null) {
-                new Handler(Looper.getMainLooper()).post(onComplete);
-            }
-            return;
-        }
-
-        if (context instanceof android.app.Activity) {
-            android.app.Activity activity = (android.app.Activity) context;
-            if (activity.isDestroyed() || activity.isFinishing()) {
-                if (onComplete != null) {
-                    new Handler(Looper.getMainLooper()).post(onComplete);
-                }
-                return;
-            }
-        }
-
-        // Use applicationContext so the decoded bitmap survives fragment/activity lifecycle
-        // changes and is available as a memory-cache hit on the next home fragment visit.
-        Glide.with(context.getApplicationContext())
-                .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        if (onComplete != null) {
-                            new Handler(Looper.getMainLooper()).post(onComplete);
-                        }
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        if (onComplete != null) {
-                            new Handler(Looper.getMainLooper()).post(onComplete);
-                        }
-                        return false;
-                    }
-                })
-                .preload();
+        GlideUtils.preloadImage(context, url, onComplete);
     }
 
     public static void preloadImagesInParallel(Context context, String[] urls, Runnable onSuccess) {
-        if (urls == null || urls.length == 0) {
-            if (onSuccess != null) {
-                new Handler(Looper.getMainLooper()).post(onSuccess);
-            }
-            return;
-        }
-
-        final int[] loadedCount = {0};
-        final int total = urls.length;
-
-        Runnable check = () -> {
-            synchronized (loadedCount) {
-                loadedCount[0]++;
-                if (loadedCount[0] >= total && onSuccess != null) {
-                    new Handler(Looper.getMainLooper()).post(onSuccess);
-                }
-            }
-        };
-
-        for (String url : urls) {
-            preloadImage(context, url, check);
-        }
+        GlideUtils.preloadImagesInParallel(context, urls, onSuccess);
     }
 
     public static void loadSequenceOfImagesWithGlide(Context context, String[] urls, ImageView[] imageViews, Runnable onSuccess) {
-        if (urls.length != imageViews.length) {
-            throw new IllegalArgumentException("The length of urls and imageViews must be the same");
-        }
-
-        if (urls.length == 0) {
-            if (onSuccess != null) {
-                new Handler(Looper.getMainLooper()).post(onSuccess);
-            }
-            return;
-        }
-
-        // Start the chain with the first image
-        loadImageSequentially(context, urls, imageViews, 0, onSuccess);
+        GlideUtils.loadSequenceOfImagesWithGlide(context, urls, imageViews, onSuccess);
     }
 
-    private static void loadImageSequentially(Context context, String[] urls, ImageView[] imageViews, int index, Runnable onSuccess) {
-        if (index >= urls.length) {
-            // All images loaded, call final callback
-            if (onSuccess != null) {
-                new Handler(Looper.getMainLooper()).post(onSuccess);
-            }
-            return;
-        }
-
-        // Load current image with callback to load next image
-        loadImage(context, urls[index], imageViews[index], () -> {
-            // Load next image in sequence
-            loadImageSequentially(context, urls, imageViews, index + 1, onSuccess);
-        }, 0);
-    }
-
-    /**
-     * Load multiple images in parallel (faster than sequence)
-     * All images load simultaneously, onSuccess called when all complete
-     */
     public static void loadImagesInParallel(Context context, String[] urls, ImageView[] imageViews, Runnable onSuccess) {
-        if (urls.length != imageViews.length) {
-            throw new IllegalArgumentException("The length of urls and imageViews must be the same");
-        }
-
-        if (urls.length == 0) {
-            if (onSuccess != null) {
-                new Handler(Looper.getMainLooper()).post(onSuccess);
-            }
-            return;
-        }
-
-        // Track how many images have fully loaded (full-quality, not thumbnail)
-        final int[] loadedCount = {0};
-        final int totalImages = urls.length;
-
-        Runnable checkComplete = () -> {
-            synchronized (loadedCount) {
-                loadedCount[0]++;
-                if (loadedCount[0] == totalImages && onSuccess != null) {
-                    // Post to Handler to escape the callback context
-                    // This prevents IllegalStateException if onSuccess triggers another Glide load
-                    new Handler(Looper.getMainLooper()).post(onSuccess);
-                }
-            }
-        };
-
-        // Load all images in parallel
-        for (int i = 0; i < urls.length; i++) {
-            loadImage(context, urls[i], imageViews[i], checkComplete, 0);
-        }
+        GlideUtils.loadImagesInParallel(context, urls, imageViews, onSuccess);
     }
 
-    /**
-     * Loads an image into an ImageView asynchronously without any completion callback.
-     * Use this when you want to display data immediately and let images fill in on their own.
-     * Unlike loadImagesInParallel(), this does NOT block any completion signal.
-     */
     public static void loadImageAsync(Context context, String url, ImageView imageView) {
-        if (imageView == null) return;
-        if (url == null || url.isEmpty()) return;
-        if (context instanceof android.app.Activity) {
-            android.app.Activity activity = (android.app.Activity) context;
-            if (activity.isDestroyed() || activity.isFinishing()) return;
-        }
-        Glide.with(context)
-                .load(url)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imageView);
-    }
-
-
-    private static void loadImage(Context context, String url, ImageView imageView, Runnable onSuccess, int retryCount) {
-        Log.i("Glide", "Loading image: " + url);
-
-        // Guard: if the context is a destroyed Activity, skip the load to avoid the
-        // "You cannot start a load for a destroyed activity" crash that occurs when an
-        // async callback (posted via Handler) fires after the user has navigated away.
-        if (context instanceof android.app.Activity) {
-            android.app.Activity activity = (android.app.Activity) context;
-            if (activity.isDestroyed() || activity.isFinishing()) {
-                Log.w("Glide", "Skipping image load — activity is destroyed: " + url);
-                if (onSuccess != null) {
-                    new Handler(Looper.getMainLooper()).post(onSuccess);
-                }
-                return;
-            }
-        }
-
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        Network activeNetwork = cm != null ? cm.getActiveNetwork() : null;
-        NetworkCapabilities nc = (activeNetwork != null) ? cm.getNetworkCapabilities(activeNetwork) : null;
-        final boolean isConnected = nc != null
-                && nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
-                && nc.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED);
-
-
-        if (url != null && !url.isEmpty()) {
-            // Ensure the onSuccess callback fires exactly once per loadImage() call.
-            // .thumbnail(0.25f) causes Glide to invoke onResourceReady twice:
-            //   1st call: low-res thumbnail (isFirstResource = true)
-            //   2nd call: full-quality image  (isFirstResource = false)
-            // Without this guard, loadImagesInParallel's counter would be incremented
-            // twice per image, firing the completion callback before all images are ready.
-            final boolean[] callbackFired = {false};
-
-            Glide.with(context)
-                    .load(url)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)  // Cache both original and resized
-                    .listener(new RequestListener<>() {
-                        @Override
-                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                            Log.e("Glide", "Image loading failed: " + url);
-
-                            synchronized (callbackFired) {
-                                if (callbackFired[0]) return true;
-                                callbackFired[0] = true;
-                            }
-
-                            if (isConnected) {
-                                if (retryCount <= Constants.MAX_RETRY_COUNT) {
-                                    Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
-                                    new Handler(Looper.getMainLooper()).post(() -> loadImage(context, url, imageView, onSuccess, retryCount + 1));
-                                } else {
-                                    Log.e("Glide", "Max retry count reached for image: " + url);
-                                    manageContentLoadError(imageView, null, context, onSuccess, 0);
-                                }
-                            } else {
-                                manageContentLoadError(imageView, null, context, onSuccess, 0);
-                            }
-                            return true; // We handled the error
-                        }
-
-                        @Override
-                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                            Log.i("Glide", "Full image loaded (firing callback): " + url);
-
-                            synchronized (callbackFired) {
-                                if (callbackFired[0])
-                                    return false; // callback already fired
-                                callbackFired[0] = true;
-                            }
-
-                            if (onSuccess != null) {
-                                // Post to Handler to escape the callback context.
-                                // This prevents IllegalStateException if onSuccess triggers another Glide load.
-                                new Handler(Looper.getMainLooper()).post(onSuccess);
-                            }
-                            return false; // Let Glide display the resource
-                        }
-                    })
-                    .into(imageView);
-        } else {
-            Log.e("Glide", "URL is null");
-            manageContentLoadError(imageView, null, context, onSuccess, 0);
-        }
+        GlideUtils.loadImageAsync(context, url, imageView);
     }
 
     public static void loadImageInEventCardWithAlpha(Context context, String url, LinearLayout card, Runnable onSuccess, int alpha) {
-        loadImageAlpha(context, url, card, onSuccess, alpha, 0);
-    }
-
-    private static void loadImageAlpha(Context context, String url, LinearLayout card, Runnable onSuccess, int alpha, int retryCount) {
-        // Guard: skip load if the associated Activity is already destroyed.
-        if (context instanceof android.app.Activity) {
-            android.app.Activity activity = (android.app.Activity) context;
-            if (activity.isDestroyed() || activity.isFinishing()) {
-                Log.w("Glide", "Skipping alpha image load — activity is destroyed: " + url);
-                if (onSuccess != null) {
-                    new Handler(Looper.getMainLooper()).post(onSuccess);
-                }
-                return;
-            }
-        }
-
-        if (url != null && !url.isEmpty()) {
-            Glide.with(context)
-                    .load(url)
-                    .transform(new BitmapTransformation() {
-                        @Override
-                        public void updateDiskCacheKey(@NonNull MessageDigest messageDigest) {
-
-                        }
-
-                        @Override
-                        protected Bitmap transform(@NonNull BitmapPool pool, @NonNull Bitmap toTransform, int outWidth, int outHeight) {
-                            // Make the bitmap 30% transparent (76/255 ≈ 0.3)
-                            return setAlpha(toTransform, alpha);
-                        }
-
-                        // Helper method to set alpha on bitmap
-                        private Bitmap setAlpha(Bitmap bitmap, int alpha) {
-                            Bitmap mutableBitmap = bitmap.isMutable() ? bitmap : bitmap.copy(Bitmap.Config.ARGB_8888, true);
-                            Canvas canvas = new Canvas(mutableBitmap);
-                            Paint paint = new Paint();
-                            paint.setAlpha(alpha);
-                            canvas.drawRect(0, 0, bitmap.getWidth(), bitmap.getHeight(), paint);
-                            return mutableBitmap;
-                        }
-                    })
-                    .into(new CustomTarget<Drawable>() {
-                        @Override
-                        public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                            card.setBackground(resource);
-                            if (onSuccess != null) {
-                                // Post to Handler to escape the callback context
-                                // This prevents IllegalStateException if onSuccess triggers another Glide load
-                                new Handler(Looper.getMainLooper()).post(onSuccess);
-                            }
-                        }
-
-                        @Override
-                        public void onLoadCleared(@Nullable Drawable placeholder) {
-                            // Use default image if loading fails
-                            Drawable defaultImage = ContextCompat.getDrawable(context, R.drawable.content_not_found_icon);
-                            if (defaultImage != null) {
-                                defaultImage.setAlpha(76);
-                            }
-                            card.setBackground(defaultImage);
-                            if (onSuccess != null) {
-                                // Post to Handler to escape the callback context
-                                // This prevents IllegalStateException if onSuccess triggers another Glide load
-                                new Handler(Looper.getMainLooper()).post(onSuccess);
-                            }
-                        }
-
-                        @Override
-                        public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                            Log.w("Glide", "Image loading failed: " + url);
-                            if (retryCount <= Constants.MAX_RETRY_COUNT) {
-                                Log.i("Glide", "Retrying image load: " + url + " - retry count: " + retryCount);
-                                new Handler(Looper.getMainLooper()).post(() -> loadImageAlpha(context, url, card, onSuccess, alpha, retryCount + 1));
-                            } else {
-                                Log.e("Glide", "Max retry count reached for image: " + url);
-                                manageContentLoadError(null, card, context, onSuccess, 1);
-                            }
-                        }
-                    });
-        } else {
-            Log.e("Glide", "URL is null");
-            manageContentLoadError(null, card, context, onSuccess, 1);
-        }
+        GlideUtils.loadImageInEventCardWithAlpha(context, url, card, onSuccess, alpha);
     }
 
     public static void animateCardBackgroundColor(Context context, MaterialCardView cardView, int startColorResId, int endColor, int duration, int repeatCount) {
@@ -488,27 +173,6 @@ public class UIUtils {
             }
         });
         colorAnimator.start();
-    }
-
-    private static void manageContentLoadError(ImageView imageView, LinearLayout layout, Context context, Runnable onSuccess, int contentType) {
-        switch (contentType) {
-            case 0: // Image
-                Log.e("Glide", "Image loading failed, setting backup image");
-                Drawable errorImage = AppCompatResources.getDrawable(context, R.drawable.content_not_found_icon);
-                imageView.setImageDrawable(errorImage);
-                imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-                break;
-            case 1: // Layout
-                Log.e("UIUtils", "Layout loading failed, setting backup background");
-                layout.setBackgroundColor(context.getColor(R.color.timer_gray));
-                break;
-            default:
-                Log.e("UIUtils", "Unknown content type for error handling");
-        }
-
-        if (onSuccess != null) {
-            onSuccess.run();
-        }
     }
 
 
@@ -635,9 +299,13 @@ public class UIUtils {
      * ----------------------------------------------------------------------------------------------
      */
 
-    public static void translateSchedule(Context context, TextView sessionTypeTextView, TextView sessionDayTextView, String sessionId) {
+    public static void translateSchedule(Context context, TextView sessionTypeTextView, TextView sessionDayTextView, String sessionId, Session session) {
         translateSessionType(context, sessionTypeTextView, sessionId);
-        translateSessionDay(context, sessionDayTextView, sessionId);
+        translateSessionDay(context, sessionDayTextView, sessionId, session);
+    }
+
+    public static void translateSchedule(Context context, TextView sessionTypeTextView, TextView sessionDayTextView, String sessionId) {
+        translateSchedule(context, sessionTypeTextView, sessionDayTextView, sessionId, null);
     }
 
     public static void translateSessionType(Context context, TextView sessionTypeTextView, String sessionId) {
@@ -650,8 +318,23 @@ public class UIUtils {
     }
 
     public static void translateSessionDay(Context context, TextView sessionDayTextView, String sessionId) {
+        translateSessionDay(context, sessionDayTextView, sessionId, null);
+    }
+
+    public static void translateSessionDay(Context context, TextView sessionDayTextView, String sessionId, Session session) {
         String langTags = AppCompatDelegate.getApplicationLocales().toLanguageTags();
-        if (langTags != null && langTags.toLowerCase(Locale.ROOT).startsWith("it")) {
+        boolean isItalian = langTags != null && langTags.toLowerCase(Locale.ROOT).startsWith("it");
+
+        if (session != null && session.getStartDateTime() != null) {
+            DayOfWeek dayOfWeek = session.getStartDateTime().getDayOfWeek();
+            String dayName = isItalian ? Constants.DAY_OF_WEEK_ITA.get(dayOfWeek) : Constants.DAY_OF_WEEK_ENG.get(dayOfWeek);
+            if (dayName != null) {
+                UIUtils.singleSetTextViewText(dayName, sessionDayTextView);
+                return;
+            }
+        }
+
+        if (isItalian) {
             UIUtils.singleSetTextViewText(Constants.SESSION_DAY_ITA.getOrDefault(sessionId, context.getString(R.string.unknown)), sessionDayTextView);
         } else {
             UIUtils.singleSetTextViewText(Constants.SESSION_DAY_ENG.getOrDefault(sessionId, context.getString(R.string.unknown)), sessionDayTextView);
@@ -982,9 +665,111 @@ public class UIUtils {
                 ", Total Races: " + totalRaces + ", Wins: " + totalWins + ", Podiums: " + totalPodiums);
     }
 
-    // SYSTEM_UI_FLAG_FULLSCREEN: Hide the status bar
-    // SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN: Let the layout expand into status bar
-    // SYSTEM_UI_FLAG_LAYOUT_STABLE: avoid abrupt layout changes during toggling of status and navigation bars
-    // SYSTEM_UI_FLAG_HIDE_NAVIGATION: Hide the navigation bar
-    // SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION: Let the layout expand into navigation bar
+    /**
+     * Styles a favorite driver or constructor card with:
+     * - A subtle, gentle-on-the-eyes semi-transparent team color tint as background (composited over dark surface)
+     * - A ranking button with a darker, richer tone of the team color and clear elevation shadow
+     *
+     * @param context   The context
+     * @param cardView  The outer MaterialCardView of the favorite item
+     * @param rankCard  The ranking MaterialCardView inside the card (optional)
+     * @param teamId    The team/constructor ID (e.g. "ferrari", "mclaren")
+     */
+    public static void styleFavoriteCard(Context context, MaterialCardView cardView, MaterialCardView rankCard, String teamId) {
+        if (context == null || cardView == null) return;
+        try {
+            int teamColorRes = R.color.app_primary_red;
+            if (teamId != null) {
+                String normalized = teamId.toLowerCase().trim();
+                Integer col = Constants.TEAM_COLOR.get(normalized);
+                if (col == null) {
+                    if (normalized.contains("red_bull") || normalized.contains("redbull")) {
+                        col = Constants.TEAM_COLOR.get("red_bull");
+                    } else if (normalized.contains("mclaren")) {
+                        col = Constants.TEAM_COLOR.get("mclaren");
+                    } else if (normalized.contains("ferrari")) {
+                        col = Constants.TEAM_COLOR.get("ferrari");
+                    } else if (normalized.contains("mercedes")) {
+                        col = Constants.TEAM_COLOR.get("mercedes");
+                    } else if (normalized.contains("aston")) {
+                        col = Constants.TEAM_COLOR.get("aston_martin");
+                    } else if (normalized.contains("alpine")) {
+                        col = Constants.TEAM_COLOR.get("alpine");
+                    } else if (normalized.contains("haas")) {
+                        col = Constants.TEAM_COLOR.get("haas");
+                    } else if (normalized.contains("sauber") || normalized.contains("kick")) {
+                        col = Constants.TEAM_COLOR.get("sauber");
+                    } else if (normalized.contains("williams")) {
+                        col = Constants.TEAM_COLOR.get("williams");
+                    } else if (normalized.contains("rb") || normalized.contains("racing_bulls") || normalized.contains("toro_rosso")) {
+                        col = Constants.TEAM_COLOR.get("rb");
+                    } else if (normalized.contains("audi")) {
+                        col = Constants.TEAM_COLOR.get("audi");
+                    } else if (normalized.contains("cadillac")) {
+                        col = Constants.TEAM_COLOR.get("cadillac");
+                    }
+                }
+                if (col != null) {
+                    teamColorRes = col;
+                }
+            }
+            int teamColor = ContextCompat.getColor(context, teamColorRes);
+            int darkBase = ContextCompat.getColor(context, R.color.card_surface_dark);
+
+            // Vibrant semi-transparent team color tint: ~33% alpha (84 / 255) composited over dark base
+            int softCardBg = ColorUtils.compositeColors(ColorUtils.setAlphaComponent(teamColor, 84), darkBase);
+            cardView.setCardBackgroundColor(ColorStateList.valueOf(softCardBg));
+
+            // Illuminated border in the team color to make the card edges vivid and sleek
+            cardView.setStrokeColor(ColorStateList.valueOf(ColorUtils.setAlphaComponent(teamColor, 120)));
+            cardView.setStrokeWidth((int) (context.getResources().getDisplayMetrics().density * 1.5f));
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                cardView.setOutlineSpotShadowColor(teamColor);
+                cardView.setOutlineAmbientShadowColor(ColorUtils.setAlphaComponent(teamColor, 60));
+            }
+
+            // Ensure card does not clip children so inner elevation shadows render freely
+            cardView.setClipChildren(false);
+            cardView.setClipToPadding(false);
+
+            // Ranking button: a rich, vibrant dark tone (45% black blend) with prominent elevation & colored shadow
+            if (rankCard != null) {
+                // Ensure parent containers do not clip rank card shadow
+                android.view.ViewParent p = rankCard.getParent();
+                while (p instanceof ViewGroup && p != cardView) {
+                    ((ViewGroup) p).setClipChildren(false);
+                    ((ViewGroup) p).setClipToPadding(false);
+                    p = p.getParent();
+                }
+
+                int darkRankColor = ColorUtils.blendARGB(teamColor, Color.BLACK, 0.45f);
+                rankCard.setCardBackgroundColor(ColorStateList.valueOf(darkRankColor));
+                rankCard.setCardElevation(context.getResources().getDisplayMetrics().density * 5);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    rankCard.setOutlineSpotShadowColor(Color.BLACK);
+                    rankCard.setOutlineAmbientShadowColor(ColorUtils.setAlphaComponent(teamColor, 120));
+                }
+            }
+        } catch (Exception e) {
+            Log.e("UIUtils.styleFavoriteCard", "Error styling favorite card: " + e.getMessage());
+        }
+    }
+
+    public static void styleFavoriteCard(Context context, MaterialCardView cardView, MaterialCardView rankCard, ImageView watermarkView, String teamId) {
+        styleFavoriteCard(context, cardView, rankCard, teamId);
+    }
+
+    public static void styleDriverCard(Context context, MaterialCardView cardView, int teamColorRes) {
+        if (context == null || cardView == null) return;
+        try {
+            int teamColor = ContextCompat.getColor(context, teamColorRes);
+            int darkBase = ContextCompat.getColor(context, R.color.card_surface_dark);
+            int softCardBg = ColorUtils.compositeColors(ColorUtils.setAlphaComponent(teamColor, 84), darkBase);
+            cardView.setCardBackgroundColor(ColorStateList.valueOf(softCardBg));
+            cardView.setStrokeColor(ColorStateList.valueOf(ColorUtils.setAlphaComponent(teamColor, 120)));
+        } catch (Exception e) {
+            Log.e("UIUtils.styleDriverCard", "Error styling driver card: " + e.getMessage());
+        }
+    }
 }

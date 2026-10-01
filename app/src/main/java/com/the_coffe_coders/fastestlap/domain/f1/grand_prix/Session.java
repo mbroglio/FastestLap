@@ -2,6 +2,7 @@ package com.the_coffe_coders.fastestlap.domain.f1.grand_prix;
 
 import com.the_coffe_coders.fastestlap.util.Constants;
 
+import org.threeten.bp.DayOfWeek;
 import org.threeten.bp.LocalDateTime;
 import org.threeten.bp.ZoneId;
 import org.threeten.bp.ZonedDateTime;
@@ -60,12 +61,22 @@ public abstract class Session {
         return getStartDateTime().toLocalTime().toString();
     }
 
+    public DayOfWeek getDayOfWeek() {
+        return startDateTime != null ? startDateTime.getDayOfWeek() : null;
+    }
+
     public Boolean isFinished() {
-        return this.getSessionStatus().equals(SessionStatus.FINISHED);
+        if (this.sessionStatus == null) {
+            setSessionStatus();
+        }
+        return SessionStatus.FINISHED.equals(this.sessionStatus);
     }
 
     public Boolean isUnderway() {
-        return this.getSessionStatus().equals(SessionStatus.IN_PROGRESS);
+        if (this.sessionStatus == null) {
+            setSessionStatus();
+        }
+        return SessionStatus.IN_PROGRESS.equals(this.sessionStatus);
     }
 
     public void setSessionStatus() {

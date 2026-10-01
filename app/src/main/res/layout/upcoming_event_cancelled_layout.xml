@@ -1,36 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_gravity="center"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <LinearLayout
+    <!-- Grand Prix Name (Cancelled) -->
+    <TextView
+        android:id="@+id/upcoming_gp_name_cancelled"
+        style="@style/t14BoldWhiteLineLimited"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:layout_centerInParent="true">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="@string/not_found"
+        android:textColor="@color/white" />
+
+    <!-- Cancelled Badge -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/upcoming_gp_name_cancelled"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="2dp"
+        app:cardBackgroundColor="#2A1616"
+        app:cardCornerRadius="6dp"
+        app:cardElevation="0dp"
+        app:strokeColor="@color/app_primary_red"
+        app:strokeWidth="1dp">
 
         <TextView
-            android:id="@+id/upcoming_gp_name_cancelled"
-            style="@style/t14BoldWhiteLineLimited"
+            style="@style/t12UpperCaseBoldWhiteLineLimited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/not_found"
-            android:layout_marginBottom="16dp">
+            android:paddingStart="8dp"
+            android:paddingTop="3dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="3dp"
+            android:text="@string/race_cancelled"
+            android:textColor="@color/app_primary_red" />
 
-        </TextView>
-
-        <TextView
-            style="@style/t16UpperCaseBoldWhite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/race_cancelled">
-
-        </TextView>
-
-    </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
 </RelativeLayout>

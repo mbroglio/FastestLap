@@ -4,79 +4,62 @@
     android:id="@+id/constructor_bio_table_row"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginStart="10dp"
-    android:layout_marginEnd="10dp"
-    android:orientation="vertical"
+    android:background="@color/card_surface_dark"
+    android:orientation="horizontal"
+    android:paddingStart="4dp"
+    android:paddingTop="10dp"
+    android:paddingEnd="4dp"
+    android:paddingBottom="10dp"
     tools:context=".ui.bio.ConstructorBioActivity">
 
-    <LinearLayout
-        android:id="@+id/driver_history_row"
-        android:layout_width="match_parent"
+    <TextView
+        style="@style/t10UpperCaseBoldWhiteLineLimited"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        tools:ignore="UselessParent">
+        android:layout_weight="1"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/year"
+        android:textColor="@color/timer_gray" />
 
-        <TextView
-            style="@style/t14UpperCaseBoldBlack"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_weight="2.25"
-            android:gravity="center"
-            android:maxLines="1"
-            android:text="@string/year">
+    <TextView
+        style="@style/t10UpperCaseBoldWhiteLineLimited"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/pos"
+        android:textColor="@color/timer_gray" />
 
-        </TextView>
+    <TextView
+        style="@style/t10UpperCaseBoldWhiteLineLimited"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/points_abbr"
+        android:textColor="@color/timer_gray" />
 
-        <TextView
-            style="@style/t14UpperCaseBoldBlack"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_weight="2.3"
-            android:gravity="center"
-            android:maxLines="1"
-            android:text="@string/pos">
+    <TextView
+        style="@style/t10UpperCaseBoldWhiteLineLimited"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/wins_abbr"
+        android:textColor="@color/timer_gray" />
 
-        </TextView>
-
-        <TextView
-            style="@style/t14UpperCaseBoldBlack"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_weight="2.3"
-            android:gravity="center"
-            android:maxLines="1"
-            android:text="@string/points">
-
-        </TextView>
-
-        <TextView
-            style="@style/t14UpperCaseBoldBlack"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_weight="2.2"
-            android:gravity="center"
-            android:maxLines="1"
-            android:text="@string/wins">
-
-        </TextView>
-
-        <TextView
-            style="@style/t14UpperCaseBoldBlack"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
-            android:layout_weight="2.2"
-            android:gravity="center"
-            android:maxLines="1"
-            android:text="@string/pod">
-
-        </TextView>
-
-    </LinearLayout>
+    <TextView
+        style="@style/t10UpperCaseBoldWhiteLineLimited"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:maxLines="1"
+        android:text="@string/pod"
+        android:textColor="@color/timer_gray" />
 
 </LinearLayout>

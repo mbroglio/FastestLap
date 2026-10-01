@@ -241,17 +241,24 @@ const juniorFunctions = {
                 const updates = {};
                 const basePath = `junior_categories/${seriesId}`;
                 
+                const resultsMap = {};
                 result.forEach(race => {
                     const raceResultsEntry = {
                         round: race.round,
                         circuit: race.circuit,
                         sprint: race.sprint_race,
-                        feature: race.feature_race,
                         nationFlagUrl: race.nationFlagUrl
                     };
-                    updates[`${basePath}/results/${race.round}`] = raceResultsEntry;
+                    if (race.isDouble && race.feature2_race) {
+                        raceResultsEntry.feature1 = race.feature1_race || race.feature_race;
+                        raceResultsEntry.feature2 = race.feature2_race;
+                    } else {
+                        raceResultsEntry.feature = race.feature_race;
+                    }
+                    resultsMap[race.round] = raceResultsEntry;
                     console.log(`Updating DB for Round ${race.round}...`);
                 });
+                updates[`${basePath}/results`] = resultsMap;
                 
                 await db.ref().update(updates);
                 console.log(`\n✓ Database updated with ${result.length} race results for ${seriesId}`);
@@ -334,6 +341,21 @@ const juniorFunctions = {
             await juniorLogic.processSeries(db, seriesId, url);
             console.log(`\n✓ Series ${seriesId} processed successfully`);
             return true;
+        }
+    },
+
+    scrapeNews: {
+        description: 'Scrape official news from FIA Formula 2 / Formula 3 website',
+        args: ['seriesId', 'maxPages'],
+        example: 'node test_individual_functions.js junior scrapeNews f2 1',
+        needsDb: false,
+        execute: async (seriesId = 'f2', maxPages = '1') => {
+            const pages = parseInt(maxPages) || 1;
+            console.log(`Scraping ${seriesId.toUpperCase()} news (maxPages: ${pages})...`);
+            const news = await juniorLogic.scrapeJuniorNews(seriesId, { maxPages: pages });
+            console.log(`\nArticles found: ${news?.length || 0}`);
+            console.log(JSON.stringify(news, null, 2));
+            return news;
         }
     }
 };
@@ -433,6 +455,44 @@ const f1Functions = {
             console.log('\nCircuit archive updates:');
             console.log(JSON.stringify(updates, null, 2));
             
+        }
+    },
+
+    fixCareerStats: {
+        description: 'Verify and synchronize accurate career stats (podiums, wins, gps_entered) from Jolpica',
+        args: [],
+        example: 'node test_individual_functions.js f1 fixCareerStats',
+        execute: async (db) => {
+            const fixCareerStatsModule = require('./fix_career_stats');
+            const driversSnap = await db.ref('drivers').once('value');
+            const drivers = Object.keys(driversSnap.val() || {});
+            console.log(`Checking ${drivers.length} drivers for career stats accuracy...`);
+
+            const updates = {};
+            for (const d of drivers) {
+                const cur = driversSnap.val()[d] || {};
+                console.log(`Fetching Jolpica stats for ${d}...`);
+                const stats = await fixCareerStatsModule.fetchDriverCareerStats(d);
+                console.log(`  Driver ${d}: podiums ${cur.podiums} -> ${stats.podiums}, gps_entered ${cur.gps_entered} -> ${stats.gps_entered}`);
+                updates[`drivers/${d}/podiums`] = stats.podiums;
+                updates[`drivers/${d}/gps_entered`] = stats.gps_entered;
+            }
+
+            const teamsSnap = await db.ref('teams').once('value');
+            const teams = Object.keys(teamsSnap.val() || {});
+            console.log(`Checking ${teams.length} constructors for career stats accuracy...`);
+            for (const t of teams) {
+                const cur = teamsSnap.val()[t] || {};
+                console.log(`Fetching Jolpica stats for team ${t}...`);
+                const stats = await fixCareerStatsModule.fetchConstructorCareerStats(t);
+                console.log(`  Team ${t}: podiums ${cur.podiums} -> ${stats.podiums}, wins ${cur.wins} -> ${stats.wins}, gps_entered ${cur.gps_entered} -> ${stats.gps_entered}`);
+                updates[`teams/${t}/podiums`] = stats.podiums;
+                updates[`teams/${t}/wins`] = stats.wins;
+                updates[`teams/${t}/gps_entered`] = stats.gps_entered;
+            }
+
+            await db.ref().update(updates);
+            console.log('✓ Career stats successfully repaired in database!');
             return updates;
         }
     }

@@ -27,27 +27,30 @@ public class LocalJuniorStandingsDataSource implements JuniorStandingsDataSource
 
     @Override
     public void getJuniorDriverStandings(String series, JuniorStandingsCallback callback) {
-        Log.d(TAG, "Fetching junior driver standings from local database");
-        JuniorDriverStandings result = juniorStandingsDAO.getDriverStandingsBySeries(series);
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            Log.d(TAG, "Fetching junior driver standings from local database");
+            JuniorDriverStandings result = juniorStandingsDAO.getDriverStandingsBySeries(series);
 
-        if (result != null && result.getDriverStandings() != null && !result.getDriverStandings().isEmpty()) {
-            callback.onDriverStandingsLoaded(result);
-        } else {
-            callback.onError(new Exception("No junior driver standings found in local database"));
-        }
+            if (result != null && result.getDriverStandings() != null && !result.getDriverStandings().isEmpty()) {
+                callback.onDriverStandingsLoaded(result);
+            } else {
+                callback.onError(new Exception("No junior driver standings found in local database"));
+            }
+        });
     }
 
     @Override
     public void getJuniorConstructorStandings(String series, JuniorStandingsCallback callback) {
-        Log.d(TAG, "Fetching junior constructor standings from local database");
-        JuniorConstructorStandings result = juniorStandingsDAO.getConstructorStandingsBySeries(series);
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            Log.d(TAG, "Fetching junior constructor standings from local database");
+            JuniorConstructorStandings result = juniorStandingsDAO.getConstructorStandingsBySeries(series);
 
-        if (result != null && result.getConstructorStandings() != null && !result.getConstructorStandings().isEmpty()) {
-            callback.onConstructorStandingsLoaded(result);
-        } else {
-            callback.onError(new Exception("No junior constructor standings found in local database"));
-        }
-
+            if (result != null && result.getConstructorStandings() != null && !result.getConstructorStandings().isEmpty()) {
+                callback.onConstructorStandingsLoaded(result);
+            } else {
+                callback.onError(new Exception("No junior constructor standings found in local database"));
+            }
+        });
     }
 
     public void insertJuniorDriverStandings(JuniorDriverStandings standings) {

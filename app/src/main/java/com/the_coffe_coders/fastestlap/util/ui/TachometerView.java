@@ -23,7 +23,9 @@ public class TachometerView extends View {
     private Paint labelPaint;
     private Paint dotPaint;
     private float percentage = 0f;
+    private float targetPercentage = 0f;
     private float currentPercentage = 0f; // The animated value
+    private boolean hasAnimated = false;
     private String label = "";
     private RectF arcRect;
     private int color;
@@ -86,19 +88,39 @@ public class TachometerView extends View {
     }
 
     public void setPercentage(float percentage) {
-        this.percentage = Math.min(100f, Math.max(0f, percentage));
-        animateToPercentage(this.percentage);
+        setPercentage(percentage, false);
     }
 
-    private void animateToPercentage(float targetPercentage) {
-        // Cancel any existing animation
+    public void setPercentage(float percentage, boolean animateImmediately) {
+        this.targetPercentage = Math.min(100f, Math.max(0f, percentage));
+        this.percentage = this.targetPercentage;
+        this.hasAnimated = false;
+
+        if (animateImmediately || (isShown() && getVisibility() == VISIBLE)) {
+            startAnimation();
+        } else {
+            this.currentPercentage = 0f;
+            invalidate();
+        }
+    }
+
+    public void startAnimation() {
+        if (targetPercentage <= 0f) {
+            this.currentPercentage = 0f;
+            invalidate();
+            return;
+        }
+        hasAnimated = true;
+        animateToPercentage(targetPercentage);
+    }
+
+    private void animateToPercentage(float target) {
         if (animator != null && animator.isRunning()) {
             animator.cancel();
         }
 
-        // Create animator from current percentage to target percentage
-        animator = ValueAnimator.ofFloat(currentPercentage, targetPercentage);
-        animator.setDuration(3000); // 1.5 seconds animation
+        animator = ValueAnimator.ofFloat(0f, target);
+        animator.setDuration(1800); // 1.8 seconds smooth animation when displayed
         animator.setInterpolator(new DecelerateInterpolator());
 
         animator.addUpdateListener(animation -> {
@@ -107,6 +129,22 @@ public class TachometerView extends View {
         });
 
         animator.start();
+    }
+
+    @Override
+    protected void onVisibilityChanged(@NonNull View changedView, int visibility) {
+        super.onVisibilityChanged(changedView, visibility);
+        if (visibility == VISIBLE && isShown() && !hasAnimated && targetPercentage > 0f) {
+            startAnimation();
+        }
+    }
+
+    @Override
+    protected void onWindowVisibilityChanged(int visibility) {
+        super.onWindowVisibilityChanged(visibility);
+        if (visibility == VISIBLE && isShown() && !hasAnimated && targetPercentage > 0f) {
+            startAnimation();
+        }
     }
 
     public void setLabel(String label) {

@@ -26,14 +26,16 @@ public class LocalJuniorEntryListDataSource implements JuniorEntryListDataSource
 
     @Override
     public void getJuniorEntryList(String series, JuniorEntryListCallback callback) {
-        Log.d(TAG, "Fetching junior entry list from local database");
-        JuniorEntryList entryList = juniorEntryListDAO.getBySeries(series);
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            Log.d(TAG, "Fetching junior entry list from local database");
+            JuniorEntryList entryList = juniorEntryListDAO.getBySeries(series);
 
-        if (entryList != null && entryList.getTeams() != null && !entryList.getTeams().isEmpty()) {
-            callback.onEntryListLoaded(entryList);
-        } else {
-            callback.onError(new Exception("No junior entry list found in local database"));
-        }
+            if (entryList != null && entryList.getTeams() != null && !entryList.getTeams().isEmpty()) {
+                callback.onEntryListLoaded(entryList);
+            } else {
+                callback.onError(new Exception("No junior entry list found in local database"));
+            }
+        });
     }
 
     public void insertJuniorEntryList(JuniorEntryList entryList) {

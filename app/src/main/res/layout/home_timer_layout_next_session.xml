@@ -1,142 +1,135 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/timer"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/timer_gray"
-    android:orientation="vertical">
+    app:cardBackgroundColor="@color/card_surface_elevated"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="3dp"
+    app:strokeColor="@color/subtle_white_border"
+    app:strokeWidth="1dp">
 
-    <RelativeLayout
-        android:id="@+id/next_grand_prix"
+    <com.google.android.material.imageview.ShapeableImageView
+        android:id="@+id/home_next_gp_background_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.28"
+        android:importantForAccessibility="no"
+        android:scaleType="centerCrop"
+        app:shapeAppearanceOverlay="@style/ShapeAppearance.FastestLap.RoundedCardBackground" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="5dp"
-        android:orientation="horizontal">
+        android:paddingStart="14dp"
+        android:paddingTop="12dp"
+        android:paddingEnd="14dp"
+        android:paddingBottom="12dp">
 
-        <TextView
-            android:id="@+id/text_1"
-            style="@style/t12RegularBlackLineLimited"
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_split"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_marginStart="10dp"
-            android:text="@string/next_event">
-
-        </TextView>
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.30" />
 
         <TextView
             android:id="@+id/home_next_gp_name"
-            style="@style/t14BoldBlackLineLimited"
-            android:layout_width="match_parent"
+            style="@style/t14BoldWhiteLineLimited"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="10dp"
-            android:layout_toEndOf="@+id/text_1"
-            android:gravity="center">
+            android:gravity="center"
+            android:maxLines="1"
+            app:layout_constraintEnd_toEndOf="@id/timer_countdown_frame"
+            app:layout_constraintStart_toStartOf="@id/timer_countdown_frame"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        </TextView>
+        <TextView
+            android:id="@+id/text_1"
+            style="@style/t12RegularWhiteLineLimited"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/next_event"
+            app:layout_constraintBottom_toBottomOf="@id/home_next_gp_name"
+            app:layout_constraintEnd_toEndOf="@id/home_next_gp_flag"
+            app:layout_constraintStart_toStartOf="@id/home_next_gp_flag"
+            app:layout_constraintTop_toTopOf="@id/home_next_gp_name" />
 
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/timer_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/next_grand_prix"
-        android:layout_centerInParent="true"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="5dp"
-        android:baselineAligned="false"
-        android:orientation="horizontal">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="0.7">
-
-            <ImageView
-                android:id="@+id/home_next_gp_flag"
-                android:layout_width="55dp"
-                android:layout_height="40dp"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center"
-                android:importantForAccessibility="no">
-
-            </ImageView>
-
-        </RelativeLayout>
-
-        <LinearLayout
-            android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="16dp"
-            android:background="@color/black"
-            android:gravity="center_vertical">
-
-        </LinearLayout>
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/home_next_gp_flag"
+            android:layout_width="54dp"
+            android:layout_height="36dp"
+            android:importantForAccessibility="no"
+            android:scaleType="centerCrop"
+            app:layout_constraintBottom_toBottomOf="@id/timer_countdown_frame"
+            app:layout_constraintEnd_toStartOf="@id/guideline_split"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/timer_countdown_frame"
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.FastestLap.RoundedFlag"
+            app:strokeColor="@color/subtle_white_border"
+            app:strokeWidth="1dp" />
 
         <FrameLayout
-            android:layout_width="match_parent"
+            android:id="@+id/timer_countdown_frame"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/medium_margin"
-            android:layout_weight="0.3">
+            android:layout_marginTop="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline_split"
+            app:layout_constraintTop_toBottomOf="@id/home_next_gp_name">
 
             <include
                 android:id="@+id/timer_frame"
-                layout="@layout/timer" />
+                layout="@layout/home_timer_countdown" />
 
         </FrameLayout>
 
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/next_session_type"
-        style="@style/t12BoldBlackLineLimited"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/timer_layout"
-        android:layout_centerInParent="true"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:text="@string/not_found">
-
-    </TextView>
-
-    <LinearLayout
-        android:id="@+id/timer_live_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="15dp"
-        android:layout_below="@id/timer_layout"
-        android:layout_alignParentEnd="true"
-        android:layout_marginTop="5dp"
-        android:visibility="visible"
-        tools:ignore="UseCompoundDrawables">
-
         <TextView
-            android:id="@+id/live_now"
-            style="@style/t12UpperCaseBoldBlackLineLimited"
+            android:id="@+id/next_session_type"
+            style="@style/t12BoldWhiteLineLimited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/live">
+            android:layout_marginTop="8dp"
+            android:text="@string/not_found"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/timer_countdown_frame" />
 
-        </TextView>
-
-        <ImageView
-            android:id="@+id/live_icon"
+        <LinearLayout
+            android:id="@+id/timer_live_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:importantForAccessibility="no"
-            app:srcCompat="@drawable/dot_inside_a_circle_red">
+            android:gravity="center_vertical"
+            android:visibility="visible"
+            tools:ignore="UseCompoundDrawables"
+            app:layout_constraintBottom_toBottomOf="@id/next_session_type"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/next_session_type">
 
-        </ImageView>
+            <TextView
+                android:id="@+id/live_now"
+                style="@style/t12UpperCaseBoldBlackLineLimited"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/live"
+                android:textColor="@color/app_primary_red" />
 
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/live_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="2dp"
+                android:importantForAccessibility="no"
+                app:srcCompat="@drawable/dot_inside_a_circle_red" />
 
-</RelativeLayout>
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</com.google.android.material.card.MaterialCardView>

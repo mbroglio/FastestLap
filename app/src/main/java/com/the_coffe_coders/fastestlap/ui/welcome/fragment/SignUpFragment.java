@@ -27,8 +27,8 @@ import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModel;
 import com.the_coffe_coders.fastestlap.ui.welcome.viewmodel.UserViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.Constants;
-import com.the_coffe_coders.fastestlap.util.ServiceLocator;
-import com.the_coffe_coders.fastestlap.util.SharedPreferencesUtils;
+import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
+import com.the_coffe_coders.fastestlap.util.service.SharedPreferencesUtils;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 
 import org.apache.commons.validator.routines.EmailValidator;

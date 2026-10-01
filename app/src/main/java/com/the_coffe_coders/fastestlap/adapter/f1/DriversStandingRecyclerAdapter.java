@@ -1,7 +1,7 @@
 package com.the_coffe_coders.fastestlap.adapter.f1;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.content.res.ColorStateList;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +17,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
@@ -113,24 +114,28 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
                             element.getPosition(), //if false
                             holder.driverPosition);
 
-                    if (driverId != null) {
-                        if (currentDriverId.equals(driverId)) {
-                            UIUtils.animateCardBackgroundColor(context, holder.driverCard.findViewById(R.id.driver_card_view), R.color.yellow, Color.TRANSPARENT, 1000, 10);
-                        }
-                    }
+                    String teamId = driver.getTeam_id();
+                    Integer teamColorRes = teamId != null ? Constants.TEAM_COLOR.get(teamId) : null;
+                    int strokeColor = ContextCompat.getColor(context, teamColorRes != null ? teamColorRes : R.color.subtle_white_border);
+                    int posTextColor = ContextCompat.getColor(context, teamColorRes != null ? teamColorRes : R.color.white);
+                    holder.driverCard.setStrokeColor(strokeColor);
+                    holder.driverPosition.setTextColor(posTextColor);
+
+                    ColorStateList teamColorStateList = ColorStateList.valueOf(strokeColor);
+                    holder.driverImage.setStrokeColor(teamColorStateList);
 
                     holder.driverCard.setOnClickListener(v -> goToBioPage(position));
                     Log.i("DriversStanding", driver.getDriverId() + " driver.getTeam_id()");
 
-                    if (driver.getTeam_id() != null) {
+                    if (teamId != null) {
                         try {
-                            holder.driverCardInnerLayout.setBackground(AppCompatResources.getDrawable(context, Constants.TEAM_GRADIENT_COLOR.get(driver.getTeam_id())));
+                            holder.driverCardInnerLayout.setBackground(AppCompatResources.getDrawable(context, Constants.TEAM_GRADIENT_COLOR.get(teamId)));
                         } catch (Exception e) {
-                            holder.driverCardInnerLayout.setBackground(AppCompatResources.getDrawable(context, R.color.timer_gray));
+                            holder.driverCardInnerLayout.setBackground(AppCompatResources.getDrawable(context, R.color.card_surface_elevated));
                             holder.driverTeamImage.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.f1_car_icon_filled));
                         }
                     } else {
-                        holder.driverCardInnerLayout.setBackground(AppCompatResources.getDrawable(context, R.color.timer_gray));
+                        holder.driverCardInnerLayout.setBackground(AppCompatResources.getDrawable(context, R.color.card_surface_elevated));
                         holder.driverTeamImage.setImageDrawable(AppCompatResources.getDrawable(context, R.drawable.f1_car_icon_filled));
                     }
 
@@ -161,6 +166,10 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
     private void showDriverNotFound(DriverViewHolder holder, String driverId) {
         holder.driverCardInnerLayout.setVisibility(View.INVISIBLE);
         holder.driverNotFound.setVisibility(View.VISIBLE);
+        int defaultStroke = ContextCompat.getColor(context, R.color.subtle_white_border);
+        holder.driverCard.setStrokeColor(defaultStroke);
+        ColorStateList defaultStrokeList = ColorStateList.valueOf(defaultStroke);
+        holder.driverImage.setStrokeColor(defaultStrokeList);
         Log.i("DriversStandingAdapter", "Driver not found id test: " + driverId + " -> " + driverId.contains("_"));
 
         if (driverId != null) {
@@ -309,7 +318,7 @@ public class DriversStandingRecyclerAdapter extends RecyclerView.Adapter<Drivers
         final TextView driverPoints;
         final TextView driverPosition;
         final TextView driverNotFound;
-        final ImageView driverImage;
+        final ShapeableImageView driverImage;
         final ImageView driverTeamImage;
         final RelativeLayout driverCardInnerLayout;
 

@@ -5,13 +5,12 @@
     android:layout_height="match_parent">
 
     <TextView
-        style="@style/t25UpperCaseBoldBlack"
+        style="@style/t18UpperCaseBoldWhite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:gravity="center"
-        android:text="@string/race_cancelled">
-
-    </TextView>
+        android:textColor="@color/app_primary_red"
+        android:text="@string/race_cancelled" />
 
 </RelativeLayout>

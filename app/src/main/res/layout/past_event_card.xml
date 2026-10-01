@@ -1,228 +1,153 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/past_event_card_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/medium_margin"
-    android:layout_marginTop="8dp"
+    android:layout_marginTop="6dp"
     android:layout_marginEnd="@dimen/medium_margin"
-    android:layout_marginBottom="8dp"
-    app:cardBackgroundColor="@color/grey_card"
-    app:strokeColor="@color/black"
-    app:strokeWidth="3dp">
+    android:layout_marginBottom="6dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardBackgroundColor="@color/card_surface_elevated"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="3dp"
+    app:rippleColor="#20FFFFFF"
+    app:strokeColor="@color/subtle_white_border"
+    app:strokeWidth="1dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="5dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="8dp"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="12dp">
 
+        <!-- Left Column: Track Layout & Date -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="88dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
+            android:gravity="center_horizontal"
             android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/past_date"
-                style="@style/t12RegularWhiteLineLimited"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/not_found">
-
-            </TextView>
-
-            <TextView
-                android:id="@+id/past_month"
-                style="@style/t14BoldWhiteLineLimited"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/not_found">
-
-            </TextView>
 
             <ImageView
                 android:id="@+id/past_track_outline"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_gravity="center"
-                android:importantForAccessibility="no">
+                android:layout_width="74dp"
+                android:layout_height="62dp"
+                android:importantForAccessibility="no"
+                android:scaleType="fitCenter" />
 
-            </ImageView>
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/past_date"
+                    style="@style/t16BoldWhite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/not_found" />
+
+                <TextView
+                    android:id="@+id/past_month"
+                    style="@style/t12BoldWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:text="@string/not_found" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="2dp"
+        <!-- Vertical Subtle Divider -->
+        <View
+            android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:background="@color/white">
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="12dp"
+            android:layout_marginBottom="4dp"
+            android:background="@color/subtle_white_border" />
 
-        </LinearLayout>
-
+        <!-- Right Column: Event Details & Podium / Pending -->
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginStart="5dp">
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
 
+            <!-- Round Tag -->
             <TextView
                 android:id="@+id/past_round_number"
                 style="@style/t10UpperCaseBoldWhiteLineLimited"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
-                android:layout_centerInParent="true"
-                android:text="@string/not_found">
+                android:text="@string/not_found"
+                android:textColor="@color/app_primary_red" />
 
-            </TextView>
-
+            <!-- Grand Prix Name -->
             <TextView
                 android:id="@+id/past_gp_name"
                 style="@style/t14BoldWhiteLineLimited"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/past_round_number"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="3dp"
-                android:text="@string/not_found">
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@id/past_event_card_arrow"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="6dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/not_found"
+                android:textColor="@color/white" />
 
-            </TextView>
-
-            <LinearLayout
+            <include
                 android:id="@+id/race_podium"
+                layout="@layout/race_result"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/past_gp_name"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@id/past_event_card_arrow"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="6dp"
+                android:visibility="visible"/>
+            
+            <!-- Pending Results Fallback -->
+            <TextView
+                android:id="@+id/pending_results_text"
+                style="@style/t12UpperCaseBoldWhiteLineLimited"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/past_gp_name"
                 android:layout_alignParentStart="true"
-                android:layout_centerInParent="true"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="10dp"
-                android:layout_toStartOf="@id/past_event_card_arrow"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/t12BoldWhiteLineLimited"
-                        android:layout_width="10dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/_1_numeric">
-
-                    </TextView>
-
-                    <TextView
-                        android:id="@+id/past_first_driver"
-                        style="@style/t12RegularWhiteLineLimited"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:text="@string/not_found">
-
-                    </TextView>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/t12BoldWhiteLineLimited"
-                        android:layout_width="10dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/_2_numeric">
-
-                    </TextView>
-
-                    <TextView
-                        android:id="@+id/past_second_driver"
-                        style="@style/t12RegularWhiteLineLimited"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:text="@string/not_found">
-
-                    </TextView>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        style="@style/t12BoldWhiteLineLimited"
-                        android:layout_width="10dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/_3_numeric">
-
-                    </TextView>
-
-                    <TextView
-                        android:id="@+id/past_third_driver"
-                        style="@style/t12RegularWhiteLineLimited"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="5dp"
-                        android:text="@string/not_found">
-
-                    </TextView>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <TextView
-                android:id="@+id/pending_results_text"
-                style="@style/t14UpperCaseBoldWhite"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/past_gp_name"
-                android:layout_centerInParent="true"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="8dp"
                 android:text="@string/pending_results"
-                android:visibility="gone">
+                android:textColor="@color/timer_gray"
+                android:visibility="gone" />
 
-            </TextView>
-
+            <!-- Navigation Indicator -->
             <ImageView
                 android:id="@+id/past_event_card_arrow"
-                android:layout_width="@dimen/icon_size"
-                android:layout_height="@dimen/icon_size"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginEnd="5dp"
-                android:layout_marginBottom="5dp"
+                android:layout_marginBottom="2dp"
                 android:importantForAccessibility="no"
-                android:visibility="visible"
-                app:srcCompat="@drawable/play_icon_white">
-
-            </ImageView>
+                app:srcCompat="@drawable/play_icon_white"
+                app:tint="@color/timer_gray" />
 
         </RelativeLayout>
 
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>
-

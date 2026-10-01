@@ -1,7 +1,7 @@
 package com.the_coffe_coders.fastestlap.adapter.f1;
 
 import android.content.Context;
-import android.graphics.Color;
+import android.content.res.ColorStateList;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +17,7 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.imageview.ShapeableImageView;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
@@ -105,12 +106,22 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                 Constructor constructor = ((Result.ConstructorSuccess) result).getData();
                 element.setConstructor(constructor);
 
+                Integer teamColorRes = Constants.TEAM_COLOR.get(currentConstructorId);
+                int strokeColor = ContextCompat.getColor(context, teamColorRes != null ? teamColorRes : R.color.subtle_white_border);
+                int posTextColor = ContextCompat.getColor(context, teamColorRes != null ? teamColorRes : R.color.white);
+                holder.constructorCard.setStrokeColor(strokeColor);
+                holder.constructorPosition.setTextColor(posTextColor);
+
+                ColorStateList teamColorStateList = ColorStateList.valueOf(strokeColor);
+                holder.driverOneImage.setStrokeColor(teamColorStateList);
+                holder.driverTwoImage.setStrokeColor(teamColorStateList);
+
                 try {
                     holder.constructorCardInnerLayout.setBackground(AppCompatResources.getDrawable(context,
                             Objects.requireNonNull(Constants.TEAM_GRADIENT_COLOR.get(currentConstructorId))));
                 } catch (Exception e) {
                     holder.constructorCardInnerLayout.setBackground(
-                            AppCompatResources.getDrawable(context, R.color.timer_gray));
+                            AppCompatResources.getDrawable(context, R.color.card_surface_elevated));
                 }
 
                 UIUtils.setTextViewTextWithCondition(element.getPosition() == null,
@@ -122,15 +133,10 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
                         new String[]{constructor.getName(), element.getPoints()},
                         new TextView[]{holder.constructorName, holder.constructorPoints});
 
-                if (constructorId != null && currentConstructorId.equals(constructorId)) {
-                    UIUtils.animateCardBackgroundColor(context, holder.constructorCard,
-                            R.color.yellow, Color.TRANSPARENT, 1000, 10);
-                }
-
                 holder.constructorCard.setOnClickListener(v -> goToBioPage(position));
 
                 UIUtils.loadImagesInParallel(context,
-                        new String[]{constructor.getCar_pic_url(), constructor.getTeam_logo_url()},
+                        new String[]{constructor.getCar_pic_url(), constructor.getTeam_logo_minimal_url()},
                         new ImageView[]{holder.constructorCarImage, holder.constructorLogo},
                         () -> {
                             loadingScreen.updateProgress();
@@ -334,6 +340,11 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
     private void showConstructorNotFound(ConstructorViewHolder holder, String constructorId) {
         holder.constructorCardInnerLayout.setVisibility(View.INVISIBLE);
         holder.constructorNotFound.setVisibility(View.VISIBLE);
+        int defaultStroke = ContextCompat.getColor(context, R.color.subtle_white_border);
+        holder.constructorCard.setStrokeColor(defaultStroke);
+        ColorStateList defaultStrokeList = ColorStateList.valueOf(defaultStroke);
+        holder.driverOneImage.setStrokeColor(defaultStrokeList);
+        holder.driverTwoImage.setStrokeColor(defaultStrokeList);
         Log.i("ConstructorsStandingAdapter", "Constructor not found id test: " + constructorId + " -> " + constructorId.contains("_"));
 
         if (constructorId != null) {
@@ -368,8 +379,8 @@ public class ConstructorStandingsRecyclerAdapter extends RecyclerView.Adapter<Co
         final TextView constructorNotFound;
         final ImageView constructorLogo;
         final ImageView constructorCarImage;
-        final ImageView driverOneImage;
-        final ImageView driverTwoImage;
+        final ShapeableImageView driverOneImage;
+        final ShapeableImageView driverTwoImage;
         final LinearLayout constructorCardInnerLayout;
         final MaterialCardView constructorCard;
 

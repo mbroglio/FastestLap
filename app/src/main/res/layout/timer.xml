@@ -12,26 +12,23 @@
         android:orientation="vertical">
 
         <TextView
-            style="@style/t14UpperCaseRegularBlack"
+            style="@style/t14UpperCaseRegularWhite"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
+            android:layout_marginEnd="4dp"
             android:gravity="center"
             android:maxLines="1"
-            android:text="@string/days">
-
-        </TextView>
+            android:textColor="@color/timer_gray"
+            android:text="@string/days" />
 
         <TextView
             android:id="@+id/next_days_counter"
-            style="@style/timer32BoldBlackStandard"
+            style="@style/timer32BoldWhiteStandard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="5dp"
+            android:layout_marginEnd="4dp"
             android:gravity="center"
-            android:text="@string/base_countdown">
-
-        </TextView>
+            android:text="@string/base_countdown" />
 
     </LinearLayout>
 
@@ -42,28 +39,25 @@
         android:orientation="vertical">
 
         <TextView
-            style="@style/t14UpperCaseRegularBlack"
+            style="@style/t14UpperCaseRegularWhite"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             android:gravity="center"
             android:maxLines="1"
-            android:text="@string/hours_abbr">
-
-        </TextView>
+            android:textColor="@color/timer_gray"
+            android:text="@string/hours_abbr" />
 
         <TextView
             android:id="@+id/next_hours_counter"
-            style="@style/timer32BoldBlackStandard"
+            style="@style/timer32BoldWhiteStandard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             android:gravity="center"
-            android:text="@string/base_countdown">
-
-        </TextView>
+            android:text="@string/base_countdown" />
 
     </LinearLayout>
 
@@ -74,28 +68,25 @@
         android:orientation="vertical">
 
         <TextView
-            style="@style/t14UpperCaseRegularBlack"
+            style="@style/t14UpperCaseRegularWhite"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             android:gravity="center"
             android:maxLines="1"
-            android:text="@string/minutes_abbr">
-
-        </TextView>
+            android:textColor="@color/timer_gray"
+            android:text="@string/minutes_abbr" />
 
         <TextView
             android:id="@+id/next_minutes_counter"
-            style="@style/timer32BoldBlackStandard"
+            style="@style/timer32BoldWhiteStandard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             android:gravity="center"
-            android:text="@string/base_countdown">
-
-        </TextView>
+            android:text="@string/base_countdown" />
 
     </LinearLayout>
 
@@ -106,27 +97,24 @@
         android:orientation="vertical">
 
         <TextView
-            style="@style/t14UpperCaseRegularBlack"
+            style="@style/t14UpperCaseRegularWhite"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
+            android:layout_marginStart="4dp"
             android:gravity="center"
             android:maxLines="1"
-            android:text="@string/seconds_abbr">
-
-        </TextView>
+            android:textColor="@color/timer_gray"
+            android:text="@string/seconds_abbr" />
 
         <TextView
             android:id="@+id/next_seconds_counter"
-            style="@style/timer32BoldBlackStandard"
+            style="@style/timer32BoldWhiteStandard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_marginEnd="5dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
             android:gravity="center"
-            android:text="@string/base_countdown">
-
-        </TextView>
+            android:text="@string/base_countdown" />
 
     </LinearLayout>
 

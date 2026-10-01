@@ -25,14 +25,16 @@ public class LocalJuniorCalendarDataSource implements JuniorCalendarDataSource {
 
     @Override
     public void getJuniorCalendar(String series, JuniorCalendarCallback callback) {
-        Log.d(TAG, "Fetching junior calendar from local database");
-        JuniorCalendar calendar = juniorCalendarDAO.getBySeries(series);
+        AppRoomDatabase.databaseWriteExecutor.execute(() -> {
+            Log.d(TAG, "Fetching junior calendar from local database");
+            JuniorCalendar calendar = juniorCalendarDAO.getBySeries(series);
 
-        if (calendar != null && calendar.getEvents() != null && !calendar.getEvents().isEmpty()) {
-            callback.onCalendarLoaded(calendar);
-        } else {
-            callback.onError(new Exception("No junior calendar found in local database"));
-        }
+            if (calendar != null && calendar.getEvents() != null && !calendar.getEvents().isEmpty()) {
+                callback.onCalendarLoaded(calendar);
+            } else {
+                callback.onError(new Exception("No junior calendar found in local database"));
+            }
+        });
     }
 
     public void insertJuniorCalendar(JuniorCalendar calendar) {
