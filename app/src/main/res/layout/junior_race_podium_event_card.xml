@@ -1,90 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:gravity="center"
-    android:orientation="vertical"
-    android:paddingStart="4dp"
-    android:paddingTop="4dp"
-    android:paddingEnd="4dp"
-    android:paddingBottom="4dp">
+    android:clickable="true"
+    android:focusable="true"
+    android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/race_podium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_below="@id/race_text"
+        android:layout_centerInParent="true"
+        android:orientation="vertical">
 
-        <TextView
-            style="@style/t12BoldWhiteLineLimited"
-            android:layout_width="14dp"
+        <!-- 1st Place -->
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/_1_numeric"
-            android:textColor="@color/yellow" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/first_driver"
-            style="@style/t12RegularWhiteLineLimited"
-            android:layout_width="0dp"
+            <TextView
+                style="@style/t12BoldWhiteLineLimited"
+                android:layout_width="14dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/_1_numeric"
+                android:textColor="@color/yellow" />
+
+            <TextView
+                android:id="@+id/first_driver"
+                style="@style/t12BoldWhiteLineLimited"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="@string/not_found" />
+
+        </LinearLayout>
+
+        <!-- 2nd Place -->
+        <LinearLayout
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_weight="1"
-            android:text="@string/not_found" />
+            android:layout_marginTop="6dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/t12BoldWhiteLineLimited"
+                android:layout_width="14dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/_2_numeric"
+                android:textColor="@color/silver" />
+
+            <TextView
+                android:id="@+id/second_driver"
+                style="@style/t12BoldWhiteLineLimited"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="@string/not_found" />
+
+        </LinearLayout>
+
+        <!-- 3rd Place -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/t12BoldWhiteLineLimited"
+                android:layout_width="14dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/_3_numeric"
+                android:textColor="@color/bronze" />
+
+            <TextView
+                android:id="@+id/third_driver"
+                style="@style/t12BoldWhiteLineLimited"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="@string/not_found" />
+
+        </LinearLayout>
 
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            style="@style/t12BoldWhiteLineLimited"
-            android:layout_width="14dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/_2_numeric"
-            android:textColor="@color/silver" />
-
-        <TextView
-            android:id="@+id/second_driver"
-            style="@style/t12RegularWhiteLineLimited"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_weight="1"
-            android:text="@string/not_found" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="6dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <TextView
-            style="@style/t12BoldWhiteLineLimited"
-            android:layout_width="14dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="@string/_3_numeric"
-            android:textColor="@color/bronze" />
-
-        <TextView
-            android:id="@+id/third_driver"
-            style="@style/t12RegularWhiteLineLimited"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:layout_weight="1"
-            android:text="@string/not_found" />
-
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>

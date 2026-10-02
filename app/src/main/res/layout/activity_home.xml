@@ -49,10 +49,16 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/bottom_nav_height"
         android:background="@color/app_primary_red"
+        android:elevation="5dp"
+        android:outlineAmbientShadowColor="@color/ripple_color"
         app:elevation="8dp"
         app:itemIconTint="@color/screen_background_color"
-        app:itemRippleColor="#33FFFFFF"
-        app:labelVisibilityMode="unlabeled"
+        app:itemRippleColor="@color/ripple_color"
+        app:itemTextAppearanceActive="@style/t10UpperCaseBoldBlackLineLimited"
+        app:itemPaddingBottom="0dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        app:labelVisibilityMode="selected"
         app:layout_constraintBottom_toBottomOf="parent"
         app:menu="@menu/nav_bar_menu">
 
