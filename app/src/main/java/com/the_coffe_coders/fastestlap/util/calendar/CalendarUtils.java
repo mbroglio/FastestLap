@@ -9,14 +9,17 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Environment;
-import android.provider.CalendarContract;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.FileProvider;
+import androidx.core.os.LocaleListCompat;
 
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Practice;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Session;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.WeeklyRace;
+import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
 import com.the_coffe_coders.fastestlap.util.Constants;
 
 import org.threeten.bp.ZoneId;
@@ -28,15 +31,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.time.Instant;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
 /**
  * Utility class to export Grand Prix sessions into the device calendar app.
- * Uses CalendarContract.Events INSERT intents — no WRITE_CALENDAR permission required.
+ * Generates an RFC 5545 standard .ics (iCalendar) package containing all weekend
+ * sessions and opens it with system calendar applications (e.g. Google Calendar)
+ * allowing one-click bulk import without requiring WRITE_CALENDAR runtime permissions.
  */
 public class CalendarUtils {
 
@@ -45,21 +49,16 @@ public class CalendarUtils {
     }
 
     /**
-     * Opens the system calendar app to insert all sessions of a WeeklyRace.
-     * Each session (FP1, FP2, FP3, Qualifying, Race, etc.) is inserted as a separate event.
+     * Exports all upcoming sessions of a single race weekend into a single .ics file
+     * and opens it in the device calendar app (e.g. Google Calendar) so the user can
+     * import all events at once with a single confirmation.
      *
      * @param context    The Android context.
-     * @param weeklyRace The race weekend whose sessions will be inserted.
+     * @param weeklyRace The race weekend whose sessions will be exported.
      */
     public static void addWeekendToCalendar(Context context, WeeklyRace weeklyRace) {
-        List<Session> sessions = weeklyRace.getSessions();
-        Log.i("Calendar Utils", "sessions:\n" + sessions);
-        for (Session session : sessions) {
-            if (session != null) {
-                String sessionLabel = buildSessionLabel(context, session, weeklyRace.getRaceName());
-                insertCalendarEvent(context, sessionLabel, weeklyRace, session);
-            }
-        }
+        List<WeeklyRace> singleRaceList = Collections.singletonList(weeklyRace);
+        addRacesToCalendar(context, singleRaceList);
     }
 
     public static void addRacesToCalendar(Context context, List<WeeklyRace> weeklyRaces) {
@@ -72,8 +71,8 @@ public class CalendarUtils {
         File downloadsDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
         if (downloadsDir == null) downloadsDir = context.getCacheDir();
 
-        String fileName = "fastestlap_events_" + Date.from(Instant.ofEpochMilli(System.currentTimeMillis())) + ".ics";
-        File icsFile = new File(downloadsDir, fileName);
+        // Build a clean, human-readable filename based on the first race name (or timestamp fallback)
+        File icsFile = getIcsFile(weeklyRaces, downloadsDir);
 
         try (FileOutputStream fos = new FileOutputStream(icsFile)) {
             fos.write(ics.getBytes(StandardCharsets.UTF_8));
@@ -150,6 +149,26 @@ public class CalendarUtils {
         }
     }
 
+    @NonNull
+    private static File getIcsFile(List<WeeklyRace> weeklyRaces, File downloadsDir) {
+        String baseName = "fastestlap_calendar";
+        if (!weeklyRaces.isEmpty() && weeklyRaces.get(0) != null && weeklyRaces.get(0).getRaceName() != null) {
+            if (weeklyRaces.size() == 1) {
+                // Single weekend: use the race name (e.g. "fastestlap_bahrain_gp.ics")
+                baseName = "fastestlap_" + weeklyRaces.get(0).getRaceName()
+                        .toLowerCase(Locale.ROOT)
+                        .replaceAll("[^a-z0-9]+", "_")
+                        .replaceAll("_+$", "");
+            }
+            // Multiple weekends: keep generic name
+        }
+        String fileName = baseName + ".ics";
+        return new File(downloadsDir, fileName);
+    }
+
+    /**
+     * Builds an iCalendar (.ics) file content representing all sessions of the given races.
+     */
     /**
      * Builds an iCalendar (.ics) file content representing all sessions of the given races.
      */
@@ -161,13 +180,20 @@ public class CalendarUtils {
         sb.append("PRODID:-//FastestLap//EN\r\n");
         sb.append("CALSCALE:GREGORIAN\r\n");
         sb.append("METHOD:PUBLISH\r\n");
+        sb.append("X-WR-CALNAME:FastestLap\r\n");
+        sb.append("X-WR-CALDESC:Calendario Gran Premi e Sessioni F1 FastestLap\r\n");
+        sb.append("X-WR-TIMEZONE:UTC\r\n");
+
+        boolean isIt = isItalianLanguage(context);
 
         for (WeeklyRace weeklyRace : weeklyRaces) {
             if (weeklyRace == null) continue;
             List<Session> sessions = weeklyRace.getSessions();
             if (sessions == null) continue;
             for (Session session : sessions) {
-                if (session == null) continue;
+                if (session == null || session.getStartDateTime() == null) continue;
+                // Skip sessions that have already concluded
+                if (session.isFinished()) continue;
 
                 ZonedDateTime startZdt = session.getStartDateTime().atZone(ZoneId.systemDefault()).withZoneSameInstant(ZoneOffset.UTC);
 
@@ -180,16 +206,12 @@ public class CalendarUtils {
 
                 String uid = UUID.randomUUID().toString() + "@fastestlap";
                 String summary = buildSessionLabel(context, session, weeklyRace.getRaceName());
+                String location = buildLocation(weeklyRace);
 
-                String description = "Round " + weeklyRace.getRound()
-                        + " · " + weeklyRace.getSeason()
-                        + " · " + weeklyRace.getRaceName();
-
-                String location = "";
-                if (weeklyRace.getTrack() != null && weeklyRace.getTrack().getLocation() != null) {
-                    location = weeklyRace.getTrack().getLocation().getLocality()
-                            + ", " + weeklyRace.getTrack().getLocation().getCountry();
-                }
+                String description = "FastestLap · " + (weeklyRace.getRaceName() != null ? weeklyRace.getRaceName() : "Formula 1")
+                        + (isIt ? "\nStagione: " : "\nSeason: ") + weeklyRace.getSeason()
+                        + " · Round " + weeklyRace.getRound()
+                        + (!location.isEmpty() ? ((isIt ? "\nCircuito: " : "\nCircuit: ") + location) : "");
 
                 sb.append("BEGIN:VEVENT\r\n");
                 sb.append("UID:").append(uid).append("\r\n");
@@ -198,14 +220,85 @@ public class CalendarUtils {
                 sb.append("DTEND:").append(endZdt.format(fmt)).append("\r\n");
                 sb.append("SUMMARY:").append(escapeText(summary)).append("\r\n");
                 sb.append("DESCRIPTION:").append(escapeText(description)).append("\r\n");
-                if (!location.isEmpty())
+                if (!location.isEmpty()) {
                     sb.append("LOCATION:").append(escapeText(location)).append("\r\n");
+                }
+                sb.append("STATUS:CONFIRMED\r\n");
+                sb.append("SEQUENCE:0\r\n");
                 sb.append("END:VEVENT\r\n");
             }
         }
 
         sb.append("END:VCALENDAR\r\n");
         return sb.toString();
+    }
+
+    /**
+     * Builds a clean, complete location string avoiding null values or "Singapore, null".
+     */
+    private static String buildLocation(WeeklyRace weeklyRace) {
+        if (weeklyRace == null || weeklyRace.getTrack() == null) return "";
+        Track track = weeklyRace.getTrack();
+
+        String circuitName = track.getTrackName();
+        String locality = null;
+        String country = null;
+
+        if (track.getLocation() != null) {
+            locality = track.getLocation().getLocality();
+            country = track.getLocation().getCountry();
+        }
+        if ((country == null || country.trim().isEmpty() || country.equalsIgnoreCase("null"))
+                && track.getCountry() != null && !track.getCountry().trim().isEmpty() && !track.getCountry().equalsIgnoreCase("null")) {
+            country = track.getCountry();
+        }
+
+        StringBuilder sb = new StringBuilder();
+        if (circuitName != null && !circuitName.trim().isEmpty() && !circuitName.equalsIgnoreCase("null")) {
+            sb.append(circuitName.trim());
+        }
+
+        if (locality != null && !locality.trim().isEmpty() && !locality.equalsIgnoreCase("null")) {
+            String cleanLoc = locality.trim();
+            if (!sb.toString().toLowerCase(Locale.ROOT).contains(cleanLoc.toLowerCase(Locale.ROOT))) {
+                if (sb.length() > 0) sb.append(", ");
+                sb.append(cleanLoc);
+            }
+        }
+
+        if (country != null && !country.trim().isEmpty() && !country.equalsIgnoreCase("null")) {
+            String cleanCountry = country.trim();
+            if (!sb.toString().toLowerCase(Locale.ROOT).contains(cleanCountry.toLowerCase(Locale.ROOT))) {
+                if (sb.length() > 0) sb.append(", ");
+                sb.append(cleanCountry);
+            }
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Checks if current active language (in app or system) is Italian.
+     */
+    private static boolean isItalianLanguage(Context context) {
+        try {
+            LocaleListCompat appLocales = AppCompatDelegate.getApplicationLocales();
+            String langTag = appLocales.toLanguageTags();
+            if (langTag != null && !langTag.isEmpty()) {
+                return langTag.toLowerCase(Locale.ROOT).startsWith("it");
+            }
+        } catch (Exception ignored) {}
+
+        if (context != null) {
+            try {
+                String sysLang = context.getResources().getConfiguration().getLocales().get(0).getLanguage();
+                if (sysLang != null && sysLang.toLowerCase(Locale.ROOT).startsWith("it")) {
+                    return true;
+                }
+            } catch (Exception ignored) {}
+        }
+
+        return Locale.getDefault().getLanguage().toLowerCase(Locale.ROOT).startsWith("it");
     }
 
     /**
@@ -221,21 +314,20 @@ public class CalendarUtils {
 
     /**
      * Builds a human-readable title for the calendar event.
-     * Uses the session name maps from Constants, respecting the device locale.
-     * e.g. "Monaco GP – Free Practice 1" or "Monaco GP – Prova Libera 1"
+     * Uses the session name maps from Constants, respecting the active app/device locale.
+     * e.g. "Singapore Grand Prix - Prova Libera 1"
      */
     private static String buildSessionLabel(Context context, Session session, String raceName) {
-        // Determine the session key for the Constants maps
         String sessionKey;
         if (session instanceof Practice) {
             Practice practice = (Practice) session;
-            sessionKey = practice.getPractice(); // "Practice1", "Practice2", "Practice3"
+            int num = practice.getNumber() > 0 ? practice.getNumber() : 1;
+            sessionKey = "Practice" + num;
         } else {
-            sessionKey = session.getClass().getSimpleName(); // "Qualifying", "Sprint", "Race", …
+            sessionKey = session.getClass().getSimpleName();
         }
 
-        // Pick the right locale map
-        boolean isItalian = Locale.getDefault().getLanguage().equals("it");
+        boolean isItalian = isItalianLanguage(context);
         String sessionName;
         if (isItalian) {
             sessionName = Constants.SESSION_NAMES_ITA.getOrDefault(sessionKey, sessionKey);
@@ -243,48 +335,8 @@ public class CalendarUtils {
             sessionName = Constants.SESSION_NAMES_ENG.getOrDefault(sessionKey, sessionKey);
         }
 
-        return raceName + " – " + sessionName;
-    }
-
-    /**
-     * Fires an INSERT intent for the calendar app, pre-filling all session details.
-     */
-    private static void insertCalendarEvent(Context context, String title,
-                                            WeeklyRace weeklyRace, Session session) {
-        // Convert ThreeTenBP LocalDateTime → epoch millis
-        ZonedDateTime startZdt = session.getStartDateTime().atZone(ZoneId.systemDefault());
-        long startMillis = startZdt.toInstant().toEpochMilli();
-
-        // Use endDateTime if available, otherwise fall back to a 2-hour window
-        long endMillis;
-        if (session.getEndDateTime() != null) {
-            ZonedDateTime endZdt = session.getEndDateTime().atZone(ZoneId.systemDefault());
-            endMillis = endZdt.toInstant().toEpochMilli();
-        } else {
-            endMillis = startMillis + 2 * 60 * 60 * 1000L;
-        }
-
-        String description = "Round " + weeklyRace.getRound()
-                + " · " + weeklyRace.getSeason()
-                + " · " + weeklyRace.getRaceName();
-
-        String location = "";
-        if (weeklyRace.getTrack() != null && weeklyRace.getTrack().getLocation() != null) {
-            location = weeklyRace.getTrack().getLocation().getLocality()
-                    + ", " + weeklyRace.getTrack().getLocation().getCountry();
-        }
-
-        Intent intent = new Intent(Intent.ACTION_INSERT)
-                .setData(CalendarContract.Events.CONTENT_URI)
-                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startMillis)
-                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endMillis)
-                .putExtra(CalendarContract.Events.TITLE, title)
-                .putExtra(CalendarContract.Events.DESCRIPTION, description)
-                .putExtra(CalendarContract.Events.EVENT_LOCATION, location)
-                .putExtra(CalendarContract.Events.AVAILABILITY,
-                        CalendarContract.Events.AVAILABILITY_BUSY);
-
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+        String validRaceName = raceName != null && !raceName.trim().isEmpty() ? raceName.trim() : "Formula 1";
+        return validRaceName + " - " + sessionName;
     }
 }
+

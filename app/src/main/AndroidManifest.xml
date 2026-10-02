@@ -17,10 +17,11 @@
             <data android:scheme="geo" />
         </intent>
         <intent>
-            <action android:name="android.intent.action.INSERT" />
+            <action android:name="android.intent.action.VIEW" />
 
-            <data android:mimeType="vnd.android.cursor.dir/event" />
+            <data android:mimeType="text/calendar" />
         </intent>
+        <package android:name="com.google.android.calendar" />
     </queries>
 
     <application
