@@ -319,16 +319,23 @@ public class EventActivity extends AppCompatActivity {
         buildEventCardFinalStep(weeklyRace);
 
         View scheduleCalendarBadge = findViewById(R.id.schedule_calendar_badge);
+        //check if event is concluded
+
         if (scheduleCalendarBadge != null) {
-            scheduleCalendarBadge.setOnClickListener(v -> {
-                try {
-                    CalendarUtils.addWeekendToCalendar(this, weeklyRace);
-                    Toast.makeText(this, R.string.add_to_calendar_success, Toast.LENGTH_SHORT).show();
-                } catch (Exception e) {
-                    Log.e(TAG, "Error opening calendar: " + e.getMessage());
-                    Toast.makeText(this, R.string.calendar_not_found, Toast.LENGTH_SHORT).show();
-                }
-            });
+            if (weeklyRace.isWeekFinished()) {
+                scheduleCalendarBadge.setVisibility(View.GONE);
+            } else {
+                scheduleCalendarBadge.setVisibility(View.VISIBLE);
+                scheduleCalendarBadge.setOnClickListener(v -> {
+                    try {
+                        CalendarUtils.addWeekendToCalendar(this, weeklyRace);
+                        Toast.makeText(this, R.string.add_to_calendar_success, Toast.LENGTH_SHORT).show();
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error opening calendar: " + e.getMessage());
+                        Toast.makeText(this, R.string.calendar_not_found, Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
         }
     }
 
@@ -592,11 +599,11 @@ public class EventActivity extends AppCompatActivity {
 
             if (flagContainer != null) {
                 flagContainer.setVisibility(View.VISIBLE);
-                if(!session.isPractice()){
+                if (!session.isPractice()) {
                     flagContainer.setClickable(true);
                     flagContainer.setFocusable(true);
                     flagContainer.setOnClickListener(v -> manageSessionScheduleClick(session, round));
-                }else{
+                } else {
                     flagContainer.setClickable(false);
                     flagContainer.setFocusable(false);
                     flagContainer.setOnClickListener(null);
@@ -630,7 +637,7 @@ public class EventActivity extends AppCompatActivity {
 
     private void manageSessionScheduleClick(Session session, String round) {
         Log.i(TAG, "session id clicked: " + session.getClass().getSimpleName());
-        if (!session.isPractice()){
+        if (!session.isPractice()) {
             if (session.isRace()) {
                 if (currentRace != null && currentRace.getRaceResults() != null && !currentRace.getRaceResults().isEmpty()) {
                     showRaceResultsDialog(currentRace);
@@ -641,7 +648,7 @@ public class EventActivity extends AppCompatActivity {
                 processQualifyingData(round);
             } else if (session.isSprint()) {
                 processSprintData(round);
-            } else{
+            } else {
                 Toast.makeText(this, R.string.results_not_available, Toast.LENGTH_SHORT).show();
             }
         }

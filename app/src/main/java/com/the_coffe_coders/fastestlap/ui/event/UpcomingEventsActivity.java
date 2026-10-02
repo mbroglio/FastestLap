@@ -3,6 +3,7 @@ package com.the_coffe_coders.fastestlap.ui.event;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -220,8 +221,12 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         if (addToCalendarItem == null) return;
 
         addToCalendarItem.setOnMenuItemClickListener(v -> {
-            for (WeeklyRace race : upcomingRaces) {
-                CalendarUtils.addWeekendToCalendar(this, race);
+            try {
+                CalendarUtils.addRacesToCalendar(this, upcomingRaces);
+                Toast.makeText(this, R.string.add_to_calendar_success, Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Log.e(TAG, "Error opening calendar: " + e.getMessage());
+                Toast.makeText(this, R.string.calendar_not_found, Toast.LENGTH_SHORT).show();
             }
             return true;
         });
