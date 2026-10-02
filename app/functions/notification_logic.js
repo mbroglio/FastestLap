@@ -406,10 +406,10 @@ async function executeSessionCheckAndPush(db, messaging) {
 
         const payload = {
             topic: targetTopic,
-            notification: {
-                title: title,
-                body: body
-            },
+            // ⚠️ NO top-level "notification" field — this forces Android to always call
+            // onMessageReceived() even when the app is in background/terminated.
+            // The app then renders the notification on the correct channel (fastestlap_sessions_v4)
+            // with the custom team_radio sound and high importance.
             data: {
                 type: "session",
                 EXTRA_TARGET_TAB: "sessions",
@@ -420,16 +420,22 @@ async function executeSessionCheckAndPush(db, messaging) {
                 alertType: alertSuffix,
                 startTimeMillis: (s.startTimeMillis || "").toString(),
                 title: title,
-                body: body
+                body: body,
+                channelId: "fastestlap_sessions_v4"
             },
             android: {
-                priority: "high",
-                notification: {
-                    channelId: "fastestlap_sessions_v4",
-                    sound: "team_radio",
-                    defaultSound: false,
-                    priority: "high",
-                    visibility: "public"
+                priority: "high"
+                // No android.notification here — the app handles channel/sound via onMessageReceived
+            },
+            apns: {
+                headers: { "apns-priority": "10" },
+                payload: {
+                    aps: {
+                        alert: { title: title, body: body },
+                        sound: "team_radio.mp3",
+                        badge: 1,
+                        contentAvailable: true
+                    }
                 }
             }
         };
@@ -477,10 +483,14 @@ async function sendTestNotification(messaging, topic = "news_motorsport", custom
 
     const payload = {
         topic: topic,
-        notification: {
-            title: title,
-            body: body
-        },
+        // For session notifications: data-only so onMessageReceived is always called on Android.
+        // For news notifications: notification+data is fine (app doesn't have custom channel handling issue).
+        ...(isSession ? {} : {
+            notification: {
+                title: title,
+                body: body
+            }
+        }),
         data: {
             type: isSession ? "session" : "news",
             EXTRA_TARGET_TAB: isSession ? "sessions" : "news",
@@ -489,17 +499,20 @@ async function sendTestNotification(messaging, topic = "news_motorsport", custom
             raceName: isSession ? "Gran Premio di Test" : "",
             sessionName: isSession ? "Qualifiche" : "",
             sessionTime: isSession ? "15:00" : "",
-            newsUrl: !isSession ? "https://www.formula1.com" : ""
+            newsUrl: !isSession ? "https://www.formula1.com" : "",
+            channelId: isSession ? "fastestlap_sessions_v4" : "fastestlap_news_v4"
         },
         android: {
             priority: "high",
-            notification: {
-                channelId: isSession ? "fastestlap_sessions_v4" : "fastestlap_news_v4",
-                sound: "team_radio",
-                defaultSound: false,
-                priority: "high",
-                visibility: "public"
-            }
+            ...(isSession ? {} : {
+                notification: {
+                    channelId: "fastestlap_news_v4",
+                    sound: "team_radio",
+                    defaultSound: false,
+                    priority: "high",
+                    visibility: "public"
+                }
+            })
         }
     };
 

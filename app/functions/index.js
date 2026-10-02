@@ -358,3 +358,60 @@ exports.syncAllCareerStatsNow = onRequest(
     }
   }
 );
+
+/**
+ * HTTP ENDPOINT: Clear Sent Sessions Registry
+ * Deletes all entries in app_config/notifications/sent_sessions so the next
+ * checkAndPushSessions execution will re-send pending session notifications
+ * (useful after fixing the FCM payload or when a session was missed).
+ * Optionally pass ?round=16 or ?category=f1 to clear only specific entries.
+ * GET https://.../clearSentSessions
+ */
+exports.clearSentSessions = onRequest(
+  {
+    cors: true,
+    timeoutSeconds: 60
+  },
+  async (req, res) => {
+    try {
+      const filterRound = req.query.round || null;
+      const filterCategory = req.query.category || null;
+      const filterYear = req.query.year || new Date().getFullYear().toString();
+
+      const sentRef = db.ref("app_config/notifications/sent_sessions");
+      const snap = await sentRef.once("value");
+      const sentData = snap.val() || {};
+
+      const keysToDelete = [];
+      for (const key of Object.keys(sentData)) {
+        // key format: {year}_{category}_round{round}_{sessionId}_{alertType}
+        const matchesYear = key.startsWith(filterYear + "_");
+        const matchesRound = !filterRound || key.includes(`_round${filterRound}_`);
+        const matchesCategory = !filterCategory || key.includes(`_${filterCategory}_`);
+        if (matchesYear && matchesRound && matchesCategory) {
+          keysToDelete.push(key);
+        }
+      }
+
+      const updates = {};
+      for (const key of keysToDelete) {
+        updates[key] = null;
+      }
+
+      if (keysToDelete.length > 0) {
+        await sentRef.update(updates);
+      }
+
+      console.log(`✅ Cleared ${keysToDelete.length} sent session entries (year=${filterYear}, round=${filterRound || "all"}, category=${filterCategory || "all"})`);
+      res.status(200).json({
+        status: "success",
+        cleared: keysToDelete.length,
+        keys: keysToDelete,
+        filters: { year: filterYear, round: filterRound, category: filterCategory }
+      });
+    } catch (error) {
+      console.error("Error in clearSentSessions:", error);
+      res.status(500).json({ status: "error", message: error.message });
+    }
+  }
+);
