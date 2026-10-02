@@ -54,7 +54,7 @@
         app:elevation="8dp"
         app:itemIconTint="@color/screen_background_color"
         app:itemRippleColor="@color/ripple_color"
-        app:itemTextAppearanceActive="@style/t10UpperCaseBoldBlackLineLimited"
+        app:itemTextAppearanceActive="@style/t10RegularBlackLineLimited"
         app:itemPaddingBottom="0dp"
         android:paddingStart="8dp"
         android:paddingEnd="8dp"
