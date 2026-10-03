@@ -13,6 +13,8 @@ import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.service.SharedPreferencesUtils;
 
+import java.util.Map;
+
 import lombok.Getter;
 import lombok.Setter;
 
@@ -72,6 +74,16 @@ public class UserViewModel extends ViewModel {
 
     public Task<Boolean> isAutoLoginEnabled(String idToken) {
         return userRepository.isAutoLoginEnabled(idToken);
+    }
+
+    public Task<Map<String, Boolean>> getNotificationPreferences(String idToken) {
+        return userRepository.getNotificationPreferences(idToken);
+    }
+
+    public void saveUserNotificationPreference(String key, boolean value, String idToken) {
+        if (idToken != null) {
+            userRepository.saveUserNotificationPreference(key, value, idToken);
+        }
     }
 
     public MutableLiveData<Result> getUserPreferences(String idToken) {

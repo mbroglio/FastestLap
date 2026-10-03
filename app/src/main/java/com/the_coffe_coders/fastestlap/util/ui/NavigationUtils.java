@@ -321,15 +321,15 @@ public class NavigationUtils {
         }
     }
 
-    public static void navigateToWeatherPage(Context context, String locality, String latitude, String longitude, String sessionKey) {
-        navigateToWeatherPage(context, locality, latitude, longitude, sessionKey, null, null, false);
+    public static void navigateToWeatherPage(Context context, String locality, String latitude, String longitude, String sessionKey, String zoneId) {
+        navigateToWeatherPage(context, locality, latitude, longitude, sessionKey, null, null, zoneId, false);
     }
 
-    public static void navigateToWeatherPage(Context context, String locality, String latitude, String longitude, String sessionKey, String startDate, String endDate) {
-        navigateToWeatherPage(context, locality, latitude, longitude, sessionKey, startDate, endDate, false);
+    public static void navigateToWeatherPage(Context context, String locality, String latitude, String longitude, String sessionKey, String startDate, String endDate, String zoneId) {
+        navigateToWeatherPage(context, locality, latitude, longitude, sessionKey, startDate, endDate, zoneId, false);
     }
 
-    public static void navigateToWeatherPage(Context context, String locality, String latitude, String longitude, String sessionKey, String startDate, String endDate, boolean isSessionInProgress) {
+    public static void navigateToWeatherPage(Context context, String locality, String latitude, String longitude, String sessionKey, String startDate, String endDate, String zoneId, boolean isSessionInProgress) {
         Intent intent = new Intent(context, com.the_coffe_coders.fastestlap.ui.weather.WeatherActivity.class);
         if (locality != null) intent.putExtra("LOCALITY", locality);
         if (latitude != null) intent.putExtra("LATITUDE", latitude);
@@ -337,6 +337,7 @@ public class NavigationUtils {
         if (sessionKey != null) intent.putExtra("SESSION_KEY", sessionKey);
         if (startDate != null) intent.putExtra("START_DATE", startDate);
         if (endDate != null) intent.putExtra("END_DATE", endDate);
+        if (zoneId != null) intent.putExtra("ZONE_ID", zoneId);
         intent.putExtra("IS_SESSION_IN_PROGRESS", isSessionInProgress);
         context.startActivity(intent);
     }

@@ -79,6 +79,7 @@
                         android:layout_height="match_parent"
                         android:alpha="0.7"
                         android:importantForAccessibility="no"
+                        android:scaleType="centerCrop"
                         app:shapeAppearanceOverlay="@style/ShapeAppearance.FastestLap.BottomRoundedCard" />
 
                     <LinearLayout

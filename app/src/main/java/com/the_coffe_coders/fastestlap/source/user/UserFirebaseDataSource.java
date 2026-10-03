@@ -23,6 +23,9 @@ import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.notification.AppNotificationManager;
 import com.the_coffe_coders.fastestlap.util.service.SharedPreferencesUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Class that gets the user information using Firebase Realtime Database.
  */
@@ -91,9 +94,26 @@ public class UserFirebaseDataSource extends BaseUserDataRemoteDataSource {
                                                                 sourceId);
                                                         AppNotificationManager.getInstance().updateNewsTopicSubscription(sourceId);
                                                     }
-                                                });
 
-                                        userResponseCallback.onSuccessFromGettingUserPreferences();
+                                                    // Also retrieve remote notification preferences (F1, F2, F3)
+                                                    databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken).
+                                                            child("notification_preferences").get().addOnCompleteListener(taskNotif -> {
+                                                                if (taskNotif.isSuccessful() && taskNotif.getResult() != null && taskNotif.getResult().exists()) {
+                                                                    Log.i(TAG, "Restoring notification preferences from Firebase for user " + idToken);
+                                                                    for (DataSnapshot child : taskNotif.getResult().getChildren()) {
+                                                                        String key = child.getKey();
+                                                                        Boolean val = child.getValue(Boolean.class);
+                                                                        if (key != null && val != null) {
+                                                                            sharedPreferencesUtil.writeBooleanData(SHARED_PREFERENCES_FILENAME, key, val);
+                                                                        }
+                                                                    }
+                                                                    if (sharedPreferencesUtil.getContext() != null) {
+                                                                        AppNotificationManager.getInstance().syncSessionTopicSubscriptions(sharedPreferencesUtil.getContext(), false);
+                                                                    }
+                                                                }
+                                                                userResponseCallback.onSuccessFromGettingUserPreferences();
+                                                            });
+                                                });
                                     }
                                 });
                     }
@@ -142,6 +162,7 @@ public class UserFirebaseDataSource extends BaseUserDataRemoteDataSource {
         }
     }
 
+    @Override
     public Task<Boolean> isAutoLoginEnabled(String idToken) {
         TaskCompletionSource<Boolean> taskCompletionSource = new TaskCompletionSource<>();
         databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken)
@@ -155,6 +176,40 @@ public class UserFirebaseDataSource extends BaseUserDataRemoteDataSource {
                     }
                 });
         return taskCompletionSource.getTask();
+    }
+
+    @Override
+    public Task<Map<String, Boolean>> getNotificationPreferences(String idToken) {
+        TaskCompletionSource<Map<String, Boolean>> taskCompletionSource = new TaskCompletionSource<>();
+        databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken)
+                .child("notification_preferences").get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null && task.getResult().exists()) {
+                        Map<String, Boolean> prefs = new HashMap<>();
+                        for (DataSnapshot child : task.getResult().getChildren()) {
+                            String key = child.getKey();
+                            Boolean val = child.getValue(Boolean.class);
+                            if (key != null && val != null) {
+                                prefs.put(key, val);
+                            }
+                        }
+                        taskCompletionSource.setResult(prefs);
+                    } else if (task.isSuccessful()) {
+                        taskCompletionSource.setResult(new HashMap<>());
+                    } else {
+                        Log.e(TAG, "Failed to get notification_preferences", task.getException());
+                        taskCompletionSource.setException(task.getException() != null ? task.getException() : new Exception("Failed to get notification preferences"));
+                    }
+                });
+        return taskCompletionSource.getTask();
+    }
+
+    @Override
+    public void saveUserNotificationPreference(String key, boolean value, String idToken) {
+        if (idToken != null) {
+            databaseReference.child(FIREBASE_USERS_COLLECTION).child(idToken)
+                    .child("notification_preferences").child(key).setValue(value)
+                    .addOnSuccessListener(unused -> Log.i(TAG, "Saved notification preference " + key + "=" + value + " to remote DB"));
+        }
     }
 
 }

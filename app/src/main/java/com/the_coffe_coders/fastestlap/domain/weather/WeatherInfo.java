@@ -19,7 +19,6 @@ public class WeatherInfo {
     private String dateString;
     private String weatherCondition;
     private int weatherIconResId;
-    private int weatherVideoResId;
     private Double airTempCurrent;
     private Double airTempMin;
     private Double airTempMax;

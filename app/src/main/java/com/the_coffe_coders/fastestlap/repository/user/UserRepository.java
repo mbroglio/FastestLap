@@ -8,6 +8,8 @@ import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.source.user.BaseUserAuthenticationRemoteDataSource;
 import com.the_coffe_coders.fastestlap.source.user.BaseUserDataRemoteDataSource;
 
+import java.util.Map;
+
 public class UserRepository implements IUserRepository, UserResponseCallback {
     private static final String TAG = UserRepository.class.getSimpleName();
     private final MutableLiveData<Result> userMutableLiveData;
@@ -102,6 +104,16 @@ public class UserRepository implements IUserRepository, UserResponseCallback {
     @Override
     public Task<Boolean> isAutoLoginEnabled(String idToken) {
         return userDataRemoteDataSource.isAutoLoginEnabled(idToken);
+    }
+
+    @Override
+    public Task<Map<String, Boolean>> getNotificationPreferences(String idToken) {
+        return userDataRemoteDataSource.getNotificationPreferences(idToken);
+    }
+
+    @Override
+    public void saveUserNotificationPreference(String key, boolean value, String idToken) {
+        userDataRemoteDataSource.saveUserNotificationPreference(key, value, idToken);
     }
 
     @Override

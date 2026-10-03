@@ -73,11 +73,41 @@ public class LocalRaceResultDataSource implements RaceResultDataSource {
     }
 
     public void insertRaceResults(Race race) {
-        Log.d(TAG, "Inserting race results into local database for round: " + race.getRound());
+        insertRaceResults(race, null);
+    }
+
+    public void insertRaceResults(Race race, Runnable onMergedAndInserted) {
+        Log.d(TAG, "Inserting race results into local database for round: " + (race != null ? race.getRound() : "null"));
         AppRoomDatabase.databaseWriteExecutor.execute(() -> {
             try {
+                if (race != null && race.getRound() != null) {
+                    try {
+                        int roundInt = Integer.parseInt(race.getRound());
+                        Race existing = raceDAO.getRaceByRound(roundInt);
+                        if (existing != null) {
+                            boolean restored = false;
+                            if ((race.getRaceStints() == null || race.getRaceStints().isEmpty())
+                                    && existing.getRaceStints() != null && !existing.getRaceStints().isEmpty()) {
+                                race.setRaceStints(existing.getRaceStints());
+                                restored = true;
+                            }
+                            if ((race.getSprintStints() == null || race.getSprintStints().isEmpty())
+                                    && existing.getSprintStints() != null && !existing.getSprintStints().isEmpty()) {
+                                race.setSprintStints(existing.getSprintStints());
+                                restored = true;
+                            }
+                            if (restored) {
+                                Log.d(TAG, "Preserved existing stints from local database for race round: " + race.getRound());
+                            }
+                        }
+                    } catch (NumberFormatException ignored) {
+                    }
+                }
                 raceDAO.insert(race);
-                Log.d(TAG, "Race results successfully inserted into local database for round: " + race.getRound());
+                Log.d(TAG, "Race results successfully inserted into local database for round: " + (race != null ? race.getRound() : "null"));
+                if (onMergedAndInserted != null) {
+                    onMergedAndInserted.run();
+                }
             } catch (Exception e) {
                 Log.e(TAG, "Error inserting race results into database: " + e.getMessage());
             }
@@ -187,11 +217,41 @@ public class LocalRaceResultDataSource implements RaceResultDataSource {
     }
 
     public void insertSprintResults(Race race) {
-        Log.d(TAG, "Inserting sprint results into local database for round: " + race.getRound());
+        insertSprintResults(race, null);
+    }
+
+    public void insertSprintResults(Race race, Runnable onMergedAndInserted) {
+        Log.d(TAG, "Inserting sprint results into local database for round: " + (race != null ? race.getRound() : "null"));
         AppRoomDatabase.databaseWriteExecutor.execute(() -> {
             try {
+                if (race != null && race.getRound() != null) {
+                    try {
+                        int roundInt = Integer.parseInt(race.getRound());
+                        Race existing = sprintDAO.getRaceByRound(roundInt);
+                        if (existing != null) {
+                            boolean restored = false;
+                            if ((race.getSprintStints() == null || race.getSprintStints().isEmpty())
+                                    && existing.getSprintStints() != null && !existing.getSprintStints().isEmpty()) {
+                                race.setSprintStints(existing.getSprintStints());
+                                restored = true;
+                            }
+                            if ((race.getRaceStints() == null || race.getRaceStints().isEmpty())
+                                    && existing.getRaceStints() != null && !existing.getRaceStints().isEmpty()) {
+                                race.setRaceStints(existing.getRaceStints());
+                                restored = true;
+                            }
+                            if (restored) {
+                                Log.d(TAG, "Preserved existing stints from local database for sprint round: " + race.getRound());
+                            }
+                        }
+                    } catch (NumberFormatException ignored) {
+                    }
+                }
                 sprintDAO.insert(race);
-                Log.d(TAG, "sprint results successfully inserted into local database for round: + race.getRound()");
+                Log.d(TAG, "Sprint results successfully inserted into local database for round: " + (race != null ? race.getRound() : "null"));
+                if (onMergedAndInserted != null) {
+                    onMergedAndInserted.run();
+                }
             } catch (Exception e) {
                 Log.e(TAG, "Error inserting sprint results into database: " + e.getMessage());
             }

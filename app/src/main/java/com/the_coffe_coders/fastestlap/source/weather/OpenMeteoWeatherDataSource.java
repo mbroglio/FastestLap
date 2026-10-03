@@ -100,7 +100,6 @@ public class OpenMeteoWeatherDataSource implements WeatherDataSource {
                                 Log.d(TAG, "Current weather code: " + code + ", isNight: " + isNight);
                                 info.setWeatherCondition(WeatherUtils.getWeatherText(code, isNight));
                                 info.setWeatherIconResId(WeatherUtils.getWeatherIconResId(code, isNight));
-                                info.setWeatherVideoResId(WeatherUtils.getWeatherVideoResId(code, isNight));
                             }
 
                             if (json.has("daily") && !json.get("daily").isJsonNull()) {
@@ -119,21 +118,21 @@ public class OpenMeteoWeatherDataSource implements WeatherDataSource {
                     }
                 }
 
-                if (isSessionInProgress && sessionKey != null && !sessionKey.trim().isEmpty()) {
-                    fetchOpenF1TrackTemperatureOnly(info, sessionKey, callback);
+                if (info.getWeatherCondition() != null) {
+                    if (isSessionInProgress && sessionKey != null && !sessionKey.trim().isEmpty()) {
+                        fetchOpenF1TrackTemperatureOnly(info, sessionKey, callback);
+                    } else {
+                        callback.onSuccess(info);
+                    }
                 } else {
-                    callback.onSuccess(info);
+                    callback.onFailure(new Exception("Failed to fetch weather data"));
                 }
             }
 
             @Override
             public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
                 Log.w(TAG, "Failed Open-Meteo current weather fetch: " + t.getMessage());
-                if (isSessionInProgress && sessionKey != null && !sessionKey.trim().isEmpty()) {
-                    fetchOpenF1TrackTemperatureOnly(info, sessionKey, callback);
-                } else {
-                    callback.onSuccess(info);
-                }
+                callback.onFailure(new Exception(t.getMessage()));
             }
         });
     }

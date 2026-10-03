@@ -251,5 +251,9 @@
     <string name="f3_notif_sprint">Sprint Race</string>
     <string name="f3_notif_qualifying">Qualifiche</string>
     <string name="f3_notif_practice">Prove Libere</string>
+    <string name="news">Notizie</string>
+    <string name="preferences">Preferenze</string>
+    <string name="air">aria</string>
+    <string name="current_time">ora corrente:</string>
 
 </resources>

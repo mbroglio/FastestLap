@@ -36,7 +36,9 @@ import com.the_coffe_coders.fastestlap.util.Constants;
 
 import org.threeten.bp.DayOfWeek;
 
+import java.text.Normalizer;
 import java.time.Duration;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -443,6 +445,11 @@ public class UIUtils {
         }
     }
 
+    public static String getCurrentTime(String zoneIdString) {
+        ZoneId zoneId = ZoneId.of(zoneIdString);
+        ZonedDateTime now = ZonedDateTime.now(zoneId);
+        return now.format(DateTimeFormatter.ofPattern("HH:mm:ss", Locale.ENGLISH));
+    }
 
 
     /*
@@ -754,10 +761,6 @@ public class UIUtils {
         } catch (Exception e) {
             Log.e("UIUtils.styleFavoriteCard", "Error styling favorite card: " + e.getMessage());
         }
-    }
-
-    public static void styleFavoriteCard(Context context, MaterialCardView cardView, MaterialCardView rankCard, ImageView watermarkView, String teamId) {
-        styleFavoriteCard(context, cardView, rankCard, teamId);
     }
 
     public static void styleDriverCard(Context context, MaterialCardView cardView, int teamColorRes) {

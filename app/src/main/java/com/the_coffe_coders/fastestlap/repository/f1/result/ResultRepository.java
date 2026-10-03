@@ -176,17 +176,11 @@ public class ResultRepository {
                     @Override
                     public void onFailure(Exception exception) {
                         Log.e(TAG, "Error loading results: " + exception.getMessage());
-                        if (!isBackgroundRefresh) {
-                            Objects.requireNonNull(resultsCache.get(round)).postValue(new Result.Error(exception.getMessage()));
-                        }
                         loadResultsFromLocal(round);
                     }
                 });
             } catch (Exception e) {
                 Log.e(TAG, "Error loading results: " + e.getMessage());
-                if (!isBackgroundRefresh && resultsCache.containsKey(round) && resultsCache.get(round) != null) {
-                    resultsCache.get(round).postValue(new Result.Error(e.getMessage()));
-                }
                 loadResultsFromLocal(round);
             }
         } else {
@@ -196,7 +190,36 @@ public class ResultRepository {
     }
 
     private void saveAndPostRace(String round, Race race) {
-        localRaceResultDataSource.insertRaceResults(race);
+        if (race == null) return;
+
+        // 1. Preservazione in memoria immediata: se la cache in RAM aveva già gli stint per questo round,
+        // li travasiamo subito nel nuovo oggetto Race prima del dispatch alla UI
+        if (resultsCache.containsKey(round) && resultsCache.get(round) != null) {
+            Result prev = resultsCache.get(round).getValue();
+            if (prev instanceof Result.RaceResultsSuccess) {
+                Race existingMem = ((Result.RaceResultsSuccess) prev).getData();
+                if (existingMem != null) {
+                    if ((race.getRaceStints() == null || race.getRaceStints().isEmpty())
+                            && existingMem.getRaceStints() != null && !existingMem.getRaceStints().isEmpty()) {
+                        race.setRaceStints(existingMem.getRaceStints());
+                        Log.d(TAG, "Preserved in-memory raceStints for round: " + round);
+                    }
+                    if ((race.getSprintStints() == null || race.getSprintStints().isEmpty())
+                            && existingMem.getSprintStints() != null && !existingMem.getSprintStints().isEmpty()) {
+                        race.setSprintStints(existingMem.getSprintStints());
+                    }
+                }
+            }
+        }
+
+        // 2. Salvataggio su database locale Room con preservazione su disco:
+        // se la memoria era vuota ma il DB conteneva già gli stint, il callback aggiorna la UI
+        localRaceResultDataSource.insertRaceResults(race, () -> {
+            if (resultsCache.containsKey(round) && resultsCache.get(round) != null) {
+                resultsCache.get(round).postValue(new Result.RaceResultsSuccess(race));
+            }
+        });
+
         lastUpdateTimestamps.put(round, System.currentTimeMillis());
         Objects.requireNonNull(resultsCache.get(round)).postValue(new Result.RaceResultsSuccess(race));
     }
@@ -408,17 +431,11 @@ public class ResultRepository {
                     @Override
                     public void onFailure(Exception exception) {
                         Log.e(TAG, "Error loading sprint results: " + exception.getMessage());
-                        if (!isBackgroundRefresh) {
-                            Objects.requireNonNull(sprintResultsCache.get(round)).postValue(new Result.Error(exception.getMessage()));
-                        }
                         loadSprintResultsFromLocal(round);
                     }
                 });
             } catch (Exception e) {
                 Log.e(TAG, "Error loading sprint results: " + e.getMessage());
-                if (!isBackgroundRefresh && sprintResultsCache.containsKey(round) && sprintResultsCache.get(round) != null) {
-                    sprintResultsCache.get(round).postValue(new Result.Error(e.getMessage()));
-                }
                 loadSprintResultsFromLocal(round);
             }
         } else {
@@ -428,7 +445,36 @@ public class ResultRepository {
     }
 
     private void saveAndPostSprint(String round, Race race) {
-        localRaceResultDataSource.insertSprintResults(race);
+        if (race == null) return;
+
+        // 1. Preservazione in memoria immediata: se la cache in RAM aveva già gli sprintStints per questo round,
+        // li travasiamo subito nel nuovo oggetto Race prima del dispatch alla UI
+        if (sprintResultsCache.containsKey(round) && sprintResultsCache.get(round) != null) {
+            Result prev = sprintResultsCache.get(round).getValue();
+            if (prev instanceof Result.RaceResultsSuccess) {
+                Race existingMem = ((Result.RaceResultsSuccess) prev).getData();
+                if (existingMem != null) {
+                    if ((race.getSprintStints() == null || race.getSprintStints().isEmpty())
+                            && existingMem.getSprintStints() != null && !existingMem.getSprintStints().isEmpty()) {
+                        race.setSprintStints(existingMem.getSprintStints());
+                        Log.d(TAG, "Preserved in-memory sprintStints for round: " + round);
+                    }
+                    if ((race.getRaceStints() == null || race.getRaceStints().isEmpty())
+                            && existingMem.getRaceStints() != null && !existingMem.getRaceStints().isEmpty()) {
+                        race.setRaceStints(existingMem.getRaceStints());
+                    }
+                }
+            }
+        }
+
+        // 2. Salvataggio su database locale Room con preservazione su disco:
+        // se la memoria era vuota ma il DB conteneva già gli stint, il callback aggiorna la UI
+        localRaceResultDataSource.insertSprintResults(race, () -> {
+            if (sprintResultsCache.containsKey(round) && sprintResultsCache.get(round) != null) {
+                sprintResultsCache.get(round).postValue(new Result.RaceResultsSuccess(race));
+            }
+        });
+
         sprintLastUpdateTimestamps.put(round, System.currentTimeMillis());
         Objects.requireNonNull(sprintResultsCache.get(round)).postValue(new Result.RaceResultsSuccess(race));
     }
@@ -477,7 +523,17 @@ public class ResultRepository {
             }
         }
 
-        liveData.postValue(new Result.Loading("Fetching stints from OpenF1"));
+        // Controllo preventivo: se gli stint sono già disponibili nella cache locale per questo evento,
+        // li restituiamo subito senza attendere la rete
+        List<Stint> localPreCheck = findStintsInLocalCache(eventName, sessionName);
+        if (localPreCheck != null && !localPreCheck.isEmpty()) {
+            liveData.postValue(new Result.StintsSuccess(localPreCheck));
+            if (!networkUtils.isConnected()) {
+                return liveData;
+            }
+        } else {
+            liveData.postValue(new Result.Loading("Fetching stints from OpenF1"));
+        }
 
         if (networkUtils.isConnected()) {
             openF1StintDataSource.getStints(eventName, sessionName, new StintCallback() {
@@ -488,23 +544,59 @@ public class ResultRepository {
                         liveData.postValue(new Result.StintsSuccess(stints));
                         enrichCachedRacesWithStints(eventName, sessionName, stints);
                     } else {
-                        Log.d(TAG, "Stints returned empty list");
-                        liveData.postValue(new Result.Error("No stints available"));
+                        Log.d(TAG, "Stints returned empty list from OpenF1, checking local fallback");
+                        List<Stint> fallback = findStintsInLocalCache(eventName, sessionName);
+                        if (fallback != null && !fallback.isEmpty()) {
+                            liveData.postValue(new Result.StintsSuccess(fallback));
+                        } else {
+                            liveData.postValue(new Result.Error("No stints available"));
+                        }
                     }
                 }
 
                 @Override
                 public void onFailure(Exception exception) {
-                    Log.e(TAG, "Error fetching stints: " + exception.getMessage());
-                    liveData.postValue(new Result.Error(exception.getMessage()));
+                    Log.e(TAG, "Error fetching stints from OpenF1: " + exception.getMessage() + ", checking local fallback");
+                    List<Stint> fallback = findStintsInLocalCache(eventName, sessionName);
+                    if (fallback != null && !fallback.isEmpty()) {
+                        liveData.postValue(new Result.StintsSuccess(fallback));
+                    } else {
+                        liveData.postValue(new Result.Error(exception.getMessage()));
+                    }
                 }
             });
         } else {
-            Log.e(TAG, "Failed to load stints: No internet connection");
-            liveData.postValue(new Result.Error("No network connection"));
+            Log.e(TAG, "Failed to load stints: No internet connection, checking local fallback");
+            List<Stint> fallback = findStintsInLocalCache(eventName, sessionName);
+            if (fallback != null && !fallback.isEmpty()) {
+                liveData.postValue(new Result.StintsSuccess(fallback));
+            } else {
+                liveData.postValue(new Result.Error("No network connection"));
+            }
         }
 
         return liveData;
+    }
+
+    private List<Stint> findStintsInLocalCache(String eventName, String sessionName) {
+        if (eventName == null) return null;
+        boolean isSprint = "Sprint".equalsIgnoreCase(sessionName);
+        for (Map.Entry<String, MutableLiveData<Result>> entry : (isSprint ? sprintResultsCache : resultsCache).entrySet()) {
+            Result r = entry.getValue().getValue();
+            if (r instanceof Result.RaceResultsSuccess) {
+                Race race = ((Result.RaceResultsSuccess) r).getData();
+                if (race != null && eventName.equalsIgnoreCase(race.getRaceName())) {
+                    List<Stint> list = isSprint ? race.getSprintStints() : race.getRaceStints();
+                    if (list != null && !list.isEmpty()) {
+                        return list;
+                    }
+                    if (race.getStints() != null && !race.getStints().isEmpty()) {
+                        return race.getStints();
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     private void enrichCachedRacesWithStints(String eventName, String sessionName, List<Stint> stints) {

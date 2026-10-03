@@ -344,11 +344,13 @@
     <string name="f3_notif_sprint">Sprint Race</string>
     <string name="f3_notif_qualifying">Qualifying</string>
     <string name="f3_notif_practice">Practice</string>
-    <string name="zero">0</string>
-    <string name="separator">-</string>
-    <string name="feature_1">Feature 1</string>
-    <string name="feature_2">Feature 2</string>
+    <string name="zero" translatable="false">0</string>
+    <string name="separator" translatable="false">-</string>
+    <string name="feature_1" translatable="false">Feature 1</string>
+    <string name="feature_2" translatable="false">Feature 2</string>
     <string name="news">News</string>
     <string name="preferences">Preferences</string>
+    <string name="air">air</string>
+    <string name="current_time">current time:</string>
 
 </resources>

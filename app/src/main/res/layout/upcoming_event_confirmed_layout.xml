@@ -28,9 +28,8 @@
         android:layout_marginTop="2dp"
         android:layout_marginEnd="6dp"
         android:ellipsize="end"
-        android:maxLines="1"
-        android:text="@string/not_found"
-        android:textColor="@color/white" />
+        android:maxLines="2"
+        android:text="@string/not_found" />
 
     <!-- Weekend Date Information -->
     <LinearLayout
@@ -49,8 +48,7 @@
             style="@style/t14BoldWhiteLineLimited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/not_found"
-            android:textColor="@color/white" />
+            android:text="@string/not_found" />
 
         <TextView
             android:id="@+id/upcoming_month"

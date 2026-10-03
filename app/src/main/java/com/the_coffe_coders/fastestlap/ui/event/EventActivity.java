@@ -22,6 +22,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.snackbar.Snackbar;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Practice;
@@ -287,9 +289,17 @@ public class EventActivity extends AppCompatActivity {
         View scheduleWeatherBadge = findViewById(R.id.schedule_weather_badge);
         if (scheduleWeatherBadge != null) {
             scheduleWeatherBadge.setOnClickListener(v -> {
+                if (!NetworkUtils.isNetworkAvailable(this)) {
+                    Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(track==null){
+                    Toast.makeText(this, "Cannot access weather", Toast.LENGTH_SHORT).show();
+                }
                 String locality = track.getLocation().getLocality();
                 String lat = track.getLocation().getLatitude();
                 String lon = track.getLocation().getLongitude();
+                String zoneId = track.getLocation().getZoneId();
 
                 String startDateStr = null;
                 String endDateStr = null;
@@ -301,7 +311,7 @@ public class EventActivity extends AppCompatActivity {
                 }
 
                 boolean isUnderway = weeklyRace.isUnderway(false);
-                NavigationUtils.navigateToWeatherPage(this, locality, lat, lon, "latest", startDateStr, endDateStr, isUnderway);
+                NavigationUtils.navigateToWeatherPage(this, locality, lat, lon, "latest", startDateStr, endDateStr, zoneId, isUnderway);
             });
         }
 

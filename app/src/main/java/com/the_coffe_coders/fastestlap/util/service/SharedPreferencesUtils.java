@@ -3,6 +3,9 @@ package com.the_coffe_coders.fastestlap.util.service;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import lombok.Getter;
+
+@Getter
 public class SharedPreferencesUtils {
 
     private final Context context;
@@ -23,6 +26,20 @@ public class SharedPreferencesUtils {
         SharedPreferences sharedPref = context.getSharedPreferences(sharedPreferencesFileName,
                 Context.MODE_PRIVATE);
         return sharedPref.getString(key, null);
+    }
+
+    public void writeBooleanData(String sharedPreferencesFileName, String key, boolean value) {
+        SharedPreferences sharedPref = context.getSharedPreferences(sharedPreferencesFileName,
+                Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putBoolean(key, value);
+        editor.apply();
+    }
+
+    public boolean readBooleanData(String sharedPreferencesFileName, String key, boolean defaultValue) {
+        SharedPreferences sharedPref = context.getSharedPreferences(sharedPreferencesFileName,
+                Context.MODE_PRIVATE);
+        return sharedPref.getBoolean(key, defaultValue);
     }
 
 }

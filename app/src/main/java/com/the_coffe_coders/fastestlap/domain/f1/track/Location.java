@@ -18,4 +18,5 @@ public class Location {
     private String longitude;
     private String locality;
     private String country;
+    private String zoneId;
 }

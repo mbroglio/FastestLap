@@ -4,6 +4,8 @@ import com.google.android.gms.tasks.Task;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.UserResponseCallback;
 
+import java.util.Map;
+
 public abstract class BaseUserDataRemoteDataSource {
     protected UserResponseCallback userResponseCallback;
 
@@ -26,5 +28,9 @@ public abstract class BaseUserDataRemoteDataSource {
     public abstract void saveUserNewsSourcePreferences(String newsSource, String newsSourceId, String idToken);
 
     public abstract Task<Boolean> isAutoLoginEnabled(String idToken);
+
+    public abstract Task<Map<String, Boolean>> getNotificationPreferences(String idToken);
+
+    public abstract void saveUserNotificationPreference(String key, boolean value, String idToken);
 }
 

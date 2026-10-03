@@ -1,16 +1,14 @@
 package com.the_coffe_coders.fastestlap.ui.weather;
 
-import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.VideoView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,12 +16,14 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.snackbar.Snackbar;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.weather.DailyForecast;
 import com.the_coffe_coders.fastestlap.domain.weather.HourlyForecast;
 import com.the_coffe_coders.fastestlap.domain.weather.WeatherInfo;
 import com.the_coffe_coders.fastestlap.ui.weather.viewmodel.WeatherViewModel;
+import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
@@ -36,7 +36,6 @@ public class WeatherActivity extends AppCompatActivity {
     private static final String TAG = "WeatherActivity";
 
     private WeatherViewModel weatherViewModel;
-    private VideoView videoView;
     private MaterialToolbar toolbar;
     private SwipeRefreshLayout weatherLayout;
     private View weatherMainContent;
@@ -45,11 +44,11 @@ public class WeatherActivity extends AppCompatActivity {
     private TextView weatherNotAvailableText;
 
     private TextView todayDateText;
+    private TextView currentTimeText;
     private TextView weatherText;
     private ImageView weatherIcon;
     private TextView tempCurrentText;
-    private TextView tempMinText;
-    private TextView tempMaxText;
+    private TextView tempMinMaxText;
     private TextView trackTempText;
     private TextView humidityValueText;
     private TextView rainProbValueText;
@@ -58,14 +57,17 @@ public class WeatherActivity extends AppCompatActivity {
     private TextView windSpeedValueText;
     private TextView windGustValueText;
     private TextView weekendForecastText;
-    private String locality = "SILVERSTONE";
-    private double latitude = 52.0786;
-    private double longitude = -1.0169;
-    private String sessionKey = "latest";
+    private String locality = null;
+    private String zoneId = null;
+    private double latitude = 0;
+    private double longitude = 0;
+    private String sessionKey = null;
     private String startDate = null;
     private String endDate = null;
     private boolean isSessionInProgress = false;
-    private int currentVideoResId = -1;
+
+    private final Handler clockHandler = new Handler(Looper.getMainLooper());
+    private Runnable clockRunnable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +77,50 @@ public class WeatherActivity extends AppCompatActivity {
 
         parseIntentExtras();
         start();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        startRealTimeClock();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopRealTimeClock();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopRealTimeClock();
+    }
+
+    private void startRealTimeClock() {
+        stopRealTimeClock();
+        clockRunnable = new Runnable() {
+            @Override
+            public void run() {
+                updateCurrentTimeUI();
+                clockHandler.postDelayed(this, 1000);
+            }
+        };
+        clockHandler.post(clockRunnable);
+    }
+
+    private void stopRealTimeClock() {
+        if (clockRunnable != null) {
+            clockHandler.removeCallbacks(clockRunnable);
+            clockRunnable = null;
+        }
+    }
+
+    private void updateCurrentTimeUI() {
+        if (currentTimeText != null) {
+            String currentTime = UIUtils.getCurrentTime(zoneId);
+            UIUtils.singleSetTextViewText(currentTime, currentTimeText);
+        }
     }
 
     private void start() {
@@ -124,21 +170,22 @@ public class WeatherActivity extends AppCompatActivity {
             startDate = getIntent().getStringExtra("START_DATE");
             endDate = getIntent().getStringExtra("END_DATE");
             isSessionInProgress = getIntent().getBooleanExtra("IS_SESSION_IN_PROGRESS", false);
+            zoneId = getIntent().getStringExtra("ZONE_ID");
+            Log.i(TAG, "Parsed intent extras: zoneId=" + zoneId);
         }
     }
 
     private void initViews() {
-        videoView = findViewById(R.id.video_view);
         toolbar = findViewById(R.id.topAppBar);
         weekendForecastLayout = findViewById(R.id.weekend_forecast_layout);
         weatherNotAvailableText = findViewById(R.id.weather_not_available_text);
 
         todayDateText = findViewById(R.id.today_date_text);
+        currentTimeText = findViewById(R.id.current_time_text);
         weatherText = findViewById(R.id.weather_text);
         weatherIcon = findViewById(R.id.weather_icon);
         tempCurrentText = findViewById(R.id.temp_current_text);
-        tempMinText = findViewById(R.id.temp_min_text);
-        tempMaxText = findViewById(R.id.temp_max_text);
+        tempMinMaxText = findViewById(R.id.temp_min_max_text);
         trackTempText = findViewById(R.id.track_temp_text);
         humidityValueText = findViewById(R.id.humidity_value_text);
         rainProbValueText = findViewById(R.id.rain_prob_value_text);
@@ -171,7 +218,6 @@ public class WeatherActivity extends AppCompatActivity {
             toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
             UIUtils.applyWindowInsets(toolbar);
-
             UIUtils.applyWindowInsets(weatherLayout);
 
             toolbar.setOnMenuItemClickListener(item -> {
@@ -182,11 +228,18 @@ public class WeatherActivity extends AppCompatActivity {
                 return false;
             });
         }
-
-
     }
 
     private void observeWeatherData() {
+        if (!NetworkUtils.isNetworkAvailable(this)) {
+            loadingScreen.hideLoadingScreen();
+            if (weatherLayout != null) weatherLayout.setRefreshing(false);
+            showWeatherNotAvailable();
+            Snackbar.make(weatherLayout != null ? weatherLayout : findViewById(android.R.id.content),
+                    R.string.no_internet_connection, Snackbar.LENGTH_SHORT).show();
+            return;
+        }
+
         // CHIAMATA 1: Recupera il meteo corrente e popola gli elementi principali della pagina
         weatherViewModel.getCurrentWeather(locality, latitude, longitude, sessionKey, isSessionInProgress).observe(this, result -> {
             if (result instanceof Result.WeatherSuccess) {
@@ -196,23 +249,26 @@ public class WeatherActivity extends AppCompatActivity {
                 }
             } else if (result instanceof Result.Error) {
                 Log.e(TAG, "Error fetching current weather: " + result.getError());
-                observeWeatherDataForecast();
+                loadingScreen.hideLoadingScreen();
+                if (weatherLayout != null) weatherLayout.setRefreshing(false);
+                showWeatherNotAvailable();
+                Snackbar.make(weatherLayout != null ? weatherLayout : findViewById(android.R.id.content),
+                        R.string.no_internet_connection, Snackbar.LENGTH_SHORT).show();
             }
         });
-
-
     }
 
     private void updateCurrentWeatherUI(WeatherInfo info) {
         printWeatherInfoToConsole(info);
+
+        updateCurrentTimeUI();
 
         UIUtils.multipleSetTextViewText(
                 new String[]{
                         info.getDateString(),
                         info.getWeatherCondition(),
                         Math.round(info.getAirTempCurrent()) + "°",
-                        "MIN: " + Math.round(info.getAirTempMin()) + "°",
-                        "MAX: " + Math.round(info.getAirTempMax()) + "°",
+                        "MIN: " + Math.round(info.getAirTempMin()) + "° • MAX: " + Math.round(info.getAirTempMax()) + "°",
                         info.getHumidity() + "%",
                         info.getRainProbability() + "%",
                         Math.round(info.getPressure()) + " hPa",
@@ -224,8 +280,7 @@ public class WeatherActivity extends AppCompatActivity {
                         todayDateText,
                         weatherText,
                         tempCurrentText,
-                        tempMinText,
-                        tempMaxText,
+                        tempMinMaxText,
                         humidityValueText,
                         rainProbValueText,
                         pressureValueText,
@@ -235,17 +290,15 @@ public class WeatherActivity extends AppCompatActivity {
                 }
         );
 
-        if(info.getTrackTemp() != null){
+        if (info.getTrackTemp() != null) {
             UIUtils.singleSetTextViewText(Math.round(info.getTrackTemp()) + "°", trackTempText);
-        }else{
+        } else {
             UIUtils.singleSetTextViewText((Math.round(info.getAirTempCurrent()) + 8) + "°", trackTempText);
         }
 
         if (weatherIcon != null && info.getWeatherIconResId() != 0) {
             weatherIcon.setImageResource(info.getWeatherIconResId());
         }
-
-        playBackgroundVideo(info.getWeatherVideoResId() != 0 ? info.getWeatherVideoResId() : R.raw.sun_weather_video);
 
         observeWeatherDataForecast();
     }
@@ -279,7 +332,6 @@ public class WeatherActivity extends AppCompatActivity {
             }
         });
     }
-
 
     private void showWeatherNotAvailable() {
         if (weekendForecastLayout != null) weekendForecastLayout.setVisibility(View.GONE);
@@ -317,7 +369,7 @@ public class WeatherActivity extends AppCompatActivity {
 
         for (int i = 0; i < Math.min(forecasts.size(), 3); i++) {
             DailyForecast df = forecasts.get(i);
-            RelativeLayout dayRow = findViewById(rowIds[i]);
+            View dayRow = findViewById(rowIds[i]);
             TextView dayTv = findViewById(textIds[i]);
             TextView dateTv = findViewById(dateIds[i]);
             ImageView iconIv = findViewById(iconIds[i]);
@@ -384,20 +436,6 @@ public class WeatherActivity extends AppCompatActivity {
         }
     }
 
-    private void playBackgroundVideo(int videoResId) {
-        if (videoView == null) return;
-        if (currentVideoResId == videoResId && videoView.isPlaying()) return;
-        currentVideoResId = videoResId;
-
-        String videoPath = "android.resource://" + getPackageName() + "/" + videoResId;
-        Uri uri = Uri.parse(videoPath);
-        videoView.setVideoURI(uri);
-        videoView.setOnPreparedListener(mp -> {
-            mp.setLooping(true);
-            videoView.start();
-        });
-    }
-
     private void printWeatherInfoToConsole(WeatherInfo info) {
         if (info == null) return;
         Log.d(TAG, "========== CURRENT WEATHER RETRIEVED ==========");
@@ -415,27 +453,5 @@ public class WeatherActivity extends AppCompatActivity {
         Log.d(TAG, "Wind Speed: " + info.getWindSpeedKmH() + " km/h");
         Log.d(TAG, "Wind Gust: " + info.getWindGustKmH() + " km/h");
         Log.d(TAG, "===============================================");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (videoView != null && currentVideoResId != -1) {
-            String videoPath = "android.resource://" + getPackageName() + "/" + currentVideoResId;
-            Uri uri = Uri.parse(videoPath);
-            videoView.setVideoURI(uri);
-            videoView.setOnPreparedListener(mp -> {
-                mp.setLooping(true);
-                videoView.start();
-            });
-        }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        if (videoView != null && videoView.isPlaying()) {
-            videoView.pause();
-        }
     }
 }

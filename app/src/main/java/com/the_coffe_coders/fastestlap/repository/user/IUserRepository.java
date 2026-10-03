@@ -6,6 +6,8 @@ import com.google.android.gms.tasks.Task;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.user.User;
 
+import java.util.Map;
+
 public interface IUserRepository {
     MutableLiveData<Result> getUser(String email, String password, boolean isUserRegistered);
 
@@ -36,4 +38,8 @@ public interface IUserRepository {
     void onSuccessFromAuthentication(User user);
 
     Task<Boolean> isAutoLoginEnabled(String idToken);
+
+    Task<Map<String, Boolean>> getNotificationPreferences(String idToken);
+
+    void saveUserNotificationPreference(String key, boolean value, String idToken);
 }

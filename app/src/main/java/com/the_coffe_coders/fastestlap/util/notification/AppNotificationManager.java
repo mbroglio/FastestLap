@@ -167,8 +167,8 @@ public class AppNotificationManager {
         String currentSourceId = getSavedNewsSourceId(context);
         updateNewsTopicSubscription(currentSourceId);
 
-        // 3. Synchronize session topic subscriptions based on user preferences
-        syncSessionTopicSubscriptions(context);
+        // 3. Synchronize session topic subscriptions based on user preferences (do not push to remote during init)
+        syncSessionTopicSubscriptions(context, false);
 
         // 3. Retrieve and log the FCM registration token
         FirebaseMessaging.getInstance().getToken()
@@ -233,6 +233,10 @@ public class AppNotificationManager {
      * Synchronizes all FCM session topic subscriptions based on user preferences.
      */
     public void syncSessionTopicSubscriptions(Context context) {
+        syncSessionTopicSubscriptions(context, true);
+    }
+
+    public void syncSessionTopicSubscriptions(Context context, boolean syncToRemote) {
         if (context == null) return;
         SharedPreferences prefs = context.getSharedPreferences(Constants.SHARED_PREFERENCES_FILENAME, Context.MODE_PRIVATE);
 
@@ -276,7 +280,9 @@ public class AppNotificationManager {
         setTopicSubscription(Constants.FCM_TOPIC_SESSION_F3_PRACTICE, f3Practice);
 
         Log.i(TAG, "Session topic subscriptions synced. F1: [race=" + f1Race + ", quali=" + f1Quali + ", sprint=" + f1Sprint + ", fp=" + f1Practice + "], F2: [enabled=" + f2Enabled + "], F3: [enabled=" + f3Enabled + "]");
-        syncSessionPreferencesToRemote(prefs);
+        if (syncToRemote) {
+            syncSessionPreferencesToRemote(prefs);
+        }
     }
 
     public void setTopicSubscription(String topic, boolean subscribe) {
@@ -299,6 +305,12 @@ public class AppNotificationManager {
         try {
             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
             if (currentUser != null) {
+                // Guard: non sovrascrivere il database remoto se le SharedPreferences locali non contengono ancora le preferenze
+                if (!prefs.contains(Constants.PREF_NOTIF_F2_ENABLED) && !prefs.contains(Constants.PREF_NOTIF_F1_RACE)) {
+                    Log.d(TAG, "Skipping syncSessionPreferencesToRemote: local preferences not initialized yet");
+                    return;
+                }
+
                 java.util.Map<String, Object> sessionPrefs = new java.util.HashMap<>();
                 sessionPrefs.put(Constants.PREF_NOTIF_F1_RACE, prefs.getBoolean(Constants.PREF_NOTIF_F1_RACE, true));
                 sessionPrefs.put(Constants.PREF_NOTIF_F1_QUALIFYING, prefs.getBoolean(Constants.PREF_NOTIF_F1_QUALIFYING, true));
