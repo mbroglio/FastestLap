@@ -352,5 +352,7 @@
     <string name="preferences">Preferences</string>
     <string name="air">air</string>
     <string name="current_time">current time:</string>
+    <string name="direction">direction:</string>
+    <string name="pressure">pressure</string>
 
 </resources>

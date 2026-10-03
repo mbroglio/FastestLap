@@ -38,6 +38,7 @@ public class WeatherActivity extends AppCompatActivity {
     private WeatherViewModel weatherViewModel;
     private MaterialToolbar toolbar;
     private SwipeRefreshLayout weatherLayout;
+    private View weatherContainer;
     private View weatherMainContent;
     private LoadingScreen loadingScreen;
     private ViewGroup weekendForecastLayout;
@@ -124,17 +125,18 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void start() {
+        weatherContainer = findViewById(R.id.weather_container);
         weatherLayout = findViewById(R.id.weather_layout);
         weatherMainContent = findViewById(R.id.weather_main_content);
 
-        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, weatherLayout, null);
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, weatherContainer != null ? weatherContainer : weatherLayout, null);
         loadingScreen.showLoadingScreen(false);
         loadingScreen.updateProgress();
 
         initViews();
         setupToolbar();
 
-        UIUtils.applyWindowInsets(weatherLayout);
+        UIUtils.applyWindowInsets(weatherContainer != null ? weatherContainer : weatherLayout);
         if (weatherLayout != null) {
             weatherLayout.setOnRefreshListener(this::observeWeatherData);
         }
@@ -218,7 +220,7 @@ public class WeatherActivity extends AppCompatActivity {
             toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
             UIUtils.applyWindowInsets(toolbar);
-            UIUtils.applyWindowInsets(weatherLayout);
+            UIUtils.applyWindowInsets(weatherContainer != null ? weatherContainer : weatherLayout);
 
             toolbar.setOnMenuItemClickListener(item -> {
                 if (item.getItemId() == R.id.action_open_google_weather) {
