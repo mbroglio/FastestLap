@@ -296,6 +296,15 @@ public class NextRaceHandler {
         liveIconLayout.setVisibility(View.GONE);
         long millisUntilStart = ZonedDateTime.of(eventDate, ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis();
         if (millisUntilStart <= 0) {
+            UIUtils.multipleSetTextViewText(
+                    new String[]{"0", "0", "0", "0"},
+                    new TextView[]{
+                            view.findViewById(R.id.next_days_counter),
+                            view.findViewById(R.id.next_hours_counter),
+                            view.findViewById(R.id.next_minutes_counter),
+                            view.findViewById(R.id.next_seconds_counter)
+                    }
+            );
             liveIconLayout.setVisibility(View.VISIBLE);
             cardLoadedCallback.onCardLoaded("nextSession");
             return;

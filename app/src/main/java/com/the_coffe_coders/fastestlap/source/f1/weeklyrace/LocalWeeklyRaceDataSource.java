@@ -116,22 +116,24 @@ public class LocalWeeklyRaceDataSource {
                 allRaces.addAll(classicRaces);
                 allRaces.addAll(sprintRaces);
 
-                WeeklyRace nextRace = null;
-                LocalDateTime currentDateTime = LocalDateTime.now();
-                LocalDateTime closestDateTime = null;
+                java.util.Collections.sort(allRaces, (r1, r2) -> {
+                    try {
+                        return Integer.compare(Integer.parseInt(r1.getRound()), Integer.parseInt(r2.getRound()));
+                    } catch (Exception e) {
+                        return 0;
+                    }
+                });
 
+                WeeklyRace nextRace = null;
                 for (WeeklyRace race : allRaces) {
-                    LocalDateTime raceDateTime = race.getDateTime();
-                    if (raceDateTime != null && raceDateTime.isAfter(currentDateTime)) {
-                        if (closestDateTime == null || raceDateTime.isBefore(closestDateTime)) {
-                            closestDateTime = raceDateTime;
-                            nextRace = race;
-                        }
+                    if (!race.isWeekFinished()) {
+                        nextRace = race;
+                        break;
                     }
                 }
 
                 if (nextRace != null) {
-                    Log.d(TAG, "Next weekly race found in local database");
+                    Log.d(TAG, "Next weekly race found in local database: Round " + nextRace.getRound());
                     callback.onSuccess(nextRace);
                 } else {
                     Log.d(TAG, "No next weekly race found in local database");
@@ -155,22 +157,25 @@ public class LocalWeeklyRaceDataSource {
                 allRaces.addAll(classicRaces);
                 allRaces.addAll(sprintRaces);
 
-                WeeklyRace lastRace = null;
-                LocalDateTime currentDateTime = LocalDateTime.now();
-                LocalDateTime mostRecentDateTime = null;
+                java.util.Collections.sort(allRaces, (r1, r2) -> {
+                    try {
+                        return Integer.compare(Integer.parseInt(r1.getRound()), Integer.parseInt(r2.getRound()));
+                    } catch (Exception e) {
+                        return 0;
+                    }
+                });
 
-                for (WeeklyRace race : allRaces) {
-                    LocalDateTime raceDateTime = race.getDateTime();
-                    if (raceDateTime != null && raceDateTime.isBefore(currentDateTime)) {
-                        if (mostRecentDateTime == null || raceDateTime.isAfter(mostRecentDateTime)) {
-                            mostRecentDateTime = raceDateTime;
-                            lastRace = race;
-                        }
+                WeeklyRace lastRace = null;
+                for (int i = allRaces.size() - 1; i >= 0; i--) {
+                    WeeklyRace race = allRaces.get(i);
+                    if (race.isWeekFinished()) {
+                        lastRace = race;
+                        break;
                     }
                 }
 
                 if (lastRace != null) {
-                    Log.d(TAG, "Last weekly race found in local database");
+                    Log.d(TAG, "Last weekly race found in local database: Round " + lastRace.getRound());
                     callback.onSuccess(lastRace);
                 } else {
                     Log.d(TAG, "No last weekly race found in local database");

@@ -75,6 +75,8 @@ public class JolpicaRaceResultDataSource implements RaceResultDataSource {
                     Log.d(TAG, "Successfully parsed race results: " + raceResultsAPIResponse);
                     if (raceResultsAPIResponse.getFinalRace() != null) {
                         resultCallback.onSuccess(RaceMapper.toRace(raceResultsAPIResponse.getFinalRace()));
+                    } else {
+                        resultCallback.onFailure(new Exception("No race results available for round " + round));
                     }
                 } catch (IOException e) {
                     Log.e(TAG, "IOException while reading response", e);

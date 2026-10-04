@@ -7,7 +7,10 @@
     app:cardCornerRadius="16dp"
     app:cardElevation="3dp"
     app:strokeColor="@color/subtle_white_border"
-    app:strokeWidth="1dp">
+    app:strokeWidth="1dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:rippleColor="#33FFFFFF">
 
     <TextView
         style="@style/t20BoldWhite"

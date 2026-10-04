@@ -105,6 +105,9 @@ public abstract class WeeklyRace {
     }
 
     public boolean isWeekFinished() {
+        if (this.getFinalRace() == null || this.getFinalRace().getEndDateTime() == null) {
+            return false;
+        }
         LocalDateTime now = LocalDateTime.now();
         return now.isAfter(this.getFinalRace().getEndDateTime());
     }

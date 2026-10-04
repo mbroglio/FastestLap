@@ -5,10 +5,11 @@
     android:layout_height="wrap_content">
 
     <TextView
-        style="@style/t16BoldWhite"
+        style="@style/t16UpperCaseBoldWhite"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
+        android:maxLines="2"
         android:textColor="@color/timer_gray"
         android:text="@string/pending_results" />
 

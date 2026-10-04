@@ -47,6 +47,7 @@ public class LastRaceHandler {
     private View view;
     @Setter
     private String nextRaceRound;
+    private WeeklyRace currentLastRace;
 
     public LastRaceHandler(Fragment fragment, View view,
                            WeeklyRaceViewModel weeklyRaceViewModel,
@@ -93,6 +94,7 @@ public class LastRaceHandler {
                 lastRace.removeObserver(observerHolder[0]);
                 if (result.isSuccess()) {
                     WeeklyRace raceResult = ((Result.NextRaceSuccess) result).getData();
+                    this.currentLastRace = raceResult;
                     Log.i(TAG, "Last Race: " + raceResult);
 
                     if (raceResult.getRound().equals(nextRaceRound)) {
@@ -221,21 +223,62 @@ public class LastRaceHandler {
                 }
                 if (result.isSuccess()) {
                     List<RaceResult> raceResults = ((Result.RaceResultsSuccess) result).getData().getResults();
-                    setDriverNames(raceResults);
+                    if (raceResults != null && !raceResults.isEmpty()) {
+                        showPodiumViews(true);
+                        setDriverNames(raceResults);
+                    } else {
+                        showPodiumViews(false);
+                        cardLoadedCallback.onCardLoaded("lastRace");
+                    }
                 } else {
-                    throw new Exception("Failed to fetch race results: " + result.getError());
+                    showPodiumViews(false);
+                    cardLoadedCallback.onCardLoaded("lastRace");
                 }
             } catch (Exception e) {
                 Log.e(TAG, "Error setting driver names: " + e.getMessage());
+                showPodiumViews(false);
+                cardLoadedCallback.onCardLoaded("lastRace");
             }
         });
 
+        View.OnClickListener openEventClickListener = v -> {
+            if (race != null && race.getTrack() != null) {
+                Intent intent = new Intent(context, EventActivity.class);
+                intent.putExtra("CIRCUIT_ID", race.getTrack().getTrackId());
+                context.startActivity(intent);
+            }
+        };
+
+        View lastRaceCard = view.findViewById(R.id.last_race_card);
+        if (lastRaceCard != null) {
+            lastRaceCard.setOnClickListener(openEventClickListener);
+        }
+
+        View pendingLayout = view.findViewById(R.id.last_race_pending_results);
+        if (pendingLayout != null) {
+            pendingLayout.setOnClickListener(openEventClickListener);
+        }
+
         MaterialCardView resultCard = view.findViewById(R.id.past_event_result);
-        resultCard.setOnClickListener(v -> {
-            Intent intent = new Intent(context, EventActivity.class);
-            intent.putExtra("CIRCUIT_ID", race.getTrack().getTrackId());
-            context.startActivity(intent);
-        });
+        if (resultCard != null) {
+            resultCard.setOnClickListener(openEventClickListener);
+        }
+    }
+
+    private void showPodiumViews(boolean hasResults) {
+        View podiumView = view.findViewById(R.id.race_podium);
+        View resultButton = view.findViewById(R.id.past_event_result);
+        View pendingTextView = view.findViewById(R.id.last_race_pending_results);
+
+        if (podiumView != null) {
+            podiumView.setVisibility(hasResults ? View.VISIBLE : View.GONE);
+        }
+        if (resultButton != null) {
+            resultButton.setVisibility(hasResults ? View.VISIBLE : View.GONE);
+        }
+        if (pendingTextView != null) {
+            pendingTextView.setVisibility(hasResults ? View.GONE : View.VISIBLE);
+        }
     }
 
     private void setDriverNames(List<RaceResult> raceResults) {
@@ -254,8 +297,16 @@ public class LastRaceHandler {
     }
 
     private void loadPendingResultsLayout() {
-        view.findViewById(R.id.pending_last_race_results).setVisibility(View.VISIBLE);
+        View pendingView = view.findViewById(R.id.pending_last_race_results);
+        pendingView.setVisibility(View.VISIBLE);
         view.findViewById(R.id.last_race_results).setVisibility(View.GONE);
+        if (currentLastRace != null && currentLastRace.getTrack() != null) {
+            pendingView.setOnClickListener(v -> {
+                Intent intent = new Intent(context, EventActivity.class);
+                intent.putExtra("CIRCUIT_ID", currentLastRace.getTrack().getTrackId());
+                context.startActivity(intent);
+            });
+        }
         cardLoadedCallback.onCardLoaded("lastRace");
     }
 
