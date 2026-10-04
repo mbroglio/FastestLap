@@ -425,10 +425,11 @@ function createCalendarEntry(newRound, newSeason, trackId, results, updates) {
 * -----------------------------------------------------------------
 */
 
-async function fetchAndCalculateDriverSeasonStats() {
+async function fetchAndCalculateDriverSeasonStats(targetSeason) {
     
     const standingsRes = await axios.get(APIS.driverStandings, { timeout: 15000 });
     const standingsTable = standingsRes.data?.MRData?.StandingsTable;
+    const season = targetSeason || standingsTable?.season || new Date().getFullYear().toString();
     
     const standingsLists = standingsTable?.StandingsLists || [];
     const driverStandings = (standingsLists.length > 0 && standingsLists[0].DriverStandings) ? standingsLists[0].DriverStandings : [];
@@ -550,7 +551,7 @@ async function fetchAndCalculateDriverSeasonStats() {
 
 async function syncDriverSeasonStats(db, targetSeason) {
     console.log(`Starting driver season_stats sync...`);
-    const { season, statsByDriverId } = await fetchAndCalculateDriverSeasonStats();
+    const { season, statsByDriverId } = await fetchAndCalculateDriverSeasonStats(targetSeason);
 
     const driversSnap = await db.ref(PATHS.drivers).once("value");
     if (!driversSnap.exists()) {
@@ -595,19 +596,11 @@ async function syncDriverSeasonStats(db, targetSeason) {
 * -----------------------------------------------------------------
 */
 
-async function fetchAndCalculateConstructorSeasonStats() {
-   
-
-
+async function fetchAndCalculateConstructorSeasonStats(targetSeason) {
     console.log(`Fetching F1 constructor standings`);
     const standingsRes = await axios.get(APIS.constructorStandings, { timeout: 15000 });
     const standingsTable = standingsRes.data?.MRData?.StandingsTable;
-    if (!season && standingsTable?.season) {
-        season = standingsTable.season;
-    }
-    if (!season) {
-        season = new Date().getFullYear().toString();
-    }
+    const season = targetSeason || standingsTable?.season || new Date().getFullYear().toString();
 
     const standingsLists = standingsTable?.StandingsLists || [];
     const constructorStandings = (standingsLists.length > 0 && standingsLists[0].ConstructorStandings) ? standingsLists[0].ConstructorStandings : [];
@@ -726,7 +719,7 @@ async function fetchAndCalculateConstructorSeasonStats() {
 
 async function syncConstructorSeasonStats(db, targetSeason) {
     console.log(`Starting constructor season_stats sync...`);
-    const { season, statsByConstructorId } = await fetchAndCalculateConstructorSeasonStats();
+    const { season, statsByConstructorId } = await fetchAndCalculateConstructorSeasonStats(targetSeason);
 
     const teamsSnap = await db.ref(PATHS.teams).once("value");
     if (!teamsSnap.exists()) {

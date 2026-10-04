@@ -254,6 +254,7 @@ exports.syncDriverSeasonStatsNow = onRequest(
     }
   }
 );
+exports.updateDriverSeasonStatsNow = exports.syncDriverSeasonStatsNow;
 
 /**
  * HTTP ENDPOINT: Manual F1 Post-Race Stats Update Trigger
