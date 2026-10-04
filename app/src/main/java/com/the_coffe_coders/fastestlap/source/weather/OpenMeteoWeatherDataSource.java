@@ -187,6 +187,10 @@ public class OpenMeteoWeatherDataSource implements WeatherDataSource {
                                             String datePart = parts[0];
                                             String timePart = parts[1];
 
+                                            if (timePart.length() > 5) {
+                                                timePart = timePart.substring(0, 5);
+                                            }
+
                                             if (!hourlyByDate.containsKey(datePart)) {
                                                 hourlyByDate.put(datePart, new HashMap<>());
                                             }
@@ -194,7 +198,13 @@ public class OpenMeteoWeatherDataSource implements WeatherDataSource {
                                             int tVal = (hTemp != null && i < hTemp.size()) ? (int) Math.round(hTemp.get(i).getAsDouble()) : 20;
                                             int cVal = (hCode != null && i < hCode.size()) ? hCode.get(i).getAsInt() : 0;
                                             int rVal = (hRain != null && i < hRain.size()) ? hRain.get(i).getAsInt() : 0;
-                                            int iconRes = WeatherUtils.getWeatherIconResId(cVal, false);
+
+                                            boolean isNight = false;
+                                            try {
+                                                int hourNum = Integer.parseInt(timePart.split(":")[0]);
+                                                isNight = (hourNum < 6 || hourNum >= 21);
+                                            } catch (Exception ignored) {}
+                                            int iconRes = WeatherUtils.getWeatherIconResId(cVal, isNight);
 
                                             HourlyForecast hf = new HourlyForecast(timePart, iconRes, tVal, rVal);
                                             hourlyByDate.get(datePart).put(timePart, hf);
@@ -215,6 +225,8 @@ public class OpenMeteoWeatherDataSource implements WeatherDataSource {
                                 String[] defaultDays = new String[]{"Friday", "Saturday", "Sunday"};
 
                                 if (times != null && !times.isEmpty()) {
+                                    String[] targetHours = new String[]{"00:00", "03:00", "06:00", "09:00", "12:00", "15:00", "18:00", "21:00", "23:00"};
+
                                     for (int i = 0; i < Math.min(3, times.size()); i++) {
                                         String dateIso = times.get(i).getAsString();
                                         String dayName = defaultDays[i % 3];
@@ -238,18 +250,32 @@ public class OpenMeteoWeatherDataSource implements WeatherDataSource {
                                         df.setTempMin(minT);
 
                                         Map<String, HourlyForecast> dayHours = hourlyByDate.get(dateIso);
-                                        if (dayHours != null) {
-                                            HourlyForecast morning = dayHours.get("09:00");
-                                            HourlyForecast afternoon = dayHours.get("14:00");
-                                            HourlyForecast evening = dayHours.get("19:00");
+                                        for (String targetHour : targetHours) {
+                                            if (dayHours != null && dayHours.containsKey(targetHour)) {
+                                                df.getHourlyForecasts().add(dayHours.get(targetHour));
+                                            } else {
+                                                int hourNum = 12;
+                                                try {
+                                                    hourNum = Integer.parseInt(targetHour.split(":")[0]);
+                                                } catch (Exception ignored) {}
+                                                boolean isNight = (hourNum < 6 || hourNum >= 21);
+                                                int fallbackIcon = WeatherUtils.getWeatherIconResId(wCode, isNight);
 
-                                            df.getHourlyForecasts().add(morning != null ? morning : new HourlyForecast("09:00", iconRes, minT + 2, 5));
-                                            df.getHourlyForecasts().add(afternoon != null ? afternoon : new HourlyForecast("14:00", iconRes, maxT, 10));
-                                            df.getHourlyForecasts().add(evening != null ? evening : new HourlyForecast("19:00", iconRes, minT + 4, 15));
-                                        } else {
-                                            df.getHourlyForecasts().add(new HourlyForecast("09:00", iconRes, minT + 2, 5));
-                                            df.getHourlyForecasts().add(new HourlyForecast("14:00", iconRes, maxT, 10));
-                                            df.getHourlyForecasts().add(new HourlyForecast("19:00", iconRes, minT + 4, 15));
+                                                int tempEstimate;
+                                                if (hourNum <= 6) {
+                                                    tempEstimate = minT;
+                                                } else if (hourNum == 9) {
+                                                    tempEstimate = minT + (maxT - minT) / 3;
+                                                } else if (hourNum == 12 || hourNum == 15) {
+                                                    tempEstimate = maxT;
+                                                } else if (hourNum == 18) {
+                                                    tempEstimate = minT + (maxT - minT) / 2;
+                                                } else {
+                                                    tempEstimate = minT + 2;
+                                                }
+
+                                                df.getHourlyForecasts().add(new HourlyForecast(targetHour, fallbackIcon, tempEstimate, 5));
+                                            }
                                         }
 
                                         dailyForecasts.add(df);

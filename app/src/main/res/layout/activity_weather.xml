@@ -200,7 +200,7 @@
                         <!-- TEMPERATURE METRICS & WEATHER ICON -->
                         <include
                             android:id="@+id/temperature_layout"
-                            layout="@layout/weather_info_layout" />
+                            layout="@layout/weather_current_info_layout" />
 
                     </LinearLayout>
 

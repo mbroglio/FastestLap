@@ -164,7 +164,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/day_2_temp_max"
+                        android:id="@+id/day_2_temp_min"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/orbitron_bold"
@@ -172,7 +172,7 @@
                         android:textSize="14sp" />
 
                     <TextView
-                        android:id="@+id/day_2_temp_min"
+                        android:id="@+id/day_2_temp_max"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
@@ -232,7 +232,7 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:id="@+id/day_3_temp_max"
+                        android:id="@+id/day_3_temp_min"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/orbitron_bold"
@@ -240,7 +240,7 @@
                         android:textSize="14sp" />
 
                     <TextView
-                        android:id="@+id/day_3_temp_min"
+                        android:id="@+id/day_3_temp_max"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"

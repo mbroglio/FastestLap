@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -400,14 +401,18 @@ public class WeatherActivity extends AppCompatActivity {
             if (minTv != null) UIUtils.singleSetTextViewText(df.getTempMin() + "°", minTv);
 
             if (dayRow != null && weekendForecastLayout != null) {
-                View hourlyContainer = getLayoutInflater().inflate(R.layout.daily_weather_container, weekendForecastLayout, false);
+                View hourlyContainer = getLayoutInflater().inflate(R.layout.weather_daily_container, weekendForecastLayout, false);
                 hourlyContainer.setVisibility(View.GONE);
 
+                LinearLayout itemsContainer = hourlyContainer.findViewById(R.id.day_hourly_items_container);
                 List<HourlyForecast> hourlyList = df.getHourlyForecasts();
-                if (hourlyList != null && hourlyList.size() >= 3) {
-                    bindHourlySlotDynamic(hourlyContainer, hourlyList.get(0), R.id.morning_icon, R.id.morning_temp, R.id.morning_rain);
-                    bindHourlySlotDynamic(hourlyContainer, hourlyList.get(1), R.id.afternoon_icon, R.id.afternoon_temp, R.id.afternoon_rain);
-                    bindHourlySlotDynamic(hourlyContainer, hourlyList.get(2), R.id.evening_icon, R.id.evening_temp, R.id.evening_rain);
+                if (itemsContainer != null && hourlyList != null) {
+                    itemsContainer.removeAllViews();
+                    for (HourlyForecast hf : hourlyList) {
+                        View card = getLayoutInflater().inflate(R.layout.weather_hourly_card, itemsContainer, false);
+                        bindHourlyCard(card, hf);
+                        itemsContainer.addView(card);
+                    }
                 }
 
                 int index = weekendForecastLayout.indexOfChild(dayRow);
@@ -421,12 +426,16 @@ public class WeatherActivity extends AppCompatActivity {
         if (weatherLayout != null) weatherLayout.setRefreshing(false);
     }
 
-    private void bindHourlySlotDynamic(View container, HourlyForecast hf, int iconId, int tempId, int rainId) {
-        if (container == null || hf == null) return;
-        ImageView iconIv = container.findViewById(iconId);
-        TextView tempTv = container.findViewById(tempId);
-        TextView rainTv = container.findViewById(rainId);
+    private void bindHourlyCard(View card, HourlyForecast hf) {
+        if (card == null || hf == null) return;
+        TextView timeTv = card.findViewById(R.id.hourly_time);
+        ImageView iconIv = card.findViewById(R.id.hourly_icon);
+        TextView tempTv = card.findViewById(R.id.hourly_temp);
+        TextView rainTv = card.findViewById(R.id.hourly_rain);
 
+        if (timeTv != null && hf.getTimeLabel() != null) {
+            UIUtils.singleSetTextViewText(hf.getTimeLabel(), timeTv);
+        }
         if (iconIv != null && hf.getWeatherIconResId() != 0) {
             iconIv.setImageResource(hf.getWeatherIconResId());
         }

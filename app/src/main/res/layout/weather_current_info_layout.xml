@@ -28,13 +28,12 @@
 
         <TextView
             android:id="@+id/temp_current_text"
+            style="@style/t25UpperCaseBoldWhite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:textColor="@color/white"
-            android:textSize="36sp"
-            tools:text="36°" />
+            android:maxLines="1"
+            android:textSize="36sp" />
 
         <TextView
             android:id="@+id/temp_min_max_text"
@@ -92,11 +91,11 @@
 
         <TextView
             android:id="@+id/track_temp_text"
+            style="@style/t25UpperCaseBoldWhite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/orbitron_bold"
             android:gravity="center"
-            android:textColor="@color/white"
+            android:maxLines="1"
             android:textSize="36sp" />
 
         <TextView
