@@ -23,6 +23,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.snackbar.Snackbar;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.SessionStatus;
 import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.Result;
@@ -135,7 +136,7 @@ public class EventActivity extends AppCompatActivity {
         List<WeeklyRace> races = new ArrayList<>();
         LiveData<Result> data = weeklyRaceViewModel.getWeeklyRacesLiveData();
         @SuppressWarnings("unchecked")
-        androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
+        Observer<Result>[] observerHolder = new Observer[1];
         observerHolder[0] = result -> {
             if (result instanceof Result.Loading) {
                 return;
@@ -174,7 +175,7 @@ public class EventActivity extends AppCompatActivity {
         TrackViewModel trackViewModel = new ViewModelProvider(this, new TrackViewModelFactory(getApplication())).get(TrackViewModel.class);
         MutableLiveData<Result> trackData = trackViewModel.getTrack(trackId);
         @SuppressWarnings("unchecked")
-        androidx.lifecycle.Observer<Result>[] observerTrack = new androidx.lifecycle.Observer[1];
+        Observer<Result>[] observerTrack = new Observer[1];
         observerTrack[0] = result -> {
             if (result instanceof Result.Loading) {
                 return;
@@ -189,7 +190,7 @@ public class EventActivity extends AppCompatActivity {
                     try {
                         MutableLiveData<Result> nationData = nationViewModel.getNation(track.getCountry());
                         @SuppressWarnings("unchecked")
-                        androidx.lifecycle.Observer<Result>[] observerNation = new androidx.lifecycle.Observer[1];
+                        Observer<Result>[] observerNation = new Observer[1];
                         observerNation[0] = result1 -> {
                             if (result1 instanceof Result.Loading) {
                                 return;
@@ -233,7 +234,7 @@ public class EventActivity extends AppCompatActivity {
         try {
             MutableLiveData<Result> nationData = nationViewModel.getNation(targetTrack.getCountry());
             @SuppressWarnings("unchecked")
-            androidx.lifecycle.Observer<Result>[] observerNation = new androidx.lifecycle.Observer[1];
+            Observer<Result>[] observerNation = new Observer[1];
             observerNation[0] = result1 -> {
                 if (result1 instanceof Result.Loading) {
                     return;
@@ -361,20 +362,45 @@ public class EventActivity extends AppCompatActivity {
                 : null;
         String totalLaps = (track != null && track.getLaps() != null) ? track.getLaps() : null;
 
-        // TEST ONLY – decommentare per forzare la live card e testare OpenF1 senza GP in corso:
-        //setLiveSession(eventTitle, totalLaps);
+        // Trova la sessione attualmente in corso (se presente) oppure la prossima sessione
+        Session activeOrNextSession = null;
+        for (Session s : sessions) {
+            if (s != null && s.getSessionStatus() == SessionStatus.IN_PROGRESS) {
+                activeOrNextSession = s;
+                break;
+            }
+        }
+        if (activeOrNextSession == null) {
+            activeOrNextSession = nextEvent;
+        }
+
+        String sessionName = null;
+        if (activeOrNextSession != null) {
+            String sid = activeOrNextSession.getClass().getSimpleName();
+            if (activeOrNextSession.isPractice()) {
+                Practice p = (Practice) activeOrNextSession;
+                sid = p.getPractice();
+            }
+            String langTags = androidx.appcompat.app.AppCompatDelegate.getApplicationLocales().toLanguageTags();
+            if (langTags != null && langTags.toLowerCase(java.util.Locale.ROOT).startsWith("it")) {
+                sessionName = Constants.SESSION_NAMES_ITA.getOrDefault(sid, sid);
+            } else {
+                sessionName = Constants.SESSION_NAMES_ENG.getOrDefault(sid, sid);
+            }
+        }
+
+        // Il live timing è sempre accessibile (anche se la sessione non è in corso, la pagina web gestisce lo stato "content not available")
+        setLiveSession(eventTitle, totalLaps, underway, sessionName);
 
         if (nextEvent != null && !underway) {
             LocalDateTime eventDateTime = nextEvent.getStartDateTime();
             startCountdown(eventDateTime);
         } else if (!underway) {
             showResults(weeklyRace);
-        } else {
-            setLiveSession(eventTitle, totalLaps);
         }
     }
 
-    private void setLiveSession(String eventTitle, String totalLaps) {
+    private void setLiveSession(String eventTitle, String totalLaps, boolean isLive, String sessionName) {
         View liveSession = findViewById(R.id.event_live_card);
         View noLiveSession = findViewById(R.id.event_not_live_card);
 
@@ -385,8 +411,16 @@ public class EventActivity extends AppCompatActivity {
         Animation pulse = AnimationUtils.loadAnimation(this, R.anim.pulse_dynamic);
         liveIcon.startAnimation(pulse);
 
-        // Al click apre la LiveActivity passando il titolo dell'evento e i giri totali
-        liveSession.setOnClickListener(v -> NavigationUtils.navigateToLivePage(this, eventTitle, totalLaps));
+        // Al click apre la LiveActivity passando il titolo dell'evento, giri totali, circuit ID, immagine, stato live e nome sessione
+        liveSession.setOnClickListener(v -> NavigationUtils.navigateToLivePage(
+                this,
+                eventTitle,
+                totalLaps,
+                trackId,
+                (track != null) ? track.getTrack_minimal_layout_url() : null,
+                isLive,
+                sessionName
+        ));
 
         Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: EventActivity at " + System.currentTimeMillis());
         loadingScreen.hideLoadingScreen();
@@ -486,7 +520,7 @@ public class EventActivity extends AppCompatActivity {
 
         MutableLiveData<Result> resultMutableLiveData = raceResultViewModel.getRaceResults(weeklyRace.getRound());
         @SuppressWarnings("unchecked")
-        androidx.lifecycle.Observer<Result>[] observerHolder = new androidx.lifecycle.Observer[1];
+        Observer<Result>[] observerHolder = new Observer[1];
         observerHolder[0] = result -> {
             if (result instanceof Result.Loading) {
                 return;
@@ -602,7 +636,7 @@ public class EventActivity extends AppCompatActivity {
 
         boolean isFinished = (weeklyRace != null && weeklyRace.isWeekFinished())
                 || (session != null && session.isFinished())
-                || (session != null && session.getEndDateTime() != null && session.getEndDateTime().isBefore(org.threeten.bp.LocalDateTime.now()));
+                || (session != null && session.getEndDateTime() != null && session.getEndDateTime().isBefore(LocalDateTime.now()));
 
         if (isFinished) {
             String round = weeklyRace != null ? weeklyRace.getRound() : "";

@@ -1,0 +1,290 @@
+[
+  {
+    "driver": "55",
+    "lap": 20,
+    "startSec": 2226.5,
+    "endSec": 2247.1,
+    "duration": 20.6,
+    "outLapEndSec": 2349.3
+  },
+  {
+    "driver": "77",
+    "lap": 26,
+    "startSec": 2939.4,
+    "endSec": 2962.4,
+    "duration": 23.0,
+    "outLapEndSec": 3067.4
+  },
+  {
+    "driver": "10",
+    "lap": 30,
+    "startSec": 3285.4,
+    "endSec": 3306.1,
+    "duration": 20.7,
+    "outLapEndSec": 3444.5
+  },
+  {
+    "driver": "12",
+    "lap": 30,
+    "startSec": 3290.7,
+    "endSec": 3311.4,
+    "duration": 20.7,
+    "outLapEndSec": 3449.0
+  },
+  {
+    "driver": "1",
+    "lap": 30,
+    "startSec": 3301.5,
+    "endSec": 3322.3,
+    "duration": 20.8,
+    "outLapEndSec": 3461.3
+  },
+  {
+    "driver": "43",
+    "lap": 30,
+    "startSec": 3304.3,
+    "endSec": 3325.0,
+    "duration": 20.7,
+    "outLapEndSec": 3465.3
+  },
+  {
+    "driver": "87",
+    "lap": 30,
+    "startSec": 3310.7,
+    "endSec": 3331.9,
+    "duration": 21.2,
+    "outLapEndSec": 3471.4
+  },
+  {
+    "driver": "31",
+    "lap": 30,
+    "startSec": 3321.0,
+    "endSec": 3342.4,
+    "duration": 21.4,
+    "outLapEndSec": 3480.7
+  },
+  {
+    "driver": "41",
+    "lap": 30,
+    "startSec": 3329.9,
+    "endSec": 3352.0,
+    "duration": 22.1,
+    "outLapEndSec": 3490.2
+  },
+  {
+    "driver": "5",
+    "lap": 30,
+    "startSec": 3340.3,
+    "endSec": 3360.6,
+    "duration": 20.3,
+    "outLapEndSec": 3500.3
+  },
+  {
+    "driver": "11",
+    "lap": 30,
+    "startSec": 3352.4,
+    "endSec": 3374.6,
+    "duration": 22.2,
+    "outLapEndSec": 3514.7
+  },
+  {
+    "driver": "55",
+    "lap": 30,
+    "startSec": 3368.1,
+    "endSec": 3389.5,
+    "duration": 21.4,
+    "outLapEndSec": 3530.6
+  },
+  {
+    "driver": "63",
+    "lap": 31,
+    "startSec": 3388.7,
+    "endSec": 3409.3,
+    "duration": 20.6,
+    "outLapEndSec": 3564.7
+  },
+  {
+    "driver": "81",
+    "lap": 31,
+    "startSec": 3404.5,
+    "endSec": 3425.0,
+    "duration": 20.5,
+    "outLapEndSec": 3565.6
+  },
+  {
+    "driver": "3",
+    "lap": 31,
+    "startSec": 3405.1,
+    "endSec": 3425.9,
+    "duration": 20.8,
+    "outLapEndSec": 3567.2
+  },
+  {
+    "driver": "6",
+    "lap": 31,
+    "startSec": 3411.3,
+    "endSec": 3433.2,
+    "duration": 21.9,
+    "outLapEndSec": 3568.9
+  },
+  {
+    "driver": "16",
+    "lap": 31,
+    "startSec": 3413.9,
+    "endSec": 3435.9,
+    "duration": 22.0,
+    "outLapEndSec": 3575.7
+  },
+  {
+    "driver": "44",
+    "lap": 31,
+    "startSec": 3426.0,
+    "endSec": 3448.1,
+    "duration": 22.1,
+    "outLapEndSec": 3578.1
+  },
+  {
+    "driver": "30",
+    "lap": 31,
+    "startSec": 3468.2,
+    "endSec": 3489.9,
+    "duration": 21.7,
+    "outLapEndSec": 3607.6
+  },
+  {
+    "driver": "27",
+    "lap": 32,
+    "startSec": 3619.3,
+    "endSec": 3639.4,
+    "duration": 20.1,
+    "outLapEndSec": 3750.6
+  },
+  {
+    "driver": "63",
+    "lap": 36,
+    "startSec": 4187.6,
+    "endSec": 4202.6,
+    "duration": 15.1,
+    "outLapEndSec": 4349.2
+  },
+  {
+    "driver": "3",
+    "lap": 36,
+    "startSec": 4188.9,
+    "endSec": 4204.1,
+    "duration": 15.2,
+    "outLapEndSec": 4350.1
+  },
+  {
+    "driver": "81",
+    "lap": 36,
+    "startSec": 4193.2,
+    "endSec": 4208.3,
+    "duration": 15.1,
+    "outLapEndSec": 4352.0
+  },
+  {
+    "driver": "6",
+    "lap": 36,
+    "startSec": 4195.6,
+    "endSec": 4210.8,
+    "duration": 15.2,
+    "outLapEndSec": 4353.3
+  },
+  {
+    "driver": "16",
+    "lap": 36,
+    "startSec": 4198.2,
+    "endSec": 4213.7,
+    "duration": 15.5,
+    "outLapEndSec": 4355.0
+  },
+  {
+    "driver": "44",
+    "lap": 36,
+    "startSec": 4199.3,
+    "endSec": 4215.8,
+    "duration": 16.5,
+    "outLapEndSec": 4357.1
+  },
+  {
+    "driver": "12",
+    "lap": 36,
+    "startSec": 4200.8,
+    "endSec": 4217.1,
+    "duration": 16.3,
+    "outLapEndSec": 4359.0
+  },
+  {
+    "driver": "31",
+    "lap": 36,
+    "startSec": 4201.8,
+    "endSec": 4217.9,
+    "duration": 16.1,
+    "outLapEndSec": 4360.1
+  },
+  {
+    "driver": "87",
+    "lap": 36,
+    "startSec": 4202.8,
+    "endSec": 4219.1,
+    "duration": 16.3,
+    "outLapEndSec": 4361.4
+  },
+  {
+    "driver": "41",
+    "lap": 36,
+    "startSec": 4203.8,
+    "endSec": 4219.8,
+    "duration": 16.0,
+    "outLapEndSec": 4362.5
+  },
+  {
+    "driver": "27",
+    "lap": 36,
+    "startSec": 4205.4,
+    "endSec": 4220.7,
+    "duration": 15.3,
+    "outLapEndSec": 4364.0
+  },
+  {
+    "driver": "55",
+    "lap": 36,
+    "startSec": 4206.7,
+    "endSec": 4222.6,
+    "duration": 15.9,
+    "outLapEndSec": 4364.9
+  },
+  {
+    "driver": "5",
+    "lap": 36,
+    "startSec": 4208.0,
+    "endSec": 4223.2,
+    "duration": 15.2,
+    "outLapEndSec": 4365.3
+  },
+  {
+    "driver": "11",
+    "lap": 36,
+    "startSec": 4209.5,
+    "endSec": 4224.8,
+    "duration": 15.3,
+    "outLapEndSec": 4366.0
+  },
+  {
+    "driver": "30",
+    "lap": 36,
+    "startSec": 4214.0,
+    "endSec": 4237.6,
+    "duration": 23.6,
+    "outLapEndSec": 4377.0
+  },
+  {
+    "driver": "77",
+    "lap": 36,
+    "startSec": 4248.4,
+    "endSec": 4263.4,
+    "duration": 15.0,
+    "outLapEndSec": 4405.8
+  }
+]

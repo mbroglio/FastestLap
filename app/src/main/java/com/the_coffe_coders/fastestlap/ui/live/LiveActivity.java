@@ -1,197 +1,308 @@
 package com.the_coffe_coders.fastestlap.ui.live;
 
+import android.annotation.SuppressLint;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.CheckBox;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import androidx.activity.EdgeToEdge;
+import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import androidx.viewpager2.widget.ViewPager2;
 
-import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.tabs.TabItem;
-import com.google.android.material.tabs.TabLayout;
-import com.google.android.material.tabs.TabLayoutMediator;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.adapter.LivePagerAdapter;
-
-import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.widget.TextView;
-
-import androidx.lifecycle.ViewModelProvider;
-
-import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.f1.livetiming.RaceControlMessage;
-import com.the_coffe_coders.fastestlap.ui.live.viewmodel.LiveViewModel;
-import com.the_coffe_coders.fastestlap.ui.live.viewmodel.LiveViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
-import java.util.List;
-
+/**
+ * LiveActivity
+ *
+ * Avvia ed esegue il modulo Live Timing su Web (formato track_map.html),
+ * configurandolo in base alle informazioni ricevute (titolo sessione, ID circuito,
+ * immagine del circuito, giri totali, stato sessione live).
+ */
 public class LiveActivity extends AppCompatActivity {
 
-    private AppBarLayout appBarLayout;
-    private MaterialToolbar toolbar;
-    private TabLayout tabLayout;
-    private ViewPager2 viewPager;
-    private CheckBox fullTelemetryCheckbox;
-    private LiveViewModel liveViewModel;
+    public static final String EXTRA_EVENT_TITLE = "EVENT_TITLE";
+    public static final String EXTRA_SESSION_NAME = "SESSION_NAME";
+    public static final String EXTRA_CIRCUIT_ID = "CIRCUIT_ID";
+    public static final String EXTRA_CIRCUIT_IMAGE = "CIRCUIT_IMAGE";
+    public static final String EXTRA_TOTAL_LAPS = "TOTAL_LAPS";
+    public static final String EXTRA_IS_LIVE = "IS_LIVE";
 
+    private MaterialToolbar toolbar;
+    private WebView webView;
+    private ProgressBar progressBar;
+
+    private String eventTitle = "LIVE TIMING";
+    private String sessionName = "";
+    private String circuitId = "sepang";
+    private String circuitImageUrl = null;
+    private String totalLaps = "55";
+    private boolean isLive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_live);
 
-        appBarLayout = findViewById(R.id.top_bar_layout);
         toolbar = findViewById(R.id.top_app_bar);
-        tabLayout = findViewById(R.id.tab_layout);
-        viewPager = findViewById(R.id.view_pager);
-        //fullTelemetryCheckbox = findViewById(R.id.full_telemetry_checkbox);
+        webView = findViewById(R.id.live_timing_webview);
+        progressBar = findViewById(R.id.live_web_loading_bar);
 
-        UIUtils.applyWindowInsets(toolbar);
-
-        UIUtils.applyWindowInsets(viewPager);
-
-        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
-
-        String eventTitle = getIntent().getStringExtra("EVENT_TITLE");
-        if (eventTitle != null && !eventTitle.isEmpty()) {
-            toolbar.setTitle(eventTitle);
-        }
-
-        ViewPager2 viewPager = findViewById(R.id.view_pager);
-        LivePagerAdapter adapter = new LivePagerAdapter(this);
-        viewPager.setAdapter(adapter);
-        viewPager.setUserInputEnabled(false); // solo click sul tab, nessuno swipe
-
-        TabLayout tabLayout = findViewById(R.id.tab_layout);
-        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
-            switch (position) {
-                case 0:
-                    tab.setText("LIVE");
-                    break;
-                case 1:
-                    tab.setText("RACE CONTROL");
-                    break;
-                case 2:
-                    tab.setText("VERSUS");
-                    break;
-            }
-        }).attach();
-
-        // Controlla il polling in base alla tab selezionata
-        liveViewModel = new ViewModelProvider(
-                this,
-                new LiveViewModelFactory(getApplication())
-        ).get(LiveViewModel.class);
-
-        viewPager.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-            private static final int RACE_CONTROL_TAB = 1;
-
-            @Override
-            public void onPageSelected(int position) {
-                if (position == RACE_CONTROL_TAB) {
-                    liveViewModel.startPolling();
-                } else {
-                    liveViewModel.stopPolling();
-                }
-            }
+        View rootLayout = findViewById(R.id.main);
+        androidx.core.view.ViewCompat.setOnApplyWindowInsetsListener(rootLayout, (v, insets) -> {
+            androidx.core.graphics.Insets bars = insets.getInsets(
+                    androidx.core.view.WindowInsetsCompat.Type.systemBars()
+                            | androidx.core.view.WindowInsetsCompat.Type.displayCutout()
+            );
+            v.setPadding(bars.left, bars.top, bars.right, bars.bottom);
+            return insets;
         });
 
-        setupSessionSituationObserver();
+        extractIntentData();
+        setupToolbar();
+        setupWebView();
+        setupBackNavigation();
+        loadCircuitImageIfNeeded();
     }
 
-    private void setupSessionSituationObserver() {
-        TextView currentLapText = findViewById(R.id.current_lap_text);
-        TextView eventSituationText = findViewById(R.id.event_situation_text);
-        View eventSituationTextLayout = findViewById(R.id.event_situation_text_layout);
-        View light1 = findViewById(R.id.event_situation_light_1);
-        View light2 = findViewById(R.id.event_situation_light_2);
+    private void extractIntentData() {
+        Intent intent = getIntent();
+        if (intent == null) return;
 
-        String totalLaps = getIntent().getStringExtra("TOTAL_LAPS");
-        if (totalLaps == null || totalLaps.isEmpty()) {
-            totalLaps = "53";
+        if (intent.hasExtra(EXTRA_IS_LIVE)) {
+            isLive = intent.getBooleanExtra(EXTRA_IS_LIVE, false);
         }
-        final String totalLapsFormatted = totalLaps;
 
-        LiveViewModel liveViewModel = new ViewModelProvider(
-                this,
-                new LiveViewModelFactory(getApplication())
-        ).get(LiveViewModel.class);
+        if (intent.hasExtra(EXTRA_SESSION_NAME)) {
+            String sess = intent.getStringExtra(EXTRA_SESSION_NAME);
+            if (sess != null && !sess.trim().isEmpty()) {
+                sessionName = sess.trim();
+            }
+        }
 
-        liveViewModel.getRaceControlMessages().observe(this, result -> {
-            if (result instanceof Result.RaceControlSuccess) {
-                List<RaceControlMessage> messages = ((Result.RaceControlSuccess) result).getData();
-                if (messages != null && !messages.isEmpty()) {
-                    int maxLap = -1;
-                    String latestFlag = null;
+        if (intent.hasExtra(EXTRA_EVENT_TITLE)) {
+            String title = intent.getStringExtra(EXTRA_EVENT_TITLE);
+            if (title != null && !title.trim().isEmpty()) {
+                eventTitle = title.trim();
+            }
+        }
 
-                    for (RaceControlMessage msg : messages) {
-                        if (msg.getLapNumber() != null && msg.getLapNumber() > maxLap) {
-                            maxLap = msg.getLapNumber();
+        if (intent.hasExtra(EXTRA_CIRCUIT_ID)) {
+            String id = intent.getStringExtra(EXTRA_CIRCUIT_ID);
+            if (id != null && !id.trim().isEmpty()) {
+                circuitId = id.trim().toLowerCase();
+            }
+        } else if (eventTitle != null) {
+            String lower = eventTitle.toLowerCase();
+            if (lower.contains("baku") || lower.contains("azerbaijan") || lower.contains("azerbaigian")) {
+                circuitId = "baku";
+            } else if (lower.contains("sepang") || lower.contains("malaysia") || lower.contains("malesia")) {
+                circuitId = "sepang";
+            }
+        }
+
+        if (intent.hasExtra(EXTRA_CIRCUIT_IMAGE)) {
+            circuitImageUrl = intent.getStringExtra(EXTRA_CIRCUIT_IMAGE);
+        }
+
+        if (intent.hasExtra(EXTRA_TOTAL_LAPS)) {
+            String laps = intent.getStringExtra(EXTRA_TOTAL_LAPS);
+            if (laps != null && !laps.trim().isEmpty()) {
+                totalLaps = laps.trim();
+            }
+        } else {
+            totalLaps = "baku".equalsIgnoreCase(circuitId) ? "51" : "55";
+        }
+    }
+
+    private void loadCircuitImageIfNeeded() {
+        if (circuitImageUrl == null || circuitImageUrl.isEmpty()) {
+            com.the_coffe_coders.fastestlap.source.track.FirebaseTrackDataSource.getInstance()
+                    .getTrack(circuitId, new com.the_coffe_coders.fastestlap.repository.track.TrackCallback() {
+                        @Override
+                        public void onTrackLoaded(com.the_coffe_coders.fastestlap.domain.f1.track.Track t) {
+                            if (t != null && t.getTrack_minimal_layout_url() != null && !t.getTrack_minimal_layout_url().isEmpty()) {
+                                circuitImageUrl = t.getTrack_minimal_layout_url();
+                                runOnUiThread(() -> {
+                                    if (webView != null) {
+                                        webView.evaluateJavascript("if (window.setCircuitImage) window.setCircuitImage('" + circuitImageUrl + "');", null);
+                                    }
+                                });
+                            }
                         }
-                    }
 
-                    // Prende l'ultimo flag registrato in ordine cronologico
-                    for (int i = messages.size() - 1; i >= 0; i--) {
-                        RaceControlMessage msg = messages.get(i);
-                        if (msg.getFlag() != null && !msg.getFlag().isEmpty()) {
-                            latestFlag = msg.getFlag().toUpperCase();
-                            break;
+                        @Override
+                        public void onError(Exception e) {
+                            // Fallback to local asset
                         }
-                    }
+                    });
+        }
+    }
 
-                    // Formato LAP: XX/YY
-                    if (currentLapText != null) {
-                        if (maxLap > 0) {
-                            currentLapText.setText("LAP: " + maxLap + "/" + totalLapsFormatted);
-                        } else {
-                            currentLapText.setText("LAP: 0/" + totalLapsFormatted);
-                        }
-                    }
+    private void setupToolbar() {
+        if (toolbar == null) return;
+        toolbar.setTitle(eventTitle);
+        toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
+    }
 
-                    // Gestione colore e testo bandiera + luci circolari laterali
-                    if (eventSituationText != null && eventSituationTextLayout != null) {
-                        int flagColor;
-                        if (latestFlag != null && latestFlag.contains("YELLOW")) {
-                            flagColor = Color.parseColor("#FBC02D");
-                            eventSituationText.setText("YELLOW\nFLAG");
-                            eventSituationTextLayout.setBackgroundResource(R.drawable.background_all_margins_filled_yellow);
-                        } else if (latestFlag != null && latestFlag.contains("RED")) {
-                            flagColor = Color.parseColor("#D32F2F");
-                            eventSituationText.setText("RED\nFLAG");
-                            eventSituationTextLayout.setBackgroundResource(R.drawable.background_all_margins_filled_red);
-                        } else {
-                            // Default o GREEN / CLEAR / CHEQUERED -> GREEN FLAG su sfondo verde
-                            flagColor = Color.parseColor("#2E7D32");
-                            eventSituationText.setText("GREEN\nFLAG");
-                            eventSituationTextLayout.setBackgroundResource(R.drawable.background_all_margins_filled_green);
-                        }
+    @SuppressLint("SetJavaScriptEnabled")
+    private void setupWebView() {
+        if (webView == null) return;
 
-                        if (light1 != null) {
-                            light1.setBackgroundTintList(ColorStateList.valueOf(flagColor));
-                        }
-                        if (light2 != null) {
-                            light2.setBackgroundTintList(ColorStateList.valueOf(flagColor));
-                        }
+        WebSettings settings = webView.getSettings();
+        settings.setJavaScriptEnabled(true);
+        settings.setDomStorageEnabled(true);
+        settings.setAllowFileAccess(true);
+        settings.setAllowContentAccess(true);
+        settings.setLoadWithOverviewMode(true);
+        settings.setUseWideViewPort(true);
+        settings.setBuiltInZoomControls(true);
+        settings.setDisplayZoomControls(false);
+        settings.setSupportZoom(true);
+
+        // Hardware acceleration per canvas a 60 FPS
+        webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+
+        // JavaScript Bridge bidirezionale per passare info del tracciato al modulo web
+        webView.addJavascriptInterface(new Object() {
+            @JavascriptInterface
+            public boolean isSessionLive() {
+                // Momentaneamente forzato a true per far partire la simulazione di Sepang una volta aperta la pagina
+                return true;
+            }
+
+            @JavascriptInterface
+            public String getSessionName() {
+                return (sessionName != null && !sessionName.trim().isEmpty())
+                        ? sessionName
+                        : "Gara (Simulazione)";
+            }
+
+            @JavascriptInterface
+            public String getEventTitle() {
+                return (eventTitle != null && !eventTitle.trim().isEmpty() && !eventTitle.equalsIgnoreCase("live timing"))
+                        ? eventTitle
+                        : "FORMULA 1 PETRONAS MALAYSIAN GP";
+            }
+
+            @JavascriptInterface
+            public String getCircuitId() {
+                // Momentaneamente garantisce Sepang per la simulazione richiesta
+                return "sepang";
+            }
+
+            @JavascriptInterface
+            public String getTotalLaps() {
+                return totalLaps != null ? totalLaps : "55";
+            }
+
+            @JavascriptInterface
+            public String getCircuitImageUrl() {
+                return circuitImageUrl != null ? circuitImageUrl : "";
+            }
+
+            @JavascriptInterface
+            public void closeLive() {
+                runOnUiThread(LiveActivity.this::finish);
+            }
+        }, "FastestLapBridge");
+
+        webView.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public void onProgressChanged(WebView view, int newProgress) {
+                if (progressBar != null) {
+                    if (newProgress < 100) {
+                        progressBar.setVisibility(View.VISIBLE);
+                        progressBar.setProgress(newProgress);
+                    } else {
+                        progressBar.setVisibility(View.GONE);
                     }
                 }
             }
         });
+
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                Uri url = request.getUrl();
+                if (url != null && "file".equalsIgnoreCase(url.getScheme())) {
+                    return false; // Carica internamente gli asset HTML5/JS
+                }
+                // Link esterni
+                if (url != null) {
+                    try {
+                        Intent externalIntent = new Intent(Intent.ACTION_VIEW, url);
+                        startActivity(externalIntent);
+                        return true;
+                    } catch (Exception ignored) {
+                    }
+                }
+                return false;
+            }
+        });
+
+        // Carica la pagina generale di Live Timing (adattata per landscape e smartphone)
+        String url = "file:///android_asset/live_timing/track_map.html";
+        webView.loadUrl(url);
+    }
+
+    private void setupBackNavigation() {
+        getOnBackPressedDispatcher().addCallback(this, new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                if (webView != null && webView.canGoBack()) {
+                    webView.goBack();
+                } else {
+                    setEnabled(false);
+                    getOnBackPressedDispatcher().onBackPressed();
+                }
+            }
+        });
+    }
+
+    // Metodi stub per compatibilità con eventuali chiamate legacy
+    public void openLiveTrackMap() {
+        // Il modulo web è già a schermo intero
+    }
+
+    public void setFullTelemetryMode(boolean full) {
+        // Gestito nativamente nel modulo web
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (webView != null) {
+            webView.onResume();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (webView != null) {
+            webView.onPause();
+        }
     }
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
-        if (liveViewModel != null) {
-            liveViewModel.stopPolling();
+        if (webView != null) {
+            webView.destroy();
+            webView = null;
         }
+        super.onDestroy();
     }
 }

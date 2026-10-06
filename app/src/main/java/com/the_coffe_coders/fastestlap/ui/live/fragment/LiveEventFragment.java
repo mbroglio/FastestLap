@@ -65,6 +65,15 @@ public class LiveEventFragment extends Fragment {
 
         //updateTableHeaderAndRows(fullTelemetryCheckbox.isChecked());
 
+        View btnOpenTrackMap = view.findViewById(R.id.btn_open_track_map);
+        if (btnOpenTrackMap != null) {
+            btnOpenTrackMap.setOnClickListener(v -> {
+                if (requireActivity() instanceof LiveActivity) {
+                    ((LiveActivity) requireActivity()).openLiveTrackMap();
+                }
+            });
+        }
+
         return view;
     }
 

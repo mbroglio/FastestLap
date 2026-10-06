@@ -7,11 +7,35 @@
     android:background="@color/screen_background_color"
     tools:context=".ui.live.fragment.LiveEventFragment">
 
+    <LinearLayout
+        android:id="@+id/live_action_bar_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="6dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_open_track_map"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:backgroundTint="#D32F2F"
+            android:fontFamily="@font/orbitron_bold"
+            android:text="🏎️ APRI MAPPA LIVE TRACCIATO"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:cornerRadius="6dp" />
+    </LinearLayout>
+
     <FrameLayout
         android:id="@+id/live_table_rows"
         android:layout_width="match_parent"
         android:layout_marginTop="0dp"
-        android:layout_height="25dp">
+        android:layout_height="25dp"
+        android:layout_below="@id/live_action_bar_container">
 
         <include
             android:id="@+id/race_header_short"

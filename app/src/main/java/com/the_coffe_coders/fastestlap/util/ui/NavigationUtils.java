@@ -129,12 +129,30 @@ public class NavigationUtils {
     }
 
     public static void navigateToLivePage(Context context, String eventTitle, String totalLaps) {
+        navigateToLivePage(context, eventTitle, totalLaps, null, null);
+    }
+
+    public static void navigateToLivePage(Context context, String eventTitle, String totalLaps, String circuitId, String circuitImageUrl) {
+        navigateToLivePage(context, eventTitle, totalLaps, circuitId, circuitImageUrl, false, null);
+    }
+
+    public static void navigateToLivePage(Context context, String eventTitle, String totalLaps, String circuitId, String circuitImageUrl, boolean isLive, String sessionName) {
         Intent intent = new Intent(context, com.the_coffe_coders.fastestlap.ui.live.LiveActivity.class);
         if (eventTitle != null) {
-            intent.putExtra("EVENT_TITLE", eventTitle);
+            intent.putExtra(com.the_coffe_coders.fastestlap.ui.live.LiveActivity.EXTRA_EVENT_TITLE, eventTitle);
         }
         if (totalLaps != null) {
-            intent.putExtra("TOTAL_LAPS", totalLaps);
+            intent.putExtra(com.the_coffe_coders.fastestlap.ui.live.LiveActivity.EXTRA_TOTAL_LAPS, totalLaps);
+        }
+        if (circuitId != null) {
+            intent.putExtra(com.the_coffe_coders.fastestlap.ui.live.LiveActivity.EXTRA_CIRCUIT_ID, circuitId);
+        }
+        if (circuitImageUrl != null) {
+            intent.putExtra(com.the_coffe_coders.fastestlap.ui.live.LiveActivity.EXTRA_CIRCUIT_IMAGE, circuitImageUrl);
+        }
+        intent.putExtra(com.the_coffe_coders.fastestlap.ui.live.LiveActivity.EXTRA_IS_LIVE, isLive);
+        if (sessionName != null) {
+            intent.putExtra(com.the_coffe_coders.fastestlap.ui.live.LiveActivity.EXTRA_SESSION_NAME, sessionName);
         }
         context.startActivity(intent);
     }

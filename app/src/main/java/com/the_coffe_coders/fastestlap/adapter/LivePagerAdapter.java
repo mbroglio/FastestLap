@@ -8,8 +8,15 @@ import com.the_coffe_coders.fastestlap.ui.live.fragment.*;
 
 public class LivePagerAdapter extends FragmentStateAdapter {
 
+    private String circuitId = null;
+
     public LivePagerAdapter(@NonNull FragmentActivity fragmentActivity) {
         super(fragmentActivity);
+    }
+
+    public LivePagerAdapter(@NonNull FragmentActivity fragmentActivity, String circuitId) {
+        super(fragmentActivity);
+        this.circuitId = circuitId;
     }
 
     @NonNull
@@ -22,12 +29,14 @@ public class LivePagerAdapter extends FragmentStateAdapter {
                 return new RaceControlFragment();
             case 2:
                 return new VersusFragment();
+            case 3:
+                return circuitId != null ? LiveTrackMapFragment.newInstance(circuitId) : new LiveTrackMapFragment();
         }
         return new LiveEventFragment();
     }
 
     @Override
     public int getItemCount() {
-        return 3;
+        return 4;
     }
 }

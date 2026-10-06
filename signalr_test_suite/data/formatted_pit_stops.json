@@ -1,0 +1,659 @@
+[
+  {
+    "driver": "11",
+    "lap": 1,
+    "startSec": 249.9,
+    "endSec": 287.9,
+    "duration": 38,
+    "tireFrom": "S",
+    "tireTo": "I"
+  },
+  {
+    "driver": "81",
+    "lap": 2,
+    "startSec": 405.3,
+    "endSec": 486.7,
+    "duration": 81.4,
+    "tireFrom": "I",
+    "tireTo": "H"
+  },
+  {
+    "driver": "5",
+    "lap": 2,
+    "startSec": 406.5,
+    "endSec": 480.3,
+    "duration": 73.8,
+    "tireFrom": "I",
+    "tireTo": "S"
+  },
+  {
+    "driver": "18",
+    "lap": 2,
+    "startSec": 407.3,
+    "endSec": 467.7,
+    "duration": 60.4,
+    "tireFrom": "I",
+    "tireTo": "H"
+  },
+  {
+    "driver": "27",
+    "lap": 2,
+    "startSec": 408.6,
+    "endSec": 469.7,
+    "duration": 61.1,
+    "tireFrom": "I",
+    "tireTo": "S"
+  },
+  {
+    "driver": "11",
+    "lap": 2,
+    "startSec": 409.2,
+    "endSec": 450.9,
+    "duration": 41.7,
+    "tireFrom": "I",
+    "tireTo": "M"
+  },
+  {
+    "driver": "16",
+    "lap": 3,
+    "startSec": 579.7,
+    "endSec": 617.7,
+    "duration": 38,
+    "tireFrom": "I",
+    "tireTo": "S"
+  },
+  {
+    "driver": "27",
+    "lap": 8,
+    "startSec": 1115.2,
+    "endSec": 1142.7,
+    "duration": 27.5,
+    "tireFrom": "S",
+    "tireTo": "S"
+  },
+  {
+    "driver": "12",
+    "lap": 9,
+    "startSec": 1203,
+    "endSec": 1230.7,
+    "duration": 27.7,
+    "tireFrom": "I",
+    "tireTo": "M"
+  },
+  {
+    "driver": "3",
+    "lap": 9,
+    "startSec": 1203.8,
+    "endSec": 1231.4,
+    "duration": 27.6,
+    "tireFrom": "S",
+    "tireTo": "S"
+  },
+  {
+    "driver": "63",
+    "lap": 9,
+    "startSec": 1209.3,
+    "endSec": 1238.1,
+    "duration": 28.8,
+    "tireFrom": "S",
+    "tireTo": "S"
+  },
+  {
+    "driver": "6",
+    "lap": 9,
+    "startSec": 1217.9,
+    "endSec": 1246,
+    "duration": 28.1,
+    "tireFrom": "S",
+    "tireTo": "S"
+  },
+  {
+    "driver": "30",
+    "lap": 9,
+    "startSec": 1227.1,
+    "endSec": 1255.7,
+    "duration": 28.6,
+    "tireFrom": "H",
+    "tireTo": "H"
+  },
+  {
+    "driver": "31",
+    "lap": 9,
+    "startSec": 1228.9,
+    "endSec": 1257.5,
+    "duration": 28.6,
+    "tireFrom": "S",
+    "tireTo": "H"
+  },
+  {
+    "driver": "41",
+    "lap": 9,
+    "startSec": 1233.9,
+    "endSec": 1262.4,
+    "duration": 28.5,
+    "tireFrom": "H",
+    "tireTo": "H"
+  },
+  {
+    "driver": "55",
+    "lap": 9,
+    "startSec": 1236.2,
+    "endSec": 1268.2,
+    "duration": 32,
+    "tireFrom": "S",
+    "tireTo": "H"
+  },
+  {
+    "driver": "5",
+    "lap": 9,
+    "startSec": 1241.2,
+    "endSec": 1269,
+    "duration": 27.8,
+    "tireFrom": "S",
+    "tireTo": "H"
+  },
+  {
+    "driver": "81",
+    "lap": 9,
+    "startSec": 1242,
+    "endSec": 1271.2,
+    "duration": 29.2,
+    "tireFrom": "H",
+    "tireTo": "M"
+  },
+  {
+    "driver": "23",
+    "lap": 9,
+    "startSec": 1244.1,
+    "endSec": 1276.5,
+    "duration": 32.4,
+    "tireFrom": "S",
+    "tireTo": "H"
+  },
+  {
+    "driver": "18",
+    "lap": 9,
+    "startSec": 1244.3,
+    "endSec": 1272.3,
+    "duration": 28,
+    "tireFrom": "H",
+    "tireTo": "H"
+  },
+  {
+    "driver": "11",
+    "lap": 9,
+    "startSec": 1254.6,
+    "endSec": 1284.4,
+    "duration": 29.8,
+    "tireFrom": "M",
+    "tireTo": "H"
+  },
+  {
+    "driver": "1",
+    "lap": 9,
+    "startSec": 1295,
+    "endSec": 1325.7,
+    "duration": 30.7,
+    "tireFrom": "H",
+    "tireTo": "S"
+  },
+  {
+    "driver": "16",
+    "lap": 9,
+    "startSec": 1298,
+    "endSec": 1326.6,
+    "duration": 28.6,
+    "tireFrom": "S",
+    "tireTo": "S"
+  },
+  {
+    "driver": "14",
+    "lap": 9,
+    "startSec": 1305.4,
+    "endSec": 1333.7,
+    "duration": 28.3,
+    "tireFrom": "H",
+    "tireTo": "S"
+  },
+  {
+    "driver": "10",
+    "lap": 9,
+    "startSec": 1322.8,
+    "endSec": 1350.9,
+    "duration": 28.1,
+    "tireFrom": "H",
+    "tireTo": "S"
+  },
+  {
+    "driver": "43",
+    "lap": 9,
+    "startSec": 1335.5,
+    "endSec": 1363.4,
+    "duration": 27.9,
+    "tireFrom": "H",
+    "tireTo": "M"
+  },
+  {
+    "driver": "87",
+    "lap": 10,
+    "startSec": 1468,
+    "endSec": 1496.5,
+    "duration": 28.5,
+    "tireFrom": "M",
+    "tireTo": "H"
+  },
+  {
+    "driver": "5",
+    "lap": 15,
+    "startSec": 2024.9,
+    "endSec": 2061.6,
+    "duration": 36.7,
+    "tireFrom": "H",
+    "tireTo": "S"
+  },
+  {
+    "driver": "23",
+    "lap": 16,
+    "startSec": 2127.9,
+    "endSec": 2155.5,
+    "duration": 27.6,
+    "tireFrom": "H",
+    "tireTo": "S"
+  },
+  {
+    "driver": "11",
+    "lap": 18,
+    "startSec": 2342.8,
+    "endSec": 2371.6,
+    "duration": 28.8,
+    "tireFrom": "H",
+    "tireTo": "H"
+  },
+  {
+    "driver": "11",
+    "lap": 21,
+    "startSec": 2681.8,
+    "endSec": 2711,
+    "duration": 29.2,
+    "tireFrom": "H",
+    "tireTo": "M"
+  },
+  {
+    "driver": "87",
+    "lap": 24,
+    "startSec": 2966.3,
+    "endSec": 2995.3,
+    "duration": 29,
+    "tireFrom": "H",
+    "tireTo": "H"
+  },
+  {
+    "driver": "10",
+    "lap": 25,
+    "startSec": 3067.4,
+    "endSec": 3095.1,
+    "duration": 27.7,
+    "tireFrom": "S",
+    "tireTo": "S"
+  },
+  {
+    "driver": "55",
+    "lap": 26,
+    "startSec": 3171.2,
+    "endSec": 3199.4,
+    "duration": 28.2,
+    "tireFrom": "H",
+    "tireTo": "S"
+  },
+  {
+    "driver": "16",
+    "lap": 28,
+    "startSec": 3360,
+    "endSec": 3387.9,
+    "duration": 27.9,
+    "tireFrom": "S",
+    "tireTo": "S"
+  },
+  {
+    "driver": "41",
+    "lap": 28,
+    "startSec": 3367.2,
+    "endSec": 3396.4,
+    "duration": 29.2,
+    "tireFrom": "H",
+    "tireTo": "S"
+  },
+  {
+    "driver": "18",
+    "lap": 28,
+    "startSec": 3369.6,
+    "endSec": 3397.9,
+    "duration": 28.3,
+    "tireFrom": "H",
+    "tireTo": "S"
+  },
+  {
+    "driver": "31",
+    "lap": 29,
+    "startSec": 3468,
+    "endSec": 3497,
+    "duration": 29,
+    "tireFrom": "I",
+    "tireTo": "S"
+  },
+  {
+    "driver": "23",
+    "lap": 29,
+    "startSec": 3505.5,
+    "endSec": 3533.3,
+    "duration": 27.8,
+    "tireFrom": "I",
+    "tireTo": "S"
+  },
+  {
+    "driver": "30",
+    "lap": 30,
+    "startSec": 3568,
+    "endSec": 3596,
+    "duration": 28,
+    "tireFrom": "I",
+    "tireTo": "S"
+  },
+  {
+    "driver": "6",
+    "lap": 31,
+    "startSec": 3650.1,
+    "endSec": 3678.6,
+    "duration": 28.5,
+    "tireFrom": "I",
+    "tireTo": "S"
+  },
+  {
+    "driver": "44",
+    "lap": 31,
+    "startSec": 3652.9,
+    "endSec": 3680.7,
+    "duration": 27.8,
+    "tireFrom": "S",
+    "tireTo": "S"
+  },
+  {
+    "driver": "14",
+    "lap": 31,
+    "startSec": 3680.4,
+    "endSec": 3708,
+    "duration": 27.6,
+    "tireFrom": "M",
+    "tireTo": "S"
+  },
+  {
+    "driver": "43",
+    "lap": 31,
+    "startSec": 3695.7,
+    "endSec": 3723.3,
+    "duration": 27.6,
+    "tireFrom": "S",
+    "tireTo": "M"
+  },
+  {
+    "driver": "63",
+    "lap": 32,
+    "startSec": 3741.6,
+    "endSec": 3769.2,
+    "duration": 27.6,
+    "tireFrom": "I",
+    "tireTo": "S"
+  },
+  {
+    "driver": "27",
+    "lap": 32,
+    "startSec": 3784.2,
+    "endSec": 3812.6,
+    "duration": 28.4,
+    "tireFrom": "S",
+    "tireTo": "S"
+  },
+  {
+    "driver": "3",
+    "lap": 33,
+    "startSec": 3828.2,
+    "endSec": 3856,
+    "duration": 27.8,
+    "tireFrom": "I",
+    "tireTo": "S"
+  },
+  {
+    "driver": "12",
+    "lap": 33,
+    "startSec": 3838.3,
+    "endSec": 3865.9,
+    "duration": 27.6,
+    "tireFrom": "M",
+    "tireTo": "S"
+  },
+  {
+    "driver": "81",
+    "lap": 33,
+    "startSec": 3875.9,
+    "endSec": 3904.2,
+    "duration": 28.3,
+    "tireFrom": "M",
+    "tireTo": "H"
+  },
+  {
+    "driver": "1",
+    "lap": 34,
+    "startSec": 3980.9,
+    "endSec": 4009.1,
+    "duration": 28.2,
+    "tireFrom": "M",
+    "tireTo": "S"
+  },
+  {
+    "driver": "5",
+    "lap": 34,
+    "startSec": 4053.6,
+    "endSec": 4105.4,
+    "duration": 51.8,
+    "tireFrom": "S",
+    "tireTo": "S"
+  },
+  {
+    "driver": "10",
+    "lap": 37,
+    "startSec": 4329.9,
+    "endSec": 4357.7,
+    "duration": 27.8,
+    "tireFrom": "S",
+    "tireTo": "S"
+  },
+  {
+    "driver": "87",
+    "lap": 38,
+    "startSec": 4431.3,
+    "endSec": 4459.3,
+    "duration": 28,
+    "tireFrom": "S",
+    "tireTo": "H"
+  },
+  {
+    "driver": "11",
+    "lap": 39,
+    "startSec": 4610.4,
+    "endSec": 4641.7,
+    "duration": 31.3,
+    "tireFrom": "M",
+    "tireTo": "S"
+  },
+  {
+    "driver": "31",
+    "lap": 41,
+    "startSec": 4737.2,
+    "endSec": 4765.6,
+    "duration": 28.4,
+    "tireFrom": "H",
+    "tireTo": "S"
+  },
+  {
+    "driver": "43",
+    "lap": 42,
+    "startSec": 4850.9,
+    "endSec": 4879.1,
+    "duration": 28.2,
+    "tireFrom": "S",
+    "tireTo": "M"
+  },
+  {
+    "driver": "3",
+    "lap": 43,
+    "startSec": 4872.8,
+    "endSec": 4900.4,
+    "duration": 27.6,
+    "tireFrom": "I",
+    "tireTo": "S"
+  },
+  {
+    "driver": "55",
+    "lap": 42,
+    "startSec": 4873.2,
+    "endSec": 4912.8,
+    "duration": 39.6,
+    "tireFrom": "I",
+    "tireTo": "S"
+  },
+  {
+    "driver": "44",
+    "lap": 43,
+    "startSec": 4914.8,
+    "endSec": 4942.8,
+    "duration": 28,
+    "tireFrom": "M",
+    "tireTo": "S"
+  },
+  {
+    "driver": "16",
+    "lap": 43,
+    "startSec": 4933.4,
+    "endSec": 4961.5,
+    "duration": 28.1,
+    "tireFrom": "S",
+    "tireTo": "S"
+  },
+  {
+    "driver": "41",
+    "lap": 43,
+    "startSec": 4971.1,
+    "endSec": 4999.1,
+    "duration": 28,
+    "tireFrom": "I",
+    "tireTo": "S"
+  },
+  {
+    "driver": "18",
+    "lap": 43,
+    "startSec": 4973.4,
+    "endSec": 5000.8,
+    "duration": 27.4,
+    "tireFrom": "M",
+    "tireTo": "S"
+  },
+  {
+    "driver": "12",
+    "lap": 44,
+    "startSec": 5021.4,
+    "endSec": 5048.6,
+    "duration": 27.2,
+    "tireFrom": "S",
+    "tireTo": "S"
+  },
+  {
+    "driver": "63",
+    "lap": 44,
+    "startSec": 5030,
+    "endSec": 5057.7,
+    "duration": 27.7,
+    "tireFrom": "I",
+    "tireTo": "S"
+  },
+  {
+    "driver": "6",
+    "lap": 44,
+    "startSec": 5046.6,
+    "endSec": 5073.9,
+    "duration": 27.3,
+    "tireFrom": "S",
+    "tireTo": "S"
+  },
+  {
+    "driver": "5",
+    "lap": 44,
+    "startSec": 5187.5,
+    "endSec": 5215.2,
+    "duration": 27.7,
+    "tireFrom": "S",
+    "tireTo": "S"
+  },
+  {
+    "driver": "81",
+    "lap": 45,
+    "startSec": 5202.5,
+    "endSec": 5229.9,
+    "duration": 27.4,
+    "tireFrom": "M",
+    "tireTo": "H"
+  },
+  {
+    "driver": "1",
+    "lap": 45,
+    "startSec": 5211.4,
+    "endSec": 5239.2,
+    "duration": 27.8,
+    "tireFrom": "S",
+    "tireTo": "S"
+  },
+  {
+    "driver": "30",
+    "lap": 45,
+    "startSec": 5223,
+    "endSec": 5252.6,
+    "duration": 29.6,
+    "tireFrom": "H",
+    "tireTo": "S"
+  },
+  {
+    "driver": "14",
+    "lap": 45,
+    "startSec": 5234,
+    "endSec": 5261.8,
+    "duration": 27.8,
+    "tireFrom": "M",
+    "tireTo": "S"
+  },
+  {
+    "driver": "27",
+    "lap": 45,
+    "startSec": 5235.8,
+    "endSec": 5264,
+    "duration": 28.2,
+    "tireFrom": "S",
+    "tireTo": "S"
+  },
+  {
+    "driver": "11",
+    "lap": 44,
+    "startSec": 5246.8,
+    "endSec": 5275.7,
+    "duration": 28.9,
+    "tireFrom": "S",
+    "tireTo": "S"
+  },
+  {
+    "driver": "10",
+    "lap": 45,
+    "startSec": 5279.6,
+    "endSec": 5307.9,
+    "duration": 28.3,
+    "tireFrom": "S",
+    "tireTo": "S"
+  }
+]

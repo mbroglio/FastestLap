@@ -5,13 +5,14 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/screen_background_color"
+    android:background="@android:color/black"
     tools:context=".ui.live.LiveActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:visibility="gone"
         android:background="@android:color/transparent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -28,159 +29,22 @@
             app:titleTextColor="@color/white" />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <TextView
-        android:id="@+id/session_text"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/orbitron_bold"
-        android:gravity="center"
-        android:text="Race"
-        android:textColor="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/top_bar_layout">
-
-    </TextView>
-
-    <com.google.android.material.tabs.TabLayout
-        android:id="@+id/tab_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:background="@android:color/transparent"
-        app:layout_constraintTop_toBottomOf="@id/session_text"
-        app:tabIndicatorColor="@color/white"
-        app:tabMode="fixed"
-        app:tabRippleColor="@android:color/transparent"
-        app:tabSelectedTextAppearance="@style/t16UpperCaseBoldWhite"
-        app:tabTextAppearance="@style/t14UpperCaseRegularWhite"
-        app:tabTextColor="@color/white">
-
-        <com.google.android.material.tabs.TabItem
-            android:id="@+id/live_tab"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="LIVE" />
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="RACE CONTROL" />
-
-        <com.google.android.material.tabs.TabItem
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="VERSUS" />
-
-    </com.google.android.material.tabs.TabLayout>
-
-    <LinearLayout
-        android:id="@+id/separator_1"
+    <ProgressBar
+        android:id="@+id/live_web_loading_bar"
+        style="?android:attr/progressBarStyleHorizontal"
         android:layout_width="match_parent"
         android:layout_height="3dp"
-        android:layout_marginTop="5dp"
-        android:background="@color/white"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/tab_layout">
+        android:indeterminate="false"
+        android:max="100"
+        android:progressTint="@color/app_primary_red"
+        android:visibility="gone"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/session_situation_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        app:layout_constraintTop_toBottomOf="@id/separator_1"
-        android:orientation="horizontal">
-
-        <RelativeLayout
-            android:id="@+id/event_situation_layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_weight="1">
-
-            <View
-                android:id="@+id/event_situation_light_1"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_alignParentStart="true"
-                android:layout_centerInParent="true"
-                android:background="@drawable/circle_background_black"
-                android:backgroundTint="#2E7D32">
-
-            </View>
-
-            <LinearLayout
-                android:id="@+id/event_situation_text_layout"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_toEndOf="@id/event_situation_light_1"
-                android:background="@drawable/background_all_margins_filled_green">
-
-                <TextView
-                    android:id="@+id/event_situation_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:fontFamily="@font/orbitron_bold"
-                    android:gravity="center"
-                    android:text="GREEN\nFLAG"
-                    android:textColor="@color/black">
-
-                </TextView>
-
-            </LinearLayout>
-
-            <View
-                android:id="@+id/event_situation_light_2"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_centerInParent="true"
-                android:layout_marginStart="5dp"
-                android:layout_toEndOf="@id/event_situation_text_layout"
-                android:background="@drawable/circle_background_black"
-                android:backgroundTint="#2E7D32">
-
-            </View>
-
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/current_lap_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginEnd="10dp"
-            android:layout_marginTop="15dp"
-            android:text="LAP: --"
-            android:fontFamily="@font/orbitron_bold"
-            android:textColor="@color/white"
-            android:layout_weight="1">
-
-        </TextView>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/separator_2"
-        android:layout_width="match_parent"
-        android:layout_height="3dp"
-        android:layout_marginTop="5dp"
-        android:background="@color/white"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@id/session_situation_layout">
-
-    </LinearLayout>
-
-
-    <androidx.viewpager2.widget.ViewPager2
-        android:id="@+id/view_pager"
+    <WebView
+        android:id="@+id/live_timing_webview"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/separator_2">
-
-    </androidx.viewpager2.widget.ViewPager2>
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

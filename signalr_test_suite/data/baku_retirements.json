@@ -1,0 +1,32 @@
+{
+  "18": {
+    "lap": 8,
+    "timeSec": 890.0,
+    "reason": "Sospensione danneggiata"
+  },
+  "14": {
+    "lap": 21,
+    "timeSec": 2310.0,
+    "reason": "Freni surriscaldati"
+  },
+  "23": {
+    "lap": 30,
+    "timeSec": 3300.0,
+    "reason": "Incidente Curva 15 (Barriera) \u2014 SC1"
+  },
+  "1": {
+    "lap": 36,
+    "timeSec": 4120.0,
+    "reason": "Contatto Curva 1 con Gasly \u2014 SC2"
+  },
+  "10": {
+    "lap": 36,
+    "timeSec": 4120.0,
+    "reason": "Collisione Curva 1 con Norris \u2014 SC2"
+  },
+  "43": {
+    "lap": 37,
+    "timeSec": 4210.0,
+    "reason": "Problema Power Unit (Idraulica)"
+  }
+}

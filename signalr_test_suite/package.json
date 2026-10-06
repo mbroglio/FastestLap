@@ -1,0 +1,26 @@
+{
+  "name": "fastestlap-signalr-test-suite",
+  "version": "1.0.0",
+  "description": "SignalR telemetry testing suite for F1 Live Timing stream & FastF1 protocol",
+  "main": "run_all_tests.js",
+  "scripts": {
+    "start": "node serve.js",
+    "test": "node run_all_tests.js",
+    "stress": "node tests/test_rate_limits.js",
+    "live": "node tests/test_live_connection.js",
+    "viewer": "node telemetry_viewer.js",
+    "race": "node race_simulator.js",
+    "map": "node serve.js",
+    "generate": "node src/generate_sepang_session.js"
+  },
+  "keywords": [
+    "f1",
+    "signalr",
+    "fastf1",
+    "telemetry",
+    "livetiming",
+    "cardata"
+  ],
+  "author": "The Coffee Coders - FastestLap",
+  "license": "MIT"
+}
