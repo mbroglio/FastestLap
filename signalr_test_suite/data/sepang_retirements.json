@@ -1,0 +1,17 @@
+{
+  "23": {
+    "lap": 41,
+    "timeSec": 4760,
+    "reason": "Hydraulics (DNF)"
+  },
+  "63": {
+    "lap": 49,
+    "timeSec": 5840,
+    "reason": "Power Unit Smoke (DNF)"
+  },
+  "77": {
+    "lap": 7,
+    "timeSec": 1050,
+    "reason": "Engine Failure (DNF)"
+  }
+}

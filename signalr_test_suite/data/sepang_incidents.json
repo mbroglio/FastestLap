@@ -1,0 +1,61 @@
+[
+  {
+    "id": "bottas_engine_t9",
+    "driver": "77",
+    "driverCode": "BOT",
+    "startSec": 1050,
+    "type": "STOPPED_RETIRED",
+    "trackSec": 42.5,
+    "targetPx": 1075,
+    "targetPy": 635,
+    "turnNumber": 9,
+    "locationName": "Curva 9 — Bordo Pista Fuori Traiettoria (Avaria Motore)",
+    "reason": "Engine Failure (DNF)",
+    "transitionDuration": 3.5
+  },
+  {
+    "id": "sainz_lockup_t1",
+    "driver": "55",
+    "driverCode": "SAI",
+    "startSec": 1480,
+    "durationSec": 14,
+    "type": "OFF_TRACK_REJOIN",
+    "trackSec": 4.5,
+    "targetPx": 120,
+    "targetPy": 460,
+    "turnNumber": 1,
+    "locationName": "Curva 1 — Via di Fuga Asfaltata (Lungo in Staccata & Rientro)",
+    "reason": "Lungo in frenata Curva 1",
+    "entryDuration": 3,
+    "maneuverDuration": 8,
+    "rejoinDuration": 3
+  },
+  {
+    "id": "albon_hydraulics_t4",
+    "driver": "23",
+    "driverCode": "ALB",
+    "startSec": 4760,
+    "type": "STOPPED_RETIRED",
+    "trackSec": 18,
+    "targetPx": 785,
+    "targetPy": 215,
+    "turnNumber": 4,
+    "locationName": "Curva 4 — Via di Fuga (Guasto Idraulico)",
+    "reason": "Hydraulics (DNF)",
+    "transitionDuration": 3
+  },
+  {
+    "id": "russell_powerunit_t15",
+    "driver": "63",
+    "driverCode": "RUS",
+    "startSec": 5840,
+    "type": "STOPPED_RETIRED",
+    "trackSec": 88,
+    "targetPx": 825,
+    "targetPy": 565,
+    "turnNumber": 15,
+    "locationName": "Curva 15 — Bordo Pista Fuori Traiettoria (Fumo Power Unit)",
+    "reason": "Power Unit Smoke (DNF)",
+    "transitionDuration": 3
+  }
+]

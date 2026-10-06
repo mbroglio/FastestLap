@@ -1,0 +1,822 @@
+{
+  "1": [
+    {
+      "stint": 1,
+      "lapStart": 1,
+      "lapEnd": 1,
+      "compound": "MEDIUM",
+      "code": "M",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 2,
+      "lapStart": 2,
+      "lapEnd": 9,
+      "compound": "HARD",
+      "code": "H",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 3,
+      "lapStart": 10,
+      "lapEnd": 45,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 4,
+      "lapStart": 46,
+      "lapEnd": 55,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    }
+  ],
+  "3": [
+    {
+      "stint": 1,
+      "lapStart": 1,
+      "lapEnd": 1,
+      "compound": "INTERMEDIATE",
+      "code": "I",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 2,
+      "lapStart": 2,
+      "lapEnd": 2,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 3,
+      "lapStart": 3,
+      "lapEnd": 9,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 4,
+      "lapStart": 10,
+      "lapEnd": 55,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    }
+  ],
+  "5": [
+    {
+      "stint": 1,
+      "lapStart": 1,
+      "lapEnd": 1,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 2,
+      "lapStart": 2,
+      "lapEnd": 2,
+      "compound": "INTERMEDIATE",
+      "code": "I",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 3,
+      "lapStart": 3,
+      "lapEnd": 9,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 4,
+      "lapStart": 10,
+      "lapEnd": 15,
+      "compound": "HARD",
+      "code": "H",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 5,
+      "lapStart": 16,
+      "lapEnd": 44,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 6,
+      "lapStart": 45,
+      "lapEnd": 55,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    }
+  ],
+  "6": [
+    {
+      "stint": 1,
+      "lapStart": 1,
+      "lapEnd": 1,
+      "compound": "INTERMEDIATE",
+      "code": "I",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 2,
+      "lapStart": 2,
+      "lapEnd": 9,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 3,
+      "lapStart": 10,
+      "lapEnd": 44,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 4,
+      "lapStart": 45,
+      "lapEnd": 55,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 3
+    }
+  ],
+  "10": [
+    {
+      "stint": 1,
+      "lapStart": 1,
+      "lapEnd": 1,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 2,
+      "lapStart": 2,
+      "lapEnd": 2,
+      "compound": "MEDIUM",
+      "code": "M",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 3,
+      "lapStart": 3,
+      "lapEnd": 9,
+      "compound": "HARD",
+      "code": "H",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 4,
+      "lapStart": 10,
+      "lapEnd": 25,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 5,
+      "lapStart": 26,
+      "lapEnd": 55,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    }
+  ],
+  "11": [
+    {
+      "stint": 1,
+      "lapStart": 1,
+      "lapEnd": 1,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 2,
+      "lapStart": 2,
+      "lapEnd": 1,
+      "compound": "INTERMEDIATE",
+      "code": "I",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 3,
+      "lapStart": 2,
+      "lapEnd": 2,
+      "compound": "INTERMEDIATE",
+      "code": "I",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 4,
+      "lapStart": 3,
+      "lapEnd": 9,
+      "compound": "MEDIUM",
+      "code": "M",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 5,
+      "lapStart": 10,
+      "lapEnd": 18,
+      "compound": "HARD",
+      "code": "H",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 6,
+      "lapStart": 19,
+      "lapEnd": 21,
+      "compound": "HARD",
+      "code": "H",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 7,
+      "lapStart": 22,
+      "lapEnd": 39,
+      "compound": "MEDIUM",
+      "code": "M",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 8,
+      "lapStart": 40,
+      "lapEnd": 55,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    }
+  ],
+  "12": [
+    {
+      "stint": 1,
+      "lapStart": 1,
+      "lapEnd": 9,
+      "compound": "INTERMEDIATE",
+      "code": "I",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 2,
+      "lapStart": 10,
+      "lapEnd": 33,
+      "compound": "MEDIUM",
+      "code": "M",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 3,
+      "lapStart": 34,
+      "lapEnd": 44,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 4,
+      "lapStart": 45,
+      "lapEnd": 55,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 3
+    }
+  ],
+  "14": [
+    {
+      "stint": 1,
+      "lapStart": 1,
+      "lapEnd": 1,
+      "compound": "MEDIUM",
+      "code": "M",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 2,
+      "lapStart": 2,
+      "lapEnd": 2,
+      "compound": "HARD",
+      "code": "H",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 3,
+      "lapStart": 3,
+      "lapEnd": 9,
+      "compound": "HARD",
+      "code": "H",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 4,
+      "lapStart": 10,
+      "lapEnd": 55,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    }
+  ],
+  "16": [
+    {
+      "stint": 1,
+      "lapStart": 1,
+      "lapEnd": 1,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 2,
+      "lapStart": 2,
+      "lapEnd": 3,
+      "compound": "INTERMEDIATE",
+      "code": "I",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 3,
+      "lapStart": 4,
+      "lapEnd": 9,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 4,
+      "lapStart": 10,
+      "lapEnd": 43,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 5,
+      "lapStart": 44,
+      "lapEnd": 55,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 3
+    }
+  ],
+  "18": [
+    {
+      "stint": 1,
+      "lapStart": 1,
+      "lapEnd": 1,
+      "compound": "MEDIUM",
+      "code": "M",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 2,
+      "lapStart": 2,
+      "lapEnd": 2,
+      "compound": "INTERMEDIATE",
+      "code": "I",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 3,
+      "lapStart": 3,
+      "lapEnd": 9,
+      "compound": "HARD",
+      "code": "H",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 4,
+      "lapStart": 10,
+      "lapEnd": 28,
+      "compound": "HARD",
+      "code": "H",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 5,
+      "lapStart": 29,
+      "lapEnd": 55,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    }
+  ],
+  "23": [
+    {
+      "stint": 1,
+      "lapStart": 1,
+      "lapEnd": 1,
+      "compound": "INTERMEDIATE",
+      "code": "I",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 2,
+      "lapStart": 2,
+      "lapEnd": 9,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 3,
+      "lapStart": 10,
+      "lapEnd": 16,
+      "compound": "HARD",
+      "code": "H",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 4,
+      "lapStart": 17,
+      "lapEnd": 41,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    }
+  ],
+  "27": [
+    {
+      "stint": 1,
+      "lapStart": 1,
+      "lapEnd": 1,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 2,
+      "lapStart": 2,
+      "lapEnd": 2,
+      "compound": "INTERMEDIATE",
+      "code": "I",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 3,
+      "lapStart": 3,
+      "lapEnd": 8,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 4,
+      "lapStart": 9,
+      "lapEnd": 32,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 5,
+      "lapStart": 33,
+      "lapEnd": 55,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    }
+  ],
+  "30": [
+    {
+      "stint": 1,
+      "lapStart": 1,
+      "lapEnd": 1,
+      "compound": "INTERMEDIATE",
+      "code": "I",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 2,
+      "lapStart": 2,
+      "lapEnd": 9,
+      "compound": "HARD",
+      "code": "H",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 3,
+      "lapStart": 10,
+      "lapEnd": 45,
+      "compound": "HARD",
+      "code": "H",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 4,
+      "lapStart": 46,
+      "lapEnd": 55,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    }
+  ],
+  "31": [
+    {
+      "stint": 1,
+      "lapStart": 1,
+      "lapEnd": 1,
+      "compound": "INTERMEDIATE",
+      "code": "I",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 2,
+      "lapStart": 2,
+      "lapEnd": 9,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 3,
+      "lapStart": 10,
+      "lapEnd": 41,
+      "compound": "HARD",
+      "code": "H",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 4,
+      "lapStart": 42,
+      "lapEnd": 55,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    }
+  ],
+  "41": [
+    {
+      "stint": 1,
+      "lapStart": 1,
+      "lapEnd": 1,
+      "compound": "INTERMEDIATE",
+      "code": "I",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 2,
+      "lapStart": 2,
+      "lapEnd": 9,
+      "compound": "HARD",
+      "code": "H",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 3,
+      "lapStart": 10,
+      "lapEnd": 28,
+      "compound": "HARD",
+      "code": "H",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 4,
+      "lapStart": 29,
+      "lapEnd": 55,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    }
+  ],
+  "43": [
+    {
+      "stint": 1,
+      "lapStart": 1,
+      "lapEnd": 1,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 2,
+      "lapStart": 2,
+      "lapEnd": 2,
+      "compound": "MEDIUM",
+      "code": "M",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 3,
+      "lapStart": 3,
+      "lapEnd": 9,
+      "compound": "HARD",
+      "code": "H",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 4,
+      "lapStart": 10,
+      "lapEnd": 55,
+      "compound": "MEDIUM",
+      "code": "M",
+      "ageAtStart": 0
+    }
+  ],
+  "44": [
+    {
+      "stint": 1,
+      "lapStart": 1,
+      "lapEnd": 1,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 2,
+      "lapStart": 2,
+      "lapEnd": 43,
+      "compound": "MEDIUM",
+      "code": "M",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 3,
+      "lapStart": 44,
+      "lapEnd": 55,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 3
+    }
+  ],
+  "55": [
+    {
+      "stint": 1,
+      "lapStart": 1,
+      "lapEnd": 1,
+      "compound": "INTERMEDIATE",
+      "code": "I",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 2,
+      "lapStart": 2,
+      "lapEnd": 9,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 3,
+      "lapStart": 10,
+      "lapEnd": 26,
+      "compound": "HARD",
+      "code": "H",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 4,
+      "lapStart": 27,
+      "lapEnd": 55,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    }
+  ],
+  "63": [
+    {
+      "stint": 1,
+      "lapStart": 1,
+      "lapEnd": 1,
+      "compound": "INTERMEDIATE",
+      "code": "I",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 2,
+      "lapStart": 2,
+      "lapEnd": 2,
+      "compound": "MEDIUM",
+      "code": "M",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 3,
+      "lapStart": 3,
+      "lapEnd": 9,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 4,
+      "lapStart": 10,
+      "lapEnd": 49,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    }
+  ],
+  "77": [
+    {
+      "stint": 1,
+      "lapStart": 1,
+      "lapEnd": 1,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 2,
+      "lapStart": 2,
+      "lapEnd": 7,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    }
+  ],
+  "81": [
+    {
+      "stint": 1,
+      "lapStart": 1,
+      "lapEnd": 1,
+      "compound": "MEDIUM",
+      "code": "M",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 2,
+      "lapStart": 2,
+      "lapEnd": 2,
+      "compound": "INTERMEDIATE",
+      "code": "I",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 3,
+      "lapStart": 3,
+      "lapEnd": 2,
+      "compound": "HARD",
+      "code": "H",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 4,
+      "lapStart": 3,
+      "lapEnd": 9,
+      "compound": "HARD",
+      "code": "H",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 5,
+      "lapStart": 10,
+      "lapEnd": 34,
+      "compound": "MEDIUM",
+      "code": "M",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 6,
+      "lapStart": 35,
+      "lapEnd": 55,
+      "compound": "HARD",
+      "code": "H",
+      "ageAtStart": 1
+    }
+  ],
+  "87": [
+    {
+      "stint": 1,
+      "lapStart": 1,
+      "lapEnd": 1,
+      "compound": "SOFT",
+      "code": "S",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 2,
+      "lapStart": 2,
+      "lapEnd": 10,
+      "compound": "MEDIUM",
+      "code": "M",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 3,
+      "lapStart": 11,
+      "lapEnd": 24,
+      "compound": "HARD",
+      "code": "H",
+      "ageAtStart": 0
+    },
+    {
+      "stint": 4,
+      "lapStart": 25,
+      "lapEnd": 55,
+      "compound": "HARD",
+      "code": "H",
+      "ageAtStart": 0
+    }
+  ]
+}
