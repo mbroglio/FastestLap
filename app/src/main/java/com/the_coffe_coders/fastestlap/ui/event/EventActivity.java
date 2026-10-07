@@ -363,23 +363,33 @@ public class EventActivity extends AppCompatActivity {
         String totalLaps = (track != null && track.getLaps() != null) ? track.getLaps() : null;
 
         // Trova la sessione attualmente in corso (se presente) oppure la prossima sessione
-        Session activeOrNextSession = null;
+        Session activeSession = null;
         for (Session s : sessions) {
-            if (s != null && s.getSessionStatus() == SessionStatus.IN_PROGRESS) {
-                activeOrNextSession = s;
+            if (s != null && (s.isUnderway() || s.getSessionStatus() == SessionStatus.IN_PROGRESS)) {
+                activeSession = s;
                 break;
             }
         }
+
+        Session activeOrNextSession = activeSession;
         if (activeOrNextSession == null) {
             activeOrNextSession = nextEvent;
         }
 
         String sessionName = null;
+        String sessionType = null; // default
         if (activeOrNextSession != null) {
             String sid = activeOrNextSession.getClass().getSimpleName();
             if (activeOrNextSession.isPractice()) {
                 Practice p = (Practice) activeOrNextSession;
                 sid = p.getPractice();
+                sessionType = "practice";
+            } else if (activeOrNextSession.isQualifying()) {
+                sessionType = "qualifying";
+            } else if (activeOrNextSession.isSprint()) {
+                sessionType = "sprint";
+            } else {
+                sessionType = "race";
             }
             String langTags = androidx.appcompat.app.AppCompatDelegate.getApplicationLocales().toLanguageTags();
             if (langTags != null && langTags.toLowerCase(java.util.Locale.ROOT).startsWith("it")) {
@@ -389,8 +399,9 @@ public class EventActivity extends AppCompatActivity {
             }
         }
 
-        // Il live timing è sempre accessibile (anche se la sessione non è in corso, la pagina web gestisce lo stato "content not available")
-        setLiveSession(eventTitle, totalLaps, underway, sessionName);
+        boolean isSessionLive = activeSession != null;
+
+        setLiveSession(eventTitle, totalLaps, isSessionLive, sessionName, sessionType);
 
         if (nextEvent != null && !underway) {
             LocalDateTime eventDateTime = nextEvent.getStartDateTime();
@@ -400,26 +411,38 @@ public class EventActivity extends AppCompatActivity {
         }
     }
 
-    private void setLiveSession(String eventTitle, String totalLaps, boolean isLive, String sessionName) {
+    private void setLiveSession(String eventTitle, String totalLaps, boolean isLive, String sessionName, String sessionType) {
         View liveSession = findViewById(R.id.event_live_card);
         View noLiveSession = findViewById(R.id.event_not_live_card);
 
-        liveSession.setVisibility(View.VISIBLE);
-        noLiveSession.setVisibility(View.GONE);
+        liveSession.setVisibility(isLive ? View.VISIBLE : View.GONE);
+        noLiveSession.setVisibility(isLive ? View.GONE : View.VISIBLE);
+
+        if (!isLive) {
+            liveSession.setOnClickListener(null);
+            loadingScreen.hideLoadingScreen();
+            return;
+        }
 
         ImageView liveIcon = findViewById(R.id.live_icon);
         Animation pulse = AnimationUtils.loadAnimation(this, R.anim.pulse_dynamic);
         liveIcon.startAnimation(pulse);
 
-        // Al click apre la LiveActivity passando il titolo dell'evento, giri totali, circuit ID, immagine, stato live e nome sessione
+        String effectiveTrackId = (trackId != null && !trackId.isEmpty())
+                ? trackId
+                : ((track != null && track.getTrackId() != null) ? track.getTrackId() : null);
+        String circuitImageUrl = (track != null) ? track.getTrack_minimal_layout_url() : null;
+
+        // Al click apre la LiveActivity passando il titolo dell'evento, giri totali, circuit ID, immagine, stato live, nome sessione e tipo sessione
         liveSession.setOnClickListener(v -> NavigationUtils.navigateToLivePage(
                 this,
                 eventTitle,
                 totalLaps,
-                trackId,
-                (track != null) ? track.getTrack_minimal_layout_url() : null,
+                effectiveTrackId,
+                circuitImageUrl,
                 isLive,
-                sessionName
+                sessionName,
+                sessionType
         ));
 
         Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: EventActivity at " + System.currentTimeMillis());
@@ -462,6 +485,23 @@ public class EventActivity extends AppCompatActivity {
 
     private void showRaceResultsDialog(Race race) {
         if (race != null) {
+            // Assicura che l'oggetto Race abbia i dati completi del Track da Firebase (incluso gp_long_name e layout)
+            if (this.track != null) {
+                if (race.getTrack() == null) {
+                    race.setTrack(this.track);
+                } else {
+                    if (race.getTrack().getGp_long_name() == null && this.track.getGp_long_name() != null) {
+                        race.getTrack().setGp_long_name(this.track.getGp_long_name());
+                    }
+                    if (race.getTrack().getLocation() == null && this.track.getLocation() != null) {
+                        race.getTrack().setLocation(this.track.getLocation());
+                    }
+                    if (race.getTrack().getTrack_minimal_layout_url() == null && this.track.getTrack_minimal_layout_url() != null) {
+                        race.getTrack().setTrack_minimal_layout_url(this.track.getTrack_minimal_layout_url());
+                    }
+                }
+            }
+
             String sessionName = null;
             RaceResultFastestLap raceFastestLap = null;
 
@@ -480,6 +520,7 @@ public class EventActivity extends AppCompatActivity {
                 if (cachedStints == null || cachedStints.isEmpty()) {
                     cachedStints = race.getStints();
                 }
+
                 NavigationUtils.showRaceResults(this, race, 0, cachedStints, raceFastestLap);
             } else {
                 Log.e(TAG, "race results not found");

@@ -32,12 +32,27 @@ public class RaceResultViewModel extends ViewModel {
     /**
      * Recupera la lista degli stint degli pneumatici per un evento e una sessione specifici.
      *
-     * @param eventName nome dell'evento (es. visualizzato nella topBar di EventActivity)
-     * @param sessionName nome della sessione (es. "Race", "Qualifying", "Sprint")
+     * @param location località dell'evento (es. "Melbourne", "Monza")
+     * @param eventName nome dell'evento (es. "Australian Grand Prix")
+     * @param sessionName nome della sessione (es. "Race", "Sprint")
      * @return LiveData che emette Result.Loading -> Result.StintsSuccess o Result.Error
      */
-    public MutableLiveData<Result> getStints(String eventName, String sessionName) {
-        Log.i("RaceResultViewModel", "Fetching stints for event: " + eventName + ", session: " + sessionName);
-        return resultRepository.fetchStints(eventName, sessionName);
+    public MutableLiveData<Result> getStints(String location, String eventName, String sessionName) {
+        return getStints(location, eventName, sessionName, null);
+    }
+
+    /**
+     * Recupera la lista degli stint degli pneumatici per un evento e una sessione specifici,
+     * includendo anche il nome ufficiale lungo del GP per massimizzare la precisione di matching con OpenF1.
+     *
+     * @param location località dell'evento (es. "Melbourne", "Monza")
+     * @param eventName nome dell'evento (es. "Australian Grand Prix")
+     * @param sessionName nome della sessione (es. "Race", "Sprint")
+     * @param gpLongName nome ufficiale lungo del GP (es. "FORMULA 1 ROLEX AUSTRALIAN GRAND PRIX 2026")
+     * @return LiveData che emette Result.Loading -> Result.StintsSuccess o Result.Error
+     */
+    public MutableLiveData<Result> getStints(String location, String eventName, String sessionName, String gpLongName) {
+        Log.i("RaceResultViewModel", "Fetching stints for event: " + eventName + ", location: " + location + ", session: " + sessionName + ", gpLongName: " + gpLongName);
+        return resultRepository.fetchStints(location, eventName, sessionName, gpLongName);
     }
 }

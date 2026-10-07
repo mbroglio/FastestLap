@@ -1,6 +1,7 @@
 package com.the_coffe_coders.fastestlap.ui.event.fragment;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,23 +30,30 @@ import java.util.List;
 public class StintsResultsTabFragment extends Fragment {
 
     private Race race;
+    private String locality;
     private List<Stint> stintsList;
 
-    public static StintsResultsTabFragment newInstance(Race race, List<Stint> stints) {
+    public static StintsResultsTabFragment newInstance(Race race, String locality, List<Stint> stints) {
         StintsResultsTabFragment fragment = new StintsResultsTabFragment();
         Bundle args = new Bundle();
         if (race != null) {
             args.putParcelable("RACE", race);
+            if (race.getTrack() != null && race.getTrack().getGp_long_name() != null) {
+                args.putString("GP_LONG_NAME", race.getTrack().getGp_long_name());
+            }
         }
         if (stints != null) {
             args.putParcelableArrayList("STINTS", new ArrayList<>(stints));
+        }
+        if (locality != null) {
+            args.putString("LOCALITY", locality);
         }
         fragment.setArguments(args);
         return fragment;
     }
 
     public static StintsResultsTabFragment newInstance(List<Stint> stints) {
-        return newInstance(null, stints);
+        return newInstance(null, null, stints);
     }
 
     @Override
@@ -54,6 +62,25 @@ public class StintsResultsTabFragment extends Fragment {
         if (getArguments() != null) {
             race = androidx.core.os.BundleCompat.getParcelable(getArguments(), "RACE", Race.class);
             stintsList = androidx.core.os.BundleCompat.getParcelableArrayList(getArguments(), "STINTS", Stint.class);
+            locality = getArguments().getString("LOCALITY");
+            String gpLongName = getArguments().getString("GP_LONG_NAME");
+            if (race != null) {
+                if (race.getTrack() == null) {
+                    com.the_coffe_coders.fastestlap.domain.f1.track.Track t = new com.the_coffe_coders.fastestlap.domain.f1.track.Track();
+                    if (locality != null) {
+                        com.the_coffe_coders.fastestlap.domain.f1.track.Location loc = new com.the_coffe_coders.fastestlap.domain.f1.track.Location();
+                        loc.setLocality(locality);
+                        t.setLocation(loc);
+                    }
+                    t.setGp_long_name(gpLongName);
+                    race.setTrack(t);
+                } else if (race.getTrack().getGp_long_name() == null && gpLongName != null) {
+                    race.getTrack().setGp_long_name(gpLongName);
+                }
+                if (locality == null && race.getTrack().getLocation() != null) {
+                    locality = race.getTrack().getLocation().getLocality();
+                }
+            }
         }
     }
 
@@ -105,7 +132,10 @@ public class StintsResultsTabFragment extends Fragment {
                         new RaceResultViewModelFactory(requireActivity().getApplication(), requireActivity())
                 ).get(RaceResultViewModel.class);
 
-                raceResultViewModel.getStints(race.getRaceName(), sessionType).observe(getViewLifecycleOwner(), result -> {
+                Log.i("StintsTab", "race: "+race.getTrack());
+
+                String gpLongName = (race.getTrack() != null) ? race.getTrack().getGp_long_name() : null;
+                raceResultViewModel.getStints(locality, race.getRaceName(), sessionType, gpLongName).observe(getViewLifecycleOwner(), result -> {
                     if (result instanceof Result.Loading) {
                         if (progressBar != null) {
                             progressBar.setVisibility(View.VISIBLE);

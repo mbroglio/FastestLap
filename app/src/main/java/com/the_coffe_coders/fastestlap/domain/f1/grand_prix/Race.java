@@ -91,6 +91,24 @@ public class Race extends Session implements Parcelable {
         round = in.readString();
         url = in.readString();
         raceName = in.readString();
+        if (in.readByte() == 1) {
+            track = new Track();
+            track.setTrackId(in.readString());
+            track.setTrackName(in.readString());
+            track.setGp_long_name(in.readString());
+            String loc = in.readString();
+            String country = in.readString();
+            if (loc != null || country != null) {
+                com.the_coffe_coders.fastestlap.domain.f1.track.Location location = new com.the_coffe_coders.fastestlap.domain.f1.track.Location();
+                location.setLocality(loc);
+                location.setCountry(country);
+                track.setLocation(location);
+            }
+            track.setCountry(country);
+            track.setTrack_minimal_layout_url(in.readString());
+            track.setTrack_full_layout_url(in.readString());
+            track.setTrack_pic_url(in.readString());
+        }
     }
 
     public int getRoundAsInt() {
@@ -159,5 +177,20 @@ public class Race extends Session implements Parcelable {
         dest.writeString(round);
         dest.writeString(url);
         dest.writeString(raceName);
+        if (track != null) {
+            dest.writeByte((byte) 1);
+            dest.writeString(track.getTrackId());
+            dest.writeString(track.getTrackName());
+            dest.writeString(track.getGp_long_name());
+            String loc = (track.getLocation() != null) ? track.getLocation().getLocality() : null;
+            dest.writeString(loc);
+            String country = (track.getLocation() != null) ? track.getLocation().getCountry() : track.getCountry();
+            dest.writeString(country);
+            dest.writeString(track.getTrack_minimal_layout_url());
+            dest.writeString(track.getTrack_full_layout_url());
+            dest.writeString(track.getTrack_pic_url());
+        } else {
+            dest.writeByte((byte) 0);
+        }
     }
 }

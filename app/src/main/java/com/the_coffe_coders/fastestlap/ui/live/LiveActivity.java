@@ -33,6 +33,7 @@ public class LiveActivity extends AppCompatActivity {
 
     public static final String EXTRA_EVENT_TITLE = "EVENT_TITLE";
     public static final String EXTRA_SESSION_NAME = "SESSION_NAME";
+    public static final String EXTRA_SESSION_TYPE = "SESSION_TYPE";
     public static final String EXTRA_CIRCUIT_ID = "CIRCUIT_ID";
     public static final String EXTRA_CIRCUIT_IMAGE = "CIRCUIT_IMAGE";
     public static final String EXTRA_TOTAL_LAPS = "TOTAL_LAPS";
@@ -44,15 +45,17 @@ public class LiveActivity extends AppCompatActivity {
 
     private String eventTitle = "LIVE TIMING";
     private String sessionName = "";
-    private String circuitId = "sepang";
+    private String sessionType = null;
+    private String circuitId = null;
     private String circuitImageUrl = null;
-    private String totalLaps = "55";
+    private String totalLaps = null;
     private boolean isLive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+        // Permette la visualizzazione iniziale della sola classifica sia in portrait che in landscape
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_live);
 
@@ -92,6 +95,27 @@ public class LiveActivity extends AppCompatActivity {
             }
         }
 
+        if (intent.hasExtra(EXTRA_SESSION_TYPE)) {
+            String st = intent.getStringExtra(EXTRA_SESSION_TYPE);
+            if (st != null && !st.trim().isEmpty()) {
+                sessionType = st.trim().toLowerCase();
+            }
+        } else if (sessionName != null && !sessionName.trim().isEmpty()) {
+            String s = sessionName.toLowerCase().trim();
+            if (s.contains("practice") || s.contains("prova") || s.contains("prove")
+                    || s.contains("libera") || s.contains("libere")
+                    || s.matches(".*\\bfp[1-3]?\\b.*") || s.startsWith("fp")) {
+                sessionType = "practice";
+            } else if (s.contains("qualif") || s.contains("shootout")
+                    || s.matches(".*\\bq[1-3]\\b.*") || s.startsWith("q")) {
+                sessionType = "qualifying";
+            } else if (s.contains("sprint")) {
+                sessionType = "sprint";
+            } else {
+                sessionType = "race";
+            }
+        }
+
         if (intent.hasExtra(EXTRA_EVENT_TITLE)) {
             String title = intent.getStringExtra(EXTRA_EVENT_TITLE);
             if (title != null && !title.trim().isEmpty()) {
@@ -118,36 +142,17 @@ public class LiveActivity extends AppCompatActivity {
         }
 
         if (intent.hasExtra(EXTRA_TOTAL_LAPS)) {
-            String laps = intent.getStringExtra(EXTRA_TOTAL_LAPS);
-            if (laps != null && !laps.trim().isEmpty()) {
-                totalLaps = laps.trim();
-            }
-        } else {
-            totalLaps = "baku".equalsIgnoreCase(circuitId) ? "51" : "55";
+            totalLaps = intent.getStringExtra(EXTRA_TOTAL_LAPS);
         }
     }
 
     private void loadCircuitImageIfNeeded() {
-        if (circuitImageUrl == null || circuitImageUrl.isEmpty()) {
-            com.the_coffe_coders.fastestlap.source.track.FirebaseTrackDataSource.getInstance()
-                    .getTrack(circuitId, new com.the_coffe_coders.fastestlap.repository.track.TrackCallback() {
-                        @Override
-                        public void onTrackLoaded(com.the_coffe_coders.fastestlap.domain.f1.track.Track t) {
-                            if (t != null && t.getTrack_minimal_layout_url() != null && !t.getTrack_minimal_layout_url().isEmpty()) {
-                                circuitImageUrl = t.getTrack_minimal_layout_url();
-                                runOnUiThread(() -> {
-                                    if (webView != null) {
-                                        webView.evaluateJavascript("if (window.setCircuitImage) window.setCircuitImage('" + circuitImageUrl + "');", null);
-                                    }
-                                });
-                            }
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            // Fallback to local asset
-                        }
-                    });
+        if (circuitImageUrl != null && !circuitImageUrl.isEmpty()) {
+            runOnUiThread(() -> {
+                if (webView != null) {
+                    webView.evaluateJavascript("if (window.setCircuitImage) window.setCircuitImage('" + circuitImageUrl + "');", null);
+                }
+            });
         }
     }
 
@@ -178,39 +183,84 @@ public class LiveActivity extends AppCompatActivity {
         // JavaScript Bridge bidirezionale per passare info del tracciato al modulo web
         webView.addJavascriptInterface(new Object() {
             @JavascriptInterface
+            public boolean isTestMode() {
+                return false;
+            }
+
+            @JavascriptInterface
+            public String getTestCircuit() {
+                return "";
+            }
+
+            @JavascriptInterface
             public boolean isSessionLive() {
-                // Momentaneamente forzato a true per far partire la simulazione di Sepang una volta aperta la pagina
-                return true;
+                return isLive;
             }
 
             @JavascriptInterface
             public String getSessionName() {
                 return (sessionName != null && !sessionName.trim().isEmpty())
                         ? sessionName
-                        : "Gara (Simulazione)";
+                        : "Sessione Live";
+            }
+
+            @JavascriptInterface
+            public String getSessionType() {
+                if (sessionType != null && !sessionType.trim().isEmpty()) {
+                    return sessionType.trim().toLowerCase();
+                }
+                return "race";
+            }
+
+            @JavascriptInterface
+            public String getSessionPart() {
+                if (sessionName == null) return "";
+                String s = sessionName.toLowerCase().trim();
+                // English keywords
+                if (s.contains("q1")) return "Q1";
+                if (s.contains("q2")) return "Q2";
+                if (s.contains("q3")) return "Q3";
+                if (s.contains("fp1") || s.contains("practice 1") || s.contains("prova libera 1") || s.contains("libere 1")) return "FP1";
+                if (s.contains("fp2") || s.contains("practice 2") || s.contains("prova libera 2") || s.contains("libere 2")) return "FP2";
+                if (s.contains("fp3") || s.contains("practice 3") || s.contains("prova libera 3") || s.contains("libere 3")) return "FP3";
+                // Italian Qualifying Sprint
+                if (s.contains("qualifica sprint") || s.contains("sprint qualifying") || s.contains("sq")) return "SQ";
+                return "";
             }
 
             @JavascriptInterface
             public String getEventTitle() {
                 return (eventTitle != null && !eventTitle.trim().isEmpty() && !eventTitle.equalsIgnoreCase("live timing"))
                         ? eventTitle
-                        : "FORMULA 1 PETRONAS MALAYSIAN GP";
+                        : "FORMULA 1 GRAND PRIX";
             }
 
             @JavascriptInterface
             public String getCircuitId() {
-                // Momentaneamente garantisce Sepang per la simulazione richiesta
-                return "sepang";
+                return circuitId != null ? circuitId : "";
+            }
+            
+            @JavascriptInterface
+            public String getCircuitImageUrl() {
+                return circuitImageUrl != null ? circuitImageUrl : "";
             }
 
             @JavascriptInterface
             public String getTotalLaps() {
-                return totalLaps != null ? totalLaps : "55";
+                return totalLaps != null ? totalLaps : "";
             }
 
             @JavascriptInterface
-            public String getCircuitImageUrl() {
-                return circuitImageUrl != null ? circuitImageUrl : "";
+            public void onTabChanged(String tabId) {
+                runOnUiThread(() -> {
+                    if ("view-track".equals(tabId)) {
+                        // La seconda pagina (Mappa & Pista) è visualizzabile unicamente in modalità landscape
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+                    } else {
+                        // La pagina della sola classifica (view-standings) e race control sono visualizzabili sia in landscape che in portrait
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                    }
+                });
             }
 
             @JavascriptInterface
@@ -234,6 +284,12 @@ public class LiveActivity extends AppCompatActivity {
         });
 
         webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                loadCircuitImageIfNeeded();
+            }
+
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri url = request.getUrl();

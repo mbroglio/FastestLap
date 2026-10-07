@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Baku City Circuit Live Timing — GP Azerbaigian 2026 (FastestLap)</title>
+  <link rel="stylesheet" href="baku_timing.css">
+</head>
+<body>
+  <header>
+    <div class="title-box">
+      <span class="badge">SIGNALR LIVE</span>
+      <h1>Baku City Circuit (26 Settembre 2026) — GP Azerbaigian 51 Giri</h1>
+      <div class="circuit-switch-bar">
+        <a href="track_map.html" class="switch-btn">🇲🇾 Sepang GP (Bagnato)</a>
+        <a href="track_map_baku.html" class="switch-btn active">🇦🇿 Baku GP (Asciutto)</a>
+      </div>
+    </div>
+    <div class="clock-display" id="headerClock">
+      26 Settembre 2026 | 11:03:51 UTC | Giro: 1/51
+    </div>
+  </header>
+
+  <div class="main-container">
+    <div class="map-pane">
+      <canvas id="trackCanvas"></canvas>
+    </div>
+
+    <div class="hud-pane">
+      <!-- Live Overtake & Events Ticker -->
+      <div class="card event-card">
+        <div class="card-title">
+          <span>⚡ Feed Sorpassi & Eventi Baku</span>
+          <span style="font-size: 10px; color: #58a6ff;" id="eventCountBadge">Live Feed</span>
+        </div>
+        <div class="event-ticker" id="overtakeTicker">
+          🏁 11:03:51 — Semafori spenti! Le 22 monoposto scattano dalla griglia di Baku per il GP dell'Azerbaigian!
+        </div>
+      </div>
+
+      <!-- FIA Race Control Messages Card -->
+      <div class="card rc-card">
+        <div class="card-title">
+          <span>🏁 FIA Race Control — Direzione Gara</span>
+          <span style="font-size: 10px; color: #ff8000;" id="rcStatusText">LIVE DIRECT</span>
+        </div>
+        <div class="rc-status-row">
+          <div class="rc-pill rc-flag-green" id="rcFlagBadge">🟢 TRACK CLEAR</div>
+          <div class="rc-pill rc-drs-on" id="rcDrsBadge">DRS ON</div>
+          <span style="font-size: 10px; color: #8b949e; margin-left: auto;" id="rcTotalCount">141 Messaggi</span>
+        </div>
+        <div class="rc-feed-box" id="rcFeedBox"></div>
+      </div>
+
+      <!-- Driver Selector Card -->
+      <div class="card">
+        <div class="card-title">
+          <span>Selezione Pilota & Focus</span>
+          <span style="font-size: 10px; color: #58a6ff;" id="driverModeLabel">Vista Globale: 22 Piloti</span>
+        </div>
+        <select id="driverSelect">
+          <option value="all">🏁 Vista Globale — Tutti i 22 Piloti in Pista</option>
+          <optgroup label="Griglia Ufficiale F1 2026 (22 Piloti — Baku)">
+            <option value="1">#1 NOR — Lando Norris (McLaren)</option>
+<option value="3">#3 VER — Max Verstappen (Red Bull Racing)</option>
+<option value="5">#5 BOR — Gabriel Bortoleto (Audi)</option>
+<option value="6">#6 HAD — Isack Hadjar (Red Bull Racing)</option>
+<option value="10">#10 GAS — Pierre Gasly (Alpine)</option>
+<option value="11">#11 PER — Sergio Perez (Cadillac)</option>
+<option value="12">#12 ANT — Kimi Antonelli (Mercedes)</option>
+<option value="14">#14 ALO — Fernando Alonso (Aston Martin)</option>
+<option value="16">#16 LEC — Charles Leclerc (Ferrari)</option>
+<option value="18">#18 STR — Lance Stroll (Aston Martin)</option>
+<option value="23">#23 ALB — Alexander Albon (Williams)</option>
+<option value="27">#27 HUL — Nico Hulkenberg (Audi)</option>
+<option value="30">#30 LAW — Liam Lawson (Racing Bulls)</option>
+<option value="31">#31 OCO — Esteban Ocon (Haas F1 Team)</option>
+<option value="41">#41 LIN — Arvid Lindblad (Racing Bulls)</option>
+<option value="43">#43 COL — Franco Colapinto (Alpine)</option>
+<option value="44">#44 HAM — Lewis Hamilton (Ferrari)</option>
+<option value="55">#55 SAI — Carlos Sainz (Williams)</option>
+<option value="63">#63 RUS — George Russell (Mercedes)</option>
+<option value="77">#77 BOT — Valtteri Bottas (Cadillac)</option>
+<option value="81">#81 PIA — Oscar Piastri (McLaren)</option>
+<option value="87">#87 BEA — Oliver Bearman (Haas F1 Team)</option>
+          </optgroup>
+        </select>
+
+        <!-- Driver Active Header Banner -->
+        <div class="driver-banner" id="activeDriverBanner">
+          <div class="driver-color-bar" id="bannerColorBar" style="background: #3671C6;"></div>
+          <div class="driver-num-badge" id="bannerNum">#3</div>
+          <div class="driver-meta">
+            <div class="driver-fullname" id="bannerName">Max Verstappen (VER)</div>
+            <div class="driver-teamname" id="bannerTeam">Oracle Red Bull Racing</div>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 3px;">
+            <span class="badge" style="background: #238636; font-size: 9px;" id="bannerStatus">LIVE TRACKING</span>
+            <span class="tire-badge tire-M" id="bannerTire">MEDIUM</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cockpit Telemetry HUD -->
+      <div class="card">
+        <div class="card-title">
+          <span>Cockpit Telemetria Real-Time</span>
+          <span id="syncIndicator" style="color: #2ea043; font-size: 10px;">● 1:1 Sincronizzato</span>
+        </div>
+        <div class="cockpit-grid">
+          <div class="gear-box" id="gearVal">8</div>
+          <div class="speed-box">
+            <div><span class="speed-value" id="speedVal">335</span> <span class="speed-unit">KM/H</span></div>
+            <div class="rpm-text" id="rpmVal">12,400 RPM</div>
+          </div>
+        </div>
+
+        <div class="led-bar" id="ledBar">
+          <div class="led green"></div><div class="led green"></div><div class="led green"></div><div class="led green"></div>
+          <div class="led yellow"></div><div class="led yellow"></div><div class="led yellow"></div><div class="led yellow"></div>
+          <div class="led red"></div><div class="led red"></div>
+        </div>
+
+        <div class="pedal-bar-wrap">
+          <div class="pedal-label"><span>ACCELERATORE (THROTTLE)</span><span id="throttleVal">100%</span></div>
+          <div class="progress-track"><div class="progress-fill fill-throttle" id="throttleFill" style="width: 100%;"></div></div>
+        </div>
+
+        <div class="tags-row">
+          <div class="tag" id="brakeTag">FRENO (OFF)</div>
+          <div class="tag drs-on" id="drsTag">ACTIVE AERO: Z-MODE (LOW DRAG)</div>
+        </div>
+
+        <div style="display: flex; gap: 8px; margin-top: 6px; font-size: 11px; font-weight: 700;">
+          <div style="flex: 1; background: #21262d; border: 1px solid #30363d; border-radius: 4px; padding: 4px 8px; display: flex; justify-content: space-between;">
+            <span style="color: #8b949e;">BATTERIA SoC:</span>
+            <span id="socVal" style="color: #3fb950;">84%</span>
+          </div>
+          <div style="flex: 1; background: #21262d; border: 1px solid #30363d; border-radius: 4px; padding: 4px 8px; display: flex; justify-content: space-between;">
+            <span style="color: #8b949e;">OVERRIDE (MOM):</span>
+            <span id="momVal" style="color: #38bdf8;">DISPONIBILE</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- GPS & Track Location -->
+      <div class="card">
+        <div class="card-title">Posizione Pista & Coordinate GPS Decimetriche</div>
+        <div class="loc-name" id="locName">📍 Rettifilo Arrivo (DRS Zona 1 — 335 km/h)</div>
+        <div id="sectorBadge" class="sector-badge sec-1">SETTORE 1</div>
+        <div class="clock-display" style="font-size: 10px; margin-top: 2px;" id="gpsCoords">GPS: X = +92.4m, Y = -65.0m</div>
+      </div>
+
+      <!-- Tempi sul Giro & Settori Pilota -->
+      <div class="card timing-hud-card">
+        <div class="card-title">
+          <span>Tempi sul Giro & Settori (Live Timing)</span>
+          <span id="hudLapNumBadge" style="font-size: 10px; color: #58a6ff; font-weight: 800;">GIRO 1 / 51</span>
+        </div>
+        
+        <div class="hud-sectors-row">
+          <div class="hud-sec-box" id="hudSec1Box">
+            <div class="hud-sec-lbl">SETTORE 1</div>
+            <div class="hud-sec-val" id="hudSec1Val">-</div>
+            <div class="hud-sec-tag badge-dim" id="hudSec1Tag">IN ATTESA</div>
+          </div>
+          <div class="hud-sec-box" id="hudSec2Box">
+            <div class="hud-sec-lbl">SETTORE 2</div>
+            <div class="hud-sec-val" id="hudSec2Val">-</div>
+            <div class="hud-sec-tag badge-dim" id="hudSec2Tag">IN ATTESA</div>
+          </div>
+          <div class="hud-sec-box" id="hudSec3Box">
+            <div class="hud-sec-lbl">SETTORE 3</div>
+            <div class="hud-sec-val" id="hudSec3Val">-</div>
+            <div class="hud-sec-tag badge-dim" id="hudSec3Tag">IN ATTESA</div>
+          </div>
+        </div>
+
+        <div class="hud-laps-row">
+          <div class="hud-lap-box">
+            <div class="hud-lap-lbl">ULTIMO GIRO</div>
+            <div class="hud-lap-val" id="hudLastLapVal">-</div>
+            <div class="hud-lap-status badge-dim" id="hudLastLapTag">NESSUN GIRO</div>
+          </div>
+          <div class="hud-lap-box">
+            <div class="hud-lap-lbl">MIGLIOR GIRO</div>
+            <div class="hud-lap-val" id="hudBestLapVal">-</div>
+            <div class="hud-lap-status badge-dim" id="hudBestLapTag">IN ATTESA</div>
+          </div>
+        </div>
+
+        <div style="font-size: 9.5px; color: #8b949e; margin-top: 6px; display: flex; justify-content: space-between; border-top: 1px solid #21262d; padding-top: 4px;">
+          <span>RECORD GARA: <strong id="hudSessionFastestVal" style="color: #d2a8ff;">1:44.916</strong> (<span id="hudSessionFastestDrv">#63 RUS</span>)</span>
+          <span style="display: flex; gap: 6px;">
+            <span style="color: #d2a8ff; font-weight: 700;">● Viola: Assoluto</span>
+            <span style="color: #3fb950; font-weight: 700;">● Verde: Personale</span>
+            <span style="color: #e3b341; font-weight: 700;">● Giallo: No Migl.</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Live Timing Tower -->
+      <div class="card">
+        <div class="card-title">
+          <span>Classifica Live in Pista (22 Piloti)</span>
+          <span style="font-size: 10px; color: #8b949e;">Click riga per focus</span>
+        </div>
+        <div class="timing-table-wrap">
+          <table class="timing-table">
+            <thead>
+              <tr>
+                <th class="pos-cell">POS</th>
+                <th class="delta-cell">+/-</th>
+                <th style="text-align: left; padding-left: 6px;">PILOTA</th>
+                <th>S1</th>
+                <th>S2</th>
+                <th>S3</th>
+                <th>ULTIMO</th>
+                <th>MIGLIORE</th>
+                <th>DISTACCO</th>
+                <th>GOMMA</th>
+              </tr>
+            </thead>
+            <tbody id="timingTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Playback Controls -->
+      <div class="card controls-card">
+        <div class="card-title">
+          <span>Controlli Simulazione & Salto Momenti Chiave</span>
+          <span style="font-size: 10px; color: #3fb950; font-weight: 700;">PRODUZIONE: 1x (TEMPO REALE)</span>
+        </div>
+        <div class="ctrl-row">
+          <button class="btn-primary" id="playPauseBtn">PAUSA</button>
+          <span style="font-size: 12px; font-weight: 600;" id="speedLabel">Velocità: 2x (Test)</span>
+          <div style="display: flex; gap: 4px; margin-left: auto;">
+            <button class="jump-btn" onclick="setSimulationSpeed(1)">1x (Reale)</button>
+            <button class="jump-btn" onclick="setSimulationSpeed(2)">2x</button>
+            <button class="jump-btn" onclick="setSimulationSpeed(5)">5x</button>
+            <button class="jump-btn" onclick="setSimulationSpeed(10)">10x</button>
+            <button class="jump-btn" onclick="setSimulationSpeed(20)">20x</button>
+          </div>
+        </div>
+        <div class="ctrl-row" style="margin-top: 6px;">
+          <span style="font-size: 11px; color: #8b949e; width: 65px;">Velocità:</span>
+          <input type="range" id="speedRange" min="1" max="20" value="2">
+        </div>
+        <div class="ctrl-row" style="margin-top: 4px;">
+          <span style="font-size: 11px; color: #8b949e; width: 65px;">Timeline:</span>
+          <input type="range" id="timeScrubber" min="0" max="6000" value="0">
+        </div>
+
+        <!-- Shortcuts Bar -->
+        <div class="shortcuts-bar">
+          <span style="font-size: 10px; color: #e3b341; width: 100%; margin-top: 4px; font-weight: 700;">Momenti Chiave GP Baku:</span>
+          <button class="jump-btn race-event" onclick="jumpToRace(0)">⚡ 11:03:51 Standing Start: Partenza da Fermo!</button>
+          <button class="jump-btn race-event" onclick="jumpToRace(250)">🏎️ 11:08:01 G3: Verstappen supera Norris (DRS 338 km/h)</button>
+          <button class="jump-btn race-event" onclick="jumpToRace(890, '18')">⚠️ 11:18:41 G8: Ritiro Stroll (Sospensione a C4)</button>
+          <button class="jump-btn race-event" onclick="jumpToRace(1200)">🏎️ 11:23:51 G11: Piastri supera Leclerc (P2)</button>
+          <button class="jump-btn race-event" onclick="jumpToRace(1650)">🏎️ 11:31:21 G15: Verstappen supera Leclerc (P3)</button>
+          <button class="jump-btn race-event" onclick="jumpToRace(1850, '44')">⚠️ 11:34:41 G17: Hamilton lungo a Curva 1 (Via di Fuga & Rientro)</button>
+          <button class="jump-btn race-event" onclick="jumpToRace(2226)">🔧 11:40:57 G20: Pit stop Sainz (Hard)</button>
+          <button class="jump-btn race-event" onclick="jumpToRace(2520, '55')">⚠️ 11:45:51 G23: Sainz lungo a Curva 3 (Via di Fuga & Rientro)</button>
+          <button class="jump-btn race-event" onclick="jumpToRace(2700)">🏎️ 11:48:51 G25: Verstappen supera Piastri per P2</button>
+          <button class="jump-btn race-event" onclick="jumpToRace(3280, '23')">🟡 11:58:31 G30: Safety Car 1 (Albon Barriera Curva 15)</button>
+          <button class="jump-btn race-event" onclick="jumpToRace(4044)">🟢 12:11:14 G35: Restart Gara 1</button>
+          <button class="jump-btn race-event" onclick="jumpToRace(4120, '1')">💥 12:12:31 G36: Collisione Norris-Gasly Curva 1 (Via di Fuga)</button>
+          <button class="jump-btn race-event" onclick="jumpToRace(4130)">🟡 12:12:41 G36: Safety Car 2</button>
+          <button class="jump-btn race-event" onclick="jumpToRace(4396)">🟢 12:17:06 G38: Restart Finale (13 Giri)</button>
+          <button class="jump-btn race-event" onclick="jumpToRace(5350)">👑 12:33:00 G47: Verstappen all'inseguimento di Russell (-0.5s)</button>
+          <button class="jump-btn race-event" onclick="jumpToRace(5600)">🟣 12:37:10 G49: Giro Veloce Russell (1:44.916)</button>
+          <button class="jump-btn race-event" onclick="jumpToRace(5881)">🏆 12:41:52 G51: Verstappen Vince in Volata su Russell (+0.003s)!</button>
+        </div>
+
+        <div class="shortcuts-bar" style="margin-top: 6px;">
+          <span style="font-size: 10px; color: #8b949e; width: 100%;">Salta a Sezione Pista (Pilota Attivo):</span>
+          <button class="jump-btn" onclick="jumpToCorner(0.0)">Rettilineo Arrivo (335 km/h DRS)</button>
+          <button class="jump-btn" onclick="jumpToCorner(6.0)">Staccata Curva 1 (105 km/h)</button>
+          <button class="jump-btn" onclick="jumpToCorner(13.0)">Curva 2 (Sinistra 90°)</button>
+          <button class="jump-btn" onclick="jumpToCorner(21.0)">Khagani Street (DRS 315 km/h)</button>
+          <button class="jump-btn" onclick="jumpToCorner(29.0)">Staccata Curva 3</button>
+          <button class="jump-btn" onclick="jumpToCorner(42.0)">Curve 5-6 (Chicane)</button>
+          <button class="jump-btn" onclick="jumpToCorner(58.0)">Sezione Castello (Curve 8-12)</button>
+          <button class="jump-btn" onclick="jumpToCorner(78.0)">Staccata Curva 15 Discesa</button>
+          <button class="jump-btn" onclick="jumpToCorner(85.0)">Curva 16 Rampa d'Uscita</button>
+          <button class="jump-btn" onclick="jumpToCorner(100.0)">Maxi-Rettilineo Neftchilar (345 km/h)</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="baku_timing_app.js"></script>
+</body>
+</html>

@@ -5,7 +5,7 @@
     "startSec": 249.9,
     "endSec": 287.9,
     "duration": 38,
-    "tireFrom": "S",
+    "tireFrom": "I",
     "tireTo": "I",
     "outLapEndSec": 374
   },
@@ -26,7 +26,7 @@
     "endSec": 480.3,
     "duration": 73.8,
     "tireFrom": "I",
-    "tireTo": "S",
+    "tireTo": "H",
     "outLapEndSec": 522
   },
   {
@@ -46,7 +46,7 @@
     "endSec": 469.7,
     "duration": 61.1,
     "tireFrom": "I",
-    "tireTo": "S",
+    "tireTo": "H",
     "outLapEndSec": 523.9
   },
   {
@@ -56,7 +56,7 @@
     "endSec": 450.9,
     "duration": 41.7,
     "tireFrom": "I",
-    "tireTo": "M",
+    "tireTo": "H",
     "outLapEndSec": 526.2
   },
   {
@@ -66,7 +66,7 @@
     "endSec": 617.7,
     "duration": 38,
     "tireFrom": "I",
-    "tireTo": "S",
+    "tireTo": "I",
     "outLapEndSec": 688
   },
   {
@@ -75,8 +75,8 @@
     "startSec": 1115.2,
     "endSec": 1142.7,
     "duration": 27.5,
-    "tireFrom": "S",
-    "tireTo": "S",
+    "tireFrom": "H",
+    "tireTo": "H",
     "outLapEndSec": 1245.7
   },
   {
@@ -95,8 +95,8 @@
     "startSec": 1203.8,
     "endSec": 1231.4,
     "duration": 27.6,
-    "tireFrom": "S",
-    "tireTo": "S",
+    "tireFrom": "I",
+    "tireTo": "H",
     "outLapEndSec": 1353.8
   },
   {
@@ -105,8 +105,8 @@
     "startSec": 1209.3,
     "endSec": 1238.1,
     "duration": 28.8,
-    "tireFrom": "S",
-    "tireTo": "S",
+    "tireFrom": "I",
+    "tireTo": "M",
     "outLapEndSec": 1355.5
   },
   {
@@ -115,8 +115,8 @@
     "startSec": 1217.9,
     "endSec": 1246,
     "duration": 28.1,
-    "tireFrom": "S",
-    "tireTo": "S",
+    "tireFrom": "I",
+    "tireTo": "H",
     "outLapEndSec": 1357.9
   },
   {
@@ -125,7 +125,7 @@
     "startSec": 1227.1,
     "endSec": 1255.7,
     "duration": 28.6,
-    "tireFrom": "H",
+    "tireFrom": "I",
     "tireTo": "H",
     "outLapEndSec": 1364.8
   },
@@ -135,7 +135,7 @@
     "startSec": 1228.9,
     "endSec": 1257.5,
     "duration": 28.6,
-    "tireFrom": "S",
+    "tireFrom": "I",
     "tireTo": "H",
     "outLapEndSec": 1366.6
   },
@@ -145,7 +145,7 @@
     "startSec": 1233.9,
     "endSec": 1262.4,
     "duration": 28.5,
-    "tireFrom": "H",
+    "tireFrom": "I",
     "tireTo": "H",
     "outLapEndSec": 1371.3
   },
@@ -155,7 +155,7 @@
     "startSec": 1236.2,
     "endSec": 1268.2,
     "duration": 32,
-    "tireFrom": "S",
+    "tireFrom": "I",
     "tireTo": "H",
     "outLapEndSec": 1374.3
   },
@@ -165,8 +165,8 @@
     "startSec": 1241.2,
     "endSec": 1269,
     "duration": 27.8,
-    "tireFrom": "S",
-    "tireTo": "H",
+    "tireFrom": "H",
+    "tireTo": "M",
     "outLapEndSec": 1378.3
   },
   {
@@ -185,7 +185,7 @@
     "startSec": 1244.1,
     "endSec": 1276.5,
     "duration": 32.4,
-    "tireFrom": "S",
+    "tireFrom": "I",
     "tireTo": "H",
     "outLapEndSec": 1385.5
   },
@@ -200,13 +200,23 @@
     "outLapEndSec": 1382
   },
   {
+    "driver": "44",
+    "lap": 9,
+    "startSec": 1245,
+    "endSec": 1273.2,
+    "duration": 28.2,
+    "tireFrom": "I",
+    "tireTo": "M",
+    "outLapEndSec": 1345
+  },
+  {
     "driver": "11",
     "lap": 9,
     "startSec": 1254.6,
     "endSec": 1284.4,
     "duration": 29.8,
-    "tireFrom": "M",
-    "tireTo": "H",
+    "tireFrom": "H",
+    "tireTo": "M",
     "outLapEndSec": 1391.2
   },
   {
@@ -215,8 +225,8 @@
     "startSec": 1295,
     "endSec": 1325.7,
     "duration": 30.7,
-    "tireFrom": "H",
-    "tireTo": "S",
+    "tireFrom": "I",
+    "tireTo": "H",
     "outLapEndSec": 1435.1
   },
   {
@@ -225,8 +235,8 @@
     "startSec": 1298,
     "endSec": 1326.6,
     "duration": 28.6,
-    "tireFrom": "S",
-    "tireTo": "S",
+    "tireFrom": "I",
+    "tireTo": "H",
     "outLapEndSec": 1436.9
   },
   {
@@ -235,8 +245,8 @@
     "startSec": 1305.4,
     "endSec": 1333.7,
     "duration": 28.3,
-    "tireFrom": "H",
-    "tireTo": "S",
+    "tireFrom": "I",
+    "tireTo": "H",
     "outLapEndSec": 1444
   },
   {
@@ -245,8 +255,8 @@
     "startSec": 1322.8,
     "endSec": 1350.9,
     "duration": 28.1,
-    "tireFrom": "H",
-    "tireTo": "S",
+    "tireFrom": "I",
+    "tireTo": "H",
     "outLapEndSec": 1461.6
   },
   {
@@ -255,7 +265,7 @@
     "startSec": 1335.5,
     "endSec": 1363.4,
     "duration": 27.9,
-    "tireFrom": "H",
+    "tireFrom": "I",
     "tireTo": "M",
     "outLapEndSec": 1473.1
   },
@@ -265,7 +275,7 @@
     "startSec": 1468,
     "endSec": 1496.5,
     "duration": 28.5,
-    "tireFrom": "M",
+    "tireFrom": "I",
     "tireTo": "H",
     "outLapEndSec": 1580.3
   },
@@ -275,8 +285,8 @@
     "startSec": 2024.9,
     "endSec": 2061.6,
     "duration": 36.7,
-    "tireFrom": "H",
-    "tireTo": "S",
+    "tireFrom": "M",
+    "tireTo": "H",
     "outLapEndSec": 2127.6
   },
   {
@@ -286,7 +296,7 @@
     "endSec": 2155.5,
     "duration": 27.6,
     "tireFrom": "H",
-    "tireTo": "S",
+    "tireTo": "M",
     "outLapEndSec": 2229.8
   },
   {
@@ -295,7 +305,7 @@
     "startSec": 2342.8,
     "endSec": 2371.6,
     "duration": 28.8,
-    "tireFrom": "H",
+    "tireFrom": "M",
     "tireTo": "H",
     "outLapEndSec": 2445.3
   },
@@ -306,7 +316,7 @@
     "endSec": 2711,
     "duration": 29.2,
     "tireFrom": "H",
-    "tireTo": "M",
+    "tireTo": "H",
     "outLapEndSec": 2784.7
   },
   {
@@ -316,7 +326,7 @@
     "endSec": 2995.3,
     "duration": 29,
     "tireFrom": "H",
-    "tireTo": "H",
+    "tireTo": "M",
     "outLapEndSec": 3066.7
   },
   {
@@ -325,8 +335,8 @@
     "startSec": 3067.4,
     "endSec": 3095.1,
     "duration": 27.7,
-    "tireFrom": "S",
-    "tireTo": "S",
+    "tireFrom": "H",
+    "tireTo": "M",
     "outLapEndSec": 3168.3
   },
   {
@@ -336,7 +346,7 @@
     "endSec": 3199.4,
     "duration": 28.2,
     "tireFrom": "H",
-    "tireTo": "S",
+    "tireTo": "M",
     "outLapEndSec": 3272
   },
   {
@@ -345,8 +355,8 @@
     "startSec": 3360,
     "endSec": 3387.9,
     "duration": 27.9,
-    "tireFrom": "S",
-    "tireTo": "S",
+    "tireFrom": "H",
+    "tireTo": "M",
     "outLapEndSec": 3460.1
   },
   {
@@ -356,7 +366,7 @@
     "endSec": 3396.4,
     "duration": 29.2,
     "tireFrom": "H",
-    "tireTo": "S",
+    "tireTo": "M",
     "outLapEndSec": 3466.5
   },
   {
@@ -366,7 +376,7 @@
     "endSec": 3397.9,
     "duration": 28.3,
     "tireFrom": "H",
-    "tireTo": "S",
+    "tireTo": "M",
     "outLapEndSec": 3469.7
   },
   {
@@ -375,8 +385,8 @@
     "startSec": 3468,
     "endSec": 3497,
     "duration": 29,
-    "tireFrom": "I",
-    "tireTo": "S",
+    "tireFrom": "H",
+    "tireTo": "M",
     "outLapEndSec": 3569.2
   },
   {
@@ -385,7 +395,7 @@
     "startSec": 3505.5,
     "endSec": 3533.3,
     "duration": 27.8,
-    "tireFrom": "I",
+    "tireFrom": "M",
     "tireTo": "S",
     "outLapEndSec": 3607.6
   },
@@ -395,8 +405,8 @@
     "startSec": 3568,
     "endSec": 3596,
     "duration": 28,
-    "tireFrom": "I",
-    "tireTo": "S",
+    "tireFrom": "H",
+    "tireTo": "M",
     "outLapEndSec": 3668.3
   },
   {
@@ -405,8 +415,8 @@
     "startSec": 3650.1,
     "endSec": 3678.6,
     "duration": 28.5,
-    "tireFrom": "I",
-    "tireTo": "S",
+    "tireFrom": "H",
+    "tireTo": "M",
     "outLapEndSec": 3750.9
   },
   {
@@ -415,8 +425,8 @@
     "startSec": 3652.9,
     "endSec": 3680.7,
     "duration": 27.8,
-    "tireFrom": "S",
-    "tireTo": "S",
+    "tireFrom": "M",
+    "tireTo": "H",
     "outLapEndSec": 3752.3
   },
   {
@@ -425,8 +435,8 @@
     "startSec": 3680.4,
     "endSec": 3708,
     "duration": 27.6,
-    "tireFrom": "M",
-    "tireTo": "S",
+    "tireFrom": "H",
+    "tireTo": "M",
     "outLapEndSec": 3780.2
   },
   {
@@ -435,8 +445,8 @@
     "startSec": 3695.7,
     "endSec": 3723.3,
     "duration": 27.6,
-    "tireFrom": "S",
-    "tireTo": "M",
+    "tireFrom": "M",
+    "tireTo": "H",
     "outLapEndSec": 3796.4
   },
   {
@@ -445,8 +455,8 @@
     "startSec": 3741.6,
     "endSec": 3769.2,
     "duration": 27.6,
-    "tireFrom": "I",
-    "tireTo": "S",
+    "tireFrom": "M",
+    "tireTo": "H",
     "outLapEndSec": 3841.6
   },
   {
@@ -455,8 +465,8 @@
     "startSec": 3784.2,
     "endSec": 3812.6,
     "duration": 28.4,
-    "tireFrom": "S",
-    "tireTo": "S",
+    "tireFrom": "H",
+    "tireTo": "M",
     "outLapEndSec": 3884.7
   },
   {
@@ -465,8 +475,8 @@
     "startSec": 3828.2,
     "endSec": 3856,
     "duration": 27.8,
-    "tireFrom": "I",
-    "tireTo": "S",
+    "tireFrom": "H",
+    "tireTo": "M",
     "outLapEndSec": 3928.4
   },
   {
@@ -476,7 +486,7 @@
     "endSec": 3865.9,
     "duration": 27.6,
     "tireFrom": "M",
-    "tireTo": "S",
+    "tireTo": "H",
     "outLapEndSec": 3939.1
   },
   {
@@ -495,8 +505,8 @@
     "startSec": 3980.9,
     "endSec": 4009.1,
     "duration": 28.2,
-    "tireFrom": "M",
-    "tireTo": "S",
+    "tireFrom": "H",
+    "tireTo": "M",
     "outLapEndSec": 4081
   },
   {
@@ -505,8 +515,8 @@
     "startSec": 4053.6,
     "endSec": 4105.4,
     "duration": 51.8,
-    "tireFrom": "S",
-    "tireTo": "S",
+    "tireFrom": "H",
+    "tireTo": "M",
     "outLapEndSec": 4157
   },
   {
@@ -515,8 +525,8 @@
     "startSec": 4329.9,
     "endSec": 4357.7,
     "duration": 27.8,
-    "tireFrom": "S",
-    "tireTo": "S",
+    "tireFrom": "M",
+    "tireTo": "H",
     "outLapEndSec": 4433
   },
   {
@@ -525,8 +535,8 @@
     "startSec": 4431.3,
     "endSec": 4459.3,
     "duration": 28,
-    "tireFrom": "S",
-    "tireTo": "H",
+    "tireFrom": "M",
+    "tireTo": "S",
     "outLapEndSec": 4529.7
   },
   {
@@ -535,8 +545,8 @@
     "startSec": 4610.4,
     "endSec": 4641.7,
     "duration": 31.3,
-    "tireFrom": "M",
-    "tireTo": "S",
+    "tireFrom": "H",
+    "tireTo": "M",
     "outLapEndSec": 4711.2
   },
   {
@@ -545,7 +555,7 @@
     "startSec": 4737.2,
     "endSec": 4765.6,
     "duration": 28.4,
-    "tireFrom": "H",
+    "tireFrom": "M",
     "tireTo": "S",
     "outLapEndSec": 4850.9
   },
@@ -555,8 +565,8 @@
     "startSec": 4850.9,
     "endSec": 4879.1,
     "duration": 28.2,
-    "tireFrom": "S",
-    "tireTo": "M",
+    "tireFrom": "H",
+    "tireTo": "S",
     "outLapEndSec": 4980.2
   },
   {
@@ -565,7 +575,7 @@
     "startSec": 4872.8,
     "endSec": 4900.4,
     "duration": 27.6,
-    "tireFrom": "I",
+    "tireFrom": "M",
     "tireTo": "S",
     "outLapEndSec": 5003.2
   },
@@ -575,7 +585,7 @@
     "startSec": 4873.2,
     "endSec": 4912.8,
     "duration": 39.6,
-    "tireFrom": "I",
+    "tireFrom": "M",
     "tireTo": "S",
     "outLapEndSec": 5004.2
   },
@@ -585,7 +595,7 @@
     "startSec": 4914.8,
     "endSec": 4942.8,
     "duration": 28,
-    "tireFrom": "M",
+    "tireFrom": "H",
     "tireTo": "S",
     "outLapEndSec": 5043.6
   },
@@ -595,7 +605,7 @@
     "startSec": 4933.4,
     "endSec": 4961.5,
     "duration": 28.1,
-    "tireFrom": "S",
+    "tireFrom": "M",
     "tireTo": "S",
     "outLapEndSec": 5063
   },
@@ -605,7 +615,7 @@
     "startSec": 4971.1,
     "endSec": 4999.1,
     "duration": 28,
-    "tireFrom": "I",
+    "tireFrom": "M",
     "tireTo": "S",
     "outLapEndSec": 5100.6
   },
@@ -625,7 +635,7 @@
     "startSec": 5021.4,
     "endSec": 5048.6,
     "duration": 27.2,
-    "tireFrom": "S",
+    "tireFrom": "H",
     "tireTo": "S",
     "outLapEndSec": 5151.9
   },
@@ -635,7 +645,7 @@
     "startSec": 5030,
     "endSec": 5057.7,
     "duration": 27.7,
-    "tireFrom": "I",
+    "tireFrom": "H",
     "tireTo": "S",
     "outLapEndSec": 5159.4
   },
@@ -645,7 +655,7 @@
     "startSec": 5046.6,
     "endSec": 5073.9,
     "duration": 27.3,
-    "tireFrom": "S",
+    "tireFrom": "M",
     "tireTo": "S",
     "outLapEndSec": 5177.7
   },
@@ -655,7 +665,7 @@
     "startSec": 5187.5,
     "endSec": 5215.2,
     "duration": 27.7,
-    "tireFrom": "S",
+    "tireFrom": "M",
     "tireTo": "S",
     "outLapEndSec": 5315.7
   },
@@ -665,8 +675,8 @@
     "startSec": 5202.5,
     "endSec": 5229.9,
     "duration": 27.4,
-    "tireFrom": "M",
-    "tireTo": "H",
+    "tireFrom": "H",
+    "tireTo": "S",
     "outLapEndSec": 5332.1
   },
   {
@@ -675,7 +685,7 @@
     "startSec": 5211.4,
     "endSec": 5239.2,
     "duration": 27.8,
-    "tireFrom": "S",
+    "tireFrom": "M",
     "tireTo": "S",
     "outLapEndSec": 5340.4
   },
@@ -685,7 +695,7 @@
     "startSec": 5223,
     "endSec": 5252.6,
     "duration": 29.6,
-    "tireFrom": "H",
+    "tireFrom": "M",
     "tireTo": "S",
     "outLapEndSec": 5351.7
   },
@@ -705,7 +715,7 @@
     "startSec": 5235.8,
     "endSec": 5264,
     "duration": 28.2,
-    "tireFrom": "S",
+    "tireFrom": "M",
     "tireTo": "S",
     "outLapEndSec": 5364.6
   },
@@ -715,7 +725,7 @@
     "startSec": 5246.8,
     "endSec": 5275.7,
     "duration": 28.9,
-    "tireFrom": "S",
+    "tireFrom": "M",
     "tireTo": "S",
     "outLapEndSec": 5377.6
   },
@@ -725,7 +735,7 @@
     "startSec": 5279.6,
     "endSec": 5307.9,
     "duration": 28.3,
-    "tireFrom": "S",
+    "tireFrom": "H",
     "tireTo": "S",
     "outLapEndSec": 5408.1
   }

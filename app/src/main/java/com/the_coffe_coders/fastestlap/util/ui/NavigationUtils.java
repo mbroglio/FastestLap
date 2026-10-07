@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -137,6 +138,10 @@ public class NavigationUtils {
     }
 
     public static void navigateToLivePage(Context context, String eventTitle, String totalLaps, String circuitId, String circuitImageUrl, boolean isLive, String sessionName) {
+        navigateToLivePage(context, eventTitle, totalLaps, circuitId, circuitImageUrl, isLive, sessionName, null);
+    }
+
+    public static void navigateToLivePage(Context context, String eventTitle, String totalLaps, String circuitId, String circuitImageUrl, boolean isLive, String sessionName, String sessionType) {
         Intent intent = new Intent(context, com.the_coffe_coders.fastestlap.ui.live.LiveActivity.class);
         if (eventTitle != null) {
             intent.putExtra(com.the_coffe_coders.fastestlap.ui.live.LiveActivity.EXTRA_EVENT_TITLE, eventTitle);
@@ -153,6 +158,9 @@ public class NavigationUtils {
         intent.putExtra(com.the_coffe_coders.fastestlap.ui.live.LiveActivity.EXTRA_IS_LIVE, isLive);
         if (sessionName != null) {
             intent.putExtra(com.the_coffe_coders.fastestlap.ui.live.LiveActivity.EXTRA_SESSION_NAME, sessionName);
+        }
+        if (sessionType != null) {
+            intent.putExtra(com.the_coffe_coders.fastestlap.ui.live.LiveActivity.EXTRA_SESSION_TYPE, sessionType);
         }
         context.startActivity(intent);
     }
@@ -289,6 +297,16 @@ public class NavigationUtils {
             case 0:
                 Intent intent = new Intent(context, RaceAndSprintResultsActivity.class);
                 intent.putExtra("RACE", race);
+                String locality = null;
+                String gpLongName = null;
+                if (race != null && race.getTrack() != null) {
+                    if (race.getTrack().getLocation() != null) {
+                        locality = race.getTrack().getLocation().getLocality();
+                    }
+                    gpLongName = race.getTrack().getGp_long_name();
+                }
+                intent.putExtra("LOCALITY", locality);
+                intent.putExtra("GP_LONG_NAME", gpLongName);
                 intent.putExtra("FASTEST_LAP", fastestLap);
                 if (stints != null) {
                     intent.putParcelableArrayListExtra("STINTS", new ArrayList<>(stints));
@@ -296,8 +314,8 @@ public class NavigationUtils {
                 context.startActivity(intent);
                 break;
             case 1:
-                if (context instanceof androidx.fragment.app.FragmentActivity) {
-                    FragmentManager fragmentManager = ((androidx.fragment.app.FragmentActivity) context).getSupportFragmentManager();
+                if (context instanceof FragmentActivity) {
+                    FragmentManager fragmentManager = ((FragmentActivity) context).getSupportFragmentManager();
                     QualifyingResultsFragment qualifyingResultsFragment = new QualifyingResultsFragment();
                     Bundle qualifyingArgs = new Bundle();
                     qualifyingArgs.putParcelable("RACE", race);

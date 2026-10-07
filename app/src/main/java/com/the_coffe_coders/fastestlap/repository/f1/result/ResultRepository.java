@@ -148,8 +148,10 @@ public class ResultRepository {
                         if (race != null) {
                             saveAndPostRace(round, race);
 
-                            if (race.getRaceName() != null) {
-                                openF1StintDataSource.getStints(race.getRaceName(), "Race", new StintCallback() {
+                            if (race.getTrack() != null) {
+                                String locality = race.getTrack().getLocation() != null ? race.getTrack().getLocation().getLocality() : null;
+                                Log.e(TAG, "Locality: " + locality);
+                                openF1StintDataSource.getStints(locality, race.getRaceName(), race.getTrack().getGp_long_name(), "Race", new StintCallback() {
                                     @Override
                                     public void onSuccess(List<Stint> stints) {
                                         if (stints != null && !stints.isEmpty()) {
@@ -403,8 +405,9 @@ public class ResultRepository {
                         if (race != null) {
                             saveAndPostSprint(round, race);
 
-                            if (race.getRaceName() != null) {
-                                openF1StintDataSource.getStints(race.getRaceName(), "Sprint", new StintCallback() {
+                            if (race.getTrack() != null && race.getRaceName() != null) {
+                                String locality = race.getTrack().getLocation() != null ? race.getTrack().getLocation().getLocality() : null;
+                                openF1StintDataSource.getStints(locality, race.getRaceName(), race.getTrack().getGp_long_name(), "Sprint", new StintCallback() {
                                     @Override
                                     public void onSuccess(List<Stint> stints) {
                                         if (stints != null && !stints.isEmpty()) {
@@ -506,9 +509,13 @@ public class ResultRepository {
         });
     }
 
-    public synchronized MutableLiveData<Result> fetchStints(String eventName, String sessionName) {
-        String key = (eventName != null ? eventName : "latest") + "_" + (sessionName != null ? sessionName : "Race");
-        Log.d(TAG, "Fetching stints for key: " + key);
+    public synchronized MutableLiveData<Result> fetchStints(String location, String eventName, String sessionName) {
+        return fetchStints(location, eventName, sessionName, null);
+    }
+
+    public synchronized MutableLiveData<Result> fetchStints(String location, String eventName, String sessionName, String gpLongName) {
+        String key = (eventName != null ? eventName : (location != null ? location : "latest")) + "_" + (sessionName != null ? sessionName : "Race");
+        Log.d(TAG, "Fetching stints for key: " + key + " (location=" + location + ", eventName=" + eventName + ", gpLongName=" + gpLongName + ")");
 
         if (!stintsCache.containsKey(key)) {
             stintsCache.put(key, new MutableLiveData<>());
@@ -526,6 +533,9 @@ public class ResultRepository {
         // Controllo preventivo: se gli stint sono già disponibili nella cache locale per questo evento,
         // li restituiamo subito senza attendere la rete
         List<Stint> localPreCheck = findStintsInLocalCache(eventName, sessionName);
+        if (localPreCheck == null || localPreCheck.isEmpty()) {
+            localPreCheck = findStintsInLocalCache(location, sessionName);
+        }
         if (localPreCheck != null && !localPreCheck.isEmpty()) {
             liveData.postValue(new Result.StintsSuccess(localPreCheck));
             if (!networkUtils.isConnected()) {
@@ -536,7 +546,7 @@ public class ResultRepository {
         }
 
         if (networkUtils.isConnected()) {
-            openF1StintDataSource.getStints(eventName, sessionName, new StintCallback() {
+            openF1StintDataSource.getStints(location, eventName, gpLongName, sessionName, new StintCallback() {
                 @Override
                 public void onSuccess(java.util.List<Stint> stints) {
                     if (stints != null && !stints.isEmpty()) {
@@ -546,6 +556,9 @@ public class ResultRepository {
                     } else {
                         Log.d(TAG, "Stints returned empty list from OpenF1, checking local fallback");
                         List<Stint> fallback = findStintsInLocalCache(eventName, sessionName);
+                        if (fallback == null || fallback.isEmpty()) {
+                            fallback = findStintsInLocalCache(location, sessionName);
+                        }
                         if (fallback != null && !fallback.isEmpty()) {
                             liveData.postValue(new Result.StintsSuccess(fallback));
                         } else {
@@ -558,6 +571,9 @@ public class ResultRepository {
                 public void onFailure(Exception exception) {
                     Log.e(TAG, "Error fetching stints from OpenF1: " + exception.getMessage() + ", checking local fallback");
                     List<Stint> fallback = findStintsInLocalCache(eventName, sessionName);
+                    if (fallback == null || fallback.isEmpty()) {
+                        fallback = findStintsInLocalCache(location, sessionName);
+                    }
                     if (fallback != null && !fallback.isEmpty()) {
                         liveData.postValue(new Result.StintsSuccess(fallback));
                     } else {
@@ -568,6 +584,9 @@ public class ResultRepository {
         } else {
             Log.e(TAG, "Failed to load stints: No internet connection, checking local fallback");
             List<Stint> fallback = findStintsInLocalCache(eventName, sessionName);
+            if (fallback == null || fallback.isEmpty()) {
+                fallback = findStintsInLocalCache(location, sessionName);
+            }
             if (fallback != null && !fallback.isEmpty()) {
                 liveData.postValue(new Result.StintsSuccess(fallback));
             } else {

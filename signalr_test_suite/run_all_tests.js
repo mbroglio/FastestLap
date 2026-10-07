@@ -9,7 +9,9 @@ const {
   testLiveTimingEngine,
   testBakuRace,
   testSepangRace,
-  testTelemetryDecoder
+  testTelemetryDecoder,
+  testCornerSync,
+  testSepangSessions
 } = require('./tests');
 
 // ANSI Colors
@@ -50,6 +52,8 @@ async function runAllTests() {
   await executeTest('3. Baku GP Verification (Linear Dry Race & FastF1 Session Calibration)', testBakuRace);
   await executeTest('4. Sepang GP Verification (Wet Race, 2 Formation Laps & Pit Rejoin)', testSepangRace);
   await executeTest('5. CarData.z DEFLATE Decoder & Telemetry Flow', testTelemetryDecoder);
+  await executeTest('6. Physical Position & Telemetry Sync (Zero-Desync Calibration)', testCornerSync);
+  await executeTest('7. Sepang GP Sessions (Free Practice & Qualifying Simulation)', testSepangSessions);
 
   const totalDuration = ((Date.now() - startTime) / 1000).toFixed(2);
   const totalPassed = testResults.filter(t => t.passed).length;

@@ -35,6 +35,7 @@ public class RaceAndSprintResultsActivity extends AppCompatActivity {
 
     private static final String TAG = "RaceAndSprintResultsActivity";
     private Race race;
+    private String locality;
     private List<Stint> stintsList;
     private RaceResultFastestLap raceFastestLap;
     private EventViewModel eventViewModel;
@@ -49,7 +50,33 @@ public class RaceAndSprintResultsActivity extends AppCompatActivity {
         if (getIntent() != null) {
             race = getIntent().getParcelableExtra("RACE");
             stintsList = getIntent().getParcelableArrayListExtra("STINTS");
+            locality = getIntent().getStringExtra("LOCALITY");
             raceFastestLap = getIntent().getParcelableExtra("FASTEST_LAP");
+            String gpLongName = getIntent().getStringExtra("GP_LONG_NAME");
+            if (race != null) {
+                if (race.getTrack() == null) {
+                    com.the_coffe_coders.fastestlap.domain.f1.track.Track t = new com.the_coffe_coders.fastestlap.domain.f1.track.Track();
+                    if (locality != null) {
+                        com.the_coffe_coders.fastestlap.domain.f1.track.Location loc = new com.the_coffe_coders.fastestlap.domain.f1.track.Location();
+                        loc.setLocality(locality);
+                        t.setLocation(loc);
+                    }
+                    t.setGp_long_name(gpLongName);
+                    race.setTrack(t);
+                } else {
+                    if (race.getTrack().getGp_long_name() == null && gpLongName != null) {
+                        race.getTrack().setGp_long_name(gpLongName);
+                    }
+                    if (race.getTrack().getLocation() == null && locality != null) {
+                        com.the_coffe_coders.fastestlap.domain.f1.track.Location loc = new com.the_coffe_coders.fastestlap.domain.f1.track.Location();
+                        loc.setLocality(locality);
+                        race.getTrack().setLocation(loc);
+                    }
+                }
+                if (locality == null && race.getTrack().getLocation() != null) {
+                    locality = race.getTrack().getLocation().getLocality();
+                }
+            }
         }
 
         start();
@@ -99,7 +126,7 @@ public class RaceAndSprintResultsActivity extends AppCompatActivity {
 
         // Setup TabLayout & ViewPager2
         ViewPager2 viewPager = findViewById(R.id.view_pager);
-        RaceAndSprintResultsPagerAdapter pagerAdapter = new RaceAndSprintResultsPagerAdapter(this, race, stintsList);
+        RaceAndSprintResultsPagerAdapter pagerAdapter = new RaceAndSprintResultsPagerAdapter(this, race, locality, stintsList);
         if (viewPager != null) {
             viewPager.setAdapter(pagerAdapter);
         }

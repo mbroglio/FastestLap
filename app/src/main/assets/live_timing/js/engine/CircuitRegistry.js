@@ -59,6 +59,7 @@ class CircuitRegistry {
     let raceControl = spec.raceControl || [];
     let retirements = spec.retirements || {};
     let keyframes = spec.keyframes || {};
+    let stints = spec.stints || {};
     let incidents = spec.incidents || [];
 
     // In Node.js environment, load from files if available
@@ -87,6 +88,9 @@ class CircuitRegistry {
       }
       if (spec.dataFiles.keyframes && fs.existsSync(path.join(baseDir, spec.dataFiles.keyframes))) {
         keyframes = JSON.parse(fs.readFileSync(path.join(baseDir, spec.dataFiles.keyframes), 'utf-8'));
+      }
+      if (spec.dataFiles.stints && fs.existsSync(path.join(baseDir, spec.dataFiles.stints))) {
+        stints = JSON.parse(fs.readFileSync(path.join(baseDir, spec.dataFiles.stints), 'utf-8'));
       }
       if (spec.dataFiles.incidents && fs.existsSync(path.join(baseDir, spec.dataFiles.incidents))) {
         incidents = JSON.parse(fs.readFileSync(path.join(baseDir, spec.dataFiles.incidents), 'utf-8'));
@@ -134,6 +138,7 @@ class CircuitRegistry {
     timingEngine.loadRetirements(retirements);
     timingEngine.loadIncidents(incidents);
     timingEngine.loadKeyframes(keyframes);
+    if (stints && Object.keys(stints).length > 0) timingEngine.loadStints(stints);
 
     return {
       spec,
@@ -148,7 +153,7 @@ CircuitRegistry.register('baku', {
   name: 'Baku City Circuit',
   country: 'Azerbaijan',
   flag: '🇦🇿',
-  imageFile: 'Baku_Formula_One_circuit_map.svg.webp',
+  imageFile: 'simulations/baku/Baku_Formula_One_circuit_map.svg.webp',
   dimensions: { width: 500, height: 371 },
   lapDuration: 108.6,
   totalLaps: 51,
@@ -177,7 +182,7 @@ CircuitRegistry.register('sepang', {
   name: 'Sepang International Circuit',
   country: 'Malaysia',
   flag: '🇲🇾',
-  imageFile: 'Sepang.svg.webp',
+  imageFile: 'simulations/sepang/Sepang.svg.webp',
   dimensions: { width: 1280, height: 1057 },
   lapDuration: 95.0,
   totalLaps: 55,
@@ -190,12 +195,15 @@ CircuitRegistry.register('sepang', {
   dataFiles: {
     track: 'sepang_exact_track_full.json',
     pit: 'sepang_pit_lane_nodes.json',
-    drivers: 'baku_drivers.json', // 2026 drivers
-    laps: 'baku_driver_laps.json',
-    pits: 'formatted_pit_stops.json',
-    raceControl: 'baku_race_control_messages.json',
-    retirements: 'baku_retirements.json',
-    keyframes: 'test_keyframes.json'
+    drivers: 'sepang_drivers.json',
+    laps: 'sepang_driver_laps.json',
+    pits: 'sepang_pit_stops.json',
+    raceControl: 'sepang_race_control_messages.json',
+    retirements: 'sepang_retirements.json',
+    keyframes: 'sepang_keyframes.json',
+    stints: 'sepang_driver_stints.json',
+    incidents: 'sepang_incidents.json',
+    raceEvents: 'sepang_race_events.json'
   },
   gridOrder: ['3', '44', '12', '16', '1', '81', '63', '6', '10', '5', '30', '14', '55', '18', '27', '87', '31', '23', '77', '11', '43', '41']
 });

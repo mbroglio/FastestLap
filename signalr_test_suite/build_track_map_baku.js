@@ -2234,5 +2234,42 @@ const finalHtml = templateHtml
   .replace('__DRIVER_LAPS_JSON__', driverLapsJson)
   .replace('__DRIVER_OPTIONS_HTML__', driverOptionsHtml);
 
-fs.writeFileSync(path.join(__dirname, 'track_map_baku.html'), finalHtml, 'utf-8');
-console.log('Successfully wrote track_map_baku.html! Size:', finalHtml.length);
+// Extract CSS and JS to separate modular files
+const styleMatch = finalHtml.match(/<style>([\s\S]*?)<\/style>/);
+const scriptMatch = finalHtml.match(/<script>([\s\S]*?)<\/script>/);
+
+if (styleMatch && scriptMatch) {
+  const css = styleMatch[1].trim();
+  const js = scriptMatch[1].trim();
+  const cleanHtml = finalHtml
+    .replace(/<style>[\s\S]*?<\/style>/, '<link rel="stylesheet" href="css/baku_timing.css">')
+    .replace(/<script>[\s\S]*?<\/script>/, '<script src="js/baku_timing_app.js"></script>');
+
+  const cssDir = path.join(__dirname, 'css');
+  const jsDir = path.join(__dirname, 'js');
+  const simBakuDir = path.join(__dirname, 'simulations', 'baku');
+  if (!fs.existsSync(cssDir)) fs.mkdirSync(cssDir, { recursive: true });
+  if (!fs.existsSync(jsDir)) fs.mkdirSync(jsDir, { recursive: true });
+  if (!fs.existsSync(simBakuDir)) fs.mkdirSync(simBakuDir, { recursive: true });
+
+  fs.writeFileSync(path.join(cssDir, 'baku_timing.css'), css, 'utf-8');
+  fs.writeFileSync(path.join(jsDir, 'baku_timing_app.js'), js, 'utf-8');
+  fs.writeFileSync(path.join(__dirname, 'track_map_baku.html'), cleanHtml, 'utf-8');
+
+  // Isolated simulation files
+  fs.writeFileSync(path.join(simBakuDir, 'baku_timing.css'), css, 'utf-8');
+  fs.writeFileSync(path.join(simBakuDir, 'baku_timing_app.js'), js, 'utf-8');
+  fs.writeFileSync(path.join(simBakuDir, 'track_map_baku.html'), cleanHtml.replace('src="js/', 'src="').replace('href="css/', 'href="'), 'utf-8');
+
+  console.log('Successfully wrote modular Baku files:');
+  console.log('  - css/baku_timing.css:', css.length, 'bytes');
+  console.log('  - js/baku_timing_app.js:', js.length, 'bytes');
+  console.log('  - track_map_baku.html:', cleanHtml.length, 'bytes');
+  console.log('  - simulations/baku/track_map_baku.html & assets isolated');
+} else {
+  fs.writeFileSync(path.join(__dirname, 'track_map_baku.html'), finalHtml, 'utf-8');
+  const simBakuDir = path.join(__dirname, 'simulations', 'baku');
+  if (!fs.existsSync(simBakuDir)) fs.mkdirSync(simBakuDir, { recursive: true });
+  fs.writeFileSync(path.join(simBakuDir, 'track_map_baku.html'), finalHtml, 'utf-8');
+  console.log('Successfully wrote track_map_baku.html! Size:', finalHtml.length);
+}

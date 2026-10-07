@@ -18,11 +18,13 @@ import java.util.List;
 public class RaceAndSprintResultsPagerAdapter extends FragmentStateAdapter {
 
     private final Race race;
+    private final String locality;
     private final List<Stint> stints;
 
-    public RaceAndSprintResultsPagerAdapter(@NonNull FragmentActivity fragmentActivity, Race race, List<Stint> stints) {
+    public RaceAndSprintResultsPagerAdapter(@NonNull FragmentActivity fragmentActivity, Race race, String locality, List<Stint> stints) {
         super(fragmentActivity);
         this.race = race;
+        this.locality = locality;
         this.stints = stints;
     }
 
@@ -34,7 +36,7 @@ public class RaceAndSprintResultsPagerAdapter extends FragmentStateAdapter {
             if (stintsToPass == null && race != null) {
                 stintsToPass = race.getStints();
             }
-            return StintsResultsTabFragment.newInstance(race, stintsToPass);
+            return StintsResultsTabFragment.newInstance(race, locality, stintsToPass);
         }
         return RaceResultsTabFragment.newInstance(race);
     }

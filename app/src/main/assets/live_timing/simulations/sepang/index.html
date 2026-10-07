@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Sepang International Circuit — Live Timing & Simulazioni (FastestLap)</title>
+  <link rel="stylesheet" href="sepang_timing.css">
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       OFFLINE VIEW (Shown when no session is in progress)
+       ══════════════════════════════════════════════════════════════ -->
+  <div id="offlineView">
+    <div class="offline-box">
+      <div class="offline-badge">FASTESTLAP LIVE TIMING</div>
+      <div class="offline-title" id="offlineTitle">content not available</div>
+      <div class="offline-event" id="offlineEventTitle">FORMULA 1 GRAND PRIX</div>
+      <div class="offline-session" id="offlineSessionName">NESSUNA SESSIONE IN CORSO</div>
+      <p class="offline-desc">
+        Nessuna sessione di pista è attualmente in corso per questo gran premio.<br>
+        Il modulo live timing e telemetria si attiverà non appena la sessione avrà inizio.
+      </p>
+      <button class="offline-btn" onclick="closeSession()">
+        ← TORNA ALL'EVENTO
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       PRODUCTION LIVE VIEW
+       ══════════════════════════════════════════════════════════════ -->
+  <div id="liveView">
+    <header>
+      <!-- Row 1: Brand & Back Link -->
+      <div class="hdr-top-row">
+        <div class="hdr-left">
+          <a class="back-nav-btn" href="../../track_map.html" title="Torna indietro" style="text-decoration:none;display:inline-flex;align-items:center;justify-content:center;">←</a>
+          <div class="live-badge" id="liveBadgeIndicator" style="background:#0093cc;">
+            <div class="live-dot" style="background:#58a6ff;"></div>
+            SIMULAZIONE SEPANG
+          </div>
+          <span class="hdr-event" id="hdrEventTitle">FORMULA 1 PETRONAS MALAYSIAN GP</span>
+        </div>
+        <div class="hdr-right-controls">
+          <a href="../../track_map.html" class="test-btn" style="text-decoration:none;">📱 VISTA APP</a>
+        </div>
+      </div>
+
+      <!-- Row 2: Sepang Dedicated Simulation Controls (Session pills, Scrubber, Speed) -->
+      <div class="sepang-sim-header-bar">
+        <div class="sepang-session-pills">
+          <button class="sepang-session-pill active" id="btnSessRace" onclick="setSepangSession('race')">🏎️ GARA (55 Giri)</button>
+          <button class="sepang-session-pill" id="btnSessQual" onclick="setSepangSession('qualifying')">⏱️ QUALIFICHE (Q1-Q2-Q3)</button>
+          <button class="sepang-session-pill" id="btnSessFP" onclick="setSepangSession('practice')">🟢 PROVE LIBERE (FP2)</button>
+        </div>
+
+        <div class="sepang-scrubber-box">
+          <button class="sepang-play-btn" id="sepangPlayPauseBtn" onclick="togglePlayPause()">⏸️ Pausa</button>
+          <input type="range" class="sepang-time-slider" id="sepangTimeScrubber" min="0" max="6550" value="0" oninput="onScrubberInput(event)">
+          <span class="sepang-time-label" id="sepangTimeLabel">00:00 / 109:10</span>
+        </div>
+
+        <div class="sepang-speed-box">
+          <button class="sepang-speed-btn active" id="btnSpd1x" onclick="setSimSpeed(1)">1x</button>
+          <button class="sepang-speed-btn" id="btnSpd2x" onclick="setSimSpeed(2)">2x</button>
+          <button class="sepang-speed-btn" id="btnSpd5x" onclick="setSimSpeed(5)">5x</button>
+          <button class="sepang-speed-btn" id="btnSpd10x" onclick="setSimSpeed(10)">10x</button>
+          <button class="sepang-speed-btn" id="btnSpd30x" onclick="setSimSpeed(30)">30x</button>
+        </div>
+      </div>
+
+      <!-- Row 3: Quick Key Moments Jump Bar -->
+      <div class="sepang-jump-bar" id="sepangJumpBar">
+        <!-- Dynamically populated based on active session -->
+      </div>
+
+      <!-- Row 4: Session Status Bar -->
+      <div class="session-status-bar" id="sessionStatusBar">
+        <div class="status-bar-flag-badge flag-green" id="statusBarFlag">
+          <span id="statusBarFlagIcon">🟢</span>
+          <span id="statusBarFlagText">BANDIERA VERDE</span>
+        </div>
+        <div class="status-bar-item">
+          <span class="lbl">SESSIONE:</span>
+          <span class="val" id="statusBarSessionVal">GARA</span>
+        </div>
+        <div class="status-bar-item">
+          <span class="lbl">PROGRESSO:</span>
+          <span class="val" id="statusBarLapVal">GIRO 1/55</span>
+        </div>
+        <div class="status-bar-item clock">
+          <span class="lbl">TEMPO:</span>
+          <span class="val" id="statusBarClockVal">00:00</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Swappable Views Container -->
+    <main class="views-container">
+
+      <!-- ══════════════════════════════════════════════════════════════
+           VIEW 1: CLASSIFICA LIVE A SCHERMO INTERO (SOLO CLASSIFICA IN PISTA)
+           Rimosse colonne: STATO VETTURA, TELEMETRIA e GIRI.
+           Visualizzabile sia in landscape che in portrait!
+           ══════════════════════════════════════════════════════════════ -->
+      <section class="main-view active" id="view-standings">
+        <div class="full-standings-wrapper">
+          <table class="full-standings-table">
+            <thead>
+              <tr>
+                <th class="col-pos">POS</th>
+                <th class="col-gain">+/-</th>
+                <th class="col-driver">PILOTA</th>
+                <th class="col-gap">DISTACCO</th>
+                <th class="col-int">INTERVALLO</th>
+                <th class="col-last">ULTIMO GIRO</th>
+                <th class="col-best">MIGLIOR GIRO</th>
+                <th class="col-tyre">GOMMA</th>
+                <th class="col-pit">PIT</th>
+              </tr>
+            </thead>
+            <tbody id="fullStandingsBody">
+              <!-- Dynamically populated -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════════
+           VIEW 2: MAPPA & PISTA (LANDSCAPE ONLY) CON PANNELLO LATERALE
+           Rimosso STATO dalla classifica laterale.
+           Prompt di rotazione se visualizzata in portrait.
+           ══════════════════════════════════════════════════════════════ -->
+      <section class="main-view" id="view-track">
+        
+        <!-- Prompt visible when phone is held vertically -->
+        <div class="landscape-only-prompt">
+          <div class="landscape-only-icon">🔄</div>
+          <div class="landscape-only-title">Modalità Landscape Richiesta</div>
+          <div class="landscape-only-desc">
+            La mappa del circuito e il cruscotto telemetrico sono visualizzabili unicamente in modalità orizzontale (Landscape). Ruota il tuo dispositivo per visualizzare la pista.
+          </div>
+        </div>
+
+        <div class="track-layout-container">
+          <!-- Track Map Pane (Pure dark canvas with bottom-left reset focus button) -->
+          <div class="track-pane" id="trackPane">
+            <canvas id="trackCanvas"></canvas>
+            <div id="mapZoomVerticalBadge" class="map-zoom-vertical-badge">
+              <button id="btnMapZoomIn" class="map-zoom-vbtn" onclick="zoomMapStep(1)" title="Zoom In">
+                <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+                  <path d="M8 2a.75.75 0 0 1 .75.75v4.5h4.5a.75.75 0 0 1 0 1.5h-4.5v4.5a.75.75 0 0 1-1.5 0v-4.5h-4.5a.75.75 0 0 1 0-1.5h4.5v-4.5A.75.75 0 0 1 8 2z"/>
+                </svg>
+              </button>
+              <button id="btnMapZoomOut" class="map-zoom-vbtn" onclick="zoomMapStep(-1)" title="Zoom Out">
+                <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+                  <path d="M2.75 8a.75.75 0 0 1 .75-.75h9a.75.75 0 0 1 0 1.5h-9A.75.75 0 0 1 2.75 8z"/>
+                </svg>
+              </button>
+            </div>
+            <button id="btnResetMapFocus" class="map-reset-focus-btn" onclick="resetMapFocus()" title="Torna alla vista globale">
+              <svg viewBox="0 0 16 16" width="14" height="14" fill="currentColor">
+                <path fill-rule="evenodd" d="M15 8a.75.75 0 0 1-.75.75H4.06l4.72 4.72a.75.75 0 1 1-1.06 1.06l-6-6a.75.75 0 0 1 0-1.06l6-6a.75.75 0 0 1 1.06 1.06L4.06 7.25h10.19A.75.75 0 0 1 15 8z"/>
+              </svg>
+            </button>
+          </div>
+
+          <!-- Side Panel -->
+          <div class="side-panel">
+            <div class="side-tabs-bar">
+              <button class="side-tab-btn active" id="btnSideStandings" onclick="switchSideTab('side-standings')">
+                📊 Classifica
+              </button>
+              <button class="side-tab-btn" id="btnSideTelemetry" onclick="switchSideTab('side-telemetry')">
+                🏎️ Telemetria (2 Piloti)
+              </button>
+              <button class="side-tab-btn" id="btnSideRaceControl" onclick="switchSideTab('side-rc')">
+                🚩 Race Control
+              </button>
+            </div>
+
+            <!-- Side Sub-Tab 1: Compact Standings (NO S1/S2/S3, NO AERO, NO STATO) -->
+            <div class="side-pane-content active" id="side-standings">
+              <div class="compact-table-wrapper">
+                <table class="compact-timing-table">
+                  <thead>
+                    <tr>
+                      <th class="col-side-eye"></th>
+                      <th class="col-side-pos">POS</th>
+                      <th class="col-side-gain">+/-</th>
+                      <th class="col-side-driver">PILOTA</th>
+                      <th class="col-side-gap">DISTACCO</th>
+                      <th class="col-side-int">INTERVALLO</th>
+                      <th class="col-side-last">ULTIMO</th>
+                      <th class="col-side-best">MIGLIORE</th>
+                      <th class="col-side-tyre">GOMMA</th>
+                    </tr>
+                  </thead>
+                  <tbody id="compactStandingsBody">
+                    <!-- Populated dynamically -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Side Sub-Tab 2: Dual Cockpit Telemetry -->
+            <div class="side-pane-content" id="side-telemetry">
+              <div class="telemetry-container">
+                <div class="dual-selector-bar">
+                  <div class="sel-group">
+                    <span class="sel-label">Pilota 1:</span>
+                    <select class="drv-dropdown" id="drv1Select" onchange="onDriverSelectChange(1, this.value)">
+                      <option value="1">#1 NOR — Lando Norris (McLaren Mastercard F1 Team)</option>
+                <option value="3">#3 VER — Max Verstappen (Oracle Red Bull Racing)</option>
+                <option value="5">#5 BOR — Gabriel Bortoleto (Audi Revolut F1 Team)</option>
+                <option value="6">#6 HAD — Isack Hadjar (Oracle Red Bull Racing)</option>
+                <option value="10">#10 GAS — Pierre Gasly (BWT Alpine F1 Team)</option>
+                <option value="11">#11 PER — Sergio Pérez (Cadillac Formula 1 Team)</option>
+                <option value="12">#12 ANT — Kimi Antonelli (Mercedes-AMG Petronas F1 Team)</option>
+                <option value="14">#14 ALO — Fernando Alonso (Aston Martin Aramco F1 Team)</option>
+                <option value="16">#16 LEC — Charles Leclerc (Scuderia Ferrari HP)</option>
+                <option value="18">#18 STR — Lance Stroll (Aston Martin Aramco F1 Team)</option>
+                <option value="23">#23 ALB — Alexander Albon (Atlassian Williams F1 Team)</option>
+                <option value="27">#27 HUL — Nico Hülkenberg (Audi Revolut F1 Team)</option>
+                <option value="30">#30 LAW — Liam Lawson (Visa Cash App Racing Bulls)</option>
+                <option value="31">#31 OCO — Esteban Ocon (TGR Haas F1 Team)</option>
+                <option value="41">#41 LIN — Arvid Lindblad (Visa Cash App Racing Bulls)</option>
+                <option value="43">#43 COL — Franco Colapinto (BWT Alpine F1 Team)</option>
+                <option value="44">#44 HAM — Lewis Hamilton (Scuderia Ferrari HP)</option>
+                <option value="55">#55 SAI — Carlos Sainz Jr. (Atlassian Williams F1 Team)</option>
+                <option value="63">#63 RUS — George Russell (Mercedes-AMG Petronas F1 Team)</option>
+                <option value="77">#77 BOT — Valtteri Bottas (Cadillac Formula 1 Team)</option>
+                <option value="81">#81 PIA — Oscar Piastri (McLaren Mastercard F1 Team)</option>
+                <option value="87">#87 BEA — Oliver Bearman (TGR Haas F1 Team)</option>
+                    </select>
+                  </div>
+                  <button class="swap-btn" onclick="swapSelectedDrivers()" title="Inverti confronto">⇄</button>
+                  <div class="sel-group">
+                    <span class="sel-label">Pilota 2:</span>
+                    <select class="drv-dropdown" id="drv2Select" onchange="onDriverSelectChange(2, this.value)">
+                      <option value="1">#1 NOR — Lando Norris (McLaren Mastercard F1 Team)</option>
+                <option value="3">#3 VER — Max Verstappen (Oracle Red Bull Racing)</option>
+                <option value="5">#5 BOR — Gabriel Bortoleto (Audi Revolut F1 Team)</option>
+                <option value="6">#6 HAD — Isack Hadjar (Oracle Red Bull Racing)</option>
+                <option value="10">#10 GAS — Pierre Gasly (BWT Alpine F1 Team)</option>
+                <option value="11">#11 PER — Sergio Pérez (Cadillac Formula 1 Team)</option>
+                <option value="12">#12 ANT — Kimi Antonelli (Mercedes-AMG Petronas F1 Team)</option>
+                <option value="14">#14 ALO — Fernando Alonso (Aston Martin Aramco F1 Team)</option>
+                <option value="16">#16 LEC — Charles Leclerc (Scuderia Ferrari HP)</option>
+                <option value="18">#18 STR — Lance Stroll (Aston Martin Aramco F1 Team)</option>
+                <option value="23">#23 ALB — Alexander Albon (Atlassian Williams F1 Team)</option>
+                <option value="27">#27 HUL — Nico Hülkenberg (Audi Revolut F1 Team)</option>
+                <option value="30">#30 LAW — Liam Lawson (Visa Cash App Racing Bulls)</option>
+                <option value="31">#31 OCO — Esteban Ocon (TGR Haas F1 Team)</option>
+                <option value="41">#41 LIN — Arvid Lindblad (Visa Cash App Racing Bulls)</option>
+                <option value="43">#43 COL — Franco Colapinto (BWT Alpine F1 Team)</option>
+                <option value="44">#44 HAM — Lewis Hamilton (Scuderia Ferrari HP)</option>
+                <option value="55">#55 SAI — Carlos Sainz Jr. (Atlassian Williams F1 Team)</option>
+                <option value="63">#63 RUS — George Russell (Mercedes-AMG Petronas F1 Team)</option>
+                <option value="77">#77 BOT — Valtteri Bottas (Cadillac Formula 1 Team)</option>
+                <option value="81">#81 PIA — Oscar Piastri (McLaren Mastercard F1 Team)</option>
+                <option value="87">#87 BEA — Oliver Bearman (TGR Haas F1 Team)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="dual-cockpit-grid">
+                  <!-- Cockpit 1 -->
+                  <div class="cockpit-card" id="cockpitCard1">
+                    <div class="card-top-info">
+                      <div class="card-drv-name" id="c1Name">
+                        <span class="color-dot" id="c1ColorDot" style="background:#3671c6;"></span>
+                        <span id="c1Title">#3 VER — Max Verstappen</span>
+                      </div>
+                      <div class="card-drv-team" id="c1Team">Red Bull Racing</div>
+                    </div>
+                    <div class="speed-gear-cluster">
+                      <div class="speed-display">
+                        <div class="speed-num" id="c1Speed">0</div>
+                        <div class="speed-label">KM/H</div>
+                      </div>
+                      <div class="gear-display">
+                        <div class="gear-num" id="c1Gear">N</div>
+                        <div class="gear-label">MARCIA</div>
+                      </div>
+                    </div>
+                    <div class="rpm-container">
+                      <div class="rpm-meta">
+                        <span>REGIME MOTORE</span>
+                        <span class="rpm-num" id="c1Rpm">0 RPM</span>
+                      </div>
+                      <div class="shift-led-bar" id="c1LedBar"></div>
+                    </div>
+                    <div class="pedals-box">
+                      <div class="pedal-col">
+                        <div class="pedal-label"><span>ACC</span><span id="c1ThrVal">0%</span></div>
+                        <div class="pedal-track"><div class="pedal-bar-thr" id="c1ThrBar"></div></div>
+                      </div>
+                      <div class="pedal-col">
+                        <div class="pedal-label"><span>FRENO</span><span id="c1BrkVal">0%</span></div>
+                        <div class="pedal-track"><div class="pedal-bar-brk" id="c1BrkBar"></div></div>
+                      </div>
+                    </div>
+                    <div class="regs-2026-box">
+                      <div class="aero-status-box">
+                        <span>ACTIVE AERO (2026)</span>
+                        <span class="aero-mode-badge aero-xmode" id="c1AeroBadge">X-MODE</span>
+                      </div>
+                      <div class="battery-soc-box">
+                        <div class="battery-meta">
+                          <span>BATTERIA ERS</span>
+                          <span id="c1SocVal">85%</span>
+                        </div>
+                        <div class="battery-track">
+                          <div class="battery-fill" id="c1SocBar" style="width: 85%;"></div>
+                        </div>
+                      </div>
+                      <div class="boost-box">
+                        <span>MODALITÀ SORPASSO (BOOST)</span>
+                        <span class="boost-pill boost-standby" id="c1BoostBadge">STANDBY</span>
+                      </div>
+                    </div>
+                    <div class="card-loc-text" id="c1LocText">📍 Rettilineo Principale</div>
+                  </div>
+
+                  <!-- Cockpit 2 -->
+                  <div class="cockpit-card" id="cockpitCard2">
+                    <div class="card-top-info">
+                      <div class="card-drv-name" id="c2Name">
+                        <span class="color-dot" id="c2ColorDot" style="background:#e8002d;"></span>
+                        <span id="c2Title">#16 LEC — Charles Leclerc</span>
+                      </div>
+                      <div class="card-drv-team" id="c2Team">Scuderia Ferrari</div>
+                    </div>
+                    <div class="speed-gear-cluster">
+                      <div class="speed-display">
+                        <div class="speed-num" id="c2Speed">0</div>
+                        <div class="speed-label">KM/H</div>
+                      </div>
+                      <div class="gear-display">
+                        <div class="gear-num" id="c2Gear">N</div>
+                        <div class="gear-label">MARCIA</div>
+                      </div>
+                    </div>
+                    <div class="rpm-container">
+                      <div class="rpm-meta">
+                        <span>REGIME MOTORE</span>
+                        <span class="rpm-num" id="c2Rpm">0 RPM</span>
+                      </div>
+                      <div class="shift-led-bar" id="c2LedBar"></div>
+                    </div>
+                    <div class="pedals-box">
+                      <div class="pedal-col">
+                        <div class="pedal-label"><span>ACC</span><span id="c2ThrVal">0%</span></div>
+                        <div class="pedal-track"><div class="pedal-bar-thr" id="c2ThrBar"></div></div>
+                      </div>
+                      <div class="pedal-col">
+                        <div class="pedal-label"><span>FRENO</span><span id="c2BrkVal">0%</span></div>
+                        <div class="pedal-track"><div class="pedal-bar-brk" id="c2BrkBar"></div></div>
+                      </div>
+                    </div>
+                    <div class="regs-2026-box">
+                      <div class="aero-status-box">
+                        <span>ACTIVE AERO (2026)</span>
+                        <span class="aero-mode-badge aero-xmode" id="c2AeroBadge">X-MODE</span>
+                      </div>
+                      <div class="battery-soc-box">
+                        <div class="battery-meta">
+                          <span>BATTERIA ERS</span>
+                          <span id="c2SocVal">80%</span>
+                        </div>
+                        <div class="battery-track">
+                          <div class="battery-fill" id="c2SocBar" style="width: 80%;"></div>
+                        </div>
+                      </div>
+                      <div class="boost-box">
+                        <span>MODALITÀ SORPASSO (BOOST)</span>
+                        <span class="boost-pill boost-standby" id="c2BoostBadge">STANDBY</span>
+                      </div>
+                    </div>
+                    <div class="card-loc-text" id="c2LocText">📍 Curva 1</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Side Sub-Tab 3: Mini Race Control Feed -->
+            <div class="side-pane-content" id="side-rc">
+              <div class="full-rc-container side-rc-box">
+                <div class="rc-ticker-card" id="sideRcTickerCard">
+                  🟡 Inizio Sessione
+                </div>
+                <div class="side-rc-feed-list" id="sideRcFeedList">
+                  <!-- Dynamically populated -->
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ══════════════════════════════════════════════════════════════
+           VIEW 3: RACE CONTROL FULLSCREEN
+           ══════════════════════════════════════════════════════════════ -->
+      <section class="main-view" id="view-race-control">
+        <div class="full-rc-container">
+          <div class="full-rc-header">
+            <div class="rc-filters">
+              <button class="rc-filter-btn active" id="rcFilterAll" onclick="setRcFilter('ALL')">TUTTI</button>
+              <button class="rc-filter-btn" id="rcFilterFlags" onclick="setRcFilter('Flag')">BANDIERE</button>
+              <button class="rc-filter-btn" id="rcFilterSC" onclick="setRcFilter('SafetyCar')">SAFETY CAR</button>
+              <button class="rc-filter-btn" id="rcFilterInv" onclick="setRcFilter('Investigation')">INVESTIGAZIONI</button>
+            </div>
+            <span class="rc-count-label" id="rcTotalCount">0 Messaggi</span>
+          </div>
+          <div class="rc-ticker-card" id="fullRcTickerCard">
+            🟡 Sessione Ufficiale FIA Race Control
+          </div>
+          <div class="full-rc-messages-list" id="fullRcFeedList">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- ══════════════════════════════════════════════════════════════
+         NAVBAR ALLA BASE DELLO SCHERMO (BOTTOM NAVIGATION BAR)
+         ══════════════════════════════════════════════════════════════ -->
+    <nav class="bottom-nav-bar" id="bottomNavBar">
+      <button class="bottom-nav-btn active" id="btnNavStandings" onclick="switchMainView('view-standings')">
+        <span class="bnav-icon">📊</span>
+        <span class="bnav-label">Classifica Live</span>
+      </button>
+      <button class="bottom-nav-btn" id="btnNavTrack" onclick="switchMainView('view-track')">
+        <span class="bnav-icon">🗺️</span>
+        <span class="bnav-label">Mappa & Pista</span>
+      </button>
+      <button class="bottom-nav-btn" id="btnNavRaceControl" onclick="switchMainView('view-race-control')">
+        <span class="bnav-icon">🚩</span>
+        <span class="bnav-label">Race Control</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- Modular Scripts separated from page markup -->
+  <script src="sepang_simulation_data.js"></script>
+  <script src="sepang_timing_app.js"></script>
+</body>
+</html>

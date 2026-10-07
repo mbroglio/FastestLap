@@ -116,8 +116,9 @@ class TrackMapAnalyzer {
     const totalLapDuration = options.totalLapDuration || 95.0;
     const maxSpeed = options.maxSpeed || 330;
     const minSpeed = options.minSpeed || 75;
+    const trackLengthMeters = options.trackLengthMeters || (targetCount > 200 ? 5500 : 3500);
 
-    // Compute cumulative segment distances
+    // 1. Compute cumulative segment distances
     const cumDist = [0];
     for (let i = 0; i < rawPoints.length; i++) {
       const nextIdx = (i + 1) % rawPoints.length;
@@ -128,7 +129,7 @@ class TrackMapAnalyzer {
     }
     const totalPixelLength = cumDist[cumDist.length - 1];
 
-    // Uniform resampling along total length
+    // 2. Uniform distance resampling along total length
     const nodes = [];
     for (let i = 0; i < targetCount; i++) {
       const targetDist = (i / targetCount) * totalPixelLength;
@@ -158,57 +159,133 @@ class TrackMapAnalyzer {
       });
     }
 
-    // Compute curvature and heading angle for each node
-    for (let i = 0; i < targetCount; i++) {
-      const prev = nodes[(i - 1 + targetCount) % targetCount];
-      const curr = nodes[i];
-      const next = nodes[(i + 1) % targetCount];
+    const N = targetCount;
 
-      const heading = Math.atan2(next.py - prev.py, next.px - prev.px);
-      const angle1 = Math.atan2(curr.py - prev.py, curr.px - prev.px);
-      const angle2 = Math.atan2(next.py - curr.py, next.px - curr.px);
-      let dAngle = Math.abs(angle2 - angle1);
+    // 3. Compute smoothed curvature and heading angle for each node
+    for (let i = 0; i < N; i++) {
+      const pPrev = nodes[(i - 2 + N) % N];
+      const pCurr = nodes[i];
+      const pNext = nodes[(i + 2) % N];
+
+      const heading = Math.atan2(pNext.py - pPrev.py, pNext.px - pPrev.px);
+      const a1 = Math.atan2(pCurr.py - pPrev.py, pCurr.px - pPrev.px);
+      const a2 = Math.atan2(pNext.py - pCurr.py, pNext.px - pCurr.px);
+      let dAngle = Math.abs(a2 - a1);
       if (dAngle > Math.PI) dAngle = 2 * Math.PI - dAngle;
 
-      const curvature = dAngle;
-      curr.heading = Number(heading.toFixed(4));
-      curr.curvature = Number(curvature.toFixed(4));
-
-      // Realistic speed estimate based on curvature
-      const speed = Math.round(maxSpeed - Math.min(maxSpeed - minSpeed, curvature * 450));
-      curr.speed = Math.max(minSpeed, Math.min(maxSpeed, speed));
-
-      // Associated gear and telemetry
-      if (curr.speed < 110) curr.gear = 2;
-      else if (curr.speed < 160) curr.gear = 3;
-      else if (curr.speed < 210) curr.gear = 4;
-      else if (curr.speed < 255) curr.gear = 5;
-      else if (curr.speed < 290) curr.gear = 6;
-      else if (curr.speed < 320) curr.gear = 7;
-      else curr.gear = 8;
-
-      curr.throttle = curr.speed > 250 ? 100 : Math.round((curr.speed / maxSpeed) * 100);
-      curr.brake = curr.curvature > 0.15 ? Math.round(Math.min(100, curr.curvature * 250)) : 0;
-      curr.rpm = Math.round(10500 + (curr.speed / maxSpeed) * 2000);
-      curr.drs = (curr.speed > 280 && curr.brake === 0) ? 1 : 0;
+      pCurr.heading = Number(heading.toFixed(4));
+      pCurr.curvature = Number(dAngle.toFixed(4));
     }
 
-    // Assign time marks proportional to 1/speed along distance
-    let totalTimeUnits = 0;
-    const timeDeltas = [];
-    for (let i = 0; i < targetCount; i++) {
-      const curr = nodes[i];
-      const next = nodes[(i + 1) % targetCount];
-      const ds = Math.hypot(next.px - curr.px, next.py - curr.py);
-      const dt = ds / Math.max(minSpeed, curr.speed);
-      timeDeltas.push(dt);
-      totalTimeUnits += dt;
+    // 4. Physical segment distances in meters
+    const dsMeters = new Float64Array(N);
+    for (let i = 0; i < N; i++) {
+      const next = nodes[(i + 1) % N];
+      const dp = Math.hypot(next.px - nodes[i].px, next.py - nodes[i].py);
+      dsMeters[i] = (dp / totalPixelLength) * trackLengthMeters;
+    }
+
+    // 5. Target corner speeds based on curvature (grip limit at apex)
+    const targetSpeeds = new Float64Array(N); // m/s
+    for (let i = 0; i < N; i++) {
+      const c = nodes[i].curvature;
+      let spdKmh;
+      if (c > 0.8) spdKmh = minSpeed;
+      else if (c > 0.5) spdKmh = minSpeed + (maxSpeed - minSpeed) * 0.12;
+      else if (c > 0.25) spdKmh = minSpeed + (maxSpeed - minSpeed) * 0.32;
+      else if (c > 0.12) spdKmh = minSpeed + (maxSpeed - minSpeed) * 0.60;
+      else spdKmh = maxSpeed;
+      targetSpeeds[i] = spdKmh / 3.6;
+    }
+
+    // 6. Backward braking pass (propagates braking zones backwards from apexes)
+    const speeds = new Float64Array(targetSpeeds);
+    const maxBrakeDecel = 40.0; // m/s^2 (~4.0G)
+    for (let pass = 0; pass < 2; pass++) {
+      for (let i = N - 1; i >= 0; i--) {
+        const nextIdx = (i + 1) % N;
+        const maxAllowed = Math.sqrt(speeds[nextIdx] * speeds[nextIdx] + 2 * maxBrakeDecel * dsMeters[i]);
+        if (speeds[i] > maxAllowed) speeds[i] = maxAllowed;
+      }
+    }
+
+    // 7. Forward acceleration pass (propagates traction acceleration out of corners)
+    const maxAccel = 11.5; // m/s^2 (~1.15G)
+    for (let pass = 0; pass < 2; pass++) {
+      for (let i = 0; i < N; i++) {
+        const nextIdx = (i + 1) % N;
+        const maxAllowed = Math.sqrt(speeds[i] * speeds[i] + 2 * maxAccel * dsMeters[i]);
+        if (speeds[nextIdx] > maxAllowed) speeds[nextIdx] = maxAllowed;
+      }
+    }
+
+    // 8. Physical time integration (dt = ds / v_avg)
+    const timeDeltas = new Float64Array(N);
+    let totalPhysicsTime = 0;
+    for (let i = 0; i < N; i++) {
+      const nextIdx = (i + 1) % N;
+      const vAvg = (speeds[i] + speeds[nextIdx]) / 2;
+      const dt = dsMeters[i] / Math.max(minSpeed / 3.6, vAvg);
+      timeDeltas[i] = dt;
+      totalPhysicsTime += dt;
+    }
+
+    // Sector calibration or global normalization
+    let s1Scale = 1.0, s2Scale = 1.0, s3Scale = 1.0;
+    const s1BeamIdx = options.s1NodeIndex;
+    const s2BeamIdx = options.s2NodeIndex;
+    const s1Target = options.s1TargetSec;
+    const s2Target = options.s2TargetSec;
+
+    if (s1BeamIdx && s2BeamIdx && s1Target && s2Target) {
+      const s1RawTime = timeDeltas.slice(0, s1BeamIdx).reduce((a, b) => a + b, 0);
+      const s2RawTime = timeDeltas.slice(s1BeamIdx, s2BeamIdx).reduce((a, b) => a + b, 0);
+      const s3RawTime = timeDeltas.slice(s2BeamIdx, N).reduce((a, b) => a + b, 0);
+      s1Scale = s1Target / Math.max(0.001, s1RawTime);
+      s2Scale = (s2Target - s1Target) / Math.max(0.001, s2RawTime);
+      s3Scale = (totalLapDuration - s2Target) / Math.max(0.001, s3RawTime);
+    } else {
+      const globalScale = totalLapDuration / Math.max(0.001, totalPhysicsTime);
+      s1Scale = globalScale;
+      s2Scale = globalScale;
+      s3Scale = globalScale;
     }
 
     let runningTime = 0;
-    for (let i = 0; i < targetCount; i++) {
+    for (let i = 0; i < N; i++) {
       nodes[i].t = Number(runningTime.toFixed(3));
-      runningTime += (timeDeltas[i] / totalTimeUnits) * totalLapDuration;
+      const scale = (s1BeamIdx && i < s1BeamIdx) ? s1Scale : ((s2BeamIdx && i < s2BeamIdx) ? s2Scale : s3Scale);
+      runningTime += timeDeltas[i] * scale;
+
+      const spdKmh = Math.round(speeds[i] * 3.6);
+      nodes[i].speed = Math.max(minSpeed, Math.min(maxSpeed, spdKmh));
+
+      const nextIdx = (i + 1) % N;
+      const nextSpdKmh = Math.round(speeds[nextIdx] * 3.6);
+      const isBraking = nextSpdKmh < spdKmh - 1;
+      const isAccel = nextSpdKmh > spdKmh + 0.5;
+
+      if (nodes[i].speed < 110) nodes[i].gear = 2;
+      else if (nodes[i].speed < 160) nodes[i].gear = 3;
+      else if (nodes[i].speed < 210) nodes[i].gear = 4;
+      else if (nodes[i].speed < 255) nodes[i].gear = 5;
+      else if (nodes[i].speed < 290) nodes[i].gear = 6;
+      else if (nodes[i].speed < 320) nodes[i].gear = 7;
+      else nodes[i].gear = 8;
+
+      if (isBraking) {
+        nodes[i].brake = Math.min(100, Math.max(40, Math.round((spdKmh - nextSpdKmh) * 10)));
+        nodes[i].throttle = 0;
+      } else if (isAccel) {
+        nodes[i].brake = 0;
+        nodes[i].throttle = nodes[i].speed > 250 ? 100 : Math.round(60 + 40 * (nodes[i].speed / maxSpeed));
+      } else {
+        nodes[i].brake = 0;
+        nodes[i].throttle = nodes[i].curvature > 0.25 ? 40 : 100;
+      }
+
+      nodes[i].rpm = Math.round(10200 + (nodes[i].speed % 45) / 45 * 1900 + (nodes[i].speed > 300 ? 400 : 0));
+      nodes[i].drs = (nodes[i].speed > 280 && nodes[i].brake === 0 && nodes[i].throttle === 100) ? 1 : 0;
     }
 
     return nodes;

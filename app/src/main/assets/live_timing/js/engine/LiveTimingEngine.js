@@ -311,7 +311,7 @@ class LiveTimingEngine {
         currentLap: 0,
         trackSec,
         ...posInfo,
-        speed: Math.min(posInfo.speed, 110),
+        speed: Math.round(Math.min(posInfo.speed, 110)),
         status: 'FORMATION'
       };
     }
@@ -378,6 +378,7 @@ class LiveTimingEngine {
       trackSec,
       progress: driverEffectiveTime / lapDur,
       ...visualPos,
+      speed: Math.round(visualPos.speed),
       inPit,
       s1: s1Time,
       s2: s2Time,

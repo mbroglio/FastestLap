@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import okhttp3.ResponseBody;
@@ -58,24 +59,26 @@ public class OpenF1StintDataSource implements StintDataSource {
 
     /**
      * Fetches tyre stints for a specific event and session.
-     * Maps eventName -> meeting_key and sessionName -> session_key via OpenF1 endpoints.
+     * Maps location -> meeting_key and sessionName -> session_key via OpenF1 endpoints.
      */
+    
     @Override
-    public void getStints(String eventName, String sessionName, StintCallback callback) {
+    public void getStints(String location, String raceName, String gpLongName, String sessionName, StintCallback callback) {
         String year = ServiceLocator.currentYear;
-        Log.d(TAG, "Fetching stints for eventName: " + eventName + ", sessionName: " + sessionName + ", year: " + year);
 
-        if (eventName == null || eventName.trim().isEmpty()) {
-            callback.onFailure(new Exception("Event name is null or empty"));
+        if ((location == null || location.trim().isEmpty())
+                && (raceName == null || raceName.trim().isEmpty())
+                && (gpLongName == null || gpLongName.trim().isEmpty())) {
+            callback.onFailure(new Exception("Event location and names are null or empty"));
             return;
         }
 
         // Check if meetings are already cached in memory
         if (cachedMeetingsJson != null && (System.currentTimeMillis() - meetingsCacheTimestamp < MEETINGS_CACHE_TTL)) {
             try {
-                Integer meetingKey = findMeetingKey(cachedMeetingsJson, eventName);
+                Integer meetingKey = findMeetingKey(cachedMeetingsJson, location, raceName, gpLongName);
                 if (meetingKey != null) {
-                    Log.d(TAG, "Matched meeting_key from cache: " + meetingKey + " for event: " + eventName);
+                    Log.d(TAG, "Matched meeting_key from cache: " + meetingKey + " for location=" + location + ", race=" + raceName);
                     fetchSessionKeyAndStints(meetingKey, sessionName, callback);
                     return;
                 }
@@ -102,13 +105,13 @@ public class OpenF1StintDataSource implements StintDataSource {
                     String json = body.string();
                     cachedMeetingsJson = json;
                     meetingsCacheTimestamp = System.currentTimeMillis();
-                    Integer meetingKey = findMeetingKey(json, eventName);
+                    Integer meetingKey = findMeetingKey(json, location, raceName, gpLongName);
                     if (meetingKey != null) {
-                        Log.d(TAG, "Matched meeting_key: " + meetingKey + " for event: " + eventName);
+                        Log.d(TAG, "Matched meeting_key: " + meetingKey + " for location=" + location + ", race=" + raceName);
                         fetchSessionKeyAndStints(meetingKey, sessionName, callback);
                     } else {
-                        Log.w(TAG, "No matching meeting_key found for event: " + eventName);
-                        callback.onFailure(new Exception("No matching meeting found for event: " + eventName));
+                        Log.w(TAG, "No matching meeting_key found for location: " + location + ", race: " + raceName + ", gpLong: " + gpLongName);
+                        callback.onFailure(new Exception("No matching meeting found for location: " + location + ", race: " + raceName));
                     }
                 } catch (Exception e) {
                     Log.e(TAG, "Error processing meetings response", e);
@@ -124,40 +127,111 @@ public class OpenF1StintDataSource implements StintDataSource {
         });
     }
 
-    private Integer findMeetingKey(String meetingsJson, String targetEventName) {
+    private Integer findMeetingKey(String meetingsJson, String targetLocation, String targetRaceName, String targetGpLongName) {
         JsonArray jsonArray = new Gson().fromJson(meetingsJson, JsonArray.class);
-        if (jsonArray == null) return null;
+        if (jsonArray == null || jsonArray.isEmpty()) return null;
 
-        String targetNorm = targetEventName.toLowerCase(java.util.Locale.ROOT).trim();
+        String normalizedTargetLocation = cleanString(targetLocation);
+        String normalizedTargetRaceName = cleanString(targetRaceName);
+        String normalizedTargetOfficialName = cleanString(targetGpLongName);
 
-        for (JsonElement element : jsonArray) {
-            if (!element.isJsonObject()) continue;
-            JsonObject obj = element.getAsJsonObject();
+        // 1. Controllo combinato: location E (nome evento O nome completo gran premio)
+        if (!normalizedTargetLocation.isEmpty()
+                && (!normalizedTargetRaceName.isEmpty() || !normalizedTargetOfficialName.isEmpty())) {
+            for (JsonElement element : jsonArray) {
+                if (!element.isJsonObject()) continue;
+                JsonObject meeting = element.getAsJsonObject();
+                String meetingLocation = cleanString(getStringOrNull(meeting, "location"));
+                String meetingCircuitName = cleanString(getStringOrNull(meeting, "circuit_short_name"));
+                String meetingName = cleanString(getStringOrNull(meeting, "meeting_name"));
+                String meetingOfficialName = cleanString(getStringOrNull(meeting, "meeting_official_name"));
 
-            String meetingName = getStringOrNull(obj, "meeting_name");
-            String meetingOfficialName = getStringOrNull(obj, "meeting_official_name");
-            String location = getStringOrNull(obj, "location");
-            String countryName = getStringOrNull(obj, "country_name");
-            String circuitShort = getStringOrNull(obj, "circuit_short_name");
+                boolean locationMatches = locationMatches(
+                        normalizedTargetLocation, meetingLocation, meetingCircuitName);
+                boolean eventNameMatches = (!normalizedTargetRaceName.isEmpty()
+                        && (match(normalizedTargetRaceName, meetingName)
+                        || match(normalizedTargetRaceName, meetingOfficialName)))
+                        || (!normalizedTargetOfficialName.isEmpty()
+                        && (match(normalizedTargetOfficialName, meetingOfficialName)
+                        || match(normalizedTargetOfficialName, meetingName)));
 
-            if (matches(meetingName, targetNorm)
-                    || matches(meetingOfficialName, targetNorm)
-                    || matches(location, targetNorm)
-                    || matches(countryName, targetNorm)
-                    || matches(circuitShort, targetNorm)) {
-                int key = getIntOrDefault(obj, "meeting_key", -1);
-                if (key > 0) return key;
+                if (locationMatches && eventNameMatches) {
+                    int meetingKey = getIntOrDefault(meeting, "meeting_key", -1);
+                    if (meetingKey > 0) return meetingKey;
+                }
             }
         }
+
+        // 2. Controllo sul nome completo ufficiale del Gran Premio (meeting_official_name)
+        if (!normalizedTargetOfficialName.isEmpty()) {
+            for (JsonElement element : jsonArray) {
+                if (!element.isJsonObject()) continue;
+                JsonObject meeting = element.getAsJsonObject();
+                String meetingOfficialName = cleanString(getStringOrNull(meeting, "meeting_official_name"));
+                if (match(normalizedTargetOfficialName, meetingOfficialName)) {
+                    int meetingKey = getIntOrDefault(meeting, "meeting_key", -1);
+                    if (meetingKey > 0) return meetingKey;
+                }
+            }
+        }
+
+        // 3. Controllo sulla location / circuito
+        if (!normalizedTargetLocation.isEmpty()) {
+            for (JsonElement element : jsonArray) {
+                if (!element.isJsonObject()) continue;
+                JsonObject meeting = element.getAsJsonObject();
+                String meetingLocation = cleanString(getStringOrNull(meeting, "location"));
+                String meetingCircuitName = cleanString(getStringOrNull(meeting, "circuit_short_name"));
+                if (locationMatches(normalizedTargetLocation, meetingLocation, meetingCircuitName)) {
+                    int meetingKey = getIntOrDefault(meeting, "meeting_key", -1);
+                    if (meetingKey > 0) return meetingKey;
+                }
+            }
+        }
+
+        // 4. Controllo sul nome dell'evento (meeting_name o meeting_official_name)
+        if (!normalizedTargetRaceName.isEmpty()) {
+            for (JsonElement element : jsonArray) {
+                if (!element.isJsonObject()) continue;
+                JsonObject meeting = element.getAsJsonObject();
+                String meetingName = cleanString(getStringOrNull(meeting, "meeting_name"));
+                String meetingOfficialName = cleanString(getStringOrNull(meeting, "meeting_official_name"));
+                if (match(normalizedTargetRaceName, meetingName)
+                        || match(normalizedTargetRaceName, meetingOfficialName)) {
+                    int meetingKey = getIntOrDefault(meeting, "meeting_key", -1);
+                    if (meetingKey > 0) return meetingKey;
+                }
+            }
+        }
+
         return null;
     }
 
-    private boolean matches(String candidate, String targetNorm) {
-        if (candidate == null || candidate.trim().isEmpty()) return false;
-        String candNorm = candidate.toLowerCase(java.util.Locale.ROOT).trim();
-        if (candNorm.equals(targetNorm)) return true;
-        if (candNorm.equals("grand prix") || candNorm.equals("gp") || candNorm.length() < 3) return false;
-        return candNorm.contains(targetNorm) || targetNorm.contains(candNorm);
+    private boolean locationMatches(
+            String normalizedTargetLocation,
+            String normalizedMeetingLocation,
+            String normalizedMeetingCircuitName) {
+        if (normalizedTargetLocation == null || normalizedTargetLocation.isEmpty()) return false;
+        return match(normalizedTargetLocation, normalizedMeetingLocation)
+                || match(normalizedTargetLocation, normalizedMeetingCircuitName);
+    }
+
+    private boolean match(String firstValue, String secondValue) {
+        if (firstValue == null || secondValue == null
+                || firstValue.isEmpty() || secondValue.isEmpty()) return false;
+        return firstValue.equals(secondValue)
+                || firstValue.contains(secondValue)
+                || secondValue.contains(firstValue);
+    }
+
+    private String cleanString(String value) {
+        if (value == null) return "";
+        String normalized = java.text.Normalizer.normalize(value, java.text.Normalizer.Form.NFD);
+        return normalized.replaceAll("\\p{M}", "")
+                .toLowerCase(Locale.ROOT)
+                .replaceAll("[^a-z0-9]", " ")
+                .replaceAll("\\s+", " ")
+                .trim();
     }
 
     private void fetchSessionKeyAndStints(int meetingKey, String sessionName, StintCallback callback) {
@@ -232,6 +306,14 @@ public class OpenF1StintDataSource implements StintDataSource {
         }
 
         return null;
+    }
+
+    private boolean matches(String candidate, String targetNorm) {
+        if (candidate == null || candidate.trim().isEmpty() || targetNorm == null) return false;
+        String candNorm = candidate.toLowerCase(Locale.ROOT).trim();
+        if (candNorm.equals(targetNorm)) return true;
+        if (candNorm.length() < 3) return false;
+        return candNorm.contains(targetNorm) || targetNorm.contains(candNorm);
     }
 
     private void fetchStintsBySessionKey(String sessionKey, StintCallback callback) {
