@@ -33,7 +33,7 @@ public class RaceAndSprintResultsPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         if (position == 1) {
             List<Stint> stintsToPass = stints;
-            if (stintsToPass == null && race != null) {
+            if ((stintsToPass == null || stintsToPass.isEmpty()) && race != null) {
                 stintsToPass = race.getStints();
             }
             return StintsResultsTabFragment.newInstance(race, locality, stintsToPass);

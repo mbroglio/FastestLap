@@ -130,17 +130,7 @@ public class WeeklyRaceRepository {
                     if (weeklyRace != null) {
                         localWeeklyRaceDataSource.saveSingleWeeklyRace(weeklyRace);
                         lastUpdateTimestamps.put("next", System.currentTimeMillis());
-                        localWeeklyRaceDataSource.getNextRace(new SingleWeeklyRaceCallback() {
-                            @Override
-                            public void onSuccess(WeeklyRace nextRace) {
-                                Objects.requireNonNull(raceCache.get("next")).postValue(new Result.NextRaceSuccess(nextRace));
-                            }
-
-                            @Override
-                            public void onFailure(Exception e) {
-                                Objects.requireNonNull(raceCache.get("next")).postValue(new Result.NextRaceSuccess(weeklyRace));
-                            }
-                        });
+                        Objects.requireNonNull(raceCache.get("next")).postValue(new Result.NextRaceSuccess(weeklyRace));
                     } else if (!isBackgroundRefresh) {
                         Objects.requireNonNull(raceCache.get("next")).postValue(new Result.Error("No next race found from remote"));
                     }
@@ -212,17 +202,7 @@ public class WeeklyRaceRepository {
                     if (weeklyRace != null) {
                         localWeeklyRaceDataSource.saveSingleWeeklyRace(weeklyRace);
                         lastUpdateTimestamps.put("last", System.currentTimeMillis());
-                        localWeeklyRaceDataSource.getLastRace(new SingleWeeklyRaceCallback() {
-                            @Override
-                            public void onSuccess(WeeklyRace lastRace) {
-                                Objects.requireNonNull(raceCache.get("last")).postValue(new Result.NextRaceSuccess(lastRace));
-                            }
-
-                            @Override
-                            public void onFailure(Exception e) {
-                                Objects.requireNonNull(raceCache.get("last")).postValue(new Result.NextRaceSuccess(weeklyRace));
-                            }
-                        });
+                        Objects.requireNonNull(raceCache.get("last")).postValue(new Result.NextRaceSuccess(weeklyRace));
                     } else if (!isBackgroundRefresh) {
                         Objects.requireNonNull(raceCache.get("last")).postValue(new Result.Error("No last race found from remote"));
                     }

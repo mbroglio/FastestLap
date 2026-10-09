@@ -25,6 +25,7 @@ import com.the_coffe_coders.fastestlap.ui.event.viewmodel.EventViewModel;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -75,6 +76,17 @@ public class RaceAndSprintResultsActivity extends AppCompatActivity {
                 }
                 if (locality == null && race.getTrack().getLocation() != null) {
                     locality = race.getTrack().getLocation().getLocality();
+                }
+            }
+
+            // Recovery: se non passati esplicitamente, recupera stint persistiti nell'oggetto Race
+            if (stintsList == null || stintsList.isEmpty()) {
+                if (race != null) {
+                    String sessionType = (race.getRaceResults() != null && !race.getRaceResults().isEmpty()) ? "Race" : "Sprint";
+                    stintsList = "Sprint".equalsIgnoreCase(sessionType) ? race.getSprintStints() : race.getRaceStints();
+                    if (stintsList == null || stintsList.isEmpty()) {
+                        stintsList = race.getStints();
+                    }
                 }
             }
         }
@@ -176,5 +188,25 @@ public class RaceAndSprintResultsActivity extends AppCompatActivity {
                         fastestLapLayout.findViewById(R.id.driver_name),
                         fastestLapLayout.findViewById(R.id.fastest_lap),
                         fastestLapLayout.findViewById(R.id.lap_value)});
+    }
+
+    public void updateStints(List<Stint> newStints) {
+        if (newStints == null || newStints.isEmpty()) return;
+        this.stintsList = new ArrayList<>(newStints);
+        if (getIntent() != null) {
+            getIntent().putParcelableArrayListExtra("STINTS", new ArrayList<>(newStints));
+        }
+        if (race != null) {
+            String sessionType = (race.getRaceResults() != null && !race.getRaceResults().isEmpty()) ? "Race" : "Sprint";
+            if ("Sprint".equalsIgnoreCase(sessionType)) {
+                race.setSprintStints(newStints);
+            } else {
+                race.setRaceStints(newStints);
+            }
+        }
+    }
+
+    public List<Stint> getStintsList() {
+        return stintsList;
     }
 }

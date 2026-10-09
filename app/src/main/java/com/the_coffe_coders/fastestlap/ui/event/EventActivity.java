@@ -323,7 +323,7 @@ public class EventActivity extends AppCompatActivity {
         if (flagView != null && nationFlagUrl != null) {
             UIUtils.loadImageAsync(this, nationFlagUrl, flagView);
         }
-        String outlineUrl = resolveCircuitImageUrl(track, weeklyRace);
+        String outlineUrl = track != null ? track.getTrack_minimal_layout_url() : null;;
         if (trackOutlineView != null && outlineUrl != null && !outlineUrl.isEmpty()) {
             UIUtils.loadImageAsync(this, outlineUrl, trackOutlineView);
         }
@@ -465,16 +465,13 @@ public class EventActivity extends AppCompatActivity {
         Animation pulse = AnimationUtils.loadAnimation(this, R.anim.pulse_dynamic);
         liveIcon.startAnimation(pulse);
 
-        String effectiveTrackId = resolveCircuitId(trackId, track, weeklyRace);
-        String circuitImageUrl = resolveCircuitImageUrl(track, weeklyRace);
-
         // Al click apre la LiveActivity passando il titolo dell'evento, giri totali, circuit ID, immagine, stato live, nome sessione, tipo sessione e sessionPart
         liveSession.setOnClickListener(v -> NavigationUtils.navigateToLivePage(
                 this,
                 eventTitle,
                 totalLaps,
-                effectiveTrackId,
-                circuitImageUrl,
+                trackId,
+                track.getTrack_minimal_layout_url(),
                 isLive,
                 sessionName,
                 sessionType,
@@ -483,49 +480,6 @@ public class EventActivity extends AppCompatActivity {
 
         Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: EventActivity at " + System.currentTimeMillis());
         loadingScreen.hideLoadingScreen();
-    }
-
-    private String resolveCircuitImageUrl(Track currentTrack, WeeklyRace weeklyRace) {
-        if (currentTrack != null) {
-            if (currentTrack.getTrack_minimal_layout_url() != null && !currentTrack.getTrack_minimal_layout_url().trim().isEmpty()) {
-                return currentTrack.getTrack_minimal_layout_url().trim();
-            }
-            if (currentTrack.getTrack_full_layout_url() != null && !currentTrack.getTrack_full_layout_url().trim().isEmpty()) {
-                return currentTrack.getTrack_full_layout_url().trim();
-            }
-            if (currentTrack.getTrack_pic_url() != null && !currentTrack.getTrack_pic_url().trim().isEmpty()) {
-                return currentTrack.getTrack_pic_url().trim();
-            }
-        }
-        if (weeklyRace != null && weeklyRace.getTrack() != null) {
-            Track wt = weeklyRace.getTrack();
-            if (wt.getTrack_minimal_layout_url() != null && !wt.getTrack_minimal_layout_url().trim().isEmpty()) {
-                return wt.getTrack_minimal_layout_url().trim();
-            }
-            if (wt.getTrack_full_layout_url() != null && !wt.getTrack_full_layout_url().trim().isEmpty()) {
-                return wt.getTrack_full_layout_url().trim();
-            }
-            if (wt.getTrack_pic_url() != null && !wt.getTrack_pic_url().trim().isEmpty()) {
-                return wt.getTrack_pic_url().trim();
-            }
-        }
-        return null;
-    }
-
-    private String resolveCircuitId(String trackIdParam, Track currentTrack, WeeklyRace weeklyRace) {
-        if (trackIdParam != null && !trackIdParam.trim().isEmpty()) {
-            return trackIdParam.trim().toLowerCase();
-        }
-        if (currentTrack != null && currentTrack.getTrackId() != null && !currentTrack.getTrackId().trim().isEmpty()) {
-            return currentTrack.getTrackId().trim().toLowerCase();
-        }
-        if (weeklyRace != null && weeklyRace.getTrack() != null && weeklyRace.getTrack().getTrackId() != null && !weeklyRace.getTrack().getTrackId().trim().isEmpty()) {
-            return weeklyRace.getTrack().getTrackId().trim().toLowerCase();
-        }
-        if (weeklyRace != null && weeklyRace.getRaceName() != null) {
-            return weeklyRace.getRaceName().trim().toLowerCase();
-        }
-        return "";
     }
 
     private void startCountdown(LocalDateTime eventDate, WeeklyRace weeklyRace, String eventTitle, String totalLaps, String sessionName, String sessionType, String sessionPart) {
@@ -571,6 +525,10 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void showRaceResultsDialog(Race race) {
+        showRaceResultsDialog(race, null);
+    }
+
+    private void showRaceResultsDialog(Race race, String preferredSession) {
         if (race != null) {
             // Assicura che l'oggetto Race abbia i dati completi del Track da Firebase (incluso gp_long_name e layout)
             if (this.track != null) {
@@ -592,14 +550,14 @@ public class EventActivity extends AppCompatActivity {
             String sessionName = null;
             RaceResultFastestLap raceFastestLap = null;
 
-            if (race.getRaceResults() != null && !race.getRaceResults().isEmpty()) {
-                Log.i(TAG, "Showing race results");
-                sessionName = "Race";
-                raceFastestLap = eventViewModel.extractFastestLap(race.getRaceResults());
-            } else if (race.getSprintResults() != null && !race.getSprintResults().isEmpty()) {
+            if ("Sprint".equalsIgnoreCase(preferredSession) && race.getSprintResults() != null && !race.getSprintResults().isEmpty()) {
                 Log.i(TAG, "Showing sprint results");
                 sessionName = "Sprint";
                 raceFastestLap = eventViewModel.extractFastestLap(race.getSprintResults());
+            } else if ("Race".equalsIgnoreCase(preferredSession) && race.getRaceResults() != null && !race.getRaceResults().isEmpty()) {
+                Log.i(TAG, "Showing race results");
+                sessionName = "Race";
+                raceFastestLap = eventViewModel.extractFastestLap(race.getRaceResults());
             }
 
             if (sessionName != null) {
@@ -678,7 +636,7 @@ public class EventActivity extends AppCompatActivity {
                         }
 
                         View resultsView = findViewById(R.id.timer_card_results);
-                        resultsView.setOnClickListener(v -> showRaceResultsDialog(currentRace));
+                        resultsView.setOnClickListener(v -> showRaceResultsDialog(currentRace, "Race"));
                     }
                 } else {
                     showPendingResults();
@@ -812,7 +770,7 @@ public class EventActivity extends AppCompatActivity {
         if (!session.isPractice()) {
             if (session.isRace()) {
                 if (currentRace != null && currentRace.getRaceResults() != null && !currentRace.getRaceResults().isEmpty()) {
-                    showRaceResultsDialog(currentRace);
+                    showRaceResultsDialog(currentRace, "Race");
                 } else {
                     fetchRaceResultsAndShow(round);
                 }
@@ -845,7 +803,7 @@ public class EventActivity extends AppCompatActivity {
                     Race race = ((Result.RaceResultsSuccess) result).getData();
                     if (race != null && race.getRaceResults() != null && !race.getRaceResults().isEmpty()) {
                         currentRace = race;
-                        showRaceResultsDialog(race);
+                        showRaceResultsDialog(race, "Race");
                     } else {
                         Toast.makeText(EventActivity.this, R.string.results_not_available, Toast.LENGTH_SHORT).show();
                     }
@@ -930,7 +888,7 @@ public class EventActivity extends AppCompatActivity {
                             Toast.makeText(EventActivity.this, R.string.results_not_available, Toast.LENGTH_SHORT).show();
                         } else {
                             Log.i(TAG, "Sprint results found: " + sprintResults.size());
-                            showRaceResultsDialog(race);
+                            showRaceResultsDialog(race, "Sprint");
                         }
                     } else if (result instanceof Result.Error) {
                         Toast.makeText(EventActivity.this, R.string.results_not_available, Toast.LENGTH_SHORT).show();

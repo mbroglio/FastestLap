@@ -19,6 +19,7 @@ import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
 import com.the_coffe_coders.fastestlap.domain.f1.result.RaceResult;
 import com.the_coffe_coders.fastestlap.domain.f1.result.Stint;
+import com.the_coffe_coders.fastestlap.ui.event.RaceAndSprintResultsActivity;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModel;
 import com.the_coffe_coders.fastestlap.ui.event.viewmodel.RaceResultViewModelFactory;
 
@@ -93,12 +94,9 @@ public class StintsResultsTabFragment extends Fragment {
         ProgressBar progressBar = view.findViewById(R.id.stints_progress_bar);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 
-        if ((stintsList == null || stintsList.isEmpty()) && race != null) {
-            String sessionType = (race.getRaceResults() != null && !race.getRaceResults().isEmpty()) ? "Race" : "Sprint";
-            stintsList = sessionType.equals("Sprint") ? race.getSprintStints() : race.getRaceStints();
-            if (stintsList == null || stintsList.isEmpty()) {
-                stintsList = race.getStints();
-            }
+        // Recovery baseline: se non presenti in stintsList, recupera stint già persistiti nell'oggetto race o nell'Activity
+        if (stintsList == null || stintsList.isEmpty()) {
+            stintsList = getLocalStintsFallback();
         }
 
         List<RaceResult> raceResults = (race != null)
@@ -106,112 +104,143 @@ public class StintsResultsTabFragment extends Fragment {
                     ? race.getRaceResults() : race.getSprintResults())
                 : null;
 
-        if (stintsList != null && !stintsList.isEmpty()) {
+        boolean hasLocalStints = stintsList != null && !stintsList.isEmpty();
+
+        if (hasLocalStints) {
             recyclerView.setVisibility(View.VISIBLE);
-            if (progressBar != null) {
-                progressBar.setVisibility(View.GONE);
-            }
-            if (notAvailableLayout != null) {
-                notAvailableLayout.setVisibility(View.GONE);
-            }
+            if (progressBar != null) progressBar.setVisibility(View.GONE);
+            if (notAvailableLayout != null) notAvailableLayout.setVisibility(View.GONE);
             recyclerView.setAdapter(new StintsResultsRecyclerAdapter(requireContext(), stintsList, raceResults));
         } else {
             recyclerView.setVisibility(View.GONE);
+            if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+            if (notAvailableLayout != null) notAvailableLayout.setVisibility(View.GONE);
+        }
 
-            if (race != null && race.getRaceName() != null && isAdded()) {
-                if (progressBar != null) {
-                    progressBar.setVisibility(View.VISIBLE);
-                }
-                if (notAvailableLayout != null) {
-                    notAvailableLayout.setVisibility(View.GONE);
-                }
+        if (race != null && race.getRaceName() != null && isAdded()) {
+            String sessionType = (race.getRaceResults() != null && !race.getRaceResults().isEmpty()) ? "Race" : "Sprint";
+            RaceResultViewModel raceResultViewModel = new ViewModelProvider(
+                    requireActivity(),
+                    new RaceResultViewModelFactory(requireActivity().getApplication(), requireActivity())
+            ).get(RaceResultViewModel.class);
 
-                String sessionType = (race.getRaceResults() != null && !race.getRaceResults().isEmpty()) ? "Race" : "Sprint";
-                RaceResultViewModel raceResultViewModel = new ViewModelProvider(
-                        requireActivity(),
-                        new RaceResultViewModelFactory(requireActivity().getApplication(), requireActivity())
-                ).get(RaceResultViewModel.class);
+            Log.i("StintsTab", "Requesting fresh stints for race: " + race.getRaceName() + " (" + sessionType + ")");
 
-                Log.i("StintsTab", "race: "+race.getTrack());
-
-                String gpLongName = (race.getTrack() != null) ? race.getTrack().getGp_long_name() : null;
-                raceResultViewModel.getStints(locality, race.getRaceName(), sessionType, gpLongName).observe(getViewLifecycleOwner(), result -> {
-                    if (result instanceof Result.Loading) {
-                        if (progressBar != null) {
-                            progressBar.setVisibility(View.VISIBLE);
-                        }
+            String gpLongName = (race.getTrack() != null) ? race.getTrack().getGp_long_name() : null;
+            raceResultViewModel.getStints(locality, race.getRaceName(), sessionType, gpLongName).observe(getViewLifecycleOwner(), result -> {
+                if (result instanceof Result.Loading) {
+                    if (!hasLocalStints && (stintsList == null || stintsList.isEmpty())) {
+                        if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
                         recyclerView.setVisibility(View.GONE);
-                        if (notAvailableLayout != null) {
-                            notAvailableLayout.setVisibility(View.GONE);
-                        }
-                        return;
+                        if (notAvailableLayout != null) notAvailableLayout.setVisibility(View.GONE);
                     }
+                    return;
+                }
 
-                    cancelTimeout();
+                cancelTimeout();
 
-                    if (progressBar != null) {
-                        progressBar.setVisibility(View.GONE);
-                    }
-
-                    if (result instanceof Result.StintsSuccess) {
-                        List<Stint> fetched = ((Result.StintsSuccess) result).getData();
-                        if (fetched != null && !fetched.isEmpty() && isAdded()) {
-                            stintsList = fetched;
-                            if (sessionType.equals("Sprint")) {
-                                race.setSprintStints(fetched);
-                            } else {
-                                race.setRaceStints(fetched);
-                            }
-                            recyclerView.setVisibility(View.VISIBLE);
-                            if (notAvailableLayout != null) {
-                                notAvailableLayout.setVisibility(View.GONE);
-                            }
-                            recyclerView.setAdapter(new StintsResultsRecyclerAdapter(requireContext(), stintsList, raceResults));
-                        } else if (isAdded()) {
-                            recyclerView.setVisibility(View.GONE);
-                            if (notAvailableLayout != null) {
-                                notAvailableLayout.setVisibility(View.VISIBLE);
-                            }
-                        }
-                    } else if (result instanceof Result.Error && isAdded()) {
-                        recyclerView.setVisibility(View.GONE);
-                        if (notAvailableLayout != null) {
-                            notAvailableLayout.setVisibility(View.VISIBLE);
-                        }
-                    }
-                });
-
-                startTimeout(progressBar, recyclerView, notAvailableLayout);
-            } else {
                 if (progressBar != null) {
                     progressBar.setVisibility(View.GONE);
                 }
-                if (notAvailableLayout != null) {
-                    notAvailableLayout.setVisibility(View.VISIBLE);
+
+                if (result instanceof Result.StintsSuccess) {
+                    List<Stint> fetched = ((Result.StintsSuccess) result).getData();
+                    if (fetched != null && !fetched.isEmpty() && isAdded()) {
+                        Log.i("StintsTab", "OpenF1 stints loaded: " + fetched.size() + ". Overwriting local data.");
+                        stintsList = fetched;
+                        if (sessionType.equals("Sprint")) {
+                            race.setSprintStints(fetched);
+                        } else {
+                            race.setRaceStints(fetched);
+                        }
+                        if (requireActivity() instanceof RaceAndSprintResultsActivity) {
+                            ((RaceAndSprintResultsActivity) requireActivity()).updateStints(fetched);
+                        }
+                        recyclerView.setVisibility(View.VISIBLE);
+                        if (notAvailableLayout != null) {
+                            notAvailableLayout.setVisibility(View.GONE);
+                        }
+                        recyclerView.setAdapter(new StintsResultsRecyclerAdapter(requireContext(), stintsList, raceResults));
+                    } else if (isAdded()) {
+                        Log.w("StintsTab", "OpenF1 returned empty stints. Checking recovery fallback.");
+                        applyRecoveryOrShowNotAvailable(recyclerView, progressBar, notAvailableLayout, raceResults);
+                    }
+                } else if (result instanceof Result.Error && isAdded()) {
+                    Log.w("StintsTab", "OpenF1 API error: " + ((Result.Error) result).getMessage() + ". Applying recovery fallback.");
+                    applyRecoveryOrShowNotAvailable(recyclerView, progressBar, notAvailableLayout, raceResults);
                 }
+            });
+
+            if (!hasLocalStints) {
+                startTimeout(progressBar, recyclerView, notAvailableLayout, raceResults);
+            }
+        } else {
+            if (progressBar != null) progressBar.setVisibility(View.GONE);
+            if (!hasLocalStints && notAvailableLayout != null) {
+                notAvailableLayout.setVisibility(View.VISIBLE);
             }
         }
 
         return view;
     }
 
+    private void applyRecoveryOrShowNotAvailable(RecyclerView recyclerView, ProgressBar progressBar, View notAvailableLayout, List<RaceResult> raceResults) {
+        if (progressBar != null) {
+            progressBar.setVisibility(View.GONE);
+        }
+        List<Stint> recovery = getLocalStintsFallback();
+        if (recovery != null && !recovery.isEmpty()) {
+            stintsList = recovery;
+            if (recyclerView != null) {
+                recyclerView.setVisibility(View.VISIBLE);
+                recyclerView.setAdapter(new StintsResultsRecyclerAdapter(requireContext(), stintsList, raceResults));
+            }
+            if (notAvailableLayout != null) {
+                notAvailableLayout.setVisibility(View.GONE);
+            }
+            Log.i("StintsTab", "Recovery succeeded: displaying " + recovery.size() + " local persisted stints");
+        } else {
+            if (recyclerView != null) {
+                recyclerView.setVisibility(View.GONE);
+            }
+            if (notAvailableLayout != null) {
+                notAvailableLayout.setVisibility(View.VISIBLE);
+            }
+        }
+    }
+
+    private List<Stint> getLocalStintsFallback() {
+        if (stintsList != null && !stintsList.isEmpty()) {
+            return stintsList;
+        }
+        if (isAdded() && requireActivity() instanceof RaceAndSprintResultsActivity) {
+            List<Stint> actStints = ((RaceAndSprintResultsActivity) requireActivity()).getStintsList();
+            if (actStints != null && !actStints.isEmpty()) {
+                return actStints;
+            }
+        }
+        if (race != null) {
+            String sessionType = (race.getRaceResults() != null && !race.getRaceResults().isEmpty()) ? "Race" : "Sprint";
+            List<Stint> list = "Sprint".equalsIgnoreCase(sessionType) ? race.getSprintStints() : race.getRaceStints();
+            if (list != null && !list.isEmpty()) {
+                return list;
+            }
+            if (race.getStints() != null && !race.getStints().isEmpty()) {
+                return race.getStints();
+            }
+        }
+        return null;
+    }
+
     private android.os.Handler stintTimeoutHandler;
     private Runnable stintTimeoutRunnable;
 
-    private void startTimeout(ProgressBar progressBar, RecyclerView recyclerView, View notAvailableLayout) {
+    private void startTimeout(ProgressBar progressBar, RecyclerView recyclerView, View notAvailableLayout, List<RaceResult> raceResults) {
         cancelTimeout();
         stintTimeoutHandler = new android.os.Handler(android.os.Looper.getMainLooper());
         stintTimeoutRunnable = () -> {
-            if (isAdded() && (stintsList == null || stintsList.isEmpty())) {
-                if (progressBar != null) {
-                    progressBar.setVisibility(View.GONE);
-                }
-                if (recyclerView != null) {
-                    recyclerView.setVisibility(View.GONE);
-                }
-                if (notAvailableLayout != null) {
-                    notAvailableLayout.setVisibility(View.VISIBLE);
-                }
+            if (isAdded()) {
+                applyRecoveryOrShowNotAvailable(recyclerView, progressBar, notAvailableLayout, raceResults);
             }
         };
         stintTimeoutHandler.postDelayed(stintTimeoutRunnable, 5000);

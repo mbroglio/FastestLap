@@ -14,15 +14,19 @@ import com.the_coffe_coders.fastestlap.repository.f1.weeklyrace.WeeklyRacesCallb
 import org.threeten.bp.LocalDateTime;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class LocalWeeklyRaceDataSource {
     private static final String TAG = "LocalWeeklyRaceDataSource";
     private static LocalWeeklyRaceDataSource instance;
+    private final AppRoomDatabase appRoomDatabase;
     private final WeeklyRaceClassicDAO weeklyRaceClassicDao;
     private final WeeklyRaceSprintDAO weeklyRaceSprintDao;
 
     private LocalWeeklyRaceDataSource(AppRoomDatabase appRoomDatabase) {
+        this.appRoomDatabase = appRoomDatabase;
         this.weeklyRaceClassicDao = appRoomDatabase.weeklyRaceClassicDAO();
         this.weeklyRaceSprintDao = appRoomDatabase.weeklyRaceSprintDAO();
     }
@@ -71,15 +75,17 @@ public class LocalWeeklyRaceDataSource {
         Log.d(TAG, "Saving weekly races to local database. Count: " + weeklyRaces.size());
         AppRoomDatabase.databaseWriteExecutor.execute(() -> {
             try {
-                weeklyRaceClassicDao.deleteAll();
-                weeklyRaceSprintDao.deleteAll();
-                for (WeeklyRace weeklyRace : weeklyRaces) {
-                    if (weeklyRace instanceof WeeklyRaceClassic) {
-                        weeklyRaceClassicDao.insert((WeeklyRaceClassic) weeklyRace);
-                    } else if (weeklyRace instanceof WeeklyRaceSprint) {
-                        weeklyRaceSprintDao.insert((WeeklyRaceSprint) weeklyRace);
+                appRoomDatabase.runInTransaction(() -> {
+                    weeklyRaceClassicDao.deleteAll();
+                    weeklyRaceSprintDao.deleteAll();
+                    for (WeeklyRace weeklyRace : weeklyRaces) {
+                        if (weeklyRace instanceof WeeklyRaceClassic) {
+                            weeklyRaceClassicDao.insert((WeeklyRaceClassic) weeklyRace);
+                        } else if (weeklyRace instanceof WeeklyRaceSprint) {
+                            weeklyRaceSprintDao.insert((WeeklyRaceSprint) weeklyRace);
+                        }
                     }
-                }
+                });
                 Log.d(TAG, "Weekly races successfully saved to local database");
             } catch (Exception e) {
                 Log.e(TAG, "Error saving weekly races to database: " + e.getMessage());
@@ -92,13 +98,15 @@ public class LocalWeeklyRaceDataSource {
         Log.d(TAG, "Saving single weekly race to local database: " + weeklyRace.getRound());
         AppRoomDatabase.databaseWriteExecutor.execute(() -> {
             try {
-                weeklyRaceClassicDao.delete(weeklyRace.getRound());
-                weeklyRaceSprintDao.delete(weeklyRace.getRound());
-                if (weeklyRace instanceof WeeklyRaceClassic) {
-                    weeklyRaceClassicDao.insert((WeeklyRaceClassic) weeklyRace);
-                } else if (weeklyRace instanceof WeeklyRaceSprint) {
-                    weeklyRaceSprintDao.insert((WeeklyRaceSprint) weeklyRace);
-                }
+                appRoomDatabase.runInTransaction(() -> {
+                    weeklyRaceClassicDao.delete(weeklyRace.getRound());
+                    weeklyRaceSprintDao.delete(weeklyRace.getRound());
+                    if (weeklyRace instanceof WeeklyRaceClassic) {
+                        weeklyRaceClassicDao.insert((WeeklyRaceClassic) weeklyRace);
+                    } else if (weeklyRace instanceof WeeklyRaceSprint) {
+                        weeklyRaceSprintDao.insert((WeeklyRaceSprint) weeklyRace);
+                    }
+                });
             } catch (Exception e) {
                 Log.e(TAG, "Error saving single weekly race to database: " + e.getMessage());
             }
@@ -112,11 +120,20 @@ public class LocalWeeklyRaceDataSource {
                 List<WeeklyRaceClassic> classicRaces = weeklyRaceClassicDao.getAllRaces();
                 List<WeeklyRaceSprint> sprintRaces = weeklyRaceSprintDao.getAllRaces();
 
-                List<WeeklyRace> allRaces = new ArrayList<>();
-                allRaces.addAll(classicRaces);
-                allRaces.addAll(sprintRaces);
+                List<WeeklyRace> rawList = new ArrayList<>();
+                rawList.addAll(classicRaces);
+                rawList.addAll(sprintRaces);
 
-                java.util.Collections.sort(allRaces, (r1, r2) -> {
+                List<WeeklyRace> allRaces = new ArrayList<>();
+                Set<String> seenRounds = new java.util.HashSet<>();
+                for (WeeklyRace race : rawList) {
+                    if (race != null && race.getRound() != null && !seenRounds.contains(race.getRound())) {
+                        seenRounds.add(race.getRound());
+                        allRaces.add(race);
+                    }
+                }
+
+                Collections.sort(allRaces, (r1, r2) -> {
                     try {
                         return Integer.compare(Integer.parseInt(r1.getRound()), Integer.parseInt(r2.getRound()));
                     } catch (Exception e) {
@@ -153,11 +170,20 @@ public class LocalWeeklyRaceDataSource {
                 List<WeeklyRaceClassic> classicRaces = weeklyRaceClassicDao.getAllRaces();
                 List<WeeklyRaceSprint> sprintRaces = weeklyRaceSprintDao.getAllRaces();
 
-                List<WeeklyRace> allRaces = new ArrayList<>();
-                allRaces.addAll(classicRaces);
-                allRaces.addAll(sprintRaces);
+                List<WeeklyRace> rawList = new ArrayList<>();
+                rawList.addAll(classicRaces);
+                rawList.addAll(sprintRaces);
 
-                java.util.Collections.sort(allRaces, (r1, r2) -> {
+                List<WeeklyRace> allRaces = new ArrayList<>();
+                Set<String> seenRounds = new java.util.HashSet<>();
+                for (WeeklyRace race : rawList) {
+                    if (race != null && race.getRound() != null && !seenRounds.contains(race.getRound())) {
+                        seenRounds.add(race.getRound());
+                        allRaces.add(race);
+                    }
+                }
+
+                Collections.sort(allRaces, (r1, r2) -> {
                     try {
                         return Integer.compare(Integer.parseInt(r1.getRound()), Integer.parseInt(r2.getRound()));
                     } catch (Exception e) {
