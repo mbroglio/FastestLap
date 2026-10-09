@@ -9,7 +9,7 @@ const { DEFAULT_DRIVERS } = require('./config');
 
 class SessionLoader {
   constructor(streamFilePath = null) {
-    this.filePath = streamFilePath || path.join(__dirname, '..', 'data', 'sepang_race_stream.json');
+    this.filePath = streamFilePath;
     this.rawEvents = [];
     this.drivers = { ...DEFAULT_DRIVERS };
     this.sessionInfo = null;
@@ -17,6 +17,9 @@ class SessionLoader {
   }
 
   load() {
+    if (!this.filePath) {
+      throw new Error('No session stream file path specified for SessionLoader.');
+    }
     if (!fs.existsSync(this.filePath)) {
       throw new Error(`Session stream file not found at ${this.filePath}`);
     }

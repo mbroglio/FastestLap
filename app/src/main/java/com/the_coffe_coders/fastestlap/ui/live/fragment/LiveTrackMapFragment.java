@@ -25,7 +25,7 @@ public class LiveTrackMapFragment extends Fragment {
 
     private WebView webView;
     private ProgressBar progressBar;
-    private String circuitId = "baku";
+    private String circuitId = null;
 
     public LiveTrackMapFragment() {
         // Required empty public constructor
@@ -43,17 +43,9 @@ public class LiveTrackMapFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null && getArguments().containsKey(ARG_CIRCUIT_ID)) {
-            circuitId = getArguments().getString(ARG_CIRCUIT_ID, "baku");
+            circuitId = getArguments().getString(ARG_CIRCUIT_ID, null);
         } else if (getActivity() != null && getActivity().getIntent() != null) {
-            String eventTitle = getActivity().getIntent().getStringExtra("EVENT_TITLE");
-            if (eventTitle != null) {
-                String lower = eventTitle.toLowerCase();
-                if (lower.contains("sepang") || lower.contains("malaysia")) {
-                    circuitId = "sepang";
-                } else if (lower.contains("baku") || lower.contains("azerbaijan") || lower.contains("azerbaigian")) {
-                    circuitId = "baku";
-                }
-            }
+            circuitId = getActivity().getIntent().getStringExtra("CIRCUIT_ID");
         }
     }
 
@@ -116,8 +108,8 @@ public class LiveTrackMapFragment extends Fragment {
             }
         });
 
-        // Carica la dashboard web unificata del live timing con il circuito della sessione corrente
-        String url = "file:///android_asset/live_timing/index.html?circuit=" + circuitId;
+        // Carica la dashboard web del live timing
+        String url = "file:///android_asset/live_timing/track_map.html" + (circuitId != null && !circuitId.isEmpty() ? "?circuit_id=" + circuitId : "");
         webView.loadUrl(url);
     }
 

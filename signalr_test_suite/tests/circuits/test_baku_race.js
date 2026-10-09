@@ -13,7 +13,7 @@ async function testBakuRace() {
   console.log('===============================================================================');
 
   // [1] Load Baku Circuit using generic CircuitRegistry & classes
-  const customDataPath = path.join(__dirname, '..', '..', 'data');
+  const customDataPath = path.join(__dirname, '..', '..', 'simulations', 'data');
   const { trackModel, timingEngine, spec } = CircuitRegistry.loadCircuit('baku', customDataPath);
 
   console.log(`[1] Circuit Specification: ${spec.name} (${spec.flag} ${spec.country})`);

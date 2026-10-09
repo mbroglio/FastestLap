@@ -4,6 +4,7 @@
  * driver filtering, and telemetry statistics extraction.
  */
 
+const path = require('path');
 const TelemetryDecoder = require('../src/decoder');
 const SessionLoader = require('../src/session_loader');
 
@@ -64,7 +65,7 @@ function testTelemetryDecoder() {
 
   // Subtest C: Loading Sepang race stream (4 Ottobre 2026, 09:00:00 - 10:30:40 UTC)
   console.log('3. Loading Sepang race stream and validating driver telemetry...');
-  const loader = new SessionLoader();
+  const loader = new SessionLoader(path.join(__dirname, '..', 'simulations', 'data', 'sepang_race_stream.json'));
   loader.load();
 
   const drivers = loader.getDrivers();

@@ -323,8 +323,9 @@ public class EventActivity extends AppCompatActivity {
         if (flagView != null && nationFlagUrl != null) {
             UIUtils.loadImageAsync(this, nationFlagUrl, flagView);
         }
-        if (trackOutlineView != null && track != null && track.getTrack_minimal_layout_url() != null) {
-            UIUtils.loadImageAsync(this, track.getTrack_minimal_layout_url(), trackOutlineView);
+        String outlineUrl = resolveCircuitImageUrl(track, weeklyRace);
+        if (trackOutlineView != null && outlineUrl != null && !outlineUrl.isEmpty()) {
+            UIUtils.loadImageAsync(this, outlineUrl, trackOutlineView);
         }
 
         buildEventCardFinalStep(weeklyRace);
@@ -352,6 +353,11 @@ public class EventActivity extends AppCompatActivity {
 
     private void buildEventCardFinalStep(WeeklyRace weeklyRace) {
         List<Session> sessions = weeklyRace.getSessions();
+        if (sessions != null) {
+            for (Session s : sessions) {
+                if (s != null) s.setSessionStatus();
+            }
+        }
         Session nextEvent = weeklyRace.findNextEvent(sessions);
         boolean underway = weeklyRace.isUnderway(false) && !weeklyRace.isWeekFinished();
 
@@ -364,10 +370,12 @@ public class EventActivity extends AppCompatActivity {
 
         // Trova la sessione attualmente in corso (se presente) oppure la prossima sessione
         Session activeSession = null;
-        for (Session s : sessions) {
-            if (s != null && (s.isUnderway() || s.getSessionStatus() == SessionStatus.IN_PROGRESS)) {
-                activeSession = s;
-                break;
+        if (sessions != null) {
+            for (Session s : sessions) {
+                if (s != null && (s.isUnderway() || s.getSessionStatus() == SessionStatus.IN_PROGRESS)) {
+                    activeSession = s;
+                    break;
+                }
             }
         }
 
@@ -377,19 +385,41 @@ public class EventActivity extends AppCompatActivity {
         }
 
         String sessionName = null;
-        String sessionType = null; // default
+        String sessionType = "race"; // default
+        String sessionPart = "";
         if (activeOrNextSession != null) {
             String sid = activeOrNextSession.getClass().getSimpleName();
             if (activeOrNextSession.isPractice()) {
                 Practice p = (Practice) activeOrNextSession;
+                if (p.getNumber() <= 0 && sessions != null) {
+                    int pIdx = 1;
+                    for (Session s : sessions) {
+                        if (s == activeOrNextSession) {
+                            p.setNumber(pIdx);
+                            break;
+                        }
+                        if (s != null && s.isPractice()) pIdx++;
+                    }
+                }
                 sid = p.getPractice();
                 sessionType = "practice";
-            } else if (activeOrNextSession.isQualifying()) {
+                sessionPart = "FP" + (p.getNumber() > 0 ? p.getNumber() : 1);
+            } else if (activeOrNextSession.isSprintQualifying()) {
+                sid = "SprintQualifying";
                 sessionType = "qualifying";
+                sessionPart = "SQ";
+            } else if (activeOrNextSession.isQualifying()) {
+                sid = "Qualifying";
+                sessionType = "qualifying";
+                sessionPart = "Q";
             } else if (activeOrNextSession.isSprint()) {
+                sid = "Sprint";
                 sessionType = "sprint";
+                sessionPart = "SPRINT";
             } else {
+                sid = "Race";
                 sessionType = "race";
+                sessionPart = "RACE";
             }
             String langTags = androidx.appcompat.app.AppCompatDelegate.getApplicationLocales().toLanguageTags();
             if (langTags != null && langTags.toLowerCase(java.util.Locale.ROOT).startsWith("it")) {
@@ -399,19 +429,26 @@ public class EventActivity extends AppCompatActivity {
             }
         }
 
+        long fiveMinutesMillis = 5 * 60 * 1000L;
         boolean isSessionLive = activeSession != null;
+        if (!isSessionLive && nextEvent != null) {
+            long millisUntilNext = ZonedDateTime.of(nextEvent.getStartDateTime(), ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis();
+            if (millisUntilNext <= fiveMinutesMillis) {
+                isSessionLive = true;
+            }
+        }
 
-        setLiveSession(eventTitle, totalLaps, isSessionLive, sessionName, sessionType);
+        setLiveSession(weeklyRace, eventTitle, totalLaps, isSessionLive, sessionName, sessionType, sessionPart);
 
         if (nextEvent != null && !underway) {
             LocalDateTime eventDateTime = nextEvent.getStartDateTime();
-            startCountdown(eventDateTime);
+            startCountdown(eventDateTime, weeklyRace, eventTitle, totalLaps, sessionName, sessionType, sessionPart);
         } else if (!underway) {
             showResults(weeklyRace);
         }
     }
 
-    private void setLiveSession(String eventTitle, String totalLaps, boolean isLive, String sessionName, String sessionType) {
+    private void setLiveSession(WeeklyRace weeklyRace, String eventTitle, String totalLaps, boolean isLive, String sessionName, String sessionType, String sessionPart) {
         View liveSession = findViewById(R.id.event_live_card);
         View noLiveSession = findViewById(R.id.event_not_live_card);
 
@@ -428,12 +465,10 @@ public class EventActivity extends AppCompatActivity {
         Animation pulse = AnimationUtils.loadAnimation(this, R.anim.pulse_dynamic);
         liveIcon.startAnimation(pulse);
 
-        String effectiveTrackId = (trackId != null && !trackId.isEmpty())
-                ? trackId
-                : ((track != null && track.getTrackId() != null) ? track.getTrackId() : null);
-        String circuitImageUrl = (track != null) ? track.getTrack_minimal_layout_url() : null;
+        String effectiveTrackId = resolveCircuitId(trackId, track, weeklyRace);
+        String circuitImageUrl = resolveCircuitImageUrl(track, weeklyRace);
 
-        // Al click apre la LiveActivity passando il titolo dell'evento, giri totali, circuit ID, immagine, stato live, nome sessione e tipo sessione
+        // Al click apre la LiveActivity passando il titolo dell'evento, giri totali, circuit ID, immagine, stato live, nome sessione, tipo sessione e sessionPart
         liveSession.setOnClickListener(v -> NavigationUtils.navigateToLivePage(
                 this,
                 eventTitle,
@@ -442,14 +477,58 @@ public class EventActivity extends AppCompatActivity {
                 circuitImageUrl,
                 isLive,
                 sessionName,
-                sessionType
+                sessionType,
+                sessionPart
         ));
 
         Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: EventActivity at " + System.currentTimeMillis());
         loadingScreen.hideLoadingScreen();
     }
 
-    private void startCountdown(LocalDateTime eventDate) {
+    private String resolveCircuitImageUrl(Track currentTrack, WeeklyRace weeklyRace) {
+        if (currentTrack != null) {
+            if (currentTrack.getTrack_minimal_layout_url() != null && !currentTrack.getTrack_minimal_layout_url().trim().isEmpty()) {
+                return currentTrack.getTrack_minimal_layout_url().trim();
+            }
+            if (currentTrack.getTrack_full_layout_url() != null && !currentTrack.getTrack_full_layout_url().trim().isEmpty()) {
+                return currentTrack.getTrack_full_layout_url().trim();
+            }
+            if (currentTrack.getTrack_pic_url() != null && !currentTrack.getTrack_pic_url().trim().isEmpty()) {
+                return currentTrack.getTrack_pic_url().trim();
+            }
+        }
+        if (weeklyRace != null && weeklyRace.getTrack() != null) {
+            Track wt = weeklyRace.getTrack();
+            if (wt.getTrack_minimal_layout_url() != null && !wt.getTrack_minimal_layout_url().trim().isEmpty()) {
+                return wt.getTrack_minimal_layout_url().trim();
+            }
+            if (wt.getTrack_full_layout_url() != null && !wt.getTrack_full_layout_url().trim().isEmpty()) {
+                return wt.getTrack_full_layout_url().trim();
+            }
+            if (wt.getTrack_pic_url() != null && !wt.getTrack_pic_url().trim().isEmpty()) {
+                return wt.getTrack_pic_url().trim();
+            }
+        }
+        return null;
+    }
+
+    private String resolveCircuitId(String trackIdParam, Track currentTrack, WeeklyRace weeklyRace) {
+        if (trackIdParam != null && !trackIdParam.trim().isEmpty()) {
+            return trackIdParam.trim().toLowerCase();
+        }
+        if (currentTrack != null && currentTrack.getTrackId() != null && !currentTrack.getTrackId().trim().isEmpty()) {
+            return currentTrack.getTrackId().trim().toLowerCase();
+        }
+        if (weeklyRace != null && weeklyRace.getTrack() != null && weeklyRace.getTrack().getTrackId() != null && !weeklyRace.getTrack().getTrackId().trim().isEmpty()) {
+            return weeklyRace.getTrack().getTrackId().trim().toLowerCase();
+        }
+        if (weeklyRace != null && weeklyRace.getRaceName() != null) {
+            return weeklyRace.getRaceName().trim().toLowerCase();
+        }
+        return "";
+    }
+
+    private void startCountdown(LocalDateTime eventDate, WeeklyRace weeklyRace, String eventTitle, String totalLaps, String sessionName, String sessionType, String sessionPart) {
         loadingScreen.updateProgress();
 
         long millisUntilStart = ZonedDateTime.of(eventDate, ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis();
@@ -458,6 +537,7 @@ public class EventActivity extends AppCompatActivity {
             final TextView hours_counter = findViewById(R.id.next_hours_counter);
             final TextView minutes_counter = findViewById(R.id.next_minutes_counter);
             final TextView seconds_counter = findViewById(R.id.next_seconds_counter);
+            boolean liveActivated = false;
 
             public void onTick(long millisUntilFinished) {
                 long days = millisUntilFinished / 86400000;
@@ -469,6 +549,12 @@ public class EventActivity extends AppCompatActivity {
                 hours_counter.setText(String.valueOf(hours));
                 minutes_counter.setText(String.valueOf(minutes));
                 seconds_counter.setText(String.valueOf(seconds));
+
+                // Attiva il pulsante Live Session quando mancano 5 minuti (300.000 ms) allo scadere del conto alla rovescia
+                if (millisUntilFinished <= 5 * 60 * 1000L && !liveActivated) {
+                    liveActivated = true;
+                    setLiveSession(weeklyRace, eventTitle, totalLaps, true, sessionName, sessionType, sessionPart);
+                }
             }
 
             public void onFinish() {
@@ -476,6 +562,7 @@ public class EventActivity extends AppCompatActivity {
                 hours_counter.setText("0");
                 minutes_counter.setText("0");
                 seconds_counter.setText("0");
+                setLiveSession(weeklyRace, eventTitle, totalLaps, true, sessionName, sessionType, sessionPart);
             }
         }.start();
 

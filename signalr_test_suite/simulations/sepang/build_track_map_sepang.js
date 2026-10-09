@@ -1,11 +1,11 @@
 const fs = require('fs');
 const path = require('path');
-const config = require('./src/config');
-const raceModel = require('./src/race_model');
-const { RACE_CONTROL_MESSAGES } = require('./src/race_control_events');
+const config = require('../../src/config');
+const raceModel = require('./sepang_race_model');
+const { RACE_CONTROL_MESSAGES } = require('./sepang_race_control_events');
 
 const nodes = JSON.parse(
-  fs.readFileSync(path.join(__dirname, 'data/sepang_exact_track_full.json'), 'utf-8')
+  fs.readFileSync(path.join(__dirname, '../data/sepang_exact_track_full.json'), 'utf-8')
 );
 
 // Compact nodes: [t, px, py, x, y, sector, speed, gear, rpm, throttle, brake, drs, location]
@@ -26,17 +26,17 @@ const compactNodes = nodes.map(n => [
 ]);
 
 // Dedicated Sepang data files
-const drivers = JSON.parse(fs.readFileSync(path.join(__dirname, 'data/sepang_drivers.json'), 'utf-8'));
+const drivers = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/sepang_drivers.json'), 'utf-8'));
 const driversJson = JSON.stringify(drivers, null, 2);
-const driverKeyframesJson = fs.readFileSync(path.join(__dirname, 'data/sepang_keyframes.json'), 'utf-8');
-const pitStopsJson = fs.readFileSync(path.join(__dirname, 'data/sepang_pit_stops.json'), 'utf-8');
-const raceControlJson = fs.readFileSync(path.join(__dirname, 'data/sepang_race_control_messages.json'), 'utf-8');
-const retirementsJson = fs.readFileSync(path.join(__dirname, 'data/sepang_retirements.json'), 'utf-8');
+const driverKeyframesJson = fs.readFileSync(path.join(__dirname, '../data/sepang_keyframes.json'), 'utf-8');
+const pitStopsJson = fs.readFileSync(path.join(__dirname, '../data/sepang_pit_stops.json'), 'utf-8');
+const raceControlJson = fs.readFileSync(path.join(__dirname, '../data/sepang_race_control_messages.json'), 'utf-8');
+const retirementsJson = fs.readFileSync(path.join(__dirname, '../data/sepang_retirements.json'), 'utf-8');
 const lapStartsJson = JSON.stringify(raceModel.LAP_STARTS);
-const driverStintsJson = fs.readFileSync(path.join(__dirname, 'data/sepang_driver_stints.json'), 'utf-8');
-const driverLapsJson = fs.readFileSync(path.join(__dirname, 'data/sepang_driver_laps.json'), 'utf-8');
-const raceEventsJson = fs.readFileSync(path.join(__dirname, 'data/sepang_race_events.json'), 'utf-8');
-const incidentsJson = fs.readFileSync(path.join(__dirname, 'data/sepang_incidents.json'), 'utf-8');
+const driverStintsJson = fs.readFileSync(path.join(__dirname, '../data/sepang_driver_stints.json'), 'utf-8');
+const driverLapsJson = fs.readFileSync(path.join(__dirname, '../data/sepang_driver_laps.json'), 'utf-8');
+const raceEventsJson = fs.readFileSync(path.join(__dirname, '../data/sepang_race_events.json'), 'utf-8');
+const incidentsJson = fs.readFileSync(path.join(__dirname, '../data/sepang_incidents.json'), 'utf-8');
 
 const driverOptionsHtml = Object.entries(drivers).map(([num, d]) => {
   return `<option value="${num}">#${num} ${d.code} — ${d.firstName} ${d.lastName} (${d.team})</option>`;

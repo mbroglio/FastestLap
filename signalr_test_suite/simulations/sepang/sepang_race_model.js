@@ -10,9 +10,9 @@
  * Retirements: Bottas (Lap 7, 1050s), Albon (Lap 41, 4760s), Russell (Lap 49, 5840s)
  */
 
-const config = require('./config');
-const { DRIVER_STINTS, getDriverStintInfo } = require('./driver_stints');
-const { DRIVER_LAPS, getDriverLapRecord } = require('./driver_laps');
+const config = require('../../src/config');
+const { DRIVER_STINTS, getDriverStintInfo } = require('./sepang_driver_stints');
+const { DRIVER_LAPS, getDriverLapRecord } = require('./sepang_driver_laps');
 
 const PIT_EXIT_TRACK_SEC = 5.06;
 const PIT_ENTRY_TRACK_SEC = 89.34;

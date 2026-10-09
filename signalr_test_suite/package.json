@@ -8,10 +8,10 @@
     "test": "node run_all_tests.js",
     "stress": "node tests/test_rate_limits.js",
     "live": "node tests/test_live_connection.js",
-    "viewer": "node telemetry_viewer.js",
-    "race": "node race_simulator.js",
+    "viewer": "node simulations/sepang/telemetry_viewer.js",
+    "race": "node simulations/sepang/race_simulator.js",
     "map": "node serve.js",
-    "generate": "node src/generate_sepang_session.js"
+    "generate": "node simulations/sepang/generate_sepang_session.js"
   },
   "keywords": [
     "f1",

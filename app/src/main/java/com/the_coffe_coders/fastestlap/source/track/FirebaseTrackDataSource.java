@@ -20,12 +20,6 @@ public class FirebaseTrackDataSource implements TrackDataSource {
     private static FirebaseTrackDataSource instance;
     private final FirebaseDatabase database;
 
-    // Common fallback aliases for circuit IDs between Ergast/Jolpica and Firebase
-    private static final Map<String, String> TRACK_ID_ALIASES = new HashMap<>() {{
-        put("sepang", "sepang_international_circuit");
-        put("sepang_international_circuit", "sepang");
-    }};
-
     public FirebaseTrackDataSource() {
         this.database = FirebaseDatabase.getInstance(FIREBASE_REALTIME_DATABASE);
     }
@@ -97,21 +91,9 @@ public class FirebaseTrackDataSource implements TrackDataSource {
                     }
                 }
 
-                // Check alias map as fallback (e.g. sepang -> sepang_international_circuit)
-                String aliasId = TRACK_ID_ALIASES.get(originalTrackId.toLowerCase());
-                if (aliasId != null) {
-                    Log.d(TAG, "Trying alias circuit ID '" + aliasId + "' for '" + originalTrackId + "'");
-                    fetchTrackDirect(aliasId, callback);
-                } else {
-                    searchAllCircuits(originalTrackId, callback, originalError);
-                }
+                searchAllCircuits(originalTrackId, callback, originalError);
             } else {
-                String aliasId = TRACK_ID_ALIASES.get(originalTrackId.toLowerCase());
-                if (aliasId != null) {
-                    fetchTrackDirect(aliasId, callback);
-                } else {
-                    searchAllCircuits(originalTrackId, callback, originalError);
-                }
+                searchAllCircuits(originalTrackId, callback, originalError);
             }
         });
     }

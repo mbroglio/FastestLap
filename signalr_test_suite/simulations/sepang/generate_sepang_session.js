@@ -6,11 +6,11 @@
 
 const fs = require('fs');
 const path = require('path');
-const TelemetryDecoder = require('./decoder');
-const { DEFAULT_DRIVERS } = require('./config');
+const TelemetryDecoder = require('../../src/decoder');
+const { DEFAULT_DRIVERS } = require('../../src/config');
 const { getTrackPointAtSecond } = require('./sepang_geometry');
-const raceModel = require('./race_model');
-const { RACE_CONTROL_MESSAGES } = require('./race_control_events');
+const raceModel = require('./sepang_race_model');
+const { RACE_CONTROL_MESSAGES } = require('./sepang_race_control_events');
 
 /**
  * Calculates continuous, realistic telemetry physics for Sepang circuit at any second t (0 to 94s)

@@ -142,6 +142,10 @@ public class NavigationUtils {
     }
 
     public static void navigateToLivePage(Context context, String eventTitle, String totalLaps, String circuitId, String circuitImageUrl, boolean isLive, String sessionName, String sessionType) {
+        navigateToLivePage(context, eventTitle, totalLaps, circuitId, circuitImageUrl, isLive, sessionName, sessionType, null);
+    }
+
+    public static void navigateToLivePage(Context context, String eventTitle, String totalLaps, String circuitId, String circuitImageUrl, boolean isLive, String sessionName, String sessionType, String sessionPart) {
         Intent intent = new Intent(context, com.the_coffe_coders.fastestlap.ui.live.LiveActivity.class);
         if (eventTitle != null) {
             intent.putExtra(com.the_coffe_coders.fastestlap.ui.live.LiveActivity.EXTRA_EVENT_TITLE, eventTitle);
@@ -161,6 +165,9 @@ public class NavigationUtils {
         }
         if (sessionType != null) {
             intent.putExtra(com.the_coffe_coders.fastestlap.ui.live.LiveActivity.EXTRA_SESSION_TYPE, sessionType);
+        }
+        if (sessionPart != null) {
+            intent.putExtra(com.the_coffe_coders.fastestlap.ui.live.LiveActivity.EXTRA_SESSION_PART, sessionPart);
         }
         context.startActivity(intent);
     }

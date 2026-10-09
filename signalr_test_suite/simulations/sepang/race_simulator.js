@@ -7,8 +7,9 @@
  */
 
 const readline = require('readline');
-const SessionLoader = require('./src/session_loader');
-const { getAsciiTrackMapLines } = require('./src/sepang_geometry');
+const path = require('path');
+const SessionLoader = require('../../src/session_loader');
+const { getAsciiTrackMapLines } = require('./sepang_geometry');
 
 // ANSI Color definitions
 const C = {
@@ -270,7 +271,7 @@ function parseArgs() {
 }
 
 async function main() {
-  const loader = new SessionLoader();
+  const loader = new SessionLoader(path.join(__dirname, '../data/sepang_race_stream.json'));
   loader.load();
   const options = parseArgs();
 

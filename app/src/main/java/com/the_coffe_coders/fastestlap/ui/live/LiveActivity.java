@@ -19,8 +19,17 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.gson.Gson;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.Result;
+import com.the_coffe_coders.fastestlap.domain.f1.livetiming.RaceControlMessage;
+import com.the_coffe_coders.fastestlap.ui.live.viewmodel.LiveViewModel;
+import com.the_coffe_coders.fastestlap.ui.live.viewmodel.LiveViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
+
+import java.util.List;
+
+import androidx.lifecycle.ViewModelProvider;
 
 /**
  * LiveActivity
@@ -34,6 +43,7 @@ public class LiveActivity extends AppCompatActivity {
     public static final String EXTRA_EVENT_TITLE = "EVENT_TITLE";
     public static final String EXTRA_SESSION_NAME = "SESSION_NAME";
     public static final String EXTRA_SESSION_TYPE = "SESSION_TYPE";
+    public static final String EXTRA_SESSION_PART = "SESSION_PART";
     public static final String EXTRA_CIRCUIT_ID = "CIRCUIT_ID";
     public static final String EXTRA_CIRCUIT_IMAGE = "CIRCUIT_IMAGE";
     public static final String EXTRA_TOTAL_LAPS = "TOTAL_LAPS";
@@ -43,9 +53,13 @@ public class LiveActivity extends AppCompatActivity {
     private WebView webView;
     private ProgressBar progressBar;
 
+    private LiveViewModel liveViewModel;
+    private String raceControlJson = "[]";
+
     private String eventTitle = "LIVE TIMING";
     private String sessionName = "";
     private String sessionType = null;
+    private String sessionPart = null;
     private String circuitId = null;
     private String circuitImageUrl = null;
     private String totalLaps = null;
@@ -76,6 +90,7 @@ public class LiveActivity extends AppCompatActivity {
         extractIntentData();
         setupToolbar();
         setupWebView();
+        setupLiveViewModel();
         setupBackNavigation();
         loadCircuitImageIfNeeded();
     }
@@ -92,6 +107,13 @@ public class LiveActivity extends AppCompatActivity {
             String sess = intent.getStringExtra(EXTRA_SESSION_NAME);
             if (sess != null && !sess.trim().isEmpty()) {
                 sessionName = sess.trim();
+            }
+        }
+
+        if (intent.hasExtra(EXTRA_SESSION_PART)) {
+            String sp = intent.getStringExtra(EXTRA_SESSION_PART);
+            if (sp != null && !sp.trim().isEmpty()) {
+                sessionPart = sp.trim().toUpperCase();
             }
         }
 
@@ -128,15 +150,8 @@ public class LiveActivity extends AppCompatActivity {
             if (id != null && !id.trim().isEmpty()) {
                 circuitId = id.trim().toLowerCase();
             }
-        } else if (eventTitle != null) {
-            String lower = eventTitle.toLowerCase();
-            if (lower.contains("baku") || lower.contains("azerbaijan") || lower.contains("azerbaigian")) {
-                circuitId = "baku";
-            } else if (lower.contains("sepang") || lower.contains("malaysia") || lower.contains("malesia")) {
-                circuitId = "sepang";
-            }
         }
-
+        
         if (intent.hasExtra(EXTRA_CIRCUIT_IMAGE)) {
             circuitImageUrl = intent.getStringExtra(EXTRA_CIRCUIT_IMAGE);
         }
@@ -150,7 +165,38 @@ public class LiveActivity extends AppCompatActivity {
         if (circuitImageUrl != null && !circuitImageUrl.isEmpty()) {
             runOnUiThread(() -> {
                 if (webView != null) {
-                    webView.evaluateJavascript("if (window.setCircuitImage) window.setCircuitImage('" + circuitImageUrl + "');", null);
+                    String safeUrl = circuitImageUrl.replace("\\", "\\\\").replace("'", "\\'");
+                    webView.evaluateJavascript("if (window.setCircuitImage) window.setCircuitImage('" + safeUrl + "');", null);
+                }
+            });
+        }
+    }
+
+    private void setupLiveViewModel() {
+        LiveViewModelFactory factory = new LiveViewModelFactory(getApplication());
+        liveViewModel = new ViewModelProvider(this, factory).get(LiveViewModel.class);
+
+        liveViewModel.getRaceControlMessages().observe(this, result -> {
+            if (result instanceof Result.RaceControlSuccess) {
+                List<RaceControlMessage> messages = ((Result.RaceControlSuccess) result).getData();
+                if (messages != null && !messages.isEmpty()) {
+                    raceControlJson = new Gson().toJson(messages);
+                    injectRaceControlMessagesToWebView();
+                }
+            }
+        });
+
+        liveViewModel.startPolling();
+    }
+
+    private void injectRaceControlMessagesToWebView() {
+        if (webView != null && raceControlJson != null && !raceControlJson.equals("[]")) {
+            runOnUiThread(() -> {
+                if (webView != null) {
+                    webView.evaluateJavascript(
+                        "if (window.updateRaceControlMessages) window.updateRaceControlMessages(" + raceControlJson + ");",
+                        null
+                    );
                 }
             });
         }
@@ -163,6 +209,7 @@ public class LiveActivity extends AppCompatActivity {
     }
 
     @SuppressLint("SetJavaScriptEnabled")
+    @SuppressWarnings("deprecation")
     private void setupWebView() {
         if (webView == null) return;
 
@@ -176,6 +223,9 @@ public class LiveActivity extends AppCompatActivity {
         settings.setBuiltInZoomControls(true);
         settings.setDisplayZoomControls(false);
         settings.setSupportZoom(true);
+        settings.setAllowFileAccessFromFileURLs(true);
+        settings.setAllowUniversalAccessFromFileURLs(true);
+        settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
 
         // Hardware acceleration per canvas a 60 FPS
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
@@ -194,7 +244,8 @@ public class LiveActivity extends AppCompatActivity {
 
             @JavascriptInterface
             public boolean isSessionLive() {
-                return isLive;
+                // Sempre true all'apertura della LiveActivity per permettere il rendering del tracciato e della telemetria
+                return true;
             }
 
             @JavascriptInterface
@@ -214,6 +265,9 @@ public class LiveActivity extends AppCompatActivity {
 
             @JavascriptInterface
             public String getSessionPart() {
+                if (sessionPart != null && !sessionPart.trim().isEmpty()) {
+                    return sessionPart.trim().toUpperCase();
+                }
                 if (sessionName == null) return "";
                 String s = sessionName.toLowerCase().trim();
                 // English keywords
@@ -248,6 +302,11 @@ public class LiveActivity extends AppCompatActivity {
             @JavascriptInterface
             public String getTotalLaps() {
                 return totalLaps != null ? totalLaps : "";
+            }
+
+            @JavascriptInterface
+            public String getRaceControlMessagesJson() {
+                return raceControlJson != null ? raceControlJson : "[]";
             }
 
             @JavascriptInterface
@@ -288,6 +347,7 @@ public class LiveActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 loadCircuitImageIfNeeded();
+                injectRaceControlMessagesToWebView();
             }
 
             @Override
@@ -310,7 +370,19 @@ public class LiveActivity extends AppCompatActivity {
         });
 
         // Carica la pagina generale di Live Timing (adattata per landscape e smartphone)
-        String url = "file:///android_asset/live_timing/track_map.html";
+        StringBuilder queryParams = new StringBuilder("?");
+        queryParams.append("session_type=").append(Uri.encode(sessionType != null ? sessionType : "race"));
+        if (sessionPart != null && !sessionPart.isEmpty()) {
+            queryParams.append("&session_part=").append(Uri.encode(sessionPart));
+        }
+        if (circuitId != null && !circuitId.isEmpty()) {
+            queryParams.append("&circuit_id=").append(Uri.encode(circuitId));
+        }
+        if (circuitImageUrl != null && !circuitImageUrl.isEmpty()) {
+            queryParams.append("&circuit_image=").append(Uri.encode(circuitImageUrl));
+        }
+        queryParams.append("&is_live=").append(isLive ? "true" : "true");
+        String url = "file:///android_asset/live_timing/track_map.html" + queryParams;
         webView.loadUrl(url);
     }
 
@@ -355,6 +427,9 @@ public class LiveActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        if (liveViewModel != null) {
+            liveViewModel.stopPolling();
+        }
         if (webView != null) {
             webView.destroy();
             webView = null;

@@ -24,7 +24,25 @@ class CircuitRegistry {
    * Retrieves a registered circuit specification
    */
   static getSpec(circuitId) {
-    return this._circuits[circuitId.toLowerCase()] || null;
+    const cid = circuitId.toLowerCase();
+    if (!this._circuits[cid]) {
+      try {
+        if (typeof require !== 'undefined' && path) {
+          const simPath = path.join(__dirname, '..', '..', 'simulations', 'simulation_circuits.js');
+          const altSimPath = path.join(__dirname, '..', 'simulations', 'simulation_circuits.js');
+          const target = (fs && fs.existsSync(simPath)) ? simPath : ((fs && fs.existsSync(altSimPath)) ? altSimPath : null);
+          if (target) {
+            const { registerSimulationCircuits } = require(target);
+            if (typeof registerSimulationCircuits === 'function') {
+              registerSimulationCircuits(CircuitRegistry);
+            }
+          }
+        } else if (typeof window !== 'undefined' && typeof window.registerSimulationCircuits === 'function') {
+          window.registerSimulationCircuits(CircuitRegistry);
+        }
+      } catch (ignored) {}
+    }
+    return this._circuits[cid] || null;
   }
 
   /**
@@ -59,12 +77,13 @@ class CircuitRegistry {
     let raceControl = spec.raceControl || [];
     let retirements = spec.retirements || {};
     let keyframes = spec.keyframes || {};
-    let stints = spec.stints || {};
     let incidents = spec.incidents || [];
 
     // In Node.js environment, load from files if available
     if (fs && path && spec.dataFiles) {
-      const baseDir = customDataPath || path.join(__dirname, '..', '..', 'data');
+      const baseDir = customDataPath || ((fs && fs.existsSync(path.join(__dirname, '..', '..', 'simulations', 'data')))
+        ? path.join(__dirname, '..', '..', 'simulations', 'data')
+        : path.join(__dirname, '..', '..', 'data'));
       if (spec.dataFiles.track && fs.existsSync(path.join(baseDir, spec.dataFiles.track))) {
         trackNodes = JSON.parse(fs.readFileSync(path.join(baseDir, spec.dataFiles.track), 'utf-8'));
       }
@@ -88,9 +107,6 @@ class CircuitRegistry {
       }
       if (spec.dataFiles.keyframes && fs.existsSync(path.join(baseDir, spec.dataFiles.keyframes))) {
         keyframes = JSON.parse(fs.readFileSync(path.join(baseDir, spec.dataFiles.keyframes), 'utf-8'));
-      }
-      if (spec.dataFiles.stints && fs.existsSync(path.join(baseDir, spec.dataFiles.stints))) {
-        stints = JSON.parse(fs.readFileSync(path.join(baseDir, spec.dataFiles.stints), 'utf-8'));
       }
       if (spec.dataFiles.incidents && fs.existsSync(path.join(baseDir, spec.dataFiles.incidents))) {
         incidents = JSON.parse(fs.readFileSync(path.join(baseDir, spec.dataFiles.incidents), 'utf-8'));
@@ -138,7 +154,6 @@ class CircuitRegistry {
     timingEngine.loadRetirements(retirements);
     timingEngine.loadIncidents(incidents);
     timingEngine.loadKeyframes(keyframes);
-    if (stints && Object.keys(stints).length > 0) timingEngine.loadStints(stints);
 
     return {
       spec,
@@ -147,66 +162,6 @@ class CircuitRegistry {
     };
   }
 }
-
-// Register Baku City Circuit
-CircuitRegistry.register('baku', {
-  name: 'Baku City Circuit',
-  country: 'Azerbaijan',
-  flag: '🇦🇿',
-  imageFile: 'simulations/baku/Baku_Formula_One_circuit_map.svg.webp',
-  dimensions: { width: 500, height: 371 },
-  lapDuration: 108.6,
-  totalLaps: 51,
-  formationLapsCount: 0,
-  raceStartTimeSec: 0.0,
-  raceFinishTimeSec: 5881.3,
-  isStandingStart: true,
-  pitSpeedLimit: 80,
-  sectorsConfig: { s1Time: 38.85, s2Time: 83.5 },
-  dataFiles: {
-    track: 'baku_exact_track_full.json',
-    pit: 'baku_pit_lane_nodes.json',
-    drivers: 'baku_drivers.json',
-    laps: 'baku_driver_laps.json',
-    pits: 'baku_pit_stops.json',
-    raceControl: 'baku_race_control_messages.json',
-    retirements: 'baku_retirements.json',
-    keyframes: 'baku_keyframes.json',
-    incidents: 'baku_incidents.json'
-  },
-  gridOrder: ['63', '16', '81', '6', '1', '3', '44', '10', '55', '43', '87', '30', '23', '31', '41', '12', '5', '27', '14', '11', '77', '18']
-});
-
-// Register Sepang International Circuit
-CircuitRegistry.register('sepang', {
-  name: 'Sepang International Circuit',
-  country: 'Malaysia',
-  flag: '🇲🇾',
-  imageFile: 'simulations/sepang/Sepang.svg.webp',
-  dimensions: { width: 1280, height: 1057 },
-  lapDuration: 95.0,
-  totalLaps: 55,
-  formationLapsCount: 2, // Wet anomalous start
-  raceStartTimeSec: 216.9, // 2 wet formation laps before standing start
-  raceFinishTimeSec: 5742.0,
-  isStandingStart: true,
-  pitSpeedLimit: 80,
-  sectorsConfig: { s1Time: 25.5, s2Time: 59.8 },
-  dataFiles: {
-    track: 'sepang_exact_track_full.json',
-    pit: 'sepang_pit_lane_nodes.json',
-    drivers: 'sepang_drivers.json',
-    laps: 'sepang_driver_laps.json',
-    pits: 'sepang_pit_stops.json',
-    raceControl: 'sepang_race_control_messages.json',
-    retirements: 'sepang_retirements.json',
-    keyframes: 'sepang_keyframes.json',
-    stints: 'sepang_driver_stints.json',
-    incidents: 'sepang_incidents.json',
-    raceEvents: 'sepang_race_events.json'
-  },
-  gridOrder: ['3', '44', '12', '16', '1', '81', '63', '6', '10', '5', '30', '14', '55', '18', '27', '87', '31', '23', '77', '11', '43', '41']
-});
 
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = CircuitRegistry;

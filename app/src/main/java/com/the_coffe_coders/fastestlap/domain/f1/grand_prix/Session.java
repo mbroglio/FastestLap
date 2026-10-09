@@ -95,18 +95,22 @@ public abstract class Session {
     }
 
     public boolean isRace() {
-        return this.getClass().getSimpleName().equals("Race");
+        return this instanceof Race;
     }
 
     public boolean isQualifying() {
-        return this.getClass().getSimpleName().equals("Qualifying");
+        return this instanceof Qualifying && !(this instanceof SprintQualifying);
+    }
+
+    public boolean isSprintQualifying() {
+        return this instanceof SprintQualifying;
     }
 
     public boolean isSprint() {
-        return this.getClass().getSimpleName().equals("Sprint");
+        return this instanceof Sprint;
     }
 
     public boolean isPractice() {
-        return this.getClass().getSimpleName().equals("Practice");
+        return this instanceof Practice;
     }
 }

@@ -40,7 +40,7 @@
             <div class="live-dot"></div>
             LIVE
           </div>
-          <span class="hdr-event" id="hdrEventTitle">MALAYSIAN GRAND PRIX</span>
+          <span class="hdr-event" id="hdrEventTitle">FORMULA 1 GRAND PRIX</span>
         </div>
 
         <div class="hdr-right-controls" id="hdrRightControls">
@@ -276,11 +276,11 @@
                       </div>
                     </div>
                     <div class="regs-2026-box">
-                      <div class="aero-status-box">
+                      <div class="aero-status-box" id="c1AeroBox">
                         <span>ACTIVE AERO (2026)</span>
                         <span class="aero-mode-badge aero-xmode" id="c1AeroBadge">X-MODE</span>
                       </div>
-                      <div class="battery-soc-box">
+                      <div class="battery-soc-box" id="c1BatteryBox">
                         <div class="battery-meta">
                           <span>BATTERIA ERS</span>
                           <span id="c1SocVal">85%</span>
@@ -289,7 +289,24 @@
                           <div class="battery-fill" id="c1SocBar" style="width: 85%;"></div>
                         </div>
                       </div>
-                      <div class="boost-box">
+                      <div class="sectors-split-box" id="c1SectorsBox" style="display: none;">
+                        <div class="sectors-title">INTERTEMPI SETTORI</div>
+                        <div class="sectors-row">
+                          <div class="sector-cell" id="c1S1Cell">
+                            <span class="sector-lbl">S1</span>
+                            <span class="sector-val" id="c1S1Val">-</span>
+                          </div>
+                          <div class="sector-cell" id="c1S2Cell">
+                            <span class="sector-lbl">S2</span>
+                            <span class="sector-val" id="c1S2Val">-</span>
+                          </div>
+                          <div class="sector-cell" id="c1S3Cell">
+                            <span class="sector-lbl">S3</span>
+                            <span class="sector-val" id="c1S3Val">-</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="boost-box" id="c1BoostBox">
                         <span>MODALITÀ SORPASSO (BOOST)</span>
                         <span class="boost-pill boost-standby" id="c1BoostBadge">STANDBY</span>
                       </div>
@@ -334,11 +351,11 @@
                       </div>
                     </div>
                     <div class="regs-2026-box">
-                      <div class="aero-status-box">
+                      <div class="aero-status-box" id="c2AeroBox">
                         <span>ACTIVE AERO (2026)</span>
                         <span class="aero-mode-badge aero-xmode" id="c2AeroBadge">X-MODE</span>
                       </div>
-                      <div class="battery-soc-box">
+                      <div class="battery-soc-box" id="c2BatteryBox">
                         <div class="battery-meta">
                           <span>BATTERIA ERS</span>
                           <span id="c2SocVal">80%</span>
@@ -347,7 +364,24 @@
                           <div class="battery-fill" id="c2SocBar" style="width: 80%;"></div>
                         </div>
                       </div>
-                      <div class="boost-box">
+                      <div class="sectors-split-box" id="c2SectorsBox" style="display: none;">
+                        <div class="sectors-title">INTERTEMPI SETTORI</div>
+                        <div class="sectors-row">
+                          <div class="sector-cell" id="c2S1Cell">
+                            <span class="sector-lbl">S1</span>
+                            <span class="sector-val" id="c2S1Val">-</span>
+                          </div>
+                          <div class="sector-cell" id="c2S2Cell">
+                            <span class="sector-lbl">S2</span>
+                            <span class="sector-val" id="c2S2Val">-</span>
+                          </div>
+                          <div class="sector-cell" id="c2S3Cell">
+                            <span class="sector-lbl">S3</span>
+                            <span class="sector-val" id="c2S3Val">-</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="boost-box" id="c2BoostBox">
                         <span>MODALITÀ SORPASSO (BOOST)</span>
                         <span class="boost-pill boost-standby" id="c2BoostBadge">STANDBY</span>
                       </div>
@@ -418,8 +452,12 @@
     </nav>
   </div>
 
-  <!-- Modular Scripts separated from page markup -->
-  <script src="simulations/live_simulation_data.js"></script>
+  <!-- Modular Scripts separated by scope -->
+  <script src="js/timing_state.js"></script>
+  <script src="js/race_control.js"></script>
+  <script src="js/timing_tables.js"></script>
+  <script src="js/telemetry_cockpit.js"></script>
+  <script src="js/track_canvas.js"></script>
   <script src="js/live_timing_app.js"></script>
 </body>
 </html>

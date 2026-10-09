@@ -11,7 +11,8 @@ const {
   testSepangRace,
   testTelemetryDecoder,
   testCornerSync,
-  testSepangSessions
+  testSepangSessions,
+  testAdaptiveUiAndSectors
 } = require('./tests');
 
 // ANSI Colors
@@ -54,6 +55,7 @@ async function runAllTests() {
   await executeTest('5. CarData.z DEFLATE Decoder & Telemetry Flow', testTelemetryDecoder);
   await executeTest('6. Physical Position & Telemetry Sync (Zero-Desync Calibration)', testCornerSync);
   await executeTest('7. Sepang GP Sessions (Free Practice & Qualifying Simulation)', testSepangSessions);
+  await executeTest('8. Adaptive Session UI, Sector Colors & Cockpit Toggle', testAdaptiveUiAndSectors);
 
   const totalDuration = ((Date.now() - startTime) / 1000).toFixed(2);
   const totalPassed = testResults.filter(t => t.passed).length;

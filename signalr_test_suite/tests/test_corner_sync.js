@@ -13,7 +13,7 @@ async function testCornerSync() {
   console.log('TEST SUITE: Physical Position & Telemetry Synchronization Verification');
   console.log('===============================================================================');
 
-  const customDataPath = path.join(__dirname, '..', 'data');
+  const customDataPath = path.join(__dirname, '..', 'simulations', 'data');
 
   // [1] Test Baku Circuit Corner Synchronization
   console.log('[1] Testing Baku City Circuit Corner Synchronization...');

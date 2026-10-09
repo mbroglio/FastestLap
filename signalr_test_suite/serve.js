@@ -39,7 +39,7 @@ const server = http.createServer((req, res) => {
 server.listen(PORT, () => {
   const url = `http://localhost:${PORT}`;
   console.log(`\n===========================================================`);
-  console.log(`🏎️  FASTESTLAP — SEPANG GPS LIVE TRACK VISUALIZER`);
+  console.log(`🏎️  FASTESTLAP — LIVE TIMING TRACK VISUALIZER`);
   console.log(`===========================================================`);
   console.log(`Server HTTP locale avviato con successo!`);
   console.log(`URL: ${url}`);

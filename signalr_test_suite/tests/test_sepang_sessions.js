@@ -8,7 +8,7 @@ function testSepangSessions() {
   console.log('===============================================================================');
 
   // 1. Load generator datasets
-  const { generateSepangFpDataset, generateSepangQualifyingDataset } = require('../src/generate_sepang_sessions.js');
+  const { generateSepangFpDataset, generateSepangQualifyingDataset } = require('../simulations/sepang/generate_sepang_sessions.js');
 
   const fpData = generateSepangFpDataset();
   const qData = generateSepangQualifyingDataset();

@@ -12,6 +12,7 @@ const testSepangSessions = require('./test_sepang_sessions');
 const testNegotiate = require('./test_negotiate');
 const testLiveConnection = require('./test_live_connection');
 const testRateLimits = require('./test_rate_limits');
+const testAdaptiveUiAndSectors = require('./test_adaptive_ui_and_sectors');
 
 module.exports = {
   testTrackMapAnalyzer,
@@ -23,5 +24,6 @@ module.exports = {
   testSepangSessions,
   testNegotiate,
   testLiveConnection,
-  testRateLimits
+  testRateLimits,
+  testAdaptiveUiAndSectors
 };

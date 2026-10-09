@@ -6,7 +6,8 @@
  */
 
 const readline = require('readline');
-const SessionLoader = require('./src/session_loader');
+const path = require('path');
+const SessionLoader = require('../../src/session_loader');
 
 // ANSI Color Codes for terminal
 const C = {
@@ -203,7 +204,7 @@ function parseCliArgs() {
 }
 
 async function main() {
-  const loader = new SessionLoader();
+  const loader = new SessionLoader(path.join(__dirname, '../data/sepang_race_stream.json'));
   loader.load();
 
   const options = parseCliArgs();

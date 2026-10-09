@@ -19,12 +19,28 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <TextView
-            style="@style/t10UpperCaseBoldWhiteLineLimited"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/air"
-            android:textColor="@color/timer_gray" />
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/t10UpperCaseBoldWhiteLineLimited"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/air"
+                android:textColor="@color/timer_gray" />
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_marginStart="4dp"
+                android:importantForAccessibility="no"
+                app:srcCompat="@drawable/haze_icon"
+                app:tint="@color/timer_gray" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/temp_current_text"

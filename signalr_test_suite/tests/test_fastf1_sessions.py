@@ -34,7 +34,7 @@ class TestFastF1Sessions(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        cls.data_dir = os.path.join(cls.base_dir, 'data')
+        cls.data_dir = os.path.join(cls.base_dir, 'simulations', 'data')
         cls.sepang_file = os.path.join(cls.data_dir, 'sepang_fastf1_recording.txt')
         cls.baku_file = os.path.join(cls.data_dir, 'baku_fastf1_recording.txt')
 

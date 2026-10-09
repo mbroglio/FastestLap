@@ -15,7 +15,7 @@ async function testSepangRace() {
   console.log('===============================================================================');
 
   // [1] Load Sepang Circuit using generic CircuitRegistry & classes
-  const customDataPath = path.join(__dirname, '..', '..', 'data');
+  const customDataPath = path.join(__dirname, '..', '..', 'simulations', 'data');
   const { trackModel, timingEngine, spec } = CircuitRegistry.loadCircuit('sepang', customDataPath);
 
   console.log(`[1] Circuit Specification: ${spec.name} (${spec.flag} ${spec.country})`);
