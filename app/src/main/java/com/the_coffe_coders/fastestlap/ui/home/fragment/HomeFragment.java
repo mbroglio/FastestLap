@@ -150,6 +150,14 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (nextRaceHandler != null) {
+            nextRaceHandler.cancelCountdown();
+        }
+    }
+
     private void setupFragment(View view) {
         // Prevent concurrent setups (e.g. swipe-refresh racing with a network-restore event).
         if (isSettingUp) {

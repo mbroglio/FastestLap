@@ -64,24 +64,6 @@ public class StintsResultsTabFragment extends Fragment {
             race = androidx.core.os.BundleCompat.getParcelable(getArguments(), "RACE", Race.class);
             stintsList = androidx.core.os.BundleCompat.getParcelableArrayList(getArguments(), "STINTS", Stint.class);
             locality = getArguments().getString("LOCALITY");
-            String gpLongName = getArguments().getString("GP_LONG_NAME");
-            if (race != null) {
-                if (race.getTrack() == null) {
-                    com.the_coffe_coders.fastestlap.domain.f1.track.Track t = new com.the_coffe_coders.fastestlap.domain.f1.track.Track();
-                    if (locality != null) {
-                        com.the_coffe_coders.fastestlap.domain.f1.track.Location loc = new com.the_coffe_coders.fastestlap.domain.f1.track.Location();
-                        loc.setLocality(locality);
-                        t.setLocation(loc);
-                    }
-                    t.setGp_long_name(gpLongName);
-                    race.setTrack(t);
-                } else if (race.getTrack().getGp_long_name() == null && gpLongName != null) {
-                    race.getTrack().setGp_long_name(gpLongName);
-                }
-                if (locality == null && race.getTrack().getLocation() != null) {
-                    locality = race.getTrack().getLocation().getLocality();
-                }
-            }
         }
     }
 

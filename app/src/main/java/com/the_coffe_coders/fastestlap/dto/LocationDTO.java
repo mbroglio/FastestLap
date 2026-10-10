@@ -14,4 +14,5 @@ public class LocationDTO {
     private String _long;
     private String locality;
     private String country;
+    private String zoneId;
 }

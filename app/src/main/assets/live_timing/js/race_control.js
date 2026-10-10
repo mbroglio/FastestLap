@@ -22,32 +22,8 @@ function formatRaceControlTime(m) {
 }
 
 function getInitialRaceControlMessages(sType, sPart) {
-  const now = Date.now();
-  if (sType === 'practice') {
-    const pTitle = sPart || 'PROVE LIBERE';
-    return [
-      { category: 'Flag', flag: 'GREEN', message: 'BANDIERA VERDE - INIZIO SESSIONE ' + pTitle, timeSec: 0, date: new Date(now - 35 * 60000).toISOString() },
-      { category: 'DIREZIONE GARA', flag: null, message: 'CORSIA BOX APERTA - LIMITE VELOCITÀ IN PIT LANE 80 KM/H', timeSec: 60, date: new Date(now - 34 * 60000).toISOString() },
-      { category: 'DRS', flag: null, message: 'SISTEMA DRS ABILITATO IN TUTTE LE ZONE PREVISTE', timeSec: 180, date: new Date(now - 32 * 60000).toISOString() },
-      { category: 'METEO', flag: null, message: 'CONDIZIONI ASCIUTTO: TEMPERATURA ASFALTO 33.2°C, ARIA 28.6°C', timeSec: 600, date: new Date(now - 25 * 60000).toISOString() },
-      { category: 'DIREZIONE GARA', flag: null, message: 'ATTENZIONE LIMITI DELLA PISTA IN CURVA 4 E CURVA 12', timeSec: 1200, date: new Date(now - 15 * 60000).toISOString() }
-    ];
-  } else if (sType === 'qualifying') {
-    const isSq = (sPart && sPart.toUpperCase().startsWith('SQ'));
-    const qTitle = isSq ? 'QUALIFICA SPRINT (SQ)' : 'QUALIFICA (Q)';
-    return [
-      { category: 'Flag', flag: 'GREEN', message: 'BANDIERA VERDE - INIZIO SESSIONE ' + qTitle, timeSec: 0, date: new Date(now - 20 * 60000).toISOString() },
-      { category: 'DIREZIONE GARA', flag: null, message: 'SEMAFORO VERDE IN CORSIA BOX - USCITA APERTA', timeSec: 30, date: new Date(now - 19 * 60000).toISOString() },
-      { category: 'DRS', flag: null, message: 'SISTEMA DRS ABILITATO', timeSec: 60, date: new Date(now - 18 * 60000).toISOString() },
-      { category: 'METEO', flag: null, message: 'PISTA OTTIMALE - RISCHIO PIOGGIA 0%', timeSec: 300, date: new Date(now - 15 * 60000).toISOString() }
-    ];
-  } else {
-    return [
-      { category: 'DIREZIONE GARA', flag: null, message: 'GIRO DI FORMAZIONE COMPLETATO', timeSec: 0, date: new Date(now - 40 * 60000).toISOString() },
-      { category: 'Flag', flag: 'GREEN', message: 'PARTENZA UFFICIALE - LUCI SPENTE', timeSec: 30, date: new Date(now - 39 * 60000).toISOString() },
-      { category: 'DRS', flag: null, message: 'SISTEMA DRS ABILITATO', timeSec: 180, date: new Date(now - 35 * 60000).toISOString() }
-    ];
-  }
+  // Non hardcodare messaggi fittizi: se la sessione reale è in attesa o non ci sono messaggi FIA, la lista resta vuota
+  return [];
 }
 
 function updateRaceControl() {
@@ -56,7 +32,7 @@ function updateRaceControl() {
   if (totalCount) totalCount.textContent = activeMsgs.length + ' Messaggi';
 
   const latest = activeMsgs.length > 0 ? activeMsgs[activeMsgs.length - 1] : null;
-  let tickerText = '🟢 Inizio Sessione Ufficiale';
+  let tickerText = '🟢 Direzione Gara FIA — In attesa di comunicazioni';
   if (latest) {
     tickerText = '🟡 ' + formatRaceControlTime(latest) + ' — ' + (latest.message || 'Direzione Gara');
   }
@@ -78,26 +54,31 @@ function updateRaceControl() {
     return true;
   }).reverse();
 
-  const itemsHtml = filtered.slice(0, 50).map(m => {
-    let flagClass = '';
-    const flagVal = (m.flag || '').toUpperCase();
-    const msgVal = (m.message || '').toUpperCase();
-    if (flagVal === 'YELLOW' || msgVal.includes('YELLOW')) flagClass = 'yellow';
-    else if (flagVal === 'GREEN' || msgVal.includes('GREEN')) flagClass = 'green';
-    else if (flagVal === 'RED' || msgVal.includes('RED')) flagClass = 'red';
-    else if (m.category === 'SafetyCar' || msgVal.includes('SAFETY CAR')) flagClass = 'sc';
+  let itemsHtml = '';
+  if (filtered.length === 0) {
+    itemsHtml = '<div class="rc-empty-notice" style="padding: 24px 12px; text-align: center; color: #8b949e; font-size: 11px; font-weight: 600;">🟢 Nessuna comunicazione dalla Direzione Gara al momento</div>';
+  } else {
+    itemsHtml = filtered.slice(0, 50).map(m => {
+      let flagClass = '';
+      const flagVal = (m.flag || '').toUpperCase();
+      const msgVal = (m.message || '').toUpperCase();
+      if (flagVal === 'YELLOW' || msgVal.includes('YELLOW')) flagClass = 'yellow';
+      else if (flagVal === 'GREEN' || msgVal.includes('GREEN')) flagClass = 'green';
+      else if (flagVal === 'RED' || msgVal.includes('RED')) flagClass = 'red';
+      else if (m.category === 'SafetyCar' || msgVal.includes('SAFETY CAR')) flagClass = 'sc';
 
-    const lapNum = m.lapNumber !== undefined ? m.lapNumber : m.lap;
-    const lapLabel = lapNum ? (' • GIRO ' + lapNum) : '';
+      const lapNum = m.lapNumber !== undefined ? m.lapNumber : m.lap;
+      const lapLabel = lapNum ? (' • GIRO ' + lapNum) : '';
 
-    return '<div class="rc-msg-card ' + flagClass + '">'
-      + '<div class="rc-msg-meta">'
-      + '<span>' + (m.category || 'DIREZIONE GARA') + lapLabel + '</span>'
-      + '<span>' + formatRaceControlTime(m) + '</span>'
-      + '</div>'
-      + '<div class="rc-msg-text">' + m.message + '</div>'
-      + '</div>';
-  }).join('');
+      return '<div class="rc-msg-card ' + flagClass + '">'
+        + '<div class="rc-msg-meta">'
+        + '<span>' + (m.category || 'DIREZIONE GARA') + lapLabel + '</span>'
+        + '<span>' + formatRaceControlTime(m) + '</span>'
+        + '</div>'
+        + '<div class="rc-msg-text">' + m.message + '</div>'
+        + '</div>';
+    }).join('');
+  }
 
   if (fList) fList.innerHTML = itemsHtml;
   if (sList) sList.innerHTML = itemsHtml;
@@ -128,17 +109,55 @@ window.updateRaceControlMessages = function(msgs) {
       return;
     }
   }
-  if (!Array.isArray(parsed) || parsed.length === 0) return;
 
-  const normalized = parsed.map(m => ({
-    category: m.category || (m.flag ? 'Flag' : 'DIREZIONE GARA'),
-    message: m.message || '',
-    flag: m.flag || null,
-    lap: m.lapNumber !== undefined ? m.lapNumber : m.lap,
-    date: m.date || null,
-    timeSec: m.timeSec !== undefined ? m.timeSec : currentSecond
-  }));
+  // F1 SignalR invia { Messages: [ ... ] } o { Messages: { "0": ... } } o un array diretto
+  let list = [];
+  if (Array.isArray(parsed)) {
+    list = parsed;
+  } else if (parsed && parsed.Messages) {
+    if (Array.isArray(parsed.Messages)) {
+      list = parsed.Messages;
+    } else if (typeof parsed.Messages === 'object') {
+      list = Object.values(parsed.Messages);
+    }
+  } else if (typeof parsed === 'object') {
+    list = [parsed];
+  }
 
-  RACE_CONTROL_MESSAGES = normalized;
+  if (list.length === 0) return;
+
+  const normalized = list.map(m => {
+    const rawFlag = m.Flag || m.flag || null;
+    const rawCat = m.Category || m.category || (rawFlag ? 'Flag' : 'DIREZIONE GARA');
+    const rawMsg = m.Message || m.message || '';
+    const rawLap = m.Lap !== undefined ? m.Lap : (m.lapNumber !== undefined ? m.lapNumber : m.lap);
+    const rawDate = m.Utc || m.date || new Date().toISOString();
+    return {
+      category: rawCat,
+      message: rawMsg,
+      flag: rawFlag,
+      lap: rawLap,
+      date: rawDate,
+      timeSec: m.timeSec !== undefined ? m.timeSec : currentSecond
+    };
+  }).filter(m => m.message && m.message.trim().length > 0);
+
+  // Unione e deduplicazione con i messaggi già presenti
+  const existingKeys = new Set(RACE_CONTROL_MESSAGES.map(m => (m.date || '') + '|' + m.message));
+  normalized.forEach(m => {
+    const key = (m.date || '') + '|' + m.message;
+    if (!existingKeys.has(key)) {
+      RACE_CONTROL_MESSAGES.push(m);
+      existingKeys.add(key);
+    }
+  });
+
+  // Ordina per data (cronologico ascendente)
+  RACE_CONTROL_MESSAGES.sort((a, b) => {
+    const da = a.date ? new Date(a.date).getTime() : (a.timeSec || 0);
+    const db = b.date ? new Date(b.date).getTime() : (b.timeSec || 0);
+    return da - db;
+  });
+
   updateRaceControl();
 };

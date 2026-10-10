@@ -22,19 +22,36 @@ import com.the_coffe_coders.fastestlap.R;
 public class LiveTrackMapFragment extends Fragment {
 
     public static final String ARG_CIRCUIT_ID = "arg_circuit_id";
+    public static final String ARG_SESSION_TYPE = "arg_session_type";
+    public static final String ARG_SESSION_PART = "arg_session_part";
+    public static final String ARG_TOTAL_LAPS = "arg_total_laps";
 
     private WebView webView;
     private ProgressBar progressBar;
     private String circuitId = null;
+    private String sessionType = "race";
+    private String sessionPart = "";
+    private String totalLaps = "";
 
     public LiveTrackMapFragment() {
         // Required empty public constructor
     }
 
     public static LiveTrackMapFragment newInstance(String circuitId) {
+        return newInstance(circuitId, "race", "", "");
+    }
+
+    public static LiveTrackMapFragment newInstance(String circuitId, String sessionType, String sessionPart) {
+        return newInstance(circuitId, sessionType, sessionPart, "");
+    }
+
+    public static LiveTrackMapFragment newInstance(String circuitId, String sessionType, String sessionPart, String totalLaps) {
         LiveTrackMapFragment fragment = new LiveTrackMapFragment();
         Bundle args = new Bundle();
         args.putString(ARG_CIRCUIT_ID, circuitId);
+        args.putString(ARG_SESSION_TYPE, sessionType);
+        args.putString(ARG_SESSION_PART, sessionPart);
+        args.putString(ARG_TOTAL_LAPS, totalLaps);
         fragment.setArguments(args);
         return fragment;
     }
@@ -42,10 +59,19 @@ public class LiveTrackMapFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null && getArguments().containsKey(ARG_CIRCUIT_ID)) {
+        if (getArguments() != null) {
             circuitId = getArguments().getString(ARG_CIRCUIT_ID, null);
+            sessionType = getArguments().getString(ARG_SESSION_TYPE, "race");
+            sessionPart = getArguments().getString(ARG_SESSION_PART, "");
+            totalLaps = getArguments().getString(ARG_TOTAL_LAPS, "");
         } else if (getActivity() != null && getActivity().getIntent() != null) {
             circuitId = getActivity().getIntent().getStringExtra("CIRCUIT_ID");
+            sessionType = getActivity().getIntent().getStringExtra("SESSION_TYPE");
+            if (sessionType == null) sessionType = "race";
+            sessionPart = getActivity().getIntent().getStringExtra("SESSION_PART");
+            if (sessionPart == null) sessionPart = "";
+            totalLaps = getActivity().getIntent().getStringExtra("TOTAL_LAPS");
+            if (totalLaps == null) totalLaps = "";
         }
     }
 
@@ -78,7 +104,32 @@ public class LiveTrackMapFragment extends Fragment {
         webView.addJavascriptInterface(new Object() {
             @JavascriptInterface
             public String getCircuitId() {
-                return circuitId;
+                return circuitId != null ? circuitId : "";
+            }
+
+            @JavascriptInterface
+            public String getSessionType() {
+                return sessionType != null ? sessionType : "race";
+            }
+
+            @JavascriptInterface
+            public String getSessionPart() {
+                return sessionPart != null ? sessionPart : "";
+            }
+
+            @JavascriptInterface
+            public String getTotalLaps() {
+                return totalLaps != null ? totalLaps : "";
+            }
+
+            @JavascriptInterface
+            public boolean isSessionLive() {
+                return true;
+            }
+
+            @JavascriptInterface
+            public String getCircuitTimeZone() {
+                return "";
             }
 
             @JavascriptInterface
@@ -109,7 +160,24 @@ public class LiveTrackMapFragment extends Fragment {
         });
 
         // Carica la dashboard web del live timing
-        String url = "file:///android_asset/live_timing/track_map.html" + (circuitId != null && !circuitId.isEmpty() ? "?circuit_id=" + circuitId : "");
+        StringBuilder queryParams = new StringBuilder();
+        boolean hasParam = false;
+        if (circuitId != null && !circuitId.isEmpty()) {
+            queryParams.append("?circuit_id=").append(android.net.Uri.encode(circuitId));
+            hasParam = true;
+        }
+        if (sessionType != null && !sessionType.isEmpty()) {
+            queryParams.append(hasParam ? "&" : "?").append("session_type=").append(android.net.Uri.encode(sessionType));
+            hasParam = true;
+        }
+        if (sessionPart != null && !sessionPart.isEmpty()) {
+            queryParams.append(hasParam ? "&" : "?").append("session_part=").append(android.net.Uri.encode(sessionPart));
+            hasParam = true;
+        }
+        if (totalLaps != null && !totalLaps.isEmpty()) {
+            queryParams.append(hasParam ? "&" : "?").append("total_laps=").append(android.net.Uri.encode(totalLaps));
+        }
+        String url = "file:///android_asset/live_timing/track_map.html" + queryParams;
         webView.loadUrl(url);
     }
 

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FastestLap — F1 Live Timing & Telemetry Dashboard</title>
+  <link rel="stylesheet" href="css/livetiming.css">
+</head>
+<body>
+
+  <!-- Top Navigation & Telemetry Header -->
+  <header class="f1-header">
+    <div class="f1-brand">
+      <span class="brand-badge">FASTESTLAP</span>
+      <span class="session-title" id="sessionTitle">FORMULA 1 GRAND PRIX</span>
+    </div>
+
+    <div class="session-details">
+      <span id="lapCount">LAP -- / --</span>
+      <div class="weather-widget">
+        <span>AIR: <strong id="weatherAir">--°C</strong></span>
+        <span>TRACK: <strong id="weatherTrack">--°C</strong></span>
+        <span>RAIN: <strong id="weatherRain">0%</strong></span>
+      </div>
+    </div>
+
+    <div class="controls-group">
+      <span class="status-badge simulation" id="statusBadge">⚡ SIMULATION</span>
+      <button class="btn-toggle-mode" id="btnToggleMode">Passa a Live Stream</button>
+    </div>
+  </header>
+
+  <!-- Race Control Messages Bar -->
+  <div class="race-control-banner">
+    <span class="rc-flag green" id="rcFlag">GREEN</span>
+    <span class="rc-text" id="rcText">SESSION ACTIVE — ALL SYSTEMS OPERATIONAL</span>
+  </div>
+
+  <!-- Main Multi-Column Live Grid -->
+  <main class="dashboard-grid">
+
+    <!-- Column 1: Live Leaderboard (Timing Tower) -->
+    <section class="panel">
+      <div class="panel-header">
+        <span>CLASSIFICA LIVE (TIMING TOWER)</span>
+        <span style="font-size: 10px; color: var(--text-muted);">DELTA / SETTORI</span>
+      </div>
+      <div class="panel-body">
+        <table class="timing-table">
+          <thead>
+            <tr>
+              <th>POS</th>
+              <th>PILOTA</th>
+              <th>GAP</th>
+              <th>INT</th>
+              <th>S1</th>
+              <th>S2</th>
+              <th>S3</th>
+              <th>BEST</th>
+              <th>TYRE</th>
+              <th>PIT</th>
+            </tr>
+          </thead>
+          <tbody id="timingTableBody">
+            <!-- Dynamic Driver Rows -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Column 2: 2D Live Track Map -->
+    <section class="panel">
+      <div class="panel-header">
+        <span>TRACCIATO & POSIZIONE SECONDO PER SECONDO</span>
+        <span style="font-size: 10px; color: var(--text-muted);">COORDINATE METRICHE 2D</span>
+      </div>
+      <div class="panel-body track-container">
+        <canvas id="trackCanvas"></canvas>
+      </div>
+    </section>
+
+    <!-- Column 3: Telemetry Cockpit Dashboard -->
+    <section class="panel">
+      <div class="panel-header">
+        <span>CRUSCOTTO TELEMETRIA LIVE</span>
+        <span style="font-size: 10px; color: var(--color-f1-red);">COCKPIT DI BORDO</span>
+      </div>
+      <div class="panel-body cockpit-content" id="cockpitContainer">
+
+        <!-- Selected Driver Info -->
+        <div class="cockpit-driver-header">
+          <div>
+            <div class="cockpit-driver-name" id="cockpitDriverName">CHARLES LECLERC #16</div>
+            <div class="cockpit-team" id="cockpitTeamName">SCUDERIA FERRARI HP</div>
+          </div>
+        </div>
+
+        <!-- Gear & Speed Cluster -->
+        <div class="gauge-cluster">
+          <div class="gauge-block">
+            <div class="gear-display" id="cockpitGear">7</div>
+            <div class="gauge-label">MARCIA (GEAR)</div>
+          </div>
+          <div class="gauge-block">
+            <div class="speed-display" id="cockpitSpeed">294</div>
+            <div class="gauge-label">VELOCITÀ (KM/H)</div>
+          </div>
+        </div>
+
+        <!-- Tachometer & Shift Lights -->
+        <div class="tacho-container">
+          <div class="shift-lights">
+            <div class="shift-led green"></div>
+            <div class="shift-led green"></div>
+            <div class="shift-led green"></div>
+            <div class="shift-led green"></div>
+            <div class="shift-led red"></div>
+            <div class="shift-led red"></div>
+            <div class="shift-led red"></div>
+            <div class="shift-led blue"></div>
+            <div class="shift-led blue"></div>
+            <div class="shift-led blue"></div>
+          </div>
+          <div class="rpm-text" id="cockpitRpm">11,850 RPM</div>
+        </div>
+
+        <!-- Pedals (Throttle & Brake) -->
+        <div class="pedal-group">
+          <!-- Throttle -->
+          <div class="pedal-row">
+            <div class="pedal-label-row">
+              <span style="color: var(--color-throttle);">ACCELERATORE (THROTTLE)</span>
+              <span id="throttleValue" style="color: var(--color-throttle);">98%</span>
+            </div>
+            <div class="pedal-bar-track">
+              <div class="pedal-bar-fill throttle" id="throttleBar" style="width: 98%;"></div>
+            </div>
+          </div>
+
+          <!-- Brake -->
+          <div class="pedal-row">
+            <div class="pedal-label-row">
+              <span style="color: var(--color-brake);">FRENO (BRAKE)</span>
+              <span id="brakeValue" style="color: var(--color-brake);">0%</span>
+            </div>
+            <div class="pedal-bar-track">
+              <div class="pedal-bar-fill brake" id="brakeBar" style="width: 0%;"></div>
+            </div>
+          </div>
+
+          <!-- Battery / ERS Energy Store -->
+          <div class="pedal-row">
+            <div class="pedal-label-row">
+              <span style="color: var(--color-battery);">BATTERIA (ERS SOC)</span>
+              <span id="batteryValue" style="color: var(--color-battery);">82%</span>
+            </div>
+            <div class="pedal-bar-track">
+              <div class="pedal-bar-fill battery" id="batteryBar" style="width: 82%;"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Aero Mode / DRS & ERS Indicators -->
+        <div class="cockpit-indicators">
+          <div class="indicator-box">
+            <div class="indicator-title">AERO MODE (DRS)</div>
+            <div class="indicator-value drs-open" id="drsStatus">OPEN</div>
+          </div>
+          <div class="indicator-box">
+            <div class="indicator-title">ERS DEPLOY MODE</div>
+            <div class="indicator-value ers-hotlap" id="ersStatus">HOTLAP</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Scripts -->
+  <script src="js/track_canvas.js"></script>
+  <script src="js/timing_tower.js"></script>
+  <script src="js/cockpit_dashboard.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

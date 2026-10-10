@@ -5,8 +5,12 @@
  */
 
 function updateSessionStatusBar() {
-  const scActive = isSafetyCarActive(currentSecond);
-  const vscActive = isVirtualSafetyCarActive(currentSecond);
+  const isFinished = (typeof SESSION_DURATION !== 'undefined' && currentSecond >= SESSION_DURATION) ||
+                     (typeof RACE_FINISH_SEC !== 'undefined' && currentSecond >= RACE_FINISH_SEC);
+
+  const currentTrackStatus = window.CURRENT_TRACK_STATUS || '';
+  const scActive = !isFinished && (currentTrackStatus === '4' || isSafetyCarActive(currentSecond));
+  const vscActive = !isFinished && (currentTrackStatus === '6' || isVirtualSafetyCarActive(currentSecond));
 
   const flagBadge = document.getElementById('statusBarFlag');
   const flagIcon = document.getElementById('statusBarFlagIcon');
@@ -14,7 +18,15 @@ function updateSessionStatusBar() {
 
   if (flagBadge && flagText && flagIcon) {
     flagBadge.className = 'status-bar-flag-badge';
-    if (scActive) {
+    if (isFinished) {
+      flagBadge.classList.add('flag-chequered');
+      flagIcon.textContent = '🏁';
+      flagText.textContent = 'BANDIERA A SCACCHI';
+    } else if (currentTrackStatus === '5') {
+      flagBadge.classList.add('flag-vsc');
+      flagIcon.textContent = '🔴';
+      flagText.textContent = 'BANDIERA ROSSA (SESSIONE SOSPESA / RIMANDATA)';
+    } else if (scActive) {
       flagBadge.classList.add('flag-sc');
       flagIcon.textContent = '🟡';
       flagText.textContent = 'SAFETY CAR';
@@ -22,12 +34,28 @@ function updateSessionStatusBar() {
       flagBadge.classList.add('flag-vsc');
       flagIcon.textContent = '🟡';
       flagText.textContent = 'VSC';
+    } else if (currentTrackStatus === '2') {
+      flagBadge.classList.add('flag-sc');
+      flagIcon.textContent = '🟡';
+      flagText.textContent = 'BANDIERA GIALLA';
     } else {
       flagBadge.classList.add('flag-green');
       flagIcon.textContent = '🟢';
       flagText.textContent = 'BANDIERA VERDE';
     }
   }
+
+  const liveBadge = document.getElementById('liveBadgeIndicator');
+  if (liveBadge) {
+    if (isFinished) {
+      liveBadge.innerHTML = 'TERMINATA';
+    } else {
+      liveBadge.innerHTML = '<div class="live-dot"></div>LIVE';
+    }
+  }
+
+  const sType = typeof normalizeSessionType === 'function' ? normalizeSessionType(sessionType, sessionPart) : sessionType;
+  const isSq = typeof isSprintQualifying === 'function' ? isSprintQualifying(sessionType, sessionPart) : (sessionPart && sessionPart.toUpperCase().startsWith('SQ'));
 
   // Nome e Tipo Sessione
   const sessVal = document.getElementById('statusBarSessionVal');
@@ -36,42 +64,47 @@ function updateSessionStatusBar() {
       const bSess = window.FastestLapBridge.getSessionName();
       if (bSess && bSess.trim().length > 0 && bSess !== 'Sessione Live') {
         sessVal.textContent = bSess.toUpperCase().trim();
-      } else if (sessionType === 'practice') {
+      } else if (sType === 'practice') {
         sessVal.textContent = sessionPart || 'PROVE LIBERE';
-      } else if (sessionType === 'qualifying') {
-        sessVal.textContent = sessionPart || 'QUALIFICHE';
+      } else if (sType === 'qualifying') {
+        sessVal.textContent = isSq ? (sessionPart || 'QUALIFICA SPRINT') : (sessionPart || 'QUALIFICHE');
       } else {
-        sessVal.textContent = (sessionType === 'sprint' ? 'GARA SPRINT' : 'GARA');
+        sessVal.textContent = (sType === 'sprint' ? 'GARA SPRINT' : 'GARA');
       }
-    } else if (sessionType === 'practice') {
+    } else if (sType === 'practice') {
       sessVal.textContent = sessionPart || 'PROVE LIBERE';
-    } else if (sessionType === 'qualifying') {
-      sessVal.textContent = sessionPart || 'QUALIFICHE';
+    } else if (sType === 'qualifying') {
+      sessVal.textContent = isSq ? (sessionPart || 'QUALIFICA SPRINT') : (sessionPart || 'QUALIFICHE');
     } else {
-      sessVal.textContent = (sessionType === 'sprint' ? 'GARA SPRINT' : 'GARA');
+      sessVal.textContent = (sType === 'sprint' ? 'GARA SPRINT' : 'GARA');
     }
   }
 
   // Progresso Sessione / Conteggio Giri
   const lapVal = document.getElementById('statusBarLapVal');
   if (lapVal) {
-    if (sessionType === 'practice') {
-      lapVal.textContent = 'SESSIONE ATTIVA';
-    } else if (sessionType === 'qualifying') {
-      const isSq = (sessionPart && sessionPart.toUpperCase().startsWith('SQ'));
+    if (isFinished) {
+      lapVal.textContent = 'SESSIONE TERMINATA';
+    } else if (currentTrackStatus === '5') {
+      lapVal.textContent = 'SESSIONE SOSPESA / RIMANDATA';
+    } else if (currentSecond <= 0) {
+      lapVal.textContent = 'ATTESA PARTENZA';
+    } else if (sType === 'practice') {
+      lapVal.textContent = 'SESSIONE IN CORSO';
+    } else if (sType === 'qualifying') {
       const qPrefix = isSq ? 'SQ' : 'Q';
-      const q1Cut = SESSION_DURATION * 0.35;
-      const q2Cut = SESSION_DURATION * 0.70;
       let qPhase = qPrefix + '1';
       if (sessionPart === 'Q3' || sessionPart === 'SQ3') qPhase = qPrefix + '3';
       else if (sessionPart === 'Q2' || sessionPart === 'SQ2') qPhase = qPrefix + '2';
       else if (sessionPart === 'Q1' || sessionPart === 'SQ1') qPhase = qPrefix + '1';
-      else if (currentSecond >= q2Cut) qPhase = qPrefix + '3';
-      else if (currentSecond >= q1Cut) qPhase = qPrefix + '2';
-      lapVal.textContent = qPhase + ' ATTIVA';
+      lapVal.textContent = qPhase + ' IN CORSO';
     } else {
       const curLap = getDriverLap(focusedDriver, currentSecond);
-      lapVal.textContent = 'GIRO ' + curLap + '/' + TOTAL_LAPS;
+      if (TOTAL_LAPS && TOTAL_LAPS > 0) {
+        lapVal.textContent = 'GIRO ' + curLap + '/' + TOTAL_LAPS;
+      } else {
+        lapVal.textContent = 'GIRO ' + curLap;
+      }
     }
   }
 
@@ -106,7 +139,15 @@ function switchMainView(viewId) {
     setTimeout(() => {
       resizeTrackCanvas();
       drawTrack();
-    }, 50);
+    }, 10);
+    setTimeout(() => {
+      resizeTrackCanvas();
+      drawTrack();
+    }, 70);
+    setTimeout(() => {
+      resizeTrackCanvas();
+      drawTrack();
+    }, 200);
   } else if (viewId === 'view-race-control') {
     updateRaceControl();
   } else {
@@ -149,12 +190,33 @@ function closeSession() {
 function applyGenericRealSession(circuitId, sType) {
   isGenericRealMode = true;
   currentCircuit = circuitId || 'generic';
-  sessionType = sType || 'race';
+  sessionType = typeof normalizeSessionType === 'function'
+    ? normalizeSessionType(sType || sessionType || 'race', sessionPart)
+    : (sType || sessionType || 'race');
 
   DRIVERS = { ...GRID_2026_DRIVERS };
   GRID_ORDER = Object.keys(DRIVERS);
 
-  NODES = [];
+  const cid = (circuitId || '').toLowerCase().trim();
+  if (cid.includes('sepang') && typeof SIM_SEPANG !== 'undefined') {
+    NODES = SIM_SEPANG.nodes;
+    SVG_WIDTH = SIM_SEPANG.svgWidth || 1280;
+    SVG_HEIGHT = SIM_SEPANG.svgHeight || 1057;
+    LAP_DURATION = SIM_SEPANG.lapDuration || 95.0;
+  } else if (cid.includes('baku') && typeof SIM_BAKU !== 'undefined') {
+    NODES = SIM_BAKU.nodes;
+    SVG_WIDTH = SIM_BAKU.svgWidth || 500;
+    SVG_HEIGHT = SIM_BAKU.svgHeight || 371;
+    LAP_DURATION = SIM_BAKU.lapDuration || 108.6;
+  } else {
+    SVG_WIDTH = (trackBgImage && trackBgImage.naturalWidth) ? trackBgImage.naturalWidth : 1000;
+    SVG_HEIGHT = (trackBgImage && trackBgImage.naturalHeight) ? trackBgImage.naturalHeight : 800;
+    LAP_DURATION = 90.0;
+    if (typeof buildDefaultTrackNodes === 'function') {
+      NODES = buildDefaultTrackNodes(SVG_WIDTH, SVG_HEIGHT);
+    }
+  }
+
   PIT_LANE_NODES = [];
   PIT_LANE_DISTS = [0];
   PIT_LANE_TOTAL_DIST = 1;
@@ -189,20 +251,51 @@ function applyGenericRealSession(circuitId, sType) {
     RACE_CONTROL_MESSAGES = getInitialRaceControlMessages(sessionType, sessionPart);
   }
 
-  TOTAL_LAPS = 55;
+  TOTAL_LAPS = null;
   if (window.FastestLapBridge && typeof window.FastestLapBridge.getTotalLaps === 'function') {
-    const tl = parseInt(window.FastestLapBridge.getTotalLaps(), 10);
-    if (!isNaN(tl) && tl > 0) TOTAL_LAPS = tl;
+    try {
+      const tl = parseInt(window.FastestLapBridge.getTotalLaps(), 10);
+      if (!isNaN(tl) && tl > 0) TOTAL_LAPS = tl;
+    } catch (e) {}
+  }
+  if (!TOTAL_LAPS) {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const pLaps = urlParams.get('total_laps');
+      if (pLaps) {
+        const tl = parseInt(pLaps, 10);
+        if (!isNaN(tl) && tl > 0) TOTAL_LAPS = tl;
+      }
+    } catch (e) {}
   }
   LAP_DURATION = 90.0;
-  SESSION_DURATION = sessionType === 'practice' ? 3600 : (sessionType === 'qualifying' ? 3600 : 7200);
+  const isRace = (sessionType === 'race');
+  const isSprint = (sessionType === 'sprint');
+  const baseDuration = isSprint ? 4500 : (isRace ? 7200 : 3600);
+
+  let sessionElapsedSec = 0;
+  if (window.FastestLapBridge && typeof window.FastestLapBridge.getSessionElapsedSeconds === 'function') {
+    try {
+      const es = window.FastestLapBridge.getSessionElapsedSeconds();
+      if (!isNaN(es) && es >= 0) sessionElapsedSec = es;
+    } catch (e) {}
+  }
+  if (!sessionElapsedSec) {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const pElapsed = urlParams.get('session_elapsed_sec');
+      if (pElapsed) {
+        const es = parseInt(pElapsed, 10);
+        if (!isNaN(es) && es >= 0) sessionElapsedSec = es;
+      }
+    } catch (e) {}
+  }
+
+  SESSION_DURATION = baseDuration;
   RACE_FINISH_SEC = SESSION_DURATION;
+  currentSecond = sessionElapsedSec;
 
   buildGenericSessionLaps(sessionType);
-
-  const now = new Date();
-  const sessionElapsedSec = Math.max(120, Math.min(3540, ((now.getMinutes() >= 30 ? (now.getMinutes() - 30) : now.getMinutes()) * 60) + now.getSeconds()));
-  currentSecond = sessionElapsedSec;
 
   populateDriverDropdowns();
   focusedDriver = '16';
@@ -227,25 +320,43 @@ function applyGenericRealSession(circuitId, sType) {
 
 function animate(timestamp) {
   if (!lastAnimFrameTimestamp) lastAnimFrameTimestamp = timestamp;
-  const deltaSec = (timestamp - lastAnimFrameTimestamp) / 1000;
+  const deltaSec = Math.min((timestamp - lastAnimFrameTimestamp) / 1000, 0.1);
   lastAnimFrameTimestamp = timestamp;
+  if (typeof currentDeltaTime !== 'undefined') {
+    currentDeltaTime = deltaSec;
+  }
 
   if (isPlaying) {
     currentSecond += deltaSec * simSpeedMultiplier;
-    if (currentSecond >= SESSION_DURATION) {
-      currentSecond = 0.0;
+    // In live streaming, non bloccare la progressione del tempo
+    if (window.IS_SYNTHETIC_SIMULATION && currentSecond >= SESSION_DURATION) {
+      currentSecond = SESSION_DURATION;
+      isPlaying = false;
     }
   }
 
-  drawTrack();
+  try {
+    drawTrack();
+  } catch (err) {
+    console.error('[TrackCanvas] drawTrack error:', err);
+  }
 
   if (timestamp - lastUiUpdateTime > 100) {
     lastUiUpdateTime = timestamp;
-    updateSessionStatusBar();
-    updateTimingTables();
-    updateCockpit(1, selectedDriver1);
-    updateCockpit(2, selectedDriver2);
-    updateRaceControl();
+    try {
+      if (window.FastestLapBridge && typeof window.FastestLapBridge.getDriverTelemetryJson === 'function') {
+        const telStr = window.FastestLapBridge.getDriverTelemetryJson();
+        if (telStr && telStr.trim().length > 2) {
+          window.updateDriverTelemetry(telStr);
+        }
+      }
+    } catch (e) {}
+
+    try { updateSessionStatusBar(); } catch (e) { console.error(e); }
+    try { updateTimingTables(); } catch (e) { console.error(e); }
+    try { updateCockpit(1, selectedDriver1); } catch (e) { console.error(e); }
+    try { updateCockpit(2, selectedDriver2); } catch (e) { console.error(e); }
+    try { updateRaceControl(); } catch (e) { console.error(e); }
   }
 
   requestAnimationFrame(animate);
@@ -263,6 +374,7 @@ function initApp() {
 
   // Controllo Parametri Query String & Android Bridge
   let preferredCircuit = '';
+  let isLive = true;
 
   try {
     const urlParams = new URLSearchParams(window.location.search);
@@ -270,31 +382,65 @@ function initApp() {
     const pImg = urlParams.get('circuit_image');
     const pType = urlParams.get('session_type');
     const pPart = urlParams.get('session_part');
+    const pIsLive = urlParams.get('is_live');
+    const pTz = urlParams.get('circuit_timezone');
+
+    if (pIsLive !== null) {
+      isLive = (pIsLive === 'true' || pIsLive === '1');
+    }
+    if (pTz && pTz.trim().length > 0) {
+      circuitTimeZone = pTz.trim();
+    }
     if (pCircuit && pCircuit.trim().length > 0) preferredCircuit = pCircuit.toLowerCase().trim();
-    if (pType && pType.trim().length > 0) sessionType = pType.toLowerCase().trim();
     if (pPart && pPart.trim().length > 0) sessionPart = pPart.toUpperCase().trim();
+    if (pType && pType.trim().length > 0) {
+      if (typeof isSprintQualifying === 'function' && isSprintQualifying(pType, sessionPart)) {
+        sessionType = 'qualifying';
+        if (!sessionPart) sessionPart = 'SQ';
+      } else {
+        sessionType = typeof normalizeSessionType === 'function' ? normalizeSessionType(pType, sessionPart) : pType.toLowerCase().trim();
+      }
+    }
     if (pImg && pImg.trim().length > 0) {
       window.setCircuitImage(pImg.trim());
     }
   } catch (ignored) {}
 
   if (window.FastestLapBridge) {
+    if (typeof window.FastestLapBridge.isSessionLive === 'function') {
+      try {
+        isLive = window.FastestLapBridge.isSessionLive();
+      } catch (e) {}
+    }
+    if (typeof window.FastestLapBridge.getCircuitTimeZone === 'function') {
+      try {
+        const tz = window.FastestLapBridge.getCircuitTimeZone();
+        if (tz && tz.trim().length > 0) circuitTimeZone = tz.trim();
+      } catch (e) {}
+    }
     if (typeof window.FastestLapBridge.getCircuitId === 'function') {
       try {
         const cid = window.FastestLapBridge.getCircuitId();
         if (cid && cid.trim().length > 0) preferredCircuit = cid.toLowerCase().trim();
       } catch (e) {}
     }
-    if (typeof window.FastestLapBridge.getSessionType === 'function') {
-      try {
-        const st = window.FastestLapBridge.getSessionType();
-        if (st && st.trim().length > 0) sessionType = st.toLowerCase().trim();
-      } catch (e) {}
-    }
     if (typeof window.FastestLapBridge.getSessionPart === 'function') {
       try {
         const sp = window.FastestLapBridge.getSessionPart();
         if (sp && sp.trim().length > 0) sessionPart = sp.toUpperCase().trim();
+      } catch (e) {}
+    }
+    if (typeof window.FastestLapBridge.getSessionType === 'function') {
+      try {
+        const st = window.FastestLapBridge.getSessionType();
+        if (st && st.trim().length > 0) {
+          if (typeof isSprintQualifying === 'function' && isSprintQualifying(st, sessionPart)) {
+            sessionType = 'qualifying';
+            if (!sessionPart) sessionPart = 'SQ';
+          } else {
+            sessionType = typeof normalizeSessionType === 'function' ? normalizeSessionType(st, sessionPart) : st.toLowerCase().trim();
+          }
+        }
       } catch (e) {}
     }
     if (typeof window.FastestLapBridge.getCircuitImageUrl === 'function') {
@@ -313,23 +459,149 @@ function initApp() {
         }
       } catch (e) {}
     }
+    if (typeof window.FastestLapBridge.getDriverTelemetryJson === 'function') {
+      try {
+        const telStr = window.FastestLapBridge.getDriverTelemetryJson();
+        if (telStr && telStr.trim().length > 2) {
+          window.updateDriverTelemetry(telStr);
+        }
+      } catch (e) {}
+    }
+    if (typeof window.FastestLapBridge.getPitStopsJson === 'function') {
+      try {
+        const pitStr = window.FastestLapBridge.getPitStopsJson();
+        if (pitStr && pitStr.trim().length > 2) {
+          window.updatePitStops(pitStr);
+        }
+      } catch (e) {}
+    }
   }
+
+
 
   const offlineView = document.getElementById('offlineView');
   const liveView = document.getElementById('liveView');
+
+  window.startSimulationFromOffline = function() {
+    isLive = true;
+    window.IS_SYNTHETIC_SIMULATION = true;
+    if (offlineView) offlineView.style.display = 'none';
+    if (liveView) liveView.style.display = 'flex';
+    applyGenericRealSession(preferredCircuit, sessionType);
+    if (window.FastestLapBridge && typeof window.FastestLapBridge.getEventTitle === 'function') {
+      const hdrEvent = document.getElementById('hdrEventTitle');
+      if (hdrEvent) {
+        const bTitle = window.FastestLapBridge.getEventTitle();
+        if (bTitle && bTitle.trim().length > 0 && bTitle.toLowerCase() !== 'live timing') {
+          hdrEvent.textContent = bTitle;
+        }
+      }
+    }
+    renderTableHeaders(sessionType);
+    updateSessionStatusBar();
+    resizeTrackCanvas();
+    drawTrack();
+    if (!lastAnimFrameTimestamp) requestAnimationFrame(animate);
+    if (streamClient) streamClient.setMode('simulation');
+  };
+
+  if (!isLive) {
+    if (offlineView) offlineView.style.display = 'flex';
+    if (liveView) liveView.style.display = 'none';
+
+    let displayEventTitle = 'FORMULA 1 GRAND PRIX';
+    if (window.FastestLapBridge && typeof window.FastestLapBridge.getEventTitle === 'function') {
+      try {
+        const bTitle = window.FastestLapBridge.getEventTitle();
+        if (bTitle && bTitle.trim().length > 0 && bTitle.toLowerCase() !== 'live timing') {
+          displayEventTitle = bTitle.trim();
+        }
+      } catch (e) {}
+    }
+    let displaySessionName = 'NESSUNA SESSIONE IN CORSO';
+    if (window.FastestLapBridge && typeof window.FastestLapBridge.getSessionName === 'function') {
+      try {
+        const sName = window.FastestLapBridge.getSessionName();
+        if (sName && sName.trim().length > 0) {
+          displaySessionName = sName.trim().toUpperCase();
+        }
+      } catch (e) {}
+    }
+
+    const offTitle = document.getElementById('offlineTitle');
+    const offEvent = document.getElementById('offlineEventTitle');
+    const offSess = document.getElementById('offlineSessionName');
+    const offDesc = document.getElementById('offlineDesc');
+    let sessionElapsedSec = 0;
+    if (window.FastestLapBridge && typeof window.FastestLapBridge.getSessionElapsedSeconds === 'function') {
+      try {
+        const es = window.FastestLapBridge.getSessionElapsedSeconds();
+        if (!isNaN(es) && es >= 0) sessionElapsedSec = es;
+      } catch (e) {}
+    }
+    const isPast = sessionElapsedSec > 0;
+    if (offTitle) offTitle.textContent = isPast ? 'SESSIONE TERMINATA' : 'SESSIONE NON ANCORA INIZIATA';
+    if (offEvent) offEvent.textContent = displayEventTitle;
+    if (offSess) offSess.textContent = displaySessionName;
+    if (offDesc && isPast) {
+      offDesc.innerHTML = 'La sessione di pista è terminata.<br>I risultati ufficiali e i distacchi sono disponibili nella schermata dell\'evento.';
+    }
+
+    return; // Attesa utente: Torna all'evento o Avvia Collaudo
+  }
+
+  window.IS_SYNTHETIC_SIMULATION = false;
   if (offlineView) offlineView.style.display = 'none';
   if (liveView) liveView.style.display = 'flex';
+
+  // Inizializzazione Streaming Client SignalR / Fallback
+  if (typeof SignalRStreamClient !== 'undefined') {
+    streamClient = new SignalRStreamClient();
+    streamClient.onStatusChange((status, detail) => {
+      const liveBadge = document.getElementById('liveBadgeIndicator');
+      if (liveBadge) {
+        if (status === 'live') {
+          liveBadge.className = 'live-badge live-active';
+          liveBadge.innerHTML = '<div class="live-dot"></div>LIVE';
+        } else if (status === 'connecting') {
+          liveBadge.className = 'live-badge';
+          liveBadge.innerHTML = '<div class="live-dot" style="background:#e3b341;"></div>CONNECT';
+        } else if (window.IS_SYNTHETIC_SIMULATION) {
+          liveBadge.className = 'live-badge';
+          liveBadge.innerHTML = '<div class="live-dot" style="background:#238636;"></div>COLLAUDO';
+        } else {
+          liveBadge.className = 'live-badge';
+          liveBadge.innerHTML = '<div class="live-dot" style="background:#e3b341;"></div>ATTESA';
+        }
+      }
+    });
+
+    if (isLive) {
+      streamClient.connect();
+    }
+  }
 
   // Configurazione dinamica generica della sessione
   applyGenericRealSession(preferredCircuit, sessionType);
 
-  if (window.FastestLapBridge && typeof window.FastestLapBridge.getEventTitle === 'function') {
-    const hdrEvent = document.getElementById('hdrEventTitle');
-    if (hdrEvent) {
-      const bTitle = window.FastestLapBridge.getEventTitle();
-      if (bTitle && bTitle.trim().length > 0 && bTitle.toLowerCase() !== 'live timing') {
-        hdrEvent.textContent = bTitle;
+  if (window.FastestLapBridge) {
+    if (typeof window.FastestLapBridge.getEventTitle === 'function') {
+      const hdrEvent = document.getElementById('hdrEventTitle');
+      if (hdrEvent) {
+        const bTitle = window.FastestLapBridge.getEventTitle();
+        if (bTitle && bTitle.trim().length > 0 && bTitle.toLowerCase() !== 'live timing') {
+          hdrEvent.textContent = bTitle;
+        }
       }
+    }
+    if (typeof window.FastestLapBridge.getCircuitImageUrl === 'function') {
+      const bImg = window.FastestLapBridge.getCircuitImageUrl();
+      if (bImg && bImg.trim().length > 0) {
+        window.setCircuitImage(bImg.trim());
+      }
+    }
+    if (typeof window.FastestLapBridge.requestInitialFeeds === 'function') {
+      window.FastestLapBridge.requestInitialFeeds();
     }
   }
 

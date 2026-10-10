@@ -13,7 +13,9 @@ function renderTableHeaders(type) {
   const compactThead = document.querySelector('#side-standings .compact-timing-table thead');
   if (!fullThead && !compactThead) return;
 
-  if (type === 'practice') {
+  const sType = typeof normalizeSessionType === 'function' ? normalizeSessionType(type, sessionPart) : type;
+
+  if (sType === 'practice') {
     if (fullThead) {
       fullThead.innerHTML = '<tr>'
         + '<th class="col-pos">POS</th>'
@@ -39,8 +41,8 @@ function renderTableHeaders(type) {
         + '<th class="col-side-status">STATO</th>'
         + '</tr>';
     }
-  } else if (type === 'qualifying') {
-    const isSq = (sessionPart && sessionPart.toUpperCase().startsWith('SQ'));
+  } else if (sType === 'qualifying') {
+    const isSq = typeof isSprintQualifying === 'function' ? isSprintQualifying(type, sessionPart) : (sessionPart && sessionPart.toUpperCase().startsWith('SQ'));
     const q1H = isSq ? 'SQ1' : 'Q1';
     const q2H = isSq ? 'SQ2' : 'Q2';
     const q3H = isSq ? 'SQ3' : 'Q3';
@@ -154,9 +156,11 @@ function updateTimingTablesFP() {
     if (r.state.isRetired) {
       statusBadgeHtml = '<span class="status-badge status-eliminated">STOP</span>';
     } else if (r.state.inPit) {
-      statusBadgeHtml = '<span class="status-badge status-inpit">IN PIT</span>';
+      statusBadgeHtml = '<span class="status-badge status-inpit">' + (r.stats.lapsCount === 0 ? 'IN GARAGE' : 'IN PIT') + '</span>';
     } else if (r.state.isOutLapMerge) {
       statusBadgeHtml = '<span class="status-badge status-outlap">OUT-LAP</span>';
+    } else if (r.stats.lapsCount === 0 && !window.IS_SYNTHETIC_SIMULATION) {
+      statusBadgeHtml = '<span class="status-badge status-inpit">IN GARAGE</span>';
     } else {
       statusBadgeHtml = '<span class="status-badge status-on-track">ON TRACK</span>';
     }
@@ -169,8 +173,8 @@ function updateTimingTablesFP() {
       + '<td class="pos-cell">' + currentPos + '</td>'
       + '<td class="col-driver"><span class="driver-pill"><span class="color-dot" style="background: ' + d.color + ';"></span><span class="drv-num-bold">#' + d.number + '</span> ' + d.firstName + ' <span class="drv-last-bold">' + d.lastName.toUpperCase() + '</span></span></td>'
       + '<td>' + renderBadge(r.stats.bestLapStr, r.stats.bestLapBadge) + '</td>'
-      + '<td class="gap-cell ' + gapColorClass + '">' + gapStr + '</td>'
-      + '<td class="gap-cell">' + intStr + '</td>'
+      + '<td class="col-gap gap-cell ' + gapColorClass + '">' + gapStr + '</td>'
+      + '<td class="col-int int-cell">' + intStr + '</td>'
       + '<td>' + renderBadge(r.stats.lastLapStr, r.stats.lastLapBadge) + '</td>'
       + '<td>' + tyreBadgeHtml + '</td>'
       + '<td class="laps-cell">' + r.stats.lapsCount + '</td>'
@@ -229,10 +233,12 @@ function updateTimingTablesQ() {
     const q2Laps = completedLaps.filter(l => l.startSec >= q1Cut && l.startSec < q2Cut);
     const q3Laps = completedLaps.filter(l => l.startSec >= q2Cut);
 
-    const q1Best = q1Laps.reduce((min, l) => l.dur < min ? l.dur : min, Infinity);
-    const q2Best = q2Laps.reduce((min, l) => l.dur < min ? l.dur : min, Infinity);
-    const q3Best = q3Laps.reduce((min, l) => l.dur < min ? l.dur : min, Infinity);
-    const overallBest = stats.personalBest;
+    const tel = (typeof DRIVER_TELEMETRY !== 'undefined' && DRIVER_TELEMETRY[k]) ? DRIVER_TELEMETRY[k] : {};
+    const q1Best = tel.q1Best || q1Laps.reduce((min, l) => l.dur < min ? l.dur : min, Infinity);
+    const q2Best = tel.q2Best || q2Laps.reduce((min, l) => l.dur < min ? l.dur : min, Infinity);
+    const q3Best = tel.q3Best || q3Laps.reduce((min, l) => l.dur < min ? l.dur : min, Infinity);
+    const overallBest = tel.overallBest || stats.personalBest || (q3Best < Infinity ? q3Best : (q2Best < Infinity ? q2Best : q1Best));
+    const officialPos = tel.position !== undefined ? tel.position : null;
 
     return {
       key: k,
@@ -241,17 +247,25 @@ function updateTimingTablesQ() {
       q2Best: q2Best,
       q3Best: q3Best,
       overallBest: overallBest,
+      officialPos: officialPos,
       stats: stats,
       state: state,
       tireInfo: tireInfo,
-      lapsCount: completedLaps.length
+      lapsCount: tel.pitCount !== undefined ? tel.pitCount : completedLaps.length
     };
   });
 
-  const q1Sorted = [...qDrivers].sort((a, b) => a.q1Best - b.q1Best);
+  const q1Sorted = [...qDrivers].sort((a, b) => {
+    if (a.officialPos !== null && b.officialPos !== null) return a.officialPos - b.officialPos;
+    if (a.overallBest !== b.overallBest) return a.overallBest - b.overallBest;
+    return GRID_ORDER.indexOf(a.key) - GRID_ORDER.indexOf(b.key);
+  });
 
   let ranked = [];
-  if (activeQ === 'Q1') {
+  const hasOfficialPositions = qDrivers.some(qd => qd.officialPos !== null);
+  if (hasOfficialPositions) {
+    ranked = q1Sorted;
+  } else if (activeQ === 'Q1') {
     ranked = q1Sorted;
   } else if (activeQ === 'Q2') {
     const top15 = q1Sorted.slice(0, 15).sort((a, b) => {
@@ -296,12 +310,15 @@ function updateTimingTablesQ() {
     const currentPos = idx + 1;
 
     let isEliminated = false;
-    if (activeQ === 'Q1' && currentPos > 15) {
-      isEliminated = true;
-    } else if (activeQ === 'Q2' && currentPos > 10) {
-      isEliminated = true;
-    } else if (activeQ === 'Q3' && currentPos > 10) {
-      isEliminated = true;
+    const hasAnyLaps = (bestQ1Val < Infinity);
+    if (hasAnyLaps) {
+      if (activeQ === 'Q1' && currentPos > 15) {
+        isEliminated = true;
+      } else if (activeQ === 'Q2' && currentPos > 10) {
+        isEliminated = true;
+      } else if (activeQ === 'Q3' && currentPos > 10) {
+        isEliminated = true;
+      }
     }
 
     let gapStr = '-';
@@ -319,9 +336,11 @@ function updateTimingTablesQ() {
     } else if (r.state.isRetired) {
       statusBadgeHtml = '<span class="status-badge status-eliminated">STOP</span>';
     } else if (r.state.inPit) {
-      statusBadgeHtml = '<span class="status-badge status-inpit">IN PIT</span>';
+      statusBadgeHtml = '<span class="status-badge status-inpit">' + (r.lapsCount === 0 ? 'IN GARAGE' : 'IN PIT') + '</span>';
     } else if (r.state.isOutLapMerge) {
       statusBadgeHtml = '<span class="status-badge status-outlap">OUT-LAP</span>';
+    } else if (r.lapsCount === 0 && !window.IS_SYNTHETIC_SIMULATION) {
+      statusBadgeHtml = '<span class="status-badge status-inpit">IN GARAGE</span>';
     } else {
       statusBadgeHtml = '<span class="status-badge status-on-track">ON TRACK</span>';
     }
@@ -344,7 +363,7 @@ function updateTimingTablesQ() {
       + '<td>' + renderBadge(q1Str, q1Class) + '</td>'
       + '<td>' + renderBadge(q2Str, q2Class) + '</td>'
       + '<td>' + renderBadge(q3Str, q3Class) + '</td>'
-      + '<td class="gap-cell">' + gapStr + '</td>'
+      + '<td class="col-gap gap-cell">' + gapStr + '</td>'
       + '<td>' + tyreBadgeHtml + '</td>'
       + '<td class="laps-cell">' + r.lapsCount + '</td>'
       + '<td>' + statusBadgeHtml + '</td>'
@@ -417,23 +436,31 @@ function updateTimingTablesRace() {
       gapStr = 'LEADER';
       intStr = '-';
     } else {
-      const gapVal = (idx * 2.15).toFixed(3);
-      gapStr = '+' + gapVal + 's';
-      intStr = '+2.150s';
+      const tel = (typeof DRIVER_TELEMETRY !== 'undefined') ? DRIVER_TELEMETRY[r.key] : null;
+      if (tel && tel.gapLeader && tel.gapLeader !== '-') {
+        gapStr = tel.gapLeader;
+        intStr = tel.interval || '-';
+      } else if (r.stats && r.stats.gapLeader && r.stats.gapLeader !== '-') {
+        gapStr = r.stats.gapLeader;
+        intStr = r.stats.interval || '-';
+      } else {
+        gapStr = '-';
+        intStr = '-';
+      }
     }
 
     const tyreBadgeHtml = '<span class="tire-badge" style="border-color: ' + r.tireInfo.color + '; color: ' + r.tireInfo.color + ';">'
       + r.tireInfo.compound + ' <span class="tire-laps">(' + r.tireInfo.age + 'L)</span>'
       + '</span>';
 
-    const pitCount = (r.key === '3' || r.key === '16' || r.key === '1') ? 1 : 0;
+    const pitCount = (typeof getDriverPitCount === 'function') ? getDriverPitCount(r.key, currentSecond) : 0;
 
     fullHtml += '<tr class="' + (isCurrentActive ? 'active' : '') + '" onclick="onDriverRowClick(\'' + r.key + '\')">'
       + '<td class="pos-cell">' + currentPos + '</td>'
       + '<td class="col-gain">' + gainHtml + '</td>'
       + '<td class="col-driver"><span class="driver-pill"><span class="color-dot" style="background: ' + d.color + ';"></span><span class="drv-num-bold">#' + d.number + '</span> ' + d.firstName + ' <span class="drv-last-bold">' + d.lastName.toUpperCase() + '</span></span></td>'
-      + '<td class="gap-cell">' + gapStr + '</td>'
-      + '<td class="gap-cell">' + intStr + '</td>'
+      + '<td class="col-gap gap-cell">' + gapStr + '</td>'
+      + '<td class="col-int int-cell">' + intStr + '</td>'
       + '<td>' + renderBadge(r.stats.lastLapStr, r.stats.lastLapBadge) + '</td>'
       + '<td>' + renderBadge(r.stats.bestLapStr, r.stats.bestLapBadge) + '</td>'
       + '<td>' + tyreBadgeHtml + '</td>'
@@ -453,7 +480,7 @@ function updateTimingTablesRace() {
       + '<td class="col-side-gain">' + gainHtml + '</td>'
       + '<td class="col-side-driver"><span class="driver-pill"><span class="color-dot" style="background: ' + d.color + ';"></span><span class="drv-code-bold">#' + d.number + ' ' + d.code + '</span></span></td>'
       + '<td class="col-side-gap gap-cell">' + gapStr + '</td>'
-      + '<td class="col-side-int gap-cell">' + intStr + '</td>'
+      + '<td class="col-side-int int-cell">' + intStr + '</td>'
       + '<td>' + renderBadge(r.stats.lastLapStr, r.stats.lastLapBadge) + '</td>'
       + '<td>' + renderBadge(r.stats.bestLapStr, r.stats.bestLapBadge) + '</td>'
       + '<td>' + tyreBadgeHtml + '</td>'
@@ -465,11 +492,13 @@ function updateTimingTablesRace() {
 }
 
 function updateTimingTables() {
-  if (sessionType === 'practice') {
+  const sType = typeof normalizeSessionType === 'function' ? normalizeSessionType(sessionType, sessionPart) : sessionType;
+  if (sType === 'practice') {
     updateTimingTablesFP();
-  } else if (sessionType === 'qualifying') {
+  } else if (sType === 'qualifying') {
     updateTimingTablesQ();
   } else {
+    // Gara o Sprint
     updateTimingTablesRace();
   }
 }

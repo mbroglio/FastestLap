@@ -6,5 +6,7 @@ import com.the_coffe_coders.fastestlap.repository.f1.livetiming.TeamRadioCallbac
 public interface LiveTimingDataSource {
 
     void getTeamRadioMessages(TeamRadioCallback callback);
+    void getTeamRadioMessages(String sessionKey, TeamRadioCallback callback);
     void getRaceControlMessages(RaceControlCallback callback);
+    void getRaceControlMessages(String sessionKey, RaceControlCallback callback);
 }

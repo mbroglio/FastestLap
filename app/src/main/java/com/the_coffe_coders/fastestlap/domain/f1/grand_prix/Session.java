@@ -31,6 +31,11 @@ public abstract class Session {
         setSessionStatus();
     }
 
+    public void setStartDateTime(LocalDateTime startDateTime) {
+        this.startDateTime = startDateTime;
+        setEndDateTime();
+    }
+
     public void setStartDateTime(String date, String time) {
         if (!time.contains("Z")) {
             time = time.concat("Z");
@@ -39,6 +44,7 @@ public abstract class Session {
         ZoneId localZone = ZoneId.systemDefault();
         ZonedDateTime localZonedDateTime = zonedDateTime.withZoneSameInstant(localZone);
         this.startDateTime = localZonedDateTime.toLocalDateTime();
+        setEndDateTime();
     }
 
     public void setEndDateTime() {

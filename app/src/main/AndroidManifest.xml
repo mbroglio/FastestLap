@@ -85,7 +85,7 @@
         <activity
             android:name=".ui.live.LiveActivity"
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize"
-            android:exported="false"
+            android:exported="true"
             android:screenOrientation="unspecified" />
         <activity
             android:name=".ui.event.PastEventsActivity"

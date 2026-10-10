@@ -182,7 +182,7 @@ public class Constants {
             "Practice", 60,
             "Qualifying", 60,
             "SprintQualifying", 45,
-            "Sprint", 60,
+            "Sprint", 75,
             "Race", 120
     );
 

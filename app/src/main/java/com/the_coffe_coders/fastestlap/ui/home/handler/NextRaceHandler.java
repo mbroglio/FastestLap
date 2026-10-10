@@ -27,6 +27,7 @@ import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandings;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.ConstructorStandingsElement;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandings;
 import com.the_coffe_coders.fastestlap.domain.f1.standing.DriverStandingsElement;
+import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.SessionStatus;
 import com.the_coffe_coders.fastestlap.domain.f1.track.Track;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.DriverViewModel;
@@ -62,6 +63,7 @@ public class NextRaceHandler {
     private LifecycleOwner lifecycleOwner;
     private View view;
     private String nextRaceRound;
+    private CountDownTimer countDownTimer;
 
     public NextRaceHandler(Fragment fragment, View view,
                            WeeklyRaceViewModel weeklyRaceViewModel,
@@ -265,35 +267,141 @@ public class NextRaceHandler {
             throw new Exception("Season mismatch");
         }
 
+        cancelCountdown();
+
         List<Session> sessions = nextRace.getSessions();
+        if (sessions != null) {
+            nextRace.setSessions(sessions);
+        }
         Session nextEvent = nextRace.findNextEvent(sessions);
-        if (nextEvent != null) {
-            startCountdown(nextEvent.getStartDateTime());
-            updateSessionType(nextEvent);
+
+        // Trova la sessione attualmente in corso (se presente)
+        Session activeSession = null;
+        if (sessions != null) {
+            for (Session s : sessions) {
+                if (s != null && (s.isUnderway() || s.getSessionStatus() == SessionStatus.IN_PROGRESS)) {
+                    activeSession = s;
+                    break;
+                }
+            }
+        }
+
+        Session activeOrNextSession = activeSession != null ? activeSession : nextEvent;
+        if (activeOrNextSession != null) {
+            updateSessionType(activeOrNextSession, sessions);
+        }
+
+        long fiveMinutesMillis = 5 * 60 * 1000L;
+        boolean isSessionLive = activeSession != null;
+        if (!isSessionLive && nextEvent != null && nextEvent.getStartDateTime() != null) {
+            long millisUntilNext = ZonedDateTime.of(nextEvent.getStartDateTime(), ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis();
+            if (millisUntilNext >= 0 && millisUntilNext <= fiveMinutesMillis) {
+                isSessionLive = true;
+            }
+        }
+
+        if (activeSession != null) {
+            startActiveSessionMonitoring(activeSession, nextRace);
+        } else if (nextEvent != null) {
+            startCountdown(nextEvent.getStartDateTime(), nextRace, isSessionLive);
         } else {
             setUpdating();
         }
 
         FrameLayout nextSessionCard = view.findViewById(R.id.timer_card_countdown);
-        nextSessionCard.setOnClickListener(v -> {
-            Intent intent = new Intent(context, EventActivity.class);
-            intent.putExtra("CIRCUIT_ID", nextRace.getTrack().getTrackId());
-            context.startActivity(intent);
-        });
+        if (nextSessionCard != null) {
+            nextSessionCard.setOnClickListener(v -> {
+                Intent intent = new Intent(context, EventActivity.class);
+                if (nextRace.getTrack() != null) {
+                    intent.putExtra("CIRCUIT_ID", nextRace.getTrack().getTrackId());
+                }
+                context.startActivity(intent);
+            });
+        }
     }
 
-    private void updateSessionType(Session nextEvent) {
-        String sessionId = nextEvent.getClass().getSimpleName().equals("Practice")
-                ? "Practice" + ((Practice) nextEvent).getNumber()
-                : nextEvent.getClass().getSimpleName();
+    private void updateSessionType(Session session, List<Session> sessions) {
+        if (session == null || view == null) return;
+        String sessionId;
+        if (session.isPractice()) {
+            Practice p = (Practice) session;
+            if (p.getNumber() <= 0 && sessions != null) {
+                int pIdx = 1;
+                for (Session s : sessions) {
+                    if (s == session) {
+                        p.setNumber(pIdx);
+                        break;
+                    }
+                    if (s != null && s.isPractice()) pIdx++;
+                }
+            }
+            sessionId = "Practice" + (p.getNumber() > 0 ? p.getNumber() : 1);
+        } else if (session.isSprintQualifying()) {
+            sessionId = "SprintQualifying";
+        } else if (session.isQualifying()) {
+            sessionId = "Qualifying";
+        } else if (session.isSprint()) {
+            sessionId = "Sprint";
+        } else {
+            sessionId = "Race";
+        }
         TextView sessionTypeView = view.findViewById(R.id.next_session_type);
-
-        UIUtils.translateSessionType(context, sessionTypeView, sessionId);
+        if (sessionTypeView != null) {
+            UIUtils.translateSessionType(context, sessionTypeView, sessionId);
+        }
     }
 
-    private void startCountdown(LocalDateTime eventDate) {
+    private void startActiveSessionMonitoring(Session activeSession, WeeklyRace nextRace) {
+        if (!fragment.isAdded() || view == null) return;
         LinearLayout liveIconLayout = view.findViewById(R.id.timer_live_layout);
-        liveIconLayout.setVisibility(View.GONE);
+        if (liveIconLayout != null) {
+            liveIconLayout.setVisibility(View.VISIBLE);
+        }
+        UIUtils.multipleSetTextViewText(
+                new String[]{"0", "0", "0", "0"},
+                new TextView[]{
+                        view.findViewById(R.id.next_days_counter),
+                        view.findViewById(R.id.next_hours_counter),
+                        view.findViewById(R.id.next_minutes_counter),
+                        view.findViewById(R.id.next_seconds_counter)
+                }
+        );
+        cardLoadedCallback.onCardLoaded("nextSession");
+
+        if (activeSession.getEndDateTime() != null) {
+            long millisUntilEnd = ZonedDateTime.of(activeSession.getEndDateTime(), ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis();
+            if (millisUntilEnd > 0) {
+                countDownTimer = new CountDownTimer(millisUntilEnd, 1000) {
+                    @Override
+                    public void onTick(long millisUntilFinished) {
+                        // In corso: rimane 0 0 0 0 e LIVE
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        try {
+                            setNextRaceCardFinalStep(nextRace);
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error refreshing next race after session end: " + e.getMessage());
+                        }
+                    }
+                }.start();
+            } else {
+                try {
+                    setNextRaceCardFinalStep(nextRace);
+                } catch (Exception e) {
+                    Log.e(TAG, "Error refreshing next race after session end: " + e.getMessage());
+                }
+            }
+        }
+    }
+
+    private void startCountdown(LocalDateTime eventDate, WeeklyRace nextRace, boolean isPreLive) {
+        if (!fragment.isAdded() || view == null) return;
+        LinearLayout liveIconLayout = view.findViewById(R.id.timer_live_layout);
+        if (liveIconLayout != null) {
+            liveIconLayout.setVisibility(isPreLive ? View.VISIBLE : View.GONE);
+        }
         long millisUntilStart = ZonedDateTime.of(eventDate, ZoneId.systemDefault()).toInstant().toEpochMilli() - System.currentTimeMillis();
         if (millisUntilStart <= 0) {
             UIUtils.multipleSetTextViewText(
@@ -305,19 +413,27 @@ public class NextRaceHandler {
                             view.findViewById(R.id.next_seconds_counter)
                     }
             );
-            liveIconLayout.setVisibility(View.VISIBLE);
+            if (liveIconLayout != null) {
+                liveIconLayout.setVisibility(View.VISIBLE);
+            }
             cardLoadedCallback.onCardLoaded("nextSession");
+            try {
+                setNextRaceCardFinalStep(nextRace);
+            } catch (Exception ignored) {}
             return;
         }
 
-        new CountDownTimer(millisUntilStart, 1000) {
+        final long fiveMinutesMillis = 5 * 60 * 1000L;
+        countDownTimer = new CountDownTimer(millisUntilStart, 1000) {
             final TextView days = view.findViewById(R.id.next_days_counter);
             final TextView hours = view.findViewById(R.id.next_hours_counter);
             final TextView minutes = view.findViewById(R.id.next_minutes_counter);
             final TextView seconds = view.findViewById(R.id.next_seconds_counter);
+            boolean liveActivated = isPreLive;
 
             @Override
             public void onTick(long millisUntilFinished) {
+                if (!fragment.isAdded() || view == null) return;
                 UIUtils.multipleSetTextViewText(
                         new String[]{
                                 String.valueOf(millisUntilFinished / 86400000),
@@ -327,21 +443,45 @@ public class NextRaceHandler {
                         },
                         new TextView[]{days, hours, minutes, seconds}
                 );
+
+                // Attiva l'icona LIVE a 5 minuti dallo start (stessa logica di EventActivity)
+                if (millisUntilFinished <= fiveMinutesMillis && !liveActivated) {
+                    liveActivated = true;
+                    if (liveIconLayout != null) {
+                        liveIconLayout.setVisibility(View.VISIBLE);
+                    }
+                }
             }
 
             @Override
             public void onFinish() {
+                if (!fragment.isAdded() || view == null) return;
                 UIUtils.multipleSetTextViewText(
                         new String[]{"0", "0", "0", "0"},
                         new TextView[]{days, hours, minutes, seconds}
                 );
-                liveIconLayout.setVisibility(View.VISIBLE);
+                if (liveIconLayout != null) {
+                    liveIconLayout.setVisibility(View.VISIBLE);
+                }
+                try {
+                    setNextRaceCardFinalStep(nextRace);
+                } catch (Exception e) {
+                    Log.e(TAG, "Error transitioning on countdown finish: " + e.getMessage());
+                }
             }
         }.start();
         cardLoadedCallback.onCardLoaded("nextSession");
     }
 
+    public void cancelCountdown() {
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
+    }
+
     private void setSeasonEnded() {
+        cancelCountdown();
         view.findViewById(R.id.last_race_results).setVisibility(View.GONE);
         view.findViewById(R.id.timer).setVisibility(View.GONE);
         view.findViewById(R.id.season_ended).setVisibility(View.VISIBLE);
@@ -354,6 +494,7 @@ public class NextRaceHandler {
     }
 
     private void setUpdating() {
+        cancelCountdown();
         view.findViewById(R.id.timer_card_countdown).setVisibility(View.GONE);
         view.findViewById(R.id.timer_updating).setVisibility(View.VISIBLE);
         cardLoadedCallback.onCardLoaded("nextSession");

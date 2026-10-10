@@ -69,38 +69,17 @@ public class OpenF1LiveTimingDataSource implements LiveTimingDataSource {
      * @param callback delivers the parsed list of {@link RaceControlMessage} objects,
      *                 or an error if the request or parsing fails
      */
+    @Override
     public void getRaceControlMessages(RaceControlCallback callback) {
-        Log.d(TAG, "Fetching race control messages from OpenF1 API");
-        Call<ResponseBody> call = openF1APIService.getRaceControlMessages(SESSION_KEY_LATEST);
+        getRaceControlMessages(SESSION_KEY_LATEST, callback);
+    }
 
-        call.enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call,
-                                   @NonNull Response<ResponseBody> response) {
-                ResponseBody body = response.body();
-                if (body == null) {
-                    Log.e(TAG, "OpenF1 race_control returned an empty body");
-                    callback.onFailure(new Exception("Empty response body from race_control endpoint"));
-                    return;
-                }
-                try {
-                    String json = body.string();
-                    processRaceControlResponse(json, callback);
-                } catch (IOException e) {
-                    Log.e(TAG, "IOException while reading race_control response", e);
-                    callback.onFailure(new Exception("Failed to read race_control response: " + e.getMessage(), e));
-                } catch (Exception e) {
-                    Log.e(TAG, "Exception while processing race_control response", e);
-                    callback.onFailure(new Exception("Failed to process race_control response: " + e.getMessage(), e));
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                Log.e(TAG, "Network failure fetching race_control messages", t);
-                callback.onFailure(new Exception(RETROFIT_ERROR + ": " + t.getMessage(), t));
-            }
-        });
+    @Override
+    public void getRaceControlMessages(String sessionKey, RaceControlCallback callback) {
+        Log.d(TAG, "OpenF1 race_control non abilitato nel livetiming (richiede licenza a pagamento). Restituisco lista vuota.");
+        if (callback != null) {
+            callback.onSuccess(new ArrayList<>());
+        }
     }
 
     /**
@@ -156,38 +135,17 @@ public class OpenF1LiveTimingDataSource implements LiveTimingDataSource {
      * @param callback delivers the parsed list of {@link TeamRadioMessage} objects,
      *                 or an error if the request or parsing fails
      */
+    @Override
     public void getTeamRadioMessages(TeamRadioCallback callback) {
-        Log.d(TAG, "Fetching team radio messages from OpenF1 API");
-        Call<ResponseBody> call = openF1APIService.getTeamRadioMessages(SESSION_KEY_LATEST);
+        getTeamRadioMessages(SESSION_KEY_LATEST, callback);
+    }
 
-        call.enqueue(new Callback<>() {
-            @Override
-            public void onResponse(@NonNull Call<ResponseBody> call,
-                                   @NonNull Response<ResponseBody> response) {
-                ResponseBody body = response.body();
-                if (body == null) {
-                    Log.e(TAG, "OpenF1 team_radio returned an empty body");
-                    callback.onFailure(new Exception("Empty response body from team_radio endpoint"));
-                    return;
-                }
-                try {
-                    String json = body.string();
-                    processTeamRadioResponse(json, callback);
-                } catch (IOException e) {
-                    Log.e(TAG, "IOException while reading team_radio response", e);
-                    callback.onFailure(new Exception("Failed to read team_radio response: " + e.getMessage(), e));
-                } catch (Exception e) {
-                    Log.e(TAG, "Exception while processing team_radio response", e);
-                    callback.onFailure(new Exception("Failed to process team_radio response: " + e.getMessage(), e));
-                }
-            }
-
-            @Override
-            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
-                Log.e(TAG, "Network failure fetching team_radio messages", t);
-                callback.onFailure(new Exception(RETROFIT_ERROR + ": " + t.getMessage(), t));
-            }
-        });
+    @Override
+    public void getTeamRadioMessages(String sessionKey, TeamRadioCallback callback) {
+        Log.d(TAG, "OpenF1 team_radio non abilitato nel livetiming (richiede licenza a pagamento). Restituisco lista vuota.");
+        if (callback != null) {
+            callback.onSuccess(new ArrayList<>());
+        }
     }
 
     /**

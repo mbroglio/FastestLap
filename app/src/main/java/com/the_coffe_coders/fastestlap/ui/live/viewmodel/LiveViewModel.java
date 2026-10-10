@@ -26,42 +26,48 @@ public class LiveViewModel extends ViewModel {
     private Runnable pollingRunnable;
     private boolean isPolling = false;
 
+    private String sessionKey = null;
+    private boolean isSessionLive = false;
+
     public LiveViewModel(LiveTimingRepository liveTimingRepository) {
         this.liveTimingRepository = liveTimingRepository;
+    }
+
+    public void configureSession(String sessionKey, boolean isLive) {
+        this.sessionKey = sessionKey;
+        this.isSessionLive = isLive;
+        liveTimingRepository.configureSession(sessionKey, isLive);
+    }
+
+    public void setSessionKey(String sessionKey) {
+        this.sessionKey = sessionKey;
+        liveTimingRepository.configureSession(sessionKey, this.isSessionLive);
+    }
+
+    public void setSessionLive(boolean isLive) {
+        this.isSessionLive = isLive;
+        liveTimingRepository.configureSession(this.sessionKey, isLive);
     }
 
     /**
      * Avvia (o ripristina) il fetch dei messaggi Race Control.
      */
     public LiveData<Result> getRaceControlMessages() {
-        return liveTimingRepository.fetchRaceControlMessages();
+        return liveTimingRepository.fetchRaceControlMessages(sessionKey);
     }
 
     /**
      * Avvia (o ripristina) il fetch delle registrazioni Team Radio.
      */
     public LiveData<Result> getTeamRadioMessages() {
-        return liveTimingRepository.fetchTeamRadioMessages();
+        return liveTimingRepository.fetchTeamRadioMessages(sessionKey);
     }
 
     /**
-     * Avvia il polling automatico di Race Control e Team Radio ogni 2 secondi (2000 ms).
+     * Polling disabilitato: gli endpoint OpenF1 race_control e team_radio richiedono licenza a pagamento nel livetiming.
      */
     public void startPolling() {
-        if (isPolling) return;
-        isPolling = true;
-
-        pollingRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (!isPolling) return;
-                Log.d(TAG, "[POLLING] Invio richieste periodiche a Race Control e Team Radio (intervallo 2s)...");
-                liveTimingRepository.fetchRaceControlMessages();
-                liveTimingRepository.fetchTeamRadioMessages();
-                handler.postDelayed(this, 2000);
-            }
-        };
-        handler.post(pollingRunnable);
+        Log.d(TAG, "Polling OpenF1 race control e team radio disabilitato nel livetiming (richiede licenza a pagamento)");
     }
 
     /**

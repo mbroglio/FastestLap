@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FastestLap — Live Timing & Circuit Tracker</title>
+  <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <span class="badge">LIVE TIMING</span>
+      <h1>FastestLap — Monitor Tracciato</h1>
+    </div>
+
+    <div id="loadingSpinner" class="spinner"></div>
+    <p class="desc" id="statusDesc">
+      Seleziona la sessione per visualizzare la telemetria real-time 1:1, i rilevamenti dei settori S1/S2/S3 e la posizione in pista dei piloti.
+    </p>
+
+    <div class="circuits-grid" id="circuitSelection">
+      <a href="track_map.html" class="circuit-card">
+        <div class="card-flag">🏁</div>
+        <div class="card-title">Sessione Ufficiale Live Timing</div>
+        <div class="card-sub">Tracciato Dinamico & Telemetria Real-Time</div>
+        <div class="card-tag tag-dry">Sessione Attiva</div>
+      </a>
+    </div>
+
+    <div class="footer-note">
+      Modulo integrato con FastestLap Android App • Ambiente simulazioni e test in /simulations/
+    </div>
+  </div>
+
+  <script src="js/index.js"></script>
+</body>
+</html>

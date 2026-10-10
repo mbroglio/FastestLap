@@ -1,0 +1,472 @@
+/* FastestLap Live Timing Styling */
+:root {
+  --bg-primary: #0a0b0e;
+  --bg-surface: #12141a;
+  --bg-surface-elevated: #1a1e27;
+  --border-color: #262c38;
+  --text-main: #f0f2f5;
+  --text-muted: #8a94a6;
+  --text-bright: #ffffff;
+
+  --color-f1-red: #e10600;
+  --color-purple: #b138fe;
+  --color-green: #00e676;
+  --color-yellow: #ffd600;
+  --color-drs: #00e676;
+  --color-brake: #ff1744;
+  --color-throttle: #00e676;
+  --color-battery: #00b0ff;
+
+  --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: "SF Mono", "Consolas", "Roboto Mono", monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  font-family: var(--font-family);
+  font-size: 14px;
+  line-height: 1.4;
+  overflow-x: hidden;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header Bar */
+.f1-header {
+  background: var(--bg-surface);
+  border-bottom: 2px solid var(--border-color);
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.f1-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-badge {
+  background: var(--color-f1-red);
+  color: #fff;
+  font-weight: 900;
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 3px;
+  letter-spacing: 1px;
+}
+
+.session-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.session-details {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
+
+.session-details strong {
+  color: var(--text-bright);
+}
+
+.weather-widget {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--bg-surface-elevated);
+  padding: 4px 12px;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  font-size: 12px;
+}
+
+.controls-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+.status-badge.live { background: #d50000; color: #fff; }
+.status-badge.simulation { background: #ff9100; color: #000; }
+.status-badge.disconnected { background: #424242; color: #aaa; }
+
+.btn-toggle-mode {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-color);
+  color: var(--text-main);
+  padding: 5px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+.btn-toggle-mode:hover {
+  background: #2a3140;
+  color: #fff;
+}
+
+/* Race Control Banner */
+.race-control-banner {
+  background: #181c24;
+  border-bottom: 1px solid var(--border-color);
+  padding: 6px 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.rc-flag {
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 900;
+}
+.rc-flag.green { background: var(--color-green); color: #000; }
+.rc-flag.yellow { background: var(--color-yellow); color: #000; }
+.rc-flag.red { background: var(--color-f1-red); color: #fff; }
+.rc-flag.sc { background: #ff9100; color: #000; }
+
+.rc-text {
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Main Dashboard Grid */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 460px 1fr 360px;
+  gap: 12px;
+  padding: 12px;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+@media (max-width: 1280px) {
+  .dashboard-grid {
+    grid-template-columns: 400px 1fr 320px;
+  }
+}
+@media (max-width: 1024px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+  body { height: auto; }
+}
+
+/* Panels */
+.panel {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.panel-header {
+  padding: 10px 14px;
+  background: var(--bg-surface-elevated);
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 700;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Timing Tower Table */
+.timing-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.timing-table th {
+  background: #11141a;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-align: left;
+  padding: 8px 6px;
+  font-size: 10px;
+  border-bottom: 1px solid var(--border-color);
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.timing-table td {
+  padding: 7px 6px;
+  border-bottom: 1px solid #1c212b;
+  white-space: nowrap;
+}
+
+.timing-row {
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.timing-row:hover {
+  background: #1b212c;
+}
+.timing-row.selected {
+  background: #252e3d;
+  border-left: 3px solid var(--color-f1-red);
+}
+
+.col-pos { width: 28px; text-align: center; font-weight: 700; color: #fff; }
+.col-driver { display: flex; align-items: center; gap: 6px; }
+.team-stripe { width: 3px; height: 16px; border-radius: 2px; display: inline-block; }
+.driver-code { font-weight: 700; color: #fff; }
+.driver-num { color: var(--text-muted); font-size: 10px; }
+.col-gap, .col-int { color: #cfd8dc; font-size: 11px; }
+
+/* Sectors */
+.sector-val { font-size: 11px; }
+.sector-val.purple { color: var(--color-purple); font-weight: 700; }
+.sector-val.green { color: var(--color-green); font-weight: 700; }
+.sector-val.yellow { color: var(--color-yellow); }
+
+/* Tyre badge */
+.tyre-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  font-size: 10px;
+  font-weight: 900;
+  color: #000;
+}
+.tyre-badge.SOFT { background: #ff1744; color: #fff; }
+.tyre-badge.MEDIUM { background: #ffd600; color: #000; }
+.tyre-badge.HARD { background: #ffffff; color: #000; }
+.tyre-badge.INTERMEDIATE { background: #00e676; color: #000; }
+.tyre-badge.WET { background: #00b0ff; color: #000; }
+.tyre-age { font-size: 10px; color: var(--text-muted); margin-left: 3px; }
+
+/* Center Track Map */
+.track-container {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background: #090a0d;
+}
+
+#trackCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Cockpit Dashboard */
+.cockpit-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.cockpit-driver-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.cockpit-driver-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+}
+.cockpit-team {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+/* Gear & Speedometer Cluster */
+.gauge-cluster {
+  display: flex;
+  justify-content: space-around;
+  align-items: baseline;
+  background: var(--bg-surface-elevated);
+  padding: 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+}
+
+.gauge-block {
+  text-align: center;
+}
+
+.gear-display {
+  font-size: 48px;
+  font-weight: 900;
+  font-family: var(--font-mono);
+  color: #fff;
+  line-height: 1;
+}
+
+.speed-display {
+  font-size: 42px;
+  font-weight: 800;
+  font-family: var(--font-mono);
+  color: #fff;
+  line-height: 1;
+}
+
+.gauge-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+/* Tachometer / Shift Lights */
+.tacho-container {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.shift-lights {
+  display: flex;
+  gap: 4px;
+  height: 12px;
+  justify-content: space-between;
+}
+
+.shift-led {
+  flex: 1;
+  background: #252833;
+  border-radius: 2px;
+  transition: background 0.05s ease;
+}
+.shift-led.green.on { background: #00e676; box-shadow: 0 0 6px #00e676; }
+.shift-led.red.on { background: #ff1744; box-shadow: 0 0 6px #ff1744; }
+.shift-led.blue.on { background: #b138fe; box-shadow: 0 0 8px #b138fe; }
+
+.rpm-text {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: right;
+  color: var(--text-bright);
+}
+
+/* Pedal Bars (Throttle & Brake) */
+.pedal-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pedal-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.pedal-label-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.pedal-bar-track {
+  height: 12px;
+  background: #1e222d;
+  border-radius: 3px;
+  overflow: hidden;
+  border: 1px solid #2d3444;
+}
+
+.pedal-bar-fill {
+  height: 100%;
+  width: 0%;
+  transition: width 0.08s ease;
+}
+.pedal-bar-fill.throttle { background: linear-gradient(90deg, #00b0ff, var(--color-throttle)); }
+.pedal-bar-fill.brake { background: var(--color-brake); }
+.pedal-bar-fill.battery { background: linear-gradient(90deg, #0091ea, var(--color-battery)); }
+
+/* Aero & DRS indicator */
+.cockpit-indicators {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.indicator-box {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-color);
+  padding: 10px;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.indicator-title {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.indicator-value {
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+}
+
+.indicator-value.drs-open { color: var(--color-drs); text-shadow: 0 0 8px rgba(0,230,118,0.6); }
+.indicator-value.drs-available { color: var(--color-yellow); }
+.indicator-value.drs-off { color: #546e7a; }
+
+.indicator-value.ers-hotlap { color: #ff1744; }
+.indicator-value.ers-overtake { color: var(--color-purple); }
+.indicator-value.ers-balanced { color: var(--color-battery); }

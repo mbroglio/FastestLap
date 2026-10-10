@@ -1,0 +1,23 @@
+{
+  "name": "fastestlap-livetiming",
+  "version": "1.0.0",
+  "description": "Standalone F1 Live Timing Client & Backend with SignalR streaming, telemetry decoding, REST endpoints and live dashboard",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "live": "node server.js --live",
+    "mock": "node server.js --mock",
+    "test": "node test/run_tests.js"
+  },
+  "keywords": [
+    "f1",
+    "formula1",
+    "livetiming",
+    "signalr",
+    "telemetry",
+    "fastf1",
+    "cardata"
+  ],
+  "author": "The Coffee Coders - FastestLap",
+  "license": "MIT"
+}

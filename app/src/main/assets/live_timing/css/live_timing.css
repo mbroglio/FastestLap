@@ -500,15 +500,14 @@ header {
   color: #f0f6fc;
   padding-left: 6px !important;
   padding-right: 6px !important;
-  width: 78px;
-  max-width: 82px;
-  min-width: 74px;
+  min-width: 135px;
   white-space: nowrap;
 }
 .driver-pill {
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  white-space: nowrap;
 }
 .color-dot {
   width: 7px;
@@ -526,16 +525,16 @@ header {
 }
 
 /* Column alignment and width utility classes */
-.col-pos { width: 26px; text-align: center; }
-.col-gain { width: 22px; text-align: center; }
-.col-driver { width: 78px; max-width: 82px; text-align: left !important; padding-left: 6px !important; }
+.col-pos { width: 28px; text-align: center; }
+.col-gain { width: 24px; text-align: center; }
+.col-driver { min-width: 135px; text-align: left !important; padding-left: 6px !important; white-space: nowrap; }
 .col-team { text-align: left !important; }
-.col-gap { width: 72px; text-align: right !important; padding-right: 6px !important; }
-.col-int { width: 70px; text-align: right !important; padding-right: 6px !important; }
+.col-gap { min-width: 76px; text-align: right !important; padding-right: 6px !important; white-space: nowrap; }
+.col-int { min-width: 72px; text-align: right !important; padding-right: 6px !important; white-space: nowrap; }
 .col-last { width: 66px; text-align: center; }
 .col-best { width: 66px; text-align: center; }
 .col-tyre { width: 56px; text-align: center; }
-.col-pit { width: 32px; text-align: center; }
+.col-pit { width: 34px; text-align: center; }
 
 .col-side-eye { width: 26px; text-align: center; padding: 2px !important; }
 .col-side-pos { width: 24px; text-align: center; }
@@ -759,6 +758,7 @@ header {
   flex: 0 0 40%;
   width: 40%;
   max-width: 40%;
+  height: 100%;
   background: #070a0f;
   display: flex;
   align-items: center;
@@ -1583,14 +1583,33 @@ header {
     max-width: 140px;
     font-size: 10px;
   }
-  .full-standings-table th, .full-standings-table td {
-    padding: 3.5px 3px;
-    font-size: 9.5px;
+  .full-standings-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
-  .driver-cell-full {
-    width: 78px;
-    max-width: 82px;
+  .full-standings-table {
+    min-width: max-content;
+    width: 100%;
+  }
+  .full-standings-table th, .full-standings-table td {
+    padding: 4px 4px;
+    font-size: 10px;
+  }
+  .driver-cell-full, .col-driver {
+    min-width: 130px;
+    width: auto;
+    max-width: none;
+    white-space: nowrap;
+  }
+  .col-gap, .gap-cell {
     min-width: 74px;
+    text-align: right !important;
+    padding-right: 5px !important;
+  }
+  .col-int, .int-cell {
+    min-width: 70px;
+    text-align: right !important;
+    padding-right: 5px !important;
   }
   .team-cell {
     min-width: 75px;
@@ -1609,12 +1628,29 @@ header {
     font-size: 9px;
   }
 
-  /* View 2: strictly landscape-only prompt */
-  #view-track .track-layout-container {
+  /* View 2: responsive vertical layout in portrait */
+  #view-track .landscape-only-prompt {
     display: none !important;
   }
-  #view-track .landscape-only-prompt {
+  #view-track .track-layout-container {
     display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    width: 100% !important;
+  }
+  #view-track .track-pane {
+    flex: 0 0 52% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 52% !important;
+  }
+  #view-track .side-panel {
+    flex: 0 0 48% !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 48% !important;
+    border-left: none !important;
+    border-top: 1px solid #21262d !important;
   }
 }
 
@@ -1624,6 +1660,21 @@ header {
   }
   #view-track .track-layout-container {
     display: flex !important;
+    flex-direction: row !important;
+  }
+  #view-track .track-pane {
+    flex: 0 0 40% !important;
+    width: 40% !important;
+    max-width: 40% !important;
+    height: 100% !important;
+  }
+  #view-track .side-panel {
+    flex: 0 0 60% !important;
+    width: 60% !important;
+    max-width: 60% !important;
+    height: 100% !important;
+    border-left: 1px solid #21262d !important;
+    border-top: none !important;
   }
 
   /* Vista 1: Classifica Live stretchata lungo tutto lo schermo in landscape */

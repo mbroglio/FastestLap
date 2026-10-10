@@ -52,9 +52,22 @@ public abstract class WeeklyRace {
     public abstract List<Session> getSessions();
 
     public void setSessions(List<Session> sessions) {
-        for (Session session : sessions) {
-            if (session != null)
+        if (sessions == null) return;
+        org.threeten.bp.LocalDateTime now = org.threeten.bp.LocalDateTime.now();
+        for (int i = 0; i < sessions.size(); i++) {
+            Session session = sessions.get(i);
+            if (session != null) {
                 session.setSessionStatus();
+                if (session.getSessionStatus() == SessionStatus.IN_PROGRESS) {
+                    for (int j = i + 1; j < sessions.size(); j++) {
+                        Session later = sessions.get(j);
+                        if (later != null && later.getStartDateTime() != null && !later.getStartDateTime().isAfter(now)) {
+                            session.setSessionStatus(SessionStatus.FINISHED);
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -109,7 +122,10 @@ public abstract class WeeklyRace {
             return false;
         }
         LocalDateTime now = LocalDateTime.now();
-        return now.isAfter(this.getFinalRace().getEndDateTime());
+        LocalDateTime raceEnd = this.getFinalRace().getStartDateTime() != null
+                ? this.getFinalRace().getStartDateTime().plusMinutes(180)
+                : this.getFinalRace().getEndDateTime();
+        return now.isAfter(raceEnd);
     }
 
     public void setTrack(Track track) {

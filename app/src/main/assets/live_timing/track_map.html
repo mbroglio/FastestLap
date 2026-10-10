@@ -14,16 +14,21 @@
   <div id="offlineView">
     <div class="offline-box">
       <div class="offline-badge">FASTESTLAP LIVE TIMING</div>
-      <div class="offline-title" id="offlineTitle">content not available</div>
+      <div class="offline-title" id="offlineTitle">SESSIONE NON ANCORA INIZIATA</div>
       <div class="offline-event" id="offlineEventTitle">FORMULA 1 GRAND PRIX</div>
       <div class="offline-session" id="offlineSessionName">NESSUNA SESSIONE IN CORSO</div>
-      <p class="offline-desc">
+      <p class="offline-desc" id="offlineDesc">
         Nessuna sessione di pista è attualmente in corso per questo gran premio.<br>
         Il modulo live timing e telemetria si attiverà non appena la sessione avrà inizio.
       </p>
-      <button class="offline-btn" onclick="closeSession()">
-        ← TORNA ALL'EVENTO
-      </button>
+      <div style="display: flex; gap: 10px; width: 100%; justify-content: center; margin-top: 16px; flex-wrap: wrap;">
+        <button class="offline-btn" onclick="closeSession()" style="flex: 1; min-width: 140px;">
+          ← TORNA ALL'EVENTO
+        </button>
+        <button class="offline-btn" onclick="startSimulationFromOffline()" style="flex: 1; min-width: 160px; background: #238636; border-color: #2ea043; color: #ffffff;">
+          ⚡ AVVIA COLLAUDO / TEST
+        </button>
+      </div>
     </div>
   </div>
 
@@ -44,7 +49,7 @@
         </div>
 
         <div class="hdr-right-controls" id="hdrRightControls">
-          <!-- In real context, this remains empty. Simulation controls are injected dynamically only if test mode is enabled -->
+          <button class="offline-btn" id="btnToggleMode" onclick="if (window.streamClient) { window.streamClient.setMode(window.streamClient.mode === 'live' ? 'simulation' : 'live'); } else if (typeof startSimulationFromOffline === 'function') { startSimulationFromOffline(); }" style="padding: 3px 8px; font-size: 10px; margin: 0; min-height: 24px; border-radius: 4px; background: #21262d; border: 1px solid #30363d; color: #c9d1d9;">SIGNALR / COLLAUDO</button>
         </div>
       </div>
 
@@ -60,11 +65,11 @@
         </div>
         <div class="status-bar-item">
           <span class="lbl">PROGRESSO:</span>
-          <span class="val" id="statusBarLapVal">GIRO 1/55</span>
+          <span class="val" id="statusBarLapVal">GIRO 1</span>
         </div>
         <div class="status-bar-item clock">
-          <span class="lbl">ORA:</span>
-          <span class="val" id="statusBarClockVal">08:33:00 UTC</span>
+          <span class="lbl">ORA CIRCUITO:</span>
+          <span class="val" id="statusBarClockVal">--:--:--</span>
         </div>
       </div>
     </header>
@@ -184,56 +189,56 @@
                   <div class="sel-group">
                     <span class="sel-label">Pilota 1:</span>
                     <select class="drv-dropdown" id="drv1Select" onchange="onDriverSelectChange(1, this.value)">
-                      <option value="1">#1 NOR — Lando Norris (McLaren Mastercard F1 Team)</option>
-                <option value="3">#3 VER — Max Verstappen (Oracle Red Bull Racing)</option>
-                <option value="5">#5 BOR — Gabriel Bortoleto (Audi Revolut F1 Team)</option>
-                <option value="6">#6 HAD — Isack Hadjar (Oracle Red Bull Racing)</option>
-                <option value="10">#10 GAS — Pierre Gasly (BWT Alpine F1 Team)</option>
-                <option value="11">#11 PER — Sergio Pérez (Cadillac Formula 1 Team)</option>
-                <option value="12">#12 ANT — Kimi Antonelli (Mercedes-AMG Petronas F1 Team)</option>
-                <option value="14">#14 ALO — Fernando Alonso (Aston Martin Aramco F1 Team)</option>
-                <option value="16">#16 LEC — Charles Leclerc (Scuderia Ferrari HP)</option>
-                <option value="18">#18 STR — Lance Stroll (Aston Martin Aramco F1 Team)</option>
-                <option value="23">#23 ALB — Alexander Albon (Atlassian Williams F1 Team)</option>
-                <option value="27">#27 HUL — Nico Hülkenberg (Audi Revolut F1 Team)</option>
-                <option value="30">#30 LAW — Liam Lawson (Visa Cash App Racing Bulls)</option>
-                <option value="31">#31 OCO — Esteban Ocon (TGR Haas F1 Team)</option>
-                <option value="41">#41 LIN — Arvid Lindblad (Visa Cash App Racing Bulls)</option>
-                <option value="43">#43 COL — Franco Colapinto (BWT Alpine F1 Team)</option>
-                <option value="44">#44 HAM — Lewis Hamilton (Scuderia Ferrari HP)</option>
-                <option value="55">#55 SAI — Carlos Sainz Jr. (Atlassian Williams F1 Team)</option>
-                <option value="63">#63 RUS — George Russell (Mercedes-AMG Petronas F1 Team)</option>
-                <option value="77">#77 BOT — Valtteri Bottas (Cadillac Formula 1 Team)</option>
-                <option value="81">#81 PIA — Oscar Piastri (McLaren Mastercard F1 Team)</option>
-                <option value="87">#87 BEA — Oliver Bearman (TGR Haas F1 Team)</option>
+                      <option value="1">#1 NOR • NORRIS</option>
+                      <option value="3">#3 VER • VERSTAPPEN</option>
+                      <option value="5">#5 BOR • BORTOLETO</option>
+                      <option value="6">#6 HAD • HADJAR</option>
+                      <option value="10">#10 GAS • GASLY</option>
+                      <option value="11">#11 PER • PÉREZ</option>
+                      <option value="12">#12 ANT • ANTONELLI</option>
+                      <option value="14">#14 ALO • ALONSO</option>
+                      <option value="16">#16 LEC • LECLERC</option>
+                      <option value="18">#18 STR • STROLL</option>
+                      <option value="23">#23 ALB • ALBON</option>
+                      <option value="27">#27 HUL • HÜLKENBERG</option>
+                      <option value="30">#30 LAW • LAWSON</option>
+                      <option value="31">#31 OCO • OCON</option>
+                      <option value="41">#41 LIN • LINDBLAD</option>
+                      <option value="43">#43 COL • COLAPINTO</option>
+                      <option value="44">#44 HAM • HAMILTON</option>
+                      <option value="55">#55 SAI • SAINZ JR.</option>
+                      <option value="63">#63 RUS • RUSSELL</option>
+                      <option value="77">#77 BOT • BOTTAS</option>
+                      <option value="81">#81 PIA • PIASTRI</option>
+                      <option value="87">#87 BEA • BEARMAN</option>
                     </select>
                   </div>
                   <button class="swap-btn" onclick="swapSelectedDrivers()" title="Inverti confronto">⇄</button>
                   <div class="sel-group">
                     <span class="sel-label">Pilota 2:</span>
                     <select class="drv-dropdown" id="drv2Select" onchange="onDriverSelectChange(2, this.value)">
-                      <option value="1">#1 NOR — Lando Norris (McLaren Mastercard F1 Team)</option>
-                <option value="3">#3 VER — Max Verstappen (Oracle Red Bull Racing)</option>
-                <option value="5">#5 BOR — Gabriel Bortoleto (Audi Revolut F1 Team)</option>
-                <option value="6">#6 HAD — Isack Hadjar (Oracle Red Bull Racing)</option>
-                <option value="10">#10 GAS — Pierre Gasly (BWT Alpine F1 Team)</option>
-                <option value="11">#11 PER — Sergio Pérez (Cadillac Formula 1 Team)</option>
-                <option value="12">#12 ANT — Kimi Antonelli (Mercedes-AMG Petronas F1 Team)</option>
-                <option value="14">#14 ALO — Fernando Alonso (Aston Martin Aramco F1 Team)</option>
-                <option value="16">#16 LEC — Charles Leclerc (Scuderia Ferrari HP)</option>
-                <option value="18">#18 STR — Lance Stroll (Aston Martin Aramco F1 Team)</option>
-                <option value="23">#23 ALB — Alexander Albon (Atlassian Williams F1 Team)</option>
-                <option value="27">#27 HUL — Nico Hülkenberg (Audi Revolut F1 Team)</option>
-                <option value="30">#30 LAW — Liam Lawson (Visa Cash App Racing Bulls)</option>
-                <option value="31">#31 OCO — Esteban Ocon (TGR Haas F1 Team)</option>
-                <option value="41">#41 LIN — Arvid Lindblad (Visa Cash App Racing Bulls)</option>
-                <option value="43">#43 COL — Franco Colapinto (BWT Alpine F1 Team)</option>
-                <option value="44">#44 HAM — Lewis Hamilton (Scuderia Ferrari HP)</option>
-                <option value="55">#55 SAI — Carlos Sainz Jr. (Atlassian Williams F1 Team)</option>
-                <option value="63">#63 RUS — George Russell (Mercedes-AMG Petronas F1 Team)</option>
-                <option value="77">#77 BOT — Valtteri Bottas (Cadillac Formula 1 Team)</option>
-                <option value="81">#81 PIA — Oscar Piastri (McLaren Mastercard F1 Team)</option>
-                <option value="87">#87 BEA — Oliver Bearman (TGR Haas F1 Team)</option>
+                      <option value="1">#1 NOR • NORRIS</option>
+                      <option value="3">#3 VER • VERSTAPPEN</option>
+                      <option value="5">#5 BOR • BORTOLETO</option>
+                      <option value="6">#6 HAD • HADJAR</option>
+                      <option value="10">#10 GAS • GASLY</option>
+                      <option value="11">#11 PER • PÉREZ</option>
+                      <option value="12">#12 ANT • ANTONELLI</option>
+                      <option value="14">#14 ALO • ALONSO</option>
+                      <option value="16">#16 LEC • LECLERC</option>
+                      <option value="18">#18 STR • STROLL</option>
+                      <option value="23">#23 ALB • ALBON</option>
+                      <option value="27">#27 HUL • HÜLKENBERG</option>
+                      <option value="30">#30 LAW • LAWSON</option>
+                      <option value="31">#31 OCO • OCON</option>
+                      <option value="41">#41 LIN • LINDBLAD</option>
+                      <option value="43">#43 COL • COLAPINTO</option>
+                      <option value="44">#44 HAM • HAMILTON</option>
+                      <option value="55">#55 SAI • SAINZ JR.</option>
+                      <option value="63">#63 RUS • RUSSELL</option>
+                      <option value="77">#77 BOT • BOTTAS</option>
+                      <option value="81">#81 PIA • PIASTRI</option>
+                      <option value="87">#87 BEA • BEARMAN</option>
                     </select>
                   </div>
                 </div>
@@ -244,9 +249,8 @@
                     <div class="card-top-info">
                       <div class="card-drv-name" id="c1Name">
                         <span class="color-dot" id="c1ColorDot" style="background:#3671c6;"></span>
-                        <span id="c1Title">#3 VER — Max Verstappen</span>
+                        <span id="c1Title">#3 VER</span>
                       </div>
-                      <div class="card-drv-team" id="c1Team">Red Bull Racing</div>
                     </div>
                     <div class="speed-gear-cluster">
                       <div class="speed-display">
@@ -255,13 +259,13 @@
                       </div>
                       <div class="gear-display">
                         <div class="gear-num" id="c1Gear">N</div>
-                        <div class="gear-label">MARCIA</div>
+                        <div class="gear-label">GEAR</div>
                       </div>
                     </div>
                     <div class="rpm-container">
                       <div class="rpm-meta">
-                        <span>REGIME MOTORE</span>
-                        <span class="rpm-num" id="c1Rpm">0 RPM</span>
+                        <span>RPM</span>
+                        <span class="rpm-num" id="c1Rpm">0</span>
                       </div>
                       <div class="shift-led-bar" id="c1LedBar"></div>
                     </div>
@@ -271,18 +275,18 @@
                         <div class="pedal-track"><div class="pedal-bar-thr" id="c1ThrBar"></div></div>
                       </div>
                       <div class="pedal-col">
-                        <div class="pedal-label"><span>FRENO</span><span id="c1BrkVal">0%</span></div>
+                        <div class="pedal-label"><span>BRK</span><span id="c1BrkVal">0%</span></div>
                         <div class="pedal-track"><div class="pedal-bar-brk" id="c1BrkBar"></div></div>
                       </div>
                     </div>
                     <div class="regs-2026-box">
                       <div class="aero-status-box" id="c1AeroBox">
-                        <span>ACTIVE AERO (2026)</span>
+                        <span>AERO</span>
                         <span class="aero-mode-badge aero-xmode" id="c1AeroBadge">X-MODE</span>
                       </div>
                       <div class="battery-soc-box" id="c1BatteryBox">
                         <div class="battery-meta">
-                          <span>BATTERIA ERS</span>
+                          <span>ERS</span>
                           <span id="c1SocVal">85%</span>
                         </div>
                         <div class="battery-track">
@@ -290,7 +294,6 @@
                         </div>
                       </div>
                       <div class="sectors-split-box" id="c1SectorsBox" style="display: none;">
-                        <div class="sectors-title">INTERTEMPI SETTORI</div>
                         <div class="sectors-row">
                           <div class="sector-cell" id="c1S1Cell">
                             <span class="sector-lbl">S1</span>
@@ -307,11 +310,10 @@
                         </div>
                       </div>
                       <div class="boost-box" id="c1BoostBox">
-                        <span>MODALITÀ SORPASSO (BOOST)</span>
+                        <span>BOOST</span>
                         <span class="boost-pill boost-standby" id="c1BoostBadge">STANDBY</span>
                       </div>
                     </div>
-                    <div class="card-loc-text" id="c1LocText">📍 Rettilineo Principale</div>
                   </div>
 
                   <!-- Cockpit 2 -->
@@ -319,9 +321,8 @@
                     <div class="card-top-info">
                       <div class="card-drv-name" id="c2Name">
                         <span class="color-dot" id="c2ColorDot" style="background:#e8002d;"></span>
-                        <span id="c2Title">#16 LEC — Charles Leclerc</span>
+                        <span id="c2Title">#16 LEC</span>
                       </div>
-                      <div class="card-drv-team" id="c2Team">Scuderia Ferrari</div>
                     </div>
                     <div class="speed-gear-cluster">
                       <div class="speed-display">
@@ -330,13 +331,13 @@
                       </div>
                       <div class="gear-display">
                         <div class="gear-num" id="c2Gear">N</div>
-                        <div class="gear-label">MARCIA</div>
+                        <div class="gear-label">GEAR</div>
                       </div>
                     </div>
                     <div class="rpm-container">
                       <div class="rpm-meta">
-                        <span>REGIME MOTORE</span>
-                        <span class="rpm-num" id="c2Rpm">0 RPM</span>
+                        <span>RPM</span>
+                        <span class="rpm-num" id="c2Rpm">0</span>
                       </div>
                       <div class="shift-led-bar" id="c2LedBar"></div>
                     </div>
@@ -346,18 +347,18 @@
                         <div class="pedal-track"><div class="pedal-bar-thr" id="c2ThrBar"></div></div>
                       </div>
                       <div class="pedal-col">
-                        <div class="pedal-label"><span>FRENO</span><span id="c2BrkVal">0%</span></div>
+                        <div class="pedal-label"><span>BRK</span><span id="c2BrkVal">0%</span></div>
                         <div class="pedal-track"><div class="pedal-bar-brk" id="c2BrkBar"></div></div>
                       </div>
                     </div>
                     <div class="regs-2026-box">
                       <div class="aero-status-box" id="c2AeroBox">
-                        <span>ACTIVE AERO (2026)</span>
+                        <span>AERO</span>
                         <span class="aero-mode-badge aero-xmode" id="c2AeroBadge">X-MODE</span>
                       </div>
                       <div class="battery-soc-box" id="c2BatteryBox">
                         <div class="battery-meta">
-                          <span>BATTERIA ERS</span>
+                          <span>ERS</span>
                           <span id="c2SocVal">80%</span>
                         </div>
                         <div class="battery-track">
@@ -365,7 +366,6 @@
                         </div>
                       </div>
                       <div class="sectors-split-box" id="c2SectorsBox" style="display: none;">
-                        <div class="sectors-title">INTERTEMPI SETTORI</div>
                         <div class="sectors-row">
                           <div class="sector-cell" id="c2S1Cell">
                             <span class="sector-lbl">S1</span>
@@ -382,11 +382,10 @@
                         </div>
                       </div>
                       <div class="boost-box" id="c2BoostBox">
-                        <span>MODALITÀ SORPASSO (BOOST)</span>
+                        <span>BOOST</span>
                         <span class="boost-pill boost-standby" id="c2BoostBadge">STANDBY</span>
                       </div>
                     </div>
-                    <div class="card-loc-text" id="c2LocText">📍 Curva 1</div>
                   </div>
                 </div>
               </div>
@@ -453,11 +452,13 @@
   </div>
 
   <!-- Modular Scripts separated by scope -->
+  <script src="simulations/live_simulation_data.js"></script>
   <script src="js/timing_state.js"></script>
   <script src="js/race_control.js"></script>
   <script src="js/timing_tables.js"></script>
   <script src="js/telemetry_cockpit.js"></script>
   <script src="js/track_canvas.js"></script>
+  <script src="js/signalr_client.js"></script>
   <script src="js/live_timing_app.js"></script>
 </body>
 </html>

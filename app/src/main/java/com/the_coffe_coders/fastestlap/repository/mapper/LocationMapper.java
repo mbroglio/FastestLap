@@ -10,6 +10,7 @@ public class LocationMapper {
         location.setLongitude(locationDTO.get_long());
         location.setLocality(locationDTO.getLocality());
         location.setCountry(locationDTO.getCountry());
+        location.setZoneId(locationDTO.getZoneId());
         return location;
     }
 }

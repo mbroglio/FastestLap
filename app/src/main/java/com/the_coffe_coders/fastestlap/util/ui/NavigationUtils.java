@@ -146,6 +146,14 @@ public class NavigationUtils {
     }
 
     public static void navigateToLivePage(Context context, String eventTitle, String totalLaps, String circuitId, String circuitImageUrl, boolean isLive, String sessionName, String sessionType, String sessionPart) {
+        navigateToLivePage(context, eventTitle, totalLaps, circuitId, circuitImageUrl, isLive, sessionName, sessionType, sessionPart, null);
+    }
+
+    public static void navigateToLivePage(Context context, String eventTitle, String totalLaps, String circuitId, String circuitImageUrl, boolean isLive, String sessionName, String sessionType, String sessionPart, String circuitTimeZone) {
+        navigateToLivePage(context, eventTitle, totalLaps, circuitId, circuitImageUrl, isLive, sessionName, sessionType, sessionPart, circuitTimeZone, 0L);
+    }
+
+    public static void navigateToLivePage(Context context, String eventTitle, String totalLaps, String circuitId, String circuitImageUrl, boolean isLive, String sessionName, String sessionType, String sessionPart, String circuitTimeZone, long sessionElapsedSeconds) {
         Intent intent = new Intent(context, com.the_coffe_coders.fastestlap.ui.live.LiveActivity.class);
         if (eventTitle != null) {
             intent.putExtra(com.the_coffe_coders.fastestlap.ui.live.LiveActivity.EXTRA_EVENT_TITLE, eventTitle);
@@ -168,6 +176,12 @@ public class NavigationUtils {
         }
         if (sessionPart != null) {
             intent.putExtra(com.the_coffe_coders.fastestlap.ui.live.LiveActivity.EXTRA_SESSION_PART, sessionPart);
+        }
+        if (circuitTimeZone != null) {
+            intent.putExtra(com.the_coffe_coders.fastestlap.ui.live.LiveActivity.EXTRA_CIRCUIT_TIMEZONE, circuitTimeZone);
+        }
+        if (sessionElapsedSeconds > 0) {
+            intent.putExtra(com.the_coffe_coders.fastestlap.ui.live.LiveActivity.EXTRA_SESSION_ELAPSED_SECONDS, sessionElapsedSeconds);
         }
         context.startActivity(intent);
     }
@@ -305,15 +319,12 @@ public class NavigationUtils {
                 Intent intent = new Intent(context, RaceAndSprintResultsActivity.class);
                 intent.putExtra("RACE", race);
                 String locality = null;
-                String gpLongName = null;
                 if (race != null && race.getTrack() != null) {
                     if (race.getTrack().getLocation() != null) {
                         locality = race.getTrack().getLocation().getLocality();
                     }
-                    gpLongName = race.getTrack().getGp_long_name();
                 }
                 intent.putExtra("LOCALITY", locality);
-                intent.putExtra("GP_LONG_NAME", gpLongName);
                 intent.putExtra("FASTEST_LAP", fastestLap);
                 if (stints != null) {
                     intent.putParcelableArrayListExtra("STINTS", new ArrayList<>(stints));

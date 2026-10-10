@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
@@ -19,26 +21,23 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.gson.Gson;
 import com.the_coffe_coders.fastestlap.R;
-import com.the_coffe_coders.fastestlap.domain.Result;
-import com.the_coffe_coders.fastestlap.domain.f1.livetiming.RaceControlMessage;
-import com.the_coffe_coders.fastestlap.ui.live.viewmodel.LiveViewModel;
-import com.the_coffe_coders.fastestlap.ui.live.viewmodel.LiveViewModelFactory;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
-import java.util.List;
-
-import androidx.lifecycle.ViewModelProvider;
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.zip.Inflater;
 
 /**
  * LiveActivity
  *
- * Avvia ed esegue il modulo Live Timing su Web (formato track_map.html),
- * configurandolo in base alle informazioni ricevute (titolo sessione, ID circuito,
- * immagine del circuito, giri totali, stato sessione live).
+ * Esegue il modulo Live Timing a schermo intero mantenendo il layout activity_live.xml.
+ * Fornisce un bridge JavaScript ad alte prestazioni con decompressore DEFLATE nativo
+ * in C++/Java (Inflater) per CarData.z e Position.z da SignalR.
  */
 public class LiveActivity extends AppCompatActivity {
+
+    private static final String TAG = "LiveActivity";
 
     public static final String EXTRA_EVENT_TITLE = "EVENT_TITLE";
     public static final String EXTRA_SESSION_NAME = "SESSION_NAME";
@@ -48,13 +47,14 @@ public class LiveActivity extends AppCompatActivity {
     public static final String EXTRA_CIRCUIT_IMAGE = "CIRCUIT_IMAGE";
     public static final String EXTRA_TOTAL_LAPS = "TOTAL_LAPS";
     public static final String EXTRA_IS_LIVE = "IS_LIVE";
+    public static final String EXTRA_CIRCUIT_TIMEZONE = "CIRCUIT_TIMEZONE";
+    public static final String EXTRA_SESSION_KEY = "SESSION_KEY";
+    public static final String EXTRA_SESSION_ELAPSED_SECONDS = "SESSION_ELAPSED_SECONDS";
 
     private MaterialToolbar toolbar;
     private WebView webView;
     private ProgressBar progressBar;
-
-    private LiveViewModel liveViewModel;
-    private String raceControlJson = "[]";
+    private LiveSignalRService signalRService;
 
     private String eventTitle = "LIVE TIMING";
     private String sessionName = "";
@@ -63,12 +63,14 @@ public class LiveActivity extends AppCompatActivity {
     private String circuitId = null;
     private String circuitImageUrl = null;
     private String totalLaps = null;
+    private String circuitTimeZone = null;
+    private String sessionKey = null;
+    private long sessionElapsedSeconds = 0;
     private boolean isLive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Permette la visualizzazione iniziale della sola classifica sia in portrait che in landscape
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_live);
@@ -90,9 +92,47 @@ public class LiveActivity extends AppCompatActivity {
         extractIntentData();
         setupToolbar();
         setupWebView();
-        setupLiveViewModel();
         setupBackNavigation();
         loadCircuitImageIfNeeded();
+
+        signalRService = new LiveSignalRService(webView);
+        signalRService.startStream();
+        fetchTrackFallbackIfNeeded();
+    }
+
+    public static boolean isSprintQualifying(String type, String part, String name) {
+        String t = (type != null) ? type.toLowerCase().trim() : "";
+        String p = (part != null) ? part.toUpperCase().trim() : "";
+        String n = (name != null) ? name.toLowerCase().trim() : "";
+        return p.startsWith("SQ")
+                || t.equals("sq")
+                || (t.contains("sprint") && (t.contains("qualif") || t.contains("shootout")))
+                || t.contains("sprint_qualifying")
+                || t.contains("shootout")
+                || (n.contains("sprint") && (n.contains("qualif") || n.contains("shootout") || n.contains("sq")))
+                || n.contains("shootout")
+                || n.contains("qualifica sprint");
+    }
+
+    public static String normalizeSessionType(String type, String part, String name) {
+        if (isSprintQualifying(type, part, name)) {
+            return "qualifying";
+        }
+        String t = (type != null) ? type.toLowerCase().trim() : "";
+        String n = (name != null) ? name.toLowerCase().trim() : "";
+        String combined = t + " " + n;
+        if (combined.contains("practice") || combined.contains("prova") || combined.contains("prove")
+                || combined.contains("libera") || combined.contains("libere")
+                || combined.matches(".*\\bfp[1-3]?\\b.*") || t.startsWith("fp")) {
+            return "practice";
+        }
+        if (combined.contains("qualif") || combined.matches(".*\\bq[1-3]\\b.*") || t.startsWith("q")) {
+            return "qualifying";
+        }
+        if (combined.contains("sprint")) {
+            return "sprint";
+        }
+        return "race";
     }
 
     private void extractIntentData() {
@@ -117,24 +157,24 @@ public class LiveActivity extends AppCompatActivity {
             }
         }
 
-        if (intent.hasExtra(EXTRA_SESSION_TYPE)) {
-            String st = intent.getStringExtra(EXTRA_SESSION_TYPE);
-            if (st != null && !st.trim().isEmpty()) {
-                sessionType = st.trim().toLowerCase();
+        String rawType = intent.hasExtra(EXTRA_SESSION_TYPE) ? intent.getStringExtra(EXTRA_SESSION_TYPE) : null;
+        if (isSprintQualifying(rawType, sessionPart, sessionName)) {
+            sessionType = "qualifying";
+            if (sessionPart == null || sessionPart.isEmpty()) {
+                sessionPart = "SQ";
             }
-        } else if (sessionName != null && !sessionName.trim().isEmpty()) {
-            String s = sessionName.toLowerCase().trim();
-            if (s.contains("practice") || s.contains("prova") || s.contains("prove")
-                    || s.contains("libera") || s.contains("libere")
-                    || s.matches(".*\\bfp[1-3]?\\b.*") || s.startsWith("fp")) {
-                sessionType = "practice";
-            } else if (s.contains("qualif") || s.contains("shootout")
-                    || s.matches(".*\\bq[1-3]\\b.*") || s.startsWith("q")) {
-                sessionType = "qualifying";
-            } else if (s.contains("sprint")) {
-                sessionType = "sprint";
-            } else {
-                sessionType = "race";
+        } else {
+            sessionType = normalizeSessionType(rawType, sessionPart, sessionName);
+            if (sessionPart == null || sessionPart.isEmpty()) {
+                if ("sprint".equals(sessionType)) {
+                    sessionPart = "SPRINT";
+                } else if ("practice".equals(sessionType)) {
+                    sessionPart = "FP1";
+                } else if ("qualifying".equals(sessionType)) {
+                    sessionPart = "Q";
+                } else {
+                    sessionPart = "RACE";
+                }
             }
         }
 
@@ -151,13 +191,25 @@ public class LiveActivity extends AppCompatActivity {
                 circuitId = id.trim().toLowerCase();
             }
         }
-        
+
         if (intent.hasExtra(EXTRA_CIRCUIT_IMAGE)) {
             circuitImageUrl = intent.getStringExtra(EXTRA_CIRCUIT_IMAGE);
         }
 
         if (intent.hasExtra(EXTRA_TOTAL_LAPS)) {
             totalLaps = intent.getStringExtra(EXTRA_TOTAL_LAPS);
+        }
+
+        if (intent.hasExtra(EXTRA_CIRCUIT_TIMEZONE)) {
+            circuitTimeZone = intent.getStringExtra(EXTRA_CIRCUIT_TIMEZONE);
+        }
+
+        if (intent.hasExtra(EXTRA_SESSION_KEY)) {
+            sessionKey = intent.getStringExtra(EXTRA_SESSION_KEY);
+        }
+
+        if (intent.hasExtra(EXTRA_SESSION_ELAPSED_SECONDS)) {
+            sessionElapsedSeconds = intent.getLongExtra(EXTRA_SESSION_ELAPSED_SECONDS, 0);
         }
     }
 
@@ -172,31 +224,31 @@ public class LiveActivity extends AppCompatActivity {
         }
     }
 
-    private void setupLiveViewModel() {
-        LiveViewModelFactory factory = new LiveViewModelFactory(getApplication());
-        liveViewModel = new ViewModelProvider(this, factory).get(LiveViewModel.class);
-
-        liveViewModel.getRaceControlMessages().observe(this, result -> {
-            if (result instanceof Result.RaceControlSuccess) {
-                List<RaceControlMessage> messages = ((Result.RaceControlSuccess) result).getData();
-                if (messages != null && !messages.isEmpty()) {
-                    raceControlJson = new Gson().toJson(messages);
-                    injectRaceControlMessagesToWebView();
-                }
-            }
-        });
-
-        liveViewModel.startPolling();
-    }
-
-    private void injectRaceControlMessagesToWebView() {
-        if (webView != null && raceControlJson != null && !raceControlJson.equals("[]")) {
-            runOnUiThread(() -> {
-                if (webView != null) {
-                    webView.evaluateJavascript(
-                        "if (window.updateRaceControlMessages) window.updateRaceControlMessages(" + raceControlJson + ");",
-                        null
+    private void fetchTrackFallbackIfNeeded() {
+        if ((circuitImageUrl == null || circuitImageUrl.isEmpty()) && circuitId != null && !circuitId.isEmpty()) {
+            com.the_coffe_coders.fastestlap.repository.track.TrackRepository trackRepo =
+                    com.the_coffe_coders.fastestlap.repository.track.TrackRepository.getInstance(
+                            com.the_coffe_coders.fastestlap.database.AppRoomDatabase.getDatabase(getApplicationContext()),
+                            getApplicationContext()
                     );
+            trackRepo.getTrack(circuitId).observe(this, res -> {
+                if (res instanceof com.the_coffe_coders.fastestlap.domain.Result.TrackSuccess) {
+                    com.the_coffe_coders.fastestlap.domain.f1.track.Track t =
+                            ((com.the_coffe_coders.fastestlap.domain.Result.TrackSuccess) res).getData();
+                    if (t != null) {
+                        String url = null;
+                        if (t.getTrack_minimal_layout_url() != null && !t.getTrack_minimal_layout_url().trim().isEmpty()) {
+                            url = t.getTrack_minimal_layout_url().trim();
+                        } else if (t.getTrack_full_layout_url() != null && !t.getTrack_full_layout_url().trim().isEmpty()) {
+                            url = t.getTrack_full_layout_url().trim();
+                        } else if (t.getTrack_pic_url() != null && !t.getTrack_pic_url().trim().isEmpty()) {
+                            url = t.getTrack_pic_url().trim();
+                        }
+                        if (url != null) {
+                            circuitImageUrl = url;
+                            loadCircuitImageIfNeeded();
+                        }
+                    }
                 }
             });
         }
@@ -209,7 +261,6 @@ public class LiveActivity extends AppCompatActivity {
     }
 
     @SuppressLint("SetJavaScriptEnabled")
-    @SuppressWarnings("deprecation")
     private void setupWebView() {
         if (webView == null) return;
 
@@ -227,25 +278,57 @@ public class LiveActivity extends AppCompatActivity {
         settings.setAllowUniversalAccessFromFileURLs(true);
         settings.setMixedContentMode(WebSettings.MIXED_CONTENT_ALWAYS_ALLOW);
 
-        // Hardware acceleration per canvas a 60 FPS
+        // Accelerazione hardware GPU per rendering canvas a 60 FPS
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
 
-        // JavaScript Bridge bidirezionale per passare info del tracciato al modulo web
+        // JavaScript Bridge bidirezionale con decompressore DEFLATE nativo
         webView.addJavascriptInterface(new Object() {
-            @JavascriptInterface
-            public boolean isTestMode() {
-                return false;
-            }
 
             @JavascriptInterface
-            public String getTestCircuit() {
-                return "";
+            public String inflateRaw(String base64Data) {
+                if (base64Data == null || base64Data.isEmpty()) return "{}";
+                try {
+                    byte[] compressed = Base64.decode(base64Data, Base64.DEFAULT);
+                    Inflater inflater = new Inflater(true); // nowrap = true per raw DEFLATE
+                    inflater.setInput(compressed);
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    byte[] buf = new byte[4096];
+                    while (!inflater.finished()) {
+                        int count = inflater.inflate(buf);
+                        if (count == 0 && inflater.needsInput()) break;
+                        bos.write(buf, 0, count);
+                    }
+                    inflater.end();
+                    return new String(bos.toByteArray(), StandardCharsets.UTF_8);
+                } catch (Exception e) {
+                    Log.e(TAG, "Errore decompressione Inflater nativo: " + e.getMessage());
+                    return "{}";
+                }
             }
 
             @JavascriptInterface
             public boolean isSessionLive() {
-                // Sempre true all'apertura della LiveActivity per permettere il rendering del tracciato e della telemetria
-                return true;
+                return isLive;
+            }
+
+            @JavascriptInterface
+            public long getSessionElapsedSeconds() {
+                return sessionElapsedSeconds;
+            }
+
+            @JavascriptInterface
+            public String getCircuitTimeZone() {
+                return circuitTimeZone != null ? circuitTimeZone : "";
+            }
+
+            @JavascriptInterface
+            public String getCircuitLocalTime() {
+                if (circuitTimeZone != null && !circuitTimeZone.trim().isEmpty()) {
+                    try {
+                        return UIUtils.getCurrentTime(circuitTimeZone.trim());
+                    } catch (Exception ignored) {}
+                }
+                return "";
             }
 
             @JavascriptInterface
@@ -268,17 +351,6 @@ public class LiveActivity extends AppCompatActivity {
                 if (sessionPart != null && !sessionPart.trim().isEmpty()) {
                     return sessionPart.trim().toUpperCase();
                 }
-                if (sessionName == null) return "";
-                String s = sessionName.toLowerCase().trim();
-                // English keywords
-                if (s.contains("q1")) return "Q1";
-                if (s.contains("q2")) return "Q2";
-                if (s.contains("q3")) return "Q3";
-                if (s.contains("fp1") || s.contains("practice 1") || s.contains("prova libera 1") || s.contains("libere 1")) return "FP1";
-                if (s.contains("fp2") || s.contains("practice 2") || s.contains("prova libera 2") || s.contains("libere 2")) return "FP2";
-                if (s.contains("fp3") || s.contains("practice 3") || s.contains("prova libera 3") || s.contains("libere 3")) return "FP3";
-                // Italian Qualifying Sprint
-                if (s.contains("qualifica sprint") || s.contains("sprint qualifying") || s.contains("sq")) return "SQ";
                 return "";
             }
 
@@ -293,7 +365,7 @@ public class LiveActivity extends AppCompatActivity {
             public String getCircuitId() {
                 return circuitId != null ? circuitId : "";
             }
-            
+
             @JavascriptInterface
             public String getCircuitImageUrl() {
                 return circuitImageUrl != null ? circuitImageUrl : "";
@@ -305,21 +377,49 @@ public class LiveActivity extends AppCompatActivity {
             }
 
             @JavascriptInterface
-            public String getRaceControlMessagesJson() {
-                return raceControlJson != null ? raceControlJson : "[]";
-            }
-
-            @JavascriptInterface
             public void onTabChanged(String tabId) {
                 runOnUiThread(() -> {
                     if ("view-track".equals(tabId)) {
-                        // La seconda pagina (Mappa & Pista) è visualizzabile unicamente in modalità landscape
                         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
                     } else {
-                        // La pagina della sola classifica (view-standings) e race control sono visualizzabili sia in landscape che in portrait
                         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
                     }
                 });
+            }
+
+            @JavascriptInterface
+            public void startSignalRStream() {
+                if (signalRService != null) {
+                    signalRService.startStream();
+                }
+            }
+
+            @JavascriptInterface
+            public void stopSignalRStream() {
+                if (signalRService != null) {
+                    signalRService.stopStream();
+                }
+            }
+
+            @JavascriptInterface
+            public boolean isSignalRConnected() {
+                return signalRService != null && signalRService.isConnected();
+            }
+
+            @JavascriptInterface
+            public String getRaceControlMessagesJson() {
+                if (signalRService != null) {
+                    String json = signalRService.getCachedFeedJson("RaceControlMessages");
+                    if (json != null) return json;
+                }
+                return "[]";
+            }
+
+            @JavascriptInterface
+            public void requestInitialFeeds() {
+                if (signalRService != null) {
+                    signalRService.requestInitialFeeds();
+                }
             }
 
             @JavascriptInterface
@@ -347,29 +447,29 @@ public class LiveActivity extends AppCompatActivity {
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
                 loadCircuitImageIfNeeded();
-                injectRaceControlMessagesToWebView();
+                if (signalRService != null) {
+                    signalRService.requestInitialFeeds();
+                }
             }
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
                 Uri url = request.getUrl();
                 if (url != null && "file".equalsIgnoreCase(url.getScheme())) {
-                    return false; // Carica internamente gli asset HTML5/JS
+                    return false;
                 }
-                // Link esterni
                 if (url != null) {
                     try {
                         Intent externalIntent = new Intent(Intent.ACTION_VIEW, url);
                         startActivity(externalIntent);
                         return true;
-                    } catch (Exception ignored) {
-                    }
+                    } catch (Exception ignored) {}
                 }
                 return false;
             }
         });
 
-        // Carica la pagina generale di Live Timing (adattata per landscape e smartphone)
+        // Query parameters per modulo web
         StringBuilder queryParams = new StringBuilder("?");
         queryParams.append("session_type=").append(Uri.encode(sessionType != null ? sessionType : "race"));
         if (sessionPart != null && !sessionPart.isEmpty()) {
@@ -381,8 +481,19 @@ public class LiveActivity extends AppCompatActivity {
         if (circuitImageUrl != null && !circuitImageUrl.isEmpty()) {
             queryParams.append("&circuit_image=").append(Uri.encode(circuitImageUrl));
         }
-        queryParams.append("&is_live=").append(isLive ? "true" : "true");
+        if (totalLaps != null && !totalLaps.trim().isEmpty()) {
+            queryParams.append("&total_laps=").append(Uri.encode(totalLaps.trim()));
+        }
+        if (circuitTimeZone != null && !circuitTimeZone.trim().isEmpty()) {
+            queryParams.append("&circuit_timezone=").append(Uri.encode(circuitTimeZone.trim()));
+        }
+        if (sessionElapsedSeconds > 0) {
+            queryParams.append("&session_elapsed_sec=").append(sessionElapsedSeconds);
+        }
+        queryParams.append("&is_live=").append(isLive ? "true" : "false");
+
         String url = "file:///android_asset/live_timing/track_map.html" + queryParams;
+        Log.d(TAG, "Caricamento URL Live: " + url);
         webView.loadUrl(url);
     }
 
@@ -400,7 +511,7 @@ public class LiveActivity extends AppCompatActivity {
         });
     }
 
-    // Metodi stub per compatibilità con eventuali chiamate legacy
+    // Metodi stub per compatibilità con eventuali frammenti legacy
     public void openLiveTrackMap() {
         // Il modulo web è già a schermo intero
     }
@@ -427,8 +538,9 @@ public class LiveActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        if (liveViewModel != null) {
-            liveViewModel.stopPolling();
+        if (signalRService != null) {
+            signalRService.stopStream();
+            signalRService = null;
         }
         if (webView != null) {
             webView.destroy();

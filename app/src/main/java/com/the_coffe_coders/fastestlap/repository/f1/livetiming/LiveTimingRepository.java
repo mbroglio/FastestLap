@@ -48,6 +48,9 @@ public class LiveTimingRepository {
     private final OpenF1LiveTimingDataSource remoteDataSource;
     private final NetworkUtils networkUtils;
 
+    private String currentSessionKey = null;
+    private boolean isSessionLive = false;
+
     // ─────────────────────────────────────────────────────────────
     // Singleton
     // ─────────────────────────────────────────────────────────────
@@ -66,51 +69,40 @@ public class LiveTimingRepository {
         return instance;
     }
 
+    public void configureSession(String sessionKey, boolean isLive) {
+        this.currentSessionKey = sessionKey;
+        this.isSessionLive = isLive;
+    }
+
     // ─────────────────────────────────────────────────────────────
     // Public API – observed by ViewModels
     // ─────────────────────────────────────────────────────────────
 
     /**
      * Returns a {@link LiveData} stream that emits the full list of
-     * {@link RaceControlMessage} objects for the latest session.
-     *
-     * <p>Immediately posts a {@link Result.Loading} value and then kicks off the
-     * remote fetch. The caller should call this method every time it wants a
-     * fresh snapshot (e.g. on a polling timer).</p>
-     *
-     * @return a LiveData delivering {@link Result.RaceControlSuccess} on success or
-     *         {@link Result.Error} on failure
+     * {@link RaceControlMessage} objects for the configured or latest session.
      */
     public synchronized LiveData<Result> fetchRaceControlMessages() {
-        Log.d(TAG, "Fetching race control messages");
-        if (networkUtils.isConnected()) {
-            loadRaceControlFromRemote();
-        } else {
-            Log.w(TAG, "No network connection – cannot fetch race control messages");
-            raceControlLiveData.postValue(new Result.Error("No network connection"));
-        }
+        return fetchRaceControlMessages(currentSessionKey);
+    }
+
+    public synchronized LiveData<Result> fetchRaceControlMessages(String sessionKey) {
+        Log.d(TAG, "fetchRaceControlMessages: endpoint OpenF1 disabilitato nel livetiming (richiede licenza a pagamento)");
+        raceControlLiveData.postValue(new Result.RaceControlSuccess(new java.util.ArrayList<>()));
         return raceControlLiveData;
     }
 
     /**
      * Returns a {@link LiveData} stream that emits the full list of
-     * {@link TeamRadioMessage} objects for the latest session.
-     *
-     * <p>Immediately posts a {@link Result.Loading} value and then kicks off the
-     * remote fetch. The caller should call this method every time it wants a
-     * fresh snapshot (e.g. on a polling timer).</p>
-     *
-     * @return a LiveData delivering {@link Result.TeamRadioSuccess} on success or
-     *         {@link Result.Error} on failure
+     * {@link TeamRadioMessage} objects for the configured or latest session.
      */
     public synchronized LiveData<Result> fetchTeamRadioMessages() {
-        Log.d(TAG, "Fetching team radio messages");
-        if (networkUtils.isConnected()) {
-            loadTeamRadioFromRemote();
-        } else {
-            Log.w(TAG, "No network connection – cannot fetch team radio messages");
-            teamRadioLiveData.postValue(new Result.Error("No network connection"));
-        }
+        return fetchTeamRadioMessages(currentSessionKey);
+    }
+
+    public synchronized LiveData<Result> fetchTeamRadioMessages(String sessionKey) {
+        Log.d(TAG, "fetchTeamRadioMessages: endpoint OpenF1 disabilitato nel livetiming (richiede licenza a pagamento)");
+        teamRadioLiveData.postValue(new Result.TeamRadioSuccess(new java.util.ArrayList<>()));
         return teamRadioLiveData;
     }
 
@@ -118,10 +110,10 @@ public class LiveTimingRepository {
     // Private helpers
     // ─────────────────────────────────────────────────────────────
 
-    private void loadRaceControlFromRemote() {
+    private void loadRaceControlFromRemote(String sessionKey) {
         raceControlLiveData.postValue(new Result.Loading("Loading race control messages"));
 
-        remoteDataSource.getRaceControlMessages(new RaceControlCallback() {
+        remoteDataSource.getRaceControlMessages(sessionKey, new RaceControlCallback() {
             @Override
             public void onSuccess(List<RaceControlMessage> messages) {
                 Log.d(TAG, "Race control messages loaded: " + messages.size());
@@ -136,10 +128,10 @@ public class LiveTimingRepository {
         });
     }
 
-    private void loadTeamRadioFromRemote() {
+    private void loadTeamRadioFromRemote(String sessionKey) {
         teamRadioLiveData.postValue(new Result.Loading("Loading team radio messages"));
 
-        remoteDataSource.getTeamRadioMessages(new TeamRadioCallback() {
+        remoteDataSource.getTeamRadioMessages(sessionKey, new TeamRadioCallback() {
             @Override
             public void onSuccess(List<TeamRadioMessage> messages) {
                 Log.d(TAG, "Team radio messages loaded: " + messages.size());
