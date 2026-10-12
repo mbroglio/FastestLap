@@ -48,12 +48,13 @@ public class ConstructorBioPagerAdapter extends FragmentStateAdapter {
     public Fragment createFragment(int position) {
         Integer teamColorRes = null;
         try {
-            if (constructor != null && constructor.getConstructorId() != null) {
+            if (constructor != null) {
                 teamColorRes = Constants.TEAM_COLOR.get(constructor.getConstructorId());
             } else if (teamId != null) {
                 teamColorRes = Constants.TEAM_COLOR.get(teamId);
             }
-        } catch (Exception ignored) {}
+        } catch (Exception ignored) {
+        }
         int resolvedColor = ContextCompat.getColor(fragmentActivity, teamColorRes != null ? teamColorRes : R.color.app_primary_red);
 
         switch (position) {
