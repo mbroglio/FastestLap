@@ -1,5 +1,7 @@
 package com.the_coffe_coders.fastestlap.domain.f1.constructor;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -13,7 +15,7 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class ConstructorHistory {
+public class ConstructorHistory implements Serializable {
     private String podiums;
     private String points;
     private String position;

@@ -10,6 +10,7 @@ import org.threeten.bp.DayOfWeek;
 
 public class Constants {
 
+    public static final int CALENDAR_RACES = 23;
     public static final int SPACER_HEIGHT = 20;
 
     public static final String SHARED_PREFERENCES_FILENAME = "shared";

@@ -1,42 +1,30 @@
 package com.the_coffe_coders.fastestlap.ui.bio.fragment;
 
-import android.app.Dialog;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.button.MaterialButtonToggleGroup;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.the_coffe_coders.fastestlap.R;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.ConstructorSeasonStats;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.EventResultConstructor;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.DriverSeasonStats;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.EventResultDriver;
-import com.the_coffe_coders.fastestlap.ui.bio.chart.SeasonPerformancePoint;
-import com.the_coffe_coders.fastestlap.ui.bio.chart.SeasonProgressionChartView;
-import com.the_coffe_coders.fastestlap.ui.bio.chart.StickyYAxisView;
+import com.the_coffe_coders.fastestlap.util.chart.SeasonPerformancePoint;
+import com.the_coffe_coders.fastestlap.util.chart.SeasonProgressionChartView;
+import com.the_coffe_coders.fastestlap.util.chart.StickyYAxisView;
 import com.the_coffe_coders.fastestlap.util.Constants;
+import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SeasonPerformanceChartFragment extends DialogFragment {
+public class SeasonPerformanceChartFragmentTab extends Fragment {
 
     public static final String TAG = "SeasonPerfChartFragment";
 
@@ -79,25 +67,23 @@ public class SeasonPerformanceChartFragment extends DialogFragment {
     private MaterialButtonToggleGroup toggleButtonGroup;
     private MaterialButton btnToggleRaces;
     private MaterialButton btnToggleQualifyings;
+    private LoadingScreen loadingScreen;
 
     private View legendFinishDot;
     private TextView legendFinishText;
     private View legendSecondaryDot;
     private TextView legendSecondaryText;
 
-    public static SeasonPerformanceChartFragment newInstanceForDriver(String driverId,
-                                                                      String driverName,
-                                                                      String teamId,
-                                                                      int teamColor) {
-        return newInstanceForDriver(driverId, driverName, teamId, teamColor, null);
+    public SeasonPerformanceChartFragmentTab() {
+        // Required empty public constructor
     }
 
-    public static SeasonPerformanceChartFragment newInstanceForDriver(String driverId,
-                                                                      String driverName,
-                                                                      String teamId,
-                                                                      int teamColor,
-                                                                      @Nullable DriverSeasonStats seasonStats) {
-        SeasonPerformanceChartFragment fragment = new SeasonPerformanceChartFragment();
+    public static SeasonPerformanceChartFragmentTab newInstanceForDriver(String driverId,
+                                                                         String driverName,
+                                                                         String teamId,
+                                                                         int teamColor,
+                                                                         DriverSeasonStats seasonStats) {
+        SeasonPerformanceChartFragmentTab fragment = new SeasonPerformanceChartFragmentTab();
         Bundle args = new Bundle();
         args.putBoolean(ARG_IS_CONSTRUCTOR, false);
         args.putString(ARG_ENTITY_ID, driverId);
@@ -110,20 +96,13 @@ public class SeasonPerformanceChartFragment extends DialogFragment {
         fragment.setArguments(args);
         return fragment;
     }
-
-    public static SeasonPerformanceChartFragment newInstanceForConstructor(String constructorId,
-                                                                           String constructorName,
-                                                                           int teamColor) {
-        return newInstanceForConstructor(constructorId, constructorName, teamColor, null, null, null);
-    }
-
-    public static SeasonPerformanceChartFragment newInstanceForConstructor(String constructorId,
-                                                                           String constructorName,
-                                                                           int teamColor,
-                                                                           @Nullable String driverOneName,
-                                                                           @Nullable String driverTwoName,
-                                                                           @Nullable ConstructorSeasonStats seasonStats) {
-        SeasonPerformanceChartFragment fragment = new SeasonPerformanceChartFragment();
+    public static SeasonPerformanceChartFragmentTab newInstanceForConstructor(String constructorId,
+                                                                              String constructorName,
+                                                                              int teamColor,
+                                                                              String driverOneName,
+                                                                              String driverTwoName,
+                                                                              ConstructorSeasonStats seasonStats) {
+        SeasonPerformanceChartFragmentTab fragment = new SeasonPerformanceChartFragmentTab();
         Bundle args = new Bundle();
         args.putBoolean(ARG_IS_CONSTRUCTOR, true);
         args.putString(ARG_ENTITY_ID, constructorId);
@@ -148,8 +127,8 @@ public class SeasonPerformanceChartFragment extends DialogFragment {
             entityName = getArguments().getString(ARG_ENTITY_NAME, "");
             teamId = getArguments().getString(ARG_TEAM_ID, "");
             teamColor = getArguments().getInt(ARG_TEAM_COLOR, ContextCompat.getColor(requireContext(), R.color.app_primary_red));
-            driverOneName = getArguments().getString(ARG_DRIVER_ONE_NAME, "Pilota 1");
-            driverTwoName = getArguments().getString(ARG_DRIVER_TWO_NAME, "Pilota 2");
+            driverOneName = getArguments().getString(ARG_DRIVER_ONE_NAME, "");
+            driverTwoName = getArguments().getString(ARG_DRIVER_TWO_NAME, "");
             driverSeasonStats = getArguments().getParcelable(ARG_DRIVER_SEASON_STATS);
             constructorSeasonStats = getArguments().getParcelable(ARG_CONSTRUCTOR_SEASON_STATS);
         }
@@ -179,6 +158,11 @@ public class SeasonPerformanceChartFragment extends DialogFragment {
         legendSecondaryDot = view.findViewById(R.id.legend_secondary_dot);
         legendSecondaryText = view.findViewById(R.id.legend_secondary_text);
 
+        View contentLayout = view.findViewById(R.id.chart_main_layout);
+        loadingScreen = new LoadingScreen(view, requireContext(), null, contentLayout);
+        loadingScreen.showLoadingScreen(false);
+        loadingScreen.updateProgress();
+
         // Configure chart and axis views
         chartView.setTeamColor(teamColor);
         stickyYAxisView.setGeometry(chartView.getTopPadding(), chartView.getBottomPadding(), chartView.getTotalPositions());
@@ -186,17 +170,6 @@ public class SeasonPerformanceChartFragment extends DialogFragment {
         setupLegend();
         setupToggleButtons();
         fetchCalendarAndData();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        Dialog dialog = getDialog();
-        if (dialog != null && dialog.getWindow() != null) {
-            Window window = dialog.getWindow();
-            window.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
-            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
     }
 
     private void setupLegend() {
@@ -223,7 +196,7 @@ public class SeasonPerformanceChartFragment extends DialogFragment {
                 isQualifyingMode = (checkedId == R.id.btn_toggle_qualifyings);
                 updateToggleStyles();
                 setupLegend();
-                renderChartFromCurrentData();
+                renderChart();
             }
         });
         updateToggleStyles();
@@ -246,38 +219,14 @@ public class SeasonPerformanceChartFragment extends DialogFragment {
     }
 
     private void fetchCalendarAndData() {
-        loadingProgress.setVisibility(View.VISIBLE);
+        if (loadingProgress != null) {
+            loadingProgress.setVisibility(View.GONE);
+        }
         emptyMessage.setVisibility(View.GONE);
 
-        FirebaseDatabase db = FirebaseDatabase.getInstance(Constants.FIREBASE_REALTIME_DATABASE);
+        chartView.setTotalRaces(Constants.CALENDAR_RACES);
 
-        // Fetch calendar rounds count & race names
-        db.getReference("app_config/db_calendar/f1").get().addOnCompleteListener(calTask -> {
-            int totalRaces = 24;
-            if (calTask.isSuccessful() && calTask.getResult() != null && calTask.getResult().exists()) {
-                long count = calTask.getResult().getChildrenCount();
-                if (count > 0) {
-                    totalRaces = (int) count;
-                }
-                for (DataSnapshot rSnap : calTask.getResult().getChildren()) {
-                    try {
-                        int rNum = Integer.parseInt(rSnap.getKey());
-                        String name = rSnap.child("race_name").getValue(String.class);
-                        if (name == null) name = rSnap.child("name").getValue(String.class);
-                        if (name != null) roundRaceNames.put(rNum, name);
-                    } catch (Exception ignored) {}
-                }
-            }
-            chartView.setTotalRaces(totalRaces);
-
-            // If season_stats was already passed and has season_results, render immediately!
-            if (hasSeasonResultsAvailable()) {
-                loadingProgress.setVisibility(View.GONE);
-                renderChartFromCurrentData();
-            } else {
-                fetchSeasonStatsFromFirebase(db);
-            }
-        });
+        renderChart();
     }
 
     private boolean hasSeasonResultsAvailable() {
@@ -292,41 +241,7 @@ public class SeasonPerformanceChartFragment extends DialogFragment {
         }
     }
 
-    private void fetchSeasonStatsFromFirebase(FirebaseDatabase db) {
-        String path = isConstructor ? "teams/" + entityId + "/season_stats" : "drivers/" + entityId + "/season_stats";
-        DatabaseReference statsRef = db.getReference(path);
-
-        statsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (!isAdded()) return;
-
-                if (snapshot.exists()) {
-                    if (isConstructor) {
-                        constructorSeasonStats = snapshot.getValue(ConstructorSeasonStats.class);
-                    } else {
-                        driverSeasonStats = snapshot.getValue(DriverSeasonStats.class);
-                    }
-                }
-
-                if (hasSeasonResultsAvailable()) {
-                    loadingProgress.setVisibility(View.GONE);
-                    renderChartFromCurrentData();
-                } else {
-                    // Fallback to stats_tracker/race_updates
-                    fetchRaceUpdatesFallback(db);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                if (!isAdded()) return;
-                fetchRaceUpdatesFallback(db);
-            }
-        });
-    }
-
-    private void renderChartFromCurrentData() {
+    private void renderChart() {
         List<SeasonPerformancePoint> primaryPoints = new ArrayList<>();
         List<SeasonPerformancePoint> secondaryPoints = new ArrayList<>();
 
@@ -339,24 +254,26 @@ public class SeasonPerformanceChartFragment extends DialogFragment {
         if (primaryPoints.isEmpty() && secondaryPoints.isEmpty()) {
             showEmptyState();
         } else {
+            if (loadingProgress != null) {
+                loadingProgress.setVisibility(View.GONE);
+            }
             emptyMessage.setVisibility(View.GONE);
             chartView.setData(primaryPoints, secondaryPoints, isConstructor);
+            if (loadingScreen != null) {
+                loadingScreen.hideLoadingScreenImmediately();
+            }
         }
     }
 
     private void extractPointsFromDriverStats(DriverSeasonStats dss, List<SeasonPerformancePoint> points) {
         if (dss == null || dss.getSeason_results() == null) return;
-        Map<String, EventResultDriver> map = dss.getSeason_results();
+        ArrayList<EventResultDriver> list = dss.getSeason_results();
 
-        for (Map.Entry<String, EventResultDriver> entry : map.entrySet()) {
-            int roundNum;
-            try {
-                roundNum = Integer.parseInt(entry.getKey());
-            } catch (NumberFormatException e) {
-                continue;
-            }
-            EventResultDriver res = entry.getValue();
+        for (int i = 0; i < list.size(); i++) {
+            EventResultDriver res = list.get(i);
             if (res == null) continue;
+
+            int roundNum = list.get(0) == null ? i : i + 1;
 
             String posStr = isQualifyingMode ? res.getQualifying() : res.getRace();
             if (!isQualifyingMode && (posStr == null || posStr.isEmpty())) {
@@ -374,23 +291,19 @@ public class SeasonPerformanceChartFragment extends DialogFragment {
     private void extractPointsFromConstructorStats(ConstructorSeasonStats css,
                                                    List<SeasonPerformancePoint> primaryPoints,
                                                    List<SeasonPerformancePoint> secondaryPoints) {
-        if (css == null || css.getSeason_results() == null) return;
-        Map<String, EventResultConstructor> map = css.getSeason_results();
-        String name1 = driverOneName != null && !driverOneName.isEmpty() ? driverOneName : "Pilota 1";
-        String name2 = driverTwoName != null && !driverTwoName.isEmpty() ? driverTwoName : "Pilota 2";
 
-        for (Map.Entry<String, EventResultConstructor> entry : map.entrySet()) {
-            int roundNum;
-            try {
-                roundNum = Integer.parseInt(entry.getKey());
-            } catch (NumberFormatException e) {
-                continue;
-            }
-            EventResultConstructor res = entry.getValue();
+        if (css == null || css.getSeason_results() == null) return;
+        ArrayList<EventResultConstructor> list = css.getSeason_results();
+        String name1 = driverOneName != null && !driverOneName.isEmpty() ? driverOneName : requireContext().getString(R.string.not_found);
+        String name2 = driverTwoName != null && !driverTwoName.isEmpty() ? driverTwoName : requireContext().getString(R.string.not_found);
+
+        for (int i = 0; i < list.size(); i++) {
+            EventResultConstructor res = list.get(i);
             if (res == null) continue;
 
-            String raceName = roundRaceNames.getOrDefault(roundNum, "Round " + roundNum);
+            int roundNum = list.get(0) == null ? i : i + 1;
 
+            String raceName = roundRaceNames.getOrDefault(roundNum, "Round " + roundNum);
             String pos1 = isQualifyingMode ? res.getQualifying_driver_1() : res.getRace_driver_1();
             if (!isQualifyingMode && (pos1 == null || pos1.isEmpty())) {
                 pos1 = res.getSprint_race_driver_1();
@@ -407,115 +320,6 @@ public class SeasonPerformanceChartFragment extends DialogFragment {
             SeasonPerformancePoint pt2 = createPointFromPosStr(roundNum, raceName, pos2, "d2", name2);
             if (pt2 != null) {
                 secondaryPoints.add(pt2);
-            }
-        }
-    }
-
-    private void fetchRaceUpdatesFallback(FirebaseDatabase db) {
-        DatabaseReference updatesRef = db.getReference("app_config/stats_tracker/race_updates");
-        updatesRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (!isAdded()) return;
-
-                loadingProgress.setVisibility(View.GONE);
-
-                if (!snapshot.exists()) {
-                    showEmptyState();
-                    return;
-                }
-
-                DataSnapshot targetSnapshot = snapshot;
-                for (DataSnapshot child : snapshot.getChildren()) {
-                    String key = child.getKey();
-                    if (key != null && key.length() == 4 && (key.startsWith("202") || key.startsWith("203"))) {
-                        targetSnapshot = child;
-                    }
-                }
-
-                List<SeasonPerformancePoint> primaryPoints = new ArrayList<>();
-                List<SeasonPerformancePoint> secondaryPoints = new ArrayList<>();
-
-                for (DataSnapshot roundSnap : targetSnapshot.getChildren()) {
-                    String roundKey = roundSnap.getKey();
-                    if (roundKey == null) continue;
-
-                    int roundNum;
-                    try {
-                        roundNum = Integer.parseInt(roundKey);
-                    } catch (NumberFormatException e) {
-                        continue;
-                    }
-
-                    String raceName = roundSnap.child("race_name").getValue(String.class);
-                    if (raceName == null) raceName = roundRaceNames.getOrDefault(roundNum, "Round " + roundNum);
-
-                    if (isConstructor) {
-                        parseConstructorRoundFallback(roundSnap, roundNum, raceName, primaryPoints, secondaryPoints);
-                    } else {
-                        parseDriverRoundFallback(roundSnap, roundNum, raceName, primaryPoints);
-                    }
-                }
-
-                if (primaryPoints.isEmpty() && secondaryPoints.isEmpty()) {
-                    showEmptyState();
-                } else {
-                    emptyMessage.setVisibility(View.GONE);
-                    chartView.setData(primaryPoints, secondaryPoints, isConstructor);
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                if (!isAdded()) return;
-                loadingProgress.setVisibility(View.GONE);
-                showEmptyState();
-            }
-        });
-    }
-
-    private void parseDriverRoundFallback(DataSnapshot roundSnap, int roundNum, String raceName,
-                                          List<SeasonPerformancePoint> points) {
-        String targetDriverId = entityId != null ? entityId.trim().toLowerCase() : "";
-
-        DataSnapshot resultsSnap = roundSnap.child("results_snapshot");
-        if (resultsSnap.exists()) {
-            for (DataSnapshot rSnap : resultsSnap.getChildren()) {
-                String dId = rSnap.child("driverId").getValue(String.class);
-                if (dId != null && dId.trim().equalsIgnoreCase(targetDriverId)) {
-                    Object posObj = rSnap.child("position").getValue();
-                    String posText = rSnap.child("positionText").getValue(String.class);
-                    SeasonPerformancePoint pt = createPointFromPosStr(roundNum, raceName, String.valueOf(posObj != null ? posObj : posText), entityId, entityName);
-                    if (pt != null) points.add(pt);
-                    return;
-                }
-            }
-        }
-    }
-
-    private void parseConstructorRoundFallback(DataSnapshot roundSnap, int roundNum, String raceName,
-                                               List<SeasonPerformancePoint> primaryPoints,
-                                               List<SeasonPerformancePoint> secondaryPoints) {
-        String targetTeamId = teamId != null ? teamId.trim().toLowerCase() : "";
-        String name1 = driverOneName != null && !driverOneName.isEmpty() ? driverOneName : "Pilota 1";
-        String name2 = driverTwoName != null && !driverTwoName.isEmpty() ? driverTwoName : "Pilota 2";
-
-        DataSnapshot resultsSnap = roundSnap.child("results_snapshot");
-        if (resultsSnap.exists()) {
-            int carIndex = 0;
-            for (DataSnapshot rSnap : resultsSnap.getChildren()) {
-                String cId = rSnap.child("constructorId").getValue(String.class);
-                if (cId != null && cId.trim().equalsIgnoreCase(targetTeamId)) {
-                    Object posObj = rSnap.child("position").getValue();
-                    String posText = rSnap.child("positionText").getValue(String.class);
-                    String currentName = (carIndex == 0) ? name1 : name2;
-                    SeasonPerformancePoint pt = createPointFromPosStr(roundNum, raceName, String.valueOf(posObj != null ? posObj : posText), "d" + (carIndex + 1), currentName);
-                    if (pt != null) {
-                        if (carIndex == 0) primaryPoints.add(pt);
-                        else secondaryPoints.add(pt);
-                        carIndex++;
-                    }
-                }
             }
         }
     }
@@ -539,11 +343,11 @@ public class SeasonPerformanceChartFragment extends DialogFragment {
 
         int parsedPos;
         if (isDnf) {
-            parsedPos = chartView.getTotalPositions(); // Position 21 (DNF)
+            parsedPos = chartView.getTotalPositions(); // Position 23 (DNF)
         } else {
             try {
                 parsedPos = Integer.parseInt(trimmed);
-                if (parsedPos <= 0 || parsedPos > 20) {
+                if (parsedPos <= 0 || parsedPos > 22) {
                     parsedPos = chartView.getTotalPositions();
                     isDnf = true;
                 }
@@ -559,7 +363,13 @@ public class SeasonPerformanceChartFragment extends DialogFragment {
     }
 
     private void showEmptyState() {
+        if (loadingProgress != null) {
+            loadingProgress.setVisibility(View.GONE);
+        }
         emptyMessage.setVisibility(View.VISIBLE);
         chartView.setData(Collections.emptyList(), Collections.emptyList(), isConstructor);
+        if (loadingScreen != null) {
+            loadingScreen.hideLoadingScreenImmediately();
+        }
     }
 }

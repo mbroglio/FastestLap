@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/driver_bio_navigation"
+    app:startDestination="@+id/driverBioHomeFragment">
+
+    <fragment
+        android:id="@+id/driverBioHomeFragment"
+        android:name="com.the_coffe_coders.fastestlap.ui.bio.fragment.DriverBioHomeFragmentTab"
+        tools:layout="@layout/fragment_driver_bio_home_tab">
+
+        <action
+            android:id="@+id/to_driverChart"
+            app:destination="@id/driverBioChartFragment" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/driverBioChartFragment"
+        android:name="com.the_coffe_coders.fastestlap.ui.bio.fragment.SeasonPerformanceChartFragmentTab"
+        tools:layout="@layout/fragment_season_performance_chart" />
+
+</navigation>

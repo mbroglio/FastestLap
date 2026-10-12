@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/team_logo_and_driver_flag"
+    android:layout_width="match_parent"
+    android:layout_height="80dp"
+    android:baselineAligned="false"
+    android:orientation="horizontal">
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.65">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/team_logo_card"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="2dp"
+            app:cardBackgroundColor="@color/team_card_modern_gray"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="2dp"
+            app:strokeColor="@color/subtle_white_border"
+            app:strokeWidth="1.5dp">
+
+            <ImageView
+                android:id="@+id/team_logo_image"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="8dp"
+                android:importantForAccessibility="no"
+                android:scaleType="fitCenter" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.35">
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/flag_card"
+            android:layout_width="54dp"
+            android:layout_height="36dp"
+            android:layout_centerInParent="true"
+            app:cardBackgroundColor="@color/card_surface_elevated"
+            app:cardCornerRadius="6dp"
+            app:cardElevation="2dp"
+            app:strokeColor="@color/subtle_white_border"
+            app:strokeWidth="1dp">
+
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/flag"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:importantForAccessibility="no"
+                android:scaleType="centerCrop"
+                app:shapeAppearanceOverlay="@style/ShapeAppearance.FastestLap.RoundedFlag" />
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </RelativeLayout>
+
+</LinearLayout>

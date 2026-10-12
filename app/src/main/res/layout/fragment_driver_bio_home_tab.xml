@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/screen_background_color"
+    tools:context=".ui.bio.fragment.DriverBioHomeFragmentTab">
+
+    <ScrollView
+        android:id="@+id/driver_bio_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:background="@color/screen_background_color"
+        android:scrollbars="none"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="24dp">
+
+            <!-- UNIFIED DRIVER INFO CARD (TEAM LOGO, FLAG, PORTRAIT & BIOGRAPHICAL STATS) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/driver_info_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="12dp"
+                app:cardBackgroundColor="@color/card_surface_elevated"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
+                app:strokeColor="@color/subtle_white_border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <!-- TOP ROW: TEAM LOGO & DRIVER FLAG -->
+                    <include
+                        android:id="@+id/team_logo_and_driver_flag"
+                        layout="@layout/bio_header_section" />
+
+                    <!-- HORIZONTAL SEPARATOR BETWEEN LOGO/FLAG AND PILOT/STATS -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@color/subtle_white_border" />
+
+                    <!-- BOTTOM ROW: DRIVER PORTRAIT + STATS -->
+                    <include
+                        android:id="@+id/driver_stats_section"
+                        layout="@layout/bio_driver_bio_section" />
+
+                    <!-- HORIZONTAL SEPARATOR BETWEEN BIO STATS AND SEASON STATS -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="14dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@color/subtle_white_border" />
+
+                    <include
+                        android:id="@+id/season_results_section"
+                        layout="@layout/bio_season_results_section" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- TACHOMETERS & RACING NUMBER (OUTSIDE CARD) -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginEnd="24dp"
+                        android:layout_weight="1"
+                        android:background="@color/subtle_white_border" />
+
+                    <ImageView
+                        android:id="@+id/driver_number_image"
+                        android:layout_width="@dimen/driver_photo_in_card"
+                        android:layout_height="@dimen/driver_photo_in_card"
+                        android:importantForAccessibility="no"
+                        android:scaleType="fitCenter" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginEnd="24dp"
+                        android:layout_weight="1"
+                        android:background="@color/subtle_white_border" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <include
+        android:id="@+id/loading_screen"
+        layout="@layout/loading_screen"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

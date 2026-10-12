@@ -1,4 +1,4 @@
-package com.the_coffe_coders.fastestlap.ui.bio.chart;
+package com.the_coffe_coders.fastestlap.util.chart;
 
 public class SeasonPerformancePoint {
     private final int round;

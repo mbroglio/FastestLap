@@ -359,5 +359,8 @@
     <string name="races_sprints"><![CDATA[races & sprints]]></string>
     <string name="scroll_indication">Scroll ➔</string>
     <string name="secondary_driver">Driver 2</string>
+    <string name="tab_bio">BIO</string>
+    <string name="tab_history">HISTORY</string>
+    <string name="tab_charts">CHARTS</string>
 
 </resources>

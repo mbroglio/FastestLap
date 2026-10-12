@@ -7,9 +7,11 @@ import com.google.gson.reflect.TypeToken;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.ConstructorHistory;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.ConstructorSeasonStats;
+import com.the_coffe_coders.fastestlap.domain.f1.constructor.EventResultConstructor;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.DriverHistory;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.DriverSeasonStats;
+import com.the_coffe_coders.fastestlap.domain.f1.driver.EventResultDriver;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Practice;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Qualifying;
 import com.the_coffe_coders.fastestlap.domain.f1.grand_prix.Race;
@@ -40,6 +42,7 @@ import org.threeten.bp.LocalDateTime;
 
 import java.lang.reflect.Type;
 import java.util.List;
+import java.util.Map;
 
 public class DatabaseConverters {
 

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/screen_background_color"
+    tools:context=".ui.bio.fragment.ConstructorBioHomeFragmentTab">
+
+    <ScrollView
+        android:id="@+id/constructor_bio_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:background="@color/screen_background_color"
+        android:scrollbars="none"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="24dp">
+
+            <!-- UNIFIED CONSTRUCTOR INFO CARD -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/team_info_card"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                app:cardBackgroundColor="@color/card_surface_elevated"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
+                app:strokeColor="@color/subtle_white_border"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="14dp">
+
+                    <!-- TEAM FULL NAME AT THE TOP OF THE CARD WITH AUTO-RESIZE -->
+                    <TextView
+                        android:id="@+id/team_full_name_value"
+                        style="@style/t20BoldWhite"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_marginBottom="12dp"
+                        android:maxLines="1"
+                        android:text="@string/not_found" />
+
+                    <include
+                        android:id="@+id/team_logo_and_flag"
+                        layout="@layout/bio_header_section" />
+
+                    <!-- SEPARATOR: LOGO/FLAG TO CAR -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@color/subtle_white_border" />
+
+                    <!-- SECTION 2: TEAM CAR IMAGE -->
+                    <ImageView
+                        android:id="@+id/team_car_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="100dp"
+                        android:adjustViewBounds="true"
+                        android:importantForAccessibility="no"
+                        android:scaleType="fitCenter" />
+
+                    <!-- SEPARATOR: CAR TO (TEAM INFO + DRIVERS) -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="12dp"
+                        android:background="@color/subtle_white_border" />
+
+                    <include
+                        android:id="@+id/bio_constructor_info_section"
+                        layout="@layout/bio_constructor_info_section" />
+
+                    <!-- HORIZONTAL SEPARATOR BETWEEN BIO STATS AND SEASON STATS -->
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:layout_marginTop="14dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@color/subtle_white_border" />
+
+                    <include
+                        android:id="@+id/season_results_section"
+                        layout="@layout/bio_season_results_section" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <include
+        android:id="@+id/loading_screen"
+        layout="@layout/loading_screen"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

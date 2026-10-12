@@ -2,13 +2,8 @@ package com.the_coffe_coders.fastestlap.ui.bio;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TableLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -16,20 +11,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.adapter.f1.DriverBioPagerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
-import com.the_coffe_coders.fastestlap.domain.f1.driver.DriverHistory;
-import com.the_coffe_coders.fastestlap.domain.f1.driver.DriverSeasonStats;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
-import com.the_coffe_coders.fastestlap.ui.bio.fragment.SeasonPerformanceChartFragment;
 import com.the_coffe_coders.fastestlap.ui.bio.handler.FavoriteBioHandler;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
@@ -43,35 +37,28 @@ import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
-import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
-import com.the_coffe_coders.fastestlap.util.ui.TachometerView;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
-import java.util.List;
+import java.util.Locale;
 
 public class DriverBioActivity extends AppCompatActivity {
 
-    private final String TAG = "DriverBioActivity";
-    LoadingScreen loadingScreen;
+    private static final String TAG = "DriverBioActivity";
+    private LoadingScreen loadingScreen;
     private Driver driver;
     private Nation nation;
     private Constructor team;
-    private MaterialCardView teamLogoCard;
-    private ImageView teamLogoImage;
     private MaterialToolbar toolbar;
     private AppBarLayout appBarLayout;
-    private ImageView driverNumberImage;
+    private TabLayout tabLayout;
+    private ViewPager2 viewPager;
     private String driverId;
-    private SwipeRefreshLayout driverBioLayout;
 
     private DriverViewModel driverViewModel;
     private NationViewModel nationViewModel;
     private ConstructorViewModel constructorViewModel;
     private UserViewModel userViewModel;
     private FavoriteBioHandler favoriteBioHandler;
-
-    private TachometerView winPercentageTachometer, podiumPercentageTachometer;
-
 
     private NetworkUtils networkLiveData;
 
@@ -88,13 +75,18 @@ public class DriverBioActivity extends AppCompatActivity {
     }
 
     private void start() {
-        driverBioLayout = findViewById(R.id.driver_bio_layout);
-        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, driverBioLayout, null);
+        tabLayout = findViewById(R.id.tab_layout);
+        viewPager = findViewById(R.id.view_pager);
+        viewPager.setUserInputEnabled(false);
+
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, viewPager, null);
         loadingScreen.showLoadingScreen(false);
         loadingScreen.updateProgress();
 
         toolbar = findViewById(R.id.topAppBar);
         UIUtils.applyWindowInsets(toolbar);
+
+        UIUtils.applyWindowInsets(viewPager);
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
@@ -106,10 +98,10 @@ public class DriverBioActivity extends AppCompatActivity {
                         driverId,
                         Constants.SHARED_PREFERENCES_FAVORITE_DRIVER,
                         favoriteItem,
-                        favoriteId -> {
+                        favId -> {
                             String idToken = userViewModel.getLoggedUser() != null ? userViewModel.getLoggedUser().getIdToken() : null;
                             if (idToken != null) {
-                                userViewModel.saveUserDriverPreferences(favoriteId, idToken);
+                                userViewModel.saveUserDriverPreferences(favId, idToken);
                             }
                         });
 
@@ -129,38 +121,8 @@ public class DriverBioActivity extends AppCompatActivity {
 
         appBarLayout = findViewById(R.id.top_bar_layout);
 
-        UIUtils.applyWindowInsets(driverBioLayout);
-        driverBioLayout.setOnRefreshListener(() -> {
-            if (networkLiveData.isConnected()) {
-                if (driverViewModel != null && driverId != null) {
-                    if (driver != null) {
-                        if (driver.getTeam_id() != null && constructorViewModel != null) {
-                            constructorViewModel.refreshConstructor(driver.getTeam_id());
-                        }
-                        if (driver.getNationality() != null && nationViewModel != null) {
-                            nationViewModel.refreshNation(driver.getNationality());
-                        }
-                    }
-                    driverViewModel.refreshDriver(driverId);
-                } else {
-                    driverBioLayout.setRefreshing(false);
-                }
-            } else {
-                Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
-                driverBioLayout.setRefreshing(false);
-            }
-        });
-
         driverId = getIntent().getStringExtra("DRIVER_ID");
-        Log.i("DriverBioActivity", "Driver ID: " + driverId);
-
-        teamLogoCard = findViewById(R.id.team_logo_card);
-        teamLogoImage = findViewById(R.id.team_logo_image);
-
-        driverNumberImage = findViewById(R.id.driver_number_image);
-
-        winPercentageTachometer = findViewById(R.id.win_percentage_tachometer_driver);
-        podiumPercentageTachometer = findViewById(R.id.podium_percentage_tachometer_driver);
+        Log.i(TAG, "Driver ID: " + driverId);
 
         initializeViewModels();
     }
@@ -181,20 +143,21 @@ public class DriverBioActivity extends AppCompatActivity {
             if (result instanceof Result.Loading) {
                 return;
             }
-            driverBioLayout.setRefreshing(false);
             if (result.isSuccess()) {
                 driver = ((Result.DriverSuccess) result).getData();
                 Log.i(TAG, "DRIVER SUCCESS: " + driver);
 
                 favoriteBioHandler.updateFavoriteIcon(toolbar.getMenu(), R.id.favourite_icon_outline, driverId, Constants.SHARED_PREFERENCES_FAVORITE_DRIVER);
-                if (driver.getTeam_id() != null) {
+                if (driver != null && driver.getTeam_id() != null) {
                     getTeamInfo(driver.getTeam_id());
-                } else {
+                } else if (driver != null) {
                     getNationInfo(driver.getNationality());
+                } else {
+                    loadingScreen.hideLoadingScreenImmediately();
                 }
             } else {
                 Log.e(TAG, "DRIVER ERROR: " + result.getError());
-                loadingScreen.hideLoadingScreen();
+                loadingScreen.hideLoadingScreenImmediately();
             }
         });
     }
@@ -203,7 +166,7 @@ public class DriverBioActivity extends AppCompatActivity {
         loadingScreen.updateProgress();
 
         if (teamId == null) {
-            getNationInfo(driver.getNationality());
+            getNationInfo(driver != null ? driver.getNationality() : null);
             return;
         }
 
@@ -221,16 +184,14 @@ public class DriverBioActivity extends AppCompatActivity {
             } else {
                 Log.w(TAG, "GET CONSTRUCTOR ERROR: " + result.getError());
             }
-            getNationInfo(driver.getNationality());
+            getNationInfo(driver != null ? driver.getNationality() : null);
         };
         constructorMutableLiveData.observe(this, observerHolder[0]);
     }
 
     public void getNationInfo(String nationId) {
         if (nationId == null) {
-            boolean hasTeam = (driver != null && driver.getTeam_id() != null && team != null);
-            setDriverData(driver, null, team, hasTeam, hasTeam ? driver.getTeam_id() : null);
-            setToolbar(hasTeam, hasTeam ? driver.getTeam_id() : null);
+            setupDriverBio(driver, null, team);
             return;
         }
 
@@ -243,251 +204,66 @@ public class DriverBioActivity extends AppCompatActivity {
                     return;
                 }
                 nationMutableLiveData.removeObserver(observerHolder[0]);
-                boolean hasTeam = (driver != null && driver.getTeam_id() != null && team != null);
                 if (result.isSuccess()) {
                     nation = ((Result.NationSuccess) result).getData();
                     Log.i(TAG, "GET NATION SUCCESS: " + nation);
                 } else {
                     Log.w(TAG, "GET NATION ERROR: " + result.getError());
                 }
-                setDriverData(driver, nation, team, hasTeam, hasTeam ? driver.getTeam_id() : null);
-                setToolbar(hasTeam, hasTeam ? driver.getTeam_id() : null);
+                setupDriverBio(driver, nation, team);
             };
             nationMutableLiveData.observe(this, observerHolder[0]);
         } catch (RuntimeException e) {
             Log.e(TAG, "Error fetching nation data: " + e.getMessage());
-            boolean hasTeam = (driver != null && driver.getTeam_id() != null && team != null);
-            setDriverData(driver, null, team, hasTeam, hasTeam ? driver.getTeam_id() : null);
-            setToolbar(hasTeam, hasTeam ? driver.getTeam_id() : null);
+            setupDriverBio(driver, null, team);
         }
     }
 
-    public void setToolbar(boolean teamIdPresent, String teamId) {
-
-        UIUtils.singleSetTextViewText((driver.getGivenName() + " " + driver.getFamilyName()).toUpperCase(java.util.Locale.ROOT),
-                findViewById(R.id.topAppBarTitle));
-
-        if (teamIdPresent) {
-            Integer teamColor;
-            try {
-                teamColor = Constants.TEAM_COLOR.get(teamId);
-            } catch (Exception e) {
-                teamColor = R.color.timer_gray;
-            }
-            if (teamColor == null) {
-                teamColor = R.color.timer_gray;
-            }
-
-            toolbar.setBackgroundColor(ContextCompat.getColor(this, teamColor));
-            appBarLayout.setBackgroundColor(ContextCompat.getColor(this, teamColor));
-
-            TextView driverHistoryTitle = findViewById(R.id.driver_history_title);
-            driverHistoryTitle.setTextColor(ContextCompat.getColor(this, teamColor));
-
-            TextView seasonStatsTitle = findViewById(R.id.season_stats_title);
-            seasonStatsTitle.setTextColor(ContextCompat.getColor(this, teamColor));
-
-            teamLogoCard.setOnClickListener(v ->
-                    NavigationUtils.navigateToBioPage(this, team.getConstructorId(), 0));
-        } else {
-            toolbar.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
-            appBarLayout.setBackgroundColor(ContextCompat.getColor(this, R.color.timer_gray));
-        }
-    }
-
-    private void setDriverData(Driver driver, Nation nation, Constructor team, boolean teamIdPresent, String teamId) {
-        if (teamIdPresent) {
-            Integer teamColor;
-            try {
-                teamColor = Constants.TEAM_COLOR.get(teamId);
-            } catch (Exception e) {
-                teamColor = R.color.timer_gray;
-            }
-            if (teamColor == null) {
-                teamColor = R.color.timer_gray;
-            }
-
-            teamLogoCard.setStrokeColor(ContextCompat.getColor(this, teamColor));
-
-            if (team != null && "rb".equals(team.getConstructorId())) {
-                teamLogoCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white));
-            }
-        } else {
-            teamLogoCard.setStrokeColor(ContextCompat.getColor(this, R.color.timer_gray));
+    private void setupDriverBio(Driver driver, Nation nation, Constructor team) {
+        if (driver == null) {
+            loadingScreen.hideLoadingScreenImmediately();
+            return;
         }
 
-        // Popola subito tutti i dati di testo, i tachimetri e la tabella dello storico
-        UIUtils.multipleSetTextViewText(
-                new String[]{driver.getBirth_place(),
-                        driver.getDateOfBirth(),
-                        driver.getDriverAgeAsString(),
-                        driver.getWeight(),
-                        driver.getHeight(),
-                        driver.getBest_result(),
-                        driver.getPodiums(),
-                        driver.getChampionships(),
-                        driver.getFirst_entry()},
+        boolean hasTeam = (driver.getTeam_id() != null && team != null);
+        Integer teamColorRes = null;
+        if (hasTeam) {
+            try {
+                teamColorRes = Constants.TEAM_COLOR.get(driver.getTeam_id());
+            } catch (Exception ignored) {}
+        }
+        if (teamColorRes == null) {
+            teamColorRes = R.color.timer_gray;
+        }
+        int resolvedColor = ContextCompat.getColor(this, teamColorRes);
 
-                new TextView[]{findViewById(R.id.driver_birthplace),
-                        findViewById(R.id.driver_birthdate),
-                        findViewById(R.id.driver_age),
-                        findViewById(R.id.driver_weight),
-                        findViewById(R.id.driver_height),
-                        findViewById(R.id.driver_best_result),
-                        findViewById(R.id.driver_podiums),
-                        findViewById(R.id.driver_championships),
-                        findViewById(R.id.driver_first_entry)
-                }
+        UIUtils.singleSetTextViewText(
+                (driver.getGivenName() + " " + driver.getFamilyName()).toUpperCase(Locale.ROOT),
+                findViewById(R.id.topAppBarTitle)
         );
 
-        DriverSeasonStats seasonStats = driver.getSeason_stats();
-        String seasonWins = "0";
-        String seasonPodiums = "0";
-        String seasonPoles = "0";
-        String seasonDnfs = "0";
-        String seasonPosition = "-";
-        String seasonPoints = "0";
+        toolbar.setBackgroundColor(resolvedColor);
+        appBarLayout.setBackgroundColor(resolvedColor);
+        tabLayout.setSelectedTabIndicatorColor(resolvedColor);
+        tabLayout.setTabTextColors(resolvedColor, resolvedColor);
 
-        if (seasonStats != null) {
-            if (seasonStats.getWins() != null) seasonWins = seasonStats.getWins();
-            if (seasonStats.getPodiums() != null) seasonPodiums = seasonStats.getPodiums();
-            if (seasonStats.getPoles() != null) seasonPoles = seasonStats.getPoles();
-            if (seasonStats.getDnfs() != null) seasonDnfs = seasonStats.getDnfs();
-            if (seasonStats.getSeason_position() != null) seasonPosition = seasonStats.getSeason_position();
-            if (seasonStats.getSeason_points() != null) seasonPoints = seasonStats.getSeason_points();
-        }
+        DriverBioPagerAdapter pagerAdapter = new DriverBioPagerAdapter(this, driverId, driver, nation, team);
+        viewPager.setAdapter(pagerAdapter);
 
-        UIUtils.multipleSetTextViewText(
-                new String[]{seasonWins, seasonPodiums, seasonPoles, seasonDnfs, seasonPosition, seasonPoints},
-                new TextView[]{
-                        findViewById(R.id.driver_season_wins),
-                        findViewById(R.id.driver_season_podiums),
-                        findViewById(R.id.driver_season_poles),
-                        findViewById(R.id.driver_season_dnfs),
-                        findViewById(R.id.driver_season_position),
-                        findViewById(R.id.driver_season_points)
-                }
-        );
-
-        TextView driverSeasonPosition = findViewById(R.id.driver_season_position);
-
-        if(!seasonPosition.equals("-")){
-            if(seasonPosition.equals("1")){
-                driverSeasonPosition.setTextColor(ContextCompat.getColor(this, R.color.yellow));
-            } else if(seasonPosition.equals("2")){
-                driverSeasonPosition.setTextColor(ContextCompat.getColor(this, R.color.silver));
-            } else if(seasonPosition.equals("3")){
-                driverSeasonPosition.setTextColor(ContextCompat.getColor(this, R.color.bronze));
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            switch (position) {
+                case 0:
+                    tab.setText(R.string.tab_bio);
+                    break;
+                case 1:
+                    tab.setText(R.string.tab_history);
+                    break;
+                case 2:
+                    tab.setText(R.string.tab_charts);
+                    break;
             }
-        }
-
-        ImageView btnSeasonChart = findViewById(R.id.btn_season_chart);
-        if (btnSeasonChart != null) {
-            btnSeasonChart.setOnClickListener(v -> {
-                String driverFullName = (driver.getGivenName() + " " + driver.getFamilyName()).trim();
-                Integer teamColorRes = null;
-                try {
-                    if (driver.getTeam_id() != null) {
-                        teamColorRes = Constants.TEAM_COLOR.get(driver.getTeam_id());
-                    }
-                } catch (Exception ignored) {}
-                int resolvedColor = ContextCompat.getColor(this, teamColorRes != null ? teamColorRes : R.color.app_primary_red);
-                SeasonPerformanceChartFragment fragment = SeasonPerformanceChartFragment.newInstanceForDriver(
-                        driverId,
-                        driverFullName,
-                        driver.getTeam_id(),
-                        resolvedColor,
-                        driver.getSeason_stats()
-                );
-                fragment.show(getSupportFragmentManager(), SeasonPerformanceChartFragment.TAG);
-            });
-        }
-
-        UIUtils.updateTachometers(this, driver, winPercentageTachometer, podiumPercentageTachometer);
-        createHistoryTable();
+        }).attach();
 
         loadingScreen.hideLoadingScreenImmediately();
-        if (winPercentageTachometer != null) winPercentageTachometer.startAnimation();
-        if (podiumPercentageTachometer != null) podiumPercentageTachometer.startAnimation();
-
-        String nationFlagUrl = nation != null ? nation.getNation_flag_url() : null;
-        String teamLogoUrl = team != null ? team.getTeam_logo_url() : null;
-
-        // Carica tutte le immagini in parallelo in background
-        UIUtils.loadImagesInParallel(this,
-                new String[]{
-                        teamLogoUrl,
-                        nationFlagUrl,
-                        driver.getDriver_full_pic_url(),
-                        driver.getRacing_number_pic_url()},
-
-                new ImageView[]{
-                        teamLogoImage,
-                        findViewById(R.id.driver_flag),
-                        findViewById(R.id.driver_bio_pic),
-                        driverNumberImage},
-
-                () -> Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: DriverBioActivity at " + System.currentTimeMillis()));
-    }
-
-
-
-    private void createHistoryTable() {
-        loadingScreen.updateProgress();
-
-        View driverHistoryLayout = findViewById(R.id.driver_history);
-
-        TableLayout tableLayout = findViewById(R.id.history_table);
-        tableLayout.removeAllViews();
-        LayoutInflater inflater = LayoutInflater.from(this);
-
-        if (driver.getDriver_history() != null) {
-            driverHistoryLayout.setVisibility(View.VISIBLE);
-            tableLayout.setVisibility(View.VISIBLE);
-
-            View tableHeader = inflater.inflate(R.layout.driver_bio_table_header, tableLayout, false);
-            tableLayout.addView(tableHeader);
-
-            List<DriverHistory> driverHistoryList = driver.getDriver_history();
-            for (int i = driverHistoryList.size() - 1; i >= 0; i--) {
-                DriverHistory driverHistory = driverHistoryList.get(i);
-                View tableRow = inflater.inflate(R.layout.driver_bio_table_row, tableLayout, false);
-
-                if (i % 2 == 1) {
-                    tableRow.setBackgroundColor(0x0AFFFFFF);
-                } else {
-                    tableRow.setBackgroundColor(android.graphics.Color.TRANSPARENT);
-                }
-
-                UIUtils.multipleSetTextViewText(
-                        new String[]{
-                                driverHistory.getYear(),
-                                driverHistory.getTeam(),
-                                driverHistory.getPosition(),
-                                driverHistory.getPoints(),
-                                driverHistory.getWins(),
-                                driverHistory.getPodiums()},
-
-                        new TextView[]{
-                                tableRow.findViewById(R.id.season_year),
-                                tableRow.findViewById(R.id.team_name),
-                                tableRow.findViewById(R.id.driver_position),
-                                tableRow.findViewById(R.id.driver_points),
-                                tableRow.findViewById(R.id.driver_wins),
-                                tableRow.findViewById(R.id.driver_podiums)}
-                );
-
-                tableLayout.addView(tableRow);
-            }
-        } else {
-            Log.e(TAG, "Driver history is null");
-            driverHistoryLayout.setVisibility(View.GONE);
-            tableLayout.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
     }
 }

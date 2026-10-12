@@ -254,7 +254,8 @@
     <string name="f3_notif_practice">Prove Libere</string>
     <string name="news">Notizie</string>
     <string name="preferences">Preferenze</string>
-    <string name="air">aria</string>
-    <string name="current_time">ora corrente:</string>
+    <string name="tab_bio">BIO</string>
+    <string name="tab_history">STORICO</string>
+    <string name="tab_charts">GRAFICI</string>
 
 </resources>

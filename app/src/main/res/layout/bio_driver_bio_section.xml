@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:orientation="horizontal">
+
+    <!-- Driver Portrait -->
+    <ImageView
+        android:id="@+id/driver_bio_pic"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="8dp"
+        android:layout_weight="0.9"
+        android:adjustViewBounds="true"
+        android:importantForAccessibility="no"
+        android:scaleType="fitCenter" />
+
+    <!-- Vertical Subtle Divider -->
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:background="@color/subtle_white_border" />
+
+    <!-- Driver Stats Column -->
+    <LinearLayout
+        android:id="@+id/driver_stats"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_weight="1.1"
+        android:orientation="vertical">
+
+        <!-- Place of Birth -->
+        <TextView
+            style="@style/t10UpperCaseBoldWhiteLineLimited"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="@string/place_of_birth_index"
+            android:textColor="@color/timer_gray" />
+
+        <TextView
+            android:id="@+id/driver_birthplace"
+            style="@style/t12BoldWhiteLineLimited"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="start"
+            android:text="@string/not_found" />
+
+        <!-- Date of Birth -->
+        <TextView
+            style="@style/t10UpperCaseBoldWhiteLineLimited"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="start"
+            android:text="@string/date_of_birth_index"
+            android:textColor="@color/timer_gray" />
+
+        <TextView
+            android:id="@+id/driver_birthdate"
+            style="@style/t12BoldWhiteLineLimited"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="start"
+            android:text="@string/not_found" />
+
+        <!-- Age -->
+        <TextView
+            style="@style/t10UpperCaseBoldWhiteLineLimited"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="start"
+            android:text="@string/age_index"
+            android:textColor="@color/timer_gray" />
+
+        <TextView
+            android:id="@+id/driver_age"
+            style="@style/t12BoldWhiteLineLimited"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="start"
+            android:text="@string/not_found" />
+
+        <!-- Weight / Height -->
+        <TextView
+            style="@style/t10UpperCaseBoldWhiteLineLimited"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="start"
+            android:text="@string/weight_height_index"
+            android:textColor="@color/timer_gray" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="center_vertical|start"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/driver_weight"
+                style="@style/t12BoldWhiteLineLimited"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/not_found" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:fontFamily="@font/orbitron_regular"
+                android:text="@string/kg"
+                android:textColor="@color/timer_gray"
+                android:textSize="@dimen/text_minor_importance_size" />
+
+            <TextView
+                style="@style/t12RegularWhiteLineLimited"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="@string/separator_high_dash"
+                android:textColor="@color/timer_gray" />
+
+            <TextView
+                android:id="@+id/driver_height"
+                style="@style/t12BoldWhiteLineLimited"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/not_found" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:fontFamily="@font/orbitron_regular"
+                android:text="@string/m"
+                android:textColor="@color/timer_gray"
+                android:textSize="@dimen/text_minor_importance_size" />
+
+        </LinearLayout>
+
+        <!-- Best Result -->
+        <TextView
+            style="@style/t10UpperCaseBoldWhiteLineLimited"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="start"
+            android:text="@string/best_result_index"
+            android:textColor="@color/timer_gray" />
+
+        <TextView
+            android:id="@+id/driver_best_result"
+            style="@style/t12BoldWhiteLineLimited"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="start"
+            android:text="@string/not_found" />
+
+        <!-- Podiums -->
+        <TextView
+            style="@style/t10UpperCaseBoldWhiteLineLimited"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="start"
+            android:text="@string/podiums_index"
+            android:textColor="@color/timer_gray" />
+
+        <TextView
+            android:id="@+id/driver_podiums"
+            style="@style/t12BoldWhiteLineLimited"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="start"
+            android:text="@string/not_found" />
+
+        <!-- Championships -->
+        <TextView
+            style="@style/t10UpperCaseBoldWhiteLineLimited"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="start"
+            android:text="@string/championships_index"
+            android:textColor="@color/timer_gray" />
+
+        <TextView
+            android:id="@+id/driver_championships"
+            style="@style/t12BoldWhiteLineLimited"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="start"
+            android:text="@string/not_found" />
+
+        <!-- First Entry -->
+        <TextView
+            style="@style/t10UpperCaseBoldWhiteLineLimited"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="start"
+            android:text="@string/first_entry_index"
+            android:textColor="@color/timer_gray" />
+
+        <TextView
+            android:id="@+id/driver_first_entry"
+            style="@style/t12BoldWhiteLineLimited"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="start"
+            android:text="@string/not_found" />
+
+    </LinearLayout>
+
+</LinearLayout>

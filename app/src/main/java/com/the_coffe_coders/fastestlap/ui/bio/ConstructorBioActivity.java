@@ -2,13 +2,8 @@ package com.the_coffe_coders.fastestlap.ui.bio;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TableLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
@@ -16,20 +11,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.adapter.f1.ConstructorBioPagerAdapter;
 import com.the_coffe_coders.fastestlap.domain.Result;
 import com.the_coffe_coders.fastestlap.domain.f1.constructor.Constructor;
-import com.the_coffe_coders.fastestlap.domain.f1.constructor.ConstructorHistory;
-import com.the_coffe_coders.fastestlap.domain.f1.constructor.ConstructorSeasonStats;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
-import com.the_coffe_coders.fastestlap.ui.bio.fragment.SeasonPerformanceChartFragment;
 import com.the_coffe_coders.fastestlap.ui.bio.handler.FavoriteBioHandler;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
@@ -44,31 +38,31 @@ import com.the_coffe_coders.fastestlap.util.service.NetworkUtils;
 import com.the_coffe_coders.fastestlap.util.service.ServiceLocator;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
-import com.the_coffe_coders.fastestlap.util.ui.TachometerView;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
-import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ConstructorBioActivity extends AppCompatActivity {
 
     private static final String TAG = "ConstructorBioActivity";
-    LoadingScreen loadingScreen;
-    MaterialToolbar toolbar;
-    AppBarLayout appBarLayout;
+    private LoadingScreen loadingScreen;
+    private MaterialToolbar toolbar;
+    private AppBarLayout appBarLayout;
+    private TabLayout tabLayout;
+    private ViewPager2 viewPager;
+    private String teamId;
+
     private DriverViewModel driverViewModel;
     private NationViewModel nationViewModel;
     private ConstructorViewModel constructorViewModel;
     private UserViewModel userViewModel;
     private FavoriteBioHandler favoriteBioHandler;
 
-    private SwipeRefreshLayout constructorBioLayout;
-    private String teamId;
     private Constructor constructor;
     private Nation nation;
     private Driver driverOne;
     private Driver driverTwo;
-
-    private TachometerView winPercentageTachometer, podiumPercentageTachometer;
 
     private NetworkUtils networkLiveData;
 
@@ -85,14 +79,18 @@ public class ConstructorBioActivity extends AppCompatActivity {
     }
 
     private void start() {
-        constructorBioLayout = findViewById(R.id.constructor_bio_layout);
+        tabLayout = findViewById(R.id.tab_layout);
+        viewPager = findViewById(R.id.view_pager);
+        viewPager.setUserInputEnabled(false);
 
-        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, constructorBioLayout, null);
+        loadingScreen = new LoadingScreen(getWindow().getDecorView(), this, viewPager, null);
         loadingScreen.showLoadingScreen(false);
         loadingScreen.updateProgress();
 
         toolbar = findViewById(R.id.topAppBar);
         UIUtils.applyWindowInsets(toolbar);
+
+        UIUtils.applyWindowInsets(viewPager);
 
         toolbar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
@@ -105,10 +103,10 @@ public class ConstructorBioActivity extends AppCompatActivity {
                         teamId,
                         Constants.SHARED_PREFERENCES_FAVORITE_TEAM,
                         favoriteItem,
-                        favoriteId -> {
+                        favId -> {
                             String idToken = userViewModel.getLoggedUser() != null ? userViewModel.getLoggedUser().getIdToken() : null;
                             if (idToken != null) {
-                                userViewModel.saveUserConstructorPreferences(favoriteId, idToken);
+                                userViewModel.saveUserConstructorPreferences(favId, idToken);
                             }
                         });
 
@@ -128,39 +126,10 @@ public class ConstructorBioActivity extends AppCompatActivity {
 
         appBarLayout = findViewById(R.id.top_bar_layout);
 
-        UIUtils.applyWindowInsets(constructorBioLayout);
-        constructorBioLayout.setOnRefreshListener(() -> {
-            if (networkLiveData.isConnected()) {
-                if (constructorViewModel != null && teamId != null) {
-                    if (constructor != null) {
-                        if (constructor.getDriverOneId() != null && driverViewModel != null) {
-                            driverViewModel.refreshDriver(constructor.getDriverOneId());
-                        }
-                        if (constructor.getDriverTwoId() != null && driverViewModel != null) {
-                            driverViewModel.refreshDriver(constructor.getDriverTwoId());
-                        }
-                        if (constructor.getNationality() != null && nationViewModel != null) {
-                            nationViewModel.refreshNation(constructor.getNationality());
-                        }
-                    }
-                    constructorViewModel.refreshConstructor(teamId);
-                } else {
-                    constructorBioLayout.setRefreshing(false);
-                }
-            } else {
-                Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
-                constructorBioLayout.setRefreshing(false);
-            }
-        });
-
         teamId = getIntent().getStringExtra("TEAM_ID");
-        Log.i("ConstructorBioActivity", "Team ID: " + teamId);
-
-        winPercentageTachometer = findViewById(R.id.win_percentage_tachometer_team);
-        podiumPercentageTachometer = findViewById(R.id.podium_percentage_tachometer_team);
+        Log.i(TAG, "Team ID: " + teamId);
 
         initializeViewModels();
-
     }
 
     private void initializeViewModels() {
@@ -173,14 +142,12 @@ public class ConstructorBioActivity extends AppCompatActivity {
         createConstructorBioPage(teamId);
     }
 
-
     private void createConstructorBioPage(String teamId) {
         MutableLiveData<Result> data = constructorViewModel.getSelectedConstructor(teamId);
         data.observe(this, result -> {
             if (result instanceof Result.Loading) {
                 return;
             }
-            constructorBioLayout.setRefreshing(false);
             if (result.isSuccess()) {
                 constructor = ((Result.ConstructorSuccess) result).getData();
 
@@ -189,57 +156,23 @@ public class ConstructorBioActivity extends AppCompatActivity {
                 } else {
                     Log.i(TAG, "Constructor loaded: " + constructor);
 
-                    UIUtils.singleSetTextViewText(constructor.getName().toUpperCase(), findViewById(R.id.topAppBarTitle));
-
-                    Integer teamColor = Constants.TEAM_COLOR.get(teamId);
-                    if (teamColor == null) {
-                        teamColor = R.color.timer_gray;
-                    }
-
-                    toolbar.setBackgroundColor(ContextCompat.getColor(this, teamColor));
-                    appBarLayout.setBackgroundColor(ContextCompat.getColor(this, teamColor));
-
-                    TextView teamHistoryTitle = findViewById(R.id.team_history_title);
-                    teamHistoryTitle.setTextColor(ContextCompat.getColor(this, teamColor));
-
-                    TextView teamInfoTitle = findViewById(R.id.team_info_title);
-                    teamInfoTitle.setTextColor(ContextCompat.getColor(this, teamColor));
-
-                    TextView driversTitle = findViewById(R.id.drivers_title);
-                    driversTitle.setTextColor(ContextCompat.getColor(this, teamColor));
-
-                    TextView teamSeasonStatsTitle = findViewById(R.id.team_season_stats_title);
-                    if (teamSeasonStatsTitle != null) {
-                        teamSeasonStatsTitle.setTextColor(ContextCompat.getColor(this, teamColor));
-                    }
-
-                    MaterialCardView teamLogoCard = findViewById(R.id.team_logo_card);
-                    teamLogoCard.setStrokeColor(ContextCompat.getColor(this, teamColor));
-
-                    if (teamId.equals("rb")) {
-                        teamLogoCard.setCardBackgroundColor(ContextCompat.getColor(this, R.color.white));
-                    }
-
-                    UIUtils.styleDriverCard(this, findViewById(R.id.driver_1_card), teamColor);
-                    UIUtils.styleDriverCard(this, findViewById(R.id.driver_2_card), teamColor);
-
                     favoriteBioHandler.updateFavoriteIcon(toolbar.getMenu(), R.id.favourite_icon_outline, teamId, Constants.SHARED_PREFERENCES_FAVORITE_TEAM);
 
                     fetchAllTeamDependencies(constructor);
                 }
             } else {
                 Log.e(TAG, "Error fetching constructor: " + result.getError());
-                loadingScreen.hideLoadingScreen();
+                loadingScreen.hideLoadingScreenImmediately();
             }
         });
     }
 
     private void fetchAllTeamDependencies(Constructor team) {
-        java.util.concurrent.atomic.AtomicInteger pendingCount = new java.util.concurrent.atomic.AtomicInteger(3);
+        AtomicInteger pendingCount = new AtomicInteger(3);
 
         Runnable checkComplete = () -> {
             if (pendingCount.decrementAndGet() == 0) {
-                setTeamData(constructor, nation, driverOne, driverTwo);
+                setupConstructorBio(constructor, nation, driverOne, driverTwo);
             }
         };
 
@@ -253,9 +186,6 @@ public class ConstructorBioActivity extends AppCompatActivity {
                 driver1Data.removeObserver(observer1[0]);
                 if (result.isSuccess()) {
                     driverOne = ((Result.DriverSuccess) result).getData();
-                    MaterialCardView driverOneCard = findViewById(R.id.driver_1_card);
-                    driverOneCard.setOnClickListener(v ->
-                            NavigationUtils.navigateToBioPage(this, driverOne.getDriverId(), 1));
                 }
                 checkComplete.run();
             };
@@ -274,9 +204,6 @@ public class ConstructorBioActivity extends AppCompatActivity {
                 driver2Data.removeObserver(observer2[0]);
                 if (result.isSuccess()) {
                     driverTwo = ((Result.DriverSuccess) result).getData();
-                    MaterialCardView driverTwoCard = findViewById(R.id.driver_2_card);
-                    driverTwoCard.setOnClickListener(v ->
-                            NavigationUtils.navigateToBioPage(this, driverTwo.getDriverId(), 1));
                 }
                 checkComplete.run();
             };
@@ -309,195 +236,52 @@ public class ConstructorBioActivity extends AppCompatActivity {
         }
     }
 
-    private void setTeamData(Constructor team, Nation nation, Driver driverOne, Driver driverTwo) {
-        loadingScreen.updateProgress();
+    private void setupConstructorBio(Constructor team, Nation nation, Driver driverOne, Driver driverTwo) {
+        if (team == null) {
+            loadingScreen.hideLoadingScreenImmediately();
+            return;
+        }
 
-        String d1Name = driverOne != null ? driverOne.getGivenName() + " " + driverOne.getFamilyName() : "TBA";
-        String d2Name = driverTwo != null ? driverTwo.getGivenName() + " " + driverTwo.getFamilyName() : "TBA";
-
-        // Popola subito tutti i dati di testo, i tachimetri e la tabella dello storico
-        UIUtils.multipleSetTextViewText(
-                new String[]{d1Name,
-                        d2Name,
-                        team.getFull_name(),
-                        team.getHq(),
-                        team.getTeam_principal(),
-                        team.getChassis(),
-                        team.getPower_unit(),
-                        team.getFirst_entry(),
-                        team.getWorld_championships(),
-                        team.getWins(),
-                        team.getPodiums()},
-
-                new TextView[]{findViewById(R.id.driver_1_name),
-                        findViewById(R.id.driver_2_name),
-                        findViewById(R.id.team_full_name_value),
-                        findViewById(R.id.team_base_value),
-                        findViewById(R.id.team_principal_value),
-                        findViewById(R.id.team_chassis_value),
-                        findViewById(R.id.team_power_unit_value),
-                        findViewById(R.id.team_first_entry_value),
-                        findViewById(R.id.team_championships_value),
-                        findViewById(R.id.team_wins_value),
-                        findViewById(R.id.team_podiums_value)});
-
-        ConstructorSeasonStats seasonStats = team.getSeason_stats();
-        String seasonWins = "0";
-        String seasonPodiums = "0";
-        String seasonPoles = "0";
-        String seasonDnfs = "0";
-        String seasonPosition = "-";
-        String seasonPoints = "0";
-
-        if (seasonStats != null) {
-            if (seasonStats.getWins() != null) seasonWins = seasonStats.getWins();
-            if (seasonStats.getPodiums() != null) seasonPodiums = seasonStats.getPodiums();
-            if (seasonStats.getPoles() != null) seasonPoles = seasonStats.getPoles();
-            if (seasonStats.getDnfs() != null) seasonDnfs = seasonStats.getDnfs();
-            if (seasonStats.getSeason_position() != null && !seasonStats.getSeason_position().equals("0")) {
-                seasonPosition = seasonStats.getSeason_position();
+        Integer teamColorRes = null;
+        try {
+            if (team.getConstructorId() != null) {
+                teamColorRes = Constants.TEAM_COLOR.get(team.getConstructorId());
+            } else if (teamId != null) {
+                teamColorRes = Constants.TEAM_COLOR.get(teamId);
             }
-            if (seasonStats.getSeason_points() != null) seasonPoints = seasonStats.getSeason_points();
+        } catch (Exception ignored) {}
+        if (teamColorRes == null) {
+            teamColorRes = R.color.timer_gray;
         }
+        int resolvedColor = ContextCompat.getColor(this, teamColorRes);
 
-        if ("0".equals(seasonPosition)) {
-            seasonPosition = "-";
-        }
+        UIUtils.singleSetTextViewText(team.getName().toUpperCase(Locale.ROOT), findViewById(R.id.topAppBarTitle));
 
-        UIUtils.multipleSetTextViewText(
-                new String[]{seasonWins, seasonPodiums, seasonPoles, seasonDnfs, seasonPosition, seasonPoints},
-                new TextView[]{
-                        findViewById(R.id.team_season_wins),
-                        findViewById(R.id.team_season_podiums),
-                        findViewById(R.id.team_season_poles),
-                        findViewById(R.id.team_season_dnfs),
-                        findViewById(R.id.team_season_position),
-                        findViewById(R.id.team_season_points)
-                }
+        toolbar.setBackgroundColor(resolvedColor);
+        appBarLayout.setBackgroundColor(resolvedColor);
+        tabLayout.setSelectedTabIndicatorColor(resolvedColor);
+        tabLayout.setTabTextColors(
+                resolvedColor,
+                resolvedColor
         );
 
-        TextView teamSeasonPosition = findViewById(R.id.team_season_position);
+        ConstructorBioPagerAdapter pagerAdapter = new ConstructorBioPagerAdapter(this, teamId, team, nation, driverOne, driverTwo);
+        viewPager.setAdapter(pagerAdapter);
 
-        if (!seasonPosition.equals("-")) {
-            if (seasonPosition.equals("1")) {
-                teamSeasonPosition.setTextColor(ContextCompat.getColor(this, R.color.yellow));
-            } else if (seasonPosition.equals("2")) {
-                teamSeasonPosition.setTextColor(ContextCompat.getColor(this, R.color.silver));
-            } else if (seasonPosition.equals("3")) {
-                teamSeasonPosition.setTextColor(ContextCompat.getColor(this, R.color.bronze));
+        new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+            switch (position) {
+                case 0:
+                    tab.setText(R.string.tab_bio);
+                    break;
+                case 1:
+                    tab.setText(R.string.tab_history);
+                    break;
+                case 2:
+                    tab.setText(R.string.tab_charts);
+                    break;
             }
-        }
+        }).attach();
 
-        ImageView btnSeasonChart = findViewById(R.id.btn_season_chart);
-        if (btnSeasonChart != null) {
-            btnSeasonChart.setOnClickListener(v -> {
-                String constructorName = team.getName() != null && !team.getName().isEmpty()
-                        ? team.getName()
-                        : (team.getFull_name() != null ? team.getFull_name() : team.getConstructorId());
-                Integer teamColorRes = null;
-                try {
-                    if (team.getConstructorId() != null) {
-                        teamColorRes = Constants.TEAM_COLOR.get(team.getConstructorId());
-                    }
-                } catch (Exception ignored) {}
-                int resolvedColor = ContextCompat.getColor(this, teamColorRes != null ? teamColorRes : R.color.app_primary_red);
-                SeasonPerformanceChartFragment fragment = SeasonPerformanceChartFragment.newInstanceForConstructor(
-                        team.getConstructorId(),
-                        constructorName,
-                        resolvedColor,
-                        d1Name,
-                        d2Name,
-                        team.getSeason_stats()
-                );
-                fragment.show(getSupportFragmentManager(), SeasonPerformanceChartFragment.TAG);
-            });
-        }
-
-        UIUtils.updateTachometers(this, team, winPercentageTachometer, podiumPercentageTachometer);
-        createHistoryTable();
-
-        loadingScreen.hideLoadingScreen();
-        if (winPercentageTachometer != null) winPercentageTachometer.startAnimation();
-        if (podiumPercentageTachometer != null) podiumPercentageTachometer.startAnimation();
-
-        String nationFlagUrl = nation != null ? nation.getNation_flag_url() : null;
-        String d1HalfPic = driverOne != null ? driverOne.getDriver_half_pic_url() : null;
-        String d2HalfPic = driverTwo != null ? driverTwo.getDriver_half_pic_url() : null;
-
-        // Carica le immagini in parallelo in background
-        UIUtils.loadImagesInParallel(this,
-                new String[]{
-                        team.getTeam_logo_url(),
-                        nationFlagUrl,
-                        team.getCar_pic_url(),
-                        d1HalfPic,
-                        d2HalfPic},
-
-                new ImageView[]{
-                        findViewById(R.id.team_logo_image),
-                        findViewById(R.id.team_flag),
-                        findViewById(R.id.team_car_image),
-                        findViewById(R.id.driver_1_image),
-                        findViewById(R.id.driver_2_image)},
-
-                () -> Log.i("ActivityDataLog", "DATA_AND_IMAGES_FULLY_LOADED: ConstructorBioActivity at " + System.currentTimeMillis()));
-
-    }
-
-
-
-    private void createHistoryTable() {
-        loadingScreen.updateProgress();
-
-        View teamHistory = findViewById(R.id.team_history);
-
-        TableLayout tableLayout = findViewById(R.id.history_table);
-        tableLayout.removeAllViews();
-        LayoutInflater inflater = LayoutInflater.from(this);
-
-        if (constructor.getTeam_history() != null && !constructor.getTeam_history().isEmpty()) {
-            teamHistory.setVisibility(View.VISIBLE);
-            tableLayout.setVisibility(View.VISIBLE);
-
-            View tableHeader = inflater.inflate(R.layout.constructor_bio_table_header, tableLayout, false);
-            tableLayout.addView(tableHeader);
-
-            List<ConstructorHistory> constructorHistoryList = constructor.getTeam_history();
-            for (int i = constructorHistoryList.size() - 1; i >= 0; i--) {
-                ConstructorHistory constructorHistory = constructorHistoryList.get(i);
-                View tableRow = inflater.inflate(R.layout.constructor_bio_table_row, tableLayout, false);
-
-                if (i % 2 == 1) {
-                    tableRow.setBackgroundColor(0x0AFFFFFF);
-                } else {
-                    tableRow.setBackgroundColor(android.graphics.Color.TRANSPARENT);
-                }
-
-                UIUtils.multipleSetTextViewText(
-                        new String[]{constructorHistory.getYear(),
-                                constructorHistory.getPosition(),
-                                constructorHistory.getPoints(),
-                                constructorHistory.getWins(),
-                                constructorHistory.getPodiums()},
-
-                        new TextView[]{tableRow.findViewById(R.id.season_year),
-                                tableRow.findViewById(R.id.team_position),
-                                tableRow.findViewById(R.id.team_points),
-                                tableRow.findViewById(R.id.team_wins),
-                                tableRow.findViewById(R.id.team_podiums)}
-                );
-
-                tableLayout.addView(tableRow);
-            }
-        } else {
-            Log.e(TAG, "Constructor history is null");
-            teamHistory.setVisibility(View.GONE);
-            tableLayout.setVisibility(View.GONE);
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
+        loadingScreen.hideLoadingScreenImmediately();
     }
 }

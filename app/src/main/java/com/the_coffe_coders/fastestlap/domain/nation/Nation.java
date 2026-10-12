@@ -5,6 +5,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ import lombok.ToString;
 @AllArgsConstructor(onConstructor_ = @Ignore)
 @NoArgsConstructor
 @Entity(tableName = "Nation")
-public class Nation {
+public class Nation implements Serializable {
     private long uid;
     @PrimaryKey
     @NonNull

@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- SECTION 3: PARALLEL DRIVERS AND TEAM INFO -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:baselineAligned="false"
+    android:orientation="horizontal">
+
+    <!-- LEFT COLUMN: DRIVERS (UNA SOTTO L'ALTRA CENTRATE VERTICALMENTE) -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="0.85"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/drivers_title"
+            style="@style/t12UpperCaseBoldWhiteLineLimited"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/drivers_index" />
+
+        <!-- CONTAINER CENTRATO TRA IL TITOLO DRIVERS E LA FINE DELLA CARD -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <!-- Driver 1 -->
+            <LinearLayout
+                android:id="@+id/driver_1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/driver_1_card"
+                    android:layout_width="92dp"
+                    android:layout_height="92dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="@color/card_surface_dark"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="3dp"
+                    app:strokeColor="@color/subtle_white_border"
+                    app:strokeWidth="1.5dp">
+
+                    <ImageView
+                        android:id="@+id/driver_1_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="8dp"
+                        android:importantForAccessibility="no"
+                        android:scaleType="fitCenter" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:id="@+id/driver_1_name"
+                    style="@style/t12BoldWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:maxWidth="96dp"
+                    android:text="@string/not_found" />
+
+            </LinearLayout>
+
+            <!-- Spacing between Driver 1 and Driver 2 -->
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="14dp" />
+
+            <!-- Driver 2 -->
+            <LinearLayout
+                android:id="@+id/driver_2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/driver_2_card"
+                    android:layout_width="92dp"
+                    android:layout_height="92dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardBackgroundColor="@color/card_surface_dark"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="3dp"
+                    app:strokeColor="@color/subtle_white_border"
+                    app:strokeWidth="1.5dp">
+
+                    <ImageView
+                        android:id="@+id/driver_2_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="8dp"
+                        android:importantForAccessibility="no"
+                        android:scaleType="fitCenter" />
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <TextView
+                    android:id="@+id/driver_2_name"
+                    style="@style/t12BoldWhiteLineLimited"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:gravity="center"
+                    android:maxWidth="96dp"
+                    android:text="@string/not_found" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- VERTICAL DIVIDER -->
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
+        android:background="@color/subtle_white_border" />
+
+    <!-- RIGHT COLUMN: TEAM INFO -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.15"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/team_info_title"
+            style="@style/t12UpperCaseBoldWhiteLineLimited"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/team_info_index" />
+
+        <LinearLayout
+            android:id="@+id/team_stats"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical">
+
+            <!-- HQ / Base -->
+            <TextView
+                android:id="@+id/team_base_text"
+                style="@style/t10UpperCaseBoldWhiteLineLimited"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:text="@string/base_index"
+                android:textColor="@color/timer_gray" />
+
+            <TextView
+                android:id="@+id/team_base_value"
+                style="@style/t12BoldWhiteLineLimited"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="start"
+                android:text="@string/not_found" />
+
+            <!-- Team Principal -->
+            <TextView
+                android:id="@+id/team_principal_text"
+                style="@style/t10UpperCaseBoldWhiteLineLimited"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="start"
+                android:text="@string/team_principal_index"
+                android:textColor="@color/timer_gray" />
+
+            <TextView
+                android:id="@+id/team_principal_value"
+                style="@style/t12BoldWhiteLineLimited"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="start"
+                android:text="@string/not_found" />
+
+            <!-- Chassis -->
+            <TextView
+                android:id="@+id/team_chassis_text"
+                style="@style/t10UpperCaseBoldWhiteLineLimited"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="start"
+                android:text="@string/chassis_index"
+                android:textColor="@color/timer_gray" />
+
+            <TextView
+                android:id="@+id/team_chassis_value"
+                style="@style/t12BoldWhiteLineLimited"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="start"
+                android:text="@string/not_found" />
+
+            <!-- Power Unit -->
+            <TextView
+                android:id="@+id/team_power_unit_text"
+                style="@style/t10UpperCaseBoldWhiteLineLimited"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="start"
+                android:text="@string/power_unit_index"
+                android:textColor="@color/timer_gray" />
+
+            <TextView
+                android:id="@+id/team_power_unit_value"
+                style="@style/t12BoldWhiteLineLimited"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="start"
+                android:text="@string/not_found" />
+
+            <!-- First Entry -->
+            <TextView
+                android:id="@+id/team_first_entry_text"
+                style="@style/t10UpperCaseBoldWhiteLineLimited"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="start"
+                android:text="@string/first_entry_index"
+                android:textColor="@color/timer_gray" />
+
+            <TextView
+                android:id="@+id/team_first_entry_value"
+                style="@style/t12BoldWhiteLineLimited"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="start"
+                android:text="@string/not_found" />
+
+            <!-- World Championships -->
+            <TextView
+                android:id="@+id/team_championships_text"
+                style="@style/t10UpperCaseBoldWhiteLineLimited"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="start"
+                android:text="@string/world_championships_index"
+                android:textColor="@color/timer_gray" />
+
+            <TextView
+                android:id="@+id/team_championships_value"
+                style="@style/t12BoldWhiteLineLimited"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="start"
+                android:text="@string/not_found" />
+
+            <!-- Wins -->
+            <TextView
+                android:id="@+id/team_wins_text"
+                style="@style/t10UpperCaseBoldWhiteLineLimited"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="start"
+                android:text="@string/wins_index"
+                android:textColor="@color/timer_gray" />
+
+            <TextView
+                android:id="@+id/team_wins_value"
+                style="@style/t12BoldWhiteLineLimited"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="start"
+                android:text="@string/not_found" />
+
+            <!-- Podiums -->
+            <TextView
+                android:id="@+id/team_podiums_text"
+                style="@style/t10UpperCaseBoldWhiteLineLimited"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="start"
+                android:text="@string/podiums_index"
+                android:textColor="@color/timer_gray" />
+
+            <TextView
+                android:id="@+id/team_podiums_value"
+                style="@style/t12BoldWhiteLineLimited"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:gravity="start"
+                android:text="@string/not_found" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>
