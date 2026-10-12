@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -25,6 +27,7 @@ public class ConstructorSeasonStats implements Parcelable {
     private String poles;
     private String season_position;
     private String season_points;
+    private Map<String, EventResultConstructor> season_results;
 
     protected ConstructorSeasonStats(Parcel in) {
         wins = in.readString();
@@ -33,6 +36,7 @@ public class ConstructorSeasonStats implements Parcelable {
         poles = in.readString();
         season_position = in.readString();
         season_points = in.readString();
+        season_results = in.readHashMap(EventResultConstructor.class.getClassLoader());
     }
 
     @Override
@@ -43,6 +47,7 @@ public class ConstructorSeasonStats implements Parcelable {
         parcel.writeString(poles);
         parcel.writeString(season_position);
         parcel.writeString(season_points);
+        parcel.writeMap(season_results);
     }
 
     @Override

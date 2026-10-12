@@ -395,15 +395,68 @@
                             android:layout_marginBottom="10dp"
                             android:background="@color/subtle_white_border" />
 
-                        <!-- THIS SEASON'S NUMBERS TITLE -->
-                        <TextView
-                            android:id="@+id/season_stats_title"
-                            style="@style/t12UpperCaseBoldWhiteLineLimited"
+                        <!-- THIS SEASON'S NUMBERS TITLE & CHART BUTTON -->
+                        <RelativeLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="10dp"
-                            android:gravity="center"
-                            android:text="@string/this_season_numbers_title" />
+                            android:layout_marginBottom="10dp">
+
+                            <TextView
+                                android:id="@+id/season_stats_title"
+                                style="@style/t12UpperCaseBoldWhiteLineLimited"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentStart="true"
+                                android:layout_centerVertical="true"
+                                android:layout_toStartOf="@id/btn_season_chart"
+                                android:gravity="center"
+                                android:text="@string/this_season_numbers_title" />
+
+                            <com.google.android.material.card.MaterialCardView
+                                android:id="@+id/btn_season_chart"
+                                android:layout_width="wrap_content"
+                                android:layout_height="32dp"
+                                android:clickable="true"
+                                android:focusable="true"
+                                android:layout_alignParentEnd="true"
+                                android:outlineAmbientShadowColor="#40E10600"
+                                android:outlineSpotShadowColor="@color/app_primary_red"
+                                app:cardBackgroundColor="@color/app_primary_red"
+                                android:alpha="0.8"
+                                app:cardCornerRadius="10dp"
+                                app:cardElevation="3dp"
+                                app:rippleColor="#33FFFFFF"
+                                app:strokeWidth="0dp">
+
+                                <LinearLayout
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="match_parent"
+                                    android:gravity="center_vertical"
+                                    android:orientation="horizontal"
+                                    android:paddingStart="14dp"
+                                    android:paddingEnd="14dp">
+
+                                    <TextView
+                                        android:id="@+id/raceResult"
+                                        style="@style/t12UpperCaseBoldWhiteLineLimited"
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:maxLines="1"
+                                        android:text="@string/chart"
+                                        android:textColor="@color/white" />
+
+                                    <ImageView
+                                        android:layout_width="16dp"
+                                        android:layout_height="16dp"
+                                        android:layout_marginStart="6dp"
+                                        android:importantForAccessibility="no"
+                                        android:src="@drawable/ic_show_chart"
+                                        app:tint="@color/white" />
+                                </LinearLayout>
+
+                            </com.google.android.material.card.MaterialCardView>
+
+                        </RelativeLayout>
 
                         <!-- ROW 1: 4 STATS (WINS, PODIUMS, POLES, DNF) -->
                         <LinearLayout

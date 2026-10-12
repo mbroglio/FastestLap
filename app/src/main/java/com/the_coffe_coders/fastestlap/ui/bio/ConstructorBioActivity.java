@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +29,7 @@ import com.the_coffe_coders.fastestlap.domain.f1.constructor.ConstructorSeasonSt
 import com.the_coffe_coders.fastestlap.domain.f1.driver.Driver;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
+import com.the_coffe_coders.fastestlap.ui.bio.fragment.SeasonPerformanceChartFragment;
 import com.the_coffe_coders.fastestlap.ui.bio.handler.FavoriteBioHandler;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
@@ -386,6 +386,31 @@ public class ConstructorBioActivity extends AppCompatActivity {
             } else if (seasonPosition.equals("3")) {
                 teamSeasonPosition.setTextColor(ContextCompat.getColor(this, R.color.bronze));
             }
+        }
+
+        ImageView btnSeasonChart = findViewById(R.id.btn_season_chart);
+        if (btnSeasonChart != null) {
+            btnSeasonChart.setOnClickListener(v -> {
+                String constructorName = team.getName() != null && !team.getName().isEmpty()
+                        ? team.getName()
+                        : (team.getFull_name() != null ? team.getFull_name() : team.getConstructorId());
+                Integer teamColorRes = null;
+                try {
+                    if (team.getConstructorId() != null) {
+                        teamColorRes = Constants.TEAM_COLOR.get(team.getConstructorId());
+                    }
+                } catch (Exception ignored) {}
+                int resolvedColor = ContextCompat.getColor(this, teamColorRes != null ? teamColorRes : R.color.app_primary_red);
+                SeasonPerformanceChartFragment fragment = SeasonPerformanceChartFragment.newInstanceForConstructor(
+                        team.getConstructorId(),
+                        constructorName,
+                        resolvedColor,
+                        d1Name,
+                        d2Name,
+                        team.getSeason_stats()
+                );
+                fragment.show(getSupportFragmentManager(), SeasonPerformanceChartFragment.TAG);
+            });
         }
 
         UIUtils.updateTachometers(this, team, winPercentageTachometer, podiumPercentageTachometer);

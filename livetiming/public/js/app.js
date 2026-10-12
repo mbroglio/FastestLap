@@ -1,9 +1,8 @@
 /**
- * FastestLap LiveTiming - Web Application Main Controller
+ * FastestLap LiveTiming - Web Application Main Controller (Corretto)
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-  // DOM Elements
   const sessionTitleEl = document.getElementById('sessionTitle');
   const lapCountEl = document.getElementById('lapCount');
   const weatherAirEl = document.getElementById('weatherAir');
@@ -14,10 +13,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const rcFlagEl = document.getElementById('rcFlag');
   const rcTextEl = document.getElementById('rcText');
 
-  // Sub-controllers
   const trackCanvas = new TrackCanvas(document.getElementById('trackCanvas'));
   
-  let selectedDriver = '1';
+  let selectedDriver = null;
   let driversMap = {};
   let currentTelemetry = {};
 
@@ -37,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let currentMode = 'mock';
 
-  // Toggle Mode Button
   btnToggleMode.addEventListener('click', async () => {
     const nextMode = currentMode === 'live' ? 'mock' : 'live';
     try {
@@ -53,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
         updateModeUI();
       }
     } catch (e) {
-      console.error('Failed to switch mode:', e);
+      console.error('Errore cambio modalità:', e);
     } finally {
       btnToggleMode.disabled = false;
     }
@@ -71,9 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // ─────────────────────────────────────────────────────────────
-  // Server-Sent Events (SSE) Stream Receiver
-  // ─────────────────────────────────────────────────────────────
   let eventSource = null;
 
   function connectSSE() {
@@ -82,59 +76,65 @@ document.addEventListener('DOMContentLoaded', () => {
     eventSource = new EventSource('/api/stream');
 
     eventSource.addEventListener('INIT', (e) => {
-      const snap = JSON.parse(e.data);
-      applySnapshot(snap);
+      try { applySnapshot(JSON.parse(e.data)); } catch (err) {}
+    });
+
+    eventSource.addEventListener('SNAPSHOT', (e) => {
+      try { applySnapshot(JSON.parse(e.data)); } catch (err) {}
     });
 
     eventSource.addEventListener('TICK', (e) => {
-      const tick = JSON.parse(e.data);
-      if (tick.positions) trackCanvas.updatePositions(tick.positions);
-      if (tick.telemetry) {
-        Object.assign(currentTelemetry, tick.telemetry);
-        if (currentTelemetry[selectedDriver]) {
-          cockpit.updateTelemetry(currentTelemetry[selectedDriver]);
+      try {
+        const tick = JSON.parse(e.data);
+        if (tick.positions) trackCanvas.updatePositions(tick.positions);
+        if (tick.telemetry) {
+          Object.assign(currentTelemetry, tick.telemetry);
+          if (selectedDriver && currentTelemetry[selectedDriver]) {
+            cockpit.updateTelemetry(currentTelemetry[selectedDriver]);
+          }
         }
-      }
-      if (tick.leaderboard) timingTower.updateLeaderboard(tick.leaderboard);
+        if (tick.leaderboard) timingTower.updateLeaderboard(tick.leaderboard);
+      } catch (err) {}
     });
 
     eventSource.addEventListener('TIMING', (e) => {
-      const lb = JSON.parse(e.data);
-      timingTower.updateLeaderboard(lb);
+      try { timingTower.updateLeaderboard(JSON.parse(e.data)); } catch (err) {}
     });
 
     eventSource.addEventListener('TELEMETRY', (e) => {
-      const tel = JSON.parse(e.data);
-      Object.assign(currentTelemetry, tel);
-      if (currentTelemetry[selectedDriver]) {
-        cockpit.updateTelemetry(currentTelemetry[selectedDriver]);
-      }
+      try {
+        const tel = JSON.parse(e.data);
+        Object.assign(currentTelemetry, tel);
+        if (selectedDriver && currentTelemetry[selectedDriver]) {
+          cockpit.updateTelemetry(currentTelemetry[selectedDriver]);
+        }
+      } catch (err) {}
     });
 
     eventSource.addEventListener('POSITIONS', (e) => {
-      const pos = JSON.parse(e.data);
-      trackCanvas.updatePositions(pos);
+      try { trackCanvas.updatePositions(JSON.parse(e.data)); } catch (err) {}
     });
 
     eventSource.addEventListener('RACE_CONTROL', (e) => {
-      const msgs = JSON.parse(e.data);
-      if (Array.isArray(msgs) && msgs.length > 0) {
-        const last = msgs[msgs.length - 1];
-        updateRaceControlUI(last);
-      }
+      try {
+        const msgs = JSON.parse(e.data);
+        if (Array.isArray(msgs) && msgs.length > 0) {
+          updateRaceControlUI(msgs[msgs.length - 1]);
+        }
+      } catch (err) {}
     });
 
     eventSource.addEventListener('MODE_CHANGE', (e) => {
-      const data = JSON.parse(e.data);
-      currentMode = data.mode;
-      updateModeUI();
+      try {
+        const data = JSON.parse(e.data);
+        currentMode = data.mode;
+        updateModeUI();
+      } catch (err) {}
     });
 
     eventSource.onerror = () => {
       statusBadgeEl.className = 'status-badge disconnected';
       statusBadgeEl.textContent = 'RICONNESSIONE...';
-      // Attempt fallback polling
-      pollFallback();
     };
   }
 
@@ -161,10 +161,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (snap.weather.Rainfall !== undefined) weatherRainEl.textContent = `${snap.weather.Rainfall}%`;
     }
 
-    if (snap.drivers) {
+    if (snap.drivers && Object.keys(snap.drivers).length > 0) {
       driversMap = snap.drivers;
       trackCanvas.updateDrivers(driversMap);
-      if (!selectedDriver && Object.keys(driversMap).length > 0) {
+
+      if (!selectedDriver || !driversMap[selectedDriver]) {
         selectedDriver = Object.keys(driversMap)[0];
       }
       cockpit.setDriver(selectedDriver, driversMap[selectedDriver]);
@@ -173,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (snap.leaderboard) {
       timingTower.updateLeaderboard(snap.leaderboard);
-      timingTower.setSelected(selectedDriver);
+      if (selectedDriver) timingTower.setSelected(selectedDriver);
     }
 
     if (snap.positions) {
@@ -182,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (snap.telemetry) {
       currentTelemetry = snap.telemetry;
-      if (currentTelemetry[selectedDriver]) {
+      if (selectedDriver && currentTelemetry[selectedDriver]) {
         cockpit.updateTelemetry(currentTelemetry[selectedDriver]);
       }
     }
@@ -202,16 +203,5 @@ document.addEventListener('DOMContentLoaded', () => {
     );
   }
 
-  async function pollFallback() {
-    try {
-      const res = await fetch('/api/snapshot');
-      if (res.ok) {
-        const snap = await res.json();
-        applySnapshot(snap);
-      }
-    } catch (e) {}
-  }
-
-  // Initial connect
   connectSSE();
 });

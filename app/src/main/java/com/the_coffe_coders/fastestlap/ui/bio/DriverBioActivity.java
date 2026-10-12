@@ -7,7 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,6 +29,7 @@ import com.the_coffe_coders.fastestlap.domain.f1.driver.DriverHistory;
 import com.the_coffe_coders.fastestlap.domain.f1.driver.DriverSeasonStats;
 import com.the_coffe_coders.fastestlap.domain.nation.Nation;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
+import com.the_coffe_coders.fastestlap.ui.bio.fragment.SeasonPerformanceChartFragment;
 import com.the_coffe_coders.fastestlap.ui.bio.handler.FavoriteBioHandler;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModel;
 import com.the_coffe_coders.fastestlap.ui.bio.viewmodel.ConstructorViewModelFactory;
@@ -379,6 +379,28 @@ public class DriverBioActivity extends AppCompatActivity {
             } else if(seasonPosition.equals("3")){
                 driverSeasonPosition.setTextColor(ContextCompat.getColor(this, R.color.bronze));
             }
+        }
+
+        ImageView btnSeasonChart = findViewById(R.id.btn_season_chart);
+        if (btnSeasonChart != null) {
+            btnSeasonChart.setOnClickListener(v -> {
+                String driverFullName = (driver.getGivenName() + " " + driver.getFamilyName()).trim();
+                Integer teamColorRes = null;
+                try {
+                    if (driver.getTeam_id() != null) {
+                        teamColorRes = Constants.TEAM_COLOR.get(driver.getTeam_id());
+                    }
+                } catch (Exception ignored) {}
+                int resolvedColor = ContextCompat.getColor(this, teamColorRes != null ? teamColorRes : R.color.app_primary_red);
+                SeasonPerformanceChartFragment fragment = SeasonPerformanceChartFragment.newInstanceForDriver(
+                        driverId,
+                        driverFullName,
+                        driver.getTeam_id(),
+                        resolvedColor,
+                        driver.getSeason_stats()
+                );
+                fragment.show(getSupportFragmentManager(), SeasonPerformanceChartFragment.TAG);
+            });
         }
 
         UIUtils.updateTachometers(this, driver, winPercentageTachometer, podiumPercentageTachometer);

@@ -1,6 +1,5 @@
 /**
- * FastestLap LiveTiming - Track Canvas Renderer
- * 2D Real-time Circuit Map & Driver Tracking with 60 FPS animation.
+ * FastestLap LiveTiming - Track Canvas Renderer (Corretto)
  */
 
 class TrackCanvas {
@@ -13,51 +12,43 @@ class TrackCanvas {
     this.animationId = null;
     this.trackImage = null;
 
-    // Default reference geometry (normalized parametric circuit fallback)
-    this.circuitNodes = this._generateDefaultCircuit();
+    // Bounding Box dinamico per scalare le coordinate cartesiane reali di F1
+    this.bounds = {
+      minX: Infinity,
+      maxX: -Infinity,
+      minY: Infinity,
+      maxY: -Infinity,
+      isCalibrated: false
+    };
+
+    // Scia di punti per ricostruire visivamente il tracciato reale in live
+    this.trackBreadcrumbs = [];
+    this.maxBreadcrumbs = 600;
 
     this._resize();
     window.addEventListener('resize', () => this._resize());
-    
-    // Esponi per bridge Android LiveActivity
     window.setCircuitImage = (url) => this.setCircuitImage(url);
-    
+
     this.startRendering();
   }
 
   setCircuitImage(url) {
-    if (!url || typeof url !== 'string' || url.trim().length === 0) return;
+    if (!url || typeof url !== 'string' || !url.trim()) return;
     const img = new Image();
     img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      this.trackImage = img;
-      console.log('[TrackCanvas] Layout tracciato caricato:', url);
-    };
-    img.onerror = () => {
-      console.warn('[TrackCanvas] Errore caricamento layout tracciato:', url);
-    };
+    img.onload = () => { this.trackImage = img; };
     img.src = url.trim();
-  }
-
-  _generateDefaultCircuit() {
-    const nodes = [];
-    const steps = 120;
-    for (let i = 0; i < steps; i++) {
-      const theta = (i / steps) * 2 * Math.PI;
-      const x = Math.sin(theta) * 400 + Math.sin(theta * 3) * 60;
-      const y = Math.cos(theta) * 220 + Math.cos(theta * 2) * 50;
-      nodes.push({ x, y });
-    }
-    return nodes;
   }
 
   _resize() {
     const rect = this.canvas.parentElement.getBoundingClientRect();
     this.width = rect.width;
     this.height = rect.height;
-    this.canvas.width = this.width * window.devicePixelRatio || this.width;
-    this.canvas.height = this.height * window.devicePixelRatio || this.height;
-    this.ctx.scale(window.devicePixelRatio || 1, window.devicePixelRatio || 1);
+    const dpr = window.devicePixelRatio || 1;
+    this.canvas.width = this.width * dpr;
+    this.canvas.height = this.height * dpr;
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    this.ctx.scale(dpr, dpr);
   }
 
   updateDrivers(driverMap) {
@@ -66,12 +57,30 @@ class TrackCanvas {
 
   updatePositions(positionsMap) {
     if (!positionsMap) return;
+
     for (const [num, pos] of Object.entries(positionsMap)) {
+      if (pos == null || typeof pos.x !== 'number' || typeof pos.y !== 'number') continue;
+      if (!Number.isFinite(pos.x) || !Number.isFinite(pos.y)) continue;
+
+      // Aggiornamento Bounding Box
+      if (pos.x < this.bounds.minX) this.bounds.minX = pos.x;
+      if (pos.x > this.bounds.maxX) this.bounds.maxX = pos.x;
+      if (pos.y < this.bounds.minY) this.bounds.minY = pos.y;
+      if (pos.y > this.bounds.maxY) this.bounds.maxY = pos.y;
+      this.bounds.isCalibrated = true;
+
+      // Memorizza la scia per disegnare la pista reale
+      if (this.trackBreadcrumbs.length < this.maxBreadcrumbs) {
+        this.trackBreadcrumbs.push({ x: pos.x, y: pos.y });
+      }
+
       if (!this.positions[num]) {
         this.positions[num] = { x: pos.x, y: pos.y, curX: pos.x, curY: pos.y };
       } else {
         this.positions[num].x = pos.x;
         this.positions[num].y = pos.y;
+        if (!Number.isFinite(this.positions[num].curX)) this.positions[num].curX = pos.x;
+        if (!Number.isFinite(this.positions[num].curY)) this.positions[num].curY = pos.y;
       }
     }
   }
@@ -96,102 +105,97 @@ class TrackCanvas {
 
     ctx.clearRect(0, 0, w, h);
 
-    const centerX = w / 2;
-    const centerY = h / 2;
-    const scale = Math.min(w / 1000, h / 650);
+    if (!this.bounds.isCalibrated) {
+      ctx.fillStyle = '#64748b';
+      ctx.font = '12px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('IN ATTESA DI COORDINATE TELEMETRICHE DALLA PISTA...', w / 2, h / 2);
+      return;
+    }
 
-    // 1. Draw Track Surface
-    ctx.save();
-    ctx.translate(centerX, centerY);
-    ctx.scale(scale, scale);
+    const padding = 40;
+    const spanX = Math.max(1, this.bounds.maxX - this.bounds.minX);
+    const spanY = Math.max(1, this.bounds.maxY - this.bounds.minY);
 
-    if (this.trackImage && this.trackImage.complete && this.trackImage.naturalWidth > 0) {
-      // Draw loaded official circuit SVG/WebP image
-      const imgW = this.trackImage.naturalWidth;
-      const imgH = this.trackImage.naturalHeight;
-      const fitRatio = Math.min(800 / imgW, 550 / imgH);
-      const dw = imgW * fitRatio;
-      const dh = imgH * fitRatio;
-      ctx.drawImage(this.trackImage, -dw / 2, -dh / 2, dw, dh);
-    } else {
-      // Fallback Vector Track Loop
+    const scaleX = (w - padding * 2) / spanX;
+    const scaleY = (h - padding * 2) / spanY;
+    const scale = Math.min(scaleX, scaleY);
+
+    const midX = (this.bounds.minX + this.bounds.maxX) / 2;
+    const midY = (this.bounds.minY + this.bounds.maxY) / 2;
+
+    const toScreenX = (x) => (w / 2) + (x - midX) * scale;
+    // Inverti asse Y cartesiano in coordinate schermo
+    const toScreenY = (y) => (h / 2) - (y - midY) * scale;
+
+    // 1. Disegna tracciato tramite breadcrumbs se non c'è immagine di sfondo
+    if (this.trackBreadcrumbs.length > 10) {
       ctx.beginPath();
-      this.circuitNodes.forEach((pt, i) => {
-        if (i === 0) ctx.moveTo(pt.x, pt.y);
-        else ctx.lineTo(pt.x, pt.y);
-      });
-      ctx.closePath();
-      ctx.strokeStyle = '#262f3f';
-      ctx.lineWidth = 18;
+      for (let i = 0; i < this.trackBreadcrumbs.length; i++) {
+        const pt = this.trackBreadcrumbs[i];
+        const sx = toScreenX(pt.x);
+        const sy = toScreenY(pt.y);
+        if (i === 0) ctx.moveTo(sx, sy);
+        else ctx.lineTo(sx, sy);
+      }
+      ctx.strokeStyle = '#1e293b';
+      ctx.lineWidth = 14;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
       ctx.stroke();
 
-      // Track Centerline
-      ctx.strokeStyle = '#10141c';
-      ctx.lineWidth = 14;
+      ctx.strokeStyle = '#0f172a';
+      ctx.lineWidth = 8;
       ctx.stroke();
-
-      // Start/Finish Line marker
-      if (this.circuitNodes.length > 0) {
-        const sf = this.circuitNodes[0];
-        ctx.fillStyle = '#ffffff';
-        ctx.fillRect(sf.x - 2, sf.y - 12, 4, 24);
-      }
     }
 
-    // 2. Draw Driver Positions
+    // 2. Rendering delle Monoposto
     for (const [num, pos] of Object.entries(this.positions)) {
-      if (pos.x === null || pos.y === null) continue;
+      if (!Number.isFinite(pos.x) || !Number.isFinite(pos.y)) continue;
 
-      // Smooth coordinate interpolation (lerp)
+      // LERP protetto da NaN[cite: 2]
       pos.curX += (pos.x - pos.curX) * 0.25;
       pos.curY += (pos.y - pos.curY) * 0.25;
 
+      const sx = toScreenX(pos.curX);
+      const sy = toScreenY(pos.curY);
+
+      if (!Number.isFinite(sx) || !Number.isFinite(sy)) continue;
+
       const driver = this.drivers[num] || {};
-      const teamColor = driver.TeamColour || '#ffffff';
+      const teamColor = driver.TeamColour ? (driver.TeamColour.startsWith('#') ? driver.TeamColour : `#${driver.TeamColour}`) : '#ffffff';
       const isSelected = this.selectedDriver === num;
 
-      // Halo for selected driver
+      // Alone pilota selezionato
       if (isSelected) {
         ctx.beginPath();
-        ctx.arc(pos.curX, pos.curY, 14, 0, 2 * Math.PI);
-        ctx.fillStyle = 'rgba(255, 23, 68, 0.35)';
+        ctx.arc(sx, sy, 14, 0, 2 * Math.PI);
+        ctx.fillStyle = 'rgba(225, 6, 0, 0.35)';
         ctx.fill();
-        ctx.strokeStyle = '#ff1744';
+        ctx.strokeStyle = '#e10600';
         ctx.lineWidth = 2;
         ctx.stroke();
       }
 
-      // Driver Circle
+      // Vettura
       ctx.beginPath();
-      ctx.arc(pos.curX, pos.curY, 8, 0, 2 * Math.PI);
-      ctx.fillStyle = teamColor.startsWith('#') ? teamColor : `#${teamColor}`;
+      ctx.arc(sx, sy, 7, 0, 2 * Math.PI);
+      ctx.fillStyle = teamColor;
       ctx.fill();
       ctx.strokeStyle = '#000000';
       ctx.lineWidth = 1.5;
       ctx.stroke();
 
-      // Number Label
-      ctx.fillStyle = '#000000';
+      // Etichetta TLA
+      const tla = driver.Tla || num;
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.85)';
+      ctx.fillRect(sx + 9, sy - 7, 24, 13);
+      ctx.fillStyle = '#ffffff';
       ctx.font = 'bold 8px monospace';
-      ctx.textAlign = 'center';
+      ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
-      ctx.fillText(num, pos.curX, pos.curY);
-
-      // Driver TLA pill
-      if (isSelected || scale > 0.8) {
-        const tla = driver.Tla || num;
-        ctx.fillStyle = 'rgba(10, 12, 16, 0.85)';
-        ctx.fillRect(pos.curX + 10, pos.curY - 7, 24, 12);
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 8px sans-serif';
-        ctx.textAlign = 'left';
-        ctx.fillText(tla, pos.curX + 12, pos.curY + 2);
-      }
+      ctx.fillText(tla, sx + 11, sy);
     }
-
-    ctx.restore();
   }
 }
 

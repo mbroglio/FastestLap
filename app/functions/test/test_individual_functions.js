@@ -495,6 +495,67 @@ const f1Functions = {
             console.log('✓ Career stats successfully repaired in database!');
             return updates;
         }
+    },
+
+    repopulateAllRaceUpdates: {
+        description: 'Repopulate all race updates directly under app_config/stats_tracker/race_updates/{round}',
+        args: ['season'],
+        example: 'node test_individual_functions.js f1 repopulateAllRaceUpdates current',
+        execute: async (db, season = 'current') => {
+            console.log(`Repopulating all race updates for season ${season}...`);
+            const result = await f1Logic.repopulateAllRaceUpdates(db, season);
+            console.log('\n✓ Repopulation completed:', result);
+            return result;
+        }
+    },
+
+    syncSeasonStatsForRound: {
+        description: 'Sync season stats (race, qualifying, sprint) for a specific round',
+        args: ['round', 'season'],
+        example: 'node test_individual_functions.js f1 syncSeasonStatsForRound 1 current',
+        execute: async (db, round = '1', season = 'current') => {
+            console.log(`Syncing season stats for Round ${round} (${season})...`);
+            const result = await f1Logic.syncSeasonStatsForRound(db, round, season);
+            console.log('\n✓ Sync completed:', result);
+            return result;
+        }
+    },
+
+    fetchAndCalculateDriverSeasonStats: {
+        description: 'Fetch and calculate driver season stats from Jolpica API',
+        args: ['season'],
+        example: 'node test_individual_functions.js f1 fetchAndCalculateDriverSeasonStats current',
+        execute: async (db, season = 'current') => {
+            console.log(`Calculating driver season stats for season ${season}...`);
+            const result = await f1Logic.fetchAndCalculateDriverSeasonStats(season);
+            console.log('\n✓ Calculation completed for season:', result.season);
+            console.log(`Found ${Object.keys(result.statsByDriverId).length} drivers.`);
+            return result;
+        }
+    },
+
+    syncDriverSeasonStats: {
+        description: 'Fetch and sync driver season stats into the database',
+        args: ['season'],
+        example: 'node test_individual_functions.js f1 syncDriverSeasonStats current',
+        execute: async (db, season = 'current') => {
+            console.log(`Syncing driver season stats for season ${season}...`);
+            const result = await f1Logic.syncDriverSeasonStats(db, season);
+            console.log('\n✓ Sync completed for', result.updatedCount, 'drivers.');
+            return result;
+        }
+    },
+
+    syncConstructorSeasonStats: {
+        description: 'Fetch and sync constructor season stats into the database',
+        args: ['season'],
+        example: 'node test_individual_functions.js f1 syncConstructorSeasonStats current',
+        execute: async (db, season = 'current') => {
+            console.log(`Syncing constructor season stats for season ${season}...`);
+            const result = await f1Logic.syncConstructorSeasonStats(db, season);
+            console.log('\n✓ Sync completed for', result.updatedCount, 'constructors.');
+            return result;
+        }
     }
 };
 

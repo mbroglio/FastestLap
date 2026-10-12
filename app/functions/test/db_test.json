@@ -3361,7 +3361,41 @@
       "season_podiums": "0",
       "season_wins": "0",
       "team_id": "williams",
-      "weight": "74"
+      "weight": "74",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "1",
+        "poles": "0",
+        "season_position": "19",
+        "season_points": "5",
+        "season_results": {
+          "1": {
+            "race": "12",
+            "qualifying": "15"
+          },
+          "2": {
+            "race": "DNS",
+            "qualifying": "18",
+            "sprint_race": "16"
+          },
+          "3": {
+            "race": "20",
+            "qualifying": "17"
+          },
+          "4": {
+            "race": "10",
+            "qualifying": "15",
+            "sprint_race": "18"
+          },
+          "5": {
+            "sprint_race": "19"
+          },
+          "9": {
+            "sprint_race": "18"
+          }
+        }
+      }
     },
     "alonso": {
       "best_result": "1 (x32)",
@@ -3453,7 +3487,41 @@
       "season_podiums": "0",
       "season_wins": "0",
       "team_id": "aston_martin",
-      "weight": "68"
+      "weight": "68",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "2",
+        "poles": "0",
+        "season_position": "17",
+        "season_points": "7",
+        "season_results": {
+          "1": {
+            "race": "DNF",
+            "qualifying": "17"
+          },
+          "2": {
+            "race": "DNF",
+            "qualifying": "19",
+            "sprint_race": "17"
+          },
+          "3": {
+            "race": "18",
+            "qualifying": "21"
+          },
+          "4": {
+            "race": "15",
+            "qualifying": "17",
+            "sprint_race": "15"
+          },
+          "5": {
+            "sprint_race": "DNF"
+          },
+          "9": {
+            "sprint_race": "20"
+          }
+        }
+      }
     },
     "antonelli": {
       "best_result": "2 (x1)",
@@ -3481,7 +3549,46 @@
       "season_podiums": "0",
       "season_wins": "0",
       "team_id": "mercedes",
-      "weight": "67"
+      "weight": "67",
+      "season_stats": {
+        "wins": "8",
+        "podiums": "5",
+        "dnfs": "0",
+        "poles": "6",
+        "season_position": "1",
+        "season_points": "340",
+        "season_results": {
+          "1": {
+            "race": "2",
+            "qualifying": "2"
+          },
+          "2": {
+            "race": "1",
+            "qualifying": "1",
+            "sprint_race": "5"
+          },
+          "3": {
+            "race": "1",
+            "qualifying": "1"
+          },
+          "4": {
+            "race": "1",
+            "qualifying": "1",
+            "sprint_race": "6"
+          },
+          "5": {
+            "race": "1",
+            "qualifying": "2",
+            "sprint_race": "3"
+          },
+          "9": {
+            "sprint_race": "1"
+          },
+          "12": {
+            "sprint_race": "4"
+          }
+        }
+      }
     },
     "bearman": {
       "best_result": "4 (x1)",
@@ -3517,7 +3624,43 @@
       "season_podiums": "0",
       "season_wins": "0",
       "team_id": "haas",
-      "weight": "70"
+      "weight": "70",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "1",
+        "poles": "0",
+        "season_position": "13",
+        "season_points": "23",
+        "season_results": {
+          "1": {
+            "race": "7",
+            "qualifying": "12"
+          },
+          "2": {
+            "race": "5",
+            "qualifying": "10",
+            "sprint_race": "8"
+          },
+          "3": {
+            "race": "DNF",
+            "qualifying": "18"
+          },
+          "4": {
+            "race": "11",
+            "qualifying": "12",
+            "sprint_race": "12"
+          },
+          "5": {
+            "race": "10",
+            "qualifying": "16",
+            "sprint_race": "18"
+          },
+          "9": {
+            "sprint_race": "14"
+          }
+        }
+      }
     },
     "bortoleto": {
       "best_result": "6",
@@ -3545,7 +3688,45 @@
       "season_podiums": "0",
       "season_wins": "0",
       "team_id": "audi",
-      "weight": "71"
+      "weight": "71",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "1",
+        "poles": "0",
+        "season_position": "15",
+        "season_points": "10",
+        "season_results": {
+          "1": {
+            "race": "9",
+            "qualifying": "10"
+          },
+          "2": {
+            "race": "DNS",
+            "qualifying": "16",
+            "sprint_race": "13"
+          },
+          "3": {
+            "race": "13",
+            "qualifying": "9"
+          },
+          "4": {
+            "race": "12",
+            "qualifying": "21",
+            "sprint_race": "DNF"
+          },
+          "5": {
+            "qualifying": "13",
+            "sprint_race": "12"
+          },
+          "9": {
+            "sprint_race": "13"
+          },
+          "12": {
+            "sprint_race": "9"
+          }
+        }
+      }
     },
     "bottas": {
       "best_result": "1 (x10)",
@@ -3643,7 +3824,41 @@
       "podiums": "67",
       "racing_number_pic_url": "",
       "team_id": "cadillac",
-      "weight": "69"
+      "weight": "69",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "1",
+        "poles": "0",
+        "season_position": "22",
+        "season_points": "0",
+        "season_results": {
+          "1": {
+            "race": "DNF",
+            "qualifying": "19"
+          },
+          "2": {
+            "race": "13",
+            "qualifying": "20",
+            "sprint_race": "DNF"
+          },
+          "3": {
+            "race": "19",
+            "qualifying": "20"
+          },
+          "4": {
+            "race": "18",
+            "qualifying": "19",
+            "sprint_race": "19"
+          },
+          "5": {
+            "sprint_race": "17"
+          },
+          "9": {
+            "sprint_race": "19"
+          }
+        }
+      }
     },
     "colapinto": {
       "best_result": "8",
@@ -3679,7 +3894,46 @@
       "season_podiums": "0",
       "season_wins": "0",
       "team_id": "alpine",
-      "weight": "68"
+      "weight": "68",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "0",
+        "poles": "0",
+        "season_position": "12",
+        "season_points": "27",
+        "season_results": {
+          "1": {
+            "race": "14",
+            "qualifying": "16"
+          },
+          "2": {
+            "race": "10",
+            "qualifying": "12",
+            "sprint_race": "14"
+          },
+          "3": {
+            "race": "16",
+            "qualifying": "15"
+          },
+          "4": {
+            "race": "7",
+            "qualifying": "8",
+            "sprint_race": "10"
+          },
+          "5": {
+            "race": "6",
+            "qualifying": "10",
+            "sprint_race": "9"
+          },
+          "9": {
+            "sprint_race": "12"
+          },
+          "12": {
+            "sprint_race": "12"
+          }
+        }
+      }
     },
     "doohan": {
       "best_result": "14",
@@ -3715,7 +3969,16 @@
       "season_podiums": "0",
       "season_wins": "0",
       "team_id": "",
-      "weight": "70"
+      "weight": "70",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "0",
+        "poles": "0",
+        "season_position": "-",
+        "season_points": "0",
+        "season_results": {}
+      }
     },
     "gasly": {
       "best_result": "1",
@@ -3807,7 +4070,45 @@
       "season_podiums": "0",
       "season_wins": "0",
       "team_id": "alpine",
-      "weight": "70"
+      "weight": "70",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "1",
+        "poles": "1",
+        "season_position": "10",
+        "season_points": "41",
+        "season_results": {
+          "1": {
+            "race": "10",
+            "qualifying": "14"
+          },
+          "2": {
+            "race": "6",
+            "qualifying": "7",
+            "sprint_race": "11"
+          },
+          "3": {
+            "race": "7",
+            "qualifying": "7"
+          },
+          "4": {
+            "race": "DNF",
+            "qualifying": "9",
+            "sprint_race": "8"
+          },
+          "5": {
+            "race": "8",
+            "sprint_race": "20"
+          },
+          "9": {
+            "sprint_race": "11"
+          },
+          "12": {
+            "sprint_race": "8"
+          }
+        }
+      }
     },
     "hadjar": {
       "best_result": "3",
@@ -3835,7 +4136,43 @@
       "season_podiums": "0",
       "season_wins": "0",
       "team_id": "red_bull",
-      "weight": "65"
+      "weight": "65",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "2",
+        "poles": "0",
+        "season_position": "8",
+        "season_points": "97",
+        "season_results": {
+          "1": {
+            "race": "DNF",
+            "qualifying": "3"
+          },
+          "2": {
+            "race": "8",
+            "qualifying": "9",
+            "sprint_race": "15"
+          },
+          "3": {
+            "race": "12",
+            "qualifying": "8"
+          },
+          "4": {
+            "race": "DNF",
+            "qualifying": "22",
+            "sprint_race": "9"
+          },
+          "5": {
+            "race": "5",
+            "qualifying": "7",
+            "sprint_race": "21"
+          },
+          "9": {
+            "sprint_race": "9"
+          }
+        }
+      }
     },
     "hamilton": {
       "best_result": "1 (x105)",
@@ -3935,7 +4272,46 @@
       "season_podiums": "0",
       "season_wins": "0",
       "team_id": "ferrari",
-      "weight": "71"
+      "weight": "71",
+      "season_stats": {
+        "wins": "1",
+        "podiums": "2",
+        "dnfs": "0",
+        "poles": "0",
+        "season_position": "3",
+        "season_points": "229",
+        "season_results": {
+          "1": {
+            "race": "4",
+            "qualifying": "7"
+          },
+          "2": {
+            "race": "3",
+            "qualifying": "3",
+            "sprint_race": "3"
+          },
+          "3": {
+            "race": "6",
+            "qualifying": "6"
+          },
+          "4": {
+            "race": "6",
+            "qualifying": "6",
+            "sprint_race": "7"
+          },
+          "5": {
+            "race": "2",
+            "qualifying": "5",
+            "sprint_race": "6"
+          },
+          "9": {
+            "sprint_race": "2"
+          },
+          "12": {
+            "sprint_race": "7"
+          }
+        }
+      }
     },
     "hulkenberg": {
       "best_result": "3",
@@ -4035,7 +4411,43 @@
       "season_podiums": "0",
       "season_wins": "0",
       "team_id": "audi",
-      "weight": "78"
+      "weight": "78",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "2",
+        "poles": "0",
+        "season_position": "14",
+        "season_points": "13",
+        "season_results": {
+          "1": {
+            "race": "DNS",
+            "qualifying": "11"
+          },
+          "2": {
+            "race": "11",
+            "qualifying": "11",
+            "sprint_race": "DNF"
+          },
+          "3": {
+            "race": "11",
+            "qualifying": "13"
+          },
+          "4": {
+            "race": "DNF",
+            "qualifying": "10",
+            "sprint_race": "DNS"
+          },
+          "5": {
+            "race": "12",
+            "qualifying": "11",
+            "sprint_race": "15"
+          },
+          "9": {
+            "sprint_race": "15"
+          }
+        }
+      }
     },
     "kevin_magnussen": {
       "best_result": "2",
@@ -4125,7 +4537,16 @@
       "podiums": "1",
       "racing_number_pic_url": "",
       "team_id": "",
-      "weight": "68"
+      "weight": "68",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "0",
+        "poles": "0",
+        "season_position": "-",
+        "season_points": "0",
+        "season_results": {}
+      }
     },
     "lawson": {
       "best_result": "5",
@@ -4169,7 +4590,46 @@
       "season_podiums": "0",
       "season_wins": "0",
       "team_id": "rb",
-      "weight": "67"
+      "weight": "67",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "1",
+        "poles": "0",
+        "season_position": "9",
+        "season_points": "75",
+        "season_results": {
+          "1": {
+            "race": "13",
+            "qualifying": "8"
+          },
+          "2": {
+            "race": "7",
+            "qualifying": "14",
+            "sprint_race": "7"
+          },
+          "3": {
+            "race": "9",
+            "qualifying": "14"
+          },
+          "4": {
+            "race": "DNF",
+            "qualifying": "11",
+            "sprint_race": "14"
+          },
+          "5": {
+            "race": "7",
+            "qualifying": "12",
+            "sprint_race": "11"
+          },
+          "9": {
+            "sprint_race": "8"
+          },
+          "12": {
+            "sprint_race": "11"
+          }
+        }
+      }
     },
     "leclerc": {
       "best_result": "1 (x8)",
@@ -4253,7 +4713,46 @@
       "season_podiums": "0",
       "season_wins": "0",
       "team_id": "ferrari",
-      "weight": "69"
+      "weight": "69",
+      "season_stats": {
+        "wins": "1",
+        "podiums": "2",
+        "dnfs": "0",
+        "poles": "0",
+        "season_position": "5",
+        "season_points": "215",
+        "season_results": {
+          "1": {
+            "race": "3",
+            "qualifying": "4"
+          },
+          "2": {
+            "race": "4",
+            "qualifying": "4",
+            "sprint_race": "2"
+          },
+          "3": {
+            "race": "3",
+            "qualifying": "4"
+          },
+          "4": {
+            "race": "8",
+            "qualifying": "3",
+            "sprint_race": "3"
+          },
+          "5": {
+            "race": "4",
+            "qualifying": "8",
+            "sprint_race": "5"
+          },
+          "9": {
+            "sprint_race": "5"
+          },
+          "12": {
+            "sprint_race": "2"
+          }
+        }
+      }
     },
     "lindblad": {
       "best_result": "N/A",
@@ -4271,7 +4770,16 @@
       "season_podiums": "0",
       "season_wins": "0",
       "team_id": "rb",
-      "weight": "68"
+      "weight": "68",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "0",
+        "poles": "0",
+        "season_position": "-",
+        "season_points": "0",
+        "season_results": {}
+      }
     },
     "max_verstappen": {
       "best_result": "1 (x71)",
@@ -4371,7 +4879,45 @@
       "season_podiums": "0",
       "season_wins": "0",
       "team_id": "red_bull",
-      "weight": "72"
+      "weight": "72",
+      "season_stats": {
+        "wins": "2",
+        "podiums": "1",
+        "dnfs": "1",
+        "poles": "2",
+        "season_position": "4",
+        "season_points": "221",
+        "season_results": {
+          "1": {
+            "race": "6"
+          },
+          "2": {
+            "race": "DNF",
+            "qualifying": "8",
+            "sprint_race": "9"
+          },
+          "3": {
+            "race": "8",
+            "qualifying": "11"
+          },
+          "4": {
+            "race": "5",
+            "qualifying": "2",
+            "sprint_race": "5"
+          },
+          "5": {
+            "race": "3",
+            "qualifying": "6",
+            "sprint_race": "7"
+          },
+          "9": {
+            "sprint_race": "6"
+          },
+          "12": {
+            "sprint_race": "6"
+          }
+        }
+      }
     },
     "norris": {
       "best_result": "1 (x11)",
@@ -4447,7 +4993,45 @@
       "season_podiums": "0",
       "season_wins": "0",
       "team_id": "mclaren",
-      "weight": "68"
+      "weight": "68",
+      "season_stats": {
+        "wins": "2",
+        "podiums": "1",
+        "dnfs": "1",
+        "poles": "3",
+        "season_position": "6",
+        "season_points": "201",
+        "season_results": {
+          "1": {
+            "race": "5",
+            "qualifying": "6"
+          },
+          "2": {
+            "race": "DNS",
+            "qualifying": "6",
+            "sprint_race": "4"
+          },
+          "3": {
+            "race": "5",
+            "qualifying": "5"
+          },
+          "4": {
+            "race": "2",
+            "qualifying": "4",
+            "sprint_race": "1"
+          },
+          "5": {
+            "qualifying": "3",
+            "sprint_race": "2"
+          },
+          "9": {
+            "sprint_race": "3"
+          },
+          "12": {
+            "sprint_race": "3"
+          }
+        }
+      }
     },
     "ocon": {
       "best_result": "1",
@@ -4539,7 +5123,41 @@
       "season_podiums": "0",
       "season_wins": "0",
       "team_id": "haas",
-      "weight": "66"
+      "weight": "66",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "0",
+        "poles": "0",
+        "season_position": "16",
+        "season_points": "7",
+        "season_results": {
+          "1": {
+            "race": "11",
+            "qualifying": "13"
+          },
+          "2": {
+            "race": "14",
+            "qualifying": "13",
+            "sprint_race": "10"
+          },
+          "3": {
+            "race": "10",
+            "qualifying": "12"
+          },
+          "4": {
+            "race": "13",
+            "qualifying": "14",
+            "sprint_race": "11"
+          },
+          "5": {
+            "sprint_race": "13"
+          },
+          "9": {
+            "sprint_race": "16"
+          }
+        }
+      }
     },
     "perez": {
       "best_result": "1 (x6)",
@@ -4637,7 +5255,41 @@
       "podiums": "39",
       "racing_number_pic_url": "",
       "team_id": "cadillac",
-      "weight": "70"
+      "weight": "70",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "0",
+        "poles": "0",
+        "season_position": "23",
+        "season_points": "0",
+        "season_results": {
+          "1": {
+            "race": "16",
+            "qualifying": "18"
+          },
+          "2": {
+            "race": "15",
+            "qualifying": "22",
+            "sprint_race": "19"
+          },
+          "3": {
+            "race": "17",
+            "qualifying": "19"
+          },
+          "4": {
+            "race": "16",
+            "qualifying": "20",
+            "sprint_race": "16"
+          },
+          "5": {
+            "sprint_race": "14"
+          },
+          "9": {
+            "sprint_race": "22"
+          }
+        }
+      }
     },
     "piastri": {
       "best_result": "1 (x9)",
@@ -4681,7 +5333,46 @@
       "season_podiums": "0",
       "season_wins": "0",
       "team_id": "mclaren",
-      "weight": "71"
+      "weight": "71",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "2",
+        "dnfs": "2",
+        "poles": "0",
+        "season_position": "7",
+        "season_points": "138",
+        "season_results": {
+          "1": {
+            "race": "DNS",
+            "qualifying": "5"
+          },
+          "2": {
+            "race": "DNS",
+            "qualifying": "5",
+            "sprint_race": "6"
+          },
+          "3": {
+            "race": "2",
+            "qualifying": "3"
+          },
+          "4": {
+            "race": "3",
+            "qualifying": "7",
+            "sprint_race": "2"
+          },
+          "5": {
+            "race": "11",
+            "qualifying": "4",
+            "sprint_race": "4"
+          },
+          "9": {
+            "sprint_race": "7"
+          },
+          "12": {
+            "sprint_race": "5"
+          }
+        }
+      }
     },
     "ricciardo": {
       "best_result": "1 (x8)",
@@ -4779,7 +5470,16 @@
       "podiums": "32",
       "racing_number_pic_url": "",
       "team_id": "",
-      "weight": "70"
+      "weight": "70",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "0",
+        "poles": "0",
+        "season_position": "-",
+        "season_points": "0",
+        "season_results": {}
+      }
     },
     "russell": {
       "best_result": "1 (x5)",
@@ -4855,7 +5555,45 @@
       "season_podiums": "0",
       "season_wins": "0",
       "team_id": "mercedes",
-      "weight": "70"
+      "weight": "70",
+      "season_stats": {
+        "wins": "3",
+        "podiums": "2",
+        "dnfs": "0",
+        "poles": "5",
+        "season_position": "2",
+        "season_points": "238",
+        "season_results": {
+          "1": {
+            "race": "1",
+            "qualifying": "1"
+          },
+          "2": {
+            "race": "2",
+            "qualifying": "2",
+            "sprint_race": "1"
+          },
+          "3": {
+            "race": "4",
+            "qualifying": "2"
+          },
+          "4": {
+            "race": "4",
+            "qualifying": "5",
+            "sprint_race": "4"
+          },
+          "5": {
+            "qualifying": "1",
+            "sprint_race": "1"
+          },
+          "9": {
+            "sprint_race": "4"
+          },
+          "12": {
+            "sprint_race": "1"
+          }
+        }
+      }
     },
     "sainz": {
       "best_result": "1 (x4)",
@@ -4955,7 +5693,42 @@
       "season_podiums": "0",
       "season_wins": "0",
       "team_id": "williams",
-      "weight": "70"
+      "weight": "70",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "0",
+        "poles": "0",
+        "season_position": "18",
+        "season_points": "7",
+        "season_results": {
+          "1": {
+            "race": "15"
+          },
+          "2": {
+            "race": "9",
+            "qualifying": "17",
+            "sprint_race": "12"
+          },
+          "3": {
+            "race": "15",
+            "qualifying": "16"
+          },
+          "4": {
+            "race": "9",
+            "qualifying": "13",
+            "sprint_race": "13"
+          },
+          "5": {
+            "race": "9",
+            "qualifying": "15",
+            "sprint_race": "10"
+          },
+          "9": {
+            "sprint_race": "17"
+          }
+        }
+      }
     },
     "sargeant": {
       "best_result": "10",
@@ -4989,7 +5762,16 @@
       "podiums": "0",
       "racing_number_pic_url": "",
       "team_id": "",
-      "weight": "71"
+      "weight": "71",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "0",
+        "poles": "0",
+        "season_position": "-",
+        "season_points": "0",
+        "season_results": {}
+      }
     },
     "stroll": {
       "best_result": "3 (x3)",
@@ -5081,7 +5863,40 @@
       "season_podiums": "0",
       "season_wins": "0",
       "team_id": "aston_martin",
-      "weight": "70"
+      "weight": "70",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "3",
+        "poles": "0",
+        "season_position": "21",
+        "season_points": "0",
+        "season_results": {
+          "1": {
+            "race": "DNF"
+          },
+          "2": {
+            "race": "DNF",
+            "qualifying": "21",
+            "sprint_race": "18"
+          },
+          "3": {
+            "race": "DNF",
+            "qualifying": "22"
+          },
+          "4": {
+            "race": "17",
+            "qualifying": "18",
+            "sprint_race": "17"
+          },
+          "5": {
+            "sprint_race": "16"
+          },
+          "9": {
+            "sprint_race": "21"
+          }
+        }
+      }
     },
     "tsunoda": {
       "best_result": "4",
@@ -5141,7 +5956,16 @@
       "season_podiums": "0",
       "season_wins": "0",
       "team_id": "",
-      "weight": "54"
+      "weight": "54",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "0",
+        "poles": "0",
+        "season_position": "20",
+        "season_points": "1",
+        "season_results": {}
+      }
     },
     "zhou": {
       "best_result": "8 (x2)",
@@ -5183,7 +6007,16 @@
       "podiums": "0",
       "racing_number_pic_url": "",
       "team_id": "",
-      "weight": "63"
+      "weight": "63",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "0",
+        "poles": "0",
+        "season_position": "-",
+        "season_points": "0",
+        "season_results": {}
+      }
     }
   },
   "junior_categories": {
@@ -10904,8 +11737,6 @@
       "nationality": "fr",
       "podiums": "6",
       "power_unit": "Mercedes",
-      "season_podiums": "0",
-      "season_wins": "0",
       "team_history": [
         {
           "podiums": "2",
@@ -10947,7 +11778,60 @@
       "team_logo_url": "https://firebasestorage.googleapis.com/v0/b/fastest-lap-ac540.firebasestorage.app/o/constructor_logos%2Falpine.png?alt=media&token=0e8ee877-99aa-4dd7-8bd4-4031da8b276f",
       "team_principal": "Flavio Briatore",
       "wins": "70",
-      "world_championships": "0"
+      "world_championships": "0",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "1",
+        "poles": "1",
+        "season_position": "6",
+        "season_points": "68",
+        "season_results": {
+          "1": {
+            "race_driver_1": "10",
+            "race_driver_2": "14",
+            "qualifying_driver_1": "14",
+            "qualifying_driver_2": "16"
+          },
+          "2": {
+            "race_driver_1": "6",
+            "race_driver_2": "10",
+            "qualifying_driver_1": "7",
+            "qualifying_driver_2": "12",
+            "sprint_race_driver_1": "11",
+            "sprint_race_driver_2": "14"
+          },
+          "3": {
+            "race_driver_1": "7",
+            "race_driver_2": "16",
+            "qualifying_driver_1": "7",
+            "qualifying_driver_2": "15"
+          },
+          "4": {
+            "race_driver_2": "7",
+            "race_driver_1": "DNF",
+            "qualifying_driver_2": "8",
+            "qualifying_driver_1": "9",
+            "sprint_race_driver_1": "8",
+            "sprint_race_driver_2": "10"
+          },
+          "5": {
+            "race_driver_2": "6",
+            "race_driver_1": "8",
+            "qualifying_driver_2": "10",
+            "sprint_race_driver_2": "9",
+            "sprint_race_driver_1": "20"
+          },
+          "9": {
+            "sprint_race_driver_1": "11",
+            "sprint_race_driver_2": "12"
+          },
+          "12": {
+            "sprint_race_driver_1": "8",
+            "sprint_race_driver_2": "12"
+          }
+        }
+      }
     },
     "aston_martin": {
       "car_pic_url": "https://firebasestorage.googleapis.com/v0/b/fastest-lap-ac540.firebasestorage.app/o/constructors%2Faston-martin.png?alt=media&token=d6d446be-63c2-4586-9694-bfe9c2e9e8fa",
@@ -10963,8 +11847,6 @@
       "nationality": "gb",
       "podiums": "9",
       "power_unit": "Honda",
-      "season_podiums": "0",
-      "season_wins": "0",
       "team_history": [
         {
           "podiums": "1",
@@ -11006,7 +11888,52 @@
       "team_logo_url": "https://firebasestorage.googleapis.com/v0/b/fastest-lap-ac540.firebasestorage.app/o/constructor_logos%2Faston%20martin.png?alt=media&token=2a4ed664-c8cb-4756-94b5-d56b7a23f95b",
       "team_principal": "Adrian Newey",
       "wins": "0",
-      "world_championships": "0"
+      "world_championships": "0",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "5",
+        "poles": "0",
+        "season_position": "10",
+        "season_points": "7",
+        "season_results": {
+          "1": {
+            "race_driver_2": "DNF",
+            "race_driver_1": "DNF",
+            "qualifying_driver_1": "17"
+          },
+          "2": {
+            "race_driver_1": "DNF",
+            "race_driver_2": "DNF",
+            "qualifying_driver_1": "19",
+            "qualifying_driver_2": "21",
+            "sprint_race_driver_1": "17",
+            "sprint_race_driver_2": "18"
+          },
+          "3": {
+            "race_driver_1": "18",
+            "race_driver_2": "DNF",
+            "qualifying_driver_1": "21",
+            "qualifying_driver_2": "22"
+          },
+          "4": {
+            "race_driver_1": "15",
+            "race_driver_2": "17",
+            "qualifying_driver_1": "17",
+            "qualifying_driver_2": "18",
+            "sprint_race_driver_1": "15",
+            "sprint_race_driver_2": "17"
+          },
+          "5": {
+            "sprint_race_driver_2": "16",
+            "sprint_race_driver_1": "DNF"
+          },
+          "9": {
+            "sprint_race_driver_1": "20",
+            "sprint_race_driver_2": "21"
+          }
+        }
+      }
     },
     "audi": {
       "car_pic_url": "",
@@ -11022,13 +11949,63 @@
       "nationality": "de",
       "podiums": "0",
       "power_unit": "Audi",
-      "season_podiums": "0",
-      "season_wins": "0",
       "team_logo_minimal_url": "",
       "team_logo_url": "",
       "team_principal": "Jonathan Wheatley",
       "wins": "0",
-      "world_championships": "0"
+      "world_championships": "0",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "3",
+        "poles": "0",
+        "season_position": "8",
+        "season_points": "23",
+        "season_results": {
+          "1": {
+            "race_driver_2": "9",
+            "race_driver_1": "DNS",
+            "qualifying_driver_2": "10",
+            "qualifying_driver_1": "11"
+          },
+          "2": {
+            "race_driver_1": "11",
+            "race_driver_2": "DNS",
+            "qualifying_driver_1": "11",
+            "qualifying_driver_2": "16",
+            "sprint_race_driver_2": "13",
+            "sprint_race_driver_1": "DNF"
+          },
+          "3": {
+            "race_driver_1": "11",
+            "race_driver_2": "13",
+            "qualifying_driver_2": "9",
+            "qualifying_driver_1": "13"
+          },
+          "4": {
+            "race_driver_2": "12",
+            "race_driver_1": "DNF",
+            "qualifying_driver_1": "10",
+            "qualifying_driver_2": "21",
+            "sprint_race_driver_1": "DNS",
+            "sprint_race_driver_2": "DNF"
+          },
+          "5": {
+            "race_driver_1": "12",
+            "qualifying_driver_1": "11",
+            "qualifying_driver_2": "13",
+            "sprint_race_driver_2": "12",
+            "sprint_race_driver_1": "15"
+          },
+          "9": {
+            "sprint_race_driver_2": "13",
+            "sprint_race_driver_1": "15"
+          },
+          "12": {
+            "sprint_race_driver_2": "9"
+          }
+        }
+      }
     },
     "cadillac": {
       "car_pic_url": "",
@@ -11044,13 +12021,57 @@
       "nationality": "us",
       "podiums": "0",
       "power_unit": "Ferrari",
-      "season_podiums": "0",
-      "season_wins": "0",
       "team_logo_minimal_url": "",
       "team_logo_url": "",
       "team_principal": "Graeme Lowdon",
       "wins": "0",
-      "world_championships": "0"
+      "world_championships": "0",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "1",
+        "poles": "0",
+        "season_position": "11",
+        "season_points": "0",
+        "season_results": {
+          "1": {
+            "race_driver_1": "16",
+            "race_driver_2": "DNF",
+            "qualifying_driver_1": "18",
+            "qualifying_driver_2": "19"
+          },
+          "2": {
+            "race_driver_2": "13",
+            "race_driver_1": "15",
+            "qualifying_driver_2": "20",
+            "qualifying_driver_1": "22",
+            "sprint_race_driver_1": "19",
+            "sprint_race_driver_2": "DNF"
+          },
+          "3": {
+            "race_driver_1": "17",
+            "race_driver_2": "19",
+            "qualifying_driver_1": "19",
+            "qualifying_driver_2": "20"
+          },
+          "4": {
+            "race_driver_1": "16",
+            "race_driver_2": "18",
+            "qualifying_driver_2": "19",
+            "qualifying_driver_1": "20",
+            "sprint_race_driver_1": "16",
+            "sprint_race_driver_2": "19"
+          },
+          "5": {
+            "sprint_race_driver_1": "14",
+            "sprint_race_driver_2": "17"
+          },
+          "9": {
+            "sprint_race_driver_2": "19",
+            "sprint_race_driver_1": "22"
+          }
+        }
+      }
     },
     "ferrari": {
       "car_pic_url": "https://firebasestorage.googleapis.com/v0/b/fastest-lap-ac540.firebasestorage.app/o/constructors%2Fferrari.png?alt=media&token=a0c14025-c5b5-4d0b-8fe8-a5b99664865b",
@@ -11066,8 +12087,6 @@
       "nationality": "it",
       "podiums": "833",
       "power_unit": "Ferrari",
-      "season_podiums": "0",
-      "season_wins": "0",
       "team_history": [
         {
           "podiums": "11",
@@ -11144,7 +12163,61 @@
       "team_logo_url": "https://firebasestorage.googleapis.com/v0/b/fastest-lap-ac540.firebasestorage.app/o/constructor_logos%2Fferrari.png?alt=media&token=72e944b2-af5c-45a0-b0b2-29d1c45f64b9",
       "team_principal": "Frederic Vasseur",
       "wins": "248",
-      "world_championships": "16"
+      "world_championships": "16",
+      "season_stats": {
+        "wins": "2",
+        "podiums": "4",
+        "dnfs": "0",
+        "poles": "0",
+        "season_position": "2",
+        "season_points": "444",
+        "season_results": {
+          "1": {
+            "race_driver_1": "3",
+            "race_driver_2": "4",
+            "qualifying_driver_1": "4",
+            "qualifying_driver_2": "7"
+          },
+          "2": {
+            "race_driver_2": "3",
+            "race_driver_1": "4",
+            "qualifying_driver_2": "3",
+            "qualifying_driver_1": "4",
+            "sprint_race_driver_1": "2",
+            "sprint_race_driver_2": "3"
+          },
+          "3": {
+            "race_driver_1": "3",
+            "race_driver_2": "6",
+            "qualifying_driver_1": "4",
+            "qualifying_driver_2": "6"
+          },
+          "4": {
+            "race_driver_2": "6",
+            "race_driver_1": "8",
+            "qualifying_driver_1": "3",
+            "qualifying_driver_2": "6",
+            "sprint_race_driver_1": "3",
+            "sprint_race_driver_2": "7"
+          },
+          "5": {
+            "race_driver_2": "2",
+            "race_driver_1": "4",
+            "qualifying_driver_2": "5",
+            "qualifying_driver_1": "8",
+            "sprint_race_driver_1": "5",
+            "sprint_race_driver_2": "6"
+          },
+          "9": {
+            "sprint_race_driver_2": "2",
+            "sprint_race_driver_1": "5"
+          },
+          "12": {
+            "sprint_race_driver_1": "2",
+            "sprint_race_driver_2": "7"
+          }
+        }
+      }
     },
     "haas": {
       "car_pic_url": "https://firebasestorage.googleapis.com/v0/b/fastest-lap-ac540.firebasestorage.app/o/constructors%2Fhaas.png?alt=media&token=5cba23c7-6be1-4630-8271-c7fea78e02ba",
@@ -11160,8 +12233,6 @@
       "nationality": "us",
       "podiums": "0",
       "power_unit": "Ferrari",
-      "season_podiums": "0",
-      "season_wins": "0",
       "team_history": [
         {
           "podiums": "0",
@@ -11238,7 +12309,55 @@
       "team_logo_url": "https://firebasestorage.googleapis.com/v0/b/fastest-lap-ac540.firebasestorage.app/o/constructor_logos%2Fhaas.png?alt=media&token=30ad680e-5411-4ddc-9539-8351b17298b8",
       "team_principal": "Ayao Komatsu",
       "wins": "0",
-      "world_championships": "0"
+      "world_championships": "0",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "1",
+        "poles": "0",
+        "season_position": "7",
+        "season_points": "30",
+        "season_results": {
+          "1": {
+            "race_driver_2": "7",
+            "race_driver_1": "11",
+            "qualifying_driver_2": "12",
+            "qualifying_driver_1": "13"
+          },
+          "2": {
+            "race_driver_2": "5",
+            "race_driver_1": "14",
+            "qualifying_driver_2": "10",
+            "qualifying_driver_1": "13",
+            "sprint_race_driver_2": "8",
+            "sprint_race_driver_1": "10"
+          },
+          "3": {
+            "race_driver_1": "10",
+            "race_driver_2": "DNF",
+            "qualifying_driver_1": "12",
+            "qualifying_driver_2": "18"
+          },
+          "4": {
+            "race_driver_2": "11",
+            "race_driver_1": "13",
+            "qualifying_driver_2": "12",
+            "qualifying_driver_1": "14",
+            "sprint_race_driver_1": "11",
+            "sprint_race_driver_2": "12"
+          },
+          "5": {
+            "race_driver_2": "10",
+            "qualifying_driver_2": "16",
+            "sprint_race_driver_1": "13",
+            "sprint_race_driver_2": "18"
+          },
+          "9": {
+            "sprint_race_driver_2": "14",
+            "sprint_race_driver_1": "16"
+          }
+        }
+      }
     },
     "mclaren": {
       "car_pic_url": "https://firebasestorage.googleapis.com/v0/b/fastest-lap-ac540.firebasestorage.app/o/constructors%2Fmclaren.png?alt=media&token=59590bcc-be34-4fee-8973-a7e394d556c8",
@@ -11254,8 +12373,6 @@
       "nationality": "gb",
       "podiums": "557",
       "power_unit": "Mercedes",
-      "season_podiums": "0",
-      "season_wins": "0",
       "team_history": [
         {
           "podiums": "0",
@@ -11332,7 +12449,60 @@
       "team_logo_url": "https://firebasestorage.googleapis.com/v0/b/fastest-lap-ac540.firebasestorage.app/o/constructor_logos%2Fmclaren.png?alt=media&token=ccc64c85-ec63-44fe-830e-d932f2bb9151",
       "team_principal": "Andrea Stella",
       "wins": "203",
-      "world_championships": "10"
+      "world_championships": "10",
+      "season_stats": {
+        "wins": "2",
+        "podiums": "3",
+        "dnfs": "3",
+        "poles": "3",
+        "season_position": "3",
+        "season_points": "339",
+        "season_results": {
+          "1": {
+            "race_driver_1": "5",
+            "race_driver_2": "DNS",
+            "qualifying_driver_2": "5",
+            "qualifying_driver_1": "6"
+          },
+          "2": {
+            "race_driver_2": "DNS",
+            "race_driver_1": "DNS",
+            "qualifying_driver_2": "5",
+            "qualifying_driver_1": "6",
+            "sprint_race_driver_1": "4",
+            "sprint_race_driver_2": "6"
+          },
+          "3": {
+            "race_driver_2": "2",
+            "race_driver_1": "5",
+            "qualifying_driver_2": "3",
+            "qualifying_driver_1": "5"
+          },
+          "4": {
+            "race_driver_1": "2",
+            "race_driver_2": "3",
+            "qualifying_driver_1": "4",
+            "qualifying_driver_2": "7",
+            "sprint_race_driver_1": "1",
+            "sprint_race_driver_2": "2"
+          },
+          "5": {
+            "race_driver_2": "11",
+            "qualifying_driver_1": "3",
+            "qualifying_driver_2": "4",
+            "sprint_race_driver_1": "2",
+            "sprint_race_driver_2": "4"
+          },
+          "9": {
+            "sprint_race_driver_1": "3",
+            "sprint_race_driver_2": "7"
+          },
+          "12": {
+            "sprint_race_driver_1": "3",
+            "sprint_race_driver_2": "5"
+          }
+        }
+      }
     },
     "mercedes": {
       "car_pic_url": "https://firebasestorage.googleapis.com/v0/b/fastest-lap-ac540.firebasestorage.app/o/constructors%2Fmercedes.png?alt=media&token=30bcdb9b-c919-419e-b044-2bb12a4d30e5",
@@ -11348,8 +12518,6 @@
       "nationality": "de",
       "podiums": "310",
       "power_unit": "Mercedes",
-      "season_podiums": "0",
-      "season_wins": "0",
       "team_history": [
         {
           "podiums": "33",
@@ -11426,7 +12594,60 @@
       "team_logo_url": "https://firebasestorage.googleapis.com/v0/b/fastest-lap-ac540.firebasestorage.app/o/constructor_logos%2Fmercedes.png?alt=media&token=41d00f8e-7ee3-4a8e-bb5b-58c4dd38ae9e",
       "team_principal": "Toto Wolff",
       "wins": "131",
-      "world_championships": "8"
+      "world_championships": "8",
+      "season_stats": {
+        "wins": "11",
+        "podiums": "7",
+        "dnfs": "0",
+        "poles": "11",
+        "season_position": "1",
+        "season_points": "578",
+        "season_results": {
+          "1": {
+            "race_driver_1": "1",
+            "race_driver_2": "2",
+            "qualifying_driver_1": "1",
+            "qualifying_driver_2": "2"
+          },
+          "2": {
+            "race_driver_2": "1",
+            "race_driver_1": "2",
+            "qualifying_driver_2": "1",
+            "qualifying_driver_1": "2",
+            "sprint_race_driver_1": "1",
+            "sprint_race_driver_2": "5"
+          },
+          "3": {
+            "race_driver_2": "1",
+            "race_driver_1": "4",
+            "qualifying_driver_2": "1",
+            "qualifying_driver_1": "2"
+          },
+          "4": {
+            "race_driver_2": "1",
+            "race_driver_1": "4",
+            "qualifying_driver_2": "1",
+            "qualifying_driver_1": "5",
+            "sprint_race_driver_1": "4",
+            "sprint_race_driver_2": "6"
+          },
+          "5": {
+            "race_driver_2": "1",
+            "qualifying_driver_1": "1",
+            "qualifying_driver_2": "2",
+            "sprint_race_driver_1": "1",
+            "sprint_race_driver_2": "3"
+          },
+          "9": {
+            "sprint_race_driver_2": "1",
+            "sprint_race_driver_1": "4"
+          },
+          "12": {
+            "sprint_race_driver_1": "1",
+            "sprint_race_driver_2": "4"
+          }
+        }
+      }
     },
     "rb": {
       "car_pic_url": "https://firebasestorage.googleapis.com/v0/b/fastest-lap-ac540.firebasestorage.app/o/constructors%2Fracing-bulls.png?alt=media&token=3a4f4349-258a-4267-b53f-cb59f9d8fa79",
@@ -11442,8 +12663,6 @@
       "nationality": "it",
       "podiums": "1",
       "power_unit": "Red Bull Ford",
-      "season_podiums": "0",
-      "season_wins": "0",
       "team_history": [
         {
           "podiums": "0",
@@ -11464,7 +12683,54 @@
       "team_logo_url": "https://firebasestorage.googleapis.com/v0/b/fastest-lap-ac540.firebasestorage.app/o/constructor_logos%2Fracing%20bulls.png?alt=media&token=517ed1b0-b767-4c7f-b5ba-0bf60f5f521f",
       "team_principal": "Alan Permane",
       "wins": "0",
-      "world_championships": "0"
+      "world_championships": "0",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "1",
+        "poles": "0",
+        "season_position": "5",
+        "season_points": "100",
+        "season_results": {
+          "1": {
+            "race_driver_1": "13",
+            "qualifying_driver_1": "8",
+            "qualifying_driver_2": "9"
+          },
+          "2": {
+            "race_driver_1": "7",
+            "race_driver_2": "12",
+            "qualifying_driver_1": "14",
+            "qualifying_driver_2": "15",
+            "sprint_race_driver_1": "7",
+            "sprint_race_driver_2": "DNF"
+          },
+          "3": {
+            "race_driver_1": "9",
+            "race_driver_2": "14",
+            "qualifying_driver_1": "14"
+          },
+          "4": {
+            "race_driver_1": "DNF",
+            "qualifying_driver_1": "11",
+            "qualifying_driver_2": "16",
+            "sprint_race_driver_1": "14",
+            "sprint_race_driver_2": "DNS"
+          },
+          "5": {
+            "race_driver_1": "7",
+            "qualifying_driver_1": "12",
+            "sprint_race_driver_1": "11"
+          },
+          "9": {
+            "sprint_race_driver_1": "8",
+            "sprint_race_driver_2": "10"
+          },
+          "12": {
+            "sprint_race_driver_1": "10"
+          }
+        }
+      }
     },
     "red_bull": {
       "car_pic_url": "https://firebasestorage.googleapis.com/v0/b/fastest-lap-ac540.firebasestorage.app/o/constructors%2Fred-bull-racing.png?alt=media&token=b65fea9c-759a-471a-bb77-b5720db7c1d2",
@@ -11480,8 +12746,6 @@
       "nationality": "at",
       "podiums": "297",
       "power_unit": "Red Bull Ford",
-      "season_podiums": "0",
-      "season_wins": "0",
       "team_history": [
         {
           "podiums": "16",
@@ -11558,7 +12822,60 @@
       "team_logo_url": "https://firebasestorage.googleapis.com/v0/b/fastest-lap-ac540.firebasestorage.app/o/constructor_logos%2Fred%20bull.png?alt=media&token=15f8b6e5-69c2-4dca-bfb7-76d7cad9e555",
       "team_principal": "Laurent Mekies",
       "wins": "130",
-      "world_championships": "6"
+      "world_championships": "6",
+      "season_stats": {
+        "wins": "2",
+        "podiums": "1",
+        "dnfs": "3",
+        "poles": "2",
+        "season_position": "4",
+        "season_points": "332",
+        "season_results": {
+          "1": {
+            "race_driver_1": "6",
+            "race_driver_2": "DNF",
+            "qualifying_driver_2": "3"
+          },
+          "2": {
+            "race_driver_2": "8",
+            "race_driver_1": "DNF",
+            "qualifying_driver_1": "8",
+            "qualifying_driver_2": "9",
+            "sprint_race_driver_1": "9",
+            "sprint_race_driver_2": "15"
+          },
+          "3": {
+            "race_driver_1": "8",
+            "race_driver_2": "12",
+            "qualifying_driver_2": "8",
+            "qualifying_driver_1": "11"
+          },
+          "4": {
+            "race_driver_1": "5",
+            "race_driver_2": "DNF",
+            "qualifying_driver_1": "2",
+            "qualifying_driver_2": "22",
+            "sprint_race_driver_1": "5",
+            "sprint_race_driver_2": "9"
+          },
+          "5": {
+            "race_driver_1": "3",
+            "race_driver_2": "5",
+            "qualifying_driver_1": "6",
+            "qualifying_driver_2": "7",
+            "sprint_race_driver_1": "7",
+            "sprint_race_driver_2": "21"
+          },
+          "9": {
+            "sprint_race_driver_1": "6",
+            "sprint_race_driver_2": "9"
+          },
+          "12": {
+            "sprint_race_driver_1": "6",
+            "sprint_race_driver_2": "11"
+          }
+        }
+      }
     },
     "sauber": {
       "car_pic_url": "https://firebasestorage.googleapis.com/v0/b/fastest-lap-ac540.firebasestorage.app/o/constructors%2Fkick-sauber.png?alt=media&token=93079c6c-f096-481d-8345-10a3a77120a5",
@@ -11570,8 +12887,6 @@
       "nationality": "ch",
       "podiums": "26",
       "power_unit": "Ferrari",
-      "season_podiums": "0",
-      "season_wins": "0",
       "team_history": [
         {
           "podiums": "0",
@@ -11648,7 +12963,16 @@
       "team_logo_url": "https://firebasestorage.googleapis.com/v0/b/fastest-lap-ac540.firebasestorage.app/o/constructor_logos%2Fkick%20sauber.png?alt=media&token=ca07401e-198e-4cea-8bf9-e2cafd56377d",
       "team_principal": "Jonathan Wheatley",
       "wins": "1",
-      "world_championships": "0"
+      "world_championships": "0",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "0",
+        "poles": "0",
+        "season_position": "-",
+        "season_points": "0",
+        "season_results": {}
+      }
     },
     "williams": {
       "car_pic_url": "https://firebasestorage.googleapis.com/v0/b/fastest-lap-ac540.firebasestorage.app/o/constructors%2Fwilliams.png?alt=media&token=bb2d7ebc-769c-41b0-bb8a-b133549d27fc",
@@ -11664,8 +12988,6 @@
       "nationality": "gb",
       "podiums": "314",
       "power_unit": "Mercedes",
-      "season_podiums": "0",
-      "season_wins": "0",
       "team_history": [
         {
           "podiums": "1",
@@ -11742,7 +13064,54 @@
       "team_logo_url": "https://firebasestorage.googleapis.com/v0/b/fastest-lap-ac540.firebasestorage.app/o/constructor_logos%2Fwilliams.png?alt=media&token=54745a4b-5d9d-4e28-8c83-58403ebf8435",
       "team_principal": "James Vowles",
       "wins": "114",
-      "world_championships": "9"
+      "world_championships": "9",
+      "season_stats": {
+        "wins": "0",
+        "podiums": "0",
+        "dnfs": "1",
+        "poles": "0",
+        "season_position": "9",
+        "season_points": "12",
+        "season_results": {
+          "1": {
+            "race_driver_1": "12",
+            "race_driver_2": "15",
+            "qualifying_driver_1": "15"
+          },
+          "2": {
+            "race_driver_2": "9",
+            "race_driver_1": "DNS",
+            "qualifying_driver_2": "17",
+            "qualifying_driver_1": "18",
+            "sprint_race_driver_2": "12",
+            "sprint_race_driver_1": "16"
+          },
+          "3": {
+            "race_driver_2": "15",
+            "race_driver_1": "20",
+            "qualifying_driver_2": "16",
+            "qualifying_driver_1": "17"
+          },
+          "4": {
+            "race_driver_2": "9",
+            "race_driver_1": "10",
+            "qualifying_driver_2": "13",
+            "qualifying_driver_1": "15",
+            "sprint_race_driver_2": "13",
+            "sprint_race_driver_1": "18"
+          },
+          "5": {
+            "race_driver_2": "9",
+            "qualifying_driver_2": "15",
+            "sprint_race_driver_2": "10",
+            "sprint_race_driver_1": "19"
+          },
+          "9": {
+            "sprint_race_driver_2": "17",
+            "sprint_race_driver_1": "18"
+          }
+        }
+      }
     }
   },
   "users": {

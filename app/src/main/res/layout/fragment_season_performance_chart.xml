@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/screen_background_color"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- TOGGLE BUTTONS: RACES & SPRINTS vs QUALIFYINGS -->
+    <com.google.android.material.button.MaterialButtonToggleGroup
+        android:id="@+id/toggle_button_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        app:checkedButton="@+id/btn_toggle_races"
+        app:selectionRequired="true"
+        app:singleSelection="true">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_toggle_races"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/orbitron_bold"
+            android:text="@string/races_sprints"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            app:backgroundTint="@color/card_surface_elevated"
+            app:strokeColor="@color/subtle_white_border" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_toggle_qualifyings"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/orbitron_bold"
+            android:text="@string/qualifying"
+            android:textColor="@color/timer_gray"
+            android:textSize="12sp"
+            app:backgroundTint="@color/card_surface_dark"
+            app:strokeColor="@color/subtle_white_border" />
+    </com.google.android.material.button.MaterialButtonToggleGroup>
+
+    <!-- CHART CARD CONTAINER -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:cardBackgroundColor="@color/card_surface_dark"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp"
+        app:strokeColor="@color/subtle_white_border"
+        app:strokeWidth="1dp">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <!-- Chart Horizontal Split (Sticky Y-Axis + Scrollable Chart) -->
+            <LinearLayout
+                android:id="@+id/chart_content_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <!-- Fixed Sticky Y-Axis View -->
+                <com.the_coffe_coders.fastestlap.ui.bio.chart.StickyYAxisView
+                    android:id="@+id/sticky_y_axis_view"
+                    android:layout_width="48dp"
+                    android:layout_height="match_parent" />
+
+                <!-- Horizontally Scrollable Chart Area -->
+                <HorizontalScrollView
+                    android:id="@+id/chart_scroll_view"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:fillViewport="true"
+                    android:scrollbars="horizontal">
+
+                    <com.the_coffe_coders.fastestlap.ui.bio.chart.SeasonProgressionChartView
+                        android:id="@+id/season_progression_chart_view"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent" />
+                </HorizontalScrollView>
+            </LinearLayout>
+
+            <!-- Loading Spinner -->
+            <ProgressBar
+                android:id="@+id/chart_loading_progress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/app_primary_red"
+                android:visibility="visible" />
+
+            <!-- Empty State Message -->
+            <TextView
+                android:id="@+id/chart_empty_message"
+                style="@style/t12BoldWhiteLineLimited"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="24dp"
+                android:gravity="center"
+                android:text="Nessun dato di gara registrato per la stagione corrente"
+                android:textColor="@color/timer_gray"
+                android:visibility="gone" />
+        </FrameLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- FOOTER / LEGEND -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <!-- Legend Finish Point -->
+        <View
+            android:id="@+id/legend_finish_dot"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/circular_background" />
+
+        <TextView
+            android:id="@+id/legend_finish_text"
+            style="@style/t10BoldWhiteLineLimited"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/race"
+            android:textColor="@color/timer_gray" />
+
+        <!-- Legend Secondary Driver Point (Constructor mode) -->
+        <View
+            android:id="@+id/legend_secondary_dot"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="6dp"
+            android:visibility="gone"
+            android:background="@drawable/circular_background" />
+
+        <TextView
+            android:id="@+id/legend_secondary_text"
+            style="@style/t10BoldWhiteLineLimited"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/timer_gray"
+            android:visibility="gone" />
+
+        <!-- Legend DNF -->
+        <View
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginEnd="6dp"
+            android:background="@color/md_theme_error" />
+
+        <TextView
+            style="@style/t10BoldWhiteLineLimited"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DNF / RIT"
+            android:textColor="@color/timer_gray" />
+
+        <!-- Scroll hint -->
+        <TextView
+            style="@style/t10BoldWhiteLineLimited"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:text="@string/scroll_indication"
+            android:textColor="@color/timer_gray_dark" />
+    </LinearLayout>
+
+</LinearLayout>

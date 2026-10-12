@@ -355,5 +355,9 @@
     <string name="current_time">current time:</string>
     <string name="direction">direction:</string>
     <string name="pressure">pressure</string>
+    <string name="chart">chart</string>
+    <string name="races_sprints"><![CDATA[races & sprints]]></string>
+    <string name="scroll_indication">Scroll ➔</string>
+    <string name="secondary_driver">Driver 2</string>
 
 </resources>

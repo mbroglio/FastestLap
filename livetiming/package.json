@@ -9,6 +9,9 @@
     "mock": "node server.js --mock",
     "test": "node test/run_tests.js"
   },
+  "dependencies": {
+    "ws": "^8.18.0"
+  },
   "keywords": [
     "f1",
     "formula1",

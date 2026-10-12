@@ -286,6 +286,29 @@ exports.updateRaceStatsNow = onRequest(
 );
 
 /**
+ * HTTP ENDPOINT: Repopulate All Race Updates & Migrate Node Structure
+ * Re-fetches all completed races of the season directly into app_config/stats_tracker/race_updates/{round},
+ * deletes obsolete year node (2026), updates career stats, and syncs season_results for all rounds.
+ * GET https://.../repopulateRaceUpdatesNow (optionally ?season=current)
+ */
+exports.repopulateRaceUpdatesNow = onRequest(
+  {
+    cors: true,
+    timeoutSeconds: 300
+  },
+  async (req, res) => {
+    try {
+      const season = req.query.season || req.body?.season || "current";
+      const result = await f1Logic.repopulateAllRaceUpdates(db, season);
+      res.status(200).json({ status: "success", result });
+    } catch (error) {
+      console.error("Error in repopulateRaceUpdatesNow:", error);
+      res.status(500).json({ status: "error", message: error.message });
+    }
+  }
+);
+
+/**
  * HTTP ENDPOINT: Manual Constructor Season Stats Sync Trigger
  * Allows immediate manual sync of all constructors' season_stats from browser or curl:
  * GET https://.../syncConstructorSeasonStatsNow (optionally ?season=2026 or ?inspect=true)
@@ -311,6 +334,32 @@ exports.syncConstructorSeasonStatsNow = onRequest(
       res.status(200).json({ status: "success", result });
     } catch (error) {
       console.error("Error in syncConstructorSeasonStatsNow:", error);
+      res.status(500).json({ status: "error", message: error.message });
+    }
+  }
+);
+
+/**
+ * HTTP ENDPOINT: Manual Round Season Stats Sync Trigger
+ * Allows immediate targeted sync of round race, qualifying, sprint and standings:
+ * GET https://.../syncSeasonStatsForRoundNow?round=1 (optionally &season=current)
+ */
+exports.syncSeasonStatsForRoundNow = onRequest(
+  {
+    cors: true,
+    timeoutSeconds: 300
+  },
+  async (req, res) => {
+    try {
+      const round = req.query.round || req.body?.round;
+      if (!round) {
+        return res.status(400).json({ status: "error", message: "Parameter 'round' is required" });
+      }
+      const season = req.query.season || req.body?.season || "current";
+      const result = await f1Logic.syncSeasonStatsForRound(db, round, season);
+      res.status(200).json({ status: "success", result });
+    } catch (error) {
+      console.error("Error in syncSeasonStatsForRoundNow:", error);
       res.status(500).json({ status: "error", message: error.message });
     }
   }

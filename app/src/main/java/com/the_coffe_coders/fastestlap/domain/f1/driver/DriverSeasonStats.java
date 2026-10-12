@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import androidx.annotation.NonNull;
 
+import java.util.Map;
+
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -25,6 +27,7 @@ public class DriverSeasonStats implements Parcelable {
     private String poles;
     private String season_position;
     private String season_points;
+    private Map<String, EventResultDriver> season_results;
 
     protected DriverSeasonStats(Parcel in) {
         wins = in.readString();
@@ -33,16 +36,18 @@ public class DriverSeasonStats implements Parcelable {
         poles = in.readString();
         season_position = in.readString();
         season_points = in.readString();
+        season_results = in.readHashMap(EventResultDriver.class.getClassLoader());
     }
 
     @Override
-    public void writeToParcel(@NonNull Parcel parcel, int i) {
+    public void writeToParcel(@NonNull Parcel parcel, int flags) {
         parcel.writeString(wins);
         parcel.writeString(podiums);
         parcel.writeString(dnfs);
         parcel.writeString(poles);
         parcel.writeString(season_position);
         parcel.writeString(season_points);
+        parcel.writeMap(season_results);
     }
 
     @Override

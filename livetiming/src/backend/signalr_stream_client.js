@@ -1,10 +1,8 @@
 /**
- * FastestLap LiveTiming - F1 SignalR Core Client
- *
- * Direct WebSocket client for the official Formula 1 Live Timing SignalR service.
- * Handles HTTP negotiation, cookies, WS handshake, subscription and delta decoding.
+ * FastestLap LiveTiming - F1 SignalR Core Client (Corretto)
  */
 
+const WebSocket = require('ws');
 const { TelemetryDecoder } = require('./telemetry_decoder');
 
 const F1_ORIGIN = 'https://www.formula1.com';
@@ -26,7 +24,7 @@ const TOPICS = [
   'WeatherData',
   'RaceControlMessages',
   'LapCount',
-  'TeamRadio'
+  'TrackStatus'
 ];
 
 class SignalRStreamClient {
@@ -38,8 +36,9 @@ class SignalRStreamClient {
     this.isHandshakeComplete = false;
     this.watchdogTimer = null;
     this.reconnectTimer = null;
+    this.pingTimer = null;
+    this.messageBuffer = ''; // Buffer per riassemblare chunk frammentati
     this.listeners = new Set();
-    this.lastMessageTime = null;
   }
 
   onUpdate(callback) {
@@ -52,84 +51,72 @@ class SignalRStreamClient {
       try {
         cb(type, data);
       } catch (e) {
-        console.error('[SignalRClient] Error in update listener:', e);
+        console.error('[SignalRClient] Errore listener update:', e);
       }
     }
   }
 
   async connect() {
     this.stateStore.setConnectionStatus('CONNECTING');
+    this._cleanupTimers();
+
     try {
-      console.log('[SignalRClient] Initiating F1 negotiation sequence...');
-      
-      // Step 1: Pre-negotiate OPTIONS for AWSALBCORS session cookie
-      let awsAlbCorsCookie = '';
-      try {
-        const preResp = await fetch(`${F1_HTTP_BASE}/negotiate`, {
-          method: 'OPTIONS',
-          headers: {
-            'User-Agent': 'BestHTTP',
-            'Origin': F1_ORIGIN
-          }
-        });
-        const setCookie = preResp.headers.get('set-cookie') || '';
-        const match = setCookie.match(/AWSALBCORS=([^;]+)/);
-        if (match) {
-          awsAlbCorsCookie = match[1];
-        }
-      } catch (optErr) {
-        console.warn('[SignalRClient] Pre-flight OPTIONS notice:', optErr.message);
-      }
+      console.log('[SignalRClient] Avvio negoziazione SignalR...');
 
-      // Step 2: HTTP POST Negotiation
-      const postHeaders = {
-        'User-Agent': 'BestHTTP',
-        'Origin': F1_ORIGIN,
-        'Content-Type': 'text/plain'
-      };
-      if (awsAlbCorsCookie) {
-        postHeaders['Cookie'] = `AWSALBCORS=${awsAlbCorsCookie}`;
-      }
-
+      // 1. Negoziazione HTTP POST per ottenere il connectionToken e i cookie di Session Affinity
       const negResp = await fetch(`${F1_HTTP_BASE}/negotiate?negotiateVersion=1`, {
         method: 'POST',
-        headers: postHeaders
+        headers: {
+          'User-Agent': 'BestHTTP',
+          'Origin': F1_ORIGIN,
+          'Content-Type': 'text/plain'
+        }
       });
 
       if (!negResp.ok) {
-        throw new Error(`Negotiation failed with HTTP ${negResp.status}`);
+        throw new Error(`Negoziazione fallita con codice HTTP ${negResp.status}`);
+      }
+
+      // Estrai cookie AWSALB / AWSALBCORS per mantenere la sessione sullo stesso server
+      let cookieHeader = '';
+      const rawCookies = negResp.headers.getSetCookie 
+        ? negResp.headers.getSetCookie() 
+        : [negResp.headers.get('set-cookie')];
+
+      if (rawCookies && rawCookies.length > 0) {
+        cookieHeader = rawCookies
+          .filter(Boolean)
+          .map(c => c.split(';')[0])
+          .join('; ');
       }
 
       const negJson = await negResp.json();
       if (!negJson.connectionToken) {
-        throw new Error('No connectionToken received in negotiation response');
+        throw new Error('connectionToken mancante nella risposta di negoziazione');
       }
 
       const connectionToken = encodeURIComponent(negJson.connectionToken);
       const wsUrl = `${F1_WS_BASE}?id=${connectionToken}`;
 
-      console.log('[SignalRClient] Negotiation successful. Connecting WebSocket to:', wsUrl.substring(0, 45) + '...');
-      
-      // Step 3: Establish WebSocket
-      const wsHeaders = {
-        'User-Agent': 'BestHTTP',
-        'Origin': F1_ORIGIN
+      console.log('[SignalRClient] Negoziazione riuscita. Connessione a WebSocket...');
+
+      // 2. Connessione WebSocket tramite libreria ws con headers corretti
+      const wsOptions = {
+        headers: {
+          'User-Agent': 'BestHTTP',
+          'Origin': F1_ORIGIN
+        }
       };
-      if (awsAlbCorsCookie) {
-        wsHeaders['Cookie'] = `AWSALBCORS=${awsAlbCorsCookie}`;
+      if (cookieHeader) {
+        wsOptions.headers['Cookie'] = cookieHeader;
       }
 
-      // In Node 22+, global WebSocket is available
-      const WsClass = globalThis.WebSocket;
-      if (!WsClass) {
-        throw new Error('Global WebSocket not available in this Node runtime');
-      }
-
-      this.ws = new WsClass(wsUrl, { headers: wsHeaders });
+      this.messageBuffer = '';
+      this.ws = new WebSocket(wsUrl, wsOptions);
       this._bindSocketEvents();
 
     } catch (err) {
-      console.error('[SignalRClient] Connection error:', err.message);
+      console.error('[SignalRClient] Errore durante la connessione:', err.message);
       this.stateStore.setConnectionStatus('ERROR');
       this._scheduleReconnect(5000);
     }
@@ -138,74 +125,92 @@ class SignalRStreamClient {
   _bindSocketEvents() {
     this.isHandshakeComplete = false;
 
-    this.ws.onopen = () => {
-      console.log('[SignalRClient] WebSocket open. Sending protocol handshake...');
+    this.ws.on('open', () => {
+      console.log('[SignalRClient] WebSocket aperto. Invio handshake SignalR...');
       this.ws.send(HANDSHAKE_PAYLOAD);
-    };
+      this._startPingInterval();
+    });
 
-    this.ws.onmessage = (event) => {
-      this.lastMessageTime = new Date();
+    this.ws.on('message', (data) => {
       this._resetWatchdog();
 
-      const raw = typeof event.data === 'string' ? event.data : event.data.toString('utf-8');
-      const messages = raw.split(RECORD_SEPARATOR);
+      const chunk = typeof data === 'string' ? data : data.toString('utf-8');
+      this.messageBuffer += chunk;
+
+      // De-frammentazione: dividi per il record separator 0x1e
+      const messages = this.messageBuffer.split(RECORD_SEPARATOR);
+      
+      // L'ultimo elemento è incompleto o vuoto se il messaggio terminava per 0x1e
+      this.messageBuffer = messages.pop();
 
       for (const msg of messages) {
         if (!msg || msg.trim().length === 0) continue;
+
         try {
           const frame = JSON.parse(msg);
 
+          // Ping di ritorno dal server
+          if (frame.type === 6) continue;
+
+          // Handshake ACK
           if (!this.isHandshakeComplete) {
             if (frame.error) {
-              console.error('[SignalRClient] Handshake error:', frame.error);
+              console.error('[SignalRClient] Errore handshake:', frame.error);
               this.ws.close();
               return;
             }
             this.isHandshakeComplete = true;
             this.isConnected = true;
             this.stateStore.setConnectionStatus('CONNECTED');
-            console.log('[SignalRClient] Protocol handshake accepted! Subscribing to F1 topics...');
+            console.log('[SignalRClient] Handshake accettato. Invio sottoscrizioni ai canali...');
             this._sendSubscriptions();
             continue;
           }
 
-          // Handle Snapshot from subscription response
+          // Snapshot iniziale
           if (frame.type === 3 && frame.result) {
             this._handleInitialSnapshot(frame.result);
             continue;
           }
 
-          // Handle live stream delta invocation
+          // Eventi live streaming feed
           if (frame.type === 1 && frame.target === 'feed') {
             const args = frame.arguments;
             if (args && args.length >= 2) {
-              const topic = args[0];
-              const payload = args[1];
-              this._routeTopicData(topic, payload);
+              this._routeTopicData(args[0], args[1]);
             }
           }
 
         } catch (parseErr) {
-          // Ignore incomplete chunk splits
+          console.warn('[SignalRClient] Errore parsing frame JSON:', parseErr.message);
         }
       }
-    };
+    });
 
-    this.ws.onclose = (event) => {
-      console.warn(`[SignalRClient] WebSocket disconnected (Code: ${event.code})`);
-      this.isConnected = false;
-      this.isHandshakeComplete = false;
+    this.ws.on('close', (code, reason) => {
+      console.warn(`[SignalRClient] WebSocket disconnesso (Codice: ${code}, Motivo: ${reason || 'N/A'})`);
+      this._cleanupConnection();
       this.stateStore.setConnectionStatus('DISCONNECTED');
       this._scheduleReconnect(5000);
-    };
+    });
 
-    this.ws.onerror = (err) => {
-      console.error('[SignalRClient] WebSocket error event:', err.message || err);
-    };
+    this.ws.on('error', (err) => {
+      console.error('[SignalRClient] Errore WebSocket:', err.message);
+    });
+  }
+
+  _startPingInterval() {
+    if (this.pingTimer) clearInterval(this.pingTimer);
+    // Ping SignalR ogni 15 secondi per mantenere aperto il canale
+    this.pingTimer = setInterval(() => {
+      if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+        this.ws.send(`{"type":6}${RECORD_SEPARATOR}`);
+      }
+    }, 15000);
   }
 
   _sendSubscriptions() {
-    if (!this.ws || this.ws.readyState !== 1) return;
+    if (!this.ws || this.ws.readyState !== WebSocket.OPEN) return;
     const invocation = {
       type: 1,
       invocationId: '0',
@@ -213,32 +218,15 @@ class SignalRStreamClient {
       arguments: [TOPICS]
     };
     this.ws.send(`${JSON.stringify(invocation)}${RECORD_SEPARATOR}`);
-    console.log(`[SignalRClient] Subscribed to ${TOPICS.length} live channels.`);
+    console.log(`[SignalRClient] Sottoscrizione inviata per ${TOPICS.length} canali.`);
   }
 
   _handleInitialSnapshot(snapshot) {
     if (!snapshot) return;
-    console.log('[SignalRClient] Processing initial session snapshot...');
+    console.log('[SignalRClient] Elaborazione snapshot iniziale...');
     for (const [key, val] of Object.entries(snapshot)) {
       this._routeTopicData(key, val);
     }
-    
-    const sess = this.stateStore.sessionInfo;
-    const meetingName = sess && sess.Meeting ? sess.Meeting.Name : 'F1 Session';
-    const sessType = sess ? (sess.Name || sess.Type || '') : '';
-    const sessStatus = sess ? (sess.SessionStatus || 'Live') : 'Live';
-    const driversCount = Object.keys(this.stateStore.driverList).length;
-
-    console.log(`[SignalRClient] ✅ Snapshot processed successfully!`);
-    console.log(`[SignalRClient] 🏁 Session: ${meetingName} - ${sessType} (Stato: ${sessStatus})`);
-    console.log(`[SignalRClient] 🏎️  Piloti registrati: ${driversCount}`);
-    console.log(`[SignalRClient] 🌐 Dashboard pronta e consultabile su http://localhost:3000`);
-    if (sessStatus.toLowerCase() === 'finalised' || sessStatus.toLowerCase() === 'inactive') {
-      console.log(`[SignalRClient] ℹ️  Nota: Nessuna vettura in pista al momento (sessione terminata). In attesa di nuovi eventi o avvio del prossimo GP.`);
-    } else {
-      console.log(`[SignalRClient] 📡 In ascolto dei flussi telemetrici live ad alta frequenza...`);
-    }
-
     this.notifyUpdate('SNAPSHOT', this.stateStore.getFullSnapshot());
   }
 
@@ -270,7 +258,6 @@ class SignalRStreamClient {
         return;
       }
 
-      // Delta JSON channels
       const data = typeof payload === 'string' ? JSON.parse(payload) : payload;
 
       switch (topic) {
@@ -310,45 +297,52 @@ class SignalRStreamClient {
           break;
       }
     } catch (err) {
-      console.error(`[SignalRClient] Error processing topic ${topic}:`, err.message);
+      console.error(`[SignalRClient] Errore elaborazione topic ${topic}:`, err.message);
     }
   }
 
   _resetWatchdog() {
     if (this.watchdogTimer) clearTimeout(this.watchdogTimer);
-    // If no message for 25 seconds, reconnect
+    // Timeout a 40s per evitare disconnessioni accidentali
     this.watchdogTimer = setTimeout(() => {
       if (this.isConnected) {
-        console.warn('[SignalRClient] Watchdog: No data received for 25s. Forcing reconnect...');
-        try {
-          if (this.ws) this.ws.close();
-        } catch (e) {}
+        console.warn('[SignalRClient] Watchdog: Nessun dato da 40s. Riconnessione...');
+        if (this.ws) {
+          try { this.ws.terminate(); } catch (e) {}
+        }
       }
-    }, 25000);
+    }, 40000);
   }
 
   _scheduleReconnect(delayMs) {
     if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
     this.reconnectTimer = setTimeout(() => {
-      console.log('[SignalRClient] Attempting reconnection...');
+      console.log('[SignalRClient] Tentativo di riconnessione...');
       this.connect();
     }, delayMs);
   }
 
-  disconnect() {
+  _cleanupTimers() {
     if (this.watchdogTimer) clearTimeout(this.watchdogTimer);
     if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
+    if (this.pingTimer) clearInterval(this.pingTimer);
+  }
+
+  _cleanupConnection() {
+    this._cleanupTimers();
+    this.isConnected = false;
+    this.isHandshakeComplete = false;
+    this.messageBuffer = '';
     if (this.ws) {
-      try {
-        this.ws.close();
-      } catch (e) {}
+      try { this.ws.removeAllListeners(); } catch (e) {}
       this.ws = null;
     }
-    this.isConnected = false;
+  }
+
+  disconnect() {
+    this._cleanupConnection();
     this.stateStore.setConnectionStatus('STOPPED');
   }
 }
 
-module.exports = {
-  SignalRStreamClient
-};
+module.exports = { SignalRStreamClient };
