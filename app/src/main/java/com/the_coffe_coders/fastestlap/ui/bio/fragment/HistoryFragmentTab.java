@@ -1,5 +1,6 @@
 package com.the_coffe_coders.fastestlap.ui.bio.fragment;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -182,9 +183,9 @@ public class HistoryFragmentTab extends Fragment {
             View tableRow = inflater.inflate(R.layout.driver_bio_table_row, tableLayout, false);
 
             if (i % 2 == 1) {
-                tableRow.setBackgroundColor(0x0AFFFFFF);
+                tableRow.setBackgroundColor(requireContext().getColor(R.color.odd_table_row_color));
             } else {
-                tableRow.setBackgroundColor(android.graphics.Color.TRANSPARENT);
+                tableRow.setBackgroundColor(Color.TRANSPARENT);
             }
 
             UIUtils.multipleSetTextViewText(

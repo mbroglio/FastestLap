@@ -183,7 +183,7 @@ function createHistoryEntryCircuit(year, podium, team) {
 function manageHistoryArray(existingHistory, newEntry) {
     let history = existingHistory || [];
     history.push(newEntry);
-    if (history.length > 10) history = history.slice(1);
+    //if (history.length > 10) history = history.slice(1);
     return history;
 }
 

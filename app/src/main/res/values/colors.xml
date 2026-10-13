@@ -89,5 +89,6 @@
     <color name="bronze">#CD7F32</color>
 
     <color name="ripple_color">#20FFFFFF</color>
+    <color name="odd_table_row_color">#0AFFFFFF</color>
 
 </resources>
