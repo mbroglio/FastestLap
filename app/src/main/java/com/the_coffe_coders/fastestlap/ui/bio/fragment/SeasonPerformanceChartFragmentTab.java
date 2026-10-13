@@ -2,6 +2,7 @@ package com.the_coffe_coders.fastestlap.ui.bio.fragment;
 
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,7 +59,9 @@ public class SeasonPerformanceChartFragmentTab extends Fragment {
     private ConstructorSeasonStats constructorSeasonStats;
     private final Map<Integer, String> roundRaceNames = new HashMap<>();
 
-    private boolean isQualifyingMode = false;
+    private boolean isRace = true;
+    private boolean isQualifying = false;
+    private boolean isSprint = false;
 
     private StickyYAxisView stickyYAxisView;
     private SeasonProgressionChartView chartView;
@@ -67,12 +70,8 @@ public class SeasonPerformanceChartFragmentTab extends Fragment {
     private MaterialButtonToggleGroup toggleButtonGroup;
     private MaterialButton btnToggleRaces;
     private MaterialButton btnToggleQualifyings;
+    private MaterialButton btnToggleSprints;
     private LoadingScreen loadingScreen;
-
-    private View legendFinishDot;
-    private TextView legendFinishText;
-    private View legendSecondaryDot;
-    private TextView legendSecondaryText;
 
     public SeasonPerformanceChartFragmentTab() {
         // Required empty public constructor
@@ -152,11 +151,8 @@ public class SeasonPerformanceChartFragmentTab extends Fragment {
         toggleButtonGroup = view.findViewById(R.id.toggle_button_group);
         btnToggleRaces = view.findViewById(R.id.btn_toggle_races);
         btnToggleQualifyings = view.findViewById(R.id.btn_toggle_qualifyings);
+        btnToggleSprints = view.findViewById(R.id.btn_toggle_sprints);
 
-        legendFinishDot = view.findViewById(R.id.legend_finish_dot);
-        legendFinishText = view.findViewById(R.id.legend_finish_text);
-        legendSecondaryDot = view.findViewById(R.id.legend_secondary_dot);
-        legendSecondaryText = view.findViewById(R.id.legend_secondary_text);
 
         View contentLayout = view.findViewById(R.id.chart_main_layout);
         loadingScreen = new LoadingScreen(view, requireContext(), null, contentLayout);
@@ -167,35 +163,17 @@ public class SeasonPerformanceChartFragmentTab extends Fragment {
         chartView.setTeamColor(teamColor);
         stickyYAxisView.setGeometry(chartView.getTopPadding(), chartView.getBottomPadding(), chartView.getTotalPositions());
 
-        setupLegend();
         setupToggleButtons();
         fetchCalendarAndData();
-    }
-
-    private void setupLegend() {
-        if (isConstructor) {
-            legendFinishDot.setBackgroundTintList(ColorStateList.valueOf(chartView.getTeamColor()));
-            legendFinishText.setText(driverOneName != null && !driverOneName.isEmpty() ? driverOneName : "Pilota 1");
-
-            legendSecondaryDot.setVisibility(View.VISIBLE);
-            legendSecondaryDot.setBackgroundTintList(ColorStateList.valueOf(chartView.getSecondaryTeamColor()));
-            legendSecondaryText.setVisibility(View.VISIBLE);
-            legendSecondaryText.setText(driverTwoName != null && !driverTwoName.isEmpty() ? driverTwoName : "Pilota 2");
-        } else {
-            legendFinishDot.setBackgroundTintList(ColorStateList.valueOf(chartView.getTeamColor()));
-            legendFinishText.setText(isQualifyingMode ? "Qualifica" : "Gara (GP)");
-
-            legendSecondaryDot.setVisibility(View.GONE);
-            legendSecondaryText.setVisibility(View.GONE);
-        }
     }
 
     private void setupToggleButtons() {
         toggleButtonGroup.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
             if (isChecked) {
-                isQualifyingMode = (checkedId == R.id.btn_toggle_qualifyings);
+                isRace = (checkedId == R.id.btn_toggle_races);
+                isQualifying = (checkedId == R.id.btn_toggle_qualifyings);
+                isSprint = (checkedId == R.id.btn_toggle_sprints);
                 updateToggleStyles();
-                setupLegend();
                 renderChart();
             }
         });
@@ -203,18 +181,39 @@ public class SeasonPerformanceChartFragmentTab extends Fragment {
     }
 
     private void updateToggleStyles() {
-        if (getContext() == null || btnToggleRaces == null || btnToggleQualifyings == null) return;
+        if (getContext() == null || btnToggleRaces == null || btnToggleQualifyings == null || btnToggleSprints == null) return;
 
-        if (isQualifyingMode) {
+        if (isQualifying) {
             btnToggleQualifyings.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.card_surface_elevated)));
             btnToggleQualifyings.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
             btnToggleRaces.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.card_surface_dark)));
             btnToggleRaces.setTextColor(ContextCompat.getColor(requireContext(), R.color.timer_gray));
-        } else {
+            btnToggleSprints.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.card_surface_dark)));
+            btnToggleSprints.setTextColor(ContextCompat.getColor(requireContext(), R.color.timer_gray));
+        } else if(isRace) {
             btnToggleRaces.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.card_surface_elevated)));
             btnToggleRaces.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
             btnToggleQualifyings.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.card_surface_dark)));
             btnToggleQualifyings.setTextColor(ContextCompat.getColor(requireContext(), R.color.timer_gray));
+            btnToggleSprints.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.card_surface_dark)));
+            btnToggleSprints.setTextColor(ContextCompat.getColor(requireContext(), R.color.timer_gray));
+        }else if(isSprint){
+            btnToggleSprints.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.card_surface_elevated)));
+            btnToggleSprints.setTextColor(ContextCompat.getColor(requireContext(), R.color.white));
+            btnToggleRaces.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.card_surface_dark)));
+            btnToggleRaces.setTextColor(ContextCompat.getColor(requireContext(), R.color.timer_gray));
+            btnToggleQualifyings.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.card_surface_dark)));
+            btnToggleQualifyings.setTextColor(ContextCompat.getColor(requireContext(), R.color.timer_gray));
+        }else{
+            btnToggleRaces.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.card_surface_dark)));
+            btnToggleRaces.setTextColor(ContextCompat.getColor(requireContext(), R.color.timer_gray));
+            btnToggleRaces.setClickable(false);
+            btnToggleQualifyings.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.card_surface_dark)));
+            btnToggleQualifyings.setTextColor(ContextCompat.getColor(requireContext(), R.color.timer_gray));
+            btnToggleQualifyings.setClickable(false);
+            btnToggleSprints.setBackgroundTintList(ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.card_surface_dark)));
+            btnToggleSprints.setTextColor(ContextCompat.getColor(requireContext(), R.color.timer_gray));
+            btnToggleSprints.setClickable(false);
         }
     }
 
@@ -227,18 +226,6 @@ public class SeasonPerformanceChartFragmentTab extends Fragment {
         chartView.setTotalRaces(Constants.CALENDAR_RACES);
 
         renderChart();
-    }
-
-    private boolean hasSeasonResultsAvailable() {
-        if (isConstructor) {
-            return constructorSeasonStats != null
-                    && constructorSeasonStats.getSeason_results() != null
-                    && !constructorSeasonStats.getSeason_results().isEmpty();
-        } else {
-            return driverSeasonStats != null
-                    && driverSeasonStats.getSeason_results() != null
-                    && !driverSeasonStats.getSeason_results().isEmpty();
-        }
     }
 
     private void renderChart() {
@@ -258,7 +245,20 @@ public class SeasonPerformanceChartFragmentTab extends Fragment {
                 loadingProgress.setVisibility(View.GONE);
             }
             emptyMessage.setVisibility(View.GONE);
-            chartView.setData(primaryPoints, secondaryPoints, isConstructor);
+            if(isRace){
+                chartView.setData(primaryPoints, secondaryPoints, isConstructor, 0);
+            }else if (isQualifying){
+                chartView.setData(primaryPoints, secondaryPoints, isConstructor, 1);
+            }else if (isSprint){
+                chartView.setData(primaryPoints, secondaryPoints, isConstructor, 2);
+            }else{
+                chartView.setData(primaryPoints, secondaryPoints, isConstructor, 0);
+            }
+
+            chartView.setVisibility(View.VISIBLE);
+            stickyYAxisView.setVisibility(View.VISIBLE);
+            emptyMessage.setVisibility(View.GONE);
+
             if (loadingScreen != null) {
                 loadingScreen.hideLoadingScreenImmediately();
             }
@@ -271,17 +271,23 @@ public class SeasonPerformanceChartFragmentTab extends Fragment {
 
         for (int i = 0; i < list.size(); i++) {
             EventResultDriver res = list.get(i);
+            Log.i(TAG, "extractPointsFromDriverStats: " + res);
+
             if (res == null) continue;
 
             int roundNum = list.get(0) == null ? i : i + 1;
 
-            String posStr = isQualifyingMode ? res.getQualifying() : res.getRace();
-            if (!isQualifyingMode && (posStr == null || posStr.isEmpty())) {
-                posStr = res.getSprint_race();
+            String position = null;
+            if(isRace){
+                position = res.getRace();
+            }else if(isQualifying){
+                position = res.getQualifying();
+            }else if(isSprint){
+                position = res.getSprint_race();
             }
 
-            String raceName = roundRaceNames.getOrDefault(roundNum, "Round " + roundNum);
-            SeasonPerformancePoint pt = createPointFromPosStr(roundNum, raceName, posStr, entityId, entityName);
+            String raceName = roundRaceNames.get(roundNum);
+            SeasonPerformancePoint pt = createPointFromPosStr(roundNum, raceName, position, entityId, entityName);
             if (pt != null) {
                 points.add(pt);
             }
@@ -303,21 +309,27 @@ public class SeasonPerformanceChartFragmentTab extends Fragment {
 
             int roundNum = list.get(0) == null ? i : i + 1;
 
-            String raceName = roundRaceNames.getOrDefault(roundNum, "Round " + roundNum);
-            String pos1 = isQualifyingMode ? res.getQualifying_driver_1() : res.getRace_driver_1();
-            if (!isQualifyingMode && (pos1 == null || pos1.isEmpty())) {
-                pos1 = res.getSprint_race_driver_1();
+            String raceName = roundRaceNames.get(roundNum);
+            String position1 = null;
+            String position2 = null;
+
+            if(isRace){
+                position1 = res.getRace_driver_1();
+                position2 = res.getRace_driver_2();
+            }else if(isQualifying){
+                position1 = res.getQualifying_driver_1();
+                position2 = res.getQualifying_driver_2();
+            }else if(isSprint){
+                position1 = res.getSprint_race_driver_1();
+                position2 = res.getSprint_race_driver_2();
             }
-            SeasonPerformancePoint pt1 = createPointFromPosStr(roundNum, raceName, pos1, "d1", name1);
+
+            SeasonPerformancePoint pt1 = createPointFromPosStr(roundNum, raceName, position1, "d1", name1);
+            SeasonPerformancePoint pt2 = createPointFromPosStr(roundNum, raceName, position2, "d2", name2);
+
             if (pt1 != null) {
                 primaryPoints.add(pt1);
             }
-
-            String pos2 = isQualifyingMode ? res.getQualifying_driver_2() : res.getRace_driver_2();
-            if (!isQualifyingMode && (pos2 == null || pos2.isEmpty())) {
-                pos2 = res.getSprint_race_driver_2();
-            }
-            SeasonPerformancePoint pt2 = createPointFromPosStr(roundNum, raceName, pos2, "d2", name2);
             if (pt2 != null) {
                 secondaryPoints.add(pt2);
             }
@@ -331,7 +343,7 @@ public class SeasonPerformanceChartFragmentTab extends Fragment {
             return null;
         }
 
-        String trimmed = posStr.trim();
+        String trimmed = posStr.trim().toLowerCase();
         String lower = trimmed.toLowerCase();
 
         boolean isDnf = "r".equalsIgnoreCase(lower) || "d".equalsIgnoreCase(lower)
@@ -358,8 +370,14 @@ public class SeasonPerformanceChartFragmentTab extends Fragment {
         }
 
         String displayPosText = isDnf ? "DNF" : String.valueOf(parsedPos);
-        return new SeasonPerformancePoint(roundNum, "R" + roundNum, parsedPos, displayPosText,
-                isDnf, false, raceName, pointEntityId, pointEntityName);
+
+        if(isRace){
+            return new SeasonPerformancePoint(roundNum, "R" + roundNum, parsedPos, displayPosText, isDnf, 0, raceName, pointEntityId, pointEntityName);
+        }else if(isQualifying){
+            return new SeasonPerformancePoint(roundNum, "Q" + roundNum, parsedPos, displayPosText, isDnf, 1, raceName, pointEntityId, pointEntityName);
+        }else{
+            return new SeasonPerformancePoint(roundNum, "S" + roundNum, parsedPos, displayPosText, isDnf, 2, raceName, pointEntityId, pointEntityName);
+        }
     }
 
     private void showEmptyState() {
@@ -367,7 +385,8 @@ public class SeasonPerformanceChartFragmentTab extends Fragment {
             loadingProgress.setVisibility(View.GONE);
         }
         emptyMessage.setVisibility(View.VISIBLE);
-        chartView.setData(Collections.emptyList(), Collections.emptyList(), isConstructor);
+        chartView.setVisibility(View.GONE);
+        stickyYAxisView.setVisibility(View.GONE);
         if (loadingScreen != null) {
             loadingScreen.hideLoadingScreenImmediately();
         }

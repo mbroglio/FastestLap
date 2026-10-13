@@ -71,6 +71,7 @@
 
     <color name="yellow">#FFD700</color>
     <color name="dark_red">#8B0000</color>
+    <color name="coral_red">#FF6B6B</color>
     <color name="grey_card">#3B3B37</color>
     <color name="timer_gray">#B1ADAD</color>
     <color name="team_card_modern_gray">#CED3D9</color>
@@ -90,5 +91,7 @@
 
     <color name="ripple_color">#20FFFFFF</color>
     <color name="odd_table_row_color">#0AFFFFFF</color>
+
+    <color name="chart_axis_index_color">#9E9E9E</color>
 
 </resources>

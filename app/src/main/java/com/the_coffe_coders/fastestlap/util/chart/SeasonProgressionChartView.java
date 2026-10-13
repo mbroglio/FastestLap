@@ -20,6 +20,7 @@ import androidx.core.graphics.ColorUtils;
 import com.the_coffe_coders.fastestlap.R;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import lombok.Getter;
@@ -42,6 +43,11 @@ public class SeasonProgressionChartView extends View {
     private int teamColor = Color.parseColor("#E10600");
     private int secondaryTeamColor = Color.parseColor("#E10600");
     private boolean isConstructorMode = false;
+
+    private boolean isRace = true;
+    private boolean isQualifying = false;
+    private boolean isSprint = false;
+
 
     private float columnWidth;
     private float topPadding;
@@ -95,7 +101,7 @@ public class SeasonProgressionChartView extends View {
         linePaintSecondary.setStyle(Paint.Style.STROKE);
         linePaintSecondary.setStrokeCap(Paint.Cap.ROUND);
         linePaintSecondary.setStrokeJoin(Paint.Join.ROUND);
-        linePaintSecondary.setPathEffect(new DashPathEffect(new float[]{dpToPx(6f), dpToPx(4f)}, 0));
+        //linePaintSecondary.setPathEffect(new DashPathEffect(new float[]{dpToPx(6f), dpToPx(4f)}, 0));
 
         pointFillPaint.setStyle(Paint.Style.FILL);
         pointStrokePaint.setStyle(Paint.Style.STROKE);
@@ -147,13 +153,17 @@ public class SeasonProgressionChartView extends View {
     }
     public void setData(List<SeasonPerformancePoint> primaryPoints,
                         @Nullable List<SeasonPerformancePoint> secondaryPoints,
-                        boolean isConstructor) {
+                        boolean isConstructor, int sessionType) {
         this.primaryPoints = primaryPoints != null ? new ArrayList<>(primaryPoints) : new ArrayList<>();
         this.secondaryPoints = secondaryPoints != null ? new ArrayList<>(secondaryPoints) : new ArrayList<>();
         this.isConstructorMode = isConstructor;
 
-        this.primaryPoints.sort((a, b) -> Integer.compare(a.getRound(), b.getRound()));
-        this.secondaryPoints.sort((a, b) -> Integer.compare(a.getRound(), b.getRound()));
+        this.isRace = (sessionType == 0);
+        this.isQualifying = (sessionType == 1);
+        this.isSprint = (sessionType == 2);
+
+        this.primaryPoints.sort(Comparator.comparingInt(SeasonPerformancePoint::getRound));
+        this.secondaryPoints.sort(Comparator.comparingInt(SeasonPerformancePoint::getRound));
 
         selectedPoint = null;
         requestLayout();
@@ -197,15 +207,16 @@ public class SeasonProgressionChartView extends View {
 
             // X-axis label: "R1", "R2", etc.
             float labelY = height - bottomPadding + dpToPx(18f);
-            canvas.drawText("R" + r, x, labelY, labelPaint);
+            String text = "R";
+            if(isRace){
+                text = "R";
+            }else if(isQualifying){
+                text = "Q";
+            }else if(isSprint){
+                text = "S";
+            }
 
-            // Sub-label: "GP"
-            float subLabelY = labelY + dpToPx(14f);
-            labelPaint.setTextSize(dpToPx(8.5f));
-            labelPaint.setColor(Color.parseColor("#777474"));
-            canvas.drawText("GP", x, subLabelY, labelPaint);
-            labelPaint.setTextSize(dpToPx(10f));
-            labelPaint.setColor(Color.parseColor("#B1ADAD"));
+            canvas.drawText(text + r, x, labelY, labelPaint);
         }
 
         // 3. Draw secondary line if Constructor mode

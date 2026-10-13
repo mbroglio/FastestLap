@@ -362,5 +362,7 @@
     <string name="tab_bio">BIO</string>
     <string name="tab_history">HISTORY</string>
     <string name="tab_charts">CHARTS</string>
+    <string name="sprints">sprints</string>
+    <string name="races">races</string>
 
 </resources>

@@ -24,22 +24,27 @@ public class StickyYAxisView extends View {
     private float topPadding;
     private float bottomPadding;
 
+    private Context context;
+
     public StickyYAxisView(Context context) {
         super(context);
-        init(context);
+        this.context = context;
+        init();
     }
 
     public StickyYAxisView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        init(context);
+        this.context = context;
+        init();
     }
 
     public StickyYAxisView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(context);
+        this.context = context;
+        init();
     }
 
-    private void init(Context context) {
+    private void init() {
         topPadding = dpToPx(36f);
         bottomPadding = dpToPx(48f);
 
@@ -93,19 +98,19 @@ public class StickyYAxisView extends View {
             String label;
             if (p == totalPositions) {
                 label = "DNF";
-                textPaint.setColor(Color.parseColor("#FF6B6B")); // Coral red for DNF
+                textPaint.setColor(context.getColor(R.color.coral_red)); // Coral red for DNF
             } else if (p == 1) {
                 label = "P1";
-                textPaint.setColor(Color.parseColor("#FFD700")); // Gold
+                textPaint.setColor(context.getColor(R.color.yellow)); // Gold
             } else if (p == 2) {
                 label = "P2";
-                textPaint.setColor(Color.parseColor("#D1D5DB")); // Silver
+                textPaint.setColor(context.getColor(R.color.silver)); // Silver
             } else if (p == 3) {
                 label = "P3";
-                textPaint.setColor(Color.parseColor("#CD7F32")); // Bronze
+                textPaint.setColor(context.getColor(R.color.bronze)); // Bronze
             } else {
                 label = "P" + p;
-                textPaint.setColor(Color.parseColor("#9E9E9E"));
+                textPaint.setColor(context.getColor(R.color.chart_axis_index_color));
             }
 
             // Vertically center text with the tick line
