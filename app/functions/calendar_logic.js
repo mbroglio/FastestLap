@@ -122,65 +122,50 @@ function normalizeF1Race(race) {
     const raceName = race.raceName || `Round ${round}`;
     const sessions = [];
 
-    function addSession(id, name, shortName, type, topic, date, time) {
+    function addSession(id, name, type, topic, date, time) {
         if (!date) return;
         const timing = computeSessionTimes(date, time, null, null);
-        if (timing) {
+        if (timing && timing.startTimeMillis) {
             sessions.push({
                 id,
                 name,
-                shortName,
                 category: "f1",
                 type,
                 topic,
-                ...timing
+                startTimeMillis: timing.startTimeMillis
             });
         }
     }
 
     if (race.FirstPractice) {
-        addSession("fp1", "Prove Libere 1 (FP1)", "FP1", "practice", "session_f1_practice", race.FirstPractice.date, race.FirstPractice.time);
+        addSession("fp1", "Prove Libere 1 (FP1)", "practice", "session_f1_practice", race.FirstPractice.date, race.FirstPractice.time);
     }
     if (race.SecondPractice) {
-        addSession("fp2", "Prove Libere 2 (FP2)", "FP2", "practice", "session_f1_practice", race.SecondPractice.date, race.SecondPractice.time);
+        addSession("fp2", "Prove Libere 2 (FP2)", "practice", "session_f1_practice", race.SecondPractice.date, race.SecondPractice.time);
     }
     if (race.ThirdPractice) {
-        addSession("fp3", "Prove Libere 3 (FP3)", "FP3", "practice", "session_f1_practice", race.ThirdPractice.date, race.ThirdPractice.time);
+        addSession("fp3", "Prove Libere 3 (FP3)", "practice", "session_f1_practice", race.ThirdPractice.date, race.ThirdPractice.time);
     }
     if (race.SprintQualifying) {
-        addSession("sprint_qualifying", "Sprint Qualifying", "Sprint Qualifiche", "qualifying", "session_f1_qualifying", race.SprintQualifying.date, race.SprintQualifying.time);
+        addSession("sprint_qualifying", "Sprint Qualifying", "qualifying", "session_f1_qualifying", race.SprintQualifying.date, race.SprintQualifying.time);
     }
     if (race.Sprint) {
-        addSession("sprint", "Gara Sprint", "Sprint", "sprint", "session_f1_sprint", race.Sprint.date, race.Sprint.time);
+        addSession("sprint", "Gara Sprint", "sprint", "session_f1_sprint", race.Sprint.date, race.Sprint.time);
     }
     if (race.Qualifying) {
-        addSession("qualifying", "Qualifiche", "Qualifiche", "qualifying", "session_f1_qualifying", race.Qualifying.date, race.Qualifying.time);
+        addSession("qualifying", "Qualifiche", "qualifying", "session_f1_qualifying", race.Qualifying.date, race.Qualifying.time);
     }
     if (race.date) {
-        addSession("race", "Gara", "Gara", "race", "session_f1_race", race.date, race.time);
+        addSession("race", "Gara", "race", "session_f1_race", race.date, race.time);
     }
 
     // Sort sessions chronologically
     sessions.sort((a, b) => a.startTimeMillis - b.startTimeMillis);
 
-    const raceTiming = computeSessionTimes(race.date, race.time, null, null);
-
     return {
-        season: race.season,
         round: round,
         raceName: raceName,
-        circuit: {
-            id: race.Circuit?.circuitId || "",
-            name: race.Circuit?.circuitName || "",
-            locality: race.Circuit?.Location?.locality || "",
-            country: race.Circuit?.Location?.country || "",
-            lat: race.Circuit?.Location?.lat || "",
-            long: race.Circuit?.Location?.long || ""
-        },
-        date: raceTiming?.date || race.date,
-        time: raceTiming?.time || race.time || "",
-        timeZone: "Europe/Rome",
-        timeUtc: raceTiming?.timeUtc || race.time || "",
+        circuit_id: race.Circuit?.circuitId || "",
         sessions: sessions
     };
 }

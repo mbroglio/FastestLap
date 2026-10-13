@@ -84,13 +84,71 @@ async function syncSeasonStatsForRound(db, round, targetSeason = "current", opti
         constructorStandingsPromise
     ]);
 
-    const [driversSnap, teamsSnap] = await Promise.all([
+    const calYear = (season && season !== "current")
+        ? season
+        : (resultsRes.data?.MRData?.RaceTable?.season || new Date().getFullYear().toString());
+
+    const [driversSnap, teamsSnap, circuitsSnap, nationsSnap, calendarSnap] = await Promise.all([
         db.ref(PATHS.drivers).once("value"),
-        db.ref(PATHS.teams).once("value")
+        db.ref(PATHS.teams).once("value"),
+        db.ref(PATHS.circuits).once("value"),
+        db.ref(PATHS.nations || "nations").once("value"),
+        db.ref(`${PATHS.db_calendar_f1}/${calYear}`).once("value")
     ]);
 
     const driversData = driversSnap.val() || {};
     const teamsData = teamsSnap.val() || {};
+    const circuitsData = circuitsSnap.val() || {};
+    const nationsData = nationsSnap.val() || {};
+    const calendarData = calendarSnap.val() || {};
+
+    // 1. Locate round node in calendar to extract circuit_id
+    let roundCalNode = calendarData[roundStr] || null;
+    if (!roundCalNode && typeof calendarData === "object") {
+        for (const r of Object.values(calendarData)) {
+            if (r && String(r.round) === roundStr) {
+                roundCalNode = r;
+                break;
+            }
+        }
+    }
+    let circuitId = roundCalNode?.circuit_id || roundCalNode?.circuit?.id || null;
+    if (!circuitId) {
+        circuitId = resultsRes.data?.MRData?.RaceTable?.Races?.[0]?.Circuit?.circuitId
+            || qualRes.data?.MRData?.RaceTable?.Races?.[0]?.Circuit?.circuitId
+            || sprintRes.data?.MRData?.RaceTable?.Races?.[0]?.Circuit?.circuitId
+            || null;
+    }
+
+    // 2. Locate circuit in circuits node to obtain country ID
+    let countryId = null;
+    if (circuitId) {
+        let matchedCircuit = circuitsData[circuitId] || null;
+        if (!matchedCircuit) {
+            for (const [cKey, cVal] of Object.entries(circuitsData)) {
+                if (cVal && (cKey === circuitId || cVal.trackId === circuitId || cVal.circuitId === circuitId || cVal.id === circuitId)) {
+                    matchedCircuit = cVal;
+                    break;
+                }
+            }
+        }
+        countryId = matchedCircuit?.country || null;
+    }
+
+    // 3. Locate nation in nations node to obtain abbreviation
+    let nationAbbreviation = null;
+    if (countryId) {
+        let matchedNation = nationsData[countryId] || null;
+        if (!matchedNation) {
+            for (const [nKey, nVal] of Object.entries(nationsData)) {
+                if (nVal && (nKey === countryId || nVal.nationId === countryId || nVal.id === countryId || nVal.name === countryId)) {
+                    matchedNation = nVal;
+                    break;
+                }
+            }
+        }
+        nationAbbreviation = matchedNation?.abbreviation || null;
+    }
 
     const teamsDriversMap = {};
     for (const [cId, teamObj] of Object.entries(teamsData)) {
@@ -154,6 +212,15 @@ async function syncSeasonStatsForRound(db, round, targetSeason = "current", opti
             if (!constructorRoundResults[cId]) constructorRoundResults[cId] = {};
             const slot = getConstructorDriverSlot(cId, dId, { [cId]: { [roundStr]: constructorRoundResults[cId] } }, roundStr, "sprint_race", teamsDriversMap);
             constructorRoundResults[cId][`sprint_race_driver_${slot}`] = posStr;
+        }
+    }
+
+    if (nationAbbreviation) {
+        for (const dId of Object.keys(driverRoundResults)) {
+            driverRoundResults[dId].abbreviation = nationAbbreviation;
+        }
+        for (const cId of Object.keys(constructorRoundResults)) {
+            constructorRoundResults[cId].abbreviation = nationAbbreviation;
         }
     }
 

@@ -24,12 +24,14 @@ public class EventResultDriver implements Parcelable {
     private String sprint_qualifying;
     private String race;
     private String sprint_race;
+    private String nation_abbr;
 
     protected EventResultDriver(Parcel in) {
         qualifying = in.readString();
         sprint_qualifying = in.readString();
         race = in.readString();
         sprint_race = in.readString();
+        nation_abbr = in.readString();
     }
 
     public static final Creator<EventResultDriver> CREATOR = new Creator<>() {
@@ -55,5 +57,6 @@ public class EventResultDriver implements Parcelable {
         parcel.writeString(sprint_qualifying);
         parcel.writeString(race);
         parcel.writeString(sprint_race);
+        parcel.writeString(nation_abbr);
     }
 }

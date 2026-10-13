@@ -371,7 +371,7 @@ async function executeScheduledRaceStatsCheck(db, messaging, options = {}) {
 
         const raceData = raceTableRaces[0];
         const rawResults = raceData.Results || [];
-        const trackId = raceData.Circuit?.circuitId || race.circuit?.id || "";
+        const trackId = raceData.Circuit?.circuitId || race.circuit_id || race.circuit?.id || "";
 
         const currentSnapshot = rawResults.map(r => ({
             position: r.position,

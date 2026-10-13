@@ -7,6 +7,7 @@ const PATHS = {
     team_map: "app_config/team_id_name_map",
     driver_map: "app_config/driver_id_name_map",
     db_calendar_f1: "app_config/db_calendar/f1",
+    nations: "nations",
     race_updates: "app_config/stats_tracker/race_updates"
 };
 
