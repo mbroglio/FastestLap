@@ -217,10 +217,10 @@ async function syncSeasonStatsForRound(db, round, targetSeason = "current", opti
 
     if (nationAbbreviation) {
         for (const dId of Object.keys(driverRoundResults)) {
-            driverRoundResults[dId].abbreviation = nationAbbreviation;
+            driverRoundResults[dId].nation_abbr = nationAbbreviation;
         }
         for (const cId of Object.keys(constructorRoundResults)) {
-            constructorRoundResults[cId].abbreviation = nationAbbreviation;
+            constructorRoundResults[cId].nation_abbr = nationAbbreviation;
         }
     }
 
