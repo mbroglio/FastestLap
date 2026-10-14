@@ -27,7 +27,7 @@ public class EventResultConstructor implements Parcelable {
     private String race_driver_2;
     private String sprint_race_driver_1;
     private String sprint_race_driver_2;
-    private String abbreviation;
+    private String nation_abbr;
 
     protected EventResultConstructor(Parcel in) {
         qualifying_driver_1 = in.readString();
@@ -38,7 +38,7 @@ public class EventResultConstructor implements Parcelable {
         race_driver_2 = in.readString();
         sprint_race_driver_1 = in.readString();
         sprint_race_driver_2 = in.readString();
-        abbreviation = in.readString();
+        nation_abbr = in.readString();
     }
 
     public static final Creator<EventResultConstructor> CREATOR = new Creator<>() {
@@ -68,6 +68,6 @@ public class EventResultConstructor implements Parcelable {
         parcel.writeString(race_driver_2);
         parcel.writeString(sprint_race_driver_1);
         parcel.writeString(sprint_race_driver_2);
-        parcel.writeString(abbreviation);
+        parcel.writeString(nation_abbr);
     }
 }

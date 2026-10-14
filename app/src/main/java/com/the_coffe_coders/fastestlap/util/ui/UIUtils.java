@@ -775,4 +775,12 @@ public class UIUtils {
             Log.e("UIUtils.styleDriverCard", "Error styling driver card: " + e.getMessage());
         }
     }
+
+    public static int blendingColors(int color1, int color2, float ratio) {
+        return ColorUtils.blendARGB(color1, color2, ratio);
+    }
+
+    public static int blendLighter(int color){
+        return blendingColors(color, Color.WHITE, 0.40f);
+    }
 }

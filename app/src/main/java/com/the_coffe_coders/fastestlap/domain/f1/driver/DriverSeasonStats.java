@@ -112,7 +112,7 @@ public class DriverSeasonStats implements Parcelable {
         if (r != null) res.setRace(String.valueOf(r));
         Object sr = map.get("sprint_race");
         if (sr != null) res.setSprint_race(String.valueOf(sr));
-        Object abbr = map.get("abbreviation");
+        Object abbr = map.get("nation_abbr") != null ? map.get("nation_abbr") : map.get("abbreviation");
         if (abbr != null) res.setNation_abbr(String.valueOf(abbr));
         return res;
     }

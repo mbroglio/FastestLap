@@ -212,7 +212,7 @@
     <string name="loading">loading%1$s</string>
     <string name="last_driver_position" translatable="false">22</string>
     <string name="driver_info_not_found">driver info not found</string>
-    <string name="round_plus_value" translatable="false">round  %1$s</string>
+    <string name="round_plus_value" translatable="false">Round  %1$s</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="discover_the_car">discover the car</string>
     <string name="formula_3" translatable="false">Formula 3</string>
@@ -364,5 +364,8 @@
     <string name="tab_charts">CHARTS</string>
     <string name="sprints">sprints</string>
     <string name="races">races</string>
+
+    <string name="position_index" translatable="false">%1$s°</string>
+    <string name="dnf_retired_index">DNF/retired</string>
 
 </resources>

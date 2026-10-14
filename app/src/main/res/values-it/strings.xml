@@ -254,8 +254,17 @@
     <string name="f3_notif_practice">Prove Libere</string>
     <string name="news">Notizie</string>
     <string name="preferences">Preferenze</string>
+    <string name="air">aria</string>
+    <string name="current_time">ora corrente:</string>
+    <string name="direction">direzione:</string>
+    <string name="pressure">pressione</string>
+    <string name="chart">grafico</string>
+    <string name="scroll_indication">Scorri ➔</string>
     <string name="tab_bio">BIO</string>
     <string name="tab_history">STORICO</string>
     <string name="tab_charts">GRAFICI</string>
+    <string name="sprints">sprint</string>
+    <string name="races">gare</string>
+    <string name="dnf_retired_index">DNF/ritirato</string>
 
 </resources>

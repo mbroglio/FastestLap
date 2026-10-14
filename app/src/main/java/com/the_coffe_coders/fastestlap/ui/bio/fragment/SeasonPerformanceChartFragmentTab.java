@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -26,6 +27,7 @@ import com.the_coffe_coders.fastestlap.util.chart.SeasonProgressionChartView;
 import com.the_coffe_coders.fastestlap.util.chart.StickyYAxisView;
 import com.the_coffe_coders.fastestlap.util.Constants;
 import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -71,6 +73,12 @@ public class SeasonPerformanceChartFragmentTab extends Fragment {
     private MaterialButton btnToggleRaces;
     private MaterialButton btnToggleQualifyings;
     private MaterialButton btnToggleSprints;
+    private LinearLayout driversLayout;
+    private TextView driverName1;
+    private TextView driverName2;
+    private View driverColor1;
+    private View driverColor2;
+
     private LoadingScreen loadingScreen;
 
     public SeasonPerformanceChartFragmentTab() {
@@ -152,6 +160,11 @@ public class SeasonPerformanceChartFragmentTab extends Fragment {
         btnToggleRaces = view.findViewById(R.id.btn_toggle_races);
         btnToggleQualifyings = view.findViewById(R.id.btn_toggle_qualifyings);
         btnToggleSprints = view.findViewById(R.id.btn_toggle_sprints);
+        driversLayout = view.findViewById(R.id.drivers_layout);
+        driverName1 = view.findViewById(R.id.driver_name_1);
+        driverName2 = view.findViewById(R.id.driver_name_2);
+        driverColor1 = view.findViewById(R.id.driver_color_1);
+        driverColor2 = view.findViewById(R.id.driver_color_2);
 
 
         View contentLayout = view.findViewById(R.id.chart_main_layout);
@@ -234,8 +247,10 @@ public class SeasonPerformanceChartFragmentTab extends Fragment {
 
         if (isConstructor) {
             extractPointsFromConstructorStats(constructorSeasonStats, primaryPoints, secondaryPoints);
+            toggleDriversLegend(driverOneName, driverTwoName, true);
         } else {
             extractPointsFromDriverStats(driverSeasonStats, primaryPoints);
+            toggleDriversLegend(null, null, false);
         }
 
         if (primaryPoints.isEmpty() && secondaryPoints.isEmpty()) {
@@ -265,6 +280,20 @@ public class SeasonPerformanceChartFragmentTab extends Fragment {
         }
     }
 
+    private void toggleDriversLegend(String driverOneName, String driverTwoName, boolean toShow) {
+        if(toShow){
+            driversLayout.setVisibility(View.VISIBLE);
+            driverName1.setText(driverOneName);
+            driverName2.setText(driverTwoName);
+
+            driverColor1.setBackgroundTintList(ColorStateList.valueOf(teamColor));
+            driverColor2.setBackgroundTintList(ColorStateList.valueOf(UIUtils.blendLighter(teamColor)));
+
+        } else {
+            driversLayout.setVisibility(View.GONE);
+        }
+    }
+
     private void extractPointsFromDriverStats(DriverSeasonStats dss, List<SeasonPerformancePoint> points) {
         if (dss == null || dss.getSeason_results() == null) return;
         ArrayList<EventResultDriver> list = dss.getSeason_results();
@@ -287,7 +316,8 @@ public class SeasonPerformanceChartFragmentTab extends Fragment {
             }
 
             String raceName = roundRaceNames.get(roundNum);
-            SeasonPerformancePoint pt = createPointFromPosStr(roundNum, raceName, position, entityId, entityName);
+            SeasonPerformancePoint pt = createPointFromPosStr(roundNum, raceName, position,
+                    res.getNation_abbr(), entityId, entityName);
             if (pt != null) {
                 points.add(pt);
             }
@@ -324,8 +354,10 @@ public class SeasonPerformanceChartFragmentTab extends Fragment {
                 position2 = res.getSprint_race_driver_2();
             }
 
-            SeasonPerformancePoint pt1 = createPointFromPosStr(roundNum, raceName, position1, "d1", name1);
-            SeasonPerformancePoint pt2 = createPointFromPosStr(roundNum, raceName, position2, "d2", name2);
+            SeasonPerformancePoint pt1 = createPointFromPosStr(roundNum, raceName, position1,
+                    res.getNation_abbr(), "d1", name1);
+            SeasonPerformancePoint pt2 = createPointFromPosStr(roundNum, raceName, position2,
+                    res.getNation_abbr(), "d2", name2);
 
             if (pt1 != null) {
                 primaryPoints.add(pt1);
@@ -338,7 +370,8 @@ public class SeasonPerformanceChartFragmentTab extends Fragment {
 
     @Nullable
     private SeasonPerformancePoint createPointFromPosStr(int roundNum, String raceName, String posStr,
-                                                          String pointEntityId, String pointEntityName) {
+                                                          String nationAbbr, String pointEntityId,
+                                                          String pointEntityName) {
         if (posStr == null || posStr.trim().isEmpty() || "-".equals(posStr.trim())) {
             return null;
         }
@@ -372,11 +405,14 @@ public class SeasonPerformanceChartFragmentTab extends Fragment {
         String displayPosText = isDnf ? "DNF" : String.valueOf(parsedPos);
 
         if(isRace){
-            return new SeasonPerformancePoint(roundNum, "R" + roundNum, parsedPos, displayPosText, isDnf, 0, raceName, pointEntityId, pointEntityName);
+            return new SeasonPerformancePoint(roundNum, "R" + roundNum, parsedPos, displayPosText,
+                    isDnf, 0, raceName, nationAbbr, pointEntityId, pointEntityName);
         }else if(isQualifying){
-            return new SeasonPerformancePoint(roundNum, "Q" + roundNum, parsedPos, displayPosText, isDnf, 1, raceName, pointEntityId, pointEntityName);
+            return new SeasonPerformancePoint(roundNum, "Q" + roundNum, parsedPos, displayPosText,
+                    isDnf, 1, raceName, nationAbbr, pointEntityId, pointEntityName);
         }else{
-            return new SeasonPerformancePoint(roundNum, "S" + roundNum, parsedPos, displayPosText, isDnf, 2, raceName, pointEntityId, pointEntityName);
+            return new SeasonPerformancePoint(roundNum, "S" + roundNum, parsedPos, displayPosText,
+                    isDnf, 2, raceName, nationAbbr, pointEntityId, pointEntityName);
         }
     }
 

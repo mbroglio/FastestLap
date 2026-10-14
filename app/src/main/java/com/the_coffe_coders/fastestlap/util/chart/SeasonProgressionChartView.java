@@ -18,6 +18,7 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.core.graphics.ColorUtils;
 
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -35,11 +36,12 @@ public class SeasonProgressionChartView extends View {
     private final Paint pointStrokePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint labelPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+    private final Paint nationLabelPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint tooltipBgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint tooltipTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private int totalRaces = 24;
-    private int totalPositions = 21; // 1 to 20 + DNF
+    private final int totalPositions = 23; // 1 to 20 + DNF
     private int teamColor = Color.parseColor("#E10600");
     private int secondaryTeamColor = Color.parseColor("#E10600");
     private boolean isConstructorMode = false;
@@ -113,7 +115,11 @@ public class SeasonProgressionChartView extends View {
 
         labelPaint.setTextAlign(Paint.Align.CENTER);
         labelPaint.setTextSize(dpToPx(10f));
-        labelPaint.setColor(Color.parseColor("#B1ADAD")); // timer_gray
+        labelPaint.setColor(context.getColor(R.color.timer_gray)); // timer_gray
+
+        nationLabelPaint.setTextAlign(Paint.Align.CENTER);
+        nationLabelPaint.setTextSize(dpToPx(12f));
+        nationLabelPaint.setColor(context.getColor(R.color.white));
 
         tooltipBgPaint.setColor(Color.argb(230, 28, 29, 36));
         tooltipBgPaint.setStyle(Paint.Style.FILL);
@@ -123,15 +129,20 @@ public class SeasonProgressionChartView extends View {
         tooltipTextPaint.setTextAlign(Paint.Align.CENTER);
 
         try {
-            Typeface tf = ResourcesCompat.getFont(context, R.font.orbitron_bold);
-            if (tf != null) {
-                textPaint.setTypeface(tf);
-                labelPaint.setTypeface(tf);
-                tooltipTextPaint.setTypeface(tf);
+            Typeface tfBold = ResourcesCompat.getFont(context, R.font.orbitron_bold);
+            Typeface tfRegular = ResourcesCompat.getFont(context, R.font.orbitron_regular);
+            if (tfBold != null) {
+                textPaint.setTypeface(tfBold);
+                nationLabelPaint.setTypeface(tfBold);
+                tooltipTextPaint.setTypeface(tfBold);
+            }
+            if(tfRegular != null){
+                labelPaint.setTypeface(tfRegular);
             }
         } catch (Exception ignored) {
             textPaint.setTypeface(Typeface.DEFAULT_BOLD);
             labelPaint.setTypeface(Typeface.DEFAULT_BOLD);
+            nationLabelPaint.setTypeface(Typeface.DEFAULT_BOLD);
             tooltipTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
         }
     }
@@ -146,7 +157,7 @@ public class SeasonProgressionChartView extends View {
 
     public void setTeamColor(int color) {
         this.teamColor = color;
-        this.secondaryTeamColor = ColorUtils.blendARGB(color, Color.WHITE, 0.40f);
+        this.secondaryTeamColor = UIUtils.blendLighter(color);
         linePaint.setColor(teamColor);
         linePaintSecondary.setColor(secondaryTeamColor);
         invalidate();
@@ -217,6 +228,11 @@ public class SeasonProgressionChartView extends View {
             }
 
             canvas.drawText(text + r, x, labelY, labelPaint);
+
+            String nationAbbr = getNationAbbreviation(r);
+            if (!nationAbbr.isEmpty()) {
+                canvas.drawText(nationAbbr, x, labelY + dpToPx(14f), nationLabelPaint);
+            }
         }
 
         // 3. Draw secondary line if Constructor mode
@@ -245,6 +261,20 @@ public class SeasonProgressionChartView extends View {
         if (selectedPoint != null) {
             drawTooltip(canvas, selectedPoint, selectedPointX, selectedPointY);
         }
+    }
+
+    private String getNationAbbreviation(int round) {
+        for (SeasonPerformancePoint point : primaryPoints) {
+            if (point.getRound() == round && point.getNationAbbr() != null) {
+                return point.getNationAbbr().trim().toUpperCase();
+            }
+        }
+        for (SeasonPerformancePoint point : secondaryPoints) {
+            if (point.getRound() == round && point.getNationAbbr() != null) {
+                return point.getNationAbbr().trim().toUpperCase();
+            }
+        }
+        return "";
     }
 
     private void drawProgressionLine(Canvas canvas, List<SeasonPerformancePoint> points, float stepY, Paint paint) {
@@ -311,9 +341,16 @@ public class SeasonProgressionChartView extends View {
     }
 
     private void drawTooltip(Canvas canvas, SeasonPerformancePoint pt, float x, float y) {
-        String line1 = pt.getRoundLabel() + ": " + (pt.getRaceName() != null ? pt.getRaceName() : "GP");
-        String line2 = (pt.getEntityName() != null ? pt.getEntityName() + " - " : "") +
-                (pt.isDnf() ? "DNF / Ritirato" : "Posizione " + pt.getPositionText());
+        String line1 = getContext().getString(R.string.round_plus_value, Integer.toString(pt.getRound()));
+        String line2;
+
+        if(isConstructorMode){
+            line2 = (pt.getEntityName() != null ? pt.getEntityName() + " - " : "") +
+                    (pt.isDnf() ? getContext().getString(R.string.dnf_retired_index) : getContext().getString(R.string.position_index, pt.getPositionText()));
+        }else{
+            line2 = (pt.isDnf() ? getContext().getString(R.string.dnf_retired_index) : getContext().getString(R.string.position_index, pt.getPositionText()));
+        }
+
 
         float padding = dpToPx(8f);
         float textWidth1 = tooltipTextPaint.measureText(line1);

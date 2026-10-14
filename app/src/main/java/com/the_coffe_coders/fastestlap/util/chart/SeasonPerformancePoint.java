@@ -11,12 +11,13 @@ public class SeasonPerformancePoint {
     private final boolean isDnf;
     private final int sessionType;
     private final String raceName;
+    private final String nationAbbr;
     private final String entityId;
     private final String entityName;
 
     public SeasonPerformancePoint(int round, String roundLabel, int position, String positionText,
                                   boolean isDnf, int sessionType, String raceName,
-                                  String entityId, String entityName) {
+                                  String nationAbbr, String entityId, String entityName) {
         this.round = round;
         this.roundLabel = roundLabel;
         this.position = position;
@@ -24,6 +25,7 @@ public class SeasonPerformancePoint {
         this.isDnf = isDnf;
         this.sessionType = sessionType;
         this.raceName = raceName;
+        this.nationAbbr = nationAbbr;
         this.entityId = entityId;
         this.entityName = entityName;
     }

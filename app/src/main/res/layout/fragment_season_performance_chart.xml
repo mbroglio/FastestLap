@@ -33,16 +33,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/races"
-                android:textColor="@color/white"
-                android:textSize="@dimen/body_text_size"
-                android:fontFamily="@font/orbitron_bold"
                 android:autoSizeMaxTextSize="@dimen/body_text_size"
                 android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                 android:autoSizeTextType="uniform"
-                android:maxLines="1"
                 android:breakStrategy="simple"
+                android:fontFamily="@font/orbitron_bold"
                 android:hyphenationFrequency="none"
+                android:maxLines="1"
+                android:text="@string/races"
+                android:textColor="@color/white"
+                android:textSize="@dimen/body_text_size"
                 app:backgroundTint="@color/card_surface_elevated"
                 app:strokeColor="@color/subtle_white_border" />
 
@@ -52,16 +52,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/sprints"
-                android:textColor="@color/white"
-                android:textSize="@dimen/body_text_size"
-                android:fontFamily="@font/orbitron_bold"
                 android:autoSizeMaxTextSize="@dimen/body_text_size"
                 android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                 android:autoSizeTextType="uniform"
-                android:maxLines="1"
                 android:breakStrategy="simple"
+                android:fontFamily="@font/orbitron_bold"
                 android:hyphenationFrequency="none"
+                android:maxLines="1"
+                android:text="@string/sprints"
+                android:textColor="@color/white"
+                android:textSize="@dimen/body_text_size"
                 app:backgroundTint="@color/card_surface_dark"
                 app:strokeColor="@color/subtle_white_border" />
 
@@ -71,16 +71,16 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/qualifying"
-                android:textColor="@color/white"
-                android:textSize="@dimen/body_text_size"
-                android:fontFamily="@font/orbitron_bold"
                 android:autoSizeMaxTextSize="@dimen/body_text_size"
                 android:autoSizeMinTextSize="@dimen/min_text_resize_1"
                 android:autoSizeTextType="uniform"
-                android:maxLines="1"
                 android:breakStrategy="simple"
+                android:fontFamily="@font/orbitron_bold"
                 android:hyphenationFrequency="none"
+                android:maxLines="1"
+                android:text="@string/qualifying"
+                android:textColor="@color/white"
+                android:textSize="@dimen/body_text_size"
                 app:backgroundTint="@color/card_surface_dark"
                 app:strokeColor="@color/subtle_white_border" />
         </com.google.android.material.button.MaterialButtonToggleGroup>
@@ -141,9 +141,9 @@
 
                 <!-- Empty State Message -->
                 <TextView
-                    android:layout_width="wrap_content"
                     android:id="@+id/chart_empty_message"
                     style="@style/t12BoldWhiteLineLimited"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="24dp"
@@ -166,8 +166,8 @@
                 android:id="@+id/drivers_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:layout_alignParentStart="true"
+                android:orientation="vertical"
                 android:visibility="visible">
 
                 <LinearLayout
@@ -176,19 +176,23 @@
                     android:orientation="horizontal">
 
                     <View
+                        android:id="@+id/driver_color_1"
                         android:layout_width="10dp"
                         android:layout_height="10dp"
-                        android:background="@drawable/circular_background"
-                        android:layout_gravity="center">
+                        android:layout_gravity="center"
+                        android:background="@drawable/circular_background">
 
                     </View>
 
 
                     <TextView
+                        android:id="@+id/driver_name_1"
+                        style="@style/t12BoldWhiteLineLimited"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="Sebastian Vettel">
+                        android:text="@string/not_found">
+
                     </TextView>
 
                 </LinearLayout>
@@ -196,22 +200,27 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginTop="4dp">
 
                     <View
+                        android:id="@+id/driver_color_2"
                         android:layout_width="10dp"
                         android:layout_height="10dp"
-                        android:background="@drawable/circular_background"
-                        android:layout_gravity="center">
+                        android:layout_gravity="center"
+                        android:background="@drawable/circular_background">
 
                     </View>
 
 
                     <TextView
+                        android:id="@+id/driver_name_2"
+                        style="@style/t12BoldWhiteLineLimited"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
-                        android:text="Lewis Hamilton">
+                        android:text="@string/not_found">
+
                     </TextView>
 
                 </LinearLayout>
@@ -223,10 +232,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentEnd="true"
-                android:layout_toEndOf="@id/drivers_layout"
                 android:layout_marginEnd="8dp"
-                android:gravity="end"
+                android:layout_toEndOf="@id/drivers_layout"
                 android:fontFamily="@font/orbitron_regular"
+                android:gravity="end"
                 android:text="@string/scroll_indication"
                 android:textColor="@color/timer_gray" />
 

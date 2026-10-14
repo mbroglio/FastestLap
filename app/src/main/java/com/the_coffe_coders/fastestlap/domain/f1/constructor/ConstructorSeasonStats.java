@@ -120,8 +120,8 @@ public class ConstructorSeasonStats implements Parcelable {
         if (sr1 != null) res.setSprint_race_driver_1(String.valueOf(sr1));
         Object sr2 = map.get("sprint_race_driver_2");
         if (sr2 != null) res.setSprint_race_driver_2(String.valueOf(sr2));
-        Object abbr = map.get("abbreviation");
-        if (abbr != null) res.setAbbreviation(String.valueOf(abbr));
+        Object abbr = map.get("nation_abbr") != null ? map.get("nation_abbr") : map.get("abbreviation");
+        if (abbr != null) res.setNation_abbr(String.valueOf(abbr));
         return res;
     }
 
