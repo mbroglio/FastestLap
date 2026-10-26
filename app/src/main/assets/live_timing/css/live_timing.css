@@ -342,6 +342,68 @@ header {
   color: #f0f6fc;
   font-family: ui-monospace, Menlo, Consolas, monospace;
 }
+
+.status-bar-cockpit-btn {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #21262d;
+  color: #fff;
+  border: 1px solid #30363d;
+  border-radius: 4px;
+  padding: 2px 9px;
+  font-size: 9px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+.status-bar-cockpit-btn:hover,
+.status-bar-cockpit-btn:active {
+  background: #30363d;
+  border-color: #e10600;
+}
+.status-bar-cockpit-btn.active {
+  background: rgba(225, 6, 0, 0.22);
+  border-color: #e10600;
+  color: #fff;
+}
+.status-bar-cockpit-btn #statusBarDrvBadge {
+  color: #58a6ff;
+  font-family: monospace;
+}
+
+.side-tab-close-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 8px 6px;
+  border-bottom: 1px solid #21262d;
+  margin-bottom: 6px;
+}
+.telemetry-panel-title {
+  font-size: 10px;
+  font-weight: 800;
+  color: #e10600;
+  letter-spacing: 0.5px;
+}
+.side-panel-close-btn {
+  background: #21262d;
+  border: 1px solid #30363d;
+  color: #8b949e;
+  font-size: 9px;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 2px 7px;
+  border-radius: 3px;
+  transition: all 0.15s ease;
+}
+.side-panel-close-btn:hover {
+  background: #30363d;
+  color: #fff;
+}
 .status-bar-item.clock .val {
   color: var(--cyan-f1);
 }
@@ -702,7 +764,7 @@ header {
   min-width: 38px;
   text-align: center;
 }
-.badge-purple { background: rgba(163, 113, 247, 0.22); color: #d2a8ff; border: 1px solid rgba(163, 113, 247, 0.5); }
+.badge-purple { background: rgba(163, 113, 247, 0.28); color: #d2a8ff; border: 1px solid rgba(163, 113, 247, 0.7); font-weight: 800; text-shadow: 0 0 6px rgba(163, 113, 247, 0.5); }
 .badge-green { background: rgba(35, 134, 54, 0.22); color: #56d364; border: 1px solid rgba(46, 160, 67, 0.5); }
 .badge-yellow { background: rgba(210, 153, 34, 0.18); color: #e3b341; }
 .badge-dim { color: #484f58; }
@@ -1733,5 +1795,106 @@ header {
   #view-standings .full-standings-table .col-laps {
     width: 48px;
   }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Session Ending Grace Countdown Banner & Terminated Overlay
+   ───────────────────────────────────────────────────────────── */
+.session-ending-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(90deg, #24141d 0%, #161b22 100%);
+  border-bottom: 2px solid #e10600;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #fff;
+  z-index: 10;
+}
+
+.session-ending-banner strong {
+  background: rgba(225, 6, 0, 0.3);
+  color: #ff7b72;
+  border: 1px solid rgba(225, 6, 0, 0.6);
+  padding: 1px 6px;
+  border-radius: 3px;
+  margin-left: 4px;
+}
+
+.btn-ending-close {
+  background: #e10600;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 4px 10px;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.session-terminated-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+
+.terminated-box {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-top: 4px solid #e10600;
+  border-radius: 8px;
+  padding: 24px 20px;
+  max-width: 380px;
+  width: 88%;
+  text-align: center;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.8);
+}
+
+.terminated-icon {
+  font-size: 38px;
+  margin-bottom: 8px;
+}
+
+.terminated-title {
+  color: #fff;
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.terminated-subtitle {
+  color: #8b949e;
+  font-size: 12px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.terminated-desc {
+  color: #c9d1d9;
+  font-size: 12px;
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.terminated-btn {
+  background: #e10600;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 9px 18px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  width: 100%;
 }
 

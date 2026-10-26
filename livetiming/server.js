@@ -23,7 +23,7 @@ const signalrClient = new SignalRStreamClient(stateStore);
 const mockProvider = new MockStreamProvider(stateStore);
 
 // Active streaming mode: 'live' or 'mock'
-let currentMode = process.argv.includes('--live') ? 'live' : 'mock';
+let currentMode = process.argv.includes('--mock') ? 'mock' : 'live';
 
 // SSE Clients collection
 const sseClients = new Set();

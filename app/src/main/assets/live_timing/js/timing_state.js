@@ -141,8 +141,24 @@ function formatSimClock(sec) {
 }
 
 function getDriverLap(drvKey, t) {
+  const tel = (typeof DRIVER_TELEMETRY !== 'undefined') ? DRIVER_TELEMETRY[drvKey] : null;
+  if (tel && tel.lapsCount !== undefined && tel.lapsCount !== null) {
+    const n = Number(tel.lapsCount);
+    if (!isNaN(n) && n >= 0) {
+      return tel.isRetired ? Math.max(1, n) : Math.max(1, n + 1);
+    }
+  }
+  if (typeof window !== 'undefined' && window.CURRENT_SESSION_LAP && window.CURRENT_SESSION_LAP > 0) {
+    return window.CURRENT_SESSION_LAP;
+  }
   const laps = DRIVER_LAPS[drvKey];
-  if (!laps || laps.length === 0) return 1;
+  if (!laps || laps.length === 0) {
+    const leaderKey = (typeof GRID_ORDER !== 'undefined' && GRID_ORDER[0]) ? GRID_ORDER[0] : null;
+    if (leaderKey && leaderKey !== drvKey && DRIVER_TELEMETRY[leaderKey]?.lapsCount) {
+      return Math.max(1, Number(DRIVER_TELEMETRY[leaderKey].lapsCount) + 1);
+    }
+    return 1;
+  }
   for (let i = laps.length - 1; i >= 0; i--) {
     if (t >= laps[i].startSec) return laps[i].lap;
   }
@@ -159,49 +175,148 @@ function getDriverGap(drvKey, t) {
 }
 
 function getDriverTireInfo(drvKey, t) {
-  const stints = DRIVER_STINTS[drvKey];
-  if (!stints || stints.length === 0) {
-    return { compound: 'MED', age: 1, color: '#FCD116' };
-  }
+  const tel = (typeof DRIVER_TELEMETRY !== 'undefined') ? DRIVER_TELEMETRY[drvKey] : null;
   const curLap = getDriverLap(drvKey, t);
-  let activeStint = stints[0];
-  for (let s of stints) {
-    if (curLap >= s.lapStart && (!s.lapEnd || curLap <= s.lapEnd)) {
-      activeStint = s;
-      break;
+
+  let compound = 'MED';
+  let age = null;
+
+  if (tel) {
+    if (tel.tyreCompound && tel.tyreCompound !== 'UNKNOWN') {
+      compound = String(tel.tyreCompound).toUpperCase();
+    }
+    if (tel.tyreAge !== undefined && tel.tyreAge !== null && Number(tel.tyreAge) > 0) {
+      age = Number(tel.tyreAge);
+    } else if (tel.tyreTotalLaps !== undefined && tel.tyreTotalLaps > 0) {
+      age = tel.tyreTotalLaps;
+    } else if (tel.tyreStintLapNumber !== undefined && curLap >= tel.tyreStintLapNumber) {
+      age = (tel.tyreStartLaps || 0) + (curLap - tel.tyreStintLapNumber);
     }
   }
-  const code = (activeStint.code || activeStint.compound || 'MED').toUpperCase();
-  let col = '#FCD116';
-  if (code.includes('SOFT') || code === 'SFT' || code === 'S') col = '#E10600';
-  else if (code.includes('HARD') || code === 'HRD' || code === 'H') col = '#FFFFFF';
-  else if (code.includes('INTER') || code === 'INT' || code === 'I') col = '#43B02A';
-  else if (code.includes('WET') || code === 'W') col = '#0072CE';
 
-  const age = Math.max(1, curLap - activeStint.lapStart + 1);
-  return { compound: code.substring(0, 3), age: age, color: col };
+  const stints = DRIVER_STINTS[drvKey];
+  if (stints && stints.length > 0) {
+    let activeStint = stints[stints.length - 1];
+    for (let i = stints.length - 1; i >= 0; i--) {
+      const s = stints[i];
+      if (s.lapStart && curLap >= s.lapStart && (!s.lapEnd || curLap <= s.lapEnd)) {
+        activeStint = s;
+        break;
+      }
+    }
+    if (!compound || compound === 'MED' || compound === 'UNKNOWN') {
+      compound = (activeStint.code || activeStint.compound || 'MED').toUpperCase();
+    }
+    if (age === null || age === 0) {
+      if (activeStint.totalLaps != null && activeStint.totalLaps > 0) {
+        age = activeStint.totalLaps;
+      } else if (activeStint.age != null && activeStint.age > 0) {
+        age = activeStint.age;
+      } else {
+        const stintStart = activeStint.lapStart || 1;
+        age = Math.max(1, curLap - stintStart + 1);
+      }
+    }
+  }
+
+  if (age === null || age <= 0) {
+    age = Math.max(1, curLap);
+  }
+
+  let shortCode = 'MED';
+  let col = '#FCD116';
+  if (compound.includes('SOFT') || compound === 'SFT' || compound === 'S') { shortCode = 'SFT'; col = '#E10600'; }
+  else if (compound.includes('HARD') || compound === 'HRD' || compound === 'H') { shortCode = 'HRD'; col = '#FFFFFF'; }
+  else if (compound.includes('INTER') || compound === 'INT' || compound === 'I') { shortCode = 'INT'; col = '#43B02A'; }
+  else if (compound.includes('WET') || compound === 'W') { shortCode = 'WET'; col = '#0072CE'; }
+
+  return { compound: shortCode, age: age, color: col };
+}
+
+function parseLapTimeToSec(str) {
+  if (!str || typeof str !== 'string') return 0;
+  const clean = str.trim();
+  if (!clean || clean === '--' || clean === '-') return 0;
+  const parts = clean.split(':');
+  if (parts.length === 2) {
+    const mins = parseFloat(parts[0]);
+    const secs = parseFloat(parts[1]);
+    if (!isNaN(mins) && !isNaN(secs)) return (mins * 60) + secs;
+  }
+  const val = parseFloat(clean);
+  return !isNaN(val) && val > 0 ? val : 0;
 }
 
 function getSessionBests(t) {
   let bestLap = Infinity, bestS1 = Infinity, bestS2 = Infinity, bestS3 = Infinity;
-  Object.keys(DRIVERS).forEach(k => {
-    const laps = DRIVER_LAPS[k] || [];
+  const allKeys = new Set([
+    ...Object.keys(DRIVERS || {}),
+    ...Object.keys(DRIVER_LAPS || {}),
+    ...Object.keys(DRIVER_TELEMETRY || {})
+  ]);
+
+  allKeys.forEach(k => {
+    const laps = (typeof DRIVER_LAPS !== 'undefined' && DRIVER_LAPS[k]) ? DRIVER_LAPS[k] : [];
     laps.forEach(l => {
-      if (l.startSec + (l.dur || 0) <= t && l.dur && l.dur > 50) {
+      if ((!window.IS_SYNTHETIC_SIMULATION || l.startSec + (l.dur || 0) <= t) && l.dur && l.dur > 50) {
         if (l.dur < bestLap) bestLap = l.dur;
         if (l.s1 && l.s1 < bestS1) bestS1 = l.s1;
         if (l.s2 && l.s2 < bestS2) bestS2 = l.s2;
         if (l.s3 && l.s3 < bestS3) bestS3 = l.s3;
       }
     });
+
+    const tel = (typeof DRIVER_TELEMETRY !== 'undefined' && DRIVER_TELEMETRY[k]) ? DRIVER_TELEMETRY[k] : null;
+    if (tel) {
+      const telBest = tel.overallBest || (tel.bestLapTime ? parseLapTimeToSec(tel.bestLapTime) : 0);
+      if (telBest && telBest > 50 && telBest < bestLap) {
+        bestLap = telBest;
+      }
+      const telLast = tel.lastLapSec || (tel.lastLapTimeStr ? parseLapTimeToSec(tel.lastLapTimeStr) : 0);
+      if (telLast && telLast > 50 && telLast < bestLap) {
+        bestLap = telLast;
+      }
+      if (tel.q1Best && tel.q1Best > 50 && tel.q1Best < bestLap) bestLap = tel.q1Best;
+      if (tel.q2Best && tel.q2Best > 50 && tel.q2Best < bestLap) bestLap = tel.q2Best;
+      if (tel.q3Best && tel.q3Best > 50 && tel.q3Best < bestLap) bestLap = tel.q3Best;
+
+      if (tel.sectorsState) {
+        ['1', '2', '3'].forEach((secKey, idx) => {
+          const sObj = tel.sectorsState[secKey];
+          if (sObj && sObj.value) {
+            const sVal = parseFloat(sObj.value);
+            if (sVal > 0) {
+              if (idx === 0 && sVal < bestS1) bestS1 = sVal;
+              if (idx === 1 && sVal < bestS2) bestS2 = sVal;
+              if (idx === 2 && sVal < bestS3) bestS3 = sVal;
+            }
+          }
+        });
+      }
+    }
   });
+
   return { bestLap, bestS1, bestS2, bestS3 };
 }
 
 function getDriverSectorTimes(drvKey, t, sessionBests) {
-  const laps = DRIVER_LAPS[drvKey] || [];
-  const completed = laps.filter(l => l.startSec + (l.dur || 0) <= t && l.dur && l.dur > 50);
+  const laps = (typeof DRIVER_LAPS !== 'undefined' && DRIVER_LAPS[drvKey]) ? DRIVER_LAPS[drvKey] : [];
+  const completed = laps.filter(l => (!window.IS_SYNTHETIC_SIMULATION || l.startSec + (l.dur || 0) <= t) && l.dur && l.dur > 50);
   if (completed.length === 0) {
+    const tel = (typeof DRIVER_TELEMETRY !== 'undefined' && DRIVER_TELEMETRY[drvKey]) ? DRIVER_TELEMETRY[drvKey] : null;
+    if (tel && tel.sectorsState) {
+      const s1 = tel.sectorsState['1'] || {};
+      const s2 = tel.sectorsState['2'] || {};
+      const s3 = tel.sectorsState['3'] || {};
+      const s1Class = s1.overallFastest ? 'badge-purple' : (s1.personalFastest ? 'badge-green' : (s1.value ? 'badge-yellow' : 'badge-gray'));
+      const s2Class = s2.overallFastest ? 'badge-purple' : (s2.personalFastest ? 'badge-green' : (s2.value ? 'badge-yellow' : 'badge-gray'));
+      const s3Class = s3.overallFastest ? 'badge-purple' : (s3.personalFastest ? 'badge-green' : (s3.value ? 'badge-yellow' : 'badge-gray'));
+      return {
+        s1: s1.value || '-', s1Badge: s1Class, s1Class: s1Class.replace('badge-', 'sector-'),
+        s2: s2.value || '-', s2Badge: s2Class, s2Class: s2Class.replace('badge-', 'sector-'),
+        s3: s3.value || '-', s3Badge: s3Class, s3Class: s3Class.replace('badge-', 'sector-')
+      };
+    }
     return {
       s1: '-', s1Badge: 'badge-gray', s1Class: 'sector-gray',
       s2: '-', s2Badge: 'badge-gray', s2Class: 'sector-gray',
@@ -244,40 +359,64 @@ function getDriverSectorTimes(drvKey, t, sessionBests) {
 }
 
 function getDriverTimingStats(drvKey, t, sessionBests) {
-  const laps = DRIVER_LAPS[drvKey] || [];
-  const completed = laps.filter(l => l.startSec + (l.dur || 0) <= t && l.dur && l.dur > 50);
-  if (completed.length === 0) {
-    return {
-      personalBest: Infinity,
-      bestLapStr: '-',
-      bestLapBadge: 'badge-gray',
-      lastLapStr: '-',
-      lastLapBadge: 'badge-gray',
-      lapsCount: 0
-    };
-  }
-  let pBest = Infinity;
-  completed.forEach(l => { if (l.dur < pBest) pBest = l.dur; });
-  const last = completed[completed.length - 1];
+  const laps = (typeof DRIVER_LAPS !== 'undefined' && DRIVER_LAPS[drvKey]) ? DRIVER_LAPS[drvKey] : [];
+  const completed = laps.filter(l => (!window.IS_SYNTHETIC_SIMULATION || l.startSec + (l.dur || 0) <= t) && l.dur && l.dur > 50);
+  const tel = (typeof DRIVER_TELEMETRY !== 'undefined' && DRIVER_TELEMETRY[drvKey]) ? DRIVER_TELEMETRY[drvKey] : null;
 
-  let bestBadge = 'badge-green';
-  if (sessionBests && pBest <= sessionBests.bestLap + 0.005) {
-    bestBadge = 'badge-purple';
+  const telLastStr = (tel && tel.lastLapTimeStr && tel.lastLapTimeStr !== '--' && tel.lastLapTimeStr !== '-') ? tel.lastLapTimeStr : null;
+  const telLastSec = (tel && tel.lastLapSec && tel.lastLapSec > 0) ? tel.lastLapSec : (telLastStr ? parseLapTimeToSec(telLastStr) : 0);
+  const telBestVal = (tel && tel.overallBest && tel.overallBest > 0) ? tel.overallBest : Infinity;
+
+  let pBest = telBestVal;
+  completed.forEach(l => { if (l.dur && l.dur < pBest) pBest = l.dur; });
+
+  const bestLapStr = pBest < Infinity ? formatLapTime(pBest) : (tel && tel.bestLapTime ? tel.bestLapTime : '-');
+
+  let lastDur = 0;
+  let lastStr = '-';
+  if (completed.length > 0) {
+    const last = completed[completed.length - 1];
+    lastDur = last.dur;
+    lastStr = formatLapTime(last.dur);
   }
-  let lastBadge = 'badge-yellow';
-  if (sessionBests && last.dur <= sessionBests.bestLap + 0.005) {
-    lastBadge = 'badge-purple';
-  } else if (last.dur <= pBest + 0.005) {
-    lastBadge = 'badge-green';
+  if (telLastSec > 0) {
+    lastDur = telLastSec;
   }
+  if (telLastStr) {
+    lastStr = telLastStr;
+  }
+
+  // BEST Lap Badge: purple se miglior tempo assoluto della sessione, verde se personal best
+  let bestBadge = 'badge-gray';
+  if (pBest < Infinity) {
+    if (sessionBests && sessionBests.bestLap < Infinity && pBest <= sessionBests.bestLap + 0.005) {
+      bestBadge = 'badge-purple';
+    } else {
+      bestBadge = 'badge-green';
+    }
+  }
+
+  // LAST Lap Badge: purple se corrisponde al miglior tempo assoluto della sessione, verde se personal best, giallo altrimenti
+  let lastBadge = 'badge-gray';
+  if (lastDur > 0 || (lastStr && lastStr !== '-')) {
+    if (sessionBests && sessionBests.bestLap < Infinity && lastDur > 0 && Math.abs(lastDur - sessionBests.bestLap) <= 0.005) {
+      lastBadge = 'badge-purple';
+    } else if (pBest < Infinity && lastDur > 0 && Math.abs(lastDur - pBest) <= 0.005) {
+      lastBadge = 'badge-green';
+    } else {
+      lastBadge = 'badge-yellow';
+    }
+  }
+
+  const lapsCnt = (tel && tel.lapsCount !== undefined) ? tel.lapsCount : (completed.length || 0);
 
   return {
     personalBest: pBest,
-    bestLapStr: formatLapTime(pBest),
+    bestLapStr: bestLapStr,
     bestLapBadge: bestBadge,
-    lastLapStr: formatLapTime(last.dur),
+    lastLapStr: lastStr,
     lastLapBadge: lastBadge,
-    lapsCount: completed.length
+    lapsCount: lapsCnt
   };
 }
 
@@ -383,9 +522,232 @@ function getTrackPointAtTime(sec) {
   };
 }
 
+async function loadOfficialCircuitNodes(circuitKey) {
+  if (!circuitKey || window._loadedCircuitKey === String(circuitKey)) return;
+  window._loadedCircuitKey = String(circuitKey);
+
+  const years = [2024, 2023];
+  for (const year of years) {
+    try {
+      const resp = await fetch('https://api.multiviewer.app/api/v1/circuits/' + circuitKey + '/' + year);
+      if (!resp.ok) continue;
+      const data = await resp.json();
+      if (data && Array.isArray(data.x) && Array.isArray(data.y) && data.x.length > 20) {
+        applyOfficialCircuitToNodes(data);
+        return;
+      }
+    } catch (e) {}
+  }
+}
+
+function applyOfficialCircuitToNodes(data) {
+  const rotDeg = Number(data.rotation) || 0;
+  const rad = (rotDeg * Math.PI) / 180;
+  const cos = Math.cos(rad);
+  const sin = Math.sin(rad);
+
+  const pts = [];
+  const len = Math.min(data.x.length, data.y.length);
+  let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+
+  for (let i = 0; i < len; i++) {
+    const rx = Number(data.x[i]);
+    const ry = Number(data.y[i]);
+    if (!Number.isFinite(rx) || !Number.isFinite(ry)) continue;
+    const x = rx * cos - ry * sin;
+    const y = rx * sin + ry * cos;
+    if (x < minX) minX = x;
+    if (x > maxX) maxX = x;
+    if (y < minY) minY = y;
+    if (y > maxY) maxY = y;
+    pts.push({ x, y });
+  }
+
+  const n = pts.length;
+  if (n < 10) return;
+
+  window.OFFICIAL_MINI_SECTOR_INDEXES = Array.isArray(data.miniSectorsIndexes)
+    ? data.miniSectorsIndexes.map(v => Number(v)).filter(v => Number.isFinite(v))
+    : [];
+
+  let totalRaw = 0;
+  for (let i = 0; i < n; i++) {
+    const next = pts[(i + 1) % n];
+    pts[i].rawDs = Math.hypot(next.x - pts[i].x, next.y - pts[i].y);
+    totalRaw += pts[i].rawDs;
+  }
+  const scaleToMeters = totalRaw > 15000 ? 0.1 : 1.0;
+  let cumMeters = 0;
+  for (let i = 0; i < n; i++) {
+    pts[i].ds = Math.max(0.4, pts[i].rawDs * scaleToMeters);
+    pts[i].distMeters = cumMeters;
+    cumMeters += pts[i].ds;
+  }
+
+  const findIdxByOffsetMeters = (startIdx, offsetMeters) => {
+    let acc = 0;
+    let curr = startIdx;
+    const step = offsetMeters >= 0 ? 1 : -1;
+    const target = Math.abs(offsetMeters);
+    let guard = 0;
+    while (acc < target && guard < n) {
+      curr = (curr + step + n) % n;
+      acc += pts[curr].ds;
+      guard++;
+    }
+    return curr;
+  };
+
+  const maxVms = 328 / 3.6;
+  for (let i = 0; i < n; i++) {
+    const calcKappa = (halfWindowM) => {
+      const iP = findIdxByOffsetMeters(i, -halfWindowM);
+      const iN = findIdxByOffsetMeters(i, halfWindowM);
+      const a1 = Math.atan2(pts[i].y - pts[iP].y, pts[i].x - pts[iP].x);
+      const a2 = Math.atan2(pts[iN].y - pts[i].y, pts[iN].x - pts[i].x);
+      let dT = Math.abs(a2 - a1);
+      if (dT > Math.PI) dT = 2 * Math.PI - dT;
+      return dT / (halfWindowM * 2);
+    };
+    const kappa = Math.max(calcKappa(14), calcKappa(30));
+    pts[i].kappa = kappa;
+    if (kappa < 0.0012) {
+      pts[i].vLimit = maxVms;
+    } else {
+      const aLat = 16 + Math.min(28, (0.006 / kappa) * 18);
+      pts[i].vLimit = Math.max(84 / 3.6, Math.min(maxVms, Math.sqrt(aLat / kappa)));
+    }
+    pts[i].v = pts[i].vLimit;
+  }
+
+  // Backward pass (frenata)
+  for (let pass = 0; pass < 2; pass++) {
+    for (let i = n - 1; i >= 0; i--) {
+      const next = pts[(i + 1) % n];
+      const aBrake = 24 + 16 * Math.pow(next.v / maxVms, 2);
+      const vMaxEntry = Math.sqrt(next.v * next.v + 2 * aBrake * pts[i].ds);
+      if (vMaxEntry < pts[i].v) pts[i].v = vMaxEntry;
+    }
+  }
+
+  // Forward pass (accelerazione)
+  for (let pass = 0; pass < 2; pass++) {
+    for (let i = 0; i < n; i++) {
+      const next = pts[(i + 1) % n];
+      const vRatio = pts[i].v / (330 / 3.6);
+      const aAccel = Math.max(1.0, 14.0 * (1 - Math.pow(vRatio, 1.6)));
+      const vMaxExit = Math.sqrt(pts[i].v * pts[i].v + 2 * aAccel * pts[i].ds);
+      if (vMaxExit < next.v) next.v = vMaxExit;
+    }
+  }
+
+  let totalSimSec = 0;
+  for (let i = 0; i < n; i++) {
+    pts[i].simTime = totalSimSec;
+    totalSimSec += pts[i].ds / Math.max(15, pts[i].v);
+  }
+
+  SVG_WIDTH = 1000;
+  SVG_HEIGHT = 800;
+  const targetW = SVG_WIDTH;
+  const targetH = SVG_HEIGHT;
+  const pad = 60;
+  const spanX = Math.max(1, maxX - minX);
+  const spanY = Math.max(1, maxY - minY);
+  const scale = Math.min((targetW - pad * 2) / spanX, (targetH - pad * 2) / spanY);
+  const midX = (minX + maxX) / 2;
+  const midY = (minY + maxY) / 2;
+  const lapDur = LAP_DURATION || 90.0;
+
+  window._officialCircuitLoaded = true;
+  window.OFFICIAL_CIRCUIT_TRANSFORM = {
+    cos,
+    sin,
+    midX,
+    midY,
+    scale,
+    targetW,
+    targetH,
+    scaleToMeters
+  };
+
+  const builtNodes = [];
+  const gearMinSpeeds = [0, 0, 78, 106, 140, 176, 212, 248, 286];
+  const gearMaxSpeeds = [0, 82, 114, 148, 184, 220, 256, 294, 348];
+
+  for (let i = 0; i < n; i++) {
+    const p = pts[i];
+    const next = pts[(i + 1) % n];
+    const longG = ((next.v * next.v - p.v * p.v) / (2 * p.ds)) / 9.81;
+    const speed = Math.round(p.v * 3.6);
+
+    let gear = 8;
+    if (speed < 106) gear = 2;
+    else if (speed < 140) gear = 3;
+    else if (speed < 176) gear = 4;
+    else if (speed < 212) gear = 5;
+    else if (speed < 248) gear = 6;
+    else if (speed < 286) gear = 7;
+
+    const gMin = gearMinSpeeds[gear] || 80;
+    const gMax = gearMaxSpeeds[gear] || 340;
+    const gRatio = Math.max(0, Math.min(1, (speed - gMin) / Math.max(1, gMax - gMin)));
+
+    let brake = 0;
+    let throttle = 100;
+    if (longG < -0.28) {
+      brake = Math.min(100, Math.max(15, Math.round((-longG / 2.8) * 100)));
+      throttle = longG < -0.85 ? 0 : Math.max(0, Math.round(25 * (1 + longG)));
+    } else if (p.kappa > 0.0085) {
+      const apexLoad = Math.min(1, (p.kappa - 0.0085) / 0.025);
+      throttle = Math.round(85 - apexLoad * 48);
+    } else if (p.kappa > 0.003) {
+      throttle = Math.round(92 - Math.min(1, (p.kappa - 0.003) / 0.006) * 15);
+    }
+
+    const rpm = Math.round((brake > 30 ? 9650 : 10050) + gRatio * (brake > 30 ? 1850 : 2350));
+    const drs = (p.kappa < 0.0022 && brake === 0 && throttle >= 95 && speed > 276) ? 1 : 0;
+    const prog = p.distMeters / Math.max(1, cumMeters);
+    const sector = prog < 0.33 ? 1 : (prog < 0.67 ? 2 : 3);
+
+    const px = Number(((targetW / 2) + (p.x - midX) * scale).toFixed(2));
+    const py = Number(((targetH / 2) - (p.y - midY) * scale).toFixed(2));
+    const t = Number(((p.simTime / Math.max(1, totalSimSec)) * lapDur).toFixed(3));
+
+    builtNodes.push([t, px, py, null, null, sector, speed, gear, rpm, throttle, brake, drs, 'Pista']);
+  }
+
+  NODES = builtNodes;
+  window.NODES = NODES;
+  if (typeof resizeTrackCanvas === 'function') resizeTrackCanvas();
+  if (typeof drawTrack === 'function') drawTrack();
+}
+
 function getDriverTrackSec(drvKey, t) {
-  const drvIdx = GRID_ORDER.indexOf(drvKey);
   const dur = LAP_DURATION || 90.0;
+  const tel = DRIVER_TELEMETRY[drvKey];
+  if (tel && tel.anchorTrackSec !== undefined && tel.anchorSimSec !== undefined) {
+    const elapsed = Math.max(0, t - tel.anchorSimSec);
+    let sec = tel.anchorTrackSec + elapsed;
+    if (tel.targetTrackSec !== undefined) {
+      let tDiff = ((tel.targetTrackSec - sec + dur * 1.5) % dur) - dur * 0.5;
+      if (Math.abs(tDiff) < dur * 0.35) {
+        sec += Math.max(-0.25, Math.min(0.25, tDiff * 0.3)) * Math.min(1.0, elapsed * 0.5);
+      }
+    }
+    if (tel.segStartSec !== undefined && tel.segEndSec !== undefined && tel.segEndSec > tel.segStartSec) {
+      const maxSec = tel.segMaxSec !== undefined ? tel.segMaxSec : (tel.segEndSec - 0.04);
+      if (sec > maxSec) {
+        // Asintoto dolce progressivo: la vettura decelera dolcemente invece di bloccarsi contro un muro
+        const over = sec - maxSec;
+        const softHeadroom = Math.max(0.08, (tel.segEndSec - maxSec) * 0.7);
+        sec = maxSec + (1 - Math.exp(-over / softHeadroom)) * softHeadroom;
+      }
+      if (sec < tel.segStartSec) sec = tel.segStartSec;
+    }
+    return ((sec % dur) + dur) % dur;
+  }
+  const drvIdx = GRID_ORDER.indexOf(drvKey);
   // Distacco realistico sfalsato tra i 22 piloti lungo il nastro d'asfalto
   const gapOffset = (drvIdx >= 0 ? drvIdx : 0) * (dur / 22.0) * 0.94;
   return ((t - gapOffset) % dur + dur) % dur;
@@ -401,7 +763,7 @@ function getDriverVisualState(drvKey, t) {
   let isOutLap = false;
 
   const laps = DRIVER_LAPS[drvKey] || [];
-  if (laps.length === 0 && !window.IS_SYNTHETIC_SIMULATION) {
+  if (laps.length === 0 && !window.IS_SYNTHETIC_SIMULATION && (!tel || tel.inPit === undefined)) {
     inPit = true;
   }
 
@@ -433,12 +795,25 @@ function getDriverVisualState(drvKey, t) {
       else if (st.includes('track')) inPit = false;
     }
     if (livePos.x !== undefined && livePos.y !== undefined) {
-      px = livePos.curX !== undefined ? livePos.curX : livePos.x;
-      py = livePos.curY !== undefined ? livePos.curY : livePos.y;
+      const rawX = Number(livePos.curX !== undefined ? livePos.curX : livePos.x);
+      const rawY = Number(livePos.curY !== undefined ? livePos.curY : livePos.y);
+      const tr = window.OFFICIAL_CIRCUIT_TRANSFORM;
+      if (tr && Number.isFinite(rawX) && Number.isFinite(rawY)) {
+        const posMul = (tr.scaleToMeters === 0.1 && Math.max(Math.abs(rawX), Math.abs(rawY)) < 2500) ? 10.0 : 1.0;
+        const rx = rawX * posMul;
+        const ry = rawY * posMul;
+        const rotX = rx * tr.cos - ry * tr.sin;
+        const rotY = rx * tr.sin + ry * tr.cos;
+        px = (tr.targetW / 2) + (rotX - tr.midX) * tr.scale;
+        py = (tr.targetH / 2) - (rotY - tr.midY) * tr.scale;
+      } else {
+        px = rawX;
+        py = rawY;
+      }
     }
   }
 
-  // 2. Coordinate e telemetria continua interpolata dal modello di pista
+  // 2. Coordinate e telemetria continua interpolata dal modello fisico di pista
   const trackSec = getDriverTrackSec(drvKey, t);
   const pt = getTrackPointAtTime(trackSec);
 
@@ -449,15 +824,18 @@ function getDriverVisualState(drvKey, t) {
 
   const sType = typeof normalizeSessionType === 'function' ? normalizeSessionType(sessionType, sessionPart) : sessionType;
 
-  // 3. Valori telemetrici dinamici per Cockpit
-  const speed = (tel && tel.speed !== undefined) ? tel.speed : (isRetired ? 0 : (inPit ? 80 : pt.speed));
-  const gear = (tel && tel.gear !== undefined) ? tel.gear : (isRetired ? 0 : (inPit ? 2 : pt.gear));
-  const rpm = (tel && tel.rpm !== undefined) ? tel.rpm : (isRetired ? 0 : (inPit ? 4200 : pt.rpm));
-  const throttle = (tel && tel.throttle !== undefined) ? tel.throttle : (isRetired ? 0 : (inPit ? 35 : pt.throttle));
-  const brake = (tel && tel.brake !== undefined) ? tel.brake : (isRetired ? 0 : (inPit ? 10 : pt.brake));
-  const drs = (tel && tel.drs !== undefined) ? Boolean(tel.drs) : (sType !== 'practice' && !inPit && !isRetired && pt.drs > 0);
+  // 3. Valori telemetrici dinamici per Cockpit con corrispondenza 1:1 rispetto al punto pista
+  const topTrap = (tel && tel.topSpeedTrap > 290) ? tel.topSpeedTrap : 326;
+  const scaledPtSpeed = pt.speed > 230 ? Math.round(pt.speed * (topTrap / 326)) : pt.speed;
+
+  const speed = (tel && tel.speed !== undefined) ? tel.speed : (isRetired || inPit ? 0 : (isOutLap ? 80 : scaledPtSpeed));
+  const gear = (tel && tel.gear !== undefined) ? tel.gear : (isRetired || inPit ? 0 : (isOutLap ? 2 : pt.gear));
+  const rpm = (tel && tel.rpm !== undefined) ? tel.rpm : (isRetired || inPit ? 0 : (isOutLap ? 9650 : pt.rpm));
+  const throttle = (tel && tel.throttle !== undefined) ? tel.throttle : (isRetired || inPit ? 0 : (isOutLap ? 42 : pt.throttle));
+  const brake = (tel && tel.brake !== undefined) ? tel.brake : (isRetired || inPit || isOutLap ? 0 : pt.brake);
+  const drs = (tel && tel.drs !== undefined) ? Boolean(tel.drs) : (!inPit && !isRetired && !isOutLap && pt.drs > 0);
   const batterySoc = (tel && tel.batterySoc !== undefined) ? tel.batterySoc : Math.max(30, Math.min(98, 85 - (drvIdx * 2) + Math.sin(t * 0.1) * 12));
-  const boostActive = (tel && tel.boostActive !== undefined) ? Boolean(tel.boostActive) : (pt.speed > 300 && drvIdx < 8);
+  const boostActive = (tel && tel.boostActive !== undefined) ? Boolean(tel.boostActive) : (speed > 295 && !inPit && !isRetired);
 
   return {
     px: px,

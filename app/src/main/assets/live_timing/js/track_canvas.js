@@ -27,8 +27,10 @@ window.setCircuitImage = function(url) {
   img.crossOrigin = 'anonymous';
   img.onload = function() {
     trackBgImage = img;
-    SVG_WIDTH = (img.naturalWidth > 0) ? img.naturalWidth : 1000;
-    SVG_HEIGHT = (img.naturalHeight > 0) ? img.naturalHeight : 800;
+    if (!window._officialCircuitLoaded) {
+      SVG_WIDTH = (img.naturalWidth > 0) ? img.naturalWidth : 1000;
+      SVG_HEIGHT = (img.naturalHeight > 0) ? img.naturalHeight : 800;
+    }
     resizeTrackCanvas();
     drawTrack();
   };
@@ -37,8 +39,10 @@ window.setCircuitImage = function(url) {
     const retryImg = new Image();
     retryImg.onload = function() {
       trackBgImage = retryImg;
-      SVG_WIDTH = (retryImg.naturalWidth > 0) ? retryImg.naturalWidth : 1000;
-      SVG_HEIGHT = (retryImg.naturalHeight > 0) ? retryImg.naturalHeight : 800;
+      if (!window._officialCircuitLoaded) {
+        SVG_WIDTH = (retryImg.naturalWidth > 0) ? retryImg.naturalWidth : 1000;
+        SVG_HEIGHT = (retryImg.naturalHeight > 0) ? retryImg.naturalHeight : 800;
+      }
       resizeTrackCanvas();
       drawTrack();
     };
@@ -198,11 +202,55 @@ function setupTrackMapInteractions() {
 
   c.addEventListener('touchend', () => { isMapPanning = false; });
 
+  c.addEventListener('click', e => {
+    if (isMapPanning) return;
+    const rect = c.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const clickY = e.clientY - rect.top;
+    let hitDriver = null;
+    let hitDist = 24; // 24px hit testing radius
+
+    for (const [k, scr] of Object.entries(driverVisualSmoothCache)) {
+      if (!scr || scr.curX === undefined || scr.curY === undefined) continue;
+      const d = Math.hypot(clickX - scr.curX, clickY - scr.curY);
+      if (d < hitDist) {
+        hitDist = d;
+        hitDriver = k;
+      }
+    }
+    if (hitDriver && typeof onDriverRowClick === 'function') {
+      onDriverRowClick(hitDriver);
+      if (typeof updateStatusBarCockpitTrigger === 'function') {
+        updateStatusBarCockpitTrigger(hitDriver);
+      }
+    }
+  });
+
   c.addEventListener('wheel', e => {
     e.preventDefault();
     const factor = e.deltaY < 0 ? 1.15 : 0.85;
     zoomMap(factor);
   }, { passive: false });
+}
+
+function getDriverDotColor(d, k) {
+  if (d && d.color && d.color.length >= 4 && d.color !== '#ffffff' && d.color !== '#000000') {
+    return d.color;
+  }
+  const num = parseInt(k, 10);
+  const team = String(d?.team || d?.teamName || '').toLowerCase();
+  const code = String(d?.code || '').toUpperCase();
+  if (team.includes('ferrari') || num === 16 || num === 55 || code === 'LEC' || code === 'SAI') return '#e8002d';
+  if (team.includes('mclaren') || num === 4 || num === 81 || code === 'NOR' || code === 'PIA') return '#ff8000';
+  if (team.includes('red bull') || num === 1 || num === 11 || num === 3 || num === 6 || code === 'VER' || code === 'PER' || code === 'HAD') return '#3671c6';
+  if (team.includes('mercedes') || num === 63 || num === 44 || num === 12 || code === 'RUS' || code === 'HAM' || code === 'ANT') return '#27f4d2';
+  if (team.includes('aston') || num === 14 || num === 18 || code === 'ALO' || code === 'STR') return '#229971';
+  if (team.includes('alpine') || num === 10 || num === 31 || code === 'GAS' || code === 'OCO') return '#0093cc';
+  if (team.includes('williams') || num === 23 || num === 43 || code === 'ALB' || code === 'COL') return '#64c4ff';
+  if (team.includes('racing bulls') || team.includes('rb') || num === 30 || num === 41 || code === 'LAW' || code === 'TSU') return '#6692ff';
+  if (team.includes('audi') || team.includes('sauber') || team.includes('kick') || num === 5 || num === 77 || code === 'BOR' || code === 'BOT') return '#f50537';
+  if (team.includes('haas') || num === 27 || num === 87 || code === 'HUL' || code === 'BEA') return '#b6babd';
+  return '#e10600';
 }
 
 function drawTrack() {
@@ -218,8 +266,8 @@ function drawTrack() {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // 1. Rendering Layout Tracciato Dinamico (Immagine PNG/SVG da Firebase o Intent Android)
-  if (trackBgImage && (trackBgImage.complete || trackBgImage.naturalWidth > 0)) {
+  // 1. Rendering Layout Tracciato Dinamico (Immagine PNG/SVG solo se geometria GPS non ancora caricata)
+  if (!window._officialCircuitLoaded && trackBgImage && (trackBgImage.complete || trackBgImage.naturalWidth > 0)) {
     ctx.save();
     const cx = canvasCssWidth / 2;
     const cy = canvasCssHeight / 2;
@@ -253,15 +301,14 @@ function drawTrack() {
     ctx.restore();
   }
 
-  // 2. Traiettoria Vettoriale (se disponibile per la sessione o come tracciato visivo)
+  // 2. Traiettoria Vettoriale GPS (prioritaria quando la geometria ufficiale Multiviewer è attiva)
   if (NODES && NODES.length > 0) {
     ctx.save();
     ctx.lineJoin = 'round';
     ctx.lineCap = 'round';
     const zoomScale = Math.min(2.5, Math.sqrt(userZoom));
 
-    // Solo se non c'è già un'immagine ufficiale del circuito, disegna l'asfalto vettoriale
-    if (!trackBgImage || !trackBgImage.complete) {
+    if (window._officialCircuitLoaded || !trackBgImage || !trackBgImage.complete) {
       ctx.strokeStyle = '#1e242d';
       ctx.lineWidth = Math.max(6, 16 * canvasScale * zoomScale);
       ctx.beginPath();
@@ -306,14 +353,29 @@ function drawTrack() {
 
       const targetScr = pxToScreen(state.px, state.py);
 
-      // Interpolazione esponenziale anti-scatto continua 60/90/120 FPS
-      if (!driverVisualSmoothCache[k]) {
+      // In modalità tracciato vettoriale, state.px/py è calcolato esattamente
+      // sui nodi della polilinea ad ogni frame: sincronizzazione diretta per azzerare lag e scatti
+      const livePos = window.LIVE_DRIVER_POSITIONS && window.LIVE_DRIVER_POSITIONS[k];
+      if (!livePos) {
         driverVisualSmoothCache[k] = { curX: targetScr.x, curY: targetScr.y };
       } else {
-        const dt = (typeof currentDeltaTime !== 'undefined' && currentDeltaTime > 0) ? currentDeltaTime : 0.016;
-        const alpha = 1.0 - Math.exp(-14.0 * dt);
-        driverVisualSmoothCache[k].curX += (targetScr.x - driverVisualSmoothCache[k].curX) * alpha;
-        driverVisualSmoothCache[k].curY += (targetScr.y - driverVisualSmoothCache[k].curY) * alpha;
+        // Coordinate GPS live esterne: interpolazione anti-scatto continua 60/90/120 FPS
+        if (!driverVisualSmoothCache[k]) {
+          driverVisualSmoothCache[k] = { curX: targetScr.x, curY: targetScr.y };
+        } else {
+          const dx = targetScr.x - driverVisualSmoothCache[k].curX;
+          const dy = targetScr.y - driverVisualSmoothCache[k].curY;
+          if (Math.hypot(dx, dy) > 160) {
+            // Wrap-around istantaneo al traguardo
+            driverVisualSmoothCache[k].curX = targetScr.x;
+            driverVisualSmoothCache[k].curY = targetScr.y;
+          } else {
+            const dt = (typeof currentDeltaTime !== 'undefined' && currentDeltaTime > 0) ? currentDeltaTime : 0.016;
+            const alpha = 1.0 - Math.exp(-18.0 * dt);
+            driverVisualSmoothCache[k].curX += dx * alpha;
+            driverVisualSmoothCache[k].curY += dy * alpha;
+          }
+        }
       }
       const scr = driverVisualSmoothCache[k];
 
@@ -337,8 +399,10 @@ function drawTrack() {
         ctx.stroke();
       }
 
-      // Corpo circolare del pilota con colore team
-      ctx.fillStyle = state.isRetired ? '#484f58' : (d.color || '#e10600');
+      const teamClr = getDriverDotColor(d, k);
+
+      // Corpo circolare del pilota con colore team (mai bianco o sparito)
+      ctx.fillStyle = state.isRetired ? '#484f58' : teamClr;
       ctx.beginPath();
       ctx.arc(scr.curX, scr.curY, dotR, 0, Math.PI * 2);
       ctx.fill();

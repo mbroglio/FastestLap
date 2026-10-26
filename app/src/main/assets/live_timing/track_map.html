@@ -25,9 +25,7 @@
         <button class="offline-btn" onclick="closeSession()" style="flex: 1; min-width: 140px;">
           ← TORNA ALL'EVENTO
         </button>
-        <button class="offline-btn" onclick="startSimulationFromOffline()" style="flex: 1; min-width: 160px; background: #238636; border-color: #2ea043; color: #ffffff;">
-          ⚡ AVVIA COLLAUDO / TEST
-        </button>
+
       </div>
     </div>
   </div>
@@ -49,7 +47,7 @@
         </div>
 
         <div class="hdr-right-controls" id="hdrRightControls">
-          <button class="offline-btn" id="btnToggleMode" onclick="if (window.streamClient) { window.streamClient.setMode(window.streamClient.mode === 'live' ? 'simulation' : 'live'); } else if (typeof startSimulationFromOffline === 'function') { startSimulationFromOffline(); }" style="padding: 3px 8px; font-size: 10px; margin: 0; min-height: 24px; border-radius: 4px; background: #21262d; border: 1px solid #30363d; color: #c9d1d9;">SIGNALR / COLLAUDO</button>
+
         </div>
       </div>
 
@@ -71,6 +69,15 @@
           <span class="lbl">ORA CIRCUITO:</span>
           <span class="val" id="statusBarClockVal">--:--:--</span>
         </div>
+        <button id="statusBarCockpitBtn" class="status-bar-cockpit-btn" onclick="toggleTelemetrySidePanel()" style="display: none;" title="Mostra/Nascondi telemetria a destra della mappa">
+          🏎️ TELEMETRIA <span id="statusBarDrvBadge">--</span> ▾
+        </button>
+      </div>
+
+      <!-- Grace Period Countdown Banner -->
+      <div id="sessionEndingBanner" class="session-ending-banner" style="display: none;">
+        <span>🏁 Sessione Conclusa — Chiusura Live Timing in: <strong id="sessionEndingTimer">03:00</strong></span>
+        <button class="btn-ending-close" onclick="terminateLiveTimingSession()">CHIUDI ORA</button>
       </div>
     </header>
 
@@ -182,9 +189,13 @@
               </div>
             </div>
 
-            <!-- Side Sub-Tab 2: Dual Cockpit Telemetry -->
+            <!-- Side Sub-Tab 2: Dual Cockpit Telemetry (Finestra richiudibile, default chiusa) -->
             <div class="side-pane-content" id="side-telemetry">
               <div class="telemetry-container">
+                <div class="side-tab-close-row">
+                  <span class="telemetry-panel-title">TELEMETRIA VETTURA</span>
+                  <button class="side-panel-close-btn" onclick="closeTelemetrySidePanel()" title="Chiudi telemetria">✕ CHIUDI</button>
+                </div>
                 <div class="dual-selector-bar">
                   <div class="sel-group">
                     <span class="sel-label">Pilota 1:</span>
@@ -449,6 +460,24 @@
         <span class="bnav-label">Race Control</span>
       </button>
     </nav>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════
+       SESSION TERMINATED OVERLAY MODAL
+       ══════════════════════════════════════════════════════════════ -->
+  <div id="sessionTerminatedOverlay" class="session-terminated-overlay" style="display: none;">
+    <div class="terminated-box">
+      <div class="terminated-icon">🏁</div>
+      <div class="terminated-title">SESSIONE TERMINATA</div>
+      <div class="terminated-subtitle" id="terminatedEventSubtitle">FORMULA 1 GRAND PRIX</div>
+      <p class="terminated-desc">
+        La sessione di pista si è conclusa ufficialmente.<br>
+        Il flusso telemetrico live è terminato. Ritorno alla schermata evento...
+      </p>
+      <button class="terminated-btn" onclick="closeSession()">
+        ← TORNA ALL'EVENTO
+      </button>
+    </div>
   </div>
 
   <!-- Modular Scripts separated by scope -->

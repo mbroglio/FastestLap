@@ -72,6 +72,7 @@ function renderTableHeaders(type) {
     }
   } else {
     // Gara o Sprint
+    const totHeader = (typeof TOTAL_LAPS !== 'undefined' && TOTAL_LAPS && TOTAL_LAPS > 0) ? ' / ' + TOTAL_LAPS : '';
     if (fullThead) {
       fullThead.innerHTML = '<tr>'
         + '<th class="col-pos">POS</th>'
@@ -79,6 +80,7 @@ function renderTableHeaders(type) {
         + '<th class="col-driver">PILOTA</th>'
         + '<th class="col-gap">DISTACCO</th>'
         + '<th class="col-int">INTERVALLO</th>'
+        + '<th class="col-laps">GIRI' + totHeader + '</th>'
         + '<th class="col-last">ULTIMO GIRO</th>'
         + '<th class="col-best">MIGLIOR GIRO</th>'
         + '<th class="col-tyre">GOMMA</th>'
@@ -93,6 +95,7 @@ function renderTableHeaders(type) {
         + '<th class="col-side-driver">PILOTA</th>'
         + '<th class="col-side-gap">DISTACCO</th>'
         + '<th class="col-side-int">INTERVALLO</th>'
+        + '<th class="col-side-laps">GIRI' + totHeader + '</th>'
         + '<th class="col-side-last">ULTIMO</th>'
         + '<th class="col-side-best">MIGLIORE</th>'
         + '<th class="col-side-tyre">GOMMA</th>'
@@ -227,7 +230,7 @@ function updateTimingTablesQ() {
     const state = getDriverVisualState(k, currentSecond);
     const tireInfo = getDriverTireInfo(k, currentSecond);
     const laps = DRIVER_LAPS[k] || [];
-    const completedLaps = laps.filter(l => l.startSec + (l.dur || 0) <= currentSecond && l.dur && l.dur > 50);
+    const completedLaps = laps.filter(l => (!window.IS_SYNTHETIC_SIMULATION || l.startSec + (l.dur || 0) <= currentSecond) && l.dur && l.dur > 50);
 
     const q1Laps = completedLaps.filter(l => l.startSec < q1Cut);
     const q2Laps = completedLaps.filter(l => l.startSec >= q1Cut && l.startSec < q2Cut);
@@ -237,7 +240,8 @@ function updateTimingTablesQ() {
     const q1Best = tel.q1Best || q1Laps.reduce((min, l) => l.dur < min ? l.dur : min, Infinity);
     const q2Best = tel.q2Best || q2Laps.reduce((min, l) => l.dur < min ? l.dur : min, Infinity);
     const q3Best = tel.q3Best || q3Laps.reduce((min, l) => l.dur < min ? l.dur : min, Infinity);
-    const overallBest = tel.overallBest || stats.personalBest || (q3Best < Infinity ? q3Best : (q2Best < Infinity ? q2Best : q1Best));
+    const activePartBest = activeQ === 'Q3' ? q3Best : (activeQ === 'Q2' ? q2Best : q1Best);
+    const overallBest = (window.QUALI_PART_ENDED || tel.isKnockedOut) ? Infinity : (tel.overallBest || (activePartBest < Infinity ? activePartBest : Infinity));
     const officialPos = tel.position !== undefined ? tel.position : null;
 
     return {
@@ -376,12 +380,14 @@ function updateTimingTablesQ() {
       + '<path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM7 8a1 1 0 1 1 2 0 1 1 0 0 1-2 0z"/>'
       + '</svg>';
 
+    const minQVal = Math.min(bestQ1Val, bestQ2Val, bestQ3Val);
+    const compactClass = (r.overallBest < Infinity && r.overallBest <= minQVal + 0.005) ? 'badge-purple' : (r.overallBest < Infinity ? 'badge-green' : '');
     const compactTimeStr = r.overallBest < Infinity ? formatLapTime(r.overallBest) : '-';
     compactHtml += '<tr class="' + (isCurrentActive ? 'active' : '') + (isEliminated ? ' row-eliminated' : '') + '" onclick="onDriverRowClick(\'' + r.key + '\')">'
       + '<td class="col-side-eye"><button class="' + eyeBtnClass + '" onclick="onEyeButtonClick(event, \'' + r.key + '\')" title="Focus su pilota">' + eyeSvg + '</button></td>'
       + '<td class="pos-cell">' + currentPos + '</td>'
       + '<td class="col-side-driver"><span class="driver-pill"><span class="color-dot" style="background: ' + d.color + ';"></span><span class="drv-code-bold">#' + d.number + ' ' + d.code + '</span></span></td>'
-      + '<td>' + renderBadge(compactTimeStr, 'badge-green') + '</td>'
+      + '<td>' + renderBadge(compactTimeStr, compactClass) + '</td>'
       + '<td class="col-side-gap gap-cell">' + gapStr + '</td>'
       + '<td>' + tyreBadgeHtml + '</td>'
       + '<td class="col-side-status">' + statusBadgeHtml + '</td>'
@@ -437,15 +443,24 @@ function updateTimingTablesRace() {
       intStr = '-';
     } else {
       const tel = (typeof DRIVER_TELEMETRY !== 'undefined') ? DRIVER_TELEMETRY[r.key] : null;
+      const leaderBest = (ranked[0] && ranked[0].stats) ? ranked[0].stats.personalBest : Infinity;
+      const prevBest = (ranked[idx - 1] && ranked[idx - 1].stats) ? ranked[idx - 1].stats.personalBest : Infinity;
+      const myBest = r.stats ? r.stats.personalBest : Infinity;
+
       if (tel && tel.gapLeader && tel.gapLeader !== '-') {
         gapStr = tel.gapLeader;
-        intStr = tel.interval || '-';
       } else if (r.stats && r.stats.gapLeader && r.stats.gapLeader !== '-') {
         gapStr = r.stats.gapLeader;
-        intStr = r.stats.interval || '-';
-      } else {
-        gapStr = '-';
-        intStr = '-';
+      } else if (myBest < Infinity && leaderBest < Infinity && myBest >= leaderBest) {
+        gapStr = '+' + (myBest - leaderBest).toFixed(3) + 's';
+      }
+
+      if (tel && tel.interval && tel.interval !== '-') {
+        intStr = tel.interval;
+      } else if (r.stats && r.stats.interval && r.stats.interval !== '-') {
+        intStr = r.stats.interval;
+      } else if (myBest < Infinity && prevBest < Infinity && myBest >= prevBest) {
+        intStr = '+' + (myBest - prevBest).toFixed(3) + 's';
       }
     }
 
@@ -461,6 +476,7 @@ function updateTimingTablesRace() {
       + '<td class="col-driver"><span class="driver-pill"><span class="color-dot" style="background: ' + d.color + ';"></span><span class="drv-num-bold">#' + d.number + '</span> ' + d.firstName + ' <span class="drv-last-bold">' + d.lastName.toUpperCase() + '</span></span></td>'
       + '<td class="col-gap gap-cell">' + gapStr + '</td>'
       + '<td class="col-int int-cell">' + intStr + '</td>'
+      + '<td class="laps-cell">' + r.stats.lapsCount + '</td>'
       + '<td>' + renderBadge(r.stats.lastLapStr, r.stats.lastLapBadge) + '</td>'
       + '<td>' + renderBadge(r.stats.bestLapStr, r.stats.bestLapBadge) + '</td>'
       + '<td>' + tyreBadgeHtml + '</td>'
@@ -481,6 +497,7 @@ function updateTimingTablesRace() {
       + '<td class="col-side-driver"><span class="driver-pill"><span class="color-dot" style="background: ' + d.color + ';"></span><span class="drv-code-bold">#' + d.number + ' ' + d.code + '</span></span></td>'
       + '<td class="col-side-gap gap-cell">' + gapStr + '</td>'
       + '<td class="col-side-int int-cell">' + intStr + '</td>'
+      + '<td class="col-side-laps laps-cell">' + r.stats.lapsCount + '</td>'
       + '<td>' + renderBadge(r.stats.lastLapStr, r.stats.lastLapBadge) + '</td>'
       + '<td>' + renderBadge(r.stats.bestLapStr, r.stats.bestLapBadge) + '</td>'
       + '<td>' + tyreBadgeHtml + '</td>'
@@ -510,6 +527,7 @@ function onDriverRowClick(drvKey) {
   const s1 = document.getElementById('drv1Select');
   if (s1) s1.value = drvKey;
   if (typeof updateCockpit === 'function') updateCockpit(1, selectedDriver1);
+  if (typeof updateStatusBarCockpitTrigger === 'function') updateStatusBarCockpitTrigger(drvKey);
   updateTimingTables();
   if (typeof drawTrack === 'function') drawTrack();
 }

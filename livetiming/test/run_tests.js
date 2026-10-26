@@ -9,7 +9,8 @@ const tests = [
   'test_state_merge.js',
   'test_telemetry_decode.js',
   'test_api_endpoints.js',
-  'test_signalr_connection.js'
+  'test_signalr_connection.js',
+  'test_kinematics_smoothness.js'
 ];
 
 console.log('================================================================');

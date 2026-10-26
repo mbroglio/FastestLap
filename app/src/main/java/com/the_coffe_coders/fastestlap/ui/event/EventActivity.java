@@ -178,7 +178,7 @@ public class EventActivity extends AppCompatActivity {
                 LocalDate today = LocalDate.now();
                 for (Session s : sessions) {
                     if (s != null && s.getStartDateTime() != null) {
-                        if (s.getStartDateTime().toLocalDate().equals(today)) {
+                        if (s.getStartDateTime().toLocalDate().equals(today) && (!s.isFinished() || nextEvent == null || nextEvent.getStartDateTime() == null || !nextEvent.getStartDateTime().toLocalDate().equals(today))) {
                             activeSession = s;
                             break;
                         }

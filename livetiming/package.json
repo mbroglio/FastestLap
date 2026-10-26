@@ -7,7 +7,8 @@
     "start": "node server.js",
     "live": "node server.js --live",
     "mock": "node server.js --mock",
-    "test": "node test/run_tests.js"
+    "test": "node test/run_tests.js",
+    "deploy:pages": "git subtree push --prefix livetiming/public origin gh-pages"
   },
   "dependencies": {
     "ws": "^8.18.0"

@@ -25,24 +25,44 @@
     </div>
 
     <div class="controls-group">
-      <span class="status-badge simulation" id="statusBadge">⚡ SIMULATION</span>
-      <button class="btn-toggle-mode" id="btnToggleMode">Passa a Live Stream</button>
+      <span class="status-badge live" id="statusBadge">● SIGNALR LIVE</span>
+
     </div>
   </header>
 
   <!-- Race Control Messages Bar -->
   <div class="race-control-banner">
-    <span class="rc-flag green" id="rcFlag">GREEN</span>
-    <span class="rc-text" id="rcText">SESSION ACTIVE — ALL SYSTEMS OPERATIONAL</span>
+    <div class="rc-left-group">
+      <span class="rc-flag green" id="rcFlag">GREEN</span>
+      <span class="rc-text" id="rcText">SESSION ACTIVE — ALL SYSTEMS OPERATIONAL</span>
+    </div>
+    <button id="btnToggleCockpit" class="rc-cockpit-btn" style="display: none;" title="Mostra/Nascondi telemetria a destra della mappa">
+      🏎️ TELEMETRIA <span id="rcCockpitDriverBadge">--</span> ▾
+    </button>
   </div>
 
-  <!-- Main Multi-Column Live Grid -->
-  <main class="dashboard-grid">
+  <!-- Session Terminated Grace Countdown Banner -->
+  <div class="session-ended-banner" id="sessionEndedBanner" style="display: none;">
+    <div class="seb-left">
+      <span class="seb-flag">🏁</span>
+      <span class="seb-title">SESSIONE UFFICIALMENTE CONCLUSA</span>
+      <span class="seb-timer" id="sessionCloseCountdown">Chiusura live timing tra: 03:00</span>
+    </div>
+    <div class="seb-actions">
+      <button class="seb-btn-now" id="btnExitLiveNow">CHIUDI ORA</button>
+    </div>
+  </div>
+
+  <!-- Main Multi-Column Live Grid (Cockpit closed by default) -->
+  <main class="dashboard-grid cockpit-closed" id="dashboardGrid">
 
     <!-- Column 1: Live Leaderboard (Timing Tower) -->
     <section class="panel">
       <div class="panel-header">
-        <span>CLASSIFICA LIVE (TIMING TOWER)</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span>CLASSIFICA LIVE (TIMING TOWER)</span>
+          <span class="lap-counter-pill" id="towerLapBadge">LAP -- / --</span>
+        </div>
         <span style="font-size: 10px; color: var(--text-muted);">DELTA / SETTORI</span>
       </div>
       <div class="panel-body">
@@ -56,6 +76,7 @@
               <th>S1</th>
               <th>S2</th>
               <th>S3</th>
+              <th class="col-last">LAST</th>
               <th>BEST</th>
               <th>TYRE</th>
               <th>PIT</th>
@@ -79,11 +100,14 @@
       </div>
     </section>
 
-    <!-- Column 3: Telemetry Cockpit Dashboard -->
-    <section class="panel">
-      <div class="panel-header">
-        <span>CRUSCOTTO TELEMETRIA LIVE</span>
-        <span style="font-size: 10px; color: var(--color-f1-red);">COCKPIT DI BORDO</span>
+    <!-- Column 3: Telemetry Cockpit Dashboard (Closable window, closed by default) -->
+    <section class="panel" id="cockpitPanel">
+      <div class="panel-header cockpit-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span>CRUSCOTTO TELEMETRIA LIVE</span>
+          <span style="font-size: 10px; color: var(--color-f1-red);">COCKPIT DI BORDO</span>
+        </div>
+        <button id="btnCloseCockpit" class="cockpit-close-btn" title="Chiudi telemetria">✕</button>
       </div>
       <div class="panel-body cockpit-content" id="cockpitContainer">
 
@@ -177,7 +201,33 @@
 
   </main>
 
+  <!-- Session Terminated Final Modal Overlay -->
+  <div class="session-terminated-modal" id="sessionTerminatedModal" style="display: none;">
+    <div class="session-terminated-card">
+      <div class="st-header">
+        <div class="st-icon-wrap">🏁</div>
+        <h2>SESSIONE TERMINATA</h2>
+        <p class="st-subtitle" id="stSessionSubtitle">FORMULA 1 GRAND PRIX — GARA CONCLUSA</p>
+      </div>
+      <div class="st-body">
+        <p class="st-desc">La sessione si è conclusa regolarmente. Il flusso di telemetria e tracciamento GPS live è stato chiuso.</p>
+        <div class="st-winner-box" id="stWinnerBox" style="display: none;">
+          <div class="st-trophy">🏆 VINCITORE DEL GRAN PREMIO</div>
+          <div class="st-winner-name" id="stWinnerName">--</div>
+          <div class="st-winner-team" id="stWinnerTeam">--</div>
+        </div>
+      </div>
+      <div class="st-footer">
+        <button class="st-btn primary" id="stBtnCloseWindow">CHIUDI LIVE TIMING</button>
+        <button class="st-btn secondary" id="stBtnViewFrozen">RIVEDI CLASSIFICA FINALE</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
+  <script src="js/state_store.js"></script>
+  <script src="js/telemetry_decoder.js"></script>
+  <script src="js/signalr_web_client.js"></script>
   <script src="js/track_canvas.js"></script>
   <script src="js/timing_tower.js"></script>
   <script src="js/cockpit_dashboard.js"></script>

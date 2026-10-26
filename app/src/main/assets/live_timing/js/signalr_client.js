@@ -28,7 +28,7 @@ class SignalRStreamClient {
       'SessionStatus',
       'TrackStatus',
       'RaceControlMessages',
-      'DriverList'
+      'DriverList', 'TimingDataF1', 'SessionData', 'WeatherData', 'LapCount'
     ];
 
     window.onSignalRFeed = (feed, data) => this.processFeedData(feed, data);
@@ -60,13 +60,8 @@ class SignalRStreamClient {
   }
 
   setMode(mode) {
-    this.mode = mode;
-    if (mode === 'live') {
-      this.connect();
-    } else {
-      this.disconnect();
-      this.notifyStatus('simulation', 'Modalità Collaudo/Simulazione Attiva');
-    }
+    this.mode = 'live';
+    this.connect();
   }
 
   async connect() {
@@ -95,8 +90,14 @@ class SignalRStreamClient {
       await this.negotiateAndConnectSignalR();
     } catch (err) {
       console.warn('[SignalR] Connessione live SignalR non riuscita:', err.message);
-      this.notifyStatus('simulation', 'In attesa flusso live — Collaudo attivo');
-      this.mode = 'simulation';
+      this.notifyStatus('connecting', 'In attesa del flusso SignalR live...');
+      this.mode = 'live';
+      if (!this.reconnectTimer) {
+        this.reconnectTimer = setTimeout(() => {
+          this.reconnectTimer = null;
+          this.connect();
+        }, 5000);
+      }
     }
   }
 
@@ -136,10 +137,18 @@ class SignalRStreamClient {
       this.sse.addEventListener('POSITIONS', e => this.handlePositionsPayload(JSON.parse(e.data)));
       this.sse.addEventListener('TELEMETRY', e => this.handleTelemetryPayload(JSON.parse(e.data)));
       this.sse.addEventListener('TIMING', e => this.handleTimingData(JSON.parse(e.data)));
+      this.sse.addEventListener('TYRES', e => this.handleTimingAppData(JSON.parse(e.data)));
       this.sse.addEventListener('RACE_CONTROL', e => this.notifyMessage('RaceControlMessages', JSON.parse(e.data)));
       this.sse.onerror = () => {
         this.disconnect();
-        this.notifyStatus('simulation', 'Server locale disconnesso — Fallback');
+        this.notifyStatus('connecting', 'Server locale disconnesso — Riconnessione in corso...');
+        this.mode = 'live';
+        if (!this.reconnectTimer) {
+          this.reconnectTimer = setTimeout(() => {
+            this.reconnectTimer = null;
+            this.connect();
+          }, 4000);
+        }
       };
     } catch (e) {
       console.error(e);
@@ -294,7 +303,7 @@ class SignalRStreamClient {
     }
 
     // 2. Classifica Live & Dati di Sessione
-    if (feedName === 'TimingData' || feedName === 'TimingAppData') {
+    if (feedName === 'TimingData' || feedName === 'TimingDataF1' || feedName === 'TimingAppData' || feedName === 'SessionData') {
       this.handleTimingData(data);
     } else if (feedName === 'SessionInfo') {
       this.handleSessionInfo(data);
@@ -307,13 +316,56 @@ class SignalRStreamClient {
     } else if (feedName === 'RaceControlMessages') {
       this.handleRaceControlMessages(data);
       this.notifyMessage(feedName, data);
-    } else if (feedName === 'SessionStatus') {
+    } else if (feedName === 'LapCount') {
+      if (data) {
+        if (data.CurrentLap !== undefined) window.CURRENT_SESSION_LAP = Number(data.CurrentLap);
+        if (Number(data.TotalLaps) > 0) TOTAL_LAPS = Number(data.TotalLaps);
+      }
       this.notifyMessage(feedName, data);
+    } else if (feedName === 'SessionStatus') {
+      this.handleSessionStatus(data);
+      this.notifyMessage(feedName, data);
+    }
+  }
+
+  resetQualifyingLiveTimes() {
+    for (const k of Object.keys(DRIVER_TELEMETRY)) {
+      if (DRIVER_TELEMETRY[k]) {
+        DRIVER_TELEMETRY[k].overallBest = null;
+        DRIVER_TELEMETRY[k].gapLeader = '-';
+        DRIVER_TELEMETRY[k].interval = '-';
+      }
+      if (typeof DRIVER_LAPS !== 'undefined' && DRIVER_LAPS[k]) {
+        DRIVER_LAPS[k] = [];
+      }
+    }
+  }
+
+  handleSessionStatus(data) {
+    if (!data || typeof data !== 'object') return;
+    const st = String(data.Status || '').toUpperCase();
+    const started = String(data.Started || '').toUpperCase();
+    window.CURRENT_SESSION_STATUS = st;
+    if (st === 'STARTED') {
+      window.QUALI_PART_ENDED = false;
+    } else if (st === 'INACTIVE' || st === 'FINALISED' || st === 'ENDS' || st === 'ABORTED' || started === 'FINISHED') {
+      window.QUALI_PART_ENDED = true;
+      if ((typeof normalizeSessionType === 'function' ? normalizeSessionType(sessionType, sessionPart) : sessionType) === 'qualifying') { window.QUALI_PART_ENDED = true; this.resetQualifyingLiveTimes(); }
+      if (typeof updateTimingTables === 'function') updateTimingTables();
+      if (typeof updateSessionStatusBar === 'function') updateSessionStatusBar();
+      if (typeof checkSessionTermination === 'function') checkSessionTermination();
     }
   }
 
   handleSessionInfo(info) {
     if (!info || typeof info !== 'object') return;
+    if (info.ArchiveStatus && (info.ArchiveStatus.Status === 'Generating' || info.ArchiveStatus.Status === 'Complete')) {
+      if (typeof checkSessionTermination === 'function') checkSessionTermination();
+    }
+    if (info.SessionStatus && ['FINALISED', 'FINISHED', 'ENDS', 'INACTIVE', 'ABORTED'].includes(String(info.SessionStatus).toUpperCase())) {
+      window.CURRENT_SESSION_STATUS = String(info.SessionStatus).toUpperCase();
+      if (typeof checkSessionTermination === 'function') checkSessionTermination();
+    }
     const sType = info.Type || info.Name || '';
     const sName = info.Name || '';
     const gpName = (info.Meeting && (info.Meeting.Name || info.Meeting.OfficialName)) ? info.Meeting.Name : '';
@@ -321,6 +373,10 @@ class SignalRStreamClient {
     if (gpName) {
       const hdrEvent = document.getElementById('hdrEventTitle');
       if (hdrEvent) hdrEvent.textContent = gpName.toUpperCase();
+    }
+
+    if (info.Meeting && info.Meeting.Circuit && info.Meeting.Circuit.Key && typeof loadOfficialCircuitNodes === 'function') {
+      loadOfficialCircuitNodes(info.Meeting.Circuit.Key);
     }
 
     if (sType) {
@@ -443,67 +499,527 @@ class SignalRStreamClient {
     }
   }
 
-  handleTimingData(data) {
+  
+  handleTimingAppData(data) {
     if (!data || typeof data !== 'object') return;
     const lines = data.Lines || data;
     if (!lines || typeof lines !== 'object') return;
 
-    for (const [drvNum, line] of Object.entries(lines)) {
-      if (!line) continue;
+    for (const [key, appLine] of Object.entries(lines)) {
+      if (!appLine) continue;
+      const drvNum = String(appLine.racingNumber || appLine.RacingNumber || key);
+      const stintsRaw = appLine.Stints;
+      if (!stintsRaw) continue;
+
+      let currentStint = null;
+      if (Array.isArray(stintsRaw)) {
+        for (let i = stintsRaw.length - 1; i >= 0; i--) {
+          const s = stintsRaw[i];
+          if (s && (s.Compound || s.compound)) {
+            currentStint = s;
+            break;
+          }
+        }
+        if (!currentStint && stintsRaw.length > 0) currentStint = stintsRaw[stintsRaw.length - 1];
+      } else if (typeof stintsRaw === 'object') {
+        const keys = Object.keys(stintsRaw).sort((a, b) => Number(a) - Number(b));
+        for (let i = keys.length - 1; i >= 0; i--) {
+          const s = stintsRaw[keys[i]];
+          if (s && (s.Compound || s.compound)) {
+            currentStint = s;
+            break;
+          }
+        }
+        if (!currentStint && keys.length > 0) currentStint = stintsRaw[keys[keys.length - 1]];
+      }
+
+      if (currentStint) {
+        const rawComp = (currentStint.Compound || currentStint.compound || '').toUpperCase();
+        let shortCode = 'MED';
+        if (rawComp.includes('SOFT')) shortCode = 'SFT';
+        else if (rawComp.includes('HARD')) shortCode = 'HRD';
+        else if (rawComp.includes('INTER')) shortCode = 'INT';
+        else if (rawComp.includes('WET')) shortCode = 'WET';
+
+        const totalLaps = Number(currentStint.TotalLaps) || 0;
+        const startLaps = Number(currentStint.StartLaps) || 0;
+        const stintLapNum = Number(currentStint.LapNumber) || 0;
+
+        if (!DRIVER_TELEMETRY[drvNum]) DRIVER_TELEMETRY[drvNum] = {};
+        DRIVER_TELEMETRY[drvNum].tyreTotalLaps = totalLaps;
+        DRIVER_TELEMETRY[drvNum].tyreStartLaps = startLaps;
+        DRIVER_TELEMETRY[drvNum].tyreStintLapNumber = stintLapNum;
+        DRIVER_TELEMETRY[drvNum].tyreCompound = rawComp || 'SOFT';
+
+        DRIVER_STINTS[drvNum] = [{
+          compound: rawComp || 'SOFT',
+          code: shortCode,
+          age: totalLaps,
+          totalLaps: totalLaps,
+          startLaps: startLaps,
+          lapStart: stintLapNum || 1,
+          new: currentStint.New === true || currentStint.New === 'true'
+        }];
+      }
+    }
+
+    if (typeof updateTimingTables === 'function') {
+      updateTimingTables();
+    }
+  }
+
+  handleTimingData(data) {
+    if (!data || typeof data !== 'object') return;
+    if (data.SessionPart !== undefined) {
+      const nextPart = Number(data.SessionPart);
+      if (this.currentSessionPart !== undefined && !isNaN(nextPart) && nextPart !== this.currentSessionPart) {
+        if ((typeof normalizeSessionType === 'function' ? normalizeSessionType(sessionType, sessionPart) : sessionType) === 'qualifying') { window.QUALI_PART_ENDED = true; this.resetQualifyingLiveTimes(); }
+      }
+      if (!isNaN(nextPart) && nextPart > 0) {
+        this.currentSessionPart = nextPart;
+        const isSq = typeof sessionPart === 'string' && sessionPart.toUpperCase().startsWith('SQ');
+        sessionPart = (isSq ? 'SQ' : 'Q') + nextPart;
+      }
+    }
+    const partIdx = (this.currentSessionPart && this.currentSessionPart > 0) ? (this.currentSessionPart - 1) : -1;
+    const lines = data.Lines || data;
+    if (!lines || typeof lines !== 'object') return;
+
+    for (const [drvKey, line] of Object.entries(lines)) {
+      if (!line || typeof line !== 'object') continue;
+      const drvNum = String(line.racingNumber || line.RacingNumber || drvKey);
       if (!DRIVER_TELEMETRY[drvNum]) DRIVER_TELEMETRY[drvNum] = {};
 
-      if (line.Position) {
-        const p = parseInt(line.Position, 10);
+      const posRaw = line.Position !== undefined ? line.Position : line.position;
+      if (posRaw !== undefined) {
+        const p = parseInt(posRaw, 10);
         if (!isNaN(p)) DRIVER_TELEMETRY[drvNum].position = p;
       }
-      if (line.GapToLeader) DRIVER_TELEMETRY[drvNum].gapLeader = line.GapToLeader;
-      if (line.IntervalToPositionAhead && line.IntervalToPositionAhead.Value) {
-        DRIVER_TELEMETRY[drvNum].interval = line.IntervalToPositionAhead.Value;
+
+      // Tyre compound from local server leaderboard if present
+      if (line.tyreCompound && line.tyreCompound !== 'UNKNOWN') {
+        const cmp = String(line.tyreCompound).toUpperCase();
+        let shortCode = 'MED';
+        if (cmp.includes('SOFT')) shortCode = 'SFT';
+        else if (cmp.includes('HARD')) shortCode = 'HRD';
+        else if (cmp.includes('INTER')) shortCode = 'INT';
+        else if (cmp.includes('WET')) shortCode = 'WET';
+        const ageVal = Number(line.tyreAge) || 0;
+        DRIVER_TELEMETRY[drvNum].tyreAge = ageVal;
+        DRIVER_TELEMETRY[drvNum].tyreCompound = cmp;
+        DRIVER_TELEMETRY[drvNum].tyreNew = Boolean(line.tyreNew);
+        DRIVER_STINTS[drvNum] = [{
+          compound: cmp,
+          code: shortCode,
+          age: ageVal,
+          totalLaps: ageVal,
+          lapStart: 1,
+          new: Boolean(line.tyreNew)
+        }];
       }
-      if (line.InPit !== undefined) DRIVER_TELEMETRY[drvNum].inPit = Boolean(line.InPit);
-      if (line.PitOut !== undefined && line.PitOut) DRIVER_TELEMETRY[drvNum].inPit = false;
-      if (line.Retired !== undefined) DRIVER_TELEMETRY[drvNum].isRetired = Boolean(line.Retired);
-      if (line.NumberOfLaps !== undefined) DRIVER_TELEMETRY[drvNum].pitCount = line.NumberOfLaps;
+
       if (line.KnockedOut !== undefined) DRIVER_TELEMETRY[drvNum].isKnockedOut = Boolean(line.KnockedOut);
+      else if (line.knockedOut !== undefined) DRIVER_TELEMETRY[drvNum].isKnockedOut = Boolean(line.knockedOut);
 
-      // BestLapTimes per Qualifying (Q1, Q2, Q3)
-      if (Array.isArray(line.BestLapTimes)) {
-        if (line.BestLapTimes[0] && line.BestLapTimes[0].Value) {
-          DRIVER_TELEMETRY[drvNum].q1Best = this.parseLapTimeToSec(line.BestLapTimes[0].Value);
-        }
-        if (line.BestLapTimes[1] && line.BestLapTimes[1].Value) {
-          DRIVER_TELEMETRY[drvNum].q2Best = this.parseLapTimeToSec(line.BestLapTimes[1].Value);
-        }
-        if (line.BestLapTimes[2] && line.BestLapTimes[2].Value) {
-          DRIVER_TELEMETRY[drvNum].q3Best = this.parseLapTimeToSec(line.BestLapTimes[2].Value);
+      // Raw Gap & Interval if provided
+      let rawGap = line.GapToLeader !== undefined ? line.GapToLeader : line.gapToLeader;
+      if (rawGap && typeof rawGap === 'object') rawGap = rawGap.Value;
+      if (!rawGap && line.TimeDiffToFastest) {
+        rawGap = typeof line.TimeDiffToFastest === 'object' ? line.TimeDiffToFastest.Value : line.TimeDiffToFastest;
+      }
+      if (!rawGap && line.Stats) {
+        if (partIdx >= 0) {
+          const stPart = Array.isArray(line.Stats) ? line.Stats[partIdx] : line.Stats[String(partIdx)];
+          if (stPart && stPart.TimeDiffToFastest) rawGap = stPart.TimeDiffToFastest;
+        } else {
+          const statsList = Array.isArray(line.Stats) ? line.Stats : Object.values(line.Stats);
+          for (let i = statsList.length - 1; i >= 0; i--) {
+            if (statsList[i] && statsList[i].TimeDiffToFastest) {
+              rawGap = statsList[i].TimeDiffToFastest;
+              break;
+            }
+          }
         }
       }
+      if (rawGap !== undefined) {
+        DRIVER_TELEMETRY[drvNum].gapLeader = (rawGap && rawGap !== '--' && rawGap !== '-') ? String(rawGap) : '-';
+      }
 
-      // BestLapTime globale
-      if (line.BestLapTime && line.BestLapTime.Value) {
-        const timeStr = line.BestLapTime.Value;
-        const durSec = this.parseLapTimeToSec(timeStr);
-        if (durSec > 0) {
-          DRIVER_TELEMETRY[drvNum].overallBest = durSec;
-          if (!DRIVER_TELEMETRY[drvNum].q1Best) DRIVER_TELEMETRY[drvNum].q1Best = durSec;
-          if (!DRIVER_LAPS[drvNum]) DRIVER_LAPS[drvNum] = [];
-          if (DRIVER_LAPS[drvNum].length === 0) {
-            DRIVER_LAPS[drvNum].push({
-              lap: 1,
-              startSec: 0,
-              dur: durSec,
-              s1: durSec * 0.32,
-              s2: durSec * 0.39,
-              s3: durSec * 0.29
-            });
-          } else {
-            DRIVER_LAPS[drvNum][0].dur = durSec;
+      let rawInt = line.IntervalToPositionAhead !== undefined ? line.IntervalToPositionAhead : line.intervalToAhead;
+      if (rawInt && typeof rawInt === 'object') rawInt = rawInt.Value;
+      if (!rawInt && (line.TimeDifftoPositionAhead || line.TimeDiffToPositionAhead)) {
+        const tInt = line.TimeDifftoPositionAhead || line.TimeDiffToPositionAhead;
+        rawInt = typeof tInt === 'object' ? tInt.Value : tInt;
+      }
+      if (!rawInt && line.Stats) {
+        if (partIdx >= 0) {
+          const stPart = Array.isArray(line.Stats) ? line.Stats[partIdx] : line.Stats[String(partIdx)];
+          const tInt = stPart && (stPart.TimeDifftoPositionAhead || stPart.TimeDiffToPositionAhead);
+          if (tInt) rawInt = tInt;
+        } else {
+          const statsList = Array.isArray(line.Stats) ? line.Stats : Object.values(line.Stats);
+          for (let i = statsList.length - 1; i >= 0; i--) {
+            const st = statsList[i];
+            const tInt = st && (st.TimeDifftoPositionAhead || st.TimeDiffToPositionAhead);
+            if (tInt) {
+              rawInt = tInt;
+              break;
+            }
+          }
+        }
+      }
+      if (rawInt !== undefined) {
+        DRIVER_TELEMETRY[drvNum].interval = (rawInt && rawInt !== '--' && rawInt !== '-') ? String(rawInt) : '-';
+      }
+
+      if (line.InPit !== undefined) DRIVER_TELEMETRY[drvNum].inPit = Boolean(line.InPit);
+      else if (line.inPit !== undefined) DRIVER_TELEMETRY[drvNum].inPit = Boolean(line.inPit);
+
+      if (line.PitOut !== undefined) {
+        DRIVER_TELEMETRY[drvNum].isOutLap = Boolean(line.PitOut);
+        if (line.PitOut) DRIVER_TELEMETRY[drvNum].inPit = false;
+      } else if (line.pitOut !== undefined) {
+        DRIVER_TELEMETRY[drvNum].isOutLap = Boolean(line.pitOut);
+        if (line.pitOut) DRIVER_TELEMETRY[drvNum].inPit = false;
+      }
+
+      // Speed traps live (ST, FL, I1, I2) per calibrare il picco velocistico sul rettilineo
+      const rawSpeeds = line.Speeds || line.speeds;
+      if (rawSpeeds && typeof rawSpeeds === 'object') {
+        const parseSpd = (s) => {
+          if (!s) return 0;
+          const v = parseFloat(typeof s === 'object' ? s.Value : s);
+          return !isNaN(v) && v > 0 ? v : 0;
+        };
+        const maxTrap = Math.max(parseSpd(rawSpeeds.ST), parseSpd(rawSpeeds.FL), parseSpd(rawSpeeds.I1), parseSpd(rawSpeeds.I2));
+        if (maxTrap > 200) DRIVER_TELEMETRY[drvNum].topSpeedTrap = maxTrap;
+      }
+
+      // Ancoraggio posizione in pista sui mini-settori reali (Sectors[0..2].Segments)
+      const rawSectors = line.Sectors || line.sectors;
+      if (rawSectors && typeof rawSectors === 'object') {
+        if (!DRIVER_TELEMETRY[drvNum].sectorsState) {
+          DRIVER_TELEMETRY[drvNum].sectorsState = {
+            0: { Value: '', Segments: {} },
+            1: { Value: '', Segments: {} },
+            2: { Value: '', Segments: {} }
+          };
+        }
+        const secState = DRIVER_TELEMETRY[drvNum].sectorsState;
+        for (let sIdx = 0; sIdx < 3; sIdx++) {
+          const incomingSec = rawSectors[String(sIdx)] || rawSectors[sIdx];
+          if (!incomingSec || typeof incomingSec !== 'object') continue;
+          if (incomingSec.Value !== undefined) secState[sIdx].Value = incomingSec.Value;
+          else if (incomingSec.value !== undefined) secState[sIdx].Value = incomingSec.value;
+          const incomingSegs = incomingSec.Segments || incomingSec.segments;
+          if (incomingSegs && typeof incomingSegs === 'object') {
+            for (const [k, v] of Object.entries(incomingSegs)) {
+              if (v && typeof v === 'object') {
+                const stVal = v.Status !== undefined ? v.Status : v.status;
+                if (!secState[sIdx].Segments[k]) secState[sIdx].Segments[k] = {};
+                if (stVal !== undefined) secState[sIdx].Segments[k].Status = Number(stVal) || 0;
+              }
+            }
+          }
+        }
+
+        const toSortedSegArray = (segMap) => {
+          return Object.keys(segMap)
+            .map(k => parseInt(k, 10))
+            .filter(k => !isNaN(k))
+            .sort((a, b) => a - b)
+            .map(k => segMap[String(k)]);
+        };
+        const segs0 = toSortedSegArray(secState[0].Segments);
+        const segs1 = toSortedSegArray(secState[1].Segments);
+        const segs2 = toSortedSegArray(secState[2].Segments);
+        const n0 = segs0.length;
+        const n1 = segs1.length;
+        const n2 = segs2.length;
+        const totalSegs = n0 + n1 + n2;
+        if (totalSegs > 0) {
+          const countContiguous = (arr) => {
+            let c = 0;
+            for (let i = 0; i < arr.length; i++) {
+              const st = Number(arr[i] && arr[i].Status);
+              if (st > 0 && st !== 2064) c++;
+              else break;
+            }
+            return c;
+          };
+          const d0 = countContiguous(segs0);
+          const d1 = countContiguous(segs1);
+          const d2 = countContiguous(segs2);
+          if (d0 + d1 + d2 > 0) {
+            let currentMiniSector = 0;
+            if (d0 < n0) {
+              currentMiniSector = d0;
+            } else if (d1 < n1) {
+              currentMiniSector = n0 + d1;
+            } else if (d2 < n2) {
+              currentMiniSector = n0 + n1 + d2;
+            } else {
+              currentMiniSector = 0;
+            }
+            const dur = typeof LAP_DURATION !== 'undefined' && LAP_DURATION ? LAP_DURATION : 90.0;
+            const getMiniSectorStartSec = (mIdx) => {
+              if (mIdx <= 0) return 0;
+              if (mIdx >= totalSegs) return dur;
+              if (Array.isArray(window.OFFICIAL_MINI_SECTOR_INDEXES) &&
+                  window.OFFICIAL_MINI_SECTOR_INDEXES.length >= totalSegs &&
+                  Array.isArray(NODES) && NODES.length > 0) {
+                const ptIdx = Math.max(0, Math.min(NODES.length - 1, window.OFFICIAL_MINI_SECTOR_INDEXES[mIdx]));
+                if (NODES[ptIdx] && NODES[ptIdx][0] !== undefined) {
+                  return NODES[ptIdx][0];
+                }
+              }
+              return (mIdx / totalSegs) * dur;
+            };
+            const segStartSec = getMiniSectorStartSec(currentMiniSector);
+            let segEndSec = getMiniSectorStartSec(currentMiniSector + 1);
+            if (segEndSec <= segStartSec) segEndSec = dur;
+
+            DRIVER_TELEMETRY[drvNum].currentMiniSector = currentMiniSector;
+            DRIVER_TELEMETRY[drvNum].totalMiniSectors = totalSegs;
+            DRIVER_TELEMETRY[drvNum].segStartSec = segStartSec;
+            DRIVER_TELEMETRY[drvNum].segEndSec = segEndSec;
           }
         }
       }
 
-      if (line.LastLapTime && line.LastLapTime.Value) {
-        DRIVER_TELEMETRY[drvNum].lastLapTimeStr = line.LastLapTime.Value;
+      if (line.Retired !== undefined) DRIVER_TELEMETRY[drvNum].isRetired = Boolean(line.Retired);
+      else if (line.retired !== undefined) DRIVER_TELEMETRY[drvNum].isRetired = Boolean(line.retired);
+
+      if (line.NumberOfLaps !== undefined) DRIVER_TELEMETRY[drvNum].lapsCount = Number(line.NumberOfLaps);
+      else if (line.numberOfLaps !== undefined) DRIVER_TELEMETRY[drvNum].lapsCount = Number(line.numberOfLaps);
+      if (line.NumberOfPitStops !== undefined) DRIVER_TELEMETRY[drvNum].pitCount = line.NumberOfPitStops;
+      else if (line.numberOfPitStops !== undefined) DRIVER_TELEMETRY[drvNum].pitCount = line.numberOfPitStops;
+
+      // BestLapTimes per Qualifying (Q1, Q2, Q3) - supports Array or indexed Object
+      if (line.BestLapTimes && typeof line.BestLapTimes === 'object') {
+        const b0 = line.BestLapTimes[0] || line.BestLapTimes['0'];
+        const b1 = line.BestLapTimes[1] || line.BestLapTimes['1'];
+        const b2 = line.BestLapTimes[2] || line.BestLapTimes['2'];
+        if (b0 && b0.Value !== undefined) DRIVER_TELEMETRY[drvNum].q1Best = b0.Value ? this.parseLapTimeToSec(b0.Value) : null;
+        if (b1 && b1.Value !== undefined) DRIVER_TELEMETRY[drvNum].q2Best = b1.Value ? this.parseLapTimeToSec(b1.Value) : null;
+        if (b2 && b2.Value !== undefined) DRIVER_TELEMETRY[drvNum].q3Best = b2.Value ? this.parseLapTimeToSec(b2.Value) : null;
+      }
+
+      // BestLapTime della sessione corrente
+      let bestLapRaw = null;
+      if (partIdx >= 0 && line.BestLapTimes && typeof line.BestLapTimes === 'object') {
+        const bCurr = line.BestLapTimes[partIdx] || line.BestLapTimes[String(partIdx)];
+        bestLapRaw = (bCurr && bCurr.Value) ? bCurr.Value : '';
+      } else if (line.BestLapTime !== undefined) {
+        bestLapRaw = (line.BestLapTime && line.BestLapTime.Value !== undefined) ? line.BestLapTime.Value : line.BestLapTime;
+      } else if (line.bestLapTime !== undefined) {
+        bestLapRaw = line.bestLapTime;
+      }
+
+      if (DRIVER_TELEMETRY[drvNum].isKnockedOut || window.QUALI_PART_ENDED) {
+        DRIVER_TELEMETRY[drvNum].overallBest = null;
+        DRIVER_TELEMETRY[drvNum].gapLeader = '-';
+        DRIVER_TELEMETRY[drvNum].interval = '-';
+      } else if (bestLapRaw !== null) {
+        if (bestLapRaw && bestLapRaw !== '--' && bestLapRaw !== '-') {
+          const durSec = this.parseLapTimeToSec(String(bestLapRaw));
+          if (durSec > 0) {
+            DRIVER_TELEMETRY[drvNum].overallBest = durSec;
+            if (!DRIVER_TELEMETRY[drvNum].q1Best && partIdx <= 0) DRIVER_TELEMETRY[drvNum].q1Best = durSec;
+            if (!DRIVER_LAPS[drvNum]) DRIVER_LAPS[drvNum] = [];
+            if (DRIVER_LAPS[drvNum].length === 0) {
+              DRIVER_LAPS[drvNum].push({
+                lap: 1,
+                startSec: 0,
+                dur: durSec,
+                s1: durSec * 0.32,
+                s2: durSec * 0.39,
+                s3: durSec * 0.29
+              });
+            } else {
+              DRIVER_LAPS[drvNum][0].dur = durSec;
+            }
+          }
+        } else {
+          DRIVER_TELEMETRY[drvNum].overallBest = null;
+          DRIVER_TELEMETRY[drvNum].gapLeader = '-';
+          DRIVER_TELEMETRY[drvNum].interval = '-';
+        }
+      }
+
+      const lastLapRaw = (line.LastLapTime && line.LastLapTime.Value) ? line.LastLapTime.Value : (typeof line.lastLapTime === 'string' ? line.lastLapTime : null);
+      if (lastLapRaw && lastLapRaw !== '--' && lastLapRaw !== '-') {
+        DRIVER_TELEMETRY[drvNum].lastLapTimeStr = lastLapRaw;
+        const lastSec = this.parseLapTimeToSec(lastLapRaw);
+        if (lastSec > 0) DRIVER_TELEMETRY[drvNum].lastLapSec = lastSec;
+      }
+    }
+
+    // Dynamic calculation of GAP (to P1) and INT (to driver ahead) across sorted drivers
+    const allDrvKeys = Object.keys(DRIVERS).length > 0 ? Object.keys(DRIVERS) : Object.keys(DRIVER_TELEMETRY);
+    allDrvKeys.sort((a, b) => {
+      const ta = DRIVER_TELEMETRY[a] || {};
+      const tb = DRIVER_TELEMETRY[b] || {};
+      if (ta.isRetired && !tb.isRetired) return 1;
+      if (!ta.isRetired && tb.isRetired) return -1;
+      const pa = ta.position || 99;
+      const pb = tb.position || 99;
+      if (pa !== pb) return pa - pb;
+      return (ta.overallBest || Infinity) - (tb.overallBest || Infinity);
+    });
+    GRID_ORDER = allDrvKeys;
+
+    const parseDeltaSec = (s) => {
+      if (!s || typeof s !== 'string') return null;
+      const c = s.trim().toUpperCase();
+      if (!c || c === '-' || c === '--') return null;
+      if (c === 'LEADER' || c === '0' || c === '0.000' || c === '+0.000') return 0;
+      if (c.includes('LAP') || c.includes('L')) return null;
+      const v = parseFloat(c.replace('+', '').replace('S', ''));
+      return !isNaN(v) && v >= 0 ? v : null;
+    };
+
+    if (allDrvKeys.length > 0) {
+      if (window.QUALI_PART_ENDED) {
+        for (const k of allDrvKeys) {
+          if (DRIVER_TELEMETRY[k]) {
+            DRIVER_TELEMETRY[k].overallBest = null;
+            DRIVER_TELEMETRY[k].gapLeader = '-';
+            DRIVER_TELEMETRY[k].interval = '-';
+          }
+        }
+      } else {
+        const leaderKey = allDrvKeys[0];
+        if (!DRIVER_TELEMETRY[leaderKey]) DRIVER_TELEMETRY[leaderKey] = {};
+        const leaderBest = DRIVER_TELEMETRY[leaderKey].overallBest || 0;
+        const isQualiMode = partIdx >= 0 || (typeof sessionType === 'string' && sessionType.toLowerCase().includes('qualifying'));
+        DRIVER_TELEMETRY[leaderKey].gapLeader = (isQualiMode && !leaderBest) ? '-' : 'LEADER';
+        DRIVER_TELEMETRY[leaderKey].interval = '-';
+
+        for (let i = 1; i < allDrvKeys.length; i++) {
+          const currKey = allDrvKeys[i];
+          const aheadKey = allDrvKeys[i - 1];
+          if (!DRIVER_TELEMETRY[currKey]) DRIVER_TELEMETRY[currKey] = {};
+          const curr = DRIVER_TELEMETRY[currKey];
+          const ahead = DRIVER_TELEMETRY[aheadKey] || {};
+
+          const currBest = curr.overallBest || 0;
+          const aheadBest = ahead.overallBest || 0;
+
+          const gapMissing = !curr.gapLeader || curr.gapLeader === '-' || curr.gapLeader === '--' || curr.gapLeader === 'LEADER';
+          const intMissing = !curr.interval || curr.interval === '-' || curr.interval === '--' || curr.interval === 'LEADER';
+
+          if (!currBest && gapMissing && intMissing) {
+            curr.gapLeader = '-';
+            curr.interval = '-';
+            continue;
+          }
+
+          // 1. Dynamic GAP (distacco dal primo)
+          if (gapMissing) {
+            if (currBest > 0 && leaderBest > 0 && currBest >= leaderBest) {
+              curr.gapLeader = '+' + (currBest - leaderBest).toFixed(3) + 's';
+            } else {
+              const aheadGap = i === 1 ? 0 : parseDeltaSec(ahead.gapLeader);
+              const currInt = parseDeltaSec(curr.interval);
+              if (aheadGap !== null && currInt !== null) {
+                curr.gapLeader = '+' + (aheadGap + currInt).toFixed(3) + 's';
+              }
+            }
+          }
+
+            // 2. Dynamic INT (distacco dal pilota davanti)
+          if (intMissing) {
+            const currGap = parseDeltaSec(curr.gapLeader);
+            const aheadGap = i === 1 ? 0 : parseDeltaSec(ahead.gapLeader);
+            if (currGap !== null && aheadGap !== null && currGap >= aheadGap) {
+              curr.interval = '+' + (currGap - aheadGap).toFixed(3) + 's';
+            } else if (currBest > 0 && aheadBest > 0 && currBest >= aheadBest) {
+              curr.interval = '+' + (currBest - aheadBest).toFixed(3) + 's';
+            }
+          }
+        }
+
+        // 3. Spaziatura intra-mini-settore ordinata per classifica e INT reale
+        const nowSimSec = typeof currentSecond !== 'undefined' ? currentSecond : 0;
+        let idx = 0;
+        while (idx < allDrvKeys.length) {
+          const drvK = allDrvKeys[idx];
+          const tel = DRIVER_TELEMETRY[drvK];
+          if (!tel || tel.currentMiniSector === undefined || tel.inPit || tel.isRetired) {
+            idx++;
+            continue;
+          }
+          const mSec = tel.currentMiniSector;
+          const group = [drvK];
+          let j = idx + 1;
+          while (j < allDrvKeys.length) {
+            const nextK = allDrvKeys[j];
+            const nextTel = DRIVER_TELEMETRY[nextK];
+            if (!nextTel || nextTel.inPit || nextTel.isRetired) {
+              j++;
+              continue;
+            }
+            if (nextTel.currentMiniSector === mSec) {
+              group.push(nextK);
+              j++;
+            } else {
+              break;
+            }
+          }
+
+          const segStart = tel.segStartSec || 0;
+          const segEnd = tel.segEndSec || (segStart + 4.0);
+          const segSpan = Math.max(0.2, segEnd - segStart);
+          const usableStart = segStart + segSpan * 0.06;
+          const usableEnd = segEnd - segSpan * 0.04;
+          const usableSpan = Math.max(0.1, usableEnd - usableStart);
+
+          if (group.length === 1) {
+            const segKey = mSec + '/' + (tel.totalMiniSectors || 22) + ':solo';
+            tel.segMaxSec = usableEnd;
+            if (tel.lastSegKey !== segKey) {
+              tel.lastSegKey = segKey;
+              const curSec = (tel.anchorTrackSec !== undefined && tel.anchorSimSec !== undefined && typeof getDriverTrackSec === 'function')
+                ? getDriverTrackSec(drvK, nowSimSec)
+                : usableStart;
+              tel.anchorTrackSec = curSec;
+              tel.anchorSimSec = nowSimSec;
+              tel.targetTrackSec = undefined;
+            }
+          } else {
+            const cumInt = [0];
+            for (let k = 1; k < group.length; k++) {
+              const tMember = DRIVER_TELEMETRY[group[k]] || {};
+              const dInt = parseDeltaSec(tMember.interval);
+              const step = dInt !== null && dInt > 0 ? Math.min(3.5, Math.max(0.18, dInt)) : 0.45;
+              cumInt.push(cumInt[k - 1] + step);
+            }
+            const totalGroupInt = Math.max(0.3, cumInt[cumInt.length - 1]);
+            const scale = totalGroupInt > usableSpan * 0.85 ? (usableSpan * 0.85) / totalGroupInt : 1.0;
+
+            for (let k = 0; k < group.length; k++) {
+              const memberKey = group[k];
+              const mTel = DRIVER_TELEMETRY[memberKey];
+              const offsetFromFront = cumInt[k] * scale;
+              const memberMaxSec = Math.max(usableStart, usableEnd - offsetFromFront);
+              const memberStartSec = Math.max(segStart + 0.02, memberMaxSec - Math.min(0.6, segSpan * 0.2));
+              mTel.segMaxSec = memberMaxSec;
+              const segKey = mSec + '/' + (mTel.totalMiniSectors || 22) + ':' + k + '/' + group.length;
+              if (mTel.lastSegKey !== segKey) {
+                mTel.lastSegKey = segKey;
+                const curSec = (mTel.anchorTrackSec !== undefined && mTel.anchorSimSec !== undefined && typeof getDriverTrackSec === 'function')
+                  ? getDriverTrackSec(memberKey, nowSimSec)
+                  : memberStartSec;
+                mTel.anchorTrackSec = curSec;
+                mTel.anchorSimSec = nowSimSec;
+                mTel.targetTrackSec = memberMaxSec;
+              }
+            }
+          }
+
+          idx = j;
+        }
       }
     }
 
@@ -601,6 +1117,11 @@ class SignalRStreamClient {
 
   handleLocalSnapshot(snapshot) {
     if (!snapshot) return;
+    if (snapshot.lapCount) {
+      if (snapshot.lapCount.CurrentLap) window.CURRENT_SESSION_LAP = Number(snapshot.lapCount.CurrentLap);
+      if (snapshot.lapCount.TotalLaps && Number(snapshot.lapCount.TotalLaps) > 0) TOTAL_LAPS = Number(snapshot.lapCount.TotalLaps);
+    }
+    if (snapshot.drivers) this.handleDriverList(snapshot.drivers);
     if (snapshot.positions) this.handlePositionsPayload(snapshot.positions);
     if (snapshot.telemetry) this.handleTelemetryPayload(snapshot.telemetry);
     if (snapshot.leaderboard) this.handleTimingData(snapshot.leaderboard);

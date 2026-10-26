@@ -155,18 +155,31 @@ Genera un file JSON con 300 campioni telemetrici lungo il circuito:
 
 ---
 
-## 🚀 Avvio Rapido e Test
+## 🚀 Modalità di Accesso & Avvio Rapido
 
-Tutto il backend Node.js funziona con **Node.js nativo (v22+)** senza dipendenze npm esterne:
+Il cruscotto Live Timing è progettato con architettura **ibrida**: può essere usato sia come **puro sito web statico standalone** (senza dover avviare alcun comando `npm` o server backend), sia come **server locale Node.js** per sviluppo, simulazione e testing automatizzato.
 
-### 1. Eseguire i test di verifica
+### 🌐 1. Modalità Sito Web Standalone (Zero Node / Zero `npm`)
+Non richiede l'esecuzione di `npm run live` né l'installazione di Node.js sul computer client:
+1. **Apertura diretta**: Fai doppio clic sul file `livetiming/public/index.html` nel browser (Chrome, Edge, Firefox, Safari) o caricalo su qualsiasi hosting web statico (es. GitHub Pages, Vercel, Netlify, Cloudflare Pages o WebView Android).
+2. **Funzionamento**:
+   - Il browser stabilisce una connessione WebSocket diretta WSS a `wss://livetiming.formula1.com/signalrcore`.
+   - La telemetria di bordo (`CarData.z`) e i dati GPS (`Position.z`) vengono decompressi direttamente nel browser ad alte prestazioni con la Web API nativa `DecompressionStream('deflate-raw')`.
+   - Lo stato globale e la classifica vengono sincronizzati in RAM tramite `public/js/state_store.js`.
+
+---
+
+### 🧪 2. Modalità Sviluppo e Testing Locale (Node.js)
+Per eseguire test offline, suite automatizzate o simulazioni di gara:
+
+#### Eseguire i test di verifica automatica
 ```bash
 npm test
 # oppure:
 node test/run_tests.js
 ```
 
-### 2. Avviare il Server (Modalità Simulazione / Demo)
+#### Avviare il Server Locale in modalità Simulazione (Mock Data 2Hz)
 ```bash
 npm start
 # oppure:
@@ -174,10 +187,27 @@ node server.js
 ```
 Apri il browser su: `http://localhost:3000`
 
-### 3. Avviare il Server in Connessione Diretta F1 SignalR Live
+#### Avviare il Server Locale con proxy F1 SignalR Live
 ```bash
 npm run live
 # oppure:
 node server.js --live
 ```
-È anche possibile passare istantaneamente tra la modalità Simulazione e la modalità SignalR Live direttamente dal pulsante in alto a destra nell'interfaccia web!
+
+> [!NOTE]
+> Quando `index.html` viene aperto, verifica automaticamente se è attivo il server locale di test su `/api/status`. Se presente, usa il proxy locale; se assente, attiva istantaneamente la connessione web diretta a Formula 1.
+
+
+---
+
+### 🚀 3. Pubblicazione su GitHub Pages
+Il modulo è pronto per essere ospitato direttamente su **GitHub Pages**:
+- **Workflow automatico**: [`.github/workflows/deploy-pages.yml`](../.github/workflows/deploy-pages.yml)
+- **Flag no-jekyll**: [`public/.nojekyll`](public/.nojekyll) presente per disabilitare Jekyll e servire direttamente i file statici.
+
+#### Passaggi per attivare GitHub Pages:
+1. Su GitHub vai su: **Settings** > **Pages**.
+2. Sotto **Build and deployment** > **Source**, seleziona: **GitHub Actions**.
+3. Esegui il push sul branch `master` o `live-timing` (oppure dalla tab **Actions** seleziona *Deploy Live Timing to GitHub Pages* e clicca **Run workflow**).
+4. La dashboard sarà live all'indirizzo:
+   `https://mbroglio.github.io/FastestLap/`

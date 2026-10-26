@@ -128,6 +128,12 @@ public class EventLiveHandler {
         }
 
         totalLaps = (track != null) ? track.getLaps() : null;
+        if ((totalLaps == null || totalLaps.trim().isEmpty()) && weeklyRace != null && weeklyRace.getTrack() != null) {
+            totalLaps = weeklyRace.getTrack().getLaps();
+        }
+        if (totalLaps == null || totalLaps.trim().isEmpty()) {
+            totalLaps = resolveDefaultCircuitLaps(trackId, eventTitle);
+        }
         circuitTimeZone = (track != null && track.getLocation() != null) ? track.getLocation().getZoneId() : null;
 
         boolean isSessionLive = activeSession != null;
@@ -157,12 +163,12 @@ public class EventLiveHandler {
             return;
         }
 
-        liveSession.setVisibility(View.GONE);
-        noLiveSession.setVisibility(View.VISIBLE);
+        liveSession.setVisibility(isLive ? View.VISIBLE : View.GONE);
+        noLiveSession.setVisibility(isLive ? View.GONE : View.VISIBLE);
 
         Log.i(TAG, "setupLiveSession configurato: trackImageUrl=" + this.trackImageUrl + ", trackId=" + this.trackId);
 
-        /* Card non live (permette comunque il collegamento diretto al flusso SignalR Live)
+        // Card non live (permette comunque il collegamento diretto al flusso SignalR Live)
         noLiveSession.setOnClickListener(v -> NavigationUtils.navigateToLivePage(
                 activity,
                 eventTitle,
@@ -199,7 +205,36 @@ public class EventLiveHandler {
         ));
 
         Log.i(TAG, "EventLiveHandler configurato: isLive=" + isLive + ", session=" + sessionName);
-         */
+        // Fine configurazione card live
         loadingScreen.hideLoadingScreen();
+    }
+
+    private String resolveDefaultCircuitLaps(String trackId, String eventTitle) {
+        String key = (trackId != null ? trackId : (eventTitle != null ? eventTitle : "")).toLowerCase();
+        if (key.contains("austin") || key.contains("cota") || key.contains("united states") || key.contains("usa")) return "56";
+        if (key.contains("monza") || key.contains("italy") || key.contains("italia")) return "53";
+        if (key.contains("spa") || key.contains("belgium") || key.contains("belgio")) return "44";
+        if (key.contains("silverstone") || key.contains("britain") || key.contains("gran bretagna")) return "52";
+        if (key.contains("monaco") || key.contains("monte carlo")) return "78";
+        if (key.contains("bahrain") || key.contains("sakhir")) return "57";
+        if (key.contains("jeddah") || key.contains("saudi")) return "50";
+        if (key.contains("melbourne") || key.contains("australia") || key.contains("albert park")) return "58";
+        if (key.contains("suzuka") || key.contains("japan") || key.contains("giappone")) return "53";
+        if (key.contains("shanghai") || key.contains("china") || key.contains("cina")) return "56";
+        if (key.contains("miami")) return "57";
+        if (key.contains("imola") || key.contains("emilia")) return "63";
+        if (key.contains("montreal") || key.contains("canada") || key.contains("villeneuve")) return "70";
+        if (key.contains("barcelona") || key.contains("catalunya") || key.contains("spain") || key.contains("spagna")) return "66";
+        if (key.contains("spielberg") || key.contains("austria") || key.contains("red bull ring")) return "71";
+        if (key.contains("hungaroring") || key.contains("hungary") || key.contains("ungheria") || key.contains("budapest")) return "70";
+        if (key.contains("zandvoort") || key.contains("netherlands") || key.contains("olanda")) return "72";
+        if (key.contains("baku") || key.contains("azerbaijan")) return "51";
+        if (key.contains("singapore") || key.contains("marina bay")) return "62";
+        if (key.contains("mexico") || key.contains("messico") || key.contains("rodriguez")) return "71";
+        if (key.contains("interlagos") || key.contains("brazil") || key.contains("brasile") || key.contains("sao paulo")) return "71";
+        if (key.contains("vegas")) return "50";
+        if (key.contains("lusail") || key.contains("losail") || key.contains("qatar")) return "57";
+        if (key.contains("yas marina") || key.contains("abu dhabi")) return "58";
+        return "56";
     }
 }

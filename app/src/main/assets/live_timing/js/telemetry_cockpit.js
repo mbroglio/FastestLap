@@ -74,8 +74,8 @@ function updateCockpit(idx, drvKey) {
   // Acceleratore e Freno
   const thrBar = document.getElementById(p + 'ThrBar');
   const thrVal = document.getElementById(p + 'ThrVal');
-  if (thrBar) thrBar.style.width = Math.round(state.throttle || 75) + '%';
-  if (thrVal) thrVal.textContent = Math.round(state.throttle || 75) + '%';
+  if (thrBar) thrBar.style.width = Math.round(state.throttle !== undefined && state.throttle !== null ? state.throttle : 0) + '%';
+  if (thrVal) thrVal.textContent = Math.round(state.throttle !== undefined && state.throttle !== null ? state.throttle : 0) + '%';
 
   const brkBar = document.getElementById(p + 'BrkBar');
   const brkVal = document.getElementById(p + 'BrkVal');
@@ -85,7 +85,7 @@ function updateCockpit(idx, drvKey) {
   // Configurazione Aerodinamica Attiva (Regolamento FIA 2026 X-Mode / Z-Mode)
   const aeroBadge = document.getElementById(p + 'AeroBadge');
   if (aeroBadge) {
-    if (state.drs > 0 && state.speed > 250) {
+    if ((state.drs >= 10) || (state.drs > 0 && state.drs < 8 && state.speed > 250)) {
       aeroBadge.textContent = 'X-MODE';
       aeroBadge.className = 'aero-mode-badge aero-xmode';
     } else {

@@ -21,6 +21,8 @@ const TOPICS = [
   'TimingAppData',
   'DriverList',
   'SessionInfo',
+  'SessionStatus',
+  'SessionData',
   'WeatherData',
   'RaceControlMessages',
   'LapCount',
@@ -50,31 +52,30 @@ class SignalRStreamClient {
     for (const cb of this.listeners) {
       try {
         cb(type, data);
-      } catch (e) {
-        console.error('[SignalRClient] Errore listener update:', e);
+      } catch (err) {
+        console.error('[SignalRClient] Errore listener callback:', err.message);
       }
     }
   }
 
   async connect() {
-    this.stateStore.setConnectionStatus('CONNECTING');
     this._cleanupTimers();
+    this.stateStore.setConnectionStatus('CONNECTING');
+    console.log('[SignalRClient] Avvio negoziazione SignalR...');
 
     try {
-      console.log('[SignalRClient] Avvio negoziazione SignalR...');
-
-      // 1. Negoziazione HTTP POST per ottenere il connectionToken e i cookie di Session Affinity
+      // 1. Negoziazione HTTP POST per ottenere il connectionToken SignalR
       const negResp = await fetch(`${F1_HTTP_BASE}/negotiate?negotiateVersion=1`, {
         method: 'POST',
         headers: {
           'User-Agent': 'BestHTTP',
           'Origin': F1_ORIGIN,
-          'Content-Type': 'text/plain'
+          'Accept': '*/*'
         }
       });
 
       if (!negResp.ok) {
-        throw new Error(`Negoziazione fallita con codice HTTP ${negResp.status}`);
+        throw new Error(`Negoziazione fallita con HTTP ${negResp.status}: ${negResp.statusText}`);
       }
 
       // Estrai cookie AWSALB / AWSALBCORS per mantenere la sessione sullo stesso server
@@ -138,13 +139,12 @@ class SignalRStreamClient {
       this.messageBuffer += chunk;
 
       // De-frammentazione: dividi per il record separator 0x1e
-      const messages = this.messageBuffer.split(RECORD_SEPARATOR);
-      
-      // L'ultimo elemento è incompleto o vuoto se il messaggio terminava per 0x1e
-      this.messageBuffer = messages.pop();
+      const records = this.messageBuffer.split(RECORD_SEPARATOR);
+      // L'ultimo elemento è la parte residua (se incompleta resta nel buffer, se vuota resetta)
+      this.messageBuffer = records.pop();
 
-      for (const msg of messages) {
-        if (!msg || msg.trim().length === 0) continue;
+      for (const msg of records) {
+        if (!msg.trim()) continue;
 
         try {
           const frame = JSON.parse(msg);
@@ -242,6 +242,8 @@ class SignalRStreamClient {
             this.stateStore.updateCarTelemetry(driverNum, car);
           }
           this.notifyUpdate('TELEMETRY', latest.cars);
+        } else {
+          console.warn('[SignalRClient] CarData.z payload vuoto o non decodificato');
         }
         return;
       }
@@ -254,6 +256,8 @@ class SignalRStreamClient {
             this.stateStore.updateDriverPosition(driverNum, pos);
           }
           this.notifyUpdate('POSITIONS', latest.entries);
+        } else {
+          console.warn('[SignalRClient] Position.z payload vuoto o non decodificato');
         }
         return;
       }
@@ -273,10 +277,24 @@ class SignalRStreamClient {
         case 'TimingAppData':
           this.stateStore.updateTimingAppData(data);
           this.notifyUpdate('TYRES', data);
+          this.notifyUpdate('TIMING', this.stateStore.getLeaderboard());
           break;
         case 'SessionInfo':
           this.stateStore.updateSessionInfo(data);
           this.notifyUpdate('SESSION', data);
+          break;
+        case 'SessionStatus':
+          this.stateStore.updateSessionStatus(data);
+          this.notifyUpdate('SESSION_STATUS', data);
+          this.notifyUpdate('TIMING', this.stateStore.getLeaderboard());
+          break;
+        case 'TrackStatus':
+          this.stateStore.updateTrackStatus(data);
+          this.notifyUpdate('TRACK_STATUS', this.stateStore.trackStatus);
+          break;
+        case 'SessionData':
+          this.stateStore.updateSessionData(data);
+          this.notifyUpdate('TIMING', this.stateStore.getLeaderboard());
           break;
         case 'WeatherData':
           this.stateStore.updateWeather(data);
@@ -284,7 +302,7 @@ class SignalRStreamClient {
           break;
         case 'LapCount':
           this.stateStore.updateLapCount(data);
-          this.notifyUpdate('LAPS', data);
+          this.notifyUpdate('LAPS', this.stateStore.lapCount);
           break;
         case 'RaceControlMessages':
           if (data.Messages) {

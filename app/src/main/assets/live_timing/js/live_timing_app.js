@@ -4,9 +4,57 @@
  * Integra Android Bridge, parametri URL, ciclo di animazione e navigazione schermate.
  */
 
+const CIRCUIT_TOTAL_LAPS = {
+  '9': 56, '63': 57, '149': 50, '1': 58, '10': 53, '7': 56, '151': 57,
+  '6': 63, '22': 78, '23': 70, '4': 66, '19': 71, '2': 52, '14': 70,
+  '20': 44, '55': 72, '39': 53, '144': 51, '61': 62, '65': 71, '15': 71,
+  '152': 50, '150': 57, '70': 58,
+  'austin': 56, 'cota': 56, 'united_states': 56, 'usa': 56,
+  'bahrain': 57, 'sakhir': 57,
+  'jeddah': 50, 'saudi_arabia': 50,
+  'albert_park': 58, 'melbourne': 58, 'australia': 58,
+  'suzuka': 53, 'japan': 53,
+  'shanghai': 56, 'china': 56,
+  'miami': 57,
+  'imola': 63, 'emilia_romagna': 63,
+  'monaco': 78, 'monte_carlo': 78,
+  'montreal': 70, 'canada': 70, 'villeneuve': 70,
+  'catalunya': 66, 'barcelona': 66, 'spain': 66,
+  'red_bull_ring': 71, 'spielberg': 71, 'austria': 71,
+  'silverstone': 52, 'great_britain': 52, 'britain': 52,
+  'hungaroring': 70, 'hungary': 70, 'budapest': 70,
+  'spa': 44, 'belgium': 44, 'francorchamps': 44,
+  'zandvoort': 72, 'netherlands': 72, 'dutch': 72,
+  'monza': 53, 'italy': 53,
+  'baku': 51, 'azerbaijan': 51,
+  'marina_bay': 62, 'singapore': 62,
+  'rodriguez': 71, 'mexico': 71,
+  'interlagos': 71, 'brazil': 71, 'sao_paulo': 71,
+  'las_vegas': 50, 'vegas': 50,
+  'lusail': 57, 'losail': 57, 'qatar': 57,
+  'yas_marina': 58, 'abu_dhabi': 58
+};
+
+function resolveCircuitTotalLaps(query) {
+  if (!query) return 56;
+  const str = String(query).toLowerCase().trim().replace(/ /g, '_');
+  if (CIRCUIT_TOTAL_LAPS[str]) return CIRCUIT_TOTAL_LAPS[str];
+  for (const [k, v] of Object.entries(CIRCUIT_TOTAL_LAPS)) {
+    if (str.includes(k)) return v;
+  }
+  return 56;
+}
+
+let preferredCircuit = '';
+
 function updateSessionStatusBar() {
-  const isFinished = (typeof SESSION_DURATION !== 'undefined' && currentSecond >= SESSION_DURATION) ||
+  const curSt = String(window.CURRENT_SESSION_STATUS || '').toUpperCase();
+  const isFinished = curSt === 'FINALISED' || curSt === 'FINISHED' || curSt === 'ENDS' || curSt === 'INACTIVE' || curSt === 'ABORTED' ||
+                     (typeof SESSION_DURATION !== 'undefined' && currentSecond >= SESSION_DURATION) ||
                      (typeof RACE_FINISH_SEC !== 'undefined' && currentSecond >= RACE_FINISH_SEC);
+  if (isFinished && typeof checkSessionTermination === 'function') {
+    checkSessionTermination();
+  }
 
   const currentTrackStatus = window.CURRENT_TRACK_STATUS || '';
   const scActive = !isFinished && (currentTrackStatus === '4' || isSafetyCarActive(currentSecond));
@@ -100,8 +148,12 @@ function updateSessionStatusBar() {
       lapVal.textContent = qPhase + ' IN CORSO';
     } else {
       const curLap = getDriverLap(focusedDriver, currentSecond);
+      if (!TOTAL_LAPS || TOTAL_LAPS <= 0) {
+        TOTAL_LAPS = resolveCircuitTotalLaps(currentCircuit || preferredCircuit || sessionName);
+        window.CURRENT_SESSION_TOTAL_LAPS = TOTAL_LAPS;
+      }
       if (TOTAL_LAPS && TOTAL_LAPS > 0) {
-        lapVal.textContent = 'GIRO ' + curLap + '/' + TOTAL_LAPS;
+        lapVal.textContent = 'GIRO ' + curLap + ' / ' + TOTAL_LAPS;
       } else {
         lapVal.textContent = 'GIRO ' + curLap;
       }
@@ -161,7 +213,7 @@ function switchSideTab(tabId) {
   const t = document.getElementById(tabId);
   if (t) t.classList.add('active');
 
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.side-tab-btn').forEach(b => b.classList.remove('active'));
   if (tabId === 'side-standings') {
     const b = document.getElementById('btnSideStandings');
     if (b) b.classList.add('active');
@@ -175,8 +227,38 @@ function switchSideTab(tabId) {
     if (b) b.classList.add('active');
     updateRaceControl();
   }
+
+  const cockpitBtn = document.getElementById('statusBarCockpitBtn');
+  if (cockpitBtn) cockpitBtn.classList.toggle('active', tabId === 'side-telemetry');
+
   updateTimingTables();
   drawTrack();
+}
+
+function updateStatusBarCockpitTrigger(drvKey) {
+  const btn = document.getElementById('statusBarCockpitBtn');
+  const badge = document.getElementById('statusBarDrvBadge');
+  if (!btn || !drvKey) return;
+  const d = DRIVERS[drvKey] || {};
+  const code = d.code || ('#' + drvKey);
+  if (badge) badge.textContent = code;
+  btn.style.display = 'inline-flex';
+  btn.classList.toggle('active', currentSideTab === 'side-telemetry');
+}
+
+function toggleTelemetrySidePanel() {
+  if (currentMainView !== 'view-track') {
+    switchMainView('view-track');
+  }
+  if (currentSideTab === 'side-telemetry') {
+    switchSideTab('side-standings');
+  } else {
+    switchSideTab('side-telemetry');
+  }
+}
+
+function closeTelemetrySidePanel() {
+  switchSideTab('side-standings');
 }
 
 function closeSession() {
@@ -186,6 +268,96 @@ function closeSession() {
     window.history.back();
   }
 }
+
+let sessionEndedTimestamp = null;
+let sessionTerminationTimer = null;
+let isSessionTerminatedState = false;
+
+function checkSessionTermination() {
+  if (isSessionTerminatedState) return;
+
+  const curSt = String(window.CURRENT_SESSION_STATUS || '').toUpperCase();
+  const isEnded = curSt === 'FINALISED' || curSt === 'FINISHED' || curSt === 'ENDS' || curSt === 'INACTIVE' || curSt === 'ABORTED' ||
+                  (typeof SESSION_DURATION !== 'undefined' && currentSecond >= SESSION_DURATION) ||
+                  (typeof RACE_FINISH_SEC !== 'undefined' && currentSecond >= RACE_FINISH_SEC);
+
+  if (!isEnded) return;
+
+  if (!sessionEndedTimestamp) {
+    sessionEndedTimestamp = Date.now();
+  }
+
+  const GRACE_PERIOD_MS = 180 * 1000; // 3 minuti di tolleranza
+  const elapsed = Date.now() - sessionEndedTimestamp;
+
+  if (elapsed >= GRACE_PERIOD_MS) {
+    terminateLiveTimingSession();
+  } else if (!sessionTerminationTimer) {
+    const banner = document.getElementById('sessionEndingBanner');
+    if (banner) banner.style.display = 'flex';
+
+    function tickEnding() {
+      const remSec = Math.ceil((sessionEndedTimestamp + GRACE_PERIOD_MS - Date.now()) / 1000);
+      if (remSec <= 0) {
+        if (sessionTerminationTimer) {
+          clearInterval(sessionTerminationTimer);
+          sessionTerminationTimer = null;
+        }
+        terminateLiveTimingSession();
+      } else {
+        const m = Math.floor(remSec / 60);
+        const s = remSec % 60;
+        const timerEl = document.getElementById('sessionEndingTimer');
+        if (timerEl) {
+          timerEl.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+        }
+      }
+    }
+
+    tickEnding();
+    sessionTerminationTimer = setInterval(tickEnding, 1000);
+  }
+}
+
+function terminateLiveTimingSession() {
+  isSessionTerminatedState = true;
+  if (sessionTerminationTimer) {
+    clearInterval(sessionTerminationTimer);
+    sessionTerminationTimer = null;
+  }
+
+  const banner = document.getElementById('sessionEndingBanner');
+  if (banner) banner.style.display = 'none';
+
+  // Interrompe stream SignalR
+  try {
+    if (window.signalRClient && typeof window.signalRClient.disconnect === 'function') {
+      window.signalRClient.disconnect();
+    }
+    if (window.FastestLapBridge && typeof window.FastestLapBridge.stopSignalRStream === 'function') {
+      window.FastestLapBridge.stopSignalRStream();
+    }
+  } catch (e) {}
+
+  // Mostra overlay di chiusura sessione terminata
+  const overlay = document.getElementById('sessionTerminatedOverlay');
+  if (overlay) {
+    const sub = document.getElementById('terminatedEventSubtitle');
+    const hdr = document.getElementById('hdrEventTitle');
+    if (sub && hdr) sub.textContent = hdr.textContent || 'FORMULA 1 GRAND PRIX';
+    overlay.style.display = 'flex';
+  }
+
+  // Se eseguito dentro l'app Android, chiude automaticamente la schermata live dopo 4 secondi
+  if (window.FastestLapBridge && typeof window.FastestLapBridge.closeLive === 'function') {
+    setTimeout(() => {
+      closeSession();
+    }, 4000);
+  }
+}
+
+window.checkSessionTermination = checkSessionTermination;
+window.terminateLiveTimingSession = terminateLiveTimingSession;
 
 function applyGenericRealSession(circuitId, sType) {
   isGenericRealMode = true;
@@ -268,6 +440,10 @@ function applyGenericRealSession(circuitId, sType) {
       }
     } catch (e) {}
   }
+  if (!TOTAL_LAPS) {
+    TOTAL_LAPS = resolveCircuitTotalLaps(preferredCircuit || currentCircuit || sessionName);
+  }
+  window.CURRENT_SESSION_TOTAL_LAPS = TOTAL_LAPS;
   LAP_DURATION = 90.0;
   const isRace = (sessionType === 'race');
   const isSprint = (sessionType === 'sprint');
@@ -607,6 +783,7 @@ function initApp() {
 
   renderTableHeaders(sessionType);
   updateSessionStatusBar();
+  checkSessionTermination();
 
   window.addEventListener('resize', () => {
     resizeTrackCanvas();

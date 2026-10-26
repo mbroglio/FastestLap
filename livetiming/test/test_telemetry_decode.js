@@ -73,4 +73,43 @@ assert.strictEqual(pos16.y, -450, 'Decimeters converted to meters for Y');
 assert.strictEqual(pos16.status, 'OnTrack', 'Status preserved');
 console.log('✅ Position.z DEFLATE decompression and metric coordinate scaling verified');
 
+// 3. Test root-array payloads for Position.z and CarData.z
+const rawArrayPosPayload = [
+  {
+    Timestamp: '2026-10-10T14:00:02Z',
+    Entries: {
+      '1': {
+        X: 20000,
+        Y: 10000,
+        Z: 50,
+        Status: 'OnTrack'
+      }
+    }
+  }
+];
+const encArrayPos = TelemetryDecoder.encodePosition(rawArrayPosPayload);
+const decArrayPos = TelemetryDecoder.decodePosition(encArrayPos);
+assert.strictEqual(decArrayPos.length, 1, 'Decoded root-array Position');
+assert.strictEqual(decArrayPos[0].entries['1'].x, 2000, 'Correct metric X');
+console.log('✅ Position.z root-array format decoded successfully');
+
+const rawArrayCarPayload = [
+  {
+    Utc: '2026-10-10T14:00:02Z',
+    Cars: {
+      '1': {
+        Channels: {
+          [CHANNELS.RPM]: 12000,
+          [CHANNELS.SPEED]: 310
+        }
+      }
+    }
+  }
+];
+const encArrayCar = TelemetryDecoder.encodeCarData(rawArrayCarPayload);
+const decArrayCar = TelemetryDecoder.decodeCarData(encArrayCar);
+assert.strictEqual(decArrayCar.length, 1, 'Decoded root-array CarData');
+assert.strictEqual(decArrayCar[0].cars['1'].speed, 310, 'Correct speed');
+console.log('✅ CarData.z root-array format decoded successfully');
+
 console.log('🎉 TelemetryDecoder tests passed successfully!\n');

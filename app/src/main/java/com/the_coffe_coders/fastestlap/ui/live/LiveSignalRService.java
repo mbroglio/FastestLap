@@ -216,7 +216,7 @@ public class LiveSignalRService {
                     notifyStatus("live", "● SIGNALR LIVE");
 
                     // Sottoscrizione ai canali live F1
-                    String sub = "{\"type\":1,\"invocationId\":\"0\",\"target\":\"Subscribe\",\"arguments\":[[\"Heartbeat\",\"CarData.z\",\"Position.z\",\"TimingData\",\"TimingAppData\",\"SessionInfo\",\"SessionStatus\",\"TrackStatus\",\"RaceControlMessages\",\"DriverList\"]]}" + RECORD_SEP;
+                    String sub = "{\"type\":1,\"invocationId\":\"0\",\"target\":\"Subscribe\",\"arguments\":[[\"Heartbeat\",\"CarData.z\",\"Position.z\",\"TimingData\",\"TimingDataF1\",\"TimingAppData\",\"SessionInfo\",\"SessionStatus\",\"SessionData\",\"TrackStatus\",\"RaceControlMessages\",\"DriverList\",\"WeatherData\",\"LapCount\"]]}" + RECORD_SEP;
                     ws.send(sub);
                     continue;
                 }
