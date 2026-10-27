@@ -108,6 +108,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } else if (isPractice) {
       badgeText = (currentSessionName || 'PRACTICE').toUpperCase();
+      
     } else {
       const curLap = (currentLapCount && currentLapCount.CurrentLap != null && currentLapCount.CurrentLap > 0)
         ? currentLapCount.CurrentLap
