@@ -17,7 +17,7 @@ class SignalRWebClient {
     this.TOPICS = [
       'Heartbeat', 'CarData.z', 'Position.z', 'TimingData', 'TimingDataF1',
       'TimingAppData', 'DriverList', 'SessionInfo', 'SessionStatus', 'SessionData',
-      'WeatherData', 'RaceControlMessages', 'LapCount', 'TrackStatus'
+      'ExtrapolatedClock', 'WeatherData', 'RaceControlMessages', 'LapCount', 'TrackStatus'
     ];
   }
 
@@ -119,13 +119,17 @@ class SignalRWebClient {
 
     if (snapshot.DriverList) this.stateStore.updateDrivers(snapshot.DriverList);
     if (snapshot.SessionInfo) this.stateStore.updateSessionInfo(snapshot.SessionInfo);
-    if (snapshot.SessionStatus) this.stateStore.updateSessionStatus(snapshot.SessionStatus);
     if (snapshot.SessionData) this.stateStore.updateSessionData(snapshot.SessionData);
+    if (snapshot.SessionStatus) this.stateStore.updateSessionStatus(snapshot.SessionStatus);
+    if (snapshot.ExtrapolatedClock) this.stateStore.updateExtrapolatedClock(snapshot.ExtrapolatedClock);
     if (snapshot.TrackStatus) this.stateStore.updateTrackStatus(snapshot.TrackStatus);
     if (snapshot.WeatherData) this.stateStore.updateWeather(snapshot.WeatherData);
     if (snapshot.LapCount) this.stateStore.updateLapCount(snapshot.LapCount);
     if (snapshot.TimingData) this.stateStore.updateTimingData(snapshot.TimingData);
     if (snapshot.TimingAppData) this.stateStore.updateTimingAppData(snapshot.TimingAppData);
+    if (snapshot.RaceControlMessages) {
+      this.stateStore.addRaceControlMessage(snapshot.RaceControlMessages.Messages || snapshot.RaceControlMessages);
+    }
 
     if (snapshot['Position.z'] && window.TelemetryDecoder) {
       const decodedPos = await window.TelemetryDecoder.decodePositions(snapshot['Position.z']);
@@ -172,6 +176,9 @@ class SignalRWebClient {
         break;
       case 'SessionData':
         this.stateStore.updateSessionData(data);
+        break;
+      case 'ExtrapolatedClock':
+        this.stateStore.updateExtrapolatedClock(data);
         break;
       case 'TrackStatus':
         this.stateStore.updateTrackStatus(data);

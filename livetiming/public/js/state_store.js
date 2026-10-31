@@ -138,12 +138,53 @@ class StateStore {
     this.currentSessionPart = null;
     this.weatherData = {};
     this.lapCount = { CurrentLap: 0, TotalLaps: 0 };
+    this.extrapolatedClock = { Utc: null, Remaining: null, Extrapolating: false, receivedAt: null };
     this.raceControlMessages = [];
     this.carData = {};      // Latest telemetry per driver { "1": { speed, rpm, gear, throttle, brake, drs, battery } }
     this.positions = {};    // Latest X,Y,Z per driver { "1": { x, y, z, status } }
     this.lastUpdate = new Date().toISOString();
     this.connectionStatus = 'INITIALIZING';
     this.sessionEndedAt = null;
+  }
+
+  getRemainingTimeSeconds(nowMs = Date.now()) {
+    const ec = this.extrapolatedClock;
+    if (!ec || !ec.Remaining || typeof ec.Remaining !== 'string') return null;
+    const parts = ec.Remaining.trim().split(':').map(Number);
+    if (parts.some(isNaN)) return null;
+    let baseSec = 0;
+    if (parts.length === 3) {
+      baseSec = parts[0] * 3600 + parts[1] * 60 + parts[2];
+    } else if (parts.length === 2) {
+      baseSec = parts[0] * 60 + parts[1];
+    } else {
+      return null;
+    }
+    if (!ec.Extrapolating) {
+      return Math.max(0, baseSec);
+    }
+    const utcMs = ec.Utc ? Date.parse(ec.Utc) : NaN;
+    const recMs = ec.receivedAt ? Date.parse(ec.receivedAt) : NaN;
+    let refMs = nowMs;
+    if (!isNaN(utcMs) && Math.abs((!isNaN(recMs) ? recMs : nowMs) - utcMs) < 30000) {
+      refMs = utcMs;
+    } else if (!isNaN(recMs)) {
+      refMs = recMs;
+    }
+    const elapsedSec = Math.max(0, (nowMs - refMs) / 1000);
+    return Math.max(0, Math.floor(baseSec - elapsedSec));
+  }
+
+  getRemainingTimeFormatted(nowMs = Date.now()) {
+    const sec = this.getRemainingTimeSeconds(nowMs);
+    if (sec === null) return null;
+    const h = Math.floor(sec / 3600);
+    const m = Math.floor((sec % 3600) / 60);
+    const s = sec % 60;
+    if (h > 0) {
+      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
   }
 
   setConnectionStatus(status) {
@@ -221,29 +262,62 @@ class StateStore {
 
   isSessionEnded() {
     const st = String((this.sessionStatus && this.sessionStatus.Status) || '').toUpperCase();
-    if (st === 'FINALISED' || st === 'FINISHED' || st === 'ENDS' || st === 'INACTIVE' || st === 'ABORTED') {
+    const started = String((this.sessionStatus && this.sessionStatus.Started) || '').toUpperCase();
+
+    // Finalised ha precedenza assoluta (sessione ufficialmente chiusa e archiviata)
+    if (st === 'FINALISED') {
       return true;
     }
-    const started = String((this.sessionStatus && this.sessionStatus.Started) || '').toUpperCase();
-    if (started === 'FINISHED') return true;
 
+    // In corso o sospesa temporaneamente (bandiera rossa / attesa partenza / pausa Q1-Q2-Q3)
+    if (st === 'STARTED' || st === 'INACTIVE' || st === 'ABORTED') {
+      return false;
+    }
+
+    // Se l'orologio estrapolato indica tempo residuo in scorrimento, la sessione è attiva
+    const remSec = this.getRemainingTimeSeconds();
+    if (this.extrapolatedClock && this.extrapolatedClock.Extrapolating && remSec !== null && remSec > 0) {
+      return false;
+    }
+
+    if (st === 'FINISHED' || st === 'ENDS' || started === 'FINISHED') {
+      if (this.isQualifyingSession()) {
+        const part = Number(this.timingData && this.timingData.SessionPart) || Number(this.currentSessionPart) || 0;
+        if (part === 1 || part === 2) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    // ArchiveStatus.Status è "Generating" durante tutta la sessione live; solo "Complete" indica sessione archiviata
     const archive = String((this.sessionInfo && this.sessionInfo.ArchiveStatus && this.sessionInfo.ArchiveStatus.Status) || '').toUpperCase();
-    if (archive === 'GENERATING' || archive === 'COMPLETE') return true;
+    if (archive === 'COMPLETE' && st !== 'STARTED') {
+      return true;
+    }
 
-    const curLap = Number(this.lapCount && this.lapCount.CurrentLap) || 0;
-    const totLaps = Number(this.lapCount && this.lapCount.TotalLaps) || 0;
-    if (totLaps > 0 && curLap >= totLaps) {
-      const hasChequered = Array.isArray(this.raceControlMessages) &&
-        this.raceControlMessages.slice(-10).some(m => m && String(m.Flag || '').toUpperCase() === 'CHEQUERED');
-      if (hasChequered) return true;
+    const sType = String((this.sessionInfo && (this.sessionInfo.Type || this.sessionInfo.Name)) || '').toLowerCase();
+    const isPractice = sType.includes('practice') || sType.includes('prove') || sType.includes('fp');
+    if (!isPractice && !this.isQualifyingSession()) {
+      const curLap = Number(this.lapCount && this.lapCount.CurrentLap) || 0;
+      const totLaps = Number(this.lapCount && this.lapCount.TotalLaps) || 0;
+      if (totLaps > 0 && curLap >= totLaps) {
+        const hasChequered = Array.isArray(this.raceControlMessages) &&
+          this.raceControlMessages.slice(-10).some(m => m && String(m.Flag || '').toUpperCase() === 'CHEQUERED');
+        if (hasChequered) return true;
+      }
     }
 
     return false;
   }
 
   _checkAndUpdateSessionEnded() {
-    if (this.isSessionEnded() && !this.sessionEndedAt) {
-      this.sessionEndedAt = this.lastUpdate || new Date().toISOString();
+    if (this.isSessionEnded()) {
+      if (!this.sessionEndedAt) {
+        this.sessionEndedAt = this.lastUpdate || new Date().toISOString();
+      }
+    } else {
+      this.sessionEndedAt = null;
     }
   }
 
@@ -348,6 +422,14 @@ class StateStore {
     this.lastUpdate = new Date().toISOString();
   }
 
+  updateExtrapolatedClock(data) {
+    if (!data || typeof data !== 'object') return;
+    deepMerge(this.extrapolatedClock, data);
+    this.extrapolatedClock.receivedAt = new Date().toISOString();
+    this._checkAndUpdateSessionEnded();
+    this.lastUpdate = new Date().toISOString();
+  }
+
   addRaceControlMessage(message) {
     if (!message) return;
     const msgs = Array.isArray(message) ? message : [message];
@@ -372,6 +454,10 @@ class StateStore {
     }
     Object.assign(this.carData[key], telemetry);
     this.lastUpdate = new Date().toISOString();
+  }
+
+  updateDriverTelemetry(driverNum, telemetry) {
+    return this.updateCarTelemetry(driverNum, telemetry);
   }
 
   updateDriverPosition(driverNum, pos) {
@@ -694,6 +780,9 @@ class StateStore {
       sessionPart: this.timingData.SessionPart || null,
       sessionStatus: this.sessionStatus.Status || null,
       trackStatus: this.trackStatus.Status || '1',
+      extrapolatedClock: this.extrapolatedClock,
+      remainingTime: this.getRemainingTimeFormatted(),
+      remainingSeconds: this.getRemainingTimeSeconds(),
       isSessionEnded: this.isSessionEnded(),
       sessionEndedAt: this.sessionEndedAt || (this.isSessionEnded() ? this.lastUpdate : null)
     };
@@ -707,6 +796,7 @@ class StateStore {
       trackStatus: this.trackStatus,
       weather: this.weatherData,
       lapCount: this.lapCount,
+      extrapolatedClock: this.extrapolatedClock,
       raceControl: this.raceControlMessages.slice(-20),
       leaderboard: this.getLeaderboard(),
       drivers: this.driverList,

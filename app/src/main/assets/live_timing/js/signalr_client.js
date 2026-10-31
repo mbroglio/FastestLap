@@ -28,7 +28,7 @@ class SignalRStreamClient {
       'SessionStatus',
       'TrackStatus',
       'RaceControlMessages',
-      'DriverList', 'TimingDataF1', 'SessionData', 'WeatherData', 'LapCount'
+      'DriverList', 'TimingDataF1', 'SessionData', 'ExtrapolatedClock', 'WeatherData', 'LapCount'
     ];
 
     window.onSignalRFeed = (feed, data) => this.processFeedData(feed, data);
@@ -138,6 +138,7 @@ class SignalRStreamClient {
       this.sse.addEventListener('TELEMETRY', e => this.handleTelemetryPayload(JSON.parse(e.data)));
       this.sse.addEventListener('TIMING', e => this.handleTimingData(JSON.parse(e.data)));
       this.sse.addEventListener('TYRES', e => this.handleTimingAppData(JSON.parse(e.data)));
+      this.sse.addEventListener('CLOCK', e => this.handleExtrapolatedClock(JSON.parse(e.data)));
       this.sse.addEventListener('RACE_CONTROL', e => this.notifyMessage('RaceControlMessages', JSON.parse(e.data)));
       this.sse.onerror = () => {
         this.disconnect();
@@ -322,10 +323,24 @@ class SignalRStreamClient {
         if (Number(data.TotalLaps) > 0) TOTAL_LAPS = Number(data.TotalLaps);
       }
       this.notifyMessage(feedName, data);
+    } else if (feedName === 'ExtrapolatedClock') {
+      this.handleExtrapolatedClock(data);
+      this.notifyMessage(feedName, data);
     } else if (feedName === 'SessionStatus') {
       this.handleSessionStatus(data);
       this.notifyMessage(feedName, data);
     }
+  }
+
+  handleExtrapolatedClock(clockData) {
+    if (!clockData || typeof clockData !== 'object') return;
+    window.CURRENT_EXTRAPOLATED_CLOCK = {
+      Utc: clockData.Utc || null,
+      Remaining: clockData.Remaining || null,
+      Extrapolating: Boolean(clockData.Extrapolating),
+      receivedAtMs: Date.now()
+    };
+    if (typeof updateSessionStatusBar === 'function') updateSessionStatusBar();
   }
 
   resetQualifyingLiveTimes() {
@@ -348,9 +363,13 @@ class SignalRStreamClient {
     window.CURRENT_SESSION_STATUS = st;
     if (st === 'STARTED') {
       window.QUALI_PART_ENDED = false;
-    } else if (st === 'INACTIVE' || st === 'FINALISED' || st === 'ENDS' || st === 'ABORTED' || started === 'FINISHED') {
-      window.QUALI_PART_ENDED = true;
-      if ((typeof normalizeSessionType === 'function' ? normalizeSessionType(sessionType, sessionPart) : sessionType) === 'qualifying') { window.QUALI_PART_ENDED = true; this.resetQualifyingLiveTimes(); }
+      if (typeof cancelSessionTermination === 'function') cancelSessionTermination();
+    } else if (st === 'INACTIVE' || st === 'ABORTED') {
+      // Session suspended (e.g. Red Flag) - not finished
+      if (typeof cancelSessionTermination === 'function') cancelSessionTermination();
+    } else if (st === 'FINALISED' || st === 'FINISHED' || st === 'ENDS' || started === 'FINISHED') {
+      const isQuali = (typeof normalizeSessionType === 'function' ? normalizeSessionType(sessionType, sessionPart) : sessionType) === 'qualifying';
+      if (isQuali) { window.QUALI_PART_ENDED = true; this.resetQualifyingLiveTimes(); }
       if (typeof updateTimingTables === 'function') updateTimingTables();
       if (typeof updateSessionStatusBar === 'function') updateSessionStatusBar();
       if (typeof checkSessionTermination === 'function') checkSessionTermination();
@@ -359,10 +378,13 @@ class SignalRStreamClient {
 
   handleSessionInfo(info) {
     if (!info || typeof info !== 'object') return;
-    if (info.ArchiveStatus && (info.ArchiveStatus.Status === 'Generating' || info.ArchiveStatus.Status === 'Complete')) {
-      if (typeof checkSessionTermination === 'function') checkSessionTermination();
+    if (info.ArchiveStatus && String(info.ArchiveStatus.Status).toUpperCase() === 'COMPLETE') {
+      const curSt = String(window.CURRENT_SESSION_STATUS || '').toUpperCase();
+      if (curSt && curSt !== 'STARTED') {
+        if (typeof checkSessionTermination === 'function') checkSessionTermination();
+      }
     }
-    if (info.SessionStatus && ['FINALISED', 'FINISHED', 'ENDS', 'INACTIVE', 'ABORTED'].includes(String(info.SessionStatus).toUpperCase())) {
+    if (info.SessionStatus && ['FINALISED', 'FINISHED', 'ENDS'].includes(String(info.SessionStatus).toUpperCase())) {
       window.CURRENT_SESSION_STATUS = String(info.SessionStatus).toUpperCase();
       if (typeof checkSessionTermination === 'function') checkSessionTermination();
     }

@@ -89,6 +89,55 @@ document.addEventListener('DOMContentLoaded', () => {
     CurrentLap: 0,
     TotalLaps: paramTotalLaps ? Number(paramTotalLaps) : resolveCircuitTotalLaps(paramSessionName || paramEventTitle)
   };
+  let currentExtrapolatedClock = null;
+  let currentSessionStatusStr = '';
+  const sessionRemainingTimerEl = document.getElementById('sessionRemainingTimer');
+
+  function updateExtrapolatedClockState(clockData) {
+    if (!clockData || typeof clockData !== 'object' || !clockData.Remaining) return;
+    currentExtrapolatedClock = {
+      Utc: clockData.Utc || null,
+      Remaining: clockData.Remaining,
+      Extrapolating: Boolean(clockData.Extrapolating),
+      receivedAtMs: clockData.receivedAt ? Date.parse(clockData.receivedAt) : Date.now()
+    };
+    updateSessionPhaseBadge();
+  }
+
+  function computeRemainingClock() {
+    if (!currentExtrapolatedClock || !currentExtrapolatedClock.Remaining) return null;
+    const parts = String(currentExtrapolatedClock.Remaining).trim().split(':').map(Number);
+    if (parts.some(isNaN)) return null;
+    let baseSec = 0;
+    if (parts.length === 3) baseSec = parts[0] * 3600 + parts[1] * 60 + parts[2];
+    else if (parts.length === 2) baseSec = parts[0] * 60 + parts[1];
+    else return null;
+
+    let remSec = baseSec;
+    if (currentExtrapolatedClock.Extrapolating) {
+      const nowMs = Date.now();
+      const utcMs = currentExtrapolatedClock.Utc ? Date.parse(currentExtrapolatedClock.Utc) : NaN;
+      const recMs = currentExtrapolatedClock.receivedAtMs || nowMs;
+      const refMs = (!isNaN(utcMs) && Math.abs(recMs - utcMs) < 30000) ? utcMs : recMs;
+      const elapsedSec = Math.max(0, (nowMs - refMs) / 1000);
+      remSec = Math.max(0, Math.floor(baseSec - elapsedSec));
+    } else {
+      remSec = Math.max(0, baseSec);
+    }
+
+    const h = Math.floor(remSec / 3600);
+    const m = Math.floor((remSec % 3600) / 60);
+    const s = remSec % 60;
+    const formatted = h > 0
+      ? `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`
+      : `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+
+    return {
+      seconds: remSec,
+      formatted,
+      extrapolating: Boolean(currentExtrapolatedClock.Extrapolating)
+    };
+  }
 
   function updateSessionPhaseBadge() {
     const sType = String(currentSessionType || currentSessionName || '').toLowerCase();
@@ -108,7 +157,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } else if (isPractice) {
       badgeText = (currentSessionName || 'PRACTICE').toUpperCase();
-      
     } else {
       const curLap = (currentLapCount && currentLapCount.CurrentLap != null && currentLapCount.CurrentLap > 0)
         ? currentLapCount.CurrentLap
@@ -125,9 +173,29 @@ document.addEventListener('DOMContentLoaded', () => {
       badgeText = `LAP ${curLap} / ${totLaps || '--'}`;
     }
 
+    const clockInfo = computeRemainingClock();
+    if (sessionRemainingTimerEl) {
+      if (clockInfo) {
+        sessionRemainingTimerEl.style.display = 'inline-flex';
+        sessionRemainingTimerEl.textContent = `⏱ ${clockInfo.formatted}`;
+        sessionRemainingTimerEl.className = 'session-remaining-badge' +
+          (clockInfo.seconds === 0 ? ' finished' : (!clockInfo.extrapolating ? ' paused' : ''));
+      } else {
+        sessionRemainingTimerEl.style.display = 'none';
+      }
+    }
+
     if (lapCountEl) lapCountEl.textContent = badgeText;
-    if (towerLapBadge) towerLapBadge.textContent = badgeText;
+    if (towerLapBadge) {
+      if ((isPractice || isQuali) && clockInfo) {
+        towerLapBadge.textContent = `${badgeText} • ⏱ ${clockInfo.formatted}`;
+      } else {
+        towerLapBadge.textContent = badgeText;
+      }
+    }
   }
+
+  setInterval(updateSessionPhaseBadge, 1000);
 
   const btnToggleCockpit = document.getElementById('btnToggleCockpit');
   const btnCloseCockpit = document.getElementById('btnCloseCockpit');
@@ -192,22 +260,58 @@ document.addEventListener('DOMContentLoaded', () => {
   let sessionTerminationTimestamp = null;
   const GRACE_PERIOD_MS = 180 * 1000; // 3 minuti di tolleranza post-termine
 
+  function cancelTerminationCountdown() {
+    if (sessionTerminatedTimer) {
+      clearInterval(sessionTerminatedTimer);
+      sessionTerminatedTimer = null;
+    }
+    sessionTerminationTimestamp = null;
+    if (sessionEndedBanner) sessionEndedBanner.style.display = 'none';
+    if (!isSessionTerminated && statusBadgeEl && statusBadgeEl.className.includes('chequered')) {
+      statusBadgeEl.className = 'status-badge live';
+      statusBadgeEl.textContent = '● SIGNALR LIVE';
+    }
+  }
+
   function checkSessionTermination(snapOrStatus) {
     if (isSessionTerminated || !snapOrStatus) return;
 
-    const stStr = String(
+    const incomingSt = String(
       (snapOrStatus.sessionStatus && snapOrStatus.sessionStatus.Status) ||
-      snapOrStatus.sessionStatus ||
+      (typeof snapOrStatus.sessionStatus === 'string' ? snapOrStatus.sessionStatus : '') ||
       (snapOrStatus.status && snapOrStatus.status.sessionStatus) ||
       ''
     ).toUpperCase();
 
+    if (incomingSt) {
+      currentSessionStatusStr = incomingSt;
+    }
+
+    const stStr = currentSessionStatusStr;
+    const clockInfo = computeRemainingClock();
+
+    // Se la sessione è attiva (STARTED), sospesa (INACTIVE / ABORTED per bandiera rossa) o il cronometro sta scorrendo, non è conclusa
+    if (stStr === 'STARTED' || stStr === 'INACTIVE' || stStr === 'ABORTED' ||
+        (clockInfo && clockInfo.extrapolating && clockInfo.seconds > 0)) {
+      cancelTerminationCountdown();
+      return;
+    }
+
+    const sType = String(currentSessionType || currentSessionName || '').toLowerCase();
+    const isQuali = sType.includes('qualifying') || sType.includes('qualifica') || sType.includes('shootout');
+    const partNum = Number(currentSessionPart) || 0;
+    const isQualiEarlyPart = isQuali && (partNum === 1 || partNum === 2 || String(currentSessionPart || '').endsWith('1') || String(currentSessionPart || '').endsWith('2'));
+
+    const archiveStr = String(
+      (snapOrStatus.session && snapOrStatus.session.ArchiveStatus && snapOrStatus.session.ArchiveStatus.Status) || ''
+    ).toUpperCase();
+
     const isEnded = Boolean(
-      snapOrStatus.isSessionEnded ||
-      (snapOrStatus.status && snapOrStatus.status.isSessionEnded) ||
-      ['FINALISED', 'FINISHED', 'ENDS', 'INACTIVE', 'ABORTED'].includes(stStr) ||
-      (snapOrStatus.session && snapOrStatus.session.ArchiveStatus &&
-        ['GENERATING', 'COMPLETE'].includes(String(snapOrStatus.session.ArchiveStatus.Status || '').toUpperCase()))
+      snapOrStatus.isSessionEnded === true ||
+      (snapOrStatus.status && snapOrStatus.status.isSessionEnded === true) ||
+      stStr === 'FINALISED' ||
+      ((stStr === 'FINISHED' || stStr === 'ENDS') && !isQualiEarlyPart) ||
+      (archiveStr === 'COMPLETE' && stStr && stStr !== 'STARTED')
     );
 
     if (!isEnded) return;
@@ -269,10 +373,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (sessionEndedBanner) sessionEndedBanner.style.display = 'none';
 
-    // Interrompe stream SSE e rendering
+    // Interrompe stream SSE / WebSocket e rendering
     if (eventSource) {
       eventSource.close();
       eventSource = null;
+    }
+    if (directWebSignalRClient) {
+      directWebSignalRClient.disconnect();
+      directWebSignalRClient = null;
     }
 
     if (trackCanvas && typeof trackCanvas.stop === 'function') {
@@ -659,6 +767,13 @@ document.addEventListener('DOMContentLoaded', () => {
       } catch (err) {}
     });
 
+    eventSource.addEventListener('CLOCK', (e) => {
+      try {
+        const clk = JSON.parse(e.data);
+        updateExtrapolatedClockState(clk);
+      } catch (err) {}
+    });
+
     eventSource.addEventListener('TRACK_STATUS', (e) => {
       try {
         const ts = JSON.parse(e.data);
@@ -785,6 +900,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     if (snap.status && Number(snap.status.totalLaps) > 0 && (!currentLapCount.TotalLaps || currentLapCount.TotalLaps <= 0)) {
       currentLapCount.TotalLaps = Number(snap.status.totalLaps);
+    }
+    if (snap.extrapolatedClock && snap.extrapolatedClock.Remaining) {
+      updateExtrapolatedClockState(snap.extrapolatedClock);
+    } else if (snap.status && snap.status.extrapolatedClock && snap.status.extrapolatedClock.Remaining) {
+      updateExtrapolatedClockState(snap.status.extrapolatedClock);
     }
     updateSessionPhaseBadge();
 

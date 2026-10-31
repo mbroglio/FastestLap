@@ -99,6 +99,33 @@ body {
   letter-spacing: 0.5px;
 }
 
+.session-remaining-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(0, 230, 118, 0.12);
+  color: var(--color-green);
+  border: 1px solid rgba(0, 230, 118, 0.4);
+  padding: 3px 10px;
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+.session-remaining-badge.paused {
+  background: rgba(255, 214, 0, 0.14);
+  color: var(--color-yellow);
+  border-color: rgba(255, 214, 0, 0.45);
+}
+
+.session-remaining-badge.finished {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-bright);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
 .weather-widget {
   display: flex;
   align-items: center;

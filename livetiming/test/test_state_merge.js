@@ -191,14 +191,43 @@ assert.strictEqual(lbFastest[0].bestLapOverallFastest, true, 'LEC best lap must 
 assert.strictEqual(lbFastest[1].lastLapOverallFastest, true, 'VER last lap must be marked overall fastest');
 console.log('✅ BEST and LAST overall fastest lap flags verified');
 
-// 7. Test Session Terminated Detection
+// 7. Test Session Terminated Detection & Practice Session Clock
 const storeTerminated = new StateStore();
 assert.strictEqual(storeTerminated.isSessionEnded(), false, 'Initial state must not be ended');
+
+// Practice session active with ArchiveStatus 'Generating' must NOT be considered ended
+storeTerminated.updateSessionInfo({
+  Type: 'Practice',
+  Name: 'Practice 2',
+  ArchiveStatus: { Status: 'Generating' }
+});
+storeTerminated.updateSessionStatus({ Status: 'Started', Started: 'Started' });
+assert.strictEqual(storeTerminated.isSessionEnded(), false, 'Practice session in progress must NOT be marked ended');
+
+// Red flag / Aborted / Inactive must NOT mark session ended
+storeTerminated.updateSessionStatus({ Status: 'Aborted' });
+assert.strictEqual(storeTerminated.isSessionEnded(), false, 'Session status Aborted (red flag) must NOT be marked ended');
+storeTerminated.updateSessionStatus({ Status: 'Inactive' });
+assert.strictEqual(storeTerminated.isSessionEnded(), false, 'Session status Inactive must NOT be marked ended');
+
+// ExtrapolatedClock tracking & remaining time calculation
+storeTerminated.updateExtrapolatedClock({
+  Utc: new Date().toISOString(),
+  Remaining: '00:45:12',
+  Extrapolating: true
+});
+assert.strictEqual(storeTerminated.isSessionEnded(), false, 'Session with active clock must NOT be marked ended');
+const remSec = storeTerminated.getRemainingTimeSeconds();
+assert.ok(remSec > 2600 && remSec <= 2712, 'Remaining seconds must be around 45 minutes');
+const remFmt = storeTerminated.getRemainingTimeFormatted();
+assert.ok(remFmt.startsWith('45:'), 'Formatted clock must format minutes and seconds correctly');
+
+// Finalised marks session ended
 storeTerminated.updateSessionStatus({ Status: 'Finalised' });
 assert.strictEqual(storeTerminated.isSessionEnded(), true, 'Status Finalised must mark session ended');
 assert.ok(storeTerminated.sessionEndedAt, 'sessionEndedAt must be populated');
 const statusSnapshot = storeTerminated.getStatus();
 assert.strictEqual(statusSnapshot.isSessionEnded, true, 'getStatus must expose isSessionEnded');
-console.log('✅ Session termination detection and timestamping verified');
+console.log('✅ Session termination detection, practice clock and timestamping verified');
 
 console.log('🎉 StateStore tests passed successfully!\n');

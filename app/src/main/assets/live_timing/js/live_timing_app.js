@@ -47,11 +47,67 @@ function resolveCircuitTotalLaps(query) {
 
 let preferredCircuit = '';
 
+function getExtrapolatedRemainingSec() {
+  const ec = window.CURRENT_EXTRAPOLATED_CLOCK;
+  if (!ec || !ec.Remaining || typeof ec.Remaining !== 'string') return null;
+  const parts = ec.Remaining.trim().split(':').map(Number);
+  if (parts.some(isNaN)) return null;
+  let baseSec = 0;
+  if (parts.length === 3) baseSec = parts[0] * 3600 + parts[1] * 60 + parts[2];
+  else if (parts.length === 2) baseSec = parts[0] * 60 + parts[1];
+  else return null;
+
+  if (!ec.Extrapolating) {
+    return Math.max(0, baseSec);
+  }
+
+  const nowMs = Date.now();
+  const utcMs = ec.Utc ? Date.parse(ec.Utc) : NaN;
+  const recMs = ec.receivedAtMs || nowMs;
+  const refMs = (!isNaN(utcMs) && Math.abs(recMs - utcMs) < 30000) ? utcMs : recMs;
+  const elapsedSec = Math.max(0, (nowMs - refMs) / 1000);
+  return Math.max(0, Math.floor(baseSec - elapsedSec));
+}
+
+function formatRemainingSec(sec) {
+  if (sec === null || isNaN(sec)) return null;
+  const h = Math.floor(sec / 3600);
+  const m = Math.floor((sec % 3600) / 60);
+  const s = Math.floor(sec % 60);
+  if (h > 0) {
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  }
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
+function cancelSessionTermination() {
+  if (sessionTerminationTimer) {
+    clearInterval(sessionTerminationTimer);
+    sessionTerminationTimer = null;
+  }
+  sessionEndedTimestamp = null;
+  const banner = document.getElementById('sessionEndingBanner');
+  if (banner) banner.style.display = 'none';
+  isSessionTerminatedState = false;
+}
+
 function updateSessionStatusBar() {
   const curSt = String(window.CURRENT_SESSION_STATUS || '').toUpperCase();
-  const isFinished = curSt === 'FINALISED' || curSt === 'FINISHED' || curSt === 'ENDS' || curSt === 'INACTIVE' || curSt === 'ABORTED' ||
-                     (typeof SESSION_DURATION !== 'undefined' && currentSecond >= SESSION_DURATION) ||
-                     (typeof RACE_FINISH_SEC !== 'undefined' && currentSecond >= RACE_FINISH_SEC);
+  const extraSec = getExtrapolatedRemainingSec();
+  const sType = typeof normalizeSessionType === 'function' ? normalizeSessionType(sessionType, sessionPart) : sessionType;
+  const isQuali = (sType === 'qualifying');
+  const isPractice = (sType === 'practice');
+  const isSq = typeof isSprintQualifying === 'function' ? isSprintQualifying(sessionType, sessionPart) : (sessionPart && sessionPart.toUpperCase().startsWith('SQ'));
+  const partNum = Number(sessionPart) || 0;
+  const isQualiEarlyPart = isQuali && (partNum === 1 || partNum === 2 || String(sessionPart || '').endsWith('1') || String(sessionPart || '').endsWith('2'));
+
+  const isFinished = isSessionTerminatedState || curSt === 'FINALISED' ||
+                     ((curSt === 'FINISHED' || curSt === 'ENDS') && !isQualiEarlyPart && (extraSec === null || extraSec === 0)) ||
+                     (window.IS_SYNTHETIC_SIMULATION && (
+                       (typeof SESSION_DURATION !== 'undefined' && currentSecond >= SESSION_DURATION) ||
+                       (typeof RACE_FINISH_SEC !== 'undefined' && currentSecond >= RACE_FINISH_SEC)
+                     ));
+
   if (isFinished && typeof checkSessionTermination === 'function') {
     checkSessionTermination();
   }
@@ -102,9 +158,6 @@ function updateSessionStatusBar() {
     }
   }
 
-  const sType = typeof normalizeSessionType === 'function' ? normalizeSessionType(sessionType, sessionPart) : sessionType;
-  const isSq = typeof isSprintQualifying === 'function' ? isSprintQualifying(sessionType, sessionPart) : (sessionPart && sessionPart.toUpperCase().startsWith('SQ'));
-
   // Nome e Tipo Sessione
   const sessVal = document.getElementById('statusBarSessionVal');
   if (sessVal) {
@@ -128,6 +181,23 @@ function updateSessionStatusBar() {
     }
   }
 
+  let remSec = extraSec;
+  if (remSec === null && (isPractice || isQuali) && window.IS_SYNTHETIC_SIMULATION && typeof SESSION_DURATION !== 'undefined') {
+    remSec = Math.max(0, Math.floor(SESSION_DURATION - currentSecond));
+  }
+  const remFormatted = formatRemainingSec(remSec);
+
+  const remItem = document.getElementById('statusBarRemainingItem');
+  const remVal = document.getElementById('statusBarRemainingVal');
+  if (remItem && remVal) {
+    if (remFormatted && !isFinished) {
+      remItem.style.display = 'inline-flex';
+      remVal.textContent = remFormatted;
+    } else {
+      remItem.style.display = 'none';
+    }
+  }
+
   // Progresso Sessione / Conteggio Giri
   const lapVal = document.getElementById('statusBarLapVal');
   if (lapVal) {
@@ -138,14 +208,22 @@ function updateSessionStatusBar() {
     } else if (currentSecond <= 0) {
       lapVal.textContent = 'ATTESA PARTENZA';
     } else if (sType === 'practice') {
-      lapVal.textContent = 'SESSIONE IN CORSO';
+      if (remFormatted) {
+        lapVal.textContent = '⏱ ' + remFormatted;
+      } else {
+        lapVal.textContent = 'PROVE IN CORSO';
+      }
     } else if (sType === 'qualifying') {
       const qPrefix = isSq ? 'SQ' : 'Q';
       let qPhase = qPrefix + '1';
       if (sessionPart === 'Q3' || sessionPart === 'SQ3') qPhase = qPrefix + '3';
       else if (sessionPart === 'Q2' || sessionPart === 'SQ2') qPhase = qPrefix + '2';
       else if (sessionPart === 'Q1' || sessionPart === 'SQ1') qPhase = qPrefix + '1';
-      lapVal.textContent = qPhase + ' IN CORSO';
+      if (remFormatted) {
+        lapVal.textContent = qPhase + ' • ⏱ ' + remFormatted;
+      } else {
+        lapVal.textContent = qPhase + ' IN CORSO';
+      }
     } else {
       const curLap = getDriverLap(focusedDriver, currentSecond);
       if (!TOTAL_LAPS || TOTAL_LAPS <= 0) {
@@ -277,9 +355,26 @@ function checkSessionTermination() {
   if (isSessionTerminatedState) return;
 
   const curSt = String(window.CURRENT_SESSION_STATUS || '').toUpperCase();
-  const isEnded = curSt === 'FINALISED' || curSt === 'FINISHED' || curSt === 'ENDS' || curSt === 'INACTIVE' || curSt === 'ABORTED' ||
-                  (typeof SESSION_DURATION !== 'undefined' && currentSecond >= SESSION_DURATION) ||
-                  (typeof RACE_FINISH_SEC !== 'undefined' && currentSecond >= RACE_FINISH_SEC);
+  const extraSec = getExtrapolatedRemainingSec();
+
+  // Se la sessione è attiva, sospesa (bandiera rossa) o il cronometro sta ancora scorrendo, non è conclusa
+  if (curSt === 'STARTED' || curSt === 'INACTIVE' || curSt === 'ABORTED' ||
+      (extraSec !== null && extraSec > 0)) {
+    cancelSessionTermination();
+    return;
+  }
+
+  const sType = typeof normalizeSessionType === 'function' ? normalizeSessionType(sessionType, sessionPart) : sessionType;
+  const isQuali = (sType === 'qualifying');
+  const partNum = Number(sessionPart) || 0;
+  const isQualiEarlyPart = isQuali && (partNum === 1 || partNum === 2 || String(sessionPart || '').endsWith('1') || String(sessionPart || '').endsWith('2'));
+
+  const isEnded = curSt === 'FINALISED' ||
+                  ((curSt === 'FINISHED' || curSt === 'ENDS') && !isQualiEarlyPart) ||
+                  (window.IS_SYNTHETIC_SIMULATION && (
+                    (typeof SESSION_DURATION !== 'undefined' && currentSecond >= SESSION_DURATION) ||
+                    (typeof RACE_FINISH_SEC !== 'undefined' && currentSecond >= RACE_FINISH_SEC)
+                  ));
 
   if (!isEnded) return;
 

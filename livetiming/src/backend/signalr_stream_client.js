@@ -23,6 +23,7 @@ const TOPICS = [
   'SessionInfo',
   'SessionStatus',
   'SessionData',
+  'ExtrapolatedClock',
   'WeatherData',
   'RaceControlMessages',
   'LapCount',
@@ -294,7 +295,12 @@ class SignalRStreamClient {
           break;
         case 'SessionData':
           this.stateStore.updateSessionData(data);
+          this.notifyUpdate('SESSION_STATUS', this.stateStore.sessionStatus);
           this.notifyUpdate('TIMING', this.stateStore.getLeaderboard());
+          break;
+        case 'ExtrapolatedClock':
+          this.stateStore.updateExtrapolatedClock(data);
+          this.notifyUpdate('CLOCK', this.stateStore.extrapolatedClock);
           break;
         case 'WeatherData':
           this.stateStore.updateWeather(data);
