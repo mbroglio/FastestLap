@@ -512,15 +512,34 @@ function getTrackPointAtTime(sec) {
     u = Math.min(1.0, Math.max(0.0, el / dt));
   }
 
+  const interpSpeed = n1[6] + (n2[6] - n1[6]) * u;
+  const interpThrottle = Math.round(n1[9] + (n2[9] - n1[9]) * u);
+  const interpBrake = Math.round(n1[10] + (n2[10] - n1[10]) * u);
+
+  let gear = 8;
+  if (interpSpeed < 106) gear = 2;
+  else if (interpSpeed < 140) gear = 3;
+  else if (interpSpeed < 176) gear = 4;
+  else if (interpSpeed < 212) gear = 5;
+  else if (interpSpeed < 248) gear = 6;
+  else if (interpSpeed < 286) gear = 7;
+
+  const gearMinSpeeds = [0, 0, 78, 106, 140, 176, 212, 248, 286];
+  const gearMaxSpeeds = [0, 82, 114, 148, 184, 220, 256, 294, 348];
+  const gMin = gearMinSpeeds[gear] || 80;
+  const gMax = gearMaxSpeeds[gear] || 340;
+  const gRatio = Math.max(0, Math.min(1, (interpSpeed - gMin) / Math.max(1, gMax - gMin)));
+  const rpm = Math.round((interpBrake > 30 ? 9650 : 10050) + gRatio * (interpBrake > 30 ? 1850 : 2350));
+
   return {
-    px: Number((n1[1] + (n2[1] - n1[1]) * u).toFixed(2)),
-    py: Number((n2[2] !== undefined ? (n1[2] + (n2[2] - n1[2]) * u) : n1[2]).toFixed(2)),
+    px: n1[1] + (n2[1] - n1[1]) * u,
+    py: n2[2] !== undefined ? (n1[2] + (n2[2] - n1[2]) * u) : n1[2],
     sector: n1[5] || 1,
-    speed: Math.round(n1[6] + (n2[6] - n1[6]) * u),
-    gear: n1[7] || 4,
-    rpm: Math.round(n1[8] + (n2[8] - n1[8]) * u),
-    throttle: Math.round(n1[9] + (n2[9] - n1[9]) * u),
-    brake: Math.round(n1[10] + (n2[10] - n1[10]) * u),
+    speed: Math.round(interpSpeed),
+    gear: gear,
+    rpm: rpm,
+    throttle: interpThrottle,
+    brake: interpBrake,
     drs: n1[11] || 0,
     location: n1[12] || 'Pista'
   };
@@ -583,7 +602,8 @@ function applyOfficialCircuitToNodes(data) {
   const scaleToMeters = totalRaw > 15000 ? 0.1 : 1.0;
   let cumMeters = 0;
   for (let i = 0; i < n; i++) {
-    pts[i].ds = Math.max(0.4, pts[i].rawDs * scaleToMeters);
+    // Usa la distanza euclidea reale (senza gonfiare i segmenti <0.4m) per evitare rallentamenti spurii
+    pts[i].ds = Math.max(1e-5, pts[i].rawDs * scaleToMeters);
     pts[i].distMeters = cumMeters;
     cumMeters += pts[i].ds;
   }
@@ -595,14 +615,20 @@ function applyOfficialCircuitToNodes(data) {
     const target = Math.abs(offsetMeters);
     let guard = 0;
     while (acc < target && guard < n) {
-      curr = (curr + step + n) % n;
-      acc += pts[curr].ds;
+      if (step > 0) {
+        acc += pts[curr].ds;
+        curr = (curr + 1) % n;
+      } else {
+        curr = (curr - 1 + n) % n;
+        acc += pts[curr].ds;
+      }
       guard++;
     }
     return curr;
   };
 
   const maxVms = 328 / 3.6;
+  const rawKappa = new Array(n);
   for (let i = 0; i < n; i++) {
     const calcKappa = (halfWindowM) => {
       const iP = findIdxByOffsetMeters(i, -halfWindowM);
@@ -613,7 +639,17 @@ function applyOfficialCircuitToNodes(data) {
       if (dT > Math.PI) dT = 2 * Math.PI - dT;
       return dT / (halfWindowM * 2);
     };
-    const kappa = Math.max(calcKappa(14), calcKappa(30));
+    rawKappa[i] = Math.max(calcKappa(16), calcKappa(32));
+  }
+
+  const kernelOffsetsM = [-16, -8, 0, 8, 16];
+  const kernelWeights = [0.12, 0.22, 0.32, 0.22, 0.12];
+  for (let i = 0; i < n; i++) {
+    let kappa = 0;
+    for (let k = 0; k < kernelOffsetsM.length; k++) {
+      const idxK = findIdxByOffsetMeters(i, kernelOffsetsM[k]);
+      kappa += rawKappa[idxK] * kernelWeights[k];
+    }
     pts[i].kappa = kappa;
     if (kappa < 0.0012) {
       pts[i].vLimit = maxVms;
@@ -625,7 +661,7 @@ function applyOfficialCircuitToNodes(data) {
   }
 
   // Backward pass (frenata)
-  for (let pass = 0; pass < 2; pass++) {
+  for (let pass = 0; pass < 3; pass++) {
     for (let i = n - 1; i >= 0; i--) {
       const next = pts[(i + 1) % n];
       const aBrake = 24 + 16 * Math.pow(next.v / maxVms, 2);
@@ -635,7 +671,7 @@ function applyOfficialCircuitToNodes(data) {
   }
 
   // Forward pass (accelerazione)
-  for (let pass = 0; pass < 2; pass++) {
+  for (let pass = 0; pass < 3; pass++) {
     for (let i = 0; i < n; i++) {
       const next = pts[(i + 1) % n];
       const vRatio = pts[i].v / (330 / 3.6);
@@ -647,8 +683,10 @@ function applyOfficialCircuitToNodes(data) {
 
   let totalSimSec = 0;
   for (let i = 0; i < n; i++) {
+    const next = pts[(i + 1) % n];
     pts[i].simTime = totalSimSec;
-    totalSimSec += pts[i].ds / Math.max(15, pts[i].v);
+    const vSegAvg = 0.5 * (pts[i].v + next.v);
+    totalSimSec += pts[i].ds / Math.max(15, vSegAvg);
   }
 
   SVG_WIDTH = 1000;
@@ -678,12 +716,15 @@ function applyOfficialCircuitToNodes(data) {
   const builtNodes = [];
   const gearMinSpeeds = [0, 0, 78, 106, 140, 176, 212, 248, 286];
   const gearMaxSpeeds = [0, 82, 114, 148, 184, 220, 256, 294, 348];
+  const totalTrackM = Math.max(1000, cumMeters);
 
   for (let i = 0; i < n; i++) {
     const p = pts[i];
-    const next = pts[(i + 1) % n];
-    const longG = ((next.v * next.v - p.v * p.v) / (2 * p.ds)) / 9.81;
-    const speed = Math.round(p.v * 3.6);
+    const iAhead = findIdxByOffsetMeters(i, 10);
+    let distAhead = (pts[iAhead].distMeters - p.distMeters + totalTrackM) % totalTrackM;
+    if (distAhead < 1.0) distAhead = Math.max(1.0, p.ds);
+    const longG = ((pts[iAhead].v * pts[iAhead].v - p.v * p.v) / (2 * distAhead)) / 9.81;
+    const speed = p.v * 3.6;
 
     let gear = 8;
     if (speed < 106) gear = 2;
@@ -710,13 +751,13 @@ function applyOfficialCircuitToNodes(data) {
     }
 
     const rpm = Math.round((brake > 30 ? 9650 : 10050) + gRatio * (brake > 30 ? 1850 : 2350));
-    const drs = (p.kappa < 0.0022 && brake === 0 && throttle >= 95 && speed > 276) ? 1 : 0;
-    const prog = p.distMeters / Math.max(1, cumMeters);
+    const drs = (p.kappa < 0.0022 && brake === 0 && throttle >= 95 && speed > 276) ? 10 : 0;
+    const prog = p.distMeters / totalTrackM;
     const sector = prog < 0.33 ? 1 : (prog < 0.67 ? 2 : 3);
 
-    const px = Number(((targetW / 2) + (p.x - midX) * scale).toFixed(2));
-    const py = Number(((targetH / 2) - (p.y - midY) * scale).toFixed(2));
-    const t = Number(((p.simTime / Math.max(1, totalSimSec)) * lapDur).toFixed(3));
+    const px = (targetW / 2) + (p.x - midX) * scale;
+    const py = (targetH / 2) - (p.y - midY) * scale;
+    const t = (p.simTime / Math.max(1, totalSimSec)) * lapDur;
 
     builtNodes.push([t, px, py, null, null, sector, speed, gear, rpm, throttle, brake, drs, 'Pista']);
   }
@@ -741,9 +782,15 @@ function getDriverTrackSec(drvKey, t) {
     const segStart = tel.segStartSec;
     const segEnd = tel.segEndSec;
     const segSpan = Math.max(0.5, (segEnd - segStart + dur) % dur || 4.0);
+    const refDriverLap = tel.overallBest || tel.lastLapSec || dur;
+    const basePace = Math.max(0.85, Math.min(1.25, dur / Math.max(60, Math.min(130, refDriverLap))));
 
     if (tel.curTrackSec === undefined || !Number.isFinite(tel.curTrackSec)) {
-      tel.curTrackSec = (segStart + segSpan * 0.25) % dur;
+      const initFrac = tel.initOffsetFrac !== undefined ? tel.initOffsetFrac : 0.25;
+      tel.curTrackSec = (segStart + segSpan * initFrac) % dur;
+      tel.elapsedInSegSec = (segSpan * initFrac) / basePace;
+      tel.livePace = basePace;
+      tel.smoothPace = basePace;
       tel.lastTrackStepT = t;
     }
 
@@ -751,43 +798,60 @@ function getDriverTrackSec(drvKey, t) {
     const dt = rawDt > 0 ? Math.min(0.08, rawDt) : 0;
     tel.lastTrackStepT = t;
 
-    const refDriverLap = tel.overallBest || tel.lastLapSec || dur;
-    let pace = Math.max(0.85, Math.min(1.25, dur / Math.max(60, Math.min(130, refDriverLap))));
+    if (dt > 0) {
+      tel.elapsedInSegSec = (tel.elapsedInSegSec || 0) + dt;
+      const activePace = tel.livePace || basePace;
+      let expectedRel = tel.elapsedInSegSec * activePace;
+      let instantBasePace = activePace;
 
-    const maxSec = tel.segMaxSec !== undefined ? tel.segMaxSec : (segStart + segSpan * 0.94);
-    const maxRel = Math.max(0.3, (maxSec - segStart + dur) % dur || (segSpan * 0.94));
-    const rel = circularDiff(tel.curTrackSec, segStart);
+      // Adattamento dolce per giri di raffreddamento/lancio in prova libera (>130% tempo nominale) senza frenate nei giri spinti
+      if (expectedRel > segSpan * 1.30) {
+        const overTime = tel.elapsedInSegSec - (segSpan * 1.30) / activePace;
+        const decay = Math.exp(-overTime / Math.max(3.5, segSpan));
+        instantBasePace = Math.max(0.35, activePace * decay);
+        expectedRel = Math.min(segSpan * 1.85, segSpan * 1.30 + (1.0 - decay) * segSpan * 0.55);
+        tel.livePace = Math.max(0.45, activePace * (0.996 + 0.004 * decay));
+      }
 
-    if (Math.abs(rel) > dur * 0.42) {
-      tel.curTrackSec = (segStart + segSpan * 0.25) % dur;
-    } else if (rel < 0) {
-      // Vettura reale già entrata nel mini-settore successivo: accelerazione fluida di recupero senza scatti
-      const behindSec = -rel;
-      const catchupBoost = Math.min(0.85, behindSec * 0.38);
-      pace *= (1.0 + catchupBoost);
-    } else {
-      if (tel.targetTrackSec !== undefined) {
-        const tauErr = circularDiff(tel.targetTrackSec, tel.curTrackSec);
-        if (Math.abs(tauErr) < segSpan * 1.5) {
-          pace *= (1.0 + Math.max(-0.18, Math.min(0.22, tauErr * 0.30)));
+      const expectedSec = (segStart + expectedRel) % dur;
+      const phaseErr = circularDiff(expectedSec, tel.curTrackSec);
+      const rel = circularDiff(tel.curTrackSec, segStart);
+
+      let targetPace = instantBasePace;
+      if (Math.abs(rel) > dur * 0.42 && Math.abs(phaseErr) > dur * 0.42) {
+        tel.curTrackSec = expectedSec;
+        tel.smoothPace = instantBasePace;
+      } else {
+        const maxPull = Math.abs(phaseErr) > 2.5 ? 0.22 : 0.10;
+        const maxBrake = Math.abs(phaseErr) > 2.5 ? -0.18 : -0.09;
+        const gain = Math.abs(phaseErr) < 0.6 ? 0.06 : 0.10;
+        const pllCorrection = Math.max(maxBrake, Math.min(maxPull, phaseErr * gain));
+        targetPace = instantBasePace * (1.0 + pllCorrection);
+      }
+
+      if (tel.aheadDriverKey && DRIVER_TELEMETRY[tel.aheadDriverKey]) {
+        const aheadTel = DRIVER_TELEMETRY[tel.aheadDriverKey];
+        if (aheadTel.currentMiniSector === tel.currentMiniSector && Number.isFinite(aheadTel.curTrackSec)) {
+          const gapAhead = circularDiff(aheadTel.curTrackSec, tel.curTrackSec);
+          if (gapAhead >= 0 && gapAhead < 0.26) {
+            targetPace *= (1.0 - 0.14 * ((0.26 - gapAhead) / 0.26));
+          }
         }
       }
-      if (rel >= maxRel * 0.75) {
-        const ratio = Math.min(1.0, (rel - maxRel * 0.75) / Math.max(0.10, maxRel * 0.25));
-        const easeOut = 1.0 - 0.55 * (0.5 - 0.5 * Math.cos(ratio * Math.PI));
-        pace *= easeOut;
-        if (rel > maxRel) {
-          const over = rel - maxRel;
-          pace *= Math.max(0.65, Math.exp(-over / Math.max(2.5, segSpan)));
-        }
+
+      if (tel.isOutLap && tel.curTrackSec < 4.5) {
+        targetPace = Math.min(targetPace, 0.42);
       }
+
+      targetPace = Math.max(0.32, Math.min(1.65, targetPace));
+      const paceAlpha = 1.0 - Math.exp(-4.0 * dt);
+      const prevSmooth = Number.isFinite(tel.smoothPace) && tel.smoothPace > 0 ? tel.smoothPace : targetPace;
+      tel.smoothPace = Math.max(0.32, Math.min(1.65, prevSmooth + (targetPace - prevSmooth) * paceAlpha));
+
+      tel.curTrackSec = ((tel.curTrackSec + dt * tel.smoothPace) % dur + dur) % dur;
+      tel.anchorTrackSec = tel.curTrackSec;
+      tel.anchorSimSec = t;
     }
-
-    // Mantiene sempre moto positivo continuo (anche durante giri di raffreddamento in prova libera)
-    pace = Math.max(0.28, Math.min(2.10, pace));
-    tel.curTrackSec = ((tel.curTrackSec + dt * pace) % dur + dur) % dur;
-    tel.anchorTrackSec = tel.curTrackSec;
-    tel.anchorSimSec = t;
     return tel.curTrackSec;
   }
   const drvIdx = GRID_ORDER.indexOf(drvKey);
@@ -865,20 +929,45 @@ function getDriverVisualState(drvKey, t) {
     py = pt.py;
   }
 
-  const sType = typeof normalizeSessionType === 'function' ? normalizeSessionType(sessionType, sessionPart) : sessionType;
+  // 3. Valori telemetrici dinamici per Cockpit con corrispondenza 1:1 rispetto al punto pista e al passo cinematico effettivo
+  const isPitExitZone = isOutLap && trackSec < 4.5;
+  const effectivePace = (tel && tel.smoothPace !== undefined) ? tel.smoothPace : 1.0;
+  const paceScale = effectivePace < 0.88 ? Math.max(0.45, effectivePace / 0.88) : 1.0;
 
-  // 3. Valori telemetrici dinamici per Cockpit con corrispondenza 1:1 rispetto al punto pista
   const topTrap = (tel && tel.topSpeedTrap > 290) ? tel.topSpeedTrap : 326;
-  const scaledPtSpeed = pt.speed > 230 ? Math.round(pt.speed * (topTrap / 326)) : pt.speed;
+  const baseScaledSpeed = pt.speed > 230 ? pt.speed * (topTrap / 326) : pt.speed;
+  const synthSpeed = Math.round(Math.max(80, Math.min(352, baseScaledSpeed * paceScale)));
 
-  const speed = (tel && tel.speed !== undefined) ? tel.speed : (isRetired || inPit ? 0 : (isOutLap ? 80 : scaledPtSpeed));
-  const gear = (tel && tel.gear !== undefined) ? tel.gear : (isRetired || inPit ? 0 : (isOutLap ? 2 : pt.gear));
-  const rpm = (tel && tel.rpm !== undefined) ? tel.rpm : (isRetired || inPit ? 0 : (isOutLap ? 9650 : pt.rpm));
-  const throttle = (tel && tel.throttle !== undefined) ? tel.throttle : (isRetired || inPit ? 0 : (isOutLap ? 42 : pt.throttle));
-  const brake = (tel && tel.brake !== undefined) ? tel.brake : (isRetired || inPit || isOutLap ? 0 : pt.brake);
-  const drs = (tel && tel.drs !== undefined) ? Boolean(tel.drs) : (!inPit && !isRetired && !isOutLap && pt.drs > 0);
+  let synthGear = 8;
+  if (synthSpeed < 106) synthGear = 2;
+  else if (synthSpeed < 140) synthGear = 3;
+  else if (synthSpeed < 176) synthGear = 4;
+  else if (synthSpeed < 212) synthGear = 5;
+  else if (synthSpeed < 248) synthGear = 6;
+  else if (synthSpeed < 286) synthGear = 7;
+
+  const gearMinSpeeds = [0, 0, 78, 106, 140, 176, 212, 248, 286];
+  const gearMaxSpeeds = [0, 82, 114, 148, 184, 220, 256, 294, 348];
+  const gMin = gearMinSpeeds[synthGear] || 80;
+  const gMax = gearMaxSpeeds[synthGear] || 340;
+  const gRatio = Math.max(0, Math.min(1, (synthSpeed - gMin) / Math.max(1, gMax - gMin)));
+
+  const synthBrake = Math.round(pt.brake * Math.min(1.0, paceScale * 1.1));
+  const synthThrottle = synthBrake > 15
+    ? pt.throttle
+    : Math.round(pt.throttle * (paceScale < 0.92 ? Math.max(0.48, paceScale) : 1.0));
+  const synthRpm = Math.round((synthBrake > 30 ? 9650 : 10050) + gRatio * (synthBrake > 30 ? 1850 : 2350));
+
+  const speed = (tel && tel.speed !== undefined) ? tel.speed : (isRetired || inPit ? 0 : (isPitExitZone ? 80 : synthSpeed));
+  const gear = (tel && tel.gear !== undefined) ? tel.gear : (isRetired || inPit ? 0 : (isPitExitZone ? 2 : synthGear));
+  const rpm = (tel && tel.rpm !== undefined) ? tel.rpm : (isRetired || inPit ? 0 : (isPitExitZone ? 9650 : synthRpm));
+  const throttle = (tel && tel.throttle !== undefined) ? tel.throttle : (isRetired || inPit ? 0 : (isPitExitZone ? 42 : synthThrottle));
+  const brake = (tel && tel.brake !== undefined) ? tel.brake : (isRetired || inPit || isPitExitZone ? 0 : synthBrake);
+  const drs = (tel && tel.drs !== undefined)
+    ? tel.drs
+    : (!inPit && !isRetired && !isPitExitZone && paceScale >= 0.92 && pt.drs > 0 && speed > 276 ? 10 : 0);
   const batterySoc = (tel && tel.batterySoc !== undefined) ? tel.batterySoc : Math.max(30, Math.min(98, 85 - (drvIdx * 2) + Math.sin(t * 0.1) * 12));
-  const boostActive = (tel && tel.boostActive !== undefined) ? Boolean(tel.boostActive) : (speed > 295 && !inPit && !isRetired);
+  const boostActive = (tel && tel.boostActive !== undefined) ? Boolean(tel.boostActive) : (speed > 295 && !inPit && !isRetired && paceScale >= 0.92);
 
   return {
     px: px,

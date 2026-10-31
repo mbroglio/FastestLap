@@ -534,13 +534,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const longG = metrics.longG || 0;
     const kappa = metrics.kappa || 0;
     const basePhysSpeed = metrics.physicsSpeedKmh || 240;
+    const effectivePace = metrics.effectivePace !== undefined ? metrics.effectivePace : 1.0;
+    const paceScale = effectivePace < 0.88 ? Math.max(0.45, effectivePace / 0.88) : 1.0;
 
-    // Calibra il picco velocistico sul riferimento reale della speed trap del pilota
+    // Calibra il picco velocistico sul riferimento reale della speed trap del pilota e sul passo cinematico effettivo
     const driverTopTrap = Math.max(295, Math.min(352, Math.max(stSpeed, flSpeed, i1Speed, i2Speed)));
     const trapScale = driverTopTrap / 326;
-    const speed = Math.round(
-      Math.max(82, Math.min(352, basePhysSpeed > 230 ? basePhysSpeed * trapScale : basePhysSpeed))
-    );
+    const rawTargetSpeed = (basePhysSpeed > 230 ? basePhysSpeed * trapScale : basePhysSpeed) * paceScale;
+    const speed = Math.round(Math.max(80, Math.min(352, rawTargetSpeed)));
 
     // Marcia F1 (8 rapporti) accoppiata alla velocità reale nel punto del circuito
     let gear = 8;
@@ -558,27 +559,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const gMax = gearMaxSpeeds[gear] || 340;
     const gearRatio = Math.max(0, Math.min(1, (speed - gMin) / Math.max(1, gMax - gMin)));
 
-    // Freno e Acceleratore ricavati direttamente dalla dinamica longitudinale (longG) e curvatura (kappa) nel punto mappa
+    // Freno e Acceleratore ricavati direttamente dalla dinamica longitudinale (longG), curvatura (kappa) e passo effettivo
     let brakeRaw = 0;
     let throttle = 100;
 
     if (longG < -0.28) {
       // Zona di staccata prima della curva: freno proporzionale alla decelerazione in G
-      brakeRaw = Math.min(100, Math.max(15, Math.round((-longG / 2.8) * 100)));
+      brakeRaw = Math.min(100, Math.max(15, Math.round((-longG / 2.8) * 100 * Math.min(1.0, paceScale * 1.1))));
       throttle = longG < -0.85 ? 0 : Math.max(0, Math.round(25 * (1 + longG)));
     } else if (kappa > 0.0085) {
       // Apice curva stretta / media: rilascio freno e parzializzazione acceleratore in percorrenza
       brakeRaw = 0;
       const apexLoad = Math.min(1, (kappa - 0.0085) / 0.025);
-      throttle = Math.round(85 - apexLoad * 48);
+      throttle = Math.round((85 - apexLoad * 48) * Math.min(1.0, paceScale + 0.08));
     } else if (kappa > 0.003) {
       // Curva veloce in appoggio
       brakeRaw = 0;
-      throttle = Math.round(92 - Math.min(1, (kappa - 0.003) / 0.006) * 15);
+      throttle = Math.round((92 - Math.min(1, (kappa - 0.003) / 0.006) * 15) * Math.min(1.0, paceScale + 0.05));
     } else {
-      // Rettilineo / piena trazione fuori dalla curva
+      // Rettilineo / piena trazione fuori dalla curva (parzializzato se in giro di cooldown)
       brakeRaw = 0;
-      throttle = 100;
+      throttle = paceScale < 0.92 ? Math.round(Math.max(48, 100 * paceScale)) : 100;
     }
 
     // RPM motore sincronizzato con rapporto marcia e fase di staccata/trazione
@@ -586,13 +587,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const rpmSpan = brakeRaw > 30 ? 1850 : 2350;
     const rpm = Math.round(rpmBase + gearRatio * rpmSpan);
 
-    // DRS attivo esclusivamente sui rettilinei ad alta velocità fuori dalle zone di frenata
-    const drsOpen = metrics.isOnStraight && brakeRaw === 0 && throttle >= 95 && speed > 276;
-    const drsAvailable = !drsOpen && metrics.isOnStraight && brakeRaw === 0 && speed > 235;
+    // DRS attivo esclusivamente sui rettilinei ad alta velocità fuori dalle zone di frenata in giri spinti
+    const drsOpen = paceScale >= 0.92 && metrics.isOnStraight && brakeRaw === 0 && throttle >= 95 && speed > 276;
+    const drsAvailable = !drsOpen && paceScale >= 0.90 && metrics.isOnStraight && brakeRaw === 0 && speed > 235;
     const drsState = drsOpen ? 'OPEN' : (drsAvailable ? 'AVAILABLE' : 'OFF');
 
-    // ERS: ricarica MGU-K in staccata, erogazione su rettilineo e uscita curva
-    const ersMode = brakeRaw > 25 ? 'RECHARGE' : (drsOpen ? 'OVERTAKE' : (throttle >= 95 ? 'HOTLAP' : 'BALANCED'));
+    // ERS: ricarica MGU-K in staccata o giro lento, erogazione su rettilineo e uscita curva
+    const ersMode = (brakeRaw > 25 || paceScale < 0.85) ? 'RECHARGE' : (drsOpen ? 'OVERTAKE' : (throttle >= 95 ? 'HOTLAP' : 'BALANCED'));
     const battery = Math.max(18, Math.min(100, Math.round(62 + 32 * Math.cos(prog * 2 * Math.PI) + (brakeRaw > 25 ? 4 : 0))));
 
     return {

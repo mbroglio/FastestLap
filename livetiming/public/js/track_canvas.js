@@ -246,9 +246,11 @@ class TrackCanvas {
 
     // Le coordinate ufficiali F1/Multiviewer sono in decimetri (es. 54277 = 5427.7m)
     const scaleToMeters = totalRaw > 15000 ? 0.1 : 1.0;
+    this.scaleToMeters = scaleToMeters;
     let cumMeters = 0;
     for (let i = 0; i < n; i++) {
-      pts[i].ds = Math.max(0.4, pts[i].rawDs * scaleToMeters);
+      // Usa la distanza euclidea reale (senza gonfiare i segmenti <0.4m) per evitare rallentamenti spurii sui vertici ravvicinati
+      pts[i].ds = Math.max(1e-5, pts[i].rawDs * scaleToMeters);
       pts[i].distMeters = cumMeters;
       cumMeters += pts[i].ds;
     }
@@ -261,8 +263,13 @@ class TrackCanvas {
       const target = Math.abs(offsetMeters);
       let guard = 0;
       while (acc < target && guard < n) {
-        curr = (curr + step + n) % n;
-        acc += pts[curr].ds;
+        if (step > 0) {
+          acc += pts[curr].ds;
+          curr = (curr + 1) % n;
+        } else {
+          curr = (curr - 1 + n) % n;
+          acc += pts[curr].ds;
+        }
         guard++;
       }
       return curr;
@@ -270,7 +277,8 @@ class TrackCanvas {
 
     const maxVms = 328 / 3.6;
 
-    // 1. Limite di velocità in curva dalla curvatura geometrica multi-scala (14m per tornanti, 30m per esse veloci)
+    // 1. Curvatura geometrica multi-scala (16m per tornanti, 32m per esse veloci) con filtro Gaussiano metrico
+    const rawKappa = new Array(n);
     for (let i = 0; i < n; i++) {
       const calcKappa = (halfWindowM) => {
         const iP = findIdxByOffsetMeters(i, -halfWindowM);
@@ -281,8 +289,17 @@ class TrackCanvas {
         if (dT > Math.PI) dT = 2 * Math.PI - dT;
         return dT / (halfWindowM * 2);
       };
+      rawKappa[i] = Math.max(calcKappa(16), calcKappa(32));
+    }
 
-      const kappa = Math.max(calcKappa(14), calcKappa(30));
+    const kernelOffsetsM = [-16, -8, 0, 8, 16];
+    const kernelWeights = [0.12, 0.22, 0.32, 0.22, 0.12];
+    for (let i = 0; i < n; i++) {
+      let kappa = 0;
+      for (let k = 0; k < kernelOffsetsM.length; k++) {
+        const idxK = findIdxByOffsetMeters(i, kernelOffsetsM[k]);
+        kappa += rawKappa[idxK] * kernelWeights[k];
+      }
       pts[i].kappa = kappa;
       pts[i].curvature = Math.min(1, kappa / 0.035);
 
@@ -297,7 +314,7 @@ class TrackCanvas {
     }
 
     // 2. Backward Pass: propagazione zone di frenata prima di ogni curva
-    for (let pass = 0; pass < 2; pass++) {
+    for (let pass = 0; pass < 3; pass++) {
       for (let i = n - 1; i >= 0; i--) {
         const next = pts[(i + 1) % n];
         const aBrake = 24 + 16 * Math.pow(next.v / maxVms, 2);
@@ -309,7 +326,7 @@ class TrackCanvas {
     }
 
     // 3. Forward Pass: propagazione accelerazione longitudinale in uscita di curva e sui rettilinei
-    for (let pass = 0; pass < 2; pass++) {
+    for (let pass = 0; pass < 3; pass++) {
       for (let i = 0; i < n; i++) {
         const next = pts[(i + 1) % n];
         const vRatio = pts[i].v / (330 / 3.6);
@@ -321,20 +338,31 @@ class TrackCanvas {
       }
     }
 
-    // 4. Calcolo accelerazione longitudinale in G, velocità in km/h e tempo cumulato sul giro (tauSec)
+    // 4. Calcolo accelerazione longitudinale in G su finestra metrica (10m), velocità in km/h e tempo cumulato (tauSec)
     let simTimeSec = 0;
     for (let i = 0; i < n; i++) {
       const next = pts[(i + 1) % n];
-      pts[i].speedKmh = Math.round(pts[i].v * 3.6);
-      pts[i].longG = ((next.v * next.v - pts[i].v * pts[i].v) / (2 * pts[i].ds)) / 9.81;
+      const iAhead = findIdxByOffsetMeters(i, 10);
+      let distAhead = (pts[iAhead].distMeters - pts[i].distMeters + this.trackLengthMeters) % this.trackLengthMeters;
+      if (distAhead < 1.0) distAhead = Math.max(1.0, pts[i].ds);
+      pts[i].speedKmh = pts[i].v * 3.6;
+      pts[i].longG = ((pts[iAhead].v * pts[iAhead].v - pts[i].v * pts[i].v) / (2 * distAhead)) / 9.81;
       pts[i].rawTauSec = simTimeSec;
-      simTimeSec += pts[i].ds / Math.max(15, pts[i].v);
+      const vSegAvg = 0.5 * (pts[i].v + next.v);
+      simTimeSec += pts[i].ds / Math.max(15, vSegAvg);
     }
     this.simBaseLapSec = Math.max(60, simTimeSec);
-    const refLap = this.referenceLapSec || this.simBaseLapSec;
+    // Evita che un candidateLap lento/bagnato di Multiviewer dilati il riferimento oltre il +12% del modello fisico
+    if (this.referenceLapSec && this.referenceLapSec > this.simBaseLapSec * 1.12) {
+      this.referenceLapSec = Number(this.simBaseLapSec.toFixed(3));
+    }
+    const refLap = this.referenceLapSec || Number(this.simBaseLapSec.toFixed(3));
+    this.referenceLapSec = refLap;
     const tauScale = refLap / Math.max(1, simTimeSec);
     for (let i = 0; i < n; i++) {
       pts[i].tauSec = pts[i].rawTauSec * tauScale;
+      pts[i].v = pts[i].v / tauScale;
+      pts[i].speedKmh = pts[i].v * 3.6;
     }
   }
 
@@ -499,16 +527,28 @@ class TrackCanvas {
       return d;
     };
 
+    // Trova il miglior riferimento cronometrico reale nella sessione corrente
+    let sessionBestLapSec = Infinity;
+    for (const r of leaderboard) {
+      const b = this._parseLapSeconds(r.bestLapTime) || this._parseLapSeconds(r.lastLapTime);
+      if (b > 55 && b < 135 && b < sessionBestLapSec) {
+        sessionBestLapSec = b;
+      }
+    }
+    const defaultLapSec = Number.isFinite(sessionBestLapSec) ? sessionBestLapSec : refLap;
+
     let runningGapSec = 0;
+    const initSegCounts = {};
 
     leaderboard.forEach((row, idx) => {
       const num = String(row.racingNumber);
       if (!num) return;
 
       const segInfo = this._computeExactMiniSectorAnchor(row.sectors);
-      const lapSec = this._parseLapSeconds(row.bestLapTime) || this._parseLapSeconds(row.lastLapTime) || refLap;
+      const lapSec = this._parseLapSeconds(row.bestLapTime) || this._parseLapSeconds(row.lastLapTime) || defaultLapSec;
       const isInPit = Boolean(row.inPit || row.status === 'PIT' || row.retired || row.status === 'RET');
       const isPitOut = Boolean(row.pitOut || row.status === 'OUT');
+      const basePace = Math.max(0.85, Math.min(1.25, refLap / Math.max(60, Math.min(130, lapSec || refLap))));
 
       const directGap = idx === 0 ? 0 : parseDeltaSec(row.gapToLeader);
       const intGap = parseDeltaSec(row.intervalToAhead);
@@ -526,17 +566,32 @@ class TrackCanvas {
         const hasSeg = segInfo.segStartTau !== null;
         const drvNumInt = parseInt(num, 10) || (idx + 1);
         const pitSlotMeters = (drvNumInt * 11) % Math.min(220, totalLen * 0.04);
+        const segSpan = hasSeg
+          ? Math.max(0.5, (segInfo.segEndTau - segInfo.segStartTau + refLap) % refLap || 4.0)
+          : 4.0;
+        const mKey = String(segInfo.currentMiniSector ?? 'none');
+        const sameSegIdx = initSegCounts[mKey] || 0;
+        initSegCounts[mKey] = sameSegIdx + 1;
+        const initFrac = Math.max(0.06, 0.28 - sameSegIdx * 0.07);
+
         const initTau = isInPit
           ? (pitSlotMeters / Math.max(1, totalLen)) * refLap
           : (hasSeg
-            ? segInfo.segStartTau + Math.max(0, ((segInfo.segEndTau - segInfo.segStartTau + refLap) % refLap) * 0.25)
+            ? (segInfo.segStartTau + segSpan * initFrac) % refLap
             : ((1 - idx * 0.025) % 1 + 1) % 1 * refLap);
         const initSample = this._sampleTrackPointAtTau(initTau);
         this.driverLapState[num] = {
           tauSec: initTau,
           distMeters: isInPit ? pitSlotMeters : initSample.distMeters,
           lastSegKey: segInfo.segKey,
+          prevMiniSector: segInfo.currentMiniSector,
+          prevSegSpan: segSpan,
+          elapsedInSegSec: hasSeg ? (segSpan * initFrac) / basePace : 0,
+          hasCompletedFirstSegTransition: false,
+          livePace: basePace,
+          smoothPace: basePace,
           currentMiniSector: segInfo.currentMiniSector,
+          totalMiniSectors: segInfo.totalSegs || 22,
           segStartTau: segInfo.segStartTau,
           segEndTau: segInfo.segEndTau,
           hasValidAnchor: hasSeg && !isInPit,
@@ -560,6 +615,7 @@ class TrackCanvas {
       st.onTrackGapSec = runningGapSec;
       st.intervalSec = intGap;
       st.currentMiniSector = segInfo.currentMiniSector;
+      st.totalMiniSectors = segInfo.totalSegs || st.totalMiniSectors || 22;
       st.segStartTau = segInfo.segStartTau;
       st.segEndTau = segInfo.segEndTau;
 
@@ -572,6 +628,7 @@ class TrackCanvas {
           st.distMeters = st.targetMeters;
         }
         st.tauSec = (st.distMeters / Math.max(1, totalLen)) * refLap;
+        st.elapsedInSegSec = 0;
         return;
       }
 
@@ -579,60 +636,53 @@ class TrackCanvas {
         st.wasInPit = false;
         st.tauSec = ((st.distMeters || 0) / Math.max(1, totalLen)) * refLap;
         st.hasValidAnchor = true;
+        st.hasCompletedFirstSegTransition = false;
+        st.elapsedInSegSec = 0;
+        st.livePace = basePace;
+        st.smoothPace = isPitOut && (st.distMeters || 0) < 280 ? 0.42 : basePace;
       }
 
       if (segInfo.segStartTau !== null) {
         const segSpan = Math.max(0.5, (segInfo.segEndTau - segInfo.segStartTau + refLap) % refLap || 4.0);
         if (!st.hasValidAnchor || !Number.isFinite(st.tauSec)) {
           st.tauSec = (segInfo.segStartTau + segSpan * 0.25) % refLap;
+          st.elapsedInSegSec = (segSpan * 0.25) / basePace;
+          st.hasCompletedFirstSegTransition = false;
+          st.livePace = basePace;
+          st.smoothPace = basePace;
           st.hasValidAnchor = true;
         }
         if (segInfo.segKey !== st.lastSegKey) {
+          const totS = st.totalMiniSectors || 22;
+          const isNextSeg = st.prevMiniSector !== null &&
+            st.prevMiniSector !== undefined &&
+            ((segInfo.currentMiniSector - st.prevMiniSector + totS) % totS === 1);
+          if (st.hasCompletedFirstSegTransition && isNextSeg && st.elapsedInSegSec > 0.6 && st.elapsedInSegSec < 25.0 && st.prevSegSpan > 0.4) {
+            const measuredPace = Math.max(0.42, Math.min(1.30, st.prevSegSpan / st.elapsedInSegSec));
+            if (measuredPace < basePace * 0.78) {
+              // Giro lento / raffreddamento (cooldown): adatta il passo effettivo
+              st.livePace = (st.livePace || basePace) * 0.50 + measuredPace * 0.50;
+            } else {
+              // Giro veloce normale: assorbi il jitter di rete mantenendo il passo nominale costante
+              st.livePace = (st.livePace || basePace) * 0.40 + basePace * 0.60;
+            }
+          } else if (segInfo.currentMiniSector === 0) {
+            st.livePace = basePace;
+          }
+          st.hasCompletedFirstSegTransition = true;
           st.lastSegKey = segInfo.segKey;
-          st.segMaxRel = segSpan * 0.94;
+          st.prevMiniSector = segInfo.currentMiniSector;
+          st.prevSegSpan = segSpan;
+          st.elapsedInSegSec = 0;
         }
       }
     });
-
-    // Distribuisce dolcemente i piloti che condividono lo stesso mini-settore senza mai causare salti o inversioni
-    const byMiniSector = {};
-    for (const row of leaderboard) {
-      const num = String(row.racingNumber);
-      const st = this.driverLapState[num];
-      if (!st || st.inPit || st.currentMiniSector === null || st.segStartTau === null) continue;
-      const mKey = String(st.currentMiniSector);
-      if (!byMiniSector[mKey]) byMiniSector[mKey] = [];
-      byMiniSector[mKey].push(st);
-    }
-
-    for (const group of Object.values(byMiniSector)) {
-      const firstSt = group[0];
-      const segStart = firstSt.segStartTau;
-      const segSpan = Math.max(0.6, (firstSt.segEndTau - segStart + refLap) % refLap || 4.0);
-
-      if (group.length === 1) {
-        firstSt.segMaxRel = segSpan * 0.94;
-        firstSt.targetTau = null;
-      } else {
-        // Ordina per posizione fisica attuale nel mini-settore così da non scambiare mai vetture in prova libera
-        group.sort((a, b) => circularTauDiff(b.tauSec, segStart) - circularTauDiff(a.tauSec, segStart));
-        const minSpacingSec = Math.min(0.38, (segSpan * 0.75) / group.length);
-        let leadRel = circularTauDiff(group[0].tauSec, segStart);
-        leadRel = Math.max(segSpan * 0.20, Math.min(segSpan * 0.94, leadRel));
-
-        for (let k = 0; k < group.length; k++) {
-          const st = group[k];
-          const targetRel = Math.max(segSpan * 0.05, leadRel - k * minSpacingSec);
-          st.segMaxRel = Math.max(targetRel, segSpan * 0.85 - k * minSpacingSec);
-          st.targetTau = (segStart + targetRel) % refLap;
-        }
-      }
-    }
   }
 
   /**
    * Avanza a 60fps le vetture lungo la polilinea del circuito seguendo il profilo fisico v(s)
-   * (rallenta nelle staccate e nei tornanti, accelera sui rettilinei) con continuità monotona C1.
+   * con anello ad aggancio di fase (PLL) continuo C2: zero frenate artificiali a metà rettilineo
+   * e adattamento automatico ai giri di lancio/raffreddamento (cooldown).
    */
   _stepKinematics(now) {
     const dtSec = Math.max(0.001, Math.min(0.05, (now - this.lastFrameTime) / 1000));
@@ -650,6 +700,20 @@ class TrackCanvas {
       return d;
     };
 
+    const activeByMiniSector = {};
+    for (const st of Object.values(this.driverLapState)) {
+      if (!st || st.inPit || st.currentMiniSector === null || !Number.isFinite(st.tauSec)) continue;
+      const mKey = String(st.currentMiniSector);
+      if (!activeByMiniSector[mKey]) activeByMiniSector[mKey] = [];
+      activeByMiniSector[mKey].push(st);
+    }
+    for (const group of Object.values(activeByMiniSector)) {
+      if (group.length > 1) {
+        const segStart = group[0].segStartTau || 0;
+        group.sort((a, b) => circularTauDiff(b.tauSec, segStart) - circularTauDiff(a.tauSec, segStart));
+      }
+    }
+
     for (const [num, st] of Object.entries(this.driverLapState)) {
       if (st.inPit) {
         if (st.targetMeters !== undefined) {
@@ -662,6 +726,7 @@ class TrackCanvas {
           }
         }
         st.tauSec = ((st.distMeters || 0) / Math.max(1, totalLen)) * refLap;
+        st.smoothPace = 0;
         const pt = this._sampleTrackPointAtMeters(st.distMeters || 0);
         this._setDriverPos(num, pt.x, pt.y, false);
         continue;
@@ -670,51 +735,73 @@ class TrackCanvas {
       if (!Number.isFinite(st.tauSec)) continue;
 
       const basePace = Math.max(0.85, Math.min(1.25, refLap / Math.max(60, Math.min(130, st.lapSec || refLap))));
-      let paceFactor = basePace;
+      const activePace = st.livePace || basePace;
+      let targetPace = activePace;
 
       if (st.segStartTau !== null && st.segEndTau !== null) {
         const segSpan = Math.max(0.5, (st.segEndTau - st.segStartTau + refLap) % refLap || 4.0);
-        const maxRel = st.segMaxRel !== undefined ? st.segMaxRel : (segSpan * 0.94);
+        st.elapsedInSegSec = (st.elapsedInSegSec || 0) + dtSec;
+
+        let expectedRel = st.elapsedInSegSec * activePace;
+        let instantBasePace = activePace;
+
+        // Se il pilota impiega molto più tempo del previsto nel mini-settore (>130%, es. giro di raffreddamento in FP),
+        // riduce progressivamente la velocità attesa senza mai fermare la vettura né frenare nei giri veloci
+        if (expectedRel > segSpan * 1.30) {
+          const overTime = st.elapsedInSegSec - (segSpan * 1.30) / activePace;
+          const decay = Math.exp(-overTime / Math.max(3.5, segSpan));
+          instantBasePace = Math.max(0.35, activePace * decay);
+          expectedRel = Math.min(segSpan * 1.85, segSpan * 1.30 + (1.0 - decay) * segSpan * 0.55);
+          st.livePace = Math.max(0.45, activePace * (0.996 + 0.004 * decay));
+        }
+
+        const expectedTau = (st.segStartTau + expectedRel) % refLap;
+        const phaseErr = circularTauDiff(expectedTau, st.tauSec);
         const rel = circularTauDiff(st.tauSec, st.segStartTau);
 
-        if (Math.abs(rel) > refLap * 0.42) {
+        if (Math.abs(rel) > refLap * 0.42 && Math.abs(phaseErr) > refLap * 0.42) {
           // Riallineamento solo in caso di disallineamento iniziale estremo (>42% del giro)
-          st.tauSec = (st.segStartTau + segSpan * 0.25) % refLap;
-        } else if (rel < 0) {
-          // La vettura reale è già entrata nel nuovo mini-settore: accelera dolcemente per recuperare senza scatti
-          const behindSec = -rel;
-          const catchupBoost = Math.min(0.85, behindSec * 0.38);
-          paceFactor *= (1.0 + catchupBoost);
+          st.tauSec = expectedTau;
+          st.smoothPace = instantBasePace;
         } else {
-          // All'interno del mini-settore: modulazione dolce per spaziatura e decelerazione progressiva (mai fermo)
-          if (st.targetTau !== null && st.targetTau !== undefined) {
-            const tauErr = circularTauDiff(st.targetTau, st.tauSec);
-            if (Math.abs(tauErr) < segSpan * 1.5) {
-              const paceCorrection = Math.max(-0.18, Math.min(0.22, tauErr * 0.30));
-              paceFactor *= (1.0 + paceCorrection);
-            }
-          }
+          // Controllore Phase-Locked Loop (PLL) proporzionale a guadagno morbido:
+          // assorbe il jitter di rete (±0.8s) distribuendo la correzione di fase su più mini-settori
+          // senza mai causare accelerazioni o decelerazioni percepibili sui rettilinei
+          const maxPull = Math.abs(phaseErr) > 2.5 ? 0.22 : 0.10;
+          const maxBrake = Math.abs(phaseErr) > 2.5 ? -0.18 : -0.09;
+          const gain = Math.abs(phaseErr) < 0.6 ? 0.06 : 0.10;
+          const pllCorrection = Math.max(maxBrake, Math.min(maxPull, phaseErr * gain));
+          targetPace = instantBasePace * (1.0 + pllCorrection);
+        }
 
-          if (rel >= maxRel * 0.75) {
-            const ratio = Math.min(1.0, (rel - maxRel * 0.75) / Math.max(0.10, maxRel * 0.25));
-            const easeOut = 1.0 - 0.55 * (0.5 - 0.5 * Math.cos(ratio * Math.PI));
-            paceFactor *= easeOut;
-            if (rel > maxRel) {
-              const over = rel - maxRel;
-              paceFactor *= Math.max(0.65, Math.exp(-over / Math.max(2.5, segSpan)));
+        // Prevenzione sovrapposizione visiva tra vetture nello stesso mini-settore (solo se < 0.26s dietro la vettura davanti)
+        const group = activeByMiniSector[String(st.currentMiniSector)];
+        if (group && group.length > 1) {
+          const myIdx = group.indexOf(st);
+          if (myIdx > 0) {
+            const aheadSt = group[myIdx - 1];
+            const gapAheadTau = circularTauDiff(aheadSt.tauSec, st.tauSec);
+            if (gapAheadTau >= 0 && gapAheadTau < 0.26) {
+              const bufferRatio = (0.26 - gapAheadTau) / 0.26;
+              targetPace *= (1.0 - 0.14 * bufferRatio);
             }
           }
         }
       }
 
-      // Garantisce avanzamento sempre continuo e positivo in pista (anche durante giri lenti / cooldown in FP)
-      paceFactor = Math.max(0.28, Math.min(2.10, paceFactor));
-
       if (st.pitOut && st.distMeters < 280) {
-        paceFactor = Math.min(paceFactor, 0.42); // Limitatore corsia box
+        targetPace = Math.min(targetPace, 0.42); // Limitatore corsia box in uscita pit
       }
 
-      st.tauSec = (st.tauSec + dtSec * paceFactor + refLap) % refLap;
+      targetPace = Math.max(0.32, Math.min(1.65, targetPace));
+
+      // Filtro passa-basso esponenziale sulla velocità cinematica per garantire continuità C2 (zero scatti d'accelerazione)
+      const paceAlpha = 1.0 - Math.exp(-4.0 * dtSec);
+      const prevSmooth = Number.isFinite(st.smoothPace) && st.smoothPace > 0 ? st.smoothPace : targetPace;
+      st.smoothPace = prevSmooth + (targetPace - prevSmooth) * paceAlpha;
+      st.smoothPace = Math.max(0.32, Math.min(1.65, st.smoothPace));
+
+      st.tauSec = (st.tauSec + dtSec * st.smoothPace + refLap) % refLap;
       const newPt = this._sampleTrackPointAtTau(st.tauSec);
       st.distMeters = newPt.distMeters;
       this._setDriverPos(num, newPt.x, newPt.y, false);
@@ -743,7 +830,7 @@ class TrackCanvas {
     const p1 = pts[i1];
     const t0 = p0.tauSec || 0;
     const t1 = i1 === 0 ? refLap : (p1.tauSec || refLap);
-    const spanT = Math.max(0.005, t1 - t0);
+    const spanT = Math.max(1e-6, t1 - t0);
     const frac = Math.max(0, Math.min(1, (t - t0) / spanT));
 
     const d0 = p0.distMeters || 0;
@@ -784,7 +871,7 @@ class TrackCanvas {
     const i1 = (i0 + 1) % n;
     const p0 = pts[i0];
     const p1 = pts[i1];
-    const segLen = Math.max(0.1, p0.ds || 1);
+    const segLen = Math.max(1e-5, p0.ds || 1e-5);
     const frac = Math.max(0, Math.min(1, (d - p0.distMeters) / segLen));
 
     return {
@@ -807,21 +894,54 @@ class TrackCanvas {
   getDriverTrackMetrics(driverNum) {
     const num = String(driverNum);
     const st = this.driverLapState[num];
-    if (!st || this.circuitPoints.length === 0) {
+    if (this.circuitPoints.length === 0) {
       return {
         progress: 0,
         distMeters: 0,
         curvature: 0,
         kappa: 0,
         physicsSpeedKmh: 0,
+        effectivePace: 1.0,
         longG: 0,
         isBrakingZone: false,
         isOnStraight: true
       };
     }
 
-    const sample = this._sampleTrackPointAtMeters(st.distMeters);
+    let distMeters = st ? st.distMeters : undefined;
+    if (!Number.isFinite(distMeters)) {
+      const livePos = this.positions[num];
+      if (livePos && Number.isFinite(livePos.curX) && Number.isFinite(livePos.curY)) {
+        let bestIdx = 0;
+        let bestD2 = Infinity;
+        for (let i = 0; i < this.circuitPoints.length; i++) {
+          const dx = this.circuitPoints[i].x - livePos.curX;
+          const dy = this.circuitPoints[i].y - livePos.curY;
+          const d2 = dx * dx + dy * dy;
+          if (d2 < bestD2) {
+            bestD2 = d2;
+            bestIdx = i;
+          }
+        }
+        distMeters = this.circuitPoints[bestIdx].distMeters || 0;
+      } else {
+        return {
+          progress: 0,
+          distMeters: 0,
+          curvature: 0,
+          kappa: 0,
+          physicsSpeedKmh: 0,
+          effectivePace: 1.0,
+          longG: 0,
+          isBrakingZone: false,
+          isOnStraight: true
+        };
+      }
+    }
+
+    const sample = this._sampleTrackPointAtMeters(distMeters);
     const progress = sample.distMeters / Math.max(1, this.trackLengthMeters);
+    const effectivePace = st ? (st.inPit ? 0 : (st.smoothPace || 1.0)) : 1.0;
 
     return {
       progress,
@@ -829,6 +949,7 @@ class TrackCanvas {
       curvature: sample.curvature,
       kappa: sample.kappa,
       physicsSpeedKmh: sample.speedKmh,
+      effectivePace,
       longG: sample.longG,
       isBrakingZone: sample.longG < -0.35,
       isOnStraight: sample.kappa < 0.0022 && sample.longG >= -0.25
@@ -841,7 +962,7 @@ class TrackCanvas {
    */
   _computeExactMiniSectorAnchor(sectors) {
     if (!sectors || typeof sectors !== 'object' || this.circuitPoints.length === 0) {
-      return { currentMiniSector: null, segStartTau: null, segEndTau: null, anchorDistMeters: null, segKey: null };
+      return { currentMiniSector: null, totalSegs: 0, segStartTau: null, segEndTau: null, anchorDistMeters: null, segKey: null };
     }
 
     const s0 = sectors['0'] || sectors[0] || {};
@@ -869,7 +990,7 @@ class TrackCanvas {
     const n2 = segs2.length;
     const totalSegs = n0 + n1 + n2;
     if (totalSegs === 0) {
-      return { currentMiniSector: null, segStartTau: null, segEndTau: null, anchorDistMeters: null, segKey: null };
+      return { currentMiniSector: null, totalSegs: 0, segStartTau: null, segEndTau: null, anchorDistMeters: null, segKey: null };
     }
 
     // Include Status 2064 (pitlane exit/entry) and find highest active segment index per sector
@@ -892,7 +1013,7 @@ class TrackCanvas {
     const hasVal2 = Boolean(s2.Value && String(s2.Value).trim());
 
     if (done0 === 0 && done1 === 0 && done2 === 0 && !hasVal0 && !hasVal1 && !hasVal2) {
-      return { currentMiniSector: null, segStartTau: null, segEndTau: null, anchorDistMeters: null, segKey: null };
+      return { currentMiniSector: null, totalSegs, segStartTau: null, segEndTau: null, anchorDistMeters: null, segKey: null };
     }
 
     let currentMiniSector = 0;
@@ -921,33 +1042,37 @@ class TrackCanvas {
     const nPts = this.circuitPoints.length;
     const refLap = this.referenceLapSec || this.simBaseLapSec || 94;
 
-    let startPtIdx = 0;
-    if (currentMiniSector === 0) {
-      startPtIdx = 0;
-    } else if (this.miniSectorsIndexes.length > 0) {
-      const mIdx = Math.min(currentMiniSector - 1, this.miniSectorsIndexes.length - 1);
-      startPtIdx = Math.max(0, Math.min(nPts - 1, this.miniSectorsIndexes[mIdx]));
-    } else {
-      startPtIdx = Math.min(nPts - 1, Math.floor((currentMiniSector / totalSegs) * nPts));
-    }
+    // Mappatura proporzionale esatta anche quando miniSectorsIndexes.length (es. 21 in Messico) != totalSegs (es. 22)
+    const getBoundaryPtIdx = (segIdx) => {
+      if (segIdx <= 0) return 0;
+      if (segIdx >= totalSegs) return nPts - 1;
+      if (this.miniSectorsIndexes.length > 0) {
+        const bounds = this.miniSectorsIndexes[0] > 0
+          ? [0, ...this.miniSectorsIndexes]
+          : [...this.miniSectorsIndexes];
+        const mIntervals = Math.max(1, bounds.length - 1);
+        const pos = (segIdx / totalSegs) * mIntervals;
+        const i0 = Math.min(mIntervals, Math.floor(pos));
+        const i1 = Math.min(mIntervals, i0 + 1);
+        const frac = pos - i0;
+        const idx = Math.round(bounds[i0] + (bounds[i1] - bounds[i0]) * frac);
+        return Math.max(0, Math.min(nPts - 1, idx));
+      }
+      return Math.min(nPts - 1, Math.floor((segIdx / totalSegs) * nPts));
+    };
 
-    let endPtIdx = nPts - 1;
-    if (currentMiniSector >= totalSegs - 1) {
-      endPtIdx = nPts - 1;
-    } else if (this.miniSectorsIndexes.length > currentMiniSector) {
-      endPtIdx = Math.max(startPtIdx + 1, Math.min(nPts - 1, this.miniSectorsIndexes[currentMiniSector]));
-    } else {
-      endPtIdx = Math.min(nPts - 1, Math.floor(((currentMiniSector + 1) / totalSegs) * nPts));
-    }
+    const startPtIdx = getBoundaryPtIdx(currentMiniSector);
+    const endPtIdx = Math.max(startPtIdx + 1, getBoundaryPtIdx(currentMiniSector + 1));
 
     const segStartTau = this.circuitPoints[startPtIdx].tauSec || 0;
     const segEndTau = currentMiniSector >= totalSegs - 1
       ? refLap
-      : Math.max(segStartTau + 0.5, this.circuitPoints[endPtIdx].tauSec || refLap);
+      : Math.max(segStartTau + 0.8, this.circuitPoints[Math.min(nPts - 1, endPtIdx)].tauSec || refLap);
     const anchorDistMeters = this.circuitPoints[startPtIdx].distMeters || 0;
 
     return {
       currentMiniSector,
+      totalSegs,
       segStartTau,
       segEndTau,
       anchorDistMeters,

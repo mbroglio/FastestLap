@@ -822,9 +822,16 @@ class SignalRStreamClient {
               if (mIdx <= 0) return 0;
               if (mIdx >= totalSegs) return dur;
               if (Array.isArray(window.OFFICIAL_MINI_SECTOR_INDEXES) &&
-                  window.OFFICIAL_MINI_SECTOR_INDEXES.length >= totalSegs &&
+                  window.OFFICIAL_MINI_SECTOR_INDEXES.length > 0 &&
                   Array.isArray(NODES) && NODES.length > 0) {
-                const ptIdx = Math.max(0, Math.min(NODES.length - 1, window.OFFICIAL_MINI_SECTOR_INDEXES[mIdx]));
+                const rawM = window.OFFICIAL_MINI_SECTOR_INDEXES;
+                const bounds = rawM[0] > 0 ? [0, ...rawM] : [...rawM];
+                const mIntervals = Math.max(1, bounds.length - 1);
+                const pos = (mIdx / totalSegs) * mIntervals;
+                const i0 = Math.min(mIntervals, Math.floor(pos));
+                const i1 = Math.min(mIntervals, i0 + 1);
+                const frac = pos - i0;
+                const ptIdx = Math.max(0, Math.min(NODES.length - 1, Math.round(bounds[i0] + (bounds[i1] - bounds[i0]) * frac)));
                 if (NODES[ptIdx] && NODES[ptIdx][0] !== undefined) {
                   return NODES[ptIdx][0];
                 }
@@ -834,11 +841,36 @@ class SignalRStreamClient {
             const segStartSec = getMiniSectorStartSec(currentMiniSector);
             let segEndSec = getMiniSectorStartSec(currentMiniSector + 1);
             if (segEndSec <= segStartSec) segEndSec = dur;
+            const segSpan = Math.max(0.5, (segEndSec - segStartSec + dur) % dur || 4.0);
+            const segKey = currentMiniSector + '/' + totalSegs;
 
-            DRIVER_TELEMETRY[drvNum].currentMiniSector = currentMiniSector;
-            DRIVER_TELEMETRY[drvNum].totalMiniSectors = totalSegs;
-            DRIVER_TELEMETRY[drvNum].segStartSec = segStartSec;
-            DRIVER_TELEMETRY[drvNum].segEndSec = segEndSec;
+            const telObj = DRIVER_TELEMETRY[drvNum];
+            const refDrvLap = telObj.overallBest || telObj.lastLapSec || dur;
+            const basePace = Math.max(0.85, Math.min(1.25, dur / Math.max(60, Math.min(130, refDrvLap))));
+            if (telObj.lastSegKey !== segKey) {
+              const isNextSeg = telObj.prevMiniSector !== undefined &&
+                ((currentMiniSector - telObj.prevMiniSector + totalSegs) % totalSegs === 1);
+              if (telObj.hasCompletedFirstSegTransition && isNextSeg && telObj.elapsedInSegSec > 0.6 && telObj.elapsedInSegSec < 25.0 && telObj.prevSegSpan > 0.4) {
+                const measuredPace = Math.max(0.42, Math.min(1.30, telObj.prevSegSpan / telObj.elapsedInSegSec));
+                if (measuredPace < basePace * 0.78) {
+                  telObj.livePace = (telObj.livePace || basePace) * 0.50 + measuredPace * 0.50;
+                } else {
+                  telObj.livePace = (telObj.livePace || basePace) * 0.40 + basePace * 0.60;
+                }
+              } else if (currentMiniSector === 0) {
+                telObj.livePace = basePace;
+              }
+              telObj.hasCompletedFirstSegTransition = true;
+              telObj.lastSegKey = segKey;
+              telObj.prevMiniSector = currentMiniSector;
+              telObj.prevSegSpan = segSpan;
+              telObj.elapsedInSegSec = 0;
+            }
+
+            telObj.currentMiniSector = currentMiniSector;
+            telObj.totalMiniSectors = totalSegs;
+            telObj.segStartSec = segStartSec;
+            telObj.segEndSec = segEndSec;
           }
         }
       }
@@ -1021,22 +1053,20 @@ class SignalRStreamClient {
           const segEnd = firstTel.segEndSec || (segStart + 4.0);
           const segSpan = Math.max(0.4, (segEnd - segStart + dur) % dur || 4.0);
           const usableStart = segStart + segSpan * 0.08;
-          const usableEnd = segStart + segSpan * 0.94;
 
           if (group.length === 1) {
             const drvK = group[0];
             const tel = DRIVER_TELEMETRY[drvK];
-            const segKey = tel.currentMiniSector + '/' + (tel.totalMiniSectors || 22) + ':solo';
-            tel.segMaxSec = usableEnd;
-            tel.targetTrackSec = undefined;
+            tel.aheadDriverKey = null;
+            tel.initOffsetFrac = 0.25;
             if (tel.curTrackSec === undefined) {
+              const refDrvLap = tel.overallBest || tel.lastLapSec || dur;
+              const basePace = Math.max(0.85, Math.min(1.25, dur / Math.max(60, Math.min(130, refDrvLap))));
               tel.curTrackSec = (segStart + segSpan * 0.25) % dur;
+              tel.elapsedInSegSec = (segSpan * 0.25) / basePace;
+              tel.livePace = basePace;
+              tel.smoothPace = basePace;
               tel.lastTrackStepT = nowSimSec;
-            }
-            if (tel.lastSegKey !== segKey) {
-              tel.lastSegKey = segKey;
-              tel.anchorTrackSec = tel.curTrackSec;
-              tel.anchorSimSec = nowSimSec;
             }
           } else {
             group.sort((ka, kb) => {
@@ -1046,27 +1076,21 @@ class SignalRStreamClient {
               const sb = tb.curTrackSec !== undefined ? tb.curTrackSec : usableStart;
               return circularSecDiff(sb, segStart) - circularSecDiff(sa, segStart);
             });
-            const minSpacingSec = Math.min(0.38, (segSpan * 0.75) / group.length);
-            const leadTel = DRIVER_TELEMETRY[group[0]] || {};
-            let leadRel = leadTel.curTrackSec !== undefined ? circularSecDiff(leadTel.curTrackSec, segStart) : (segSpan * 0.5);
-            leadRel = Math.max(segSpan * 0.20, Math.min(segSpan * 0.94, leadRel));
 
             for (let k = 0; k < group.length; k++) {
               const memberKey = group[k];
               const mTel = DRIVER_TELEMETRY[memberKey];
-              const targetRel = Math.max(segSpan * 0.06, leadRel - k * minSpacingSec);
-              const memberMaxSec = segStart + Math.max(targetRel, segSpan * 0.86 - k * minSpacingSec);
-              mTel.segMaxSec = memberMaxSec;
-              mTel.targetTrackSec = (segStart + targetRel) % dur;
-              const segKey = mTel.currentMiniSector + '/' + (mTel.totalMiniSectors || 22) + ':' + k + '/' + group.length;
+              const initFrac = Math.max(0.06, 0.28 - k * 0.07);
+              mTel.initOffsetFrac = initFrac;
+              mTel.aheadDriverKey = k > 0 ? group[k - 1] : null;
               if (mTel.curTrackSec === undefined) {
-                mTel.curTrackSec = mTel.targetTrackSec;
+                const refDrvLap = mTel.overallBest || mTel.lastLapSec || dur;
+                const basePace = Math.max(0.85, Math.min(1.25, dur / Math.max(60, Math.min(130, refDrvLap))));
+                mTel.curTrackSec = (segStart + segSpan * initFrac) % dur;
+                mTel.elapsedInSegSec = (segSpan * initFrac) / basePace;
+                mTel.livePace = basePace;
+                mTel.smoothPace = basePace;
                 mTel.lastTrackStepT = nowSimSec;
-              }
-              if (mTel.lastSegKey !== segKey) {
-                mTel.lastSegKey = segKey;
-                mTel.anchorTrackSec = mTel.curTrackSec;
-                mTel.anchorSimSec = nowSimSec;
               }
             }
           }

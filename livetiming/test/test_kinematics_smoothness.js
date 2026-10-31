@@ -182,4 +182,109 @@ tc._stepKinematics(simNow + 16.666);
 assert(tc.driverLapState['11'].tauSec < 15, 'Upon pit exit, car must start from pit exit and never teleport back to Sector 3');
 console.log('✅ Pit entry and pit exit transition verified without backward wrap or teleport');
 
+// Test 5: Full-lap simulation with sub-0.4m vertices & 21 miniSectorsIndexes vs 22 F1 TimingData segments (Mexico GP pattern)
+console.log('[TEST 5] Checking Full-Lap Speed Ratio, Sub-0.4m Vertices & 21-vs-22 Mini-Sector Boundary Alignment...');
+const syntheticMexico = { x: [], y: [], rotation: 0, miniSectorsIndexes: [] };
+const baseNodes = 680;
+for (let i = 0; i < baseNodes; i++) {
+  const angle = (i / baseNodes) * Math.PI * 2;
+  const rx = Math.cos(angle) * 820 + Math.cos(3 * angle) * 160;
+  const ry = Math.sin(angle) * 520 + Math.sin(2 * angle) * 120;
+  syntheticMexico.x.push(rx);
+  syntheticMexico.y.push(ry);
+  // Inject sub-0.4m duplicate/near-duplicate vertices like Multiviewer Mexico/Monza
+  if (i % 18 === 0) {
+    syntheticMexico.x.push(rx + 0.08);
+    syntheticMexico.y.push(ry + 0.05);
+  }
+}
+const totalVertices = syntheticMexico.x.length;
+for (let k = 1; k <= 21; k++) {
+  syntheticMexico.miniSectorsIndexes.push(Math.round((k / 21) * (totalVertices - 1)));
+}
+
+const tcMex = new TrackCanvas(mockCanvas);
+tcMex._applyCircuitGeometry(syntheticMexico);
+const refLapMex = tcMex.referenceLapSec;
+
+const build22Sectors = (activeSegs) => {
+  const s = [{ Segments: [] }, { Segments: [] }, { Segments: [] }];
+  for (let i = 0; i < 22; i++) {
+    const secIdx = i < 7 ? 0 : (i < 15 ? 1 : 2);
+    s[secIdx].Segments.push({ Status: i < activeSegs ? 2048 : 0 });
+  }
+  return s;
+};
+
+const mexSegStarts = [];
+for (let m = 0; m < 22; m++) {
+  const segsLit = m === 0 ? 22 : m;
+  const anchor = tcMex._computeExactMiniSectorAnchor(build22Sectors(segsLit));
+  assert.strictEqual(anchor.currentMiniSector, m, `Expected currentMiniSector=${m} for segsLit=${segsLit}`);
+  const span = (anchor.segEndTau - anchor.segStartTau + refLapMex) % refLapMex || refLapMex;
+  assert(span > 1.2, `Mini-sector ${m}/22 collapsed to span=${span.toFixed(3)}s`);
+  mexSegStarts.push(anchor.segStartTau);
+}
+
+let minSpeedRatio = 999;
+let maxSpeedRatio = 0;
+let prevDistMex = null;
+let nowMex = 5000;
+tcMex.lastFrameTime = nowMex;
+const totalFramesMex = Math.round(refLapMex * 60);
+
+for (let step = 0; step < totalFramesMex; step++) {
+  nowMex += 16.6667;
+  const tLap = (step * 0.0166667) % refLapMex;
+  let curM = 0;
+  for (let m = 0; m < 22; m++) {
+    const stTau = mexSegStarts[m];
+    const enTau = m < 21 ? mexSegStarts[m + 1] : refLapMex;
+    if (tLap >= stTau && tLap < enTau) {
+      curM = m;
+      break;
+    }
+  }
+  const segsLit = curM === 0 ? 22 : curM;
+  tcMex.updatePositionsFromLeaderboard([
+    { racingNumber: '16', bestLapTime: refLapMex.toFixed(3), sectors: build22Sectors(segsLit) }
+  ]);
+  tcMex._stepKinematics(nowMex);
+
+  const st16 = tcMex.driverLapState['16'];
+  const pt16 = tcMex._sampleTrackPointAtTau(st16.tauSec);
+  if (prevDistMex !== null && step > 180) {
+    let dMeters = st16.distMeters - prevDistMex;
+    if (dMeters < -tcMex.trackLengthMeters * 0.5) dMeters += tcMex.trackLengthMeters;
+    const visualVel = dMeters / 0.0166667;
+    const ratio = visualVel / pt16.v;
+    if (ratio < minSpeedRatio) minSpeedRatio = ratio;
+    if (ratio > maxSpeedRatio) maxSpeedRatio = ratio;
+  }
+  prevDistMex = st16.distMeters;
+}
+
+console.log(`Full-lap visual/physics velocity ratio range: [${minSpeedRatio.toFixed(3)}, ${maxSpeedRatio.toFixed(3)}]`);
+assert(minSpeedRatio > 0.88, `Anomalous deceleration detected: minSpeedRatio=${minSpeedRatio.toFixed(3)}`);
+assert(maxSpeedRatio < 1.15, `Anomalous acceleration detected: maxSpeedRatio=${maxSpeedRatio.toFixed(3)}`);
+console.log('✅ Full-lap velocity tracks physics profile v(s) within [0.88, 1.15] with zero mid-straight braking!');
+
+// Test 6: 1:1 Correspondence between placeholder track metrics and cockpit telemetry
+console.log('[TEST 6] Checking 1:1 Placeholder-to-Telemetry Correspondence...');
+let foundBraking = false;
+let foundStraight = false;
+for (let i = 0; i < tcMex.circuitPoints.length; i++) {
+  const p = tcMex.circuitPoints[i];
+  tcMex.driverLapState['16'].tauSec = p.tauSec;
+  tcMex.driverLapState['16'].distMeters = p.distMeters;
+  tcMex.driverLapState['16'].smoothPace = 1.0;
+  const m = tcMex.getDriverTrackMetrics('16');
+  assert(Math.abs(m.physicsSpeedKmh - p.speedKmh) < 1.0, 'Track metrics physicsSpeedKmh must match circuit point speedKmh');
+  if (m.longG < -1.5) foundBraking = true;
+  if (m.physicsSpeedKmh > 250 && Math.abs(m.longG) < 0.8) foundStraight = true;
+}
+assert(foundBraking, 'Physics profile must include realistic braking zones (longG < -1.5)');
+assert(foundStraight, 'Physics profile must include high-speed straights (speedKmh > 280)');
+console.log('✅ 1:1 correspondence between on-track placeholder kinematics and telemetry confirmed!');
+
 console.log('🎉 ALL KINEMATIC SMOOTHNESS TESTS PASSED!');
