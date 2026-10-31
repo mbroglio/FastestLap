@@ -230,4 +230,77 @@ const statusSnapshot = storeTerminated.getStatus();
 assert.strictEqual(statusSnapshot.isSessionEnded, true, 'getStatus must expose isSessionEnded');
 console.log('✅ Session termination detection, practice clock and timestamping verified');
 
+// 8. Test Real-Time Tyre Delta Updates (Array snapshot + Indexed Object deltas & 0-lap new tyres)
+const storeTyreLive = new StateStore();
+storeTyreLive.updateDrivers({
+  '55': { RacingNumber: '55', Tla: 'SAI', FullName: 'Carlos Sainz', TeamColour: '#E8002D' }
+});
+storeTyreLive.updateTimingData({
+  Lines: {
+    '55': {
+      Position: '1',
+      NumberOfLaps: 11,
+      Sectors: [
+        { Segments: [{ Status: 2048 }, { Status: 2048 }], Value: '28.100' },
+        { Segments: [{ Status: 2048 }, { Status: 0 }], Value: '' },
+        { Segments: [{ Status: 0 }, { Status: 0 }], Value: '' }
+      ]
+    }
+  }
+});
+storeTyreLive.updateTimingAppData({
+  Lines: {
+    '55': {
+      Stints: [
+        { Compound: 'MEDIUM', New: 'true', TotalLaps: 7, StartLaps: 0 },
+        { Compound: 'MEDIUM', New: 'false', TotalLaps: 10, StartLaps: 7 }
+      ]
+    }
+  }
+});
+
+// Live delta on TimingAppData updating ONLY TotalLaps (no Compound in delta)
+storeTyreLive.updateTimingAppData({
+  Lines: {
+    '55': {
+      Stints: {
+        '1': { TotalLaps: 12 }
+      }
+    }
+  }
+});
+// Live delta on TimingData updating a single Segment via indexed object
+storeTyreLive.updateTimingData({
+  Lines: {
+    '55': {
+      NumberOfLaps: 13,
+      Sectors: {
+        '1': { Segments: { '1': { Status: 2048 } } }
+      }
+    }
+  }
+});
+
+let saiRow = storeTyreLive.getLeaderboard()[0];
+assert.strictEqual(saiRow.tyreCompound, 'MEDIUM', 'Compound must be preserved when TotalLaps delta omits Compound');
+assert.strictEqual(saiRow.tyreAge, 12, 'Tyre age must update in real time from TotalLaps delta');
+assert.strictEqual(saiRow.sectors[0].Segments[0].Status, 2048, 'Sector 0 segment 0 must be preserved after indexed delta merge');
+assert.strictEqual(saiRow.sectors[1].Segments[1].Status, 2048, 'Sector 1 segment 1 must be updated by indexed delta');
+
+// Driver pits and fits a brand new SOFT tyre set (TotalLaps: 0) at lap 13
+storeTyreLive.updateTimingAppData({
+  Lines: {
+    '55': {
+      Stints: {
+        '2': { Compound: 'SOFT', New: 'true', TotalLaps: 0, StartLaps: 0 }
+      }
+    }
+  }
+});
+saiRow = storeTyreLive.getLeaderboard()[0];
+assert.strictEqual(saiRow.tyreCompound, 'SOFT', 'New stint compound must immediately switch to SOFT');
+assert.strictEqual(saiRow.tyreAge, 0, 'Brand new tyre set on out-lap must show 0L, not total session laps (13)');
+assert.strictEqual(saiRow.tyreNew, true, 'Brand new tyre set must be marked tyreNew = true');
+console.log('✅ Real-time tyre compound & lap count delta merges (including 0-lap new sets) verified');
+
 console.log('🎉 StateStore tests passed successfully!\n');

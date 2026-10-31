@@ -185,7 +185,9 @@ function getDriverTireInfo(drvKey, t) {
     if (tel.tyreCompound && tel.tyreCompound !== 'UNKNOWN') {
       compound = String(tel.tyreCompound).toUpperCase();
     }
-    if (tel.tyreAge !== undefined && tel.tyreAge !== null && Number(tel.tyreAge) > 0) {
+    if (tel.hasLiveTyreAge && tel.tyreAge !== undefined && tel.tyreAge !== null) {
+      age = Math.max(0, Number(tel.tyreAge) || 0);
+    } else if (tel.tyreAge !== undefined && tel.tyreAge !== null && Number(tel.tyreAge) > 0) {
       age = Number(tel.tyreAge);
     } else if (tel.tyreTotalLaps !== undefined && tel.tyreTotalLaps > 0) {
       age = tel.tyreTotalLaps;
@@ -207,8 +209,10 @@ function getDriverTireInfo(drvKey, t) {
     if (!compound || compound === 'MED' || compound === 'UNKNOWN') {
       compound = (activeStint.code || activeStint.compound || 'MED').toUpperCase();
     }
-    if (age === null || age === 0) {
-      if (activeStint.totalLaps != null && activeStint.totalLaps > 0) {
+    if (age === null) {
+      if (activeStint.totalLaps != null && activeStint.totalLaps >= 0 && tel && tel.hasLiveTyreAge) {
+        age = activeStint.totalLaps;
+      } else if (activeStint.totalLaps != null && activeStint.totalLaps > 0) {
         age = activeStint.totalLaps;
       } else if (activeStint.age != null && activeStint.age > 0) {
         age = activeStint.age;
@@ -219,7 +223,7 @@ function getDriverTireInfo(drvKey, t) {
     }
   }
 
-  if (age === null || age <= 0) {
+  if (age === null || (age < 0) || (age === 0 && (!tel || !tel.hasLiveTyreAge))) {
     age = Math.max(1, curLap);
   }
 
@@ -726,26 +730,65 @@ function applyOfficialCircuitToNodes(data) {
 function getDriverTrackSec(drvKey, t) {
   const dur = LAP_DURATION || 90.0;
   const tel = DRIVER_TELEMETRY[drvKey];
-  if (tel && tel.anchorTrackSec !== undefined && tel.anchorSimSec !== undefined) {
-    const elapsed = Math.max(0, t - tel.anchorSimSec);
-    let sec = tel.anchorTrackSec + elapsed;
-    if (tel.targetTrackSec !== undefined) {
-      let tDiff = ((tel.targetTrackSec - sec + dur * 1.5) % dur) - dur * 0.5;
-      if (Math.abs(tDiff) < dur * 0.35) {
-        sec += Math.max(-0.25, Math.min(0.25, tDiff * 0.3)) * Math.min(1.0, elapsed * 0.5);
+  if (tel && tel.segStartSec !== undefined && tel.segEndSec !== undefined) {
+    const circularDiff = (a, b) => {
+      let d = (a - b) % dur;
+      if (d > dur * 0.5) d -= dur;
+      if (d < -dur * 0.5) d += dur;
+      return d;
+    };
+
+    const segStart = tel.segStartSec;
+    const segEnd = tel.segEndSec;
+    const segSpan = Math.max(0.5, (segEnd - segStart + dur) % dur || 4.0);
+
+    if (tel.curTrackSec === undefined || !Number.isFinite(tel.curTrackSec)) {
+      tel.curTrackSec = (segStart + segSpan * 0.25) % dur;
+      tel.lastTrackStepT = t;
+    }
+
+    const rawDt = t - (tel.lastTrackStepT !== undefined ? tel.lastTrackStepT : t);
+    const dt = rawDt > 0 ? Math.min(0.08, rawDt) : 0;
+    tel.lastTrackStepT = t;
+
+    const refDriverLap = tel.overallBest || tel.lastLapSec || dur;
+    let pace = Math.max(0.85, Math.min(1.25, dur / Math.max(60, Math.min(130, refDriverLap))));
+
+    const maxSec = tel.segMaxSec !== undefined ? tel.segMaxSec : (segStart + segSpan * 0.94);
+    const maxRel = Math.max(0.3, (maxSec - segStart + dur) % dur || (segSpan * 0.94));
+    const rel = circularDiff(tel.curTrackSec, segStart);
+
+    if (Math.abs(rel) > dur * 0.42) {
+      tel.curTrackSec = (segStart + segSpan * 0.25) % dur;
+    } else if (rel < 0) {
+      // Vettura reale già entrata nel mini-settore successivo: accelerazione fluida di recupero senza scatti
+      const behindSec = -rel;
+      const catchupBoost = Math.min(0.85, behindSec * 0.38);
+      pace *= (1.0 + catchupBoost);
+    } else {
+      if (tel.targetTrackSec !== undefined) {
+        const tauErr = circularDiff(tel.targetTrackSec, tel.curTrackSec);
+        if (Math.abs(tauErr) < segSpan * 1.5) {
+          pace *= (1.0 + Math.max(-0.18, Math.min(0.22, tauErr * 0.30)));
+        }
+      }
+      if (rel >= maxRel * 0.75) {
+        const ratio = Math.min(1.0, (rel - maxRel * 0.75) / Math.max(0.10, maxRel * 0.25));
+        const easeOut = 1.0 - 0.55 * (0.5 - 0.5 * Math.cos(ratio * Math.PI));
+        pace *= easeOut;
+        if (rel > maxRel) {
+          const over = rel - maxRel;
+          pace *= Math.max(0.65, Math.exp(-over / Math.max(2.5, segSpan)));
+        }
       }
     }
-    if (tel.segStartSec !== undefined && tel.segEndSec !== undefined && tel.segEndSec > tel.segStartSec) {
-      const maxSec = tel.segMaxSec !== undefined ? tel.segMaxSec : (tel.segEndSec - 0.04);
-      if (sec > maxSec) {
-        // Asintoto dolce progressivo: la vettura decelera dolcemente invece di bloccarsi contro un muro
-        const over = sec - maxSec;
-        const softHeadroom = Math.max(0.08, (tel.segEndSec - maxSec) * 0.7);
-        sec = maxSec + (1 - Math.exp(-over / softHeadroom)) * softHeadroom;
-      }
-      if (sec < tel.segStartSec) sec = tel.segStartSec;
-    }
-    return ((sec % dur) + dur) % dur;
+
+    // Mantiene sempre moto positivo continuo (anche durante giri di raffreddamento in prova libera)
+    pace = Math.max(0.28, Math.min(2.10, pace));
+    tel.curTrackSec = ((tel.curTrackSec + dt * pace) % dur + dur) % dur;
+    tel.anchorTrackSec = tel.curTrackSec;
+    tel.anchorSimSec = t;
+    return tel.curTrackSec;
   }
   const drvIdx = GRID_ORDER.indexOf(drvKey);
   // Distacco realistico sfalsato tra i 22 piloti lungo il nastro d'asfalto

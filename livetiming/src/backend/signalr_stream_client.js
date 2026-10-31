@@ -277,7 +277,7 @@ class SignalRStreamClient {
           break;
         case 'TimingAppData':
           this.stateStore.updateTimingAppData(data);
-          this.notifyUpdate('TYRES', data);
+          this.notifyUpdate('TYRES', this.stateStore.getTyresSummary());
           this.notifyUpdate('TIMING', this.stateStore.getLeaderboard());
           break;
         case 'SessionInfo':

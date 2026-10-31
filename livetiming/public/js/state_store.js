@@ -24,24 +24,37 @@ function deepMerge(target, source) {
     const tgtVal = target[key];
 
     if (Array.isArray(tgtVal) && isPlainObject(srcVal)) {
-      // Merge indexed object delta into existing array
+      // Merge indexed object delta into existing array without losing sibling elements or properties
       for (const idxKey of Object.keys(srcVal)) {
         const idx = Number(idxKey);
-        if (!Number.isNaN(idx)) {
-          if (isPlainObject(tgtVal[idx]) && isPlainObject(srcVal[idxKey])) {
+        if (!Number.isNaN(idx) && idx >= 0) {
+          if (isPlainObject(srcVal[idxKey])) {
+            if (!isPlainObject(tgtVal[idx])) {
+              tgtVal[idx] = {};
+            }
             deepMerge(tgtVal[idx], srcVal[idxKey]);
           } else {
             tgtVal[idx] = srcVal[idxKey];
           }
         }
       }
+    } else if (isPlainObject(tgtVal) && Array.isArray(srcVal)) {
+      // Merge array snapshot/update into existing indexed object or replace with cloned array
+      const mergedArr = srcVal.map((item, idx) => {
+        const existing = tgtVal[String(idx)];
+        if (isPlainObject(existing) && isPlainObject(item)) {
+          return deepMerge(Object.assign({}, existing), item);
+        }
+        return isPlainObject(item) ? deepMerge({}, item) : item;
+      });
+      target[key] = mergedArr;
     } else if (isPlainObject(srcVal)) {
       if (!isPlainObject(tgtVal)) {
         target[key] = {};
       }
       deepMerge(target[key], srcVal);
     } else if (Array.isArray(srcVal)) {
-      target[key] = srcVal.slice();
+      target[key] = srcVal.map(item => (isPlainObject(item) ? deepMerge({}, item) : item));
     } else {
       target[key] = srcVal;
     }
@@ -497,30 +510,34 @@ class StateStore {
       const pitOut = Boolean(line.PitOut);
 
       // Extract tyre stints (supports Array or indexed Object {"0": ..., "1": ...})
+      // Always take the latest stint for real-time TotalLaps/New, and inherit Compound if a partial delta omitted it
       const stintsRaw = appLine.Stints;
       let currentStint = null;
-      if (Array.isArray(stintsRaw)) {
+      let resolvedCompound = null;
+      if (Array.isArray(stintsRaw) && stintsRaw.length > 0) {
         for (let i = stintsRaw.length - 1; i >= 0; i--) {
           const s = stintsRaw[i];
-          if (s && (s.Compound || s.compound)) {
-            currentStint = s;
-            break;
+          if (s && typeof s === 'object') {
+            if (!currentStint) currentStint = s;
+            if (!resolvedCompound && (s.Compound || s.compound)) {
+              resolvedCompound = s.Compound || s.compound;
+            }
+            if (currentStint && resolvedCompound) break;
           }
-        }
-        if (!currentStint && stintsRaw.length > 0) {
-          currentStint = stintsRaw[stintsRaw.length - 1];
         }
       } else if (stintsRaw && typeof stintsRaw === 'object') {
-        const keys = Object.keys(stintsRaw).sort((a, b) => Number(a) - Number(b));
+        const keys = Object.keys(stintsRaw)
+          .filter(k => !Number.isNaN(Number(k)))
+          .sort((a, b) => Number(a) - Number(b));
         for (let i = keys.length - 1; i >= 0; i--) {
           const s = stintsRaw[keys[i]];
-          if (s && (s.Compound || s.compound)) {
-            currentStint = s;
-            break;
+          if (s && typeof s === 'object') {
+            if (!currentStint) currentStint = s;
+            if (!resolvedCompound && (s.Compound || s.compound)) {
+              resolvedCompound = s.Compound || s.compound;
+            }
+            if (currentStint && resolvedCompound) break;
           }
-        }
-        if (!currentStint && keys.length > 0) {
-          currentStint = stintsRaw[keys[keys.length - 1]];
         }
       }
 
@@ -610,22 +627,21 @@ class StateStore {
         }
       }
 
-      const rawCompound = currentStint ? (currentStint.Compound || currentStint.compound) : null;
+      const rawCompound = resolvedCompound || (currentStint ? (currentStint.Compound || currentStint.compound) : null);
       const tyreCompound = rawCompound ? String(rawCompound).toUpperCase() : 'UNKNOWN';
-      const stintTot = currentStint ? (Number(currentStint.TotalLaps) || 0) : 0;
-      const startLaps = currentStint ? (Number(currentStint.StartLaps) || 0) : 0;
-      const stintLapNum = currentStint && currentStint.LapNumber !== undefined ? Number(currentStint.LapNumber) : 0;
+      const hasTotalLaps = currentStint && currentStint.TotalLaps !== undefined && currentStint.TotalLaps !== null && currentStint.TotalLaps !== '';
+      const stintTot = hasTotalLaps ? Math.max(0, Number(currentStint.TotalLaps) || 0) : null;
+      const hasStartLaps = currentStint && currentStint.StartLaps !== undefined && currentStint.StartLaps !== null && currentStint.StartLaps !== '';
+      const startLaps = hasStartLaps ? Math.max(0, Number(currentStint.StartLaps) || 0) : 0;
       const driverCompletedLaps = line.NumberOfLaps !== undefined ? Number(line.NumberOfLaps) : (this.lapCount.CurrentLap || 0);
 
       let tyreAge = 0;
-      if (stintTot > 0) {
+      if (stintTot !== null) {
         tyreAge = stintTot;
-      } else if (driverCompletedLaps > 0 && stintLapNum > 0 && driverCompletedLaps >= stintLapNum) {
-        tyreAge = startLaps + (driverCompletedLaps - stintLapNum);
+      } else if (currentStint) {
+        tyreAge = startLaps;
       } else if (driverCompletedLaps > 0) {
-        tyreAge = Math.max(1, driverCompletedLaps);
-      } else {
-        tyreAge = startLaps > 0 ? startLaps : 0;
+        tyreAge = driverCompletedLaps;
       }
       const tyreNew = currentStint ? (currentStint.New === true || currentStint.New === 'true') : false;
 

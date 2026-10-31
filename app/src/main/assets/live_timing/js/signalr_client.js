@@ -304,7 +304,10 @@ class SignalRStreamClient {
     }
 
     // 2. Classifica Live & Dati di Sessione
-    if (feedName === 'TimingData' || feedName === 'TimingDataF1' || feedName === 'TimingAppData' || feedName === 'SessionData') {
+    if (feedName === 'TimingAppData') {
+      this.handleTimingAppData(data);
+      this.notifyMessage(feedName, data);
+    } else if (feedName === 'TimingData' || feedName === 'TimingDataF1' || feedName === 'SessionData') {
       this.handleTimingData(data);
     } else if (feedName === 'SessionInfo') {
       this.handleSessionInfo(data);
@@ -528,53 +531,69 @@ class SignalRStreamClient {
     if (!lines || typeof lines !== 'object') return;
 
     for (const [key, appLine] of Object.entries(lines)) {
-      if (!appLine) continue;
+      if (!appLine || typeof appLine !== 'object') continue;
       const drvNum = String(appLine.racingNumber || appLine.RacingNumber || key);
-      const stintsRaw = appLine.Stints;
-      if (!stintsRaw) continue;
+      const stintsRaw = appLine.Stints || appLine.stints;
+      if (!stintsRaw || typeof stintsRaw !== 'object') continue;
+
+      if (!DRIVER_TELEMETRY[drvNum]) DRIVER_TELEMETRY[drvNum] = {};
+      if (!DRIVER_TELEMETRY[drvNum].stintsState) DRIVER_TELEMETRY[drvNum].stintsState = {};
+      const stintsState = DRIVER_TELEMETRY[drvNum].stintsState;
+
+      if (Array.isArray(stintsRaw)) {
+        stintsRaw.forEach((s, idx) => {
+          if (s && typeof s === 'object') {
+            stintsState[String(idx)] = Object.assign({}, stintsState[String(idx)] || {}, s);
+          }
+        });
+      } else {
+        for (const [sIdx, s] of Object.entries(stintsRaw)) {
+          if (s && typeof s === 'object') {
+            stintsState[String(sIdx)] = Object.assign({}, stintsState[String(sIdx)] || {}, s);
+          }
+        }
+      }
+
+      const sortedKeys = Object.keys(stintsState)
+        .filter(k => !Number.isNaN(Number(k)))
+        .sort((a, b) => Number(a) - Number(b));
 
       let currentStint = null;
-      if (Array.isArray(stintsRaw)) {
-        for (let i = stintsRaw.length - 1; i >= 0; i--) {
-          const s = stintsRaw[i];
-          if (s && (s.Compound || s.compound)) {
-            currentStint = s;
-            break;
+      let resolvedComp = null;
+      for (let i = sortedKeys.length - 1; i >= 0; i--) {
+        const s = stintsState[sortedKeys[i]];
+        if (s && typeof s === 'object') {
+          if (!currentStint) currentStint = s;
+          if (!resolvedComp && (s.Compound || s.compound)) {
+            resolvedComp = s.Compound || s.compound;
           }
+          if (currentStint && resolvedComp) break;
         }
-        if (!currentStint && stintsRaw.length > 0) currentStint = stintsRaw[stintsRaw.length - 1];
-      } else if (typeof stintsRaw === 'object') {
-        const keys = Object.keys(stintsRaw).sort((a, b) => Number(a) - Number(b));
-        for (let i = keys.length - 1; i >= 0; i--) {
-          const s = stintsRaw[keys[i]];
-          if (s && (s.Compound || s.compound)) {
-            currentStint = s;
-            break;
-          }
-        }
-        if (!currentStint && keys.length > 0) currentStint = stintsRaw[keys[keys.length - 1]];
       }
 
       if (currentStint) {
-        const rawComp = (currentStint.Compound || currentStint.compound || '').toUpperCase();
+        const rawComp = String(resolvedComp || DRIVER_TELEMETRY[drvNum].tyreCompound || 'MEDIUM').toUpperCase();
         let shortCode = 'MED';
-        if (rawComp.includes('SOFT')) shortCode = 'SFT';
-        else if (rawComp.includes('HARD')) shortCode = 'HRD';
-        else if (rawComp.includes('INTER')) shortCode = 'INT';
+        if (rawComp.includes('SOFT') || rawComp === 'SFT') shortCode = 'SFT';
+        else if (rawComp.includes('HARD') || rawComp === 'HRD') shortCode = 'HRD';
+        else if (rawComp.includes('INTER') || rawComp === 'INT') shortCode = 'INT';
         else if (rawComp.includes('WET')) shortCode = 'WET';
 
-        const totalLaps = Number(currentStint.TotalLaps) || 0;
-        const startLaps = Number(currentStint.StartLaps) || 0;
+        const hasTot = currentStint.TotalLaps !== undefined && currentStint.TotalLaps !== null && currentStint.TotalLaps !== '';
+        const hasStart = currentStint.StartLaps !== undefined && currentStint.StartLaps !== null && currentStint.StartLaps !== '';
+        const startLaps = hasStart ? Math.max(0, Number(currentStint.StartLaps) || 0) : 0;
+        const totalLaps = hasTot ? Math.max(0, Number(currentStint.TotalLaps) || 0) : startLaps;
         const stintLapNum = Number(currentStint.LapNumber) || 0;
 
-        if (!DRIVER_TELEMETRY[drvNum]) DRIVER_TELEMETRY[drvNum] = {};
         DRIVER_TELEMETRY[drvNum].tyreTotalLaps = totalLaps;
+        DRIVER_TELEMETRY[drvNum].tyreAge = totalLaps;
+        DRIVER_TELEMETRY[drvNum].hasLiveTyreAge = true;
         DRIVER_TELEMETRY[drvNum].tyreStartLaps = startLaps;
         DRIVER_TELEMETRY[drvNum].tyreStintLapNumber = stintLapNum;
-        DRIVER_TELEMETRY[drvNum].tyreCompound = rawComp || 'SOFT';
+        DRIVER_TELEMETRY[drvNum].tyreCompound = rawComp;
 
         DRIVER_STINTS[drvNum] = [{
-          compound: rawComp || 'SOFT',
+          compound: rawComp,
           code: shortCode,
           age: totalLaps,
           totalLaps: totalLaps,
@@ -626,8 +645,10 @@ class SignalRStreamClient {
         else if (cmp.includes('HARD')) shortCode = 'HRD';
         else if (cmp.includes('INTER')) shortCode = 'INT';
         else if (cmp.includes('WET')) shortCode = 'WET';
-        const ageVal = Number(line.tyreAge) || 0;
+        const ageVal = Math.max(0, Number(line.tyreAge) || 0);
         DRIVER_TELEMETRY[drvNum].tyreAge = ageVal;
+        DRIVER_TELEMETRY[drvNum].tyreTotalLaps = ageVal;
+        DRIVER_TELEMETRY[drvNum].hasLiveTyreAge = true;
         DRIVER_TELEMETRY[drvNum].tyreCompound = cmp;
         DRIVER_TELEMETRY[drvNum].tyreNew = Boolean(line.tyreNew);
         DRIVER_STINTS[drvNum] = [{
@@ -705,6 +726,14 @@ class SignalRStreamClient {
         if (line.pitOut) DRIVER_TELEMETRY[drvNum].inPit = false;
       }
 
+      if (DRIVER_TELEMETRY[drvNum].inPit) {
+        DRIVER_TELEMETRY[drvNum].wasInPit = true;
+        DRIVER_TELEMETRY[drvNum].curTrackSec = 0;
+      } else if (DRIVER_TELEMETRY[drvNum].wasInPit) {
+        DRIVER_TELEMETRY[drvNum].wasInPit = false;
+        DRIVER_TELEMETRY[drvNum].curTrackSec = 0;
+      }
+
       // Speed traps live (ST, FL, I1, I2) per calibrare il picco velocistico sul rettilineo
       const rawSpeeds = line.Speeds || line.speeds;
       if (rawSpeeds && typeof rawSpeeds === 'object') {
@@ -760,21 +789,26 @@ class SignalRStreamClient {
         const n2 = segs2.length;
         const totalSegs = n0 + n1 + n2;
         if (totalSegs > 0) {
-          const countContiguous = (arr) => {
-            let c = 0;
+          // Include Status 2064 (pitlane exit/entry) and find highest active segment index per sector
+          // so cars on Out-Laps / In-Laps never freeze at mini-sector 0
+          const countActiveDone = (arr) => {
+            let lastDone = -1;
             for (let i = 0; i < arr.length; i++) {
               const st = Number(arr[i] && arr[i].Status);
-              if (st > 0 && st !== 2064) c++;
-              else break;
+              if (st > 0) lastDone = i;
             }
-            return c;
+            return lastDone + 1;
           };
-          const d0 = countContiguous(segs0);
-          const d1 = countContiguous(segs1);
-          const d2 = countContiguous(segs2);
+          const d0 = countActiveDone(segs0);
+          const d1 = countActiveDone(segs1);
+          const d2 = countActiveDone(segs2);
           if (d0 + d1 + d2 > 0) {
             let currentMiniSector = 0;
-            if (d0 < n0) {
+            if (d2 > 0 && d2 < n2 && d1 === n1) {
+              currentMiniSector = n0 + n1 + d2;
+            } else if (d1 > 0 && d1 < n1 && (d0 === n0 || d2 === 0)) {
+              currentMiniSector = n0 + d1;
+            } else if (d0 < n0) {
               currentMiniSector = d0;
             } else if (d1 < n1) {
               currentMiniSector = n0 + d1;
@@ -962,85 +996,80 @@ class SignalRStreamClient {
           }
         }
 
-        // 3. Spaziatura intra-mini-settore ordinata per classifica e INT reale
+        // 3. Spaziatura intra-mini-settore fluida e continua (senza scambi o salti bruschi)
         const nowSimSec = typeof currentSecond !== 'undefined' ? currentSecond : 0;
-        let idx = 0;
-        while (idx < allDrvKeys.length) {
-          const drvK = allDrvKeys[idx];
-          const tel = DRIVER_TELEMETRY[drvK];
-          if (!tel || tel.currentMiniSector === undefined || tel.inPit || tel.isRetired) {
-            idx++;
-            continue;
-          }
-          const mSec = tel.currentMiniSector;
-          const group = [drvK];
-          let j = idx + 1;
-          while (j < allDrvKeys.length) {
-            const nextK = allDrvKeys[j];
-            const nextTel = DRIVER_TELEMETRY[nextK];
-            if (!nextTel || nextTel.inPit || nextTel.isRetired) {
-              j++;
-              continue;
-            }
-            if (nextTel.currentMiniSector === mSec) {
-              group.push(nextK);
-              j++;
-            } else {
-              break;
-            }
-          }
+        const dur = typeof LAP_DURATION !== 'undefined' && LAP_DURATION ? LAP_DURATION : 90.0;
+        const circularSecDiff = (a, b) => {
+          let d = (a - b) % dur;
+          if (d > dur * 0.5) d -= dur;
+          if (d < -dur * 0.5) d += dur;
+          return d;
+        };
 
-          const segStart = tel.segStartSec || 0;
-          const segEnd = tel.segEndSec || (segStart + 4.0);
-          const segSpan = Math.max(0.2, segEnd - segStart);
-          const usableStart = segStart + segSpan * 0.06;
-          const usableEnd = segEnd - segSpan * 0.04;
-          const usableSpan = Math.max(0.1, usableEnd - usableStart);
+        const byMiniSector = {};
+        for (const drvK of allDrvKeys) {
+          const tel = DRIVER_TELEMETRY[drvK];
+          if (!tel || tel.currentMiniSector === undefined || tel.inPit || tel.isRetired) continue;
+          const mKey = String(tel.currentMiniSector);
+          if (!byMiniSector[mKey]) byMiniSector[mKey] = [];
+          byMiniSector[mKey].push(drvK);
+        }
+
+        for (const group of Object.values(byMiniSector)) {
+          const firstTel = DRIVER_TELEMETRY[group[0]];
+          const segStart = firstTel.segStartSec || 0;
+          const segEnd = firstTel.segEndSec || (segStart + 4.0);
+          const segSpan = Math.max(0.4, (segEnd - segStart + dur) % dur || 4.0);
+          const usableStart = segStart + segSpan * 0.08;
+          const usableEnd = segStart + segSpan * 0.94;
 
           if (group.length === 1) {
-            const segKey = mSec + '/' + (tel.totalMiniSectors || 22) + ':solo';
+            const drvK = group[0];
+            const tel = DRIVER_TELEMETRY[drvK];
+            const segKey = tel.currentMiniSector + '/' + (tel.totalMiniSectors || 22) + ':solo';
             tel.segMaxSec = usableEnd;
+            tel.targetTrackSec = undefined;
+            if (tel.curTrackSec === undefined) {
+              tel.curTrackSec = (segStart + segSpan * 0.25) % dur;
+              tel.lastTrackStepT = nowSimSec;
+            }
             if (tel.lastSegKey !== segKey) {
               tel.lastSegKey = segKey;
-              const curSec = (tel.anchorTrackSec !== undefined && tel.anchorSimSec !== undefined && typeof getDriverTrackSec === 'function')
-                ? getDriverTrackSec(drvK, nowSimSec)
-                : usableStart;
-              tel.anchorTrackSec = curSec;
+              tel.anchorTrackSec = tel.curTrackSec;
               tel.anchorSimSec = nowSimSec;
-              tel.targetTrackSec = undefined;
             }
           } else {
-            const cumInt = [0];
-            for (let k = 1; k < group.length; k++) {
-              const tMember = DRIVER_TELEMETRY[group[k]] || {};
-              const dInt = parseDeltaSec(tMember.interval);
-              const step = dInt !== null && dInt > 0 ? Math.min(3.5, Math.max(0.18, dInt)) : 0.45;
-              cumInt.push(cumInt[k - 1] + step);
-            }
-            const totalGroupInt = Math.max(0.3, cumInt[cumInt.length - 1]);
-            const scale = totalGroupInt > usableSpan * 0.85 ? (usableSpan * 0.85) / totalGroupInt : 1.0;
+            group.sort((ka, kb) => {
+              const ta = DRIVER_TELEMETRY[ka] || {};
+              const tb = DRIVER_TELEMETRY[kb] || {};
+              const sa = ta.curTrackSec !== undefined ? ta.curTrackSec : usableStart;
+              const sb = tb.curTrackSec !== undefined ? tb.curTrackSec : usableStart;
+              return circularSecDiff(sb, segStart) - circularSecDiff(sa, segStart);
+            });
+            const minSpacingSec = Math.min(0.38, (segSpan * 0.75) / group.length);
+            const leadTel = DRIVER_TELEMETRY[group[0]] || {};
+            let leadRel = leadTel.curTrackSec !== undefined ? circularSecDiff(leadTel.curTrackSec, segStart) : (segSpan * 0.5);
+            leadRel = Math.max(segSpan * 0.20, Math.min(segSpan * 0.94, leadRel));
 
             for (let k = 0; k < group.length; k++) {
               const memberKey = group[k];
               const mTel = DRIVER_TELEMETRY[memberKey];
-              const offsetFromFront = cumInt[k] * scale;
-              const memberMaxSec = Math.max(usableStart, usableEnd - offsetFromFront);
-              const memberStartSec = Math.max(segStart + 0.02, memberMaxSec - Math.min(0.6, segSpan * 0.2));
+              const targetRel = Math.max(segSpan * 0.06, leadRel - k * minSpacingSec);
+              const memberMaxSec = segStart + Math.max(targetRel, segSpan * 0.86 - k * minSpacingSec);
               mTel.segMaxSec = memberMaxSec;
-              const segKey = mSec + '/' + (mTel.totalMiniSectors || 22) + ':' + k + '/' + group.length;
+              mTel.targetTrackSec = (segStart + targetRel) % dur;
+              const segKey = mTel.currentMiniSector + '/' + (mTel.totalMiniSectors || 22) + ':' + k + '/' + group.length;
+              if (mTel.curTrackSec === undefined) {
+                mTel.curTrackSec = mTel.targetTrackSec;
+                mTel.lastTrackStepT = nowSimSec;
+              }
               if (mTel.lastSegKey !== segKey) {
                 mTel.lastSegKey = segKey;
-                const curSec = (mTel.anchorTrackSec !== undefined && mTel.anchorSimSec !== undefined && typeof getDriverTrackSec === 'function')
-                  ? getDriverTrackSec(memberKey, nowSimSec)
-                  : memberStartSec;
-                mTel.anchorTrackSec = curSec;
+                mTel.anchorTrackSec = mTel.curTrackSec;
                 mTel.anchorSimSec = nowSimSec;
-                mTel.targetTrackSec = memberMaxSec;
               }
             }
           }
-
-          idx = j;
         }
       }
     }

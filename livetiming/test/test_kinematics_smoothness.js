@@ -123,4 +123,63 @@ for (let i = 1; i < deltas1.length; i++) {
 }
 
 console.log('✅ Zero spikes detected in multi-car grouped pacing!');
+
+// Test 3: Free Practice Out-Lap with Status 2064 (pitlane exit) & Slow Cooldown Lap (never stopping)
+console.log('[TEST 3] Checking Free Practice Out-Lap (Status 2064), Pit Entry/Exit & Cooldown Lap...');
+const fpLb = [
+  {
+    racingNumber: '11',
+    bestLapTime: '1:18.500',
+    inPit: false,
+    pitOut: true,
+    sectors: {
+      '0': { Segments: [{ Status: 2064 }, { Status: 2064 }, { Status: 2049 }, { Status: 2049 }, { Status: 0 }, { Status: 0 }] },
+      '1': { Segments: [{ Status: 0 }, { Status: 0 }, { Status: 0 }, { Status: 0 }] },
+      '2': { Segments: [{ Status: 0 }, { Status: 0 }, { Status: 0 }, { Status: 0 }] }
+    }
+  }
+];
+
+const anchor11 = tc._computeExactMiniSectorAnchor(fpLb[0].sectors);
+assert.strictEqual(anchor11.currentMiniSector, 4, 'Out-lap with Status 2064 at start of S1 must advance to mini-sector 4, not freeze at 0');
+
+tc.updatePositionsFromLeaderboard(fpLb);
+// Simulate 600 frames (10 seconds) in the SAME mini-sector (slow cooldown lap in Free Practice)
+let prevPt11 = tc._sampleTrackPointAtTau(tc.driverLapState['11'].tauSec);
+for (let frame = 0; frame < 600; frame++) {
+  simNow += 16.666;
+  tc._stepKinematics(simNow);
+  const curPt11 = tc._sampleTrackPointAtTau(tc.driverLapState['11'].tauSec);
+  const d11 = Math.hypot(curPt11.x - prevPt11.x, curPt11.y - prevPt11.y);
+  assert(d11 > 0.01, `Placeholder stopped completely at frame ${frame} during slow Free Practice lap (d=${d11})`);
+  prevPt11 = curPt11;
+}
+console.log('✅ Out-Lap Status 2064 and 10s slow cooldown lap verified (placeholder never stops)');
+
+// Test 4: Pit entry from Sector 3 and Pit exit transition (no backward wrap or teleport back to S3)
+const pitEntryLb = [
+  {
+    racingNumber: '11',
+    bestLapTime: '1:18.500',
+    inPit: true,
+    pitOut: false,
+    sectors: fpLb[0].sectors
+  }
+];
+tc.driverLapState['11'].distMeters = tc.trackLengthMeters - 80; // End of Sector 3 near pit entry
+tc.updatePositionsFromLeaderboard(pitEntryLb);
+for (let frame = 0; frame < 120; frame++) {
+  simNow += 16.666;
+  tc._stepKinematics(simNow);
+}
+assert(tc.driverLapState['11'].tauSec < 10, 'While in pit, tauSec must be synced near pit exit (0..10s)');
+
+// Now exit pit
+pitEntryLb[0].inPit = false;
+pitEntryLb[0].pitOut = true;
+tc.updatePositionsFromLeaderboard(pitEntryLb);
+tc._stepKinematics(simNow + 16.666);
+assert(tc.driverLapState['11'].tauSec < 15, 'Upon pit exit, car must start from pit exit and never teleport back to Sector 3');
+console.log('✅ Pit entry and pit exit transition verified without backward wrap or teleport');
+
 console.log('🎉 ALL KINEMATIC SMOOTHNESS TESTS PASSED!');

@@ -75,6 +75,7 @@ class TimingTower {
 
   updateTyres(tyresPayload) {
     if (!tyresPayload || typeof tyresPayload !== 'object') return;
+    if (!this.stintsByDriver) this.stintsByDriver = {};
     const lines = tyresPayload.Lines || tyresPayload;
     for (const [key, item] of Object.entries(lines)) {
       if (!item) continue;
@@ -82,33 +83,51 @@ class TimingTower {
       const stintsRaw = item.stints || item.Stints;
       if (!stintsRaw) continue;
 
-      let currentStint = null;
+      if (!this.stintsByDriver[num]) this.stintsByDriver[num] = {};
+      const driverStints = this.stintsByDriver[num];
+
       if (Array.isArray(stintsRaw)) {
-        for (let i = stintsRaw.length - 1; i >= 0; i--) {
-          if (stintsRaw[i] && (stintsRaw[i].Compound || stintsRaw[i].compound)) {
-            currentStint = stintsRaw[i];
-            break;
+        stintsRaw.forEach((s, idx) => {
+          if (s && typeof s === 'object') {
+            driverStints[String(idx)] = Object.assign({}, driverStints[String(idx)] || {}, s);
           }
-        }
-        if (!currentStint && stintsRaw.length > 0) currentStint = stintsRaw[stintsRaw.length - 1];
+        });
       } else if (typeof stintsRaw === 'object') {
-        const keys = Object.keys(stintsRaw).sort((a, b) => Number(a) - Number(b));
-        for (let i = keys.length - 1; i >= 0; i--) {
-          const s = stintsRaw[keys[i]];
-          if (s && (s.Compound || s.compound)) {
-            currentStint = s;
-            break;
+        for (const [sIdx, s] of Object.entries(stintsRaw)) {
+          if (s && typeof s === 'object') {
+            driverStints[String(sIdx)] = Object.assign({}, driverStints[String(sIdx)] || {}, s);
           }
         }
-        if (!currentStint && keys.length > 0) currentStint = stintsRaw[keys[keys.length - 1]];
+      }
+
+      const sortedKeys = Object.keys(driverStints)
+        .filter(k => !Number.isNaN(Number(k)))
+        .sort((a, b) => Number(a) - Number(b));
+
+      let currentStint = null;
+      let resolvedComp = null;
+      for (let i = sortedKeys.length - 1; i >= 0; i--) {
+        const s = driverStints[sortedKeys[i]];
+        if (s && typeof s === 'object') {
+          if (!currentStint) currentStint = s;
+          if (!resolvedComp && (s.Compound || s.compound)) {
+            resolvedComp = s.Compound || s.compound;
+          }
+          if (currentStint && resolvedComp) break;
+        }
       }
 
       if (currentStint) {
-        const comp = currentStint.Compound || currentStint.compound;
+        const comp = resolvedComp || (this.tyresCache[num] && this.tyresCache[num].compound);
+        const hasTot = currentStint.TotalLaps !== undefined && currentStint.TotalLaps !== null && currentStint.TotalLaps !== '';
+        const hasStart = currentStint.StartLaps !== undefined && currentStint.StartLaps !== null && currentStint.StartLaps !== '';
+        const ageVal = hasTot
+          ? Math.max(0, Number(currentStint.TotalLaps) || 0)
+          : (hasStart ? Math.max(0, Number(currentStint.StartLaps) || 0) : ((this.tyresCache[num] && this.tyresCache[num].age) || 0));
         if (comp) {
           this.tyresCache[num] = {
             compound: String(comp).toUpperCase(),
-            age: Number(currentStint.TotalLaps) || 0,
+            age: ageVal,
             new: currentStint.New === true || currentStint.New === 'true'
           };
         }
@@ -249,12 +268,15 @@ class TimingTower {
 
       // Usa prioritariamente i dati gomme streaming live aggiornati
       const cachedTyre = this.tyresCache[row.racingNumber];
-      const tyreCompound = (row.tyreCompound && row.tyreCompound !== 'UNKNOWN')
+      const hasRowCompound = Boolean(row.tyreCompound && row.tyreCompound !== 'UNKNOWN');
+      const tyreCompound = hasRowCompound
         ? row.tyreCompound
         : (cachedTyre ? cachedTyre.compound : 'MEDIUM');
-      const tyreAge = (row.tyreAge !== undefined && row.tyreAge !== null && row.tyreAge > 0)
-        ? row.tyreAge
-        : (cachedTyre && cachedTyre.age ? cachedTyre.age : (row.tyreAge || 0));
+      const tyreAge = (hasRowCompound && row.tyreAge !== undefined && row.tyreAge !== null)
+        ? Number(row.tyreAge)
+        : ((row.tyreAge !== undefined && row.tyreAge !== null && row.tyreAge > 0)
+          ? Number(row.tyreAge)
+          : (cachedTyre && cachedTyre.age !== undefined ? cachedTyre.age : (row.tyreAge || 0)));
 
       this.tyresCache[row.racingNumber] = {
         compound: tyreCompound,
