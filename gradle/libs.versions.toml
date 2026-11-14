@@ -1,5 +1,6 @@
 [versions]
 agp = "8.7.2"
+sonarqube = "7.5.0.8588"
 json = "20240303"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -31,4 +32,5 @@ threetenbp = { module = "org.threeten:threetenbp", version.ref = "threetenbpVers
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
+sonarqube = { id = "org.sonarqube", version.ref = "sonarqube" }
 
