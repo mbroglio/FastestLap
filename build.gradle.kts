@@ -11,10 +11,20 @@ sonar {
         property("sonar.projectKey", "mbroglio_FastestLap")
         property("sonar.organization", "mbroglio")
         property("sonar.host.url", "https://sonarcloud.io")
-        property("sonar.androidLint.reportPaths", "app/build/reports/lint-results-debug.xml")
-        property(
-            "sonar.coverage.jacoco.xmlReportPaths",
-            "app/build/reports/coverage/test/debug/report.xml"
-        )
+    }
+}
+
+project(":app") {
+    extensions.configure<org.sonarqube.gradle.SonarExtension> {
+        properties {
+            property(
+                "sonar.androidLint.reportPaths",
+                layout.buildDirectory.file("reports/lint-results-debug.xml").get().asFile.absolutePath
+            )
+            property(
+                "sonar.coverage.jacoco.xmlReportPaths",
+                layout.buildDirectory.file("reports/coverage/test/debug/report.xml").get().asFile.absolutePath
+            )
+        }
     }
 }

@@ -35,12 +35,10 @@ jobs:
         run: ./gradlew compileDebugJavaWithJavac --no-configuration-cache
 
       - name: Run Android Lint
-        continue-on-error: true
-        run: ./gradlew lintDebug --no-configuration-cache
+        run: ./gradlew lintDebug --no-configuration-cache || true
 
       - name: Run unit tests and coverage report
-        continue-on-error: true
-        run: ./gradlew testDebugUnitTest createDebugUnitTestCoverageReport --no-configuration-cache
+        run: ./gradlew testDebugUnitTest createDebugUnitTestCoverageReport --no-configuration-cache || true
 
       - name: Analyze with SonarQube Cloud
         env:
