@@ -70,9 +70,10 @@ public class SignUpFragment extends DialogFragment {
 
     private void checkSignUpCredentials(String email, String password) {
         Log.d(TAG, "Email: " + email);
-        Log.d(TAG, "Password: " + password);
 
-        if (isEmailOk(email) & isPasswordOk(password)) {
+        boolean emailOk = isEmailOk(email);
+        boolean passwordOk = isPasswordOk(password);
+        if (emailOk && passwordOk) {
             //binding.progressBar.setVisibility(View.VISIBLE);
             if (!userViewModel.isAuthenticationError()) {
                 Log.i(TAG, "Getting user");

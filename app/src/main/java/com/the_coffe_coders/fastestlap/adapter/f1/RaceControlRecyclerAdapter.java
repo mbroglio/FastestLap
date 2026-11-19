@@ -294,6 +294,7 @@ public class RaceControlRecyclerAdapter
                         }
 
                     }
+                    break;
                 }
 
                 // ──────────────────────────────────────────────

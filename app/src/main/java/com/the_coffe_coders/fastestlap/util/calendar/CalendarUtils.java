@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import android.os.Environment;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -67,9 +66,8 @@ public class CalendarUtils {
         // Build ICS content representing all sessions
         String ics = buildIcsContent(context, weeklyRaces);
 
-        // Save file into app-specific external downloads directory (no runtime permission required)
-        File downloadsDir = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
-        if (downloadsDir == null) downloadsDir = context.getCacheDir();
+        // Save file into app-private cache directory served via FileProvider
+        File downloadsDir = context.getCacheDir();
 
         // Build a clean, human-readable filename based on the first race name (or timestamp fallback)
         File icsFile = getIcsFile(weeklyRaces, downloadsDir);
