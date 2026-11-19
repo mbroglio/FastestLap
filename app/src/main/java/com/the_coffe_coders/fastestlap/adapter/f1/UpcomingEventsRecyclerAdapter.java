@@ -26,7 +26,10 @@ import com.the_coffe_coders.fastestlap.util.ui.LoadingScreen;
 import com.the_coffe_coders.fastestlap.util.ui.NavigationUtils;
 import com.the_coffe_coders.fastestlap.util.ui.UIUtils;
 
+import org.threeten.bp.LocalDateTime;
+
 import java.util.List;
+import java.util.Locale;
 
 public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<UpcomingEventsRecyclerAdapter.UpcomingEventViewHolder> {
 
@@ -169,18 +172,36 @@ public class UpcomingEventsRecyclerAdapter extends RecyclerView.Adapter<Upcoming
         holder.eventConfirmedLayout.setVisibility(View.VISIBLE);
         holder.eventCancelledLayout.setVisibility(View.GONE);
 
+        LocalDateTime firstPracticeDateTime = weeklyRace.getFirstPractice() != null
+                ? weeklyRace.getFirstPractice().getStartDateTime()
+                : null;
+        LocalDateTime raceDateTime = weeklyRace.getDateTime();
+
+        String dateRange;
+        if (firstPracticeDateTime != null && raceDateTime != null) {
+            dateRange = firstPracticeDateTime.getDayOfMonth() + " - " + raceDateTime.getDayOfMonth();
+        } else if (raceDateTime != null) {
+            dateRange = String.valueOf(raceDateTime.getDayOfMonth());
+        } else {
+            dateRange = "--";
+        }
+
         UIUtils.multipleSetTextViewText(
                 new String[]{
                         context.getString(R.string.round_plus_value, weeklyRace.getRound()),
                         weeklyRace.getRaceName(),
-                        weeklyRace.getFirstPractice().getStartDateTime().getDayOfMonth() + " - " + weeklyRace.getDateTime().getDayOfMonth()},
+                        dateRange},
                 new TextView[]{
                         holder.roundTextView,
                         holder.gpTextViewConfirmed,
                         holder.dateTextView});
 
-        UIUtils.translateMonth(weeklyRace.getDateTime().getMonth().toString().substring(0, 3).toUpperCase(java.util.Locale.getDefault()),
-                holder.monthTextView, true);
+        if (raceDateTime != null) {
+            UIUtils.translateMonth(raceDateTime.getMonth().toString().substring(0, 3).toUpperCase(Locale.ROOT),
+                    holder.monthTextView, true);
+        } else {
+            UIUtils.singleSetTextViewText("--", holder.monthTextView);
+        }
     }
 
     private void setupEventCardIcon(WeeklyRace weeklyRace, UpcomingEventViewHolder holder) {
