@@ -291,10 +291,12 @@ public class RaceControlRecyclerAdapter
                                 return inflateFlagTrackCard(inflater, parent, flag, message);
                             if(msg.isPitLane())
                                 return inflatePitLaneCard(inflater, parent, flag, message);
+                            break;
                         }
-
+                        default:
+                            break;
                     }
-                    break;
+                    return inflateFlagTrackCard(inflater, parent, flag, message);
                 }
 
                 // ──────────────────────────────────────────────
