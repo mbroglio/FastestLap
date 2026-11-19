@@ -198,10 +198,11 @@ public class LastRaceHandler {
 
     private void updateLastRaceUIFinalStep(WeeklyRace race) {
         LocalDateTime dateTime = race.getDateTime();
+        String dayText = dateTime != null ? String.valueOf(dateTime.getDayOfMonth()) : "--";
 
         UIUtils.multipleSetTextViewText(
                 new String[]{
-                        String.valueOf(dateTime.getDayOfMonth()),
+                        dayText,
                         context.getString(R.string.round_plus_value, race.getRound())
                 },
                 new TextView[]{
@@ -210,8 +211,12 @@ public class LastRaceHandler {
                 }
         );
 
-        UIUtils.translateMonth(dateTime.getMonth().toString().substring(0, 3).toUpperCase(java.util.Locale.ROOT),
-                view.findViewById(R.id.last_race_month), true);
+        if (dateTime != null) {
+            UIUtils.translateMonth(dateTime.getMonth().toString().substring(0, 3).toUpperCase(java.util.Locale.ROOT),
+                    view.findViewById(R.id.last_race_month), true);
+        } else {
+            UIUtils.singleSetTextViewText("--", view.findViewById(R.id.last_race_month));
+        }
 
         MutableLiveData<Result> raceResultData = raceResultViewModel.getRaceResults(race.getRound());
         raceResultData.observe(lifecycleOwner, result -> {

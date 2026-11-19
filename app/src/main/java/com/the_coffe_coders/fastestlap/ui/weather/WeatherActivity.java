@@ -204,6 +204,9 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
     private void updateCurrentWeatherUI(WeatherInfo info) {
+        if (info == null) {
+            return;
+        }
         printWeatherInfoToConsole(info);
 
         UIUtils.multipleSetTextViewText(

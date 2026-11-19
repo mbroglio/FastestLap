@@ -72,21 +72,23 @@ public class TrackBioActivity extends AppCompatActivity {
         networkLiveData = new NetworkUtils(this);
 
         UIUtils.applyWindowInsets(trackBioLayout);
-        trackBioLayout.setOnRefreshListener(() -> {
-            if (networkLiveData.isConnected()) {
-                if (trackViewModel != null && trackId != null) {
-                    if (track != null && track.getCountry() != null && nationViewModel != null) {
-                        nationViewModel.refreshNation(track.getCountry());
+        if (trackBioLayout != null) {
+            trackBioLayout.setOnRefreshListener(() -> {
+                if (networkLiveData.isConnected()) {
+                    if (trackViewModel != null && trackId != null) {
+                        if (track != null && track.getCountry() != null && nationViewModel != null) {
+                            nationViewModel.refreshNation(track.getCountry());
+                        }
+                        trackViewModel.refreshTrack(trackId);
+                    } else {
+                        trackBioLayout.setRefreshing(false);
                     }
-                    trackViewModel.refreshTrack(trackId);
                 } else {
+                    android.widget.Toast.makeText(this, "No internet connection", android.widget.Toast.LENGTH_SHORT).show();
                     trackBioLayout.setRefreshing(false);
                 }
-            } else {
-                android.widget.Toast.makeText(this, "No internet connection", android.widget.Toast.LENGTH_SHORT).show();
-                trackBioLayout.setRefreshing(false);
-            }
-        });
+            });
+        }
 
         trackId = getIntent().getStringExtra("CIRCUIT_ID");
         Log.i("TrackBioActivity", "CIRCUIT_ID: " + trackId);

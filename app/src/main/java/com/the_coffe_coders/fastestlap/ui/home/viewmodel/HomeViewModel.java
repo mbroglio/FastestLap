@@ -42,12 +42,12 @@ public class HomeViewModel extends ViewModel {
 
     public MutableLiveData<Result> getDriverStandingsLiveData(Application application) {
         AppRoomDatabase database = application != null ? ServiceLocator.getInstance().getRoomDatabase(application) : null;
-        return DriverStandingRepository.getInstance(database, application.getApplicationContext()).getDriverStandings();
+        return DriverStandingRepository.getInstance(database, application != null ? application.getApplicationContext() : null).getDriverStandings();
     }
 
     public MutableLiveData<Result> getConstructorStandingsLiveData(Application application) {
         AppRoomDatabase database = application != null ? ServiceLocator.getInstance().getRoomDatabase(application) : null;
-        return ConstructorStandingRepository.getInstance(database, application.getApplicationContext()).getConstructorStandings();
+        return ConstructorStandingRepository.getInstance(database, application != null ? application.getApplicationContext() : null).getConstructorStandings();
     }
 
     // Helper method to find a specific driver in the standings list

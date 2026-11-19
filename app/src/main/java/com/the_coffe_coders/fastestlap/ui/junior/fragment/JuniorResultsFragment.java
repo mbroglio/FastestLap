@@ -132,6 +132,12 @@ public class JuniorResultsFragment extends Fragment {
 
     private void fetchResults() {
         MutableLiveData<Result> resultsLiveData = juniorCategoryViewModel.getResults(categoryType);
+        if (resultsLiveData == null) {
+            if (resultsLayout != null) {
+                resultsLayout.setRefreshing(false);
+            }
+            return;
+        }
         resultsLiveData.observe(requireActivity(), result -> {
             if (result != null) {
                 if (result instanceof Result.Loading) {

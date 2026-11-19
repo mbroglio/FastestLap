@@ -92,12 +92,14 @@ public class EventActivity extends AppCompatActivity {
         UIUtils.applyWindowInsets(toolbar);
 
         UIUtils.applyWindowInsets(eventLayout);
-        eventLayout.setOnRefreshListener(() -> {
-            if (weeklyRaceViewModel != null) {
-                weeklyRaceViewModel.refreshWeeklyRaces();
-            }
-            processRaceData();
-        });
+        if (eventLayout != null) {
+            eventLayout.setOnRefreshListener(() -> {
+                if (weeklyRaceViewModel != null) {
+                    weeklyRaceViewModel.refreshWeeklyRaces();
+                }
+                processRaceData();
+            });
+        }
 
         trackId = getIntent().getStringExtra("CIRCUIT_ID");
         Log.i(TAG, "Circuit ID: " + trackId);
@@ -264,8 +266,11 @@ public class EventActivity extends AppCompatActivity {
     }
 
     private void buildEventCardStepTwo(WeeklyRace weeklyRace, Track track, Nation nation) {
+        if (weeklyRace == null) {
+            return;
+        }
 
-        String gpName = (track != null && track.getGp_long_name() != null) ? track.getGp_long_name() : (weeklyRace != null ? weeklyRace.getRaceName() : "");
+        String gpName = (track != null && track.getGp_long_name() != null) ? track.getGp_long_name() : weeklyRace.getRaceName();
 
         UIUtils.multipleSetTextViewText(
                 new String[]{

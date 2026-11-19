@@ -17,6 +17,7 @@ import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.the_coffe_coders.fastestlap.R;
+import com.the_coffe_coders.fastestlap.domain.user.User;
 import com.the_coffe_coders.fastestlap.repository.user.IUserRepository;
 import com.the_coffe_coders.fastestlap.ui.profile.ProfileActivity;
 import com.the_coffe_coders.fastestlap.ui.standing.ConstructorsStandingActivity;
@@ -137,7 +138,11 @@ public class HomePageActivity extends AppCompatActivity {
     private void getUserPreferences() {
         IUserRepository userRepository = ServiceLocator.getInstance().getUserRepository(getApplication());
         UserViewModel userViewModel = new ViewModelProvider(getViewModelStore(), new UserViewModelFactory(userRepository)).get(UserViewModel.class);
-        String idToken = userViewModel.getLoggedUser().getIdToken();
+        User loggedUser = userViewModel.getLoggedUser();
+        if (loggedUser == null) {
+            return;
+        }
+        String idToken = loggedUser.getIdToken();
 
         userViewModel.getUserPreferences(idToken).observe(this, result -> {
             if (result.isSuccess()) {
