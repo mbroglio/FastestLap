@@ -73,11 +73,12 @@
                     android:layout_height="160dp"
                     android:background="@color/card_surface_elevated">
 
-                    <com.the_coffe_coders.fastestlap.util.ui.BottomCropImageView
+                    <com.google.android.material.imageview.ShapeableImageView
                         android:id="@+id/event_background_image"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:alpha="0.7"
+                        android:scaleType="centerCrop"
                         android:importantForAccessibility="no"
                         app:shapeAppearanceOverlay="@style/ShapeAppearance.FastestLap.BottomRoundedCard" />
 

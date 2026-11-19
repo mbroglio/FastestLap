@@ -730,6 +730,9 @@ public void createNotificationChannels(Context context) {
                         .load(imageUrl)
                         .submit()
                         .get();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                Log.w(TAG, "Interrupted loading notification image from URL: " + imageUrl + " -> " + e.getMessage());
             } catch (Exception e) {
                 Log.w(TAG, "Could not load notification image from URL: " + imageUrl + " -> " + e.getMessage());
             }
@@ -909,6 +912,9 @@ public void createNotificationChannels(Context context) {
                         .load(imageUrl)
                         .submit()
                         .get();
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                Log.w(TAG, "Interrupted loading image for general notification: " + e.getMessage());
             } catch (Exception e) {
                 Log.w(TAG, "Could not load image for general notification: " + e.getMessage());
             }

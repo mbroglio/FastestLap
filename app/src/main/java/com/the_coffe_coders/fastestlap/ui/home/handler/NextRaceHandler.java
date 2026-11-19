@@ -283,7 +283,7 @@ public class NextRaceHandler {
     }
 
     private void updateSessionType(Session nextEvent) {
-        String sessionId = nextEvent.getClass().getSimpleName().equals("Practice")
+        String sessionId = nextEvent instanceof Practice
                 ? "Practice" + ((Practice) nextEvent).getNumber()
                 : nextEvent.getClass().getSimpleName();
         TextView sessionTypeView = view.findViewById(R.id.next_session_type);
