@@ -5,7 +5,9 @@
     android:layout_height="25dp"
     android:paddingTop="3dp"
     android:paddingBottom="3dp"
-    android:background="@color/screen_background_color">
+    android:background="@color/screen_background_color"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="UseCompoundDrawables">
 
     <LinearLayout
         android:id="@+id/position_layout"
@@ -175,6 +177,7 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:contentDescription="@null"
             android:id="@+id/position_change_icon"
             android:layout_width="15dp"
             android:layout_height="15dp"
@@ -209,6 +212,7 @@
         android:orientation="horizontal">
 
         <ImageView
+            android:contentDescription="@null"
             android:id="@+id/tyre_icon"
             android:layout_width="24dp"
             android:layout_height="24dp"

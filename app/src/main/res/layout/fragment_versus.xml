@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.live.fragment.VersusFragment"
-    android:background="@color/screen_background_color">
+    android:background="@color/screen_background_color"
+    tools:ignore="UselessParent">
 
     <ScrollView
         android:layout_width="match_parent"

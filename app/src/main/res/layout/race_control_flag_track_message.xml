@@ -21,6 +21,7 @@
             android:orientation="horizontal">
 
             <ImageView
+                android:contentDescription="@null"
                 android:id="@+id/flag_1"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
@@ -40,6 +41,7 @@
             </TextView>
 
             <ImageView
+                android:contentDescription="@null"
                 android:id="@+id/flag_2"
                 android:layout_width="24dp"
                 android:layout_height="24dp"

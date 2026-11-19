@@ -29,6 +29,7 @@
             android:textColor="@color/white" />
 
         <ImageView
+            android:contentDescription="@null"
             android:id="@+id/morning_icon"
             android:layout_width="20dp"
             android:layout_height="20dp"
@@ -65,6 +66,7 @@
             android:text="@string/time_14_00" />
 
         <ImageView
+            android:contentDescription="@null"
             android:id="@+id/afternoon_icon"
             android:layout_width="20dp"
             android:layout_height="20dp"
@@ -101,6 +103,7 @@
             android:text="@string/time_19_00" />
 
         <ImageView
+            android:contentDescription="@null"
             android:id="@+id/evening_icon"
             android:layout_width="20dp"
             android:layout_height="20dp"

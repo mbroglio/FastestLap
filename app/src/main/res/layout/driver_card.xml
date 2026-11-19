@@ -17,7 +17,8 @@
     app:rippleColor="@color/ripple_color"
     app:strokeColor="@color/subtle_white_border"
     app:strokeWidth="1.5dp"
-    tools:context=".ui.standing.DriversStandingActivity">
+    tools:context=".ui.standing.DriversStandingActivity"
+    tools:ignore="UselessParent">
 
     <!-- Not Found / Error State -->
     <TextView

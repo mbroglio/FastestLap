@@ -16,7 +16,8 @@
     app:cardElevation="3dp"
     app:rippleColor="@color/ripple_color"
     app:strokeColor="@color/subtle_white_border"
-    app:strokeWidth="1.5dp">
+    app:strokeWidth="1.5dp"
+    tools:ignore="UselessParent">
 
     <!-- Team Card Container with Gradient Background -->
     <LinearLayout

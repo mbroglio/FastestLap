@@ -5,7 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.weather.WeatherActivity">
+    tools:context=".ui.weather.WeatherActivity"
+    tools:ignore="UseCompoundDrawables">
 
     <VideoView
         android:id="@+id/video_view"
@@ -192,6 +193,7 @@
                                 </TextView>
 
                                 <ImageView
+                                    android:contentDescription="@null"
                                     android:layout_width="24dp"
                                     android:layout_height="24dp"
                                     android:layout_marginStart="5dp"
@@ -325,6 +327,7 @@
                     android:orientation="horizontal">
 
                     <ImageView
+                        android:contentDescription="@null"
                         android:layout_width="@dimen/driver_photo_in_card"
                         android:layout_height="@dimen/driver_photo_in_card"
                         app:srcCompat="@drawable/windsock_icon">
@@ -498,6 +501,7 @@
                             </TextView>
 
                             <ImageView
+                                android:contentDescription="@null"
                                 android:id="@+id/day_1_weather_icon"
                                 android:layout_width="25dp"
                                 android:layout_height="25dp"
@@ -564,6 +568,7 @@
                             </TextView>
 
                             <ImageView
+                                android:contentDescription="@null"
                                 android:id="@+id/day_2_weather_icon"
                                 android:layout_width="25dp"
                                 android:layout_height="25dp"
@@ -630,6 +635,7 @@
                             </TextView>
 
                             <ImageView
+                                android:contentDescription="@null"
                                 android:id="@+id/day_3_weather_icon"
                                 android:layout_width="25dp"
                                 android:layout_height="25dp"

@@ -35,7 +35,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FastestLap"
-        tools:targetApi="31">
+        tools:targetApi="33"
+        tools:ignore="LockedOrientationActivity,DiscouragedApi">
         <activity
             android:name=".ui.junior.Formula3Activity"
             android:exported="false"

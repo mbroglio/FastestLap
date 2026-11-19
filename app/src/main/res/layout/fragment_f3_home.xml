@@ -50,6 +50,7 @@
                         android:layout_weight="1"
                         android:gravity="start"
                         android:maxLines="1"
+                        android:paddingStart="0dp"
                         android:paddingEnd="8dp"
                         android:text="@string/calendar">
 
@@ -97,6 +98,7 @@
                         android:layout_weight="1"
                         android:gravity="start"
                         android:maxLines="1"
+                        android:paddingStart="0dp"
                         android:paddingEnd="8dp"
                         android:text="@string/entry_list">
 
