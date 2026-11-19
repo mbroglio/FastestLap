@@ -5,7 +5,9 @@
     android:layout_height="25dp"
     android:paddingTop="3dp"
     android:paddingBottom="3dp"
-    android:background="@color/screen_background_color">
+    android:background="@color/screen_background_color"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="Overdraw">
 <!--
     <LinearLayout
         android:id="@+id/position_layout"

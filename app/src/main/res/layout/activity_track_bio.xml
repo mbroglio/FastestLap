@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/screen_background_color"
     tools:context=".ui.bio.TrackBioActivity"
-    tools:ignore="TooDeepLayout">
+    tools:ignore="Overdraw,TooDeepLayout">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"

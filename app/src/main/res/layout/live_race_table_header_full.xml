@@ -2,7 +2,9 @@
 <TableRow xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/screen_background_color">
+    android:background="@color/screen_background_color"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="HardcodedText,Overdraw">
 
     <TextView
         android:layout_width="0dp"

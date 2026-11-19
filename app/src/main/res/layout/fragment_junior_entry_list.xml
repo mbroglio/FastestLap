@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/screen_background_color"
-    tools:context=".ui.junior.fragment.JuniorEntryListFragment">
+    tools:context=".ui.junior.fragment.JuniorEntryListFragment"
+    tools:ignore="Overdraw">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/entry_list_layout"

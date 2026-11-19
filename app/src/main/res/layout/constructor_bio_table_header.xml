@@ -10,7 +10,8 @@
     android:paddingTop="10dp"
     android:paddingEnd="4dp"
     android:paddingBottom="10dp"
-    tools:context=".ui.bio.ConstructorBioActivity">
+    tools:context=".ui.bio.ConstructorBioActivity"
+    tools:ignore="Overdraw">
 
     <TextView
         style="@style/t10UpperCaseBoldWhiteLineLimited"

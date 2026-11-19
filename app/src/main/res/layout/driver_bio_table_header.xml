@@ -10,7 +10,8 @@
     android:paddingTop="10dp"
     android:paddingEnd="4dp"
     android:paddingBottom="10dp"
-    tools:context=".ui.bio.DriverBioActivity">
+    tools:context=".ui.bio.DriverBioActivity"
+    tools:ignore="Overdraw">
 
     <TextView
         android:id="@+id/season_year"

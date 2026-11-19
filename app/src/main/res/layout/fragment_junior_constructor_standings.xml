@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/screen_background_color"
-    tools:context=".ui.junior.fragment.JuniorConstructorStandingsFragment">
+    tools:context=".ui.junior.fragment.JuniorConstructorStandingsFragment"
+    tools:ignore="Overdraw">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/constructor_standings_layout"

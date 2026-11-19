@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/screen_background_color"
-    tools:context=".ui.junior.fragment.F3CarBioFragment">
+    tools:context=".ui.junior.fragment.F3CarBioFragment"
+    tools:ignore="Overdraw">
 
     <ScrollView
         android:layout_width="match_parent"

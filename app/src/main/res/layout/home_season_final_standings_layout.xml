@@ -3,7 +3,9 @@
     android:id="@+id/home_season_final_standings"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/screen_background_color">
+    android:background="@color/screen_background_color"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="Overdraw">
 
     <LinearLayout
         android:id="@+id/title"

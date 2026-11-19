@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.weather.WeatherActivity"
-    tools:ignore="UseCompoundDrawables">
+    tools:ignore="HardcodedText,UseCompoundDrawables">
 
     <VideoView
         android:id="@+id/video_view"

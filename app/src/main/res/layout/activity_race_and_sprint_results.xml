@@ -4,7 +4,9 @@
     android:id="@+id/activity_race_and_sprint_results"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/app_primary_red">
+    android:background="@color/app_primary_red"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="Overdraw">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/top_bar_layout"

@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@color/screen_background_color"
     tools:context=".ui.home.fragment.RacingFragment"
-    tools:ignore="UseCompoundDrawables">
+    tools:ignore="Overdraw,UseCompoundDrawables">
 
     <LinearLayout
         android:layout_width="match_parent"
