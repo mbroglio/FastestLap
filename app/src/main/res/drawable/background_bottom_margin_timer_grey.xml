@@ -1,7 +1,9 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <!-- Background color -->
-    <item>
+    <item
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="UnusedResources">
         <shape android:shape="rectangle">
             <solid android:color="@color/timer_gray" />
         </shape>

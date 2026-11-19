@@ -3,7 +3,9 @@
 
     <item
         android:left="-10dp"
-        android:top="-10dp">
+        android:top="-10dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="UnusedResources">
         <shape android:shape="rectangle">
             <stroke
                 android:width="3dp"

@@ -5,7 +5,9 @@
     android:layout_height="wrap_content"
     android:background="@drawable/round_background_grey"
     android:orientation="vertical"
-    android:padding="5dp">
+    android:padding="5dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="UnusedResources">
 <!--
     <TextView
         android:id="@+id/select_drivers_text_title"

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="UnusedResources">
     <dimen name="driver_photo_in_card">100dp</dimen>
     <dimen name="small_image">50dp</dimen>
     <dimen name="image_size_30dp">30dp</dimen>

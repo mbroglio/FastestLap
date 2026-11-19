@@ -7,7 +7,7 @@
     android:paddingBottom="3dp"
     android:background="@color/screen_background_color"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="Overdraw">
+    tools:ignore="Overdraw,UnusedResources">
 <!--
     <LinearLayout
         android:id="@+id/position_layout"
