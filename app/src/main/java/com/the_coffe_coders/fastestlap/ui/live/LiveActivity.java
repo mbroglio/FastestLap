@@ -151,9 +151,9 @@ public class LiveActivity extends AppCompatActivity {
                     // Formato LAP: XX/YY
                     if (currentLapText != null) {
                         if (maxLap > 0) {
-                            currentLapText.setText("LAP: " + maxLap + "/" + totalLapsFormatted);
+                            currentLapText.setText(getString(R.string.lap_counter_format, maxLap, totalLapsFormatted));
                         } else {
-                            currentLapText.setText("LAP: 0/" + totalLapsFormatted);
+                            currentLapText.setText(getString(R.string.lap_counter_format, 0, totalLapsFormatted));
                         }
                     }
 

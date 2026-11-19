@@ -36,6 +36,7 @@ public class VersusFragment extends Fragment {
     }
 
     @Override
+    @android.annotation.SuppressLint("SourceLockedOrientationActivity")
     public void onResume() {
         super.onResume();
         // Disable screen rotation

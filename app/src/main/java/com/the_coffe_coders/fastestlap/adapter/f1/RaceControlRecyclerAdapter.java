@@ -120,6 +120,7 @@ public class RaceControlRecyclerAdapter
         rebuildAndSortItems();
     }
 
+    @android.annotation.SuppressLint("NotifyDataSetChanged")
     private void rebuildAndSortItems() {
         List<Object> unGroupedList = new ArrayList<>();
         unGroupedList.addAll(rawRaceControlGroups);

@@ -96,6 +96,7 @@ public class NewsRecyclerAdapter extends RecyclerView.Adapter<NewsRecyclerAdapte
         this.networkLiveData = new NetworkUtils(context);
     }
 
+    @android.annotation.SuppressLint("NotifyDataSetChanged")
     public void updateNewsList(List<News> newNewsList) {
         if (newNewsList == null) return;
 

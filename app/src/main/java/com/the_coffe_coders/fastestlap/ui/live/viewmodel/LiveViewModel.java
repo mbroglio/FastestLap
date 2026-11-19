@@ -77,7 +77,6 @@ public class LiveViewModel extends ViewModel {
 
     @Override
     protected void onCleared() {
-        super.onCleared();
         stopPolling();
     }
 }

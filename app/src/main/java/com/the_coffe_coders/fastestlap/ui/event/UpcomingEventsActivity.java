@@ -133,6 +133,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
         processEvents();
     }
 
+    @android.annotation.SuppressLint("NotifyDataSetChanged")
     private void clearData() {
         Log.i(TAG, "Clearing data...");
 
@@ -174,6 +175,7 @@ public class UpcomingEventsActivity extends AppCompatActivity {
     // Data loading
     // ─────────────────────────────────────────────────────────────────
 
+    @android.annotation.SuppressLint("NotifyDataSetChanged")
     private void processEvents() {
         Log.i(TAG, "Process Event");
 

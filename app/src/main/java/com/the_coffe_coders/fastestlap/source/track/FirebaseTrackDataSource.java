@@ -98,7 +98,7 @@ public class FirebaseTrackDataSource implements TrackDataSource {
                 }
 
                 // Check alias map as fallback (e.g. sepang -> sepang_international_circuit)
-                String aliasId = TRACK_ID_ALIASES.get(originalTrackId.toLowerCase());
+                String aliasId = TRACK_ID_ALIASES.get(originalTrackId.toLowerCase(java.util.Locale.ROOT));
                 if (aliasId != null) {
                     Log.d(TAG, "Trying alias circuit ID '" + aliasId + "' for '" + originalTrackId + "'");
                     fetchTrackDirect(aliasId, callback);
@@ -106,7 +106,7 @@ public class FirebaseTrackDataSource implements TrackDataSource {
                     searchAllCircuits(originalTrackId, callback, originalError);
                 }
             } else {
-                String aliasId = TRACK_ID_ALIASES.get(originalTrackId.toLowerCase());
+                String aliasId = TRACK_ID_ALIASES.get(originalTrackId.toLowerCase(java.util.Locale.ROOT));
                 if (aliasId != null) {
                     fetchTrackDirect(aliasId, callback);
                 } else {
@@ -122,12 +122,12 @@ public class FirebaseTrackDataSource implements TrackDataSource {
             if (task.isSuccessful() && task.getResult() != null) {
                 DataSnapshot snapshot = task.getResult();
                 if (snapshot.exists()) {
-                    String cleanSearchId = originalTrackId.toLowerCase().replaceAll("[^a-z0-9]", "");
+                    String cleanSearchId = originalTrackId.toLowerCase(java.util.Locale.ROOT).replaceAll("[^a-z0-9]", "");
                     for (DataSnapshot child : snapshot.getChildren()) {
                         String key = child.getKey();
                         Track t = child.getValue(Track.class);
                         if (key != null) {
-                            String cleanKey = key.toLowerCase().replaceAll("[^a-z0-9]", "");
+                            String cleanKey = key.toLowerCase(java.util.Locale.ROOT).replaceAll("[^a-z0-9]", "");
                             if (cleanKey.equals(cleanSearchId) || cleanKey.contains(cleanSearchId)) {
                                 if (t != null) {
                                     if (t.getTrackId() == null || t.getTrackId().isEmpty()) {

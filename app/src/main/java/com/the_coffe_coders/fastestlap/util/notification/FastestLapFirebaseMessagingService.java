@@ -93,7 +93,7 @@ public class FastestLapFirebaseMessagingService extends FirebaseMessagingService
         }
 
         // 3. Determine payload routing (Session reminder, News alert, or General announcement)
-        String from = remoteMessage.getFrom() != null ? remoteMessage.getFrom().toLowerCase() : "";
+        String from = remoteMessage.getFrom() != null ? remoteMessage.getFrom().toLowerCase(java.util.Locale.ROOT) : "";
         String channelId = notification != null ? notification.getChannelId() : null;
         if (channelId == null && data != null) {
             channelId = data.get("channelId");
@@ -117,7 +117,7 @@ public class FastestLapFirebaseMessagingService extends FirebaseMessagingService
 
         // If not explicitly flagged, perform contextual keyword analysis on title and body
         if (!isSession && !isNews) {
-            String lowerContent = ((title != null ? title : "") + " " + (body != null ? body : "")).toLowerCase();
+            String lowerContent = ((title != null ? title : "") + " " + (body != null ? body : "")).toLowerCase(java.util.Locale.ROOT);
             if (lowerContent.contains("qualifiche") || lowerContent.contains("qualifying")
                     || lowerContent.contains("prove libere") || lowerContent.contains("fp1")
                     || lowerContent.contains("fp2") || lowerContent.contains("fp3")

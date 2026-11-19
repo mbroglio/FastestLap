@@ -109,6 +109,7 @@ public class PastEventsActivity extends AppCompatActivity {
         processEvents();
     }
 
+    @android.annotation.SuppressLint("NotifyDataSetChanged")
     private void clearData() {
         Log.i("PastEvent", "Clearing data...");
 

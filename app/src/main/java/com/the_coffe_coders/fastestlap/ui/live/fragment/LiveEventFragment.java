@@ -96,17 +96,17 @@ public class LiveEventFragment extends Fragment {
             driverName.setText(driverAbbreviations[i]);
 
             TextView lastLapTime = tableRow.findViewById(R.id.last_lap_time);
-            lastLapTime.setText(String.format("1:%02d.%03d", (int) (Math.random() * 60), (int) (Math.random() * 1000)));
+            lastLapTime.setText(String.format(java.util.Locale.ROOT, "1:%02d.%03d", (int) (Math.random() * 60), (int) (Math.random() * 1000)));
 
             TextView gapAheadText = tableRow.findViewById(R.id.gap_ahead_text);
             LinearLayout leaderLayout = tableRow.findViewById(R.id.leader_layout);
 
             if (i == 10) {
-                gapAheadText.setText("+5.056");
+                gapAheadText.setText(R.string.default_gap_ahead);
             } else if (i == 16) {
-                gapAheadText.setText(String.format("+1:%02d.%03d", (int) (Math.random() * 60), (int) (Math.random() * 1000)));
+                gapAheadText.setText(String.format(java.util.Locale.ROOT, "+1:%02d.%03d", (int) (Math.random() * 60), (int) (Math.random() * 1000)));
             } else {
-                gapAheadText.setText(String.format("+%d.%03d", (int) (Math.random() * 60), (int) (Math.random() * 1000)));
+                gapAheadText.setText(String.format(java.util.Locale.ROOT, "+%d.%03d", (int) (Math.random() * 60), (int) (Math.random() * 1000)));
 
             }
 

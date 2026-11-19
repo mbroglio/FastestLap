@@ -680,7 +680,7 @@ public class UIUtils {
         try {
             int teamColorRes = R.color.app_primary_red;
             if (teamId != null) {
-                String normalized = teamId.toLowerCase().trim();
+                String normalized = teamId.toLowerCase(Locale.ROOT).trim();
                 Integer col = Constants.TEAM_COLOR.get(normalized);
                 if (col == null) {
                     if (normalized.contains("red_bull") || normalized.contains("redbull")) {
@@ -724,10 +724,8 @@ public class UIUtils {
             cardView.setStrokeColor(ColorStateList.valueOf(ColorUtils.setAlphaComponent(teamColor, 120)));
             cardView.setStrokeWidth((int) (context.getResources().getDisplayMetrics().density * 1.5f));
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                cardView.setOutlineSpotShadowColor(teamColor);
-                cardView.setOutlineAmbientShadowColor(ColorUtils.setAlphaComponent(teamColor, 60));
-            }
+            cardView.setOutlineSpotShadowColor(teamColor);
+            cardView.setOutlineAmbientShadowColor(ColorUtils.setAlphaComponent(teamColor, 60));
 
             // Ensure card does not clip children so inner elevation shadows render freely
             cardView.setClipChildren(false);
@@ -746,10 +744,8 @@ public class UIUtils {
                 int darkRankColor = ColorUtils.blendARGB(teamColor, Color.BLACK, 0.45f);
                 rankCard.setCardBackgroundColor(ColorStateList.valueOf(darkRankColor));
                 rankCard.setCardElevation(context.getResources().getDisplayMetrics().density * 5);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-                    rankCard.setOutlineSpotShadowColor(Color.BLACK);
-                    rankCard.setOutlineAmbientShadowColor(ColorUtils.setAlphaComponent(teamColor, 120));
-                }
+                rankCard.setOutlineSpotShadowColor(Color.BLACK);
+                rankCard.setOutlineAmbientShadowColor(ColorUtils.setAlphaComponent(teamColor, 120));
             }
         } catch (Exception e) {
             Log.e("UIUtils.styleFavoriteCard", "Error styling favorite card: " + e.getMessage());

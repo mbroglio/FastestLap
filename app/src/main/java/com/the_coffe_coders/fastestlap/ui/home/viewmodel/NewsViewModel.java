@@ -319,7 +319,6 @@ public class NewsViewModel extends ViewModel {
 
     @Override
     protected void onCleared() {
-        super.onCleared();
         if (executor != null && !executor.isShutdown()) {
             executor.shutdown();
         }

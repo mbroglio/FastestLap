@@ -270,11 +270,7 @@ public class NewsFetcher {
 
     private static byte[] decodeBase64(String str) {
         try {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                return Base64.getDecoder().decode(str);
-            } else {
-                return android.util.Base64.decode(str, android.util.Base64.DEFAULT);
-            }
+            return Base64.getDecoder().decode(str);
         } catch (Throwable t) {
             try {
                 return android.util.Base64.decode(str, android.util.Base64.DEFAULT);

@@ -48,6 +48,7 @@ public class StintsResultsRecyclerAdapter extends RecyclerView.Adapter<StintsRes
         this(context, stints, null);
     }
 
+    @android.annotation.SuppressLint("NotifyDataSetChanged")
     public void updateStints(List<Stint> stints, List<RaceResult> raceResults) {
         this.raceResults = raceResults;
         groupAndSortStints(stints, raceResults);
