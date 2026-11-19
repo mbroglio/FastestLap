@@ -41,13 +41,19 @@ public class HomeViewModel extends ViewModel {
     }
 
     public MutableLiveData<Result> getDriverStandingsLiveData(Application application) {
-        AppRoomDatabase database = application != null ? ServiceLocator.getInstance().getRoomDatabase(application) : null;
-        return DriverStandingRepository.getInstance(database, application != null ? application.getApplicationContext() : null).getDriverStandings();
+        if (application == null) {
+            return new MutableLiveData<>(new Result.Error("Application context is unavailable"));
+        }
+        AppRoomDatabase database = ServiceLocator.getInstance().getRoomDatabase(application);
+        return DriverStandingRepository.getInstance(database, application.getApplicationContext()).getDriverStandings();
     }
 
     public MutableLiveData<Result> getConstructorStandingsLiveData(Application application) {
-        AppRoomDatabase database = application != null ? ServiceLocator.getInstance().getRoomDatabase(application) : null;
-        return ConstructorStandingRepository.getInstance(database, application != null ? application.getApplicationContext() : null).getConstructorStandings();
+        if (application == null) {
+            return new MutableLiveData<>(new Result.Error("Application context is unavailable"));
+        }
+        AppRoomDatabase database = ServiceLocator.getInstance().getRoomDatabase(application);
+        return ConstructorStandingRepository.getInstance(database, application.getApplicationContext()).getConstructorStandings();
     }
 
     // Helper method to find a specific driver in the standings list
